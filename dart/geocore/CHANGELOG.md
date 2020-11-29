@@ -1,3 +1,11 @@
+## 0.1.0-nullsafety.2
+
+- Small fixes on README.md
+
+## 0.1.0-nullsafety.1
+
+- Small fixes on links of pubspec.yaml
+
 ## 0.1.0-nullsafety.0
 
 - Initial pre-release version, the API of the library is not stable

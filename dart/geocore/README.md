@@ -28,8 +28,7 @@ Dependencies defined in the `pubspec.yaml` when using the package:
 
 ```yaml
 dependencies:
-  geocore:
-    path: ^0.1.0-nullsafety.0  
+  geocore: ^0.1.0-nullsafety.2 
 ```
 
 An example how to use geospatial data structures the package provides:

@@ -28,8 +28,7 @@ Dependencies defined in the `pubspec.yaml` when using the package:
 
 ```yaml
 dependencies:
-  geodata:
-    path: ^0.1.0-nullsafety.0  
+  geodata: ^0.1.0-nullsafety.0  
 ```
 
 An example how to setup an API client and a provider for 
