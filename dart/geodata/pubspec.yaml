@@ -1,0 +1,21 @@
+name: geodata
+description: A geospatial client reading OGC API and other data sources.
+version: 0.1.0-nullsafety.0
+# repository: https://github.com/navibyte/geospatial
+
+environment:
+  sdk: '>=2.12.0-0 <3.0.0'
+
+dependencies:
+  equatable: ^2.0.0-nullsafety.0
+
+  http: ^0.12.2
+  http_parser: ^3.1.4
+  #http_parser: ^4.0.0-nullsafety
+
+  geocore:
+    path: ../geocore  
+
+dev_dependencies:
+  pedantic: ^1.10.0-nullsafety.3
+  test: ^1.16.0-nullsafety.12

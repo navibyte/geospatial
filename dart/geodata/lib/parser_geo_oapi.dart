@@ -1,0 +1,1 @@
+export 'src/parser/geo/oapi/provider_meta.dart';
