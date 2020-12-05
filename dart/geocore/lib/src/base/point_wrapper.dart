@@ -22,6 +22,9 @@ class PointWrapper<T extends Point> extends Point with EquatableMixin {
   List<Object?> get props => [point];
 
   @override
+  bool get isEmpty => point.isEmpty;
+
+  @override
   int get coordinateDimension => point.coordinateDimension;
 
   @override

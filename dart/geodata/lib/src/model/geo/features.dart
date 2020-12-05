@@ -6,30 +6,19 @@ import 'package:meta/meta.dart';
 
 import 'package:equatable/equatable.dart';
 
-import 'package:geocore/base.dart';
+import 'package:geocore/feature.dart';
 
-import 'items.dart';
+import 'common.dart';
 
-/// A geospatial feature collection.
-abstract class Features extends Items<Feature, ItemsMeta> {}
-
-/// A geospatial feature.
-///
-/// Supports representing data from GeoJSON (https://geojson.org/) features.
+/// A feature collection with feature items and metadata.
 @immutable
-class Feature extends Item with EquatableMixin {
-  const Feature(
-      {required this.id, required this.geometry, this.properties = const {}});
+class FeatureItems<T extends Feature> with EquatableMixin {
+  const FeatureItems({required this.all, required this.meta});
 
-  /// The [id] for this feature.
-  final String id;
+  final FeatureSeries<T> all;
 
-  /// The [geometry] for this feature.
-  final Geometry geometry;
-
-  /// Properties for this feature, allowed to be empty.
-  final Map<String, Object> properties;
+  final ItemsMeta meta;
 
   @override
-  List<Object?> get props => [id, geometry, properties];
+  List<Object?> get props => [all, meta];
 }

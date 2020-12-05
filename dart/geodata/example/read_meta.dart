@@ -11,7 +11,7 @@ import 'package:geodata/provider_geo_oapi.dart';
 /*
 To test run this from command line: 
 
-dart --no-sound-null-safety example/oapi/read_meta.dart https://demo.pygeoapi.io/master
+dart --no-sound-null-safety example/read_meta.dart https://demo.pygeoapi.io/master
 
 Please not that even if this package is null-safe, some dependencies are not 
 yet. So running code from the package is not sound-null-safe.

@@ -32,6 +32,11 @@ abstract class LinksMeta {
   /// An optional [type] can specify link (content) type.
   Link? self({String? type}) => byRel('self', type: type);
 
+  /// First link with "rel" matching "next" or null if no link found.
+  ///
+  /// An optional [type] can specify link (content) type.
+  Link? next({String? type}) => byRel('next', type: type);
+
   /// First link with "rel" matching "service-desc" or null if no link found.
   ///
   /// An optional [type] can specify link (content) type.

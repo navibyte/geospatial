@@ -65,6 +65,9 @@ class GeoPoint2 extends GeoPoint with EquatableMixin {
   List<Object?> get props => [_lon, _lat];
 
   @override
+  bool get isEmpty => false;
+
+  @override
   int get coordinateDimension => 2;
 
   @override

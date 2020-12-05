@@ -28,7 +28,7 @@ Dependencies defined in the `pubspec.yaml` when using the package:
 
 ```yaml
 dependencies:
-  geocore: ^0.1.0-nullsafety.2 
+  geocore: ^0.2.0-nullsafety.0
 ```
 
 An example how to use geospatial data structures the package provides:
@@ -53,10 +53,22 @@ main() {
   // Geographical points (lon-lat, lon-lat-elev) using doubles
   print(GeoPoint2.lonLat(0.0, 51.48));
   print(GeoPoint3.lonLatElev(0.0, 51.48, 11));
+
+  // Geospatial feature
+  print(Feature.of(
+    id: 'greenwich',
+    geometry: GeoPoint3.lonLatElev(0.0, 51.48, 11),
+    properties: {
+      'title': 'Greenwich',
+      'city': 'London',
+    },
+  ));
 }
 ```
 
 ## Features
+
+*Please note that this library is under developement, so classes and their features may still change*.
 
 The package contains geospatial data structures:
 
@@ -65,6 +77,10 @@ The package contains geospatial data structures:
 - Geographical points using doubles: GeoPoint2, GeoPoint3
 - Geographical camera: GeoCamera
 - Geographical bounds: GeoBounds
+- More geometries: LineString (any line string or linear ring), Polygon
+- Custom Iterable interface and sub implementation: Series, SeriesView
+- Geometry series: GeometrySeries, PointSeries, LineStringSeries, PolygonSeries
+- Features and collections: Feature, FeatureSeries
 - Coordinate reference systems: CRS class with two predefined identifiers
 - Temporal coordinates: Instant, Interval
 - Geospatial extent: Extent

@@ -72,27 +72,3 @@ class _ResponseContent extends Content {
   @override
   dynamic decodeJson() => json.decode(response.body);
 }
-
-/*
-  @override
-  Future<String> read(Query query) {
-    return http.read(query.url(_nextEndpoint()));
-  }
-
-  @override
-  Future<Uint8List> readBytes(Query query) {
-    return http.readBytes(query.url(_nextEndpoint()));
-  }
-
-  @override
-  Future<dynamic> readJson(Query query) async {
-    final data = await read(query);
-    return json.decode(data);
-  }
-
-  @override
-  Future<T?> readAs<T>(Query query) async {
-    final res = await _readResponse(query);
-    return query.fromContent<T>(_ResponseContent(res));
-  }
-*/

@@ -70,3 +70,22 @@ class CollectionMeta extends Meta {
   @override
   List<Object?> get props => [id, extent, title, description];
 }
+
+/// Metadata about a collection of items.
+@immutable
+class ItemsMeta with EquatableMixin {
+  const ItemsMeta(
+      {required this.timeStamp, this.numberMatched, this.numberReturned});
+
+  /// The time stamp
+  final DateTime timeStamp;
+
+  /// An optional count of items matched.
+  final int? numberMatched;
+
+  /// An optional count of items returned.
+  final int? numberReturned;
+
+  @override
+  List<Object?> get props => [timeStamp, numberMatched, numberReturned];
+}

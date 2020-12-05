@@ -68,8 +68,8 @@ class GeoBounds extends Bounds<GeoPoint> with EquatableMixin {
   ///
   /// List elements are converted to doubles using [valueToDouble] function.
   ///
-  /// For other lengths an ArgumentError is thrown.
-  factory GeoBounds.from(List<dynamic> coords) {
+  /// FormatException is thrown if cannot parse.
+  factory GeoBounds.fromJson(List coords) {
     if (coords.length == 4) {
       return GeoBounds.bboxLonLat(
         valueToDouble(coords[0]),
@@ -87,7 +87,7 @@ class GeoBounds extends Bounds<GeoPoint> with EquatableMixin {
         valueToDouble(coords[5]),
       );
     }
-    throw ArgumentError.value(coords, '');
+    throw FormatException('Cannot parse GeoBounds from json.');
   }
 
   final GeoPoint _min, _max;
@@ -96,10 +96,7 @@ class GeoBounds extends Bounds<GeoPoint> with EquatableMixin {
   List<Object?> get props => [_min, _max];
 
   @override
-  int get coordinateDimension => _min.coordinateDimension;
-
-  @override
-  int get spatialDimension => _min.spatialDimension;
+  bool get isEmpty => false;
 
   @override
   GeoPoint get min => _min;

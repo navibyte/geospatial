@@ -59,7 +59,7 @@ void main() {
   // Extent
   print(Extent.single(
     crs: CRS84,
-    bounds: GeoBounds.from([-180.0, -90.0, 180.0, 90.0]),
+    bounds: GeoBounds.fromJson([-180.0, -90.0, 180.0, 90.0]),
     interval: Interval.fromJson(['..', '2020-10-31']),
   ));
 
@@ -69,5 +69,15 @@ void main() {
     rel: 'alternate',
     type: 'application/json',
     title: 'Other content',
+  ));
+
+  // Geospatial feature
+  print(Feature.of(
+    id: 'greenwich',
+    geometry: GeoPoint3.lonLatElev(0.0, 51.48, 11),
+    properties: {
+      'title': 'Greenwich',
+      'city': 'London',
+    },
   ));
 }

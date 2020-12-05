@@ -51,7 +51,7 @@ CollectionMeta collectionFromJson(Map<String, dynamic> json) {
 Extent extentFromJson(Map<String, dynamic> json) {
   final spatial = json['spatial'];
   final crs = CRS.id(spatial['crs'] ?? idCRS84);
-  final allBounds = (spatial['bbox'] as List).map((e) => GeoBounds.from(e));
+  final allBounds = (spatial['bbox'] as List).map((e) => GeoBounds.fromJson(e));
   final temporal = json['temporal'];
   if (temporal != null) {
     return Extent.multi(

@@ -1,3 +1,11 @@
+## 0.2.0-nullsafety.0
+
+- Alpha version 0.2.0 with breaking changes compared to 0.1.0.
+- More geometries: LineString (any line string or linear ring), Polygon
+- Custom Iterable interface and sub implementation: Series, SeriesView
+- Geometry series: GeometrySeries, PointSeries, LineStringSeries, PolygonSeries
+- Features and collections: Feature, FeatureSeries
+
 ## 0.1.0-nullsafety.2
 
 - Small fixes on README.md

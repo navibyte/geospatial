@@ -39,6 +39,9 @@ class Point2 extends Point with EquatableMixin {
   List<Object?> get props => [_x, _y];
 
   @override
+  bool get isEmpty => false;
+
+  @override
   int get coordinateDimension => 2;
 
   @override
@@ -226,6 +229,9 @@ class Point2i extends Point with EquatableMixin {
 
   @override
   List<Object?> get props => [_x, _y];
+
+  @override
+  bool get isEmpty => false;
 
   @override
   int get coordinateDimension => 2;
