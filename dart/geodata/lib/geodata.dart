@@ -8,7 +8,7 @@ export 'client_http.dart';
 export 'model_geo.dart';
 
 // parsers
-export 'parser_geo_oapi.dart';
+export 'parse_geo_oapi.dart';
 
 // providers
 export 'provider_geo.dart';

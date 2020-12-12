@@ -49,4 +49,3 @@ KnownMime toKnownMime(String? contentType) {
 MediaType toMediaType(String? contentType) => contentType != null
     ? MediaType.parse(contentType)
     : MediaType('application', 'octet-stream');
-

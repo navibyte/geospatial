@@ -58,7 +58,7 @@ mixin PointSeriesMixin<T extends Point> implements PointSeries<T> {
   int get dimension => 0;
 
   @override
-  bool get isClosed => length >= 2 && this[0].equals2D(this[length - 1]);
+  bool get isClosed => length >= 2 && first.equals2D(last);
 }
 
 /// An unmodifiable [PointSeries] backed by another list.

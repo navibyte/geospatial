@@ -12,6 +12,9 @@ import 'common.dart';
 abstract class Geometry {
   const Geometry();
 
+  /// Creates an empty (non-existent) geometry.
+  factory Geometry.empty() = EmptyGeometry;
+
   /// The topological dimension of this geometry.
   ///
   /// For example returns 0 for point geometries, 1 for linear geometries (like
@@ -49,9 +52,6 @@ class GeomSeriesView<T extends Geometry> extends SeriesView<T>
   GeomSeriesView(Iterable<T> source) : super(source);
 
   @override
-  T operator [](int index) => this[index];
-
-  @override
   int get dimension {
     // A base implementation for calculating a maximum dimension for a series by
     // looping through all items. Should be overridden to provide more efficient
@@ -60,4 +60,16 @@ class GeomSeriesView<T extends Geometry> extends SeriesView<T>
     forEach((element) => dim = math.max(dim, element.dimension));
     return dim;
   }
+}
+
+/// An empty (non-existent) geometry.
+@immutable
+class EmptyGeometry extends Geometry {
+  const EmptyGeometry();
+
+  @override
+  int get dimension => 0;
+
+  @override
+  bool get isEmpty => true;
 }

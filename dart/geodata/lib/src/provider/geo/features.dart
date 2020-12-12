@@ -16,10 +16,10 @@ abstract class FeatureResource extends Resource {
   /// Fetches feature items from this feature (collection) resource.
   ///
   /// This accessed only one set of feature items.
-  Future<FeatureItems> features({int limit = -1});
+  Future<FeatureItems> items({int limit = -1});
 
   /// Fetches paged feature items from this feature (collection) resource.
   ///
   /// This call returns a first set of feature items with link to next set.
-  Future<Paged<FeatureItems>> featuresPaged({int limit = -1});
+  Future<Paged<FeatureItems>> itemsPaged({int limit = -1});
 }

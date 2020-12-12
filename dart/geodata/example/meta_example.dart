@@ -11,18 +11,13 @@ import 'package:geodata/provider_geo_oapi.dart';
 /*
 To test run this from command line: 
 
-dart --no-sound-null-safety example/read_meta.dart https://demo.pygeoapi.io/master
+dart --no-sound-null-safety example/meta_example.dart https://demo.pygeoapi.io/master
 
-Please not that even if this package is null-safe, some dependencies are not 
-yet. So running code from the package is not sound-null-safe.
-
-More demo APIs (however this page seems to be somewhat outdated, be careful!):
-https://github.com/opengeospatial/ogcapi-features/blob/master/implementations.md
 */
 
 /// A simple example to read metadata from standard OGC API Features services.
 void main(List<String> args) async {
-  // configure Equatable to apply toString() default impls 
+  // configure Equatable to apply toString() default impls
   EquatableConfig.stringify = true;
 
   // loop over all test URLs (from the arguments) and read meta data for each
@@ -46,7 +41,7 @@ Future<ProviderMeta> _readMeta(String baseURL) async {
   // Create a feature provider for OGC API Features (OAPIF).
   final provider = FeatureProviderOAPIF.client(client);
 
-  // Read metadata 
+  // Read metadata
   return provider.meta();
 }
 

@@ -17,7 +17,7 @@ class Instant with EquatableMixin {
   /// The input [str] must be formatted according to RFC 3339.
   ///
   /// Throws FormatException if an interval cannot be parsed.
-  factory Instant.from(String str) {
+  factory Instant.parse(String str) {
     return Instant(DateTime.parse(str));
   }
 

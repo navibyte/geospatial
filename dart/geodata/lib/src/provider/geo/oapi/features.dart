@@ -2,7 +2,6 @@
 // Use of this source code is governed by a "BSD-3-Clause"-style license, please
 // see the LICENSE file.
 
-import 'package:geodata/src/provider/geo/base.dart';
 import 'package:synchronized/synchronized.dart';
 
 import '../../../client/client.dart';
@@ -11,9 +10,10 @@ import '../../../client/query.dart';
 import '../../../model/geo/common.dart';
 import '../../../model/geo/features.dart';
 import '../../../model/geo/links.dart';
-import '../../../parser/geo/oapi/provider_meta.dart';
-import '../../../parser/geo/oapi/features.dart';
+import '../../../parse/geo/oapi/provider_meta.dart';
+import '../../../parse/geo/oapi/features.dart';
 
+import '../base.dart';
 import '../features.dart';
 
 /// A feature provider for the OGC API Features (OAPIF) standard.
@@ -73,12 +73,12 @@ class _FeatureResourceOAPIF extends FeatureResource {
   final String id;
 
   @override
-  Future<FeatureItems> features({int limit = -1}) async {
-    return (await featuresPaged(limit: limit)).current;
+  Future<FeatureItems> items({int limit = -1}) async {
+    return (await itemsPaged(limit: limit)).current;
   }
 
   @override
-  Future<Paged<FeatureItems>> featuresPaged({int limit = -1}) async {
+  Future<Paged<FeatureItems>> itemsPaged({int limit = -1}) async {
     // read "/collections/{id}/items" and return as paged response
     return _PagedFeaturesOAPIF.parse(
         client,
@@ -103,7 +103,7 @@ class _PagedFeaturesOAPIF extends Paged<FeatureItems> {
     final next = links.next(type: 'application/geo+json');
 
     // parse feature items (meta + actual features) and return a paged result
-    return _PagedFeaturesOAPIF(client, featuresItemsFromJson(json),
+    return _PagedFeaturesOAPIF(client, featureItemsFromJson(json),
         nextURL: next?.href);
   }
 

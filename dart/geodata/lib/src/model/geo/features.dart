@@ -2,23 +2,29 @@
 // Use of this source code is governed by a "BSD-3-Clause"-style license, please
 // see the LICENSE file.
 
-import 'package:meta/meta.dart';
-
 import 'package:equatable/equatable.dart';
+import 'package:meta/meta.dart';
 
 import 'package:geocore/feature.dart';
 
 import 'common.dart';
 
-/// A feature collection with feature items and metadata.
+/// A feature items with wrapped feature collection and metadata.
 @immutable
-class FeatureItems<T extends Feature> with EquatableMixin {
-  const FeatureItems({required this.all, required this.meta});
+class FeatureItems<T extends Feature> extends FeatureCollection
+    with EquatableMixin {
+  /// Create feature items by wrapping [collection] and [meta] data.
+  const FeatureItems({required this.collection, required this.meta});
 
-  final FeatureSeries<T> all;
+  /// The wrapped feature [collection].
+  final FeatureCollection<T> collection;
 
+  /// The wrapped [meta] data.
   final ItemsMeta meta;
 
   @override
-  List<Object?> get props => [all, meta];
+  List<Object?> get props => [collection, meta];
+
+  @override
+  FeatureSeries<Feature> get features => collection.features;
 }

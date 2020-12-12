@@ -5,6 +5,7 @@
 import 'package:meta/meta.dart';
 
 import 'geometry.dart';
+import 'point_immutable.dart';
 
 /// A read-only point with coordinate value getters.
 abstract class Point extends Geometry {
@@ -12,6 +13,26 @@ abstract class Point extends Geometry {
 
   /// Create an empty point.
   factory Point.empty({bool hasZ, bool hasM}) = PointEmpty;
+
+  /// A point from [coords]: xy or xyz (if [expectM] then could be xyz or xyzm).
+  ///
+  /// Throws FormatException if cannot create point.
+  factory Point.from(Iterable<double> coords, {bool expectM = false}) {
+    if (expectM) {
+      if (coords.length >= 4) {
+        return Point3m.from(coords);
+      } else if (coords.length == 3) {
+        return Point2m.from(coords);
+      }
+    } else {
+      if (coords.length >= 3) {
+        return Point3.from(coords);
+      } else if (coords.length == 2) {
+        return Point2.from(coords);
+      }
+    }
+    throw FormatException('Not a valid point.');
+  }
 
   @override
   int get dimension => 0;
@@ -80,7 +101,7 @@ abstract class Point extends Geometry {
   bool equals3D(Point other) => equals2D(other) && z == other.z;
 }
 
-/// An empty point.
+/// An empty point (non-existent) that has all coordinate values 0.0 if queried.
 @immutable
 class PointEmpty extends Point {
   PointEmpty({this.hasZ = false, this.hasM = false});

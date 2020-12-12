@@ -9,6 +9,8 @@ import 'package:equatable/equatable.dart';
 import '../base/common.dart';
 import '../base/geometry.dart';
 
+import 'id.dart';
+
 /// A geospatial feature.
 ///
 /// Supports representing data from GeoJSON (https://geojson.org/) features.
@@ -17,18 +19,24 @@ abstract class Feature {
 
   /// Create a new feature with [id] and [geometry] and optional [properites].
   factory Feature.of(
-      {required String id,
+      {required dynamic id,
       required Geometry geometry,
-      Map<String, Object> properties}) = FeatureBase;
+      Map<String, dynamic> properties = const {}}) {
+    return FeatureBase(
+      id: id is FeatureId ? id : FeatureId.of(id),
+      geometry: geometry,
+      properties: properties,
+    );
+  }
 
   /// The [id] for this feature.
-  String get id;
+  FeatureId get id;
 
   /// The [geometry] for this feature.
   Geometry get geometry;
 
   /// Properties for this feature, allowed to be empty.
-  Map<String, Object> get properties;
+  Map<String, dynamic> get properties;
 }
 
 /// An immutable base implementation of [Feature].
@@ -39,13 +47,13 @@ class FeatureBase extends Feature with EquatableMixin {
       {required this.id, required this.geometry, this.properties = const {}});
 
   @override
-  final String id;
+  final FeatureId id;
 
   @override
   final Geometry geometry;
 
   @override
-  final Map<String, Object> properties;
+  final Map<String, dynamic> properties;
 
   @override
   List<Object?> get props => [id, geometry, properties];
@@ -71,4 +79,30 @@ class FeatureSeriesView<T extends Feature> extends SeriesView<T>
     implements FeatureSeries<T> {
   /// Create an unmodifiable [FeatureSeriesView] backed by [source].
   FeatureSeriesView(Iterable<T> source) : super(source);
+}
+
+/// A feature collection with a series of features.
+abstract class FeatureCollection<T extends Feature> {
+  const FeatureCollection();
+
+  /// Creates a feature collection from a series of [features].
+  factory FeatureCollection.of(FeatureSeries<T> features) =
+      FeatureCollectionBase<T>;
+
+  /// All the [features] for this collection.
+  FeatureSeries<T> get features;
+}
+
+/// A base implementation for a [FeatureCollection].
+@immutable
+class FeatureCollectionBase<T extends Feature> extends FeatureCollection<T>
+    with EquatableMixin {
+  /// Creates a feature collection from a series of [features].
+  const FeatureCollectionBase(this.features);
+
+  @override
+  final FeatureSeries<T> features;
+
+  @override
+  List<Object?> get props => [features];
 }

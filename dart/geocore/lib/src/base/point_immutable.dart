@@ -33,6 +33,10 @@ class Point2 extends Point with EquatableMixin {
       : _x = 0.0,
         _y = 0.0;
 
+  /// A point from [coords] given in order: x, y.
+  factory Point2.from(Iterable<double> coords) =>
+      Point2.xy(coords.elementAt(0), coords.elementAt(1));
+
   final double _x, _y;
 
   @override
@@ -83,6 +87,10 @@ class Point2m extends Point2 {
       : _m = 0.0,
         super.origin();
 
+  /// A point from [coords] given in order: x, y, m.
+  factory Point2m.from(Iterable<double> coords) => Point2m.xym(
+      coords.elementAt(0), coords.elementAt(1), coords.elementAt(2));
+
   final double _m;
 
   @override
@@ -128,6 +136,10 @@ class Point3 extends Point2 {
   const Point3.origin()
       : _z = 0.0,
         super.origin();
+
+  /// A point from [coords] given in order: x, y, m.
+  factory Point3.from(Iterable<double> coords) =>
+      Point3.xyz(coords.elementAt(0), coords.elementAt(1), coords.elementAt(2));
 
   final double _z;
 
@@ -175,6 +187,13 @@ class Point3m extends Point3 {
   const Point3m.origin()
       : _m = 0.0,
         super.origin();
+
+  /// A point from [coords] given in order: x, y, z, m.
+  factory Point3m.from(Iterable<double> coords) => Point3m.xyzm(
+      coords.elementAt(0),
+      coords.elementAt(1),
+      coords.elementAt(2),
+      coords.elementAt(3));
 
   final double _m;
 
@@ -225,6 +244,10 @@ class Point2i extends Point with EquatableMixin {
       : _x = 0,
         _y = 0;
 
+  /// A point from [coords] given in order: x, y.
+  factory Point2i.from(Iterable<int> coords) =>
+      Point2i.xy(coords.elementAt(0), coords.elementAt(1));
+
   final int _x, _y;
 
   @override
@@ -265,7 +288,7 @@ class Point3i extends Point2i {
       : _z = z,
         super(x: x, y: y);
 
-  /// A point with coordinates given in order [x], [y], [z].
+  /// A point with coordinates given in order: x, y, z.
   const Point3i.xyz(int x, int y, int z)
       : _z = z,
         super(x: x, y: y);
@@ -274,6 +297,10 @@ class Point3i extends Point2i {
   const Point3i.origin()
       : _z = 0,
         super.origin();
+
+  /// A point from [coords] given in order [x], [y], [z].
+  factory Point3i.from(Iterable<int> coords) => Point3i.xyz(
+      coords.elementAt(0), coords.elementAt(1), coords.elementAt(2));
 
   final int _z;
 

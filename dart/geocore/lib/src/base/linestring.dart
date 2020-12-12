@@ -64,7 +64,7 @@ class LineString<T extends Point> extends Geometry with EquatableMixin {
   final PointSeries<T> chain;
 
   @override
-  int get dimension => 1;
+  int get dimension => type == LineStringType.ring ? 2 : 1;
 
   @override
   bool get isEmpty => chain.isEmpty;
@@ -74,7 +74,8 @@ class LineString<T extends Point> extends Geometry with EquatableMixin {
 }
 
 /// A series of line strings.
-abstract class LineStringSeries<T extends Point> extends GeomSeries<LineString<T>> {
+abstract class LineStringSeries<T extends Point>
+    extends GeomSeries<LineString<T>> {
   const LineStringSeries();
 
   /// Create an unmodifiable [LineStringSeries] backed by [source].
@@ -94,7 +95,8 @@ mixin LineStringSeriesMixin<T extends Point> implements LineStringSeries<T> {
 
 /// An unmodifiable [LineStringSeries] backed by another list.
 @immutable
-class LineStringSeriesView<T extends Point> extends GeomSeriesView<LineString<T>>
+class LineStringSeriesView<T extends Point>
+    extends GeomSeriesView<LineString<T>>
     with LineStringSeriesMixin<T>
     implements LineStringSeries<T> {
   /// Create an unmodifiable [LineStringSeries] backed by [source].

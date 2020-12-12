@@ -49,7 +49,7 @@ class Polygon<T extends Point> extends Geometry with EquatableMixin {
   bool get isEmpty => exterior.isEmpty;
 
   /// A linear ring forming an [exterior] boundary for this polygon.
-  LineString<T> get exterior => rings[0];
+  LineString<T> get exterior => rings.first;
 
   /// A series of interior rings (holes for this polygon) with 0 to N elements.
   LineStringSeries<T> get interior => LineStringSeries.view(rings.skip(1));

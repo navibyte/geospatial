@@ -6,33 +6,90 @@ import 'package:equatable/equatable.dart';
 
 import 'package:geocore/geocore.dart';
 
+/*
+To test run this from command line: 
+
+dart example/geocore_example.dart
+*/
+
 void main() {
   // configure Equatable to apply toString() default impls
   EquatableConfig.stringify = true;
 
-  // Cartesian points (XY, XYM, XYZ and XYZM) using doubles
-  print(Point2.xy(291692.0, 5707473.0));
-  print(Point2m.xym(291692.0, 5707473.0, 123.0));
-  print(Point3.xyz(291692.0, 5707473.0, 11.0));
-  print(Point3m.xyzm(291692.0, 5707473.0, 11.0, 123.0));
+  // call simple demos
+  _parseGeoJSON();
+  _basicStructures();
+}
 
-  // Cartesian points (XY, XYZ) using integers
-  print(Point2i.xy(291692, 5707473));
-  print(Point3i.xyz(291692, 5707473, 11));
+void _parseGeoJSON() {
+  print('Parse GeoJSON sample data.');
 
-  // Geographical points (lon-lat, lon-lat-elev) using doubles
-  print(GeoPoint2.lonLat(0.0, 51.48));
-  print(GeoPoint3.lonLatElev(0.0, 51.48, 11));
+  // sample GeoJSON data
+  const sample = '''
+    {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "greenwich",
+          "geometry": {
+            "type": "Point",
+            "coordinates": [-0.0014, 51.4778, 45.0]  
+          },
+          "properties": {
+            "title": "Royal Observatory",
+            "place": "Greenwich",
+            "city": "London"
+          }
+        }  
+      ]
+    }
+  ''';
 
-  // Geographical points (lat-lon, lat-lon-elev) using doubles
-  print(GeoPoint2.latLon(51.48, 0.0));
-  print(GeoPoint3.latLonElev(51.48, 0.0, 11));
+  // parse FeatureCollection using the default GeoJSON factory
+  final fc = geoJSON.featureCollection(sample);
+
+  // loop through features and print id, geometry and properties for each
+  fc.features.forEach((f) {
+    print('Feature with id: ${f.id}');
+    print('  geometry: ${f.geometry}');
+    print('  properties:');
+    f.properties.forEach((key, value) => print('    $key: $value'));
+  });
+}
+
+void _basicStructures() {
+  print('');
+  print('Create some basic data structures.');
+
+  // Geospatial feature
+  print(Feature.of(
+    id: 'greenwich',
+    geometry: GeoPoint.from([-0.0014, 51.4778, 45.0]),
+    properties: {
+      'title': 'Royal Observatory',
+      'place': 'Greenwich',
+      'city': 'London',
+    },
+  ));
+
+  // Geographical points (lon-lat, lon-lat-m, lon-lat-elev, lon-lat-elev-m)
+  print(GeoPoint2.lonLat(-0.0014, 51.4778));
+  print(GeoPoint2m.lonLatM(-0.0014, 51.4778, 123.0));
+  print(GeoPoint3.lonLatElev(-0.0014, 51.4778, 45.0));
+  print(GeoPoint3m.lonLatElevM(-0.0014, 51.4778, 45.0, 123.0));
+
+  // Geographical points (lat-lon, lat-lon-m, lat-lon-elev, lat-lon-elev-m)
+  print(GeoPoint2.latLon(51.4778, -0.0014));
+  print(GeoPoint2m.latLonM(51.4778, -0.0014, 123.0));
+  print(GeoPoint3.latLonElev(51.4778, -0.0014, 45.0));
+  print(GeoPoint3m.latLonElevM(51.4778, -0.0014, 45.0, 123.0));
 
   // Geographical camera
   print(GeoCamera.target(
-    GeoPoint3.from([51.48, 0.0, 11]),
+    GeoPoint3.from([51.4778, -0.0014, 45.0]),
     zoom: 10.0,
-    bearing: 45.0,
+    bearing: 60.0,
     tilt: 10.0,
   ));
 
@@ -40,6 +97,16 @@ void main() {
   print(GeoBounds.bboxLonLat(-180.0, -90.0, 180.0, 90.0));
   print(GeoBounds.bboxLonLatElev(-180.0, -90.0, 50.0, 180.0, 90.0, 100.0));
   print(GeoBounds.bboxLatLon(-90.0, -180.0, 90.0, 180.0));
+
+  // Cartesian points (XY, XYM, XYZ and XYZM) using doubles
+  print(Point2.xy(708221.0, 5707225.0));
+  print(Point2m.xym(708221.0, 5707225.0, 123.0));
+  print(Point3.xyz(708221.0, 5707225.0, 45.0));
+  print(Point3m.xyzm(708221.0, 5707225.0, 45.0, 123.0));
+
+  // Cartesian points (XY, XYZ) using integers
+  print(Point2i.xy(708221, 5707225));
+  print(Point3i.xyz(708221, 5707225, 45));
 
   // Temporal intervals (open, open-started, open-ended, closed)
   print(Interval.open());
@@ -49,9 +116,9 @@ void main() {
       Interval.closed(DateTime.utc(2020, 10, 01), DateTime.utc(2020, 10, 31)));
 
   // Temporal instant
-  print(Instant.from('2020-10-31'));
+  print(Instant.parse('2020-10-31'));
 
-  // Coordinate reference systems
+  // Coordinate reference system (identifiers)
   print(CRS84);
   print(CRS84h);
   print(CRS.id('urn:ogc:def:crs:EPSG::4326'));
@@ -69,15 +136,5 @@ void main() {
     rel: 'alternate',
     type: 'application/json',
     title: 'Other content',
-  ));
-
-  // Geospatial feature
-  print(Feature.of(
-    id: 'greenwich',
-    geometry: GeoPoint3.lonLatElev(0.0, 51.48, 11),
-    properties: {
-      'title': 'Greenwich',
-      'city': 'London',
-    },
   ));
 }

@@ -1,23 +1,32 @@
-# Geospatial 
+# Geospatial toolkit for Dart
 
 Geospatial data structures, tools and utilities for 
 [Dart](https://dart.dev/) 
 and [Flutter](https://flutter.dev/) mobile developers.
 
-The repository contains two [Dart](https://dart.dev/) packages:
+The repository contains two [Dart](https://dart.dev/) code packages:
 
-Project | SDK | Description 
-------- | --- | -----------
-[geocore](dart/geocore) | Dart | Geospatial data structures and geometry classes. 
-[geodata](dart/geodata) | Dart | A geospatial client reading OGC API and other data sources.
+Code        | SDK | Description 
+----------- | --- | -----------
+[geocore](dart/geocore) | Dart | Geospatial data structures (features, geometry and metadata) and utilities ([GeoJSON](https://geojson.org/) parser). 
+[geodata](dart/geodata) | Dart | A geospatial client reading [OGC API](https://ogcapi.ogc.org/) and other data sources.
 
 **This repository is at the alpha-stage, breaking changes are possible.** 
 
-**The packagages on the repository supports Dart [null-safety](https://dart.dev/null-safety).**
+## Packages and documentation
+
+Packages and documentation are published at [pub.dev](https://pub.dev/). 
+
+The latest release:
+
+Package @ pub.dev | Documentation | Example code 
+----------------- | ------------- | -----------
+[geocore](https://pub.dev/packages/geocore) | [API reference](https://pub.dev/documentation/geocore/latest/) | [Example](https://pub.dev/packages/geocore/example)
+[geodata](https://pub.dev/packages/geodata) | [API reference](https://pub.dev/documentation/geodata/latest/) | [Example](https://pub.dev/packages/geodata/example)
 
 ## Authors
 
-This project is authored by **[Navibyte](https://navibyte.com)**.
+This project is authored by [Navibyte](https://navibyte.com).
 
 ## License
 

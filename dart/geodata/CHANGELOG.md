@@ -1,3 +1,11 @@
+## 0.3.0-nullsafety.0
+
+- Alpha version 0.3.0 with breaking changes compared to 0.2.0.
+- Updated dependency: geocore (^0.3.0-nullsafety.0) for geo data structures
+- Adaptation to the geocore changes: feature, collection and geometry classes
+- Now uses GeoJSON parser from the geocore package
+- Updated example code
+
 ## 0.2.0-nullsafety.0
 
 - Alpha version 0.2.0 with breaking changes compared to 0.1.0.
