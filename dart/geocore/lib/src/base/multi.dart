@@ -1,16 +1,10 @@
-// Copyright 2020 Navibyte (https://navibyte.com). All rights reserved.
-// Use of this source code is governed by a "BSD-3-Clause"-style license, please
-// see the LICENSE file.
+// Copyright (c) 2020-2021 Navibyte (https://navibyte.com). All rights reserved.
+// Use of this source code is governed by a “BSD-3-Clause”-style license that is
+// specified in the LICENSE file.
+//
+// Docs: https://github.com/navibyte/geospatial
 
-import 'package:equatable/equatable.dart';
-
-import 'package:meta/meta.dart';
-
-import 'geometry.dart';
-import 'linestring.dart';
-import 'point.dart';
-import 'point_series.dart';
-import 'polygon.dart';
+part of 'base.dart';
 
 /// A geometry collection.
 @immutable
@@ -20,13 +14,23 @@ class GeometryCollection<T extends Geometry> extends Geometry
   GeometryCollection(this.geometries);
 
   /// All the [geometries] for this multi point.
-  final GeomSeries<T> geometries;
+  final BoundedSeries<T> geometries;
 
   @override
-  int get dimension => geometries.dimension;
+  int get dimension {
+    // A base implementation for calculating a maximum dimension for a series by
+    // looping through all items. Should be overridden to provide more efficient
+    // implementation as needed.
+    var dim = 0;
+    geometries.forEach((element) => dim = math.max(dim, element.dimension));
+    return dim;
+  }
 
   @override
   bool get isEmpty => geometries.isEmpty;
+
+  @override
+  Bounds get bounds => geometries.bounds;
 
   @override
   List<Object?> get props => [geometries];
@@ -48,6 +52,9 @@ class MultiPoint<T extends Point> extends Geometry with EquatableMixin {
   bool get isEmpty => points.isEmpty;
 
   @override
+  Bounds get bounds => points.bounds;
+
+  @override
   List<Object?> get props => [points];
 }
 
@@ -58,13 +65,16 @@ class MultiLineString<T extends Point> extends Geometry with EquatableMixin {
   MultiLineString(this.lineStrings);
 
   /// All the [lineStrings] for this multi line strings.
-  final LineStringSeries<T> lineStrings;
+  final BoundedSeries<LineString<T>> lineStrings;
 
   @override
   int get dimension => 1;
 
   @override
   bool get isEmpty => lineStrings.isEmpty;
+
+  @override
+  Bounds get bounds => lineStrings.bounds;
 
   @override
   List<Object?> get props => [lineStrings];
@@ -77,13 +87,16 @@ class MultiPolygon<T extends Point> extends Geometry with EquatableMixin {
   MultiPolygon(this.polygons);
 
   /// All the [polygons] for this multi polygon.
-  final PolygonSeries<T> polygons;
+  final BoundedSeries<Polygon<T>> polygons;
 
   @override
   int get dimension => 2;
 
   @override
   bool get isEmpty => polygons.isEmpty;
+
+  @override
+  Bounds get bounds => polygons.bounds;
 
   @override
   List<Object?> get props => [polygons];

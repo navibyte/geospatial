@@ -1,10 +1,10 @@
-// Copyright 2020 Navibyte (https://navibyte.com). All rights reserved.
-// Use of this source code is governed by a "BSD-3-Clause"-style license, please
-// see the LICENSE file.
+// Copyright (c) 2020-2021 Navibyte (https://navibyte.com). All rights reserved.
+// Use of this source code is governed by a “BSD-3-Clause”-style license that is
+// specified in the LICENSE file.
+//
+// Docs: https://github.com/navibyte/geospatial
 
-import 'package:meta/meta.dart';
-
-import 'package:equatable/equatable.dart';
+part of 'base.dart';
 
 /// An instant with a time stamp.
 @immutable
@@ -95,6 +95,13 @@ class Interval with EquatableMixin {
 
   /// The end time of the interval. If null then the interval is open ended.
   final DateTime? end;
+
+  /// A duration (difference) between [start] and [end] if both are available.
+  Duration? get duration {
+    final s = start;
+    final e = end;
+    return s != null && e != null ? e.difference(s) : null;
+  }
 
   /// True if the interval is open (both [start] and [end] are null).
   bool get isOpen => start == null && end == null;

@@ -1,12 +1,10 @@
-// Copyright 2020 Navibyte (https://navibyte.com). All rights reserved.
-// Use of this source code is governed by a "BSD-3-Clause"-style license, please
-// see the LICENSE file.
+// Copyright (c) 2020-2021 Navibyte (https://navibyte.com). All rights reserved.
+// Use of this source code is governed by a “BSD-3-Clause”-style license that is
+// specified in the LICENSE file.
+//
+// Docs: https://github.com/navibyte/geospatial
 
-import 'package:meta/meta.dart';
-
-import 'package:equatable/equatable.dart';
-
-import 'point.dart';
+part of 'base.dart';
 
 /// A point with getters to access the wrapped [point].
 ///
@@ -25,10 +23,19 @@ class PointWrapper<T extends Point> extends Point with EquatableMixin {
   bool get isEmpty => point.isEmpty;
 
   @override
+  Bounds get bounds => point.bounds;
+
+  @override
   int get coordinateDimension => point.coordinateDimension;
 
   @override
   int get spatialDimension => point.spatialDimension;
+
+  @override
+  bool get is3D => point.is3D;
+
+  @override
+  bool get hasM => point.hasM;
 
   @override
   double operator [](int i) => point[i];
@@ -44,4 +51,9 @@ class PointWrapper<T extends Point> extends Point with EquatableMixin {
 
   @override
   double get m => point.m;
+
+  @override
+  Point newPoint(
+          {double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0}) =>
+      point.newPoint(x: x, y: y, z: z, m: m);
 }

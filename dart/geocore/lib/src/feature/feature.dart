@@ -1,108 +1,125 @@
-// Copyright 2020 Navibyte (https://navibyte.com). All rights reserved.
-// Use of this source code is governed by a "BSD-3-Clause"-style license, please
-// see the LICENSE file.
+// Copyright (c) 2020-2021 Navibyte (https://navibyte.com). All rights reserved.
+// Use of this source code is governed by a “BSD-3-Clause”-style license that is
+// specified in the LICENSE file.
+//
+// Docs: https://github.com/navibyte/geospatial
 
 import 'package:meta/meta.dart';
 
 import 'package:equatable/equatable.dart';
 
-import '../base/common.dart';
-import '../base/geometry.dart';
+import 'package:attributes/collection.dart';
+import 'package:attributes/entity.dart';
 
-import 'id.dart';
+import '../base.dart';
 
-/// A geospatial feature.
+/// A feature is a geospatial entity with [id], [properties] and [geometry].
+///
+/// The [Feature] class extends [Entity] that can be used to represent
+/// non-geospatial data object with id and properties.
 ///
 /// Supports representing data from GeoJSON (https://geojson.org/) features.
-abstract class Feature {
+abstract class Feature<T extends Geometry> extends Entity implements Bounded {
   const Feature();
 
-  /// Create a new feature with [id] and [geometry] and optional [properites].
+  /// A new feature of optional [id], [properties], [geometry] and [bounds].
+  ///
+  /// If an optional [bounds] for a new feature is not provided then [geometry]
+  /// bounds is used also as feature bounds when accessed.
   factory Feature.of(
-      {required dynamic id,
-      required Geometry geometry,
-      Map<String, dynamic> properties = const {}}) {
-    return FeatureBase(
-      id: id is FeatureId ? id : FeatureId.of(id),
-      geometry: geometry,
-      properties: properties,
-    );
-  }
+          {Identifier? id,
+          required PropertyMap properties,
+          T? geometry,
+          Bounds? bounds}) =>
+      _FeatureBase(
+        id: id,
+        geometry: geometry,
+        properties: properties,
+        bounds: bounds,
+      );
 
-  /// The [id] for this feature.
-  FeatureId get id;
+  /// A new feature of optional [id], and [properties], [geometry] and [bounds].
+  ///
+  /// This factory allows [id] to be null or an instance of [Identifier],
+  /// `String`, `BigInt` or `int`. In other cases an ArgumentError is thrown.
+  ///
+  /// The [properties] is used as a source view for a feature. Any changes on
+  /// source reflect also on feature properties.
+  ///
+  /// If an optional [bounds] for a new feature is not provided then [geometry]
+  /// bounds is used also as feature bounds when accessed.
+  factory Feature.view(
+          {dynamic? id,
+          required Map<String, dynamic> properties,
+          T? geometry,
+          Bounds? bounds}) =>
+      _FeatureBase(
+        id: Identifier.idOrNull(id),
+        properties: PropertyMap.view(properties),
+        geometry: geometry,
+        bounds: bounds,
+      );
 
-  /// The [geometry] for this feature.
-  Geometry get geometry;
-
-  /// Properties for this feature, allowed to be empty.
-  Map<String, dynamic> get properties;
+  /// An optional [geometry] for this feature.
+  Geometry? get geometry;
 }
 
-/// An immutable base implementation of [Feature].
-@immutable
-class FeatureBase extends Feature with EquatableMixin {
-  /// Create a new feature with [id] and [geometry] and optional [properites].
-  const FeatureBase(
-      {required this.id, required this.geometry, this.properties = const {}});
+/// Private implementation of [Feature].
+/// The implementation may change in future.
+class _FeatureBase<T extends Geometry> extends EntityBase
+    implements Feature<T> {
+  const _FeatureBase(
+      {Identifier? id,
+      required PropertyMap properties,
+      required this.geometry,
+      Bounds? bounds})
+      : _featureBounds = bounds,
+        super(id: id, properties: properties);
+
+  final Bounds? _featureBounds;
 
   @override
-  final FeatureId id;
+  final T? geometry;
 
   @override
-  final Geometry geometry;
+  List<Object?> get props => [id, properties, geometry, _featureBounds];
 
   @override
-  final Map<String, dynamic> properties;
-
-  @override
-  List<Object?> get props => [id, geometry, properties];
-}
-
-/// A base interface for a series (list) of feature items of type [T].
-///
-/// For example this class may represent data for "FeatureCollection".
-abstract class FeatureSeries<T extends Feature> implements Series<T> {
-  const FeatureSeries();
-
-  /// Create an unmodifiable [FeatureSeries] backed by [source].
-  factory FeatureSeries.view(Iterable<T> source) = FeatureSeriesView<T>;
-
-  /// Create an immutable [FeatureSeries] copied from [elements].
-  factory FeatureSeries.from(Iterable<T> elements) =>
-      FeatureSeries<T>.view(List<T>.unmodifiable(elements));
-}
-
-/// An unmodifiable [FeatureSeries] backed by another list.
-@immutable
-class FeatureSeriesView<T extends Feature> extends SeriesView<T>
-    implements FeatureSeries<T> {
-  /// Create an unmodifiable [FeatureSeriesView] backed by [source].
-  FeatureSeriesView(Iterable<T> source) : super(source);
+  Bounds get bounds => _featureBounds ?? geometry?.bounds ?? Bounds.empty();
 }
 
 /// A feature collection with a series of features.
-abstract class FeatureCollection<T extends Feature> {
+abstract class FeatureCollection<T extends Feature> extends Bounded {
   const FeatureCollection();
 
   /// Creates a feature collection from a series of [features].
-  factory FeatureCollection.of(FeatureSeries<T> features) =
-      FeatureCollectionBase<T>;
+  ///
+  /// If an optional [bounds] for a new feature collection is not provided then
+  /// bounds of the series of [features] is used also as collection bounds.
+  factory FeatureCollection.of(
+      {required BoundedSeries<T> features,
+      Bounds? bounds}) = _FeatureCollectionBase<T>;
 
   /// All the [features] for this collection.
-  FeatureSeries<T> get features;
+  BoundedSeries<T> get features;
 }
 
-/// A base implementation for a [FeatureCollection].
+/// Private implementation of [FeatureCollection].
+/// The implementation may change in future.
 @immutable
-class FeatureCollectionBase<T extends Feature> extends FeatureCollection<T>
+class _FeatureCollectionBase<T extends Feature> extends FeatureCollection<T>
     with EquatableMixin {
-  /// Creates a feature collection from a series of [features].
-  const FeatureCollectionBase(this.features);
+  const _FeatureCollectionBase({required this.features, Bounds? bounds})
+      : _collectionBounds = bounds;
+
+  final Bounds? _collectionBounds;
 
   @override
-  final FeatureSeries<T> features;
+  final BoundedSeries<T> features;
 
   @override
   List<Object?> get props => [features];
+
+  @override
+  Bounds get bounds => _collectionBounds ?? features.bounds;
 }

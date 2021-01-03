@@ -1,0 +1,18 @@
+name: attributes
+description: A library for Dart with data structures and utilities for identifiers, value maps and dynamic data objects.
+version: 0.4.0-nullsafety.0
+repository: https://github.com/navibyte/geospatial
+homepage: https://github.com/navibyte/geospatial/tree/main/dart/attributes
+
+environment:
+  sdk: '>=2.12.0-0 <3.0.0'
+
+dependencies:
+  equatable: ^2.0.0-nullsafety.0
+  meta: ^1.3.0-nullsafety.6
+  
+  intl: ^0.17.0-nullsafety.2
+  
+dev_dependencies:
+  pedantic: ^1.10.0-nullsafety.3
+  test: ^1.16.0-nullsafety.12

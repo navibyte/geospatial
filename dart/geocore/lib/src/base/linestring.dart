@@ -1,14 +1,10 @@
-// Copyright 2020 Navibyte (https://navibyte.com). All rights reserved.
-// Use of this source code is governed by a "BSD-3-Clause"-style license, please
-// see the LICENSE file.
+// Copyright (c) 2020-2021 Navibyte (https://navibyte.com). All rights reserved.
+// Use of this source code is governed by a “BSD-3-Clause”-style license that is
+// specified in the LICENSE file.
+//
+// Docs: https://github.com/navibyte/geospatial
 
-import 'package:equatable/equatable.dart';
-
-import 'package:meta/meta.dart';
-
-import 'geometry.dart';
-import 'point.dart';
-import 'point_series.dart';
+part of 'base.dart';
 
 /// The type for the line string.
 enum LineStringType {
@@ -70,35 +66,8 @@ class LineString<T extends Point> extends Geometry with EquatableMixin {
   bool get isEmpty => chain.isEmpty;
 
   @override
-  List<Object?> get props => [chain];
-}
+  Bounds get bounds => chain.bounds;
 
-/// A series of line strings.
-abstract class LineStringSeries<T extends Point>
-    extends GeomSeries<LineString<T>> {
-  const LineStringSeries();
-
-  /// Create an unmodifiable [LineStringSeries] backed by [source].
-  factory LineStringSeries.view(Iterable<LineString<T>> source) =
-      LineStringSeriesView<T>;
-
-  /// Create an immutable [LineStringSeries] copied from [elements].
-  factory LineStringSeries.from(Iterable<LineString<T>> elements) =>
-      LineStringSeries<T>.view(List<LineString<T>>.unmodifiable(elements));
-}
-
-/// A partial implementation of [LineStringSeries] as a mixin.
-mixin LineStringSeriesMixin<T extends Point> implements LineStringSeries<T> {
   @override
-  int get dimension => 1;
-}
-
-/// An unmodifiable [LineStringSeries] backed by another list.
-@immutable
-class LineStringSeriesView<T extends Point>
-    extends GeomSeriesView<LineString<T>>
-    with LineStringSeriesMixin<T>
-    implements LineStringSeries<T> {
-  /// Create an unmodifiable [LineStringSeries] backed by [source].
-  LineStringSeriesView(Iterable<LineString<T>> source) : super(source);
+  List<Object?> get props => [chain];
 }

@@ -1,7 +1,9 @@
-// Copyright 2020 Navibyte (https://navibyte.com). All rights reserved.
-// Use of this source code is governed by a "BSD-3-Clause"-style license, please
-// see the LICENSE file.
+// Copyright (c) 2020-2021 Navibyte (https://navibyte.com). All rights reserved.
+// Use of this source code is governed by a “BSD-3-Clause”-style license that is
+// specified in the LICENSE file.
 //
+// Docs: https://github.com/navibyte/geospatial
+
 // Cartesian vector (or point) data structures:
 // * Point2 with x and y as double values
 // * Point2m with x, y and m as double values
@@ -10,10 +12,7 @@
 // * Point2i with x and y as int values
 // * Point3i with x, y and z as int values
 
-import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
-
-import 'point.dart';
+part of 'base.dart';
 
 /// An immutable point with X and Y as double values.
 @immutable
@@ -52,6 +51,12 @@ class Point2 extends Point with EquatableMixin {
   int get spatialDimension => 2;
 
   @override
+  bool get is3D => false;
+
+  @override
+  bool get hasM => false;
+
+  @override
   double operator [](int i) {
     switch (i) {
       case 0:
@@ -68,6 +73,11 @@ class Point2 extends Point with EquatableMixin {
 
   @override
   double get y => _y;
+
+  @override
+  Point newPoint(
+          {double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0}) =>
+      Point2(x: x, y: y);
 }
 
 /// An immutable point with X, Y and M as double values.
@@ -100,7 +110,7 @@ class Point2m extends Point2 {
   int get coordinateDimension => 3;
 
   @override
-  int get spatialDimension => 2;
+  bool get hasM => true;
 
   @override
   double operator [](int i) {
@@ -118,6 +128,11 @@ class Point2m extends Point2 {
 
   @override
   double get m => _m;
+
+  @override
+  Point newPoint(
+          {double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0}) =>
+      Point2m(x: x, y: y, m: m);
 }
 
 /// An immutable point with X, Y and Z as double values.
@@ -153,6 +168,9 @@ class Point3 extends Point2 {
   int get spatialDimension => 3;
 
   @override
+  bool get is3D => true;
+
+  @override
   double operator [](int i) {
     switch (i) {
       case 0:
@@ -168,6 +186,11 @@ class Point3 extends Point2 {
 
   @override
   double get z => _z;
+
+  @override
+  Point newPoint(
+          {double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0}) =>
+      Point3(x: x, y: y, z: z);
 }
 
 /// An immutable point with X, Y, Z and M as double values.
@@ -204,7 +227,7 @@ class Point3m extends Point3 {
   int get coordinateDimension => 4;
 
   @override
-  int get spatialDimension => 3;
+  bool get hasM => true;
 
   @override
   double operator [](int i) {
@@ -224,6 +247,11 @@ class Point3m extends Point3 {
 
   @override
   double get m => _m;
+
+  @override
+  Point newPoint(
+          {double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0}) =>
+      Point3m(x: x, y: y, z: z, m: m);
 }
 
 /// An immutable point with X and Y as integer values.
@@ -263,6 +291,12 @@ class Point2i extends Point with EquatableMixin {
   int get spatialDimension => 2;
 
   @override
+  bool get is3D => false;
+
+  @override
+  bool get hasM => false;
+
+  @override
   double operator [](int i) {
     switch (i) {
       case 0:
@@ -279,6 +313,11 @@ class Point2i extends Point with EquatableMixin {
 
   @override
   double get y => _y.toDouble();
+
+  @override
+  Point newPoint(
+          {double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0}) =>
+      Point2i(x: x.round(), y: y.round());
 }
 
 /// An immutable point with X, Y and Z as integer values.
@@ -314,6 +353,9 @@ class Point3i extends Point2i {
   int get spatialDimension => 3;
 
   @override
+  bool get is3D => true;
+
+  @override
   double operator [](int i) {
     switch (i) {
       case 0:
@@ -329,4 +371,9 @@ class Point3i extends Point2i {
 
   @override
   double get z => _z.toDouble();
+
+  @override
+  Point newPoint(
+          {double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0}) =>
+      Point3i(x: x.round(), y: y.round(), z: z.round());
 }

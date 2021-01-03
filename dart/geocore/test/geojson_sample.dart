@@ -64,3 +64,53 @@ const geojsonFeatureCollection = '''{
            }
        }]
    }''';
+
+/// GeoJSON sample feature with bbox from: https://tools.ietf.org/html/rfc7946
+const geojsonBboxFeature = '''{
+       "type": "Feature",
+       "bbox": [-10.0, -10.0, 10.0, 10.0],
+       "geometry": {
+           "type": "Polygon",
+           "coordinates": [
+               [
+                   [-10.0, -10.0],
+                   [10.0, -10.0],
+                   [10.0, 10.0],
+                   [-10.0, -10.0]
+               ]
+           ]
+       }
+   }''';
+
+/// GeoJSON sample feature with bbox from: https://tools.ietf.org/html/rfc7946
+const geojsonBboxFeatureCollection = '''{
+       "type": "FeatureCollection",
+       "bbox": [100.0, 0.0, -100.0, 105.0, 1.0, 0.0],
+       "features": [
+       ]
+   }''';
+
+/// GeoJSON sample feature with extended elements from: https://tools.ietf.org/html/rfc7946
+const geojsonExtendedFeature = ''' {
+       "type": "Feature",
+       "id": "f2",
+       "geometry": {
+           "type": "Polygon",
+           "coordinates": [
+               [
+                   [-10.0, -10.0],
+                   [10.0, -10.0],
+                   [10.0, 10.0],
+                   [-10.0, -10.0]
+               ]
+           ]
+       },
+       "properties": {},
+       "centerline": {
+           "type": "LineString",
+           "coordinates": [
+               [-170, 10],
+               [170, 11]
+           ]
+       }
+   }''';

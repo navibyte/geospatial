@@ -1,17 +1,23 @@
-// Copyright 2020 Navibyte (https://navibyte.com). All rights reserved.
-// Use of this source code is governed by a "BSD-3-Clause"-style license, please
-// see the LICENSE file.
+// Copyright (c) 2020-2021 Navibyte (https://navibyte.com). All rights reserved.
+// Use of this source code is governed by a “BSD-3-Clause”-style license that is
+// specified in the LICENSE file.
+//
+// Docs: https://github.com/navibyte/geospatial
 
 import 'package:equatable/equatable.dart';
 
-import 'package:geodata/client_http.dart';
-import 'package:geodata/model_geo.dart';
-import 'package:geodata/provider_geo_oapi.dart';
+import 'package:datatools/client_base.dart';
+import 'package:datatools/client_http.dart';
+
+import 'package:geodata/model_common.dart';
+import 'package:geodata/source_oapi_features.dart';
 
 /*
 To test run this from command line: 
 
 dart --no-sound-null-safety example/meta_example.dart https://demo.pygeoapi.io/master
+dart --no-sound-null-safety example/meta_example.dart https://www.ldproxy.nrw.de/kataster
+dart --no-sound-null-safety example/meta_example.dart https://weather.obs.fmibeta.com
 
 */
 

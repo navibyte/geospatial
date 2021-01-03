@@ -1,16 +1,38 @@
-// Copyright 2020 Navibyte (https://navibyte.com). All rights reserved.
-// Use of this source code is governed by a "BSD-3-Clause"-style license, please
-// see the LICENSE file.
+// Copyright (c) 2020-2021 Navibyte (https://navibyte.com). All rights reserved.
+// Use of this source code is governed by a “BSD-3-Clause”-style license that is
+// specified in the LICENSE file.
+//
+// Docs: https://github.com/navibyte/geospatial
 
 import 'dart:convert';
 
-import '../../base/crs.dart';
-import '../../base/geometry.dart';
-import '../../feature/feature.dart';
+import 'package:attributes/entity.dart';
+
+import '../../base.dart';
+import '../../crs.dart';
+import '../../feature.dart';
 import '../factory.dart';
 
-/// The default GeoJSON factory instace assuming CRS80 coordinates.
-const geoJSON = GeoJsonFactory();
+/// The default GeoJSON factory instace assuming geographic CRS80 coordinates.
+const geoJSON = GeoJsonFactory(
+  createPoint: createGeoPoint,
+  createBounds: createGeoBounds,
+);
+
+/// The GeoJSON factory instace accepting geographic or projected coordinates.
+const geoJSONAny = GeoJsonFactory(
+  createPoint: createAnyPoint,
+  createBounds: createAnyBounds,
+);
+
+// A default for [CreateFeature] forwarding directly to Feature.view() factory.
+Feature<T> _createFeatureDefault<T extends Geometry>(
+        {dynamic? id,
+        required Map<String, dynamic> properties,
+        T? geometry,
+        Bounds? bounds}) =>
+    Feature<T>.view(
+        id: id, properties: properties, geometry: geometry, bounds: bounds);
 
 /// A geospatial object factory capable of parsing GeoJSON data from json.
 ///
@@ -23,8 +45,15 @@ const geoJSON = GeoJsonFactory();
 ///
 /// See [The GeoJSON Format - RFC 7946](https://tools.ietf.org/html/rfc7946).
 class GeoJsonFactory extends GeoFactoryBase {
-  const GeoJsonFactory({CRS defaultCRS = CRS84})
+  const GeoJsonFactory(
+      {required CreatePoint createPoint,
+      required CreateBounds createBounds,
+      CreateFeature createFeature = _createFeatureDefault,
+      CRS defaultCRS = CRS84})
       : super(
+          createPoint: createPoint,
+          createBounds: createBounds,
+          createFeature: createFeature,
           expectedCRS: defaultCRS,
           expectM: false, // GeoJSON says coordinates should not have M coord
         );
@@ -58,65 +87,121 @@ class GeoJsonFactory extends GeoFactoryBase {
   }
 
   @override
-  Geometry geometry(dynamic data) {
+  T geometry<T extends Geometry>(dynamic data) {
     // expects data of Map<String, dynamic> as returned by json.decode()
     final json = _ensureDecodedMap(data);
+    var geom;
     switch (json['type']) {
       case 'Point':
-        return point(json['coordinates']);
+        geom = point(json['coordinates']);
+        break;
       case 'LineString':
-        return lineString(json['coordinates']);
+        geom = lineString(json['coordinates']);
+        break;
       case 'Polygon':
-        return polygon(json['coordinates']);
+        geom = polygon(json['coordinates']);
+        break;
       case 'MultiPoint':
-        return multiPoint(json['coordinates']);
+        geom = multiPoint(json['coordinates']);
+        break;
       case 'MultiLineString':
-        return multiLineString(json['coordinates']);
+        geom = multiLineString(json['coordinates']);
+        break;
       case 'MultiPolygon':
-        return multiPolygon(json['coordinates']);
+        geom = multiPolygon(json['coordinates']);
+        break;
       case 'GeometryCollection':
-        return geometryCollection(json['geometries']);
+        geom = geometryCollection(json['geometries']);
+        break;
+    }
+    if (geom is T) {
+      return geom;
     }
     throw FormatException('Not valid GeoJSON geometry.');
   }
 
   @override
-  Feature feature(dynamic data) {
+  Feature<T> feature<T extends Geometry>(dynamic data) {
     // expects data of Map<String, dynamic> as returned by json.decode()
     final json = _ensureDecodedMap(data);
     if (json['type'] != 'Feature') {
       throw FormatException('Not valid GeoJSON Feature.');
     }
-    // parse geometry for this feature
-    // (it's allowed geometry to be null which is mapped to an Geometry.empty)
+
+    // parse id as FeatureId or null
+    // - id read from GeoJSON is null : null as id
+    // - id read from GeoJSON is int : wrap on Identifier
+    // - otherwise : convert read value to String and wrap on Identifier
+    // (GeoJSON allows num and String types for ids)
+    final idJson = json['id'];
+    final id = idJson != null
+        ? Identifier.from(idJson is int ? idJson : idJson.toString())
+        : null;
+
+    // parse optional geometry for this feature
     final geomJson = json['geometry'];
-    final geom = geomJson != null ? geometry(geomJson) : Geometry.empty();
-    // create a feature
-    try {
-      return Feature.of(
-        id: json['id'],
-        geometry: geom,
-        properties: json['properties'],
-      );
-    } catch (e) {
-      throw FormatException('Not valid GeoJSON Feature ($e).');
-    }
+    final geom = geomJson != null ? geometry<T>(geomJson) : null;
+
+    // parse optional bbox
+    // (bbox is not required on GeoJSON and not on Feature either)
+    final bboxJson = json['bbox'];
+    final bbox = bboxJson != null ? bounds(bboxJson) : null;
+
+    // create a feature using the factory function
+    return createFeature<T>(
+      // nullable id
+      id: id,
+
+      // map of properties may be missing on GeoJSON, but for a feature
+      // non-null map (even empty) is required
+      properties: json['properties'] ?? {},
+
+      // nullable geometry object
+      geometry: geom,
+
+      // nullable bounds object
+      bounds: bbox,
+    );
   }
 
   @override
-  FeatureSeries featureSeries(dynamic data) {
+  BoundedSeries<Feature<T>> featureSeries<T extends Geometry>(dynamic data) {
     // expects data of List as returned by json.decode()
     final json = _ensureDecodedList(data);
-    return FeatureSeries.from(json.map<Feature>((f) => feature(f)));
+    return BoundedSeries<Feature<T>>.from(
+        json.map<Feature<T>>((f) => feature<T>(f)));
   }
 
   @override
-  FeatureCollection featureCollection(dynamic data) {
+  FeatureCollection<Feature<T>> featureCollection<T extends Geometry>(
+      dynamic data) {
     // expects data of Map<String, dynamic> as returned by json.decode()
     final json = _ensureDecodedMap(data);
-    if (json['type'] != 'FeatureCollection') {
-      throw FormatException('Not valid GeoJSON FeatureCollection.');
+
+    if (json['type'] == 'Feature') {
+      // just single feature, not collection, but return as a collection anyway
+      return FeatureCollection<Feature<T>>.of(
+        features: BoundedSeries<Feature<T>>.from([feature<T>(json)]),
+      );
+    } else {
+      // excepting a collection
+      if (json['type'] != 'FeatureCollection') {
+        throw FormatException('Not valid GeoJSON FeatureCollection.');
+      }
+
+      // parse optional bbox
+      // (bbox is not required on GeoJSON and not on FeatureCollection either)
+      final bboxJson = json['bbox'];
+      final bbox = bboxJson != null ? bounds(bboxJson) : null;
+
+      // create a feature collection
+      return FeatureCollection<Feature<T>>.of(
+        // required series of features (allowed to be empty)
+        features: featureSeries<T>(json['features']),
+
+        // nullable bounds object
+        bounds: bbox,
+      );
     }
-    return FeatureCollection.of(featureSeries(json['features']));
   }
 }

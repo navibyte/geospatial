@@ -1,25 +1,30 @@
-// Copyright 2020 Navibyte (https://navibyte.com). All rights reserved.
-// Use of this source code is governed by a "BSD-3-Clause"-style license, please
-// see the LICENSE file.
+// Copyright (c) 2020-2021 Navibyte (https://navibyte.com). All rights reserved.
+// Use of this source code is governed by a “BSD-3-Clause”-style license that is
+// specified in the LICENSE file.
+//
+// Docs: https://github.com/navibyte/geospatial
 
-import 'package:meta/meta.dart';
+part of 'base.dart';
 
-import 'geometry.dart';
-import 'point.dart';
-
-/// A base interface for a point serie with getters to access point items.
+/// A base interface for a series of points with getters to access point items.
 ///
-/// A point serie could represents a geometry path, a line string, a polygon,
-/// a multi point, a vertex array or any other collection for points.
-abstract class PointSeries<T extends Point> extends GeomSeries<T> {
+/// A series of points could represents a geometry path, a line string,
+/// a polygon, a multi point, a vertex array or any other collection for points.
+abstract class PointSeries<T extends Point>
+    extends _BatchedSeries<PointSeries<T>, T> {
   const PointSeries();
 
-  /// Create an unmodifiable [PointSeries] backed by [source].
-  factory PointSeries.view(Iterable<T> source) = PointSeriesView<T>;
+  /// Create an [PointSeries] instance backed by [source].
+  ///
+  /// An optional [bounds] can be provided or it's lazy calculated if null.
+  factory PointSeries.view(Iterable<T> source, {Bounds? bounds}) =
+      _PointSeriesView<T>;
 
-  /// Create an immutable [PointSeries] copied from [elements].
-  factory PointSeries.from(Iterable<T> elements) =>
-      PointSeries<T>.view(List<T>.unmodifiable(elements));
+  /// Create an immutable [PointSeries] with points copied from [source].
+  ///
+  /// An optional [bounds] can be provided or it's lazy calculated if null.
+  factory PointSeries.from(Iterable<T> source, {Bounds? bounds}) =>
+      PointSeries<T>.view(List<T>.unmodifiable(source), bounds: bounds);
 
   /// X coordinate as double at [index].
   ///
@@ -55,19 +60,35 @@ abstract class PointSeries<T extends Point> extends GeomSeries<T> {
 /// A partial implementation of [PointSeries] as a mixin.
 mixin PointSeriesMixin<T extends Point> implements PointSeries<T> {
   @override
-  int get dimension => 0;
-
-  @override
   bool get isClosed => length >= 2 && first.equals2D(last);
+
+  /// Initializes a [Bounds] object for [source] points.
+  ///
+  /// If [bounds] is non-null, then it's returned as is.
+  ///
+  /// In other cases the current implementation returns a [_LazyBounds]
+  /// instance with bounds lazy calculated when first needed. However this
+  /// implementation can internally be optimized in future (ie. bounds for
+  /// small series of points is initialized right a way, and for large
+  /// series with lazy calculations).
+  @protected
+  static Bounds initBounds<T extends Point>(Iterable<T> source,
+          {Bounds? bounds}) =>
+      bounds ??
+      _LazyBounds.calculate(() {
+        final builder = _BoundsBuilder();
+        source.forEach((p) => builder.addPoint(p));
+        return builder.bounds;
+      });
 }
 
-/// An unmodifiable [PointSeries] backed by another list.
-@immutable
-class PointSeriesView<T extends Point> extends GeomSeriesView<T>
-    with PointSeriesMixin<T>
-    implements PointSeries<T> {
-  /// Create an unmodifiable [PointSeries] backed by [source].
-  PointSeriesView(Iterable<T> source) : super(source);
+/// Private implementation of [PointSeries].
+/// The implementation may change in future.
+class _PointSeriesView<T extends Point>
+    extends _BatchedSeriesView<PointSeries<T>, T> with PointSeriesMixin<T> {
+  _PointSeriesView(Iterable<T> source, {Bounds? bounds})
+      : super(source,
+            bounds: PointSeriesMixin.initBounds<T>(source, bounds: bounds));
 
   @override
   double x(int index) => this[index].x;
@@ -80,4 +101,12 @@ class PointSeriesView<T extends Point> extends GeomSeriesView<T>
 
   @override
   double m(int index) => this[index].m;
+
+  @override
+  PointSeries<T> intersectByBounds(Bounds bounds) =>
+      _PointSeriesView(where((point) => bounds.intersectsPoint(point)));
+
+  @override
+  PointSeries<T> intersectByBounds2D(Bounds bounds) =>
+      _PointSeriesView(where((point) => bounds.intersectsPoint2D(point)));
 }

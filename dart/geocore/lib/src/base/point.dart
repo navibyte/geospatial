@@ -1,56 +1,23 @@
-// Copyright 2020 Navibyte (https://navibyte.com). All rights reserved.
-// Use of this source code is governed by a "BSD-3-Clause"-style license, please
-// see the LICENSE file.
+// Copyright (c) 2020-2021 Navibyte (https://navibyte.com). All rights reserved.
+// Use of this source code is governed by a “BSD-3-Clause”-style license that is
+// specified in the LICENSE file.
+//
+// Docs: https://github.com/navibyte/geospatial
 
-import 'package:meta/meta.dart';
-
-import 'geometry.dart';
-import 'point_immutable.dart';
+part of 'base.dart';
 
 /// A read-only point with coordinate value getters.
-abstract class Point extends Geometry {
+abstract class Point extends Geometry implements _Coordinates {
   const Point();
 
   /// Create an empty point.
-  factory Point.empty({bool hasZ, bool hasM}) = PointEmpty;
-
-  /// A point from [coords]: xy or xyz (if [expectM] then could be xyz or xyzm).
-  ///
-  /// Throws FormatException if cannot create point.
-  factory Point.from(Iterable<double> coords, {bool expectM = false}) {
-    if (expectM) {
-      if (coords.length >= 4) {
-        return Point3m.from(coords);
-      } else if (coords.length == 3) {
-        return Point2m.from(coords);
-      }
-    } else {
-      if (coords.length >= 3) {
-        return Point3.from(coords);
-      } else if (coords.length == 2) {
-        return Point2.from(coords);
-      }
-    }
-    throw FormatException('Not a valid point.');
-  }
+  factory Point.empty({bool is3D, bool hasM}) = _PointEmpty;
 
   @override
   int get dimension => 0;
 
-  /// The number of coordinate values (2, 3 or 4) for this point.
-  ///
-  /// If value is 2, the point has 2D coordinates without m coordinate.
-  ///
-  /// If value is 3, the point has 2D coordinates with m coordinate or it
-  /// has 3D coordinates without m coordinate.
-  ///
-  /// If value is 4, the point has 3D coordinates with m coordinate.
-  ///
-  /// Must be >= [spatialDimension].
-  int get coordinateDimension;
-
-  /// The number of spatial coordinate values (2 for 2D or 3 for 3D).
-  int get spatialDimension;
+  @override
+  Bounds get bounds => Bounds.of(min: this, max: this);
 
   /// A coordinate value by the index [i].
   ///
@@ -99,22 +66,38 @@ abstract class Point extends Geometry {
 
   /// True if this point equals with [other] point in 3D.
   bool equals3D(Point other) => equals2D(other) && z == other.z;
+
+  /// Creates a new [Point] instance compatible with this point instance.
+  ///
+  /// Values for a new point are given by [x], [y], [z] and [z] as applicable
+  /// for an implementing class.
+  Point newPoint(
+      {double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0});
 }
 
-/// An empty point (non-existent) that has all coordinate values 0.0 if queried.
+/// A private implementation for an empty point with coordinate 0.0 values.
+/// The implementation may change in future.
 @immutable
-class PointEmpty extends Point {
-  PointEmpty({this.hasZ = false, this.hasM = false});
+class _PointEmpty extends Point {
+  const _PointEmpty({this.is3D = false, this.hasM = false});
 
-  final bool hasZ;
+  @override
+  final bool is3D;
 
+  @override
   final bool hasM;
+
+  @override
+  Bounds get bounds => Bounds.empty();
 
   @override
   bool get isEmpty => true;
 
   @override
-  int get coordinateDimension => hasZ ? 3 : 2;
+  bool get isNotEmpty => false;
+
+  @override
+  int get coordinateDimension => is3D ? 3 : 2;
 
   @override
   int get spatialDimension => coordinateDimension + (hasM ? 1 : 0);
@@ -127,4 +110,9 @@ class PointEmpty extends Point {
 
   @override
   double get y => 0.0;
+
+  @override
+  Point newPoint(
+          {double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0}) =>
+      this;
 }

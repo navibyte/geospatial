@@ -1,27 +1,33 @@
-// Copyright 2020 Navibyte (https://navibyte.com). All rights reserved.
-// Use of this source code is governed by a "BSD-3-Clause"-style license, please
-// see the LICENSE file.
-
-import 'package:meta/meta.dart';
+// Copyright (c) 2020-2021 Navibyte (https://navibyte.com). All rights reserved.
+// Use of this source code is governed by a “BSD-3-Clause”-style license that is
+// specified in the LICENSE file.
+//
+// Docs: https://github.com/navibyte/geospatial
 
 import 'package:equatable/equatable.dart';
 
-import '../base/bounds.dart';
-import '../utils/parse/values.dart';
+import '../base.dart';
 
 import 'geopoint.dart';
 
 /// An immutable geographic bounds with min and max points for limits.
-@immutable
-class GeoBounds extends Bounds<GeoPoint> with EquatableMixin {
-  /// With required [min] and [max] points.
+///
+/// Geographic bounds can be represented as Bounds<GeoPoint> or as GeoBounds.
+/// This is a convenience class with helper factory constructors.
+class GeoBounds extends BoundsBase<GeoPoint> with EquatableMixin {
+  /// Create geographic bounds with required [min] and [max] points.
   ///
   /// [min] and [max] objects set on the bounds may or may not to be immutable.
-  const GeoBounds({
+  const GeoBounds.of({
     required GeoPoint min,
     required GeoPoint max,
-  })   : _min = min,
-        _max = max;
+  }) : super(min: min, max: max);
+
+  /// World bounds (longitude: -180.0 to 180.0, latitude: -90.0 to 90.0).
+  const GeoBounds.world()
+      : this.of(
+            min: const GeoPoint2.lonLat(-180.0, -90.0),
+            max: const GeoPoint2.lonLat(180.0, 90.0));
 
   /// With minimum and maximum pairs of longitude and latitude (+optional elev).
   GeoBounds.bbox(
@@ -31,7 +37,7 @@ class GeoBounds extends Bounds<GeoPoint> with EquatableMixin {
       required double maxLon,
       required double maxLat,
       double? maxElev})
-      : this(
+      : this.of(
             min: minElev != null
                 ? GeoPoint3.lonLatElev(minLon, minLat, minElev)
                 : GeoPoint2.lonLat(minLon, minLat),
@@ -42,65 +48,21 @@ class GeoBounds extends Bounds<GeoPoint> with EquatableMixin {
   /// With minimum and maximum pairs of longitude and latitude.
   GeoBounds.bboxLonLat(
       double minLon, double minLat, double maxLon, double maxLat)
-      : this(
+      : this.of(
             min: GeoPoint2.lonLat(minLon, minLat),
             max: GeoPoint2.lonLat(maxLon, maxLat));
 
   /// With minimum and maximum sets of longitude, latitude and elevation.
   GeoBounds.bboxLonLatElev(double minLon, double minLat, double minElev,
       double maxLon, double maxLat, double maxElev)
-      : this(
+      : this.of(
             min: GeoPoint3.lonLatElev(minLon, minLat, minElev),
             max: GeoPoint3.lonLatElev(maxLon, maxLat, maxElev));
 
   /// With minimum and maximum pairs of latitude and longitude.
   GeoBounds.bboxLatLon(
       double minLat, double minLon, double maxLat, double maxLon)
-      : this(
+      : this.of(
             min: GeoPoint2.latLon(minLat, minLon),
             max: GeoPoint2.latLon(maxLat, maxLon));
-
-  /// Geographical bounds from the list of [coords] (length must be 4 or 6).
-  ///
-  /// For length 4: minLon, minLat, maxLon, maxLat.
-  ///
-  /// For length 6: minLon, minLat, minElev, maxLon, maxLat, maxElev.
-  ///
-  /// List elements are converted to doubles using [valueToDouble] function.
-  ///
-  /// FormatException is thrown if cannot parse.
-  factory GeoBounds.fromJson(List coords) {
-    if (coords.length == 4) {
-      return GeoBounds.bboxLonLat(
-        valueToDouble(coords[0]),
-        valueToDouble(coords[1]),
-        valueToDouble(coords[2]),
-        valueToDouble(coords[3]),
-      );
-    } else if (coords.length == 6) {
-      return GeoBounds.bboxLonLatElev(
-        valueToDouble(coords[0]),
-        valueToDouble(coords[1]),
-        valueToDouble(coords[2]),
-        valueToDouble(coords[3]),
-        valueToDouble(coords[4]),
-        valueToDouble(coords[5]),
-      );
-    }
-    throw FormatException('Cannot parse GeoBounds from json.');
-  }
-
-  final GeoPoint _min, _max;
-
-  @override
-  List<Object?> get props => [_min, _max];
-
-  @override
-  bool get isEmpty => false;
-
-  @override
-  GeoPoint get min => _min;
-
-  @override
-  GeoPoint get max => _max;
 }

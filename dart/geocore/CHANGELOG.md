@@ -1,3 +1,33 @@
+## 0.4.0-nullsafety.0
+
+- Alpha version 0.4.0 with breaking changes compared to 0.3.0
+- New dependency: `attributes` (^0.4.0-nullsafety.0) for common data structures
+- Non-geospatial data structures moved to `attributes`
+- Removed dependency: fixnum (1.0.0-nullsafety.0)
+- Restructured lib/src folder:
+  - base
+  - crs
+  - feature
+  - geo
+  - meta
+    - extent
+  - parse
+    - factory
+    - geojson
+  - utils
+    - geography     
+- Restructured mini-libraries provided by the package:
+  - 'package:geocore/base.dart'
+  - 'package:geocore/crs.dart'
+  - 'package:geocore/feature.dart'
+  - 'package:geocore/geo.dart'
+  - 'package:geocore/meta_extent.dart'
+  - 'package:geocore/parse_factory.dart'
+  - 'package:geocore/parse_geojson.dart'
+- Still the whole library is available by:
+  - 'package:geocore/geocore.dart'
+- Refactoring code in many places too
+
 ## 0.3.0-nullsafety.0
 
 - Alpha version 0.3.0 with breaking changes compared to 0.2.0
