@@ -17,6 +17,14 @@ Package @ pub.dev | Version | Documentation | Example code
 :globe_with_meridians: [geocore](https://pub.dev/packages/geocore) | [![pub package](https://img.shields.io/pub/v/geocore.svg)](https://pub.dev/packages/geocore) | [API reference](https://pub.dev/documentation/geocore/latest/) | [Example](https://pub.dev/packages/geocore/example)
 :earth_americas: [geodata](https://pub.dev/packages/geodata) | [![pub package](https://img.shields.io/pub/v/geodata.svg)](https://pub.dev/packages/geodata) | [API reference](https://pub.dev/documentation/geodata/latest/) | [Example](https://pub.dev/packages/geodata/example)
 
+All packages supports Dart [null-safety](https://dart.dev/null-safety) and using
+them requires the latest SDK from a beta channel. However your package using
+them doesn't have to be migrated to null-safety yet.    
+
+Please see the official 
+[null-safety migration guide](https://dart.dev/null-safety/migration-guide)
+how to switch to the latest beta release of Dart or Flutter SDKs.
+
 ## Code
 
 **This repository is at the alpha-stage, breaking changes are possible.**
@@ -60,6 +68,9 @@ OGC (The Open Geospatial Consortium) related:
   * [OGC API Features](https://ogcapi.ogc.org/features/)
   * [OGC API Features - demo services](https://github.com/opengeospatial/ogcapi-features/blob/master/implementations.md)
 * [OGC Web API Guidelines](https://github.com/opengeospatial/OGC-Web-API-Guidelines)
+
+W3C
+* [Spatial Data on the Web Best Practices](https://www.w3.org/TR/sdw-bp/)
 
 ### Dart and Flutter programming
 
