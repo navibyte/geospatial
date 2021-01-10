@@ -21,7 +21,7 @@ import '../utils/geography.dart';
 ///
 /// Extends [Point] class. Properties have equality (in context of this
 /// library): [lon] == [x], [lat] == [y], [elev] == [z]
-abstract class GeoPoint extends Point {
+abstract class GeoPoint extends Point<double> {
   const GeoPoint();
 
   /// The longitude coordinate. Equals to [x] property.
@@ -63,8 +63,13 @@ class GeoPoint2 extends GeoPoint with EquatableMixin {
         _lat = 0.0;
 
   /// A geographic position from [coords] given in order: lon, lat.
-  factory GeoPoint2.from(Iterable<double> coords) =>
-      GeoPoint2.lonLat(coords.elementAt(0), coords.elementAt(1));
+  factory GeoPoint2.from(Iterable<num> coords, {int? offset}) {
+    final start = offset ?? 0;
+    return GeoPoint2.lonLat(
+      coords.elementAt(start).toDouble(),
+      coords.elementAt(start + 1).toDouble(),
+    );
+  }
 
   final double _lon, _lat;
 
@@ -111,14 +116,20 @@ class GeoPoint2 extends GeoPoint with EquatableMixin {
   double get lat => _lat;
 
   @override
-  double distanceTo(GeoPoint other) {
-    return distanceHaversine(_lon, _lat, other.lon, other.lat);
-  }
+  double distanceTo(GeoPoint other) =>
+      distanceHaversine(_lon, _lat, other.lon, other.lat);
 
   @override
-  Point newPoint(
-          {double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0}) =>
-      GeoPoint2(lon: x, lat: y);
+  Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) => GeoPoint2(
+        lon: x.toDouble(),
+        lat: y.toDouble(),
+      );
+
+  @override
+  Point newFrom(Iterable<num> coords, {int? offset, int? length}) {
+    CoordinateFactory.checkCoords(2, coords, offset: offset, length: length);
+    return GeoPoint2.from(coords, offset: offset);
+  }
 }
 
 /// An immutable geographic position with longitude, latitude and m (measure).
@@ -146,8 +157,14 @@ class GeoPoint2m extends GeoPoint2 {
         super.origin();
 
   /// A geographic position from [coords] given in order: lon, lat, m.
-  factory GeoPoint2m.from(Iterable<double> coords) => GeoPoint2m.lonLatM(
-      coords.elementAt(0), coords.elementAt(1), coords.elementAt(2));
+  factory GeoPoint2m.from(Iterable<num> coords, {int? offset}) {
+    final start = offset ?? 0;
+    return GeoPoint2m.lonLatM(
+      coords.elementAt(start).toDouble(),
+      coords.elementAt(start + 1).toDouble(),
+      coords.elementAt(start + 2).toDouble(),
+    );
+  }
 
   @override
   final double m;
@@ -176,9 +193,17 @@ class GeoPoint2m extends GeoPoint2 {
   }
 
   @override
-  Point newPoint(
-          {double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0}) =>
-      GeoPoint2m(lon: x, lat: y, m: m);
+  Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) => GeoPoint2m(
+        lon: x.toDouble(),
+        lat: y.toDouble(),
+        m: m?.toDouble() ?? 0.0,
+      );
+
+  @override
+  Point newFrom(Iterable<num> coords, {int? offset, int? length}) {
+    CoordinateFactory.checkCoords(3, coords, offset: offset, length: length);
+    return GeoPoint2m.from(coords, offset: offset);
+  }
 }
 
 /// An immutable geographic position with longitude, latitude and elevation.
@@ -204,8 +229,14 @@ class GeoPoint3 extends GeoPoint2 {
         super.origin();
 
   /// A geographic position from [coords], given in order: lon, lat, elev.
-  factory GeoPoint3.from(Iterable<double> coords) => GeoPoint3.lonLatElev(
-      coords.elementAt(0), coords.elementAt(1), coords.elementAt(2));
+  factory GeoPoint3.from(Iterable<num> coords, {int? offset}) {
+    final start = offset ?? 0;
+    return GeoPoint3.lonLatElev(
+      coords.elementAt(start).toDouble(),
+      coords.elementAt(start + 1).toDouble(),
+      coords.elementAt(start + 2).toDouble(),
+    );
+  }
 
   final double _elev;
 
@@ -242,9 +273,17 @@ class GeoPoint3 extends GeoPoint2 {
   double get elev => _elev;
 
   @override
-  Point newPoint(
-          {double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0}) =>
-      GeoPoint3(lon: x, lat: y, elev: z);
+  Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) => GeoPoint3(
+        lon: x.toDouble(),
+        lat: y.toDouble(),
+        elev: z?.toDouble() ?? 0.0,
+      );
+
+  @override
+  Point newFrom(Iterable<num> coords, {int? offset, int? length}) {
+    CoordinateFactory.checkCoords(3, coords, offset: offset, length: length);
+    return GeoPoint3.from(coords, offset: offset);
+  }
 }
 
 /// An immutable geographic position with longitude, latitude, elev and m.
@@ -276,11 +315,15 @@ class GeoPoint3m extends GeoPoint3 {
         super.origin();
 
   /// A geographic position from [coords], given in order: lon, lat, elev, m.
-  factory GeoPoint3m.from(Iterable<double> coords) => GeoPoint3m.lonLatElevM(
-      coords.elementAt(0),
-      coords.elementAt(1),
-      coords.elementAt(2),
-      coords.elementAt(3));
+  factory GeoPoint3m.from(Iterable<num> coords, {int? offset}) {
+    final start = offset ?? 0;
+    return GeoPoint3m.lonLatElevM(
+      coords.elementAt(start).toDouble(),
+      coords.elementAt(start + 1).toDouble(),
+      coords.elementAt(start + 2).toDouble(),
+      coords.elementAt(start + 3).toDouble(),
+    );
+  }
 
   @override
   final double m;
@@ -311,7 +354,16 @@ class GeoPoint3m extends GeoPoint3 {
   }
 
   @override
-  Point newPoint(
-          {double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0}) =>
-      GeoPoint3m(lon: x, lat: y, elev: z, m: m);
+  Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) => GeoPoint3m(
+        lon: x.toDouble(),
+        lat: y.toDouble(),
+        elev: z?.toDouble() ?? 0.0,
+        m: m?.toDouble() ?? 0.0,
+      );
+
+  @override
+  Point newFrom(Iterable<num> coords, {int? offset, int? length}) {
+    CoordinateFactory.checkCoords(4, coords, offset: offset, length: length);
+    return GeoPoint3m.from(coords, offset: offset);
+  }
 }

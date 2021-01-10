@@ -11,7 +11,7 @@ typedef CalculateBounds<T extends Point> = Bounds<T> Function();
 
 /// A base interface for bounds (aka a bounding box in 2D).
 abstract class Bounds<T extends Point> extends Geometry
-    implements _Coordinates {
+    implements _Coordinates, CoordinateFactory<Bounds> {
   const Bounds();
 
   /// Create bounds with required (and non-empty) [min] and [max] points.
@@ -142,6 +142,17 @@ class BoundsBase<T extends Point> extends Bounds<T> with EquatableMixin {
 
   @override
   T get max => _max;
+
+  @override
+  Bounds newFrom(Iterable<num> coords, {int? offset, int? length}) {
+    CoordinateFactory.checkCoords(4, coords, offset: offset, length: length);
+    final start = offset ?? 0;
+    final len = length ?? coords.length;
+    final pointLen = len ~/ 2;
+    return BoundsBase(
+        min: min.newFrom(coords, offset: start, length: pointLen),
+        max: max.newFrom(coords, offset: start + pointLen, length: pointLen));
+  }
 }
 
 /// [Bounds] with values calculated when first needed if not initialized.
@@ -182,6 +193,10 @@ class _LazyBounds<T extends Point> extends Bounds<T> {
   T get max => _ensureBounds().max;
 
   @override
+  Bounds newFrom(Iterable<num> coords, {int? offset, int? length}) =>
+      _ensureBounds().newFrom(coords, offset: offset, length: length);
+
+  @override
   bool operator ==(Object other) => _ensureBounds() == other;
 
   @override
@@ -205,93 +220,7 @@ class _EmptyBounds extends Bounds {
 
   @override
   Point get max => Point.empty();
-}
 
-/// A helper class to calculate [bounds] for a set of points and other bounds.
-///
-/// Use [addPoint] and [addBounds] methods to add geometries to be used on
-/// calculation. A value for calculations can be obtained from [bounds].
-class _BoundsBuilder {
-  /// Creates a new builder to calculate [bounds].
-  _BoundsBuilder();
-
-  int _spatialDims = 0;
-  bool _hasM = false;
-  Point? _firstOfType;
-
-  double _minx = double.nan;
-  double _miny = double.nan;
-  double _minz = double.nan;
-  double _minm = double.nan;
-  double _maxx = double.nan;
-  double _maxy = double.nan;
-  double _maxz = double.nan;
-  double _maxm = double.nan;
-
-  /// Adds a [point] to be used on bounds calculation.
-  void addPoint(Point point) {
-    var sdims = _spatialDims;
-    if (point.spatialDimension > sdims) {
-      // latest point has more spatial dims than previous ones, so update
-      sdims = _spatialDims = point.spatialDimension;
-      _firstOfType = point;
-      _hasM = point.hasM;
-    } else if (point.spatialDimension == sdims && (!_hasM && point.hasM)) {
-      // or it has same amount of spatial dims but has also M coordinate
-      _hasM = true;
-      _firstOfType = point;
-    }
-
-    // update min and max values
-    _minx = _min(_minx, point.x);
-    _miny = _min(_miny, point.y);
-    _maxx = _max(_maxx, point.x);
-    _maxy = _max(_maxy, point.y);
-    if (sdims >= 3) {
-      _minz = _min(_minz, point.z);
-      _maxz = _max(_maxz, point.z);
-    }
-    if (_hasM) {
-      _minm = _min(_minm, point.m);
-      _maxm = _max(_maxm, point.m);
-    }
-  }
-
-  static double _min(double min, double value) =>
-      min.isNaN ? value : math.min(min, value);
-
-  static double _max(double max, double value) =>
-      max.isNaN ? value : math.max(max, value);
-
-  /// Adds a [bounds] to be used on bounds calculation.
-  void addBounds(Bounds bounds) {
-    addPoint(bounds.min);
-    addPoint(bounds.max);
-  }
-
-  /// The bounds for the current set of added points and bounds.
-  Bounds get bounds {
-    final p = _firstOfType;
-    if (p != null) {
-      if (_spatialDims == 2) {
-        return !_hasM
-            ? Bounds.of(
-                min: p.newPoint(x: _minx, y: _miny),
-                max: p.newPoint(x: _maxx, y: _maxy))
-            : Bounds.of(
-                min: p.newPoint(x: _minx, y: _miny, m: _minm),
-                max: p.newPoint(x: _maxx, y: _maxy, m: _maxm));
-      } else if (_spatialDims >= 3) {
-        return !_hasM
-            ? Bounds.of(
-                min: p.newPoint(x: _minx, y: _miny, z: _minz),
-                max: p.newPoint(x: _maxx, y: _maxy, z: _maxz))
-            : Bounds.of(
-                min: p.newPoint(x: _minx, y: _miny, z: _minz, m: _minm),
-                max: p.newPoint(x: _maxx, y: _maxy, z: _maxz, m: _maxm));
-      }
-    }
-    // couldn't calculate, return empty bounds
-    return Bounds.empty();
-  }
+  @override
+  Bounds newFrom(Iterable<num> coords, {int? offset, int? length}) => this;
 }

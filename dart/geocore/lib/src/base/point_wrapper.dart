@@ -11,7 +11,8 @@ part of 'base.dart';
 /// This class is surely immutable, but the aggregated [point] object may
 /// or may not to be immutable.
 @immutable
-class PointWrapper<T extends Point> extends Point with EquatableMixin {
+class PointWrapper<T extends Point<C>, C extends num> extends Point<C>
+    with EquatableMixin {
   const PointWrapper(this.point);
 
   final T point;
@@ -38,22 +39,25 @@ class PointWrapper<T extends Point> extends Point with EquatableMixin {
   bool get hasM => point.hasM;
 
   @override
-  double operator [](int i) => point[i];
+  C operator [](int i) => point[i];
 
   @override
-  double get x => point.x;
+  C get x => point.x;
 
   @override
-  double get y => point.y;
+  C get y => point.y;
 
   @override
-  double get z => point.z;
+  C get z => point.z;
 
   @override
-  double get m => point.m;
+  C get m => point.m;
 
   @override
-  Point newPoint(
-          {double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0}) =>
-      point.newPoint(x: x, y: y, z: z, m: m);
+  Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) =>
+      point.newWith(x: x, y: y, z: z, m: m);
+
+  @override
+  Point newFrom(Iterable<num> coords, {int? offset, int? length}) =>
+      point.newFrom(coords, offset: offset, length: length);
 }

@@ -200,7 +200,8 @@ More information and other links are available at the
 
 This project is licensed under the "BSD-3-Clause"-style license.
 
-Please see the [LICENSE](LICENSE).
+Please see the 
+[LICENSE](https://github.com/navibyte/geospatial/blob/main/LICENSE).
 
 
 

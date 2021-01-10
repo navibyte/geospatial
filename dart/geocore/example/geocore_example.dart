@@ -123,6 +123,20 @@ void _basicStructures() {
   print(Point2i.xy(708221, 5707225));
   print(Point3i.xyz(708221, 5707225, 45));
 
+  // Series of points containg all types of points
+  final points = PointSeries<Point>.view([
+    // coords stored as double, GeoPoint3 implements Point<double>
+    GeoPoint3.origin(),
+    // coords stored as num (given as double or int),
+    // Point2 implements Point<num>
+    Point2.xy(708221.0, 5707225),
+    // coords stored as int, Point3i implements Point<int>
+    Point3i.xyz(708221, 5707225, 45)
+  ]);
+  print(points);
+  print(
+      'Testing int coord value: ${points[2].x} ${points[2].y} (type: ${points[2].z.runtimeType})');
+
   // Temporal intervals (open, open-started, open-ended, closed)
   print(Interval.open());
   print(Interval.openStart(DateTime.utc(2020, 10, 31)));

@@ -5,25 +5,25 @@
 // Docs: https://github.com/navibyte/geospatial
 
 // Cartesian vector (or point) data structures:
-// * Point2 with x and y as double values
-// * Point2m with x, y and m as double values
-// * Point3 with x, y and z as double values
-// * Point3m with x, y, z and m as double values
+// * Point2 with x and y as num values
+// * Point2m with x, y and m as num, values
+// * Point3 with x, y and z as num values
+// * Point3m with x, y, z and m as num values
 // * Point2i with x and y as int values
 // * Point3i with x, y and z as int values
 
 part of 'base.dart';
 
-/// An immutable point with X and Y as double values.
+/// An immutable point with X and Y as num values.
 @immutable
-class Point2 extends Point with EquatableMixin {
+class Point2 extends Point<num> with EquatableMixin {
   /// A point at given [x] and [y].
-  const Point2({required double x, required double y})
+  const Point2({required num x, required num y})
       : _x = x,
         _y = y;
 
   /// A point with coordinates given in order [x], [y].
-  const Point2.xy(double x, double y)
+  const Point2.xy(num x, num y)
       : _x = x,
         _y = y;
 
@@ -33,10 +33,15 @@ class Point2 extends Point with EquatableMixin {
         _y = 0.0;
 
   /// A point from [coords] given in order: x, y.
-  factory Point2.from(Iterable<double> coords) =>
-      Point2.xy(coords.elementAt(0), coords.elementAt(1));
+  factory Point2.from(Iterable<num> coords, {int? offset}) {
+    final start = offset ?? 0;
+    return Point2.xy(
+      coords.elementAt(start),
+      coords.elementAt(start + 1),
+    );
+  }
 
-  final double _x, _y;
+  final num _x, _y;
 
   @override
   List<Object?> get props => [_x, _y];
@@ -57,7 +62,7 @@ class Point2 extends Point with EquatableMixin {
   bool get hasM => false;
 
   @override
-  double operator [](int i) {
+  num operator [](int i) {
     switch (i) {
       case 0:
         return _x;
@@ -69,26 +74,31 @@ class Point2 extends Point with EquatableMixin {
   }
 
   @override
-  double get x => _x;
+  num get x => _x;
 
   @override
-  double get y => _y;
+  num get y => _y;
 
   @override
-  Point newPoint(
-          {double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0}) =>
+  Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) =>
       Point2(x: x, y: y);
+
+  @override
+  Point newFrom(Iterable<num> coords, {int? offset, int? length}) {
+    CoordinateFactory.checkCoords(2, coords, offset: offset, length: length);
+    return Point2.from(coords, offset: offset);
+  }
 }
 
-/// An immutable point with X, Y and M as double values.
+/// An immutable point with X, Y and M as num values.
 class Point2m extends Point2 {
   /// A point at given [x] and [y] ([m] is zero by default).
-  const Point2m({required double x, required double y, double m = 0.0})
+  const Point2m({required num x, required num y, num m = 0.0})
       : _m = m,
         super(x: x, y: y);
 
   /// A point with coordinates given in order [x], [y], [m].
-  const Point2m.xym(double x, double y, double m)
+  const Point2m.xym(num x, num y, num m)
       : _m = m,
         super(x: x, y: y);
 
@@ -98,10 +108,16 @@ class Point2m extends Point2 {
         super.origin();
 
   /// A point from [coords] given in order: x, y, m.
-  factory Point2m.from(Iterable<double> coords) => Point2m.xym(
-      coords.elementAt(0), coords.elementAt(1), coords.elementAt(2));
+  factory Point2m.from(Iterable<num> coords, {int? offset}) {
+    final start = offset ?? 0;
+    return Point2m.xym(
+      coords.elementAt(start),
+      coords.elementAt(start + 1),
+      coords.elementAt(start + 2),
+    );
+  }
 
-  final double _m;
+  final num _m;
 
   @override
   List<Object?> get props => [_x, _y, _m];
@@ -113,7 +129,7 @@ class Point2m extends Point2 {
   bool get hasM => true;
 
   @override
-  double operator [](int i) {
+  num operator [](int i) {
     switch (i) {
       case 0:
         return _x;
@@ -127,23 +143,28 @@ class Point2m extends Point2 {
   }
 
   @override
-  double get m => _m;
+  num get m => _m;
 
   @override
-  Point newPoint(
-          {double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0}) =>
-      Point2m(x: x, y: y, m: m);
+  Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) =>
+      Point2m(x: x, y: y, m: m ?? 0.0);
+
+  @override
+  Point newFrom(Iterable<num> coords, {int? offset, int? length}) {
+    CoordinateFactory.checkCoords(3, coords, offset: offset, length: length);
+    return Point2m.from(coords, offset: offset);
+  }
 }
 
-/// An immutable point with X, Y and Z as double values.
+/// An immutable point with X, Y and Z as num values.
 class Point3 extends Point2 {
   /// A point at given [x] and [y] ([z] is zero by default).
-  const Point3({required double x, required double y, double z = 0.0})
+  const Point3({required num x, required num y, num z = 0.0})
       : _z = z,
         super(x: x, y: y);
 
   /// A point with coordinates given in order [x], [y], [z].
-  const Point3.xyz(double x, double y, double z)
+  const Point3.xyz(num x, num y, num z)
       : _z = z,
         super(x: x, y: y);
 
@@ -153,10 +174,16 @@ class Point3 extends Point2 {
         super.origin();
 
   /// A point from [coords] given in order: x, y, m.
-  factory Point3.from(Iterable<double> coords) =>
-      Point3.xyz(coords.elementAt(0), coords.elementAt(1), coords.elementAt(2));
+  factory Point3.from(Iterable<num> coords, {int? offset}) {
+    final start = offset ?? 0;
+    return Point3.xyz(
+      coords.elementAt(start),
+      coords.elementAt(start + 1),
+      coords.elementAt(start + 2),
+    );
+  }
 
-  final double _z;
+  final num _z;
 
   @override
   List<Object?> get props => [_x, _y, _z];
@@ -171,7 +198,7 @@ class Point3 extends Point2 {
   bool get is3D => true;
 
   @override
-  double operator [](int i) {
+  num operator [](int i) {
     switch (i) {
       case 0:
         return _x;
@@ -185,24 +212,28 @@ class Point3 extends Point2 {
   }
 
   @override
-  double get z => _z;
+  num get z => _z;
 
   @override
-  Point newPoint(
-          {double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0}) =>
-      Point3(x: x, y: y, z: z);
+  Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) =>
+      Point3(x: x, y: y, z: z ?? 0.0);
+
+  @override
+  Point newFrom(Iterable<num> coords, {int? offset, int? length}) {
+    CoordinateFactory.checkCoords(3, coords, offset: offset, length: length);
+    return Point3.from(coords, offset: offset);
+  }
 }
 
-/// An immutable point with X, Y, Z and M as double values.
+/// An immutable point with X, Y, Z and M as num values.
 class Point3m extends Point3 {
   /// A point at given [x] and [y] ([z] and [m] are zero by default).
-  const Point3m(
-      {required double x, required double y, double z = 0.0, double m = 0.0})
+  const Point3m({required num x, required num y, num z = 0.0, num m = 0.0})
       : _m = m,
         super(x: x, y: y, z: z);
 
   /// A point with coordinates given in order [x], [y], [z], [m].
-  const Point3m.xyzm(double x, double y, double z, double m)
+  const Point3m.xyzm(num x, num y, num z, num m)
       : _m = m,
         super(x: x, y: y, z: z);
 
@@ -212,13 +243,17 @@ class Point3m extends Point3 {
         super.origin();
 
   /// A point from [coords] given in order: x, y, z, m.
-  factory Point3m.from(Iterable<double> coords) => Point3m.xyzm(
-      coords.elementAt(0),
-      coords.elementAt(1),
-      coords.elementAt(2),
-      coords.elementAt(3));
+  factory Point3m.from(Iterable<num> coords, {int? offset}) {
+    final start = offset ?? 0;
+    return Point3m.xyzm(
+      coords.elementAt(start),
+      coords.elementAt(start + 1),
+      coords.elementAt(start + 2),
+      coords.elementAt(start + 3),
+    );
+  }
 
-  final double _m;
+  final num _m;
 
   @override
   List<Object?> get props => [_x, _y, _z, _m];
@@ -230,7 +265,7 @@ class Point3m extends Point3 {
   bool get hasM => true;
 
   @override
-  double operator [](int i) {
+  num operator [](int i) {
     switch (i) {
       case 0:
         return _x;
@@ -246,17 +281,22 @@ class Point3m extends Point3 {
   }
 
   @override
-  double get m => _m;
+  num get m => _m;
 
   @override
-  Point newPoint(
-          {double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0}) =>
-      Point3m(x: x, y: y, z: z, m: m);
+  Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) =>
+      Point3m(x: x, y: y, z: z ?? 0.0, m: m ?? 0.0);
+
+  @override
+  Point newFrom(Iterable<num> coords, {int? offset, int? length}) {
+    CoordinateFactory.checkCoords(4, coords, offset: offset, length: length);
+    return Point3m.from(coords, offset: offset);
+  }
 }
 
 /// An immutable point with X and Y as integer values.
 @immutable
-class Point2i extends Point with EquatableMixin {
+class Point2i extends Point<int> with EquatableMixin {
   /// A point at given [x] and [y].
   const Point2i({required int x, required int y})
       : _x = x,
@@ -273,8 +313,13 @@ class Point2i extends Point with EquatableMixin {
         _y = 0;
 
   /// A point from [coords] given in order: x, y.
-  factory Point2i.from(Iterable<int> coords) =>
-      Point2i.xy(coords.elementAt(0), coords.elementAt(1));
+  factory Point2i.from(Iterable<num> coords, {int? offset}) {
+    final start = offset ?? 0;
+    return Point2i.xy(
+      coords.elementAt(start).round(),
+      coords.elementAt(start + 1).round(),
+    );
+  }
 
   final int _x, _y;
 
@@ -297,27 +342,38 @@ class Point2i extends Point with EquatableMixin {
   bool get hasM => false;
 
   @override
-  double operator [](int i) {
+  int operator [](int i) {
     switch (i) {
       case 0:
-        return _x.toDouble();
+        return _x;
       case 1:
-        return _y.toDouble();
+        return _y;
       default:
-        return 0.0;
+        return 0;
     }
   }
 
   @override
-  double get x => _x.toDouble();
+  int get x => _x;
 
   @override
-  double get y => _y.toDouble();
+  int get y => _y;
 
   @override
-  Point newPoint(
-          {double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0}) =>
+  int get z => 0;
+
+  @override
+  int get m => 0;
+
+  @override
+  Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) =>
       Point2i(x: x.round(), y: y.round());
+
+  @override
+  Point newFrom(Iterable<num> coords, {int? offset, int? length}) {
+    CoordinateFactory.checkCoords(2, coords, offset: offset, length: length);
+    return Point2i.from(coords, offset: offset);
+  }
 }
 
 /// An immutable point with X, Y and Z as integer values.
@@ -338,8 +394,14 @@ class Point3i extends Point2i {
         super.origin();
 
   /// A point from [coords] given in order [x], [y], [z].
-  factory Point3i.from(Iterable<int> coords) => Point3i.xyz(
-      coords.elementAt(0), coords.elementAt(1), coords.elementAt(2));
+  factory Point3i.from(Iterable<num> coords, {int? offset}) {
+    final start = offset ?? 0;
+    return Point3i.xyz(
+      coords.elementAt(start).round(),
+      coords.elementAt(start + 1).round(),
+      coords.elementAt(start + 2).round(),
+    );
+  }
 
   final int _z;
 
@@ -356,24 +418,29 @@ class Point3i extends Point2i {
   bool get is3D => true;
 
   @override
-  double operator [](int i) {
+  int operator [](int i) {
     switch (i) {
       case 0:
-        return _x.toDouble();
+        return _x;
       case 1:
-        return _y.toDouble();
+        return _y;
       case 2:
-        return _z.toDouble();
+        return _z;
       default:
-        return 0.0;
+        return 0;
     }
   }
 
   @override
-  double get z => _z.toDouble();
+  int get z => _z;
 
   @override
-  Point newPoint(
-          {double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0}) =>
-      Point3i(x: x.round(), y: y.round(), z: z.round());
+  Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) =>
+      Point3i(x: x.round(), y: y.round(), z: z?.round() ?? 0);
+
+  @override
+  Point newFrom(Iterable<num> coords, {int? offset, int? length}) {
+    CoordinateFactory.checkCoords(3, coords, offset: offset, length: length);
+    return Point3i.from(coords, offset: offset);
+  }
 }

@@ -1,3 +1,18 @@
+## 0.4.1-nullsafety.0
+
+- Alpha version 0.4.1 with minor feature changes compared to 0.4.0
+  - may require migrations
+  - Point interface has now x, y, z and m getters of type num, not double
+  - However GeoPoint still has lon, lat, elev getters as double as previously 
+  - GeoJSON parser has breaking changes on point, bounds and feature factories
+- [Coordinate value getter properties as num on points #2](https://github.com/navibyte/geospatial/issues/2)
+- [Point and geometry factory interfaces and implementations #3](https://github.com/navibyte/geospatial/issues/3)
+- [Point factory constructor consistency #4](https://github.com/navibyte/geospatial/issues/4)
+- [Adapt factory changes to GeoJSON parser #5](https://github.com/navibyte/geospatial/issues/5)
+- [GeoJSON parser to allow extended Feature data #6](https://github.com/navibyte/geospatial/issues/6)
+  - at least partial implementation, forward json object to factory function too
+- [BoundsBuilder as utility class #7](https://github.com/navibyte/geospatial/issues/7)
+ 
 ## 0.4.0-nullsafety.0
 
 - Alpha version 0.4.0 with breaking changes compared to 0.3.0

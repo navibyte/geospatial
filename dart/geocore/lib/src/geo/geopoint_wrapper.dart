@@ -13,7 +13,7 @@ import 'geopoint.dart';
 ///
 /// This class is surely immutable, but the aggregated [point] object may
 /// or may not to be immutable.
-class GeoPointWrapper<T extends GeoPoint> extends PointWrapper<T>
+class GeoPointWrapper<T extends GeoPoint> extends PointWrapper<T, double>
     implements GeoPoint {
   /// Creates a geographic position by wrapping [point].
   const GeoPointWrapper(T point) : super(point);

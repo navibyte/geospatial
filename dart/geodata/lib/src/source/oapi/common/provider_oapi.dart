@@ -12,7 +12,6 @@ import 'package:geocore/base.dart';
 import 'package:geocore/crs.dart';
 import 'package:geocore/geo.dart';
 import 'package:geocore/meta_extent.dart';
-import 'package:geocore/parse_factory.dart';
 import 'package:datatools/client_base.dart';
 
 import '../../../model/common.dart';
@@ -134,11 +133,11 @@ Extent _extentFromJson(Map<String, dynamic> json) {
   final bbox = spatialIsMap ? spatial['bbox'] : null;
   if (bbox != null && bbox is List) {
     // by standard: "bbox" is a list of bboxes
-    allBounds = bbox.map((e) => createGeoBounds(e));
+    allBounds = bbox.map((e) => GeoBounds.from(e.cast<num>()));
   } else {
     // not standard: assume "spatial" as one bbox
     try {
-      allBounds = [createGeoBounds(spatial)];
+      allBounds = [GeoBounds.from(spatial.cast<num>())];
     } catch (e) {
       // fallback
       allBounds = [GeoBounds.world()];

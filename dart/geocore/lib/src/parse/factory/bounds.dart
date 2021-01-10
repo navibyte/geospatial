@@ -5,62 +5,40 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import '../../base.dart';
-import '../../crs.dart';
 import '../../geo.dart';
 
-import 'point.dart';
-
-/// A function to create projected and geographic [Bounds] objects.
-///
-/// [Point] type candidates for bounds to contain: [Point2], [Point3],
-/// [GeoPoint2], [GeoPoint3].
-Bounds createAnyBounds(Iterable coords,
-    {CRS expectedCRS = CRS84, bool expectM = false}) {
-  final pointCoordsLen = coords.length ~/ 2;
-  return Bounds.of(
-      min: createAnyPoint(coords.take(pointCoordsLen),
-          expectedCRS: expectedCRS, expectM: expectM),
-      max: createAnyPoint(coords.skip(pointCoordsLen),
-          expectedCRS: expectedCRS, expectM: expectM));
-}
-
-/// A function to create projected and geographic [Bounds] objects.
-///
-/// [Point] type candidates for bounds to contain: [Point2], [Point2m],
-/// [Point3], [Point3m], [GeoPoint2], [GeoPoint2m], [GeoPoint3], [GeoPoint3m].
-Bounds createAnyBoundsWithM(Iterable coords,
-    {CRS expectedCRS = CRS84, bool expectM = false}) {
-  final pointCoordsLen = coords.length ~/ 2;
-  return Bounds.of(
-      min: createAnyPointWithM(coords.take(pointCoordsLen),
-          expectedCRS: expectedCRS, expectM: expectM),
-      max: createAnyPointWithM(coords.skip(pointCoordsLen),
-          expectedCRS: expectedCRS, expectM: expectM));
-}
-
-/// A function to create geographic [Bounds] objects with [GeoPoint] as min/max.
-///
-/// [Point] type candidates for bounds to contain: [GeoPoint2], [GeoPoint3].
-GeoBounds createGeoBounds(Iterable coords,
-    {CRS expectedCRS = CRS84, bool expectM = false}) {
+/// A function to create geographic bounds from [coords] with [pointFactory].
+GeoBounds geoBoundsFactory(Iterable<num> coords,
+    {required PointFactory<GeoPoint> pointFactory}) {
   final pointCoordsLen = coords.length ~/ 2;
   return GeoBounds.of(
-      min: createGeoPoint(coords.take(pointCoordsLen),
-          expectedCRS: expectedCRS, expectM: expectM),
-      max: createGeoPoint(coords.skip(pointCoordsLen),
-          expectedCRS: expectedCRS, expectM: expectM));
+    min: pointFactory.newFrom(
+      coords,
+      offset: 0,
+      length: pointCoordsLen,
+    ),
+    max: pointFactory.newFrom(
+      coords,
+      offset: pointCoordsLen,
+      length: pointCoordsLen,
+    ),
+  );
 }
 
-/// A function to create geographic [Bounds] objects with [GeoPoint] as min/max.
-///
-/// [Point] type candidates for bounds to contain: [GeoPoint2], [GeoPoint2m],
-/// [GeoPoint3], [GeoPoint3m].
-GeoBounds createGeoBoundsWithM(Iterable coords,
-    {CRS expectedCRS = CRS84, bool expectM = false}) {
+/// A function to create any [Bounds] object from [coords] with [pointFactory].
+Bounds anyBoundsFactory(Iterable<num> coords,
+    {required PointFactory pointFactory}) {
   final pointCoordsLen = coords.length ~/ 2;
-  return GeoBounds.of(
-      min: createGeoPointWithM(coords.take(pointCoordsLen),
-          expectedCRS: expectedCRS, expectM: expectM),
-      max: createGeoPointWithM(coords.skip(pointCoordsLen),
-          expectedCRS: expectedCRS, expectM: expectM));
+  return Bounds.of(
+    min: pointFactory.newFrom(
+      coords,
+      offset: 0,
+      length: pointCoordsLen,
+    ),
+    max: pointFactory.newFrom(
+      coords,
+      offset: pointCoordsLen,
+      length: pointCoordsLen,
+    ),
+  );
 }

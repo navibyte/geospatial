@@ -7,7 +7,11 @@
 part of 'base.dart';
 
 /// A read-only point with coordinate value getters.
-abstract class Point extends Geometry implements _Coordinates {
+///
+/// Coordinate values of type [C] are either `num` (allowing `double` or `int`),
+/// `double` or `int`.
+abstract class Point<C extends num> extends Geometry
+    implements _Coordinates, PointFactory {
   const Point();
 
   /// Create an empty point.
@@ -19,7 +23,7 @@ abstract class Point extends Geometry implements _Coordinates {
   @override
   Bounds get bounds => Bounds.of(min: this, max: this);
 
-  /// A coordinate value by the index [i].
+  /// A coordinate value by the index [i] as type [C] extending num.
   ///
   /// Coordinate ordering must be: (x, y), (x, y, m), (x, y, z) or (x, y, z, m).
   ///
@@ -28,37 +32,37 @@ abstract class Point extends Geometry implements _Coordinates {
   ///
   /// Or for Easting and Northing projected coordinates ordering is:
   /// (E, N), (E, N, m), (E, N, z) or (E, N, z, m).
-  double operator [](int i);
+  C operator [](int i);
 
-  /// Returns coordinate values of this point as a fixed length double list.
+  /// Returns coordinate values of this point as a fixed length list.
   ///
-  /// The default implementation creates a fixed length `List<double>` with
-  /// length equaling to [coordinateDimension]. Then [] operator is used to populate
-  /// coordinate values.
+  /// The default implementation creates a fixed length `List<C>` with
+  /// length equaling to [coordinateDimension]. Then [] operator is used to
+  /// populate coordinate values.
   ///
   /// Sub classes may override the default implementation to provide more
   /// efficient approach. It's also allowed to return internal data storage
   /// for coordinate values.
-  List<double> get values {
+  List<C> get values {
     // create fixed length list and set coordinate values on it
-    return List<double>.generate(coordinateDimension, (i) => this[i],
+    return List<C>.generate(coordinateDimension, (i) => this[i],
         growable: false);
   }
 
-  /// X coordinate as double.
-  double get x;
+  /// X coordinate as type [C] extending `num`.
+  C get x;
 
-  /// Y coordinate as double.
-  double get y;
+  /// Y coordinate as type [C] extending `num`.
+  C get y;
 
-  /// Z coordinate as double. Returns 0.0 if not available.
-  double get z => 0.0;
+  /// Z coordinate as type [C] extending `num`. Returns zero if not available.
+  C get z => _zero();
 
-  /// M coordinate (time, measure etc.) as double. Returns 0.0 if not available.
+  /// M coordinate as type [C] extending `num`. Returns zero if not available.
   ///
   /// [m] represents a value on a linear referencing system (like time).
   /// Could be associated with a 2D point (x, y, m) or a 3D point (x, y, z, m).
-  double get m => 0.0;
+  C get m => _zero();
 
   /// True if this point equals with [other] point in 2D.
   bool equals2D(Point other) =>
@@ -67,18 +71,20 @@ abstract class Point extends Geometry implements _Coordinates {
   /// True if this point equals with [other] point in 3D.
   bool equals3D(Point other) => equals2D(other) && z == other.z;
 
-  /// Creates a new [Point] instance compatible with this point instance.
-  ///
-  /// Values for a new point are given by [x], [y], [z] and [z] as applicable
-  /// for an implementing class.
-  Point newPoint(
-      {double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0});
+  /// Returns zero value of the type [C] that can be `num`, `double` or `int`.
+  C _zero() {
+    if (C == int) {
+      return 0 as C;
+    } else {
+      return 0.0 as C;
+    }
+  }
 }
 
-/// A private implementation for an empty point with coordinate 0.0 values.
+/// A private implementation for an empty point with coordinate zero values.
 /// The implementation may change in future.
 @immutable
-class _PointEmpty extends Point {
+class _PointEmpty<C extends num> extends Point<C> {
   const _PointEmpty({this.is3D = false, this.hasM = false});
 
   @override
@@ -103,16 +109,17 @@ class _PointEmpty extends Point {
   int get spatialDimension => coordinateDimension + (hasM ? 1 : 0);
 
   @override
-  double operator [](int i) => 0.0;
+  C operator [](int i) => _zero();
 
   @override
-  double get x => 0.0;
+  C get x => _zero();
 
   @override
-  double get y => 0.0;
+  C get y => _zero();
 
   @override
-  Point newPoint(
-          {double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0}) =>
-      this;
+  Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) => this;
+
+  @override
+  Point newFrom(Iterable<num> coords, {int? offset, int? length}) => this;
 }

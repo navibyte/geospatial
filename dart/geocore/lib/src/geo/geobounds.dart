@@ -65,4 +65,40 @@ class GeoBounds extends BoundsBase<GeoPoint> with EquatableMixin {
       : this.of(
             min: GeoPoint2.latLon(minLat, minLon),
             max: GeoPoint2.latLon(maxLat, maxLon));
+
+  /// With [coords] containing min and max sets of lon, lat and optional elev.
+  ///
+  /// There should be either 4 or 6 items on [coords].
+  factory GeoBounds.from(Iterable<num> coords, {int? offset, int? length}) {
+    CoordinateFactory.checkCoords(4, coords, offset: offset, length: length);
+    final start = offset ?? 0;
+    final len = length ?? coords.length;
+    return len >= 6
+        ? GeoBounds.bboxLonLatElev(
+            coords.elementAt(start + 0).toDouble(),
+            coords.elementAt(start + 1).toDouble(),
+            coords.elementAt(start + 2).toDouble(),
+            coords.elementAt(start + 3).toDouble(),
+            coords.elementAt(start + 4).toDouble(),
+            coords.elementAt(start + 5).toDouble(),
+          )
+        : GeoBounds.bboxLonLat(
+            coords.elementAt(start + 0).toDouble(),
+            coords.elementAt(start + 1).toDouble(),
+            coords.elementAt(start + 2).toDouble(),
+            coords.elementAt(start + 3).toDouble(),
+          );
+  }
+
+  @override
+  Bounds newFrom(Iterable<num> coords, {int? offset, int? length}) {
+    CoordinateFactory.checkCoords(4, coords, offset: offset, length: length);
+    final start = offset ?? 0;
+    final len = length ?? coords.length;
+    final pointLen = len ~/ 2;
+    return GeoBounds.of(
+        min: min.newFrom(coords, offset: start, length: pointLen) as GeoPoint,
+        max: max.newFrom(coords, offset: start + pointLen, length: pointLen)
+            as GeoPoint);
+  }
 }

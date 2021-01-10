@@ -1,3 +1,9 @@
+## 0.4.1-nullsafety.0
+
+- Alpha version 0.4.1 with minor feature/private code changes compared to 0.4.0
+- Updated dependency: `geocore` (^0.4.1-nullsafety.0) for geo data structures
+- Small changes to adapt with changes by `geocore`
+
 ## 0.4.0-nullsafety.0
 
 - Alpha version 0.4.0 with breaking changes compared to 0.3.0

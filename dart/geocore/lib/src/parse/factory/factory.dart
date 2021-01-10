@@ -5,27 +5,25 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import '../../base.dart';
-import '../../crs.dart';
 import '../../feature.dart';
 
-/// A function to parse a point from [coords] with at least 2 valid values.
-///
-/// Throws FormatException if cannot create point.
-typedef CreatePoint = Point Function(Iterable coords,
-    {CRS expectedCRS, bool expectM});
-
-/// A function to parse bounds from [coords].
+/// A function to parse bounds from [coords] and using [pointFactory].
 ///
 /// Throws FormatException if cannot create bounds.
-typedef CreateBounds = Bounds Function(Iterable coords,
-    {CRS expectedCRS, bool expectM});
+typedef CreateBounds<T extends Point> = Bounds<T> Function(Iterable<num> coords,
+    {required PointFactory<T> pointFactory});
 
 /// A function to create a feature of [id], [properties], [geometry] + [bounds].
+///
+/// If a feature is read from JSON data then an optional [jsonObject] contains
+/// an JSON Object for a feature as-is. If source is other than JSON then this
+/// may be unavailable.
 typedef CreateFeature = Feature<T> Function<T extends Geometry>(
     {dynamic? id,
     required Map<String, dynamic> properties,
     T? geometry,
-    Bounds? bounds});
+    Bounds? bounds,
+    Map<String, dynamic>? jsonObject});
 
 /// A factory to create geospatial geometries and features from source data.
 ///
@@ -55,103 +53,106 @@ abstract class GeoFactory {
       dynamic data);
 }
 
-/// A base implementation of [GeoFactory] with expectations (like CRS) set.
+/// A base implementation of [GeoFactory] with point and feature factories.
 ///
 /// This class also introduces some helper methods to parse specific geometries.
-abstract class GeoFactoryBase extends GeoFactory {
+abstract class GeoFactoryBase<PointType extends Point> extends GeoFactory {
+  /// A constructor of [GeoFactoryBase] with point and feature factories given.
   const GeoFactoryBase(
-      {required this.createPoint,
-      required this.createBounds,
-      required this.createFeature,
-      this.expectedCRS = CRS84,
-      this.expectM = false});
+      {required this.pointFactory,
+      required this.boundsFactory,
+      required this.featureFactory});
 
-  /// A function to parse a point.
+  /// A factory to create point objects from coordinate values.
   ///
   /// The factory can be adjusted by setting a custom function that creates
   /// custom point instances.
-  final CreatePoint createPoint;
+  final PointFactory<PointType> pointFactory;
 
-  /// A function to parse bounds.
+  /// A function to create bounds objects from min and max points.
   ///
   /// The factory can be adjusted by setting a custom function that creates
   /// custom bounds instances.
-  final CreateBounds createBounds;
+  final CreateBounds<PointType> boundsFactory;
 
-  /// A function to create a [Feature] object.
+  /// A factory function to create a [Feature] object.
   ///
   /// The factory can be adjusted by setting a custom function that creates
   /// custom [Feature] instances.
-  final CreateFeature createFeature;
-
-  /// The expected coordinate reference system for coordinates to be parsed.
-  final CRS expectedCRS;
-
-  /// Whether to expect M coordinate for coordinates to be parsed.
-  final bool expectM;
+  final CreateFeature featureFactory;
 
   /// Parses a point geometry from [coords] containing at least 2 valid values.
   ///
+  /// Assumes that [coords] contains only `num` objects (that is either `double`
+  /// or `int` objects).
+  ///
   /// Throws FormatException if cannot create point.
-  Point point(Iterable coords) =>
-      createPoint(coords, expectedCRS: expectedCRS, expectM: expectM);
+  PointType point(Iterable coords) => pointFactory
+      .newFrom(coords is Iterable<num> ? coords : coords.cast<num>());
 
   /// Parses bounds geometry from [coords].
   ///
+  /// Assumes that [coords] contains only `num` objects (that is either `double`
+  /// or `int` objects).
+  ///
   /// Throws FormatException if cannot create bounds.
-  Bounds bounds(Iterable coords) =>
-      createBounds(coords, expectedCRS: expectedCRS, expectM: expectM);
+  Bounds<PointType> bounds(Iterable coords) =>
+      boundsFactory(coords is Iterable<num> ? coords : coords.cast<num>(),
+          pointFactory: pointFactory);
 
-  /// Parses a series of [points] (an iterable of iterables of doubles).
+  /// Parses a series of [points] (an iterable of iterables of nums).
   ///
   /// Throws FormatException if cannot create a series or points on it.
-  PointSeries pointSeries(Iterable points) =>
-      PointSeries.from(points.map<Point>((coords) => point(coords)));
+  PointSeries<PointType> pointSeries(Iterable points) =>
+      PointSeries<PointType>.from(
+          points.map<PointType>((coords) => point(coords)));
 
   /// Parses a line string from series of [points].
   ///
   /// Throws FormatException if cannot create a line string.
-  LineString lineString(Iterable points,
+  LineString<PointType> lineString(Iterable points,
           {LineStringType type = LineStringType.any}) =>
-      LineString(pointSeries(points), type: type);
+      LineString<PointType>(pointSeries(points), type: type);
 
   /// Parses a series of line strings.
   ///
   /// Throws FormatException if cannot create a series of line strings.
-  BoundedSeries<LineString> lineStringSeries(Iterable lineStrings,
+  BoundedSeries<LineString<PointType>> lineStringSeries(Iterable lineStrings,
           {LineStringType type = LineStringType.any}) =>
-      BoundedSeries<LineString>.from(lineStrings
-          .map<LineString>((points) => lineString(points, type: type)));
+      BoundedSeries<LineString<PointType>>.from(
+          lineStrings.map<LineString<PointType>>(
+              (points) => lineString(points, type: type)));
 
   /// Parses a polygon from a series of rings (closed and simple line strings).
   ///
   /// Throws FormatException if cannot create a polygon.
-  Polygon polygon(Iterable rings) =>
-      Polygon(lineStringSeries(rings, type: LineStringType.ring));
+  Polygon<PointType> polygon(Iterable rings) =>
+      Polygon<PointType>(lineStringSeries(rings, type: LineStringType.ring));
 
   /// Parses a series of polygons.
   ///
   /// Throws FormatException if cannot create a series of polygons.
-  BoundedSeries<Polygon> polygonSeries(Iterable polygons) =>
-      BoundedSeries<Polygon>.from(
-          polygons.map<Polygon>((rings) => polygon(rings)));
+  BoundedSeries<Polygon<PointType>> polygonSeries(Iterable polygons) =>
+      BoundedSeries<Polygon<PointType>>.from(
+          polygons.map<Polygon<PointType>>((rings) => polygon(rings)));
 
   /// Parses a multi point geometry from [points].
   ///
   /// Throws FormatException if cannot create a multi point geometry.
-  MultiPoint multiPoint(Iterable points) => MultiPoint(pointSeries(points));
+  MultiPoint<PointType> multiPoint(Iterable points) =>
+      MultiPoint<PointType>(pointSeries(points));
 
   /// Parses a multi line string geometry from [lineStrings].
   ///
   /// Throws FormatException if cannot create a multi line string geometry.
-  MultiLineString multiLineString(Iterable lineStrings) =>
-      MultiLineString(lineStringSeries(lineStrings));
+  MultiLineString<PointType> multiLineString(Iterable lineStrings) =>
+      MultiLineString<PointType>(lineStringSeries(lineStrings));
 
   /// Parses a multi polygon geometry from [polygons].
   ///
   /// Throws FormatException if cannot create a multi polygon geometry.
-  MultiPolygon multiPolygon(Iterable polygons) =>
-      MultiPolygon(polygonSeries(polygons));
+  MultiPolygon<PointType> multiPolygon(Iterable polygons) =>
+      MultiPolygon<PointType>(polygonSeries(polygons));
 
   /// Parses a series of geometries from [geometries].
   ///
@@ -162,6 +163,7 @@ abstract class GeoFactoryBase extends GeoFactory {
   /// Parses a geometry collection from [geometries].
   ///
   /// Throws FormatException if cannot create a geometry collection.
-  GeometryCollection geometryCollection(Iterable geometries) =>
-      GeometryCollection(geometrySeries(geometries));
+  GeometryCollection<T> geometryCollection<T extends Geometry>(
+          Iterable geometries) =>
+      GeometryCollection<T>(geometrySeries<T>(geometries));
 }

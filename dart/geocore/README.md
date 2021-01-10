@@ -22,7 +22,8 @@ Key features:
     * x, y, m (measure)
     * x, y, z
     * x, y, z, m (measure)
-  * Double-based Point classes: `Point2`, `Point2m`, `Point3`, `Point3m`
+  * Num-based Point classes: `Point2`, `Point2m`, `Point3`, `Point3m`
+    * coordinate values can be any `num` (that is `double` or `int`)
   * Int-based Point classes: `Point2i`, `Point3i`
   * `PointSeries` is a custom iterable for points with intersect methods
   * `BoundedSeries` is a custom iterable for to support other geometries too
@@ -221,5 +222,6 @@ More information and other links are available at the
 
 This project is licensed under the "BSD-3-Clause"-style license.
 
-Please see the [LICENSE](LICENSE).
+Please see the 
+[LICENSE](https://github.com/navibyte/geospatial/blob/main/LICENSE).
 

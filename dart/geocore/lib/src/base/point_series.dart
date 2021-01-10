@@ -26,32 +26,32 @@ abstract class PointSeries<T extends Point>
   factory PointSeries.from(Iterable<T> source, {Bounds? bounds}) =>
       PointSeries<T>.view(List<T>.unmodifiable(source), bounds: bounds);
 
-  /// X coordinate as double at [index].
+  /// X coordinate as num at [index].
   ///
   /// Throws RangeError if [index] is out of bounds.
-  double x(int index);
+  num x(int index);
 
-  /// Y coordinate as double at [index].
+  /// Y coordinate as num at [index].
   ///
   /// Throws RangeError if [index] is out of bounds.
-  double y(int index);
+  num y(int index);
 
-  /// Z coordinate as double at [index].
+  /// Z coordinate as num at [index].
   ///
-  /// Returns 0.0 if Z is not available when an [index] >= 0 and < [length].
+  /// Returns zero if Z is not available when an [index] >= 0 and < [length].
   ///
   /// Throws RangeError if [index] is out of bounds.
-  double z(int index) => 0.0;
+  num z(int index) => 0.0;
 
-  /// M coordinate as double at [index].
+  /// M coordinate as num at [index].
   ///
-  /// Returns 0.0 if M is not available when an [index] >= 0 and < [length].
+  /// Returns zero if M is not available when an [index] >= 0 and < [length].
   ///
   /// [m] represents a value on a linear referencing system (like time).
   /// Could be associated with a 2D point (x, y, m) or a 3D point (x, y, z, m).
   ///
   /// Throws RangeError if [index] is out of bounds.
-  double m(int index) => 0.0;
+  num m(int index) => 0.0;
 
   /// True if the first and last point equals in 2D.
   bool get isClosed;
@@ -61,6 +61,18 @@ abstract class PointSeries<T extends Point>
 mixin PointSeriesMixin<T extends Point> implements PointSeries<T> {
   @override
   bool get isClosed => length >= 2 && first.equals2D(last);
+
+  @override
+  num x(int index) => this[index].x;
+
+  @override
+  num y(int index) => this[index].y;
+
+  @override
+  num z(int index) => this[index].z;
+
+  @override
+  num m(int index) => this[index].m;
 
   /// Initializes a [Bounds] object for [source] points.
   ///
@@ -76,7 +88,7 @@ mixin PointSeriesMixin<T extends Point> implements PointSeries<T> {
           {Bounds? bounds}) =>
       bounds ??
       _LazyBounds.calculate(() {
-        final builder = _BoundsBuilder();
+        final builder = BoundsBuilder();
         source.forEach((p) => builder.addPoint(p));
         return builder.bounds;
       });
@@ -89,18 +101,6 @@ class _PointSeriesView<T extends Point>
   _PointSeriesView(Iterable<T> source, {Bounds? bounds})
       : super(source,
             bounds: PointSeriesMixin.initBounds<T>(source, bounds: bounds));
-
-  @override
-  double x(int index) => this[index].x;
-
-  @override
-  double y(int index) => this[index].y;
-
-  @override
-  double z(int index) => this[index].z;
-
-  @override
-  double m(int index) => this[index].m;
 
   @override
   PointSeries<T> intersectByBounds(Bounds bounds) =>
