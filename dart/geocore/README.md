@@ -83,7 +83,7 @@ dependencies:
 All dependencies used by `geocore` are also ready for 
 [null-safety](https://dart.dev/null-safety)!
 
-## Libraries
+## :card_file_box: Libraries
 
 The package contains following mini-libraries:
 
@@ -109,7 +109,7 @@ To use all libraries of the package:
 import 'package:geocore/geocore.dart';
 ```
 
-## Usage
+## :keyboard: Usage
 
 ### Parsing GeoJSON data
 
