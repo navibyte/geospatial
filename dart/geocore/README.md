@@ -77,7 +77,7 @@ In the `pubspec.yaml` of your project add the dependency:
 
 ```yaml
 dependencies:
-  geocore: ^0.4.0-nullsafety.0
+  geocore: ^0.4.1-nullsafety.0
 ```
 
 All dependencies used by `geocore` are also ready for 

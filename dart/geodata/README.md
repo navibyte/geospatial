@@ -1,4 +1,4 @@
-# Geodata
+# :earth_americas: Geodata
 
 [![pub package](https://img.shields.io/pub/v/geodata.svg)](https://pub.dev/packages/geodata) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
@@ -10,7 +10,7 @@ Currently the package has a partial (and still quite limited) support for
 [OGC API Features](https://ogcapi.ogc.org/features/) services with functions
 to read metadata and feature items.
 
-## Package
+## :package: Package
 
 This is a [Dart](https://dart.dev/) code package named `geodata` under the 
 [geospatial](https://github.com/navibyte/geospatial) repository. 
@@ -29,7 +29,7 @@ package for geometry, metadata and feature data structures and
 [attributes](https://pub.dev/packages/attributes) package for non-geospatial
 data structures. 
 
-## Installing
+## :electric_plug: Installing
 
 The package supports Dart [null-safety](https://dart.dev/null-safety) and 
 using it requires the latest SDK from a beta channel. However your package using
@@ -43,7 +43,7 @@ In the `pubspec.yaml` of your project add the dependency:
 
 ```yaml
 dependencies:
-  geodata: ^0.4.0-nullsafety.0  
+  geodata: ^0.4.1-nullsafety.0  
 ```
 
 Please note that following dependencies used by `geodata` (indirect dependencies
@@ -54,7 +54,7 @@ depended from the `datatools` package:
 * [http](https://pub.dev/packages/http)
 * [http_parser](https://pub.dev/packages/http_parser)
 
-## Libraries
+## :card_file_box: Libraries
 
 The package contains following mini-libraries:
 
@@ -80,7 +80,7 @@ To use all libraries of the package:
 import 'package:geodata/geodata.dart';
 ```
 
-## Usage
+## :keyboard: Usage
 
 An example how to setup an API client and a provider for 
 [OGC API Features](https://ogcapi.ogc.org/features/) service.
@@ -136,14 +136,14 @@ if (items1.hasNext) {
 
 Please see full [example code](example/geodata_example.dart) for more details.
 
-## Authors
+## :house_with_garden: Authors
 
 This project is authored by [Navibyte](https://navibyte.com).
 
 More information and other links are available at the
 [geospatial](https://github.com/navibyte/geospatial) repository from GitHub. 
 
-## License
+## :copyright: License
 
 This project is licensed under the "BSD-3-Clause"-style license.
 

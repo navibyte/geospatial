@@ -1,4 +1,4 @@
-# Datatools
+# :cloud: Datatools
 
 [![pub package](https://img.shields.io/pub/v/datatools.svg)](https://pub.dev/packages/datatools) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
@@ -14,7 +14,7 @@ Key features:
 Please note that **all features and classes are still under heavy development**,
 and not finished yet.
 
-## Package
+## :package: Package
 
 This is a [Dart](https://dart.dev/) code package named `datatools` under the 
 [geospatial](https://github.com/navibyte/geospatial) repository. 
@@ -27,7 +27,7 @@ contains non-geospatial Web API data structures and utilities that are extended
 and utilized by the `geodata` package to provide client-side access for some
 geospatial APIs. 
 
-## Installing
+## :electric_plug: Installing
 
 The package supports Dart [null-safety](https://dart.dev/null-safety) and 
 using it requires the latest SDK from a beta channel. However your package using
@@ -51,14 +51,14 @@ depended from the `datatools` package:
 * [http](https://pub.dev/packages/http)
 * [http_parser](https://pub.dev/packages/http_parser)
 
-## Authors
+## :house_with_garden: Authors
 
 This project is authored by [Navibyte](https://navibyte.com).
 
 More information and other links are available at the
 [geospatial](https://github.com/navibyte/geospatial) repository from GitHub. 
 
-## License
+## :copyright: License
 
 This project is licensed under the "BSD-3-Clause"-style license.
 
