@@ -1,4 +1,4 @@
-# Geocore
+# :globe_with_meridians: Geocore
 
 [![pub package](https://img.shields.io/pub/v/geocore.svg)](https://pub.dev/packages/geocore) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
@@ -48,7 +48,7 @@ Key features:
 * Geospatial data parsers
   * Implementation to parse GeoJSON from text strings.
 
-## Package
+## :package: Package
 
 This is a [Dart](https://dart.dev/) code package named `geocore` under the 
 [geospatial](https://github.com/navibyte/geospatial) repository. 
@@ -63,7 +63,7 @@ non-geospatial data structures that are extended and utilized by the
 The package is used by the [geodata](https://pub.dev/packages/geodata) package
 that provides a geospatial client for fetching data from different data sources.
 
-## Installing
+## :electric_plug: Installing
 
 The package supports Dart [null-safety](https://dart.dev/null-safety) and 
 using it requires the latest SDK from a beta channel. However your package using
@@ -211,14 +211,14 @@ When geospatial geometries and features are not needed, then
 the [attributes](https://pub.dev/packages/attributes) package might be 
 useful for representing dynamic data objects, property maps and identifiers. 
 
-## Authors
+## :house_with_garden: Authors
 
 This project is authored by [Navibyte](https://navibyte.com).
 
 More information and other links are available at the
 [geospatial](https://github.com/navibyte/geospatial) repository from GitHub. 
 
-## License
+## :copyright: License
 
 This project is licensed under the "BSD-3-Clause"-style license.
 

@@ -17,15 +17,15 @@ Package @ pub.dev | Version | Documentation | Example code
 :globe_with_meridians: [geocore](https://pub.dev/packages/geocore) | [![pub package](https://img.shields.io/pub/v/geocore.svg)](https://pub.dev/packages/geocore) | [API reference](https://pub.dev/documentation/geocore/latest/) | [Example](https://pub.dev/packages/geocore/example)
 :earth_americas: [geodata](https://pub.dev/packages/geodata) | [![pub package](https://img.shields.io/pub/v/geodata.svg)](https://pub.dev/packages/geodata) | [API reference](https://pub.dev/documentation/geodata/latest/) | [Example](https://pub.dev/packages/geodata/example)
 
-## :page_facing_up: Code
+## Code
 
 **This repository is at the alpha-stage, breaking changes are possible.**
 
 This repository contains the following [Dart](https://dart.dev/) code 
 packages:
 
-Code        | SDK | Description 
------------ | --- | -----------
+Code @ GitHub | SDK | Description 
+------------- | --- | -----------
 :spiral_notepad: [attributes](dart/attributes) | Dart | Data structures and utilities for identifiers, value maps and dynamic data objects.
 :cloud: [datatools](dart/datatools) | Dart | Metadata structures and utilities to access Web APIs.
 :globe_with_meridians: [geocore](dart/geocore) | Dart | Geospatial data structures (features, geometry and metadata) and utilities ([GeoJSON](https://geojson.org/) parser). 
