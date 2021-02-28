@@ -7,6 +7,6 @@
 /// Metadata structures to handle links.
 ///
 /// Usage: import `package:datatools/meta_link.dart`
-library meta_link;
+library link;
 
 export 'src/meta/link.dart';

@@ -4,9 +4,9 @@
 
 **Attributes** is a library package for [Dart](https://dart.dev/) and 
 [Flutter](https://flutter.dev/) mobile developers to help on handling
-identifiers, property value maps, and dynamic data objects or *Entities*. It
-also contains utility functions to convert dynamic values to typed null-safe
-primitive values. 
+values and property maps, identifiers and dynamic data objects or *Entities*.
+It also contains utility functions to convert dynamic values to typed
+null-safe primitive values. 
 
 Key features:
 * **ValueAccessor**: an interface to access typed values by key
@@ -14,59 +14,7 @@ Key features:
 * **Identifier**: an identifier, represented as `String`, `int` or `BigInt`
 * **Entity**: a dynamic data object with optional id and required properties
 
-## :package: Package
-
-This is a [Dart](https://dart.dev/) code package named `attributes` under the 
-[geospatial](https://github.com/navibyte/geospatial) repository. 
-
-**This package is at the alpha-stage, breaking changes are possible.** 
-
-The package is associated with (but not depending on) the
-[geocore](https://pub.dev/packages/geocore) package. The `attributes` package 
-contains non-geospatial data structures that are extended and utilized by the 
-`geocore` package to provide geospatial data structures and utilities. 
-
-## :electric_plug: Installing
-
-The package supports Dart [null-safety](https://dart.dev/null-safety) and 
-using it requires the latest SDK from a beta channel. However your package using
-it doesn't have to be migrated to null-safety yet.    
-
-Please see the official 
-[null-safety migration guide](https://dart.dev/null-safety/migration-guide)
-how to switch to the latest beta release of Dart or Flutter SDKs.
-
-In the `pubspec.yaml` of your project add the dependency:
-
-```yaml
-dependencies:
-  attributes: ^0.4.0-nullsafety.0
-```
-
-All dependencies used by `attributes` are also ready for 
-[null-safety](https://dart.dev/null-safety)!
-
-## :card_file_box: Libraries
-
-The package contains following mini-libraries:
-
-Library              | Description 
--------------------- | -----------
-**collection**       | Value accessors and property maps.
-**entity**           | Entity and Identifier data structures for handling dynamic data objects.
-**values**           | Value conversions from dynamic objects to typed values. Also helper classes.
-
-For example to access a mini library you should use an import like:
-
-```dart
-import 'package:attributes/entity.dart';
-```
-
-To use all libraries of the package:
-
-```dart
-import 'package:attributes/attributes.dart';
-```
+**This package is at BETA stage, interfaces not fully final yet.** 
 
 ## :keyboard: Usage
 
@@ -188,6 +136,58 @@ defines geometry and other geospatial data structures. For example there is a
 *Feature* class in the *geocore* package that extends *Entity* of the
 *attributes* package allowing handling also geometry data in addition to generic
 non-geospatial properties and identifiers.
+
+## :electric_plug: Installing
+
+The package supports Dart [null-safety](https://dart.dev/null-safety) and 
+using it requires the latest SDK from a beta channel. However your package using
+it doesn't have to be migrated to null-safety yet.    
+
+Please see the official 
+[null-safety migration guide](https://dart.dev/null-safety/migration-guide)
+how to switch to the latest beta release of Dart or Flutter SDKs.
+
+In the `pubspec.yaml` of your project add the dependency:
+
+```yaml
+dependencies:
+  attributes: ^0.5.0-nullsafety.0
+```
+
+All dependencies used by `attributes` are also ready for 
+[null-safety](https://dart.dev/null-safety)!
+
+## :package: Package
+
+This is a [Dart](https://dart.dev/) code package named `attributes` under the 
+[geospatial](https://github.com/navibyte/geospatial) repository. 
+
+The package is associated with (but not depending on) the
+[geocore](https://pub.dev/packages/geocore) package. The `attributes` package 
+contains non-geospatial data structures that are extended and utilized by the 
+`geocore` package to provide geospatial data structures and utilities. 
+
+## :card_file_box: Libraries
+
+The package contains following mini-libraries:
+
+Library              | Description 
+-------------------- | -----------
+**collection**       | Value accessors and property maps.
+**entity**           | Entity and Identifier data structures for handling dynamic data objects.
+**values**           | Value conversions from dynamic objects to typed values. Also helper classes.
+
+For example to access a mini library you should use an import like:
+
+```dart
+import 'package:attributes/entity.dart';
+```
+
+To use all libraries of the package:
+
+```dart
+import 'package:attributes/attributes.dart';
+```
 
 ## :house_with_garden: Authors
 

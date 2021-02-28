@@ -46,6 +46,20 @@ abstract class Bounds<T extends Point> extends Geometry
   @override
   bool get hasM => min.hasM && max.hasM;
 
+  @override
+  void writeValues(StringSink buf, {String delimiter = ','}) {
+    min.writeValues(buf, delimiter: delimiter);
+    buf.write(delimiter);
+    max.writeValues(buf, delimiter: delimiter);
+  }
+
+  @override
+  String valuesAsString({String delimiter = ','}) {
+    final buf = StringBuffer();
+    writeValues(buf, delimiter: delimiter);
+    return buf.toString();
+  }
+
   /// Returns true if this bounds intesects with [other] bounds in 2D.
   ///
   /// Only X ja Y are compared on intersection calculation.

@@ -5,6 +5,7 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import 'dart:convert';
+import 'dart:math' as math;
 
 import 'package:attributes/entity.dart';
 
@@ -77,7 +78,7 @@ class GeoJsonFactory<PointType extends Point>
     throw FormatException('Unknown encoding for GeoJSON.');
   }
 
-  Iterable _ensureDecodedList(dynamic data) {
+  List _ensureDecodedList(dynamic data) {
     if (data is String) {
       try {
         data = json.decode(data);
@@ -85,8 +86,10 @@ class GeoJsonFactory<PointType extends Point>
         throw FormatException('Unknown encoding for GeoJSON ($e).');
       }
     }
-    if (data is Iterable) {
+    if (data is List) {
       return data;
+    } else if (data is Iterable) {
+      return List.unmodifiable(data);
     }
     throw FormatException('Unknown encoding for GeoJSON.');
   }
@@ -175,23 +178,31 @@ class GeoJsonFactory<PointType extends Point>
   }
 
   @override
-  BoundedSeries<Feature<T>> featureSeries<T extends Geometry>(dynamic data) {
+  BoundedSeries<Feature<T>> featureSeries<T extends Geometry>(dynamic data,
+      {Range? range}) {
     // expects data of List as returned by json.decode()
     final json = _ensureDecodedList(data);
+
+    // figure out what range (or all) of features should be returned on a series
+    final features = _listByRange(json, range: range);
+
+    // create series of features from the range selected above and map
+    // JSON object of each feature to Feature instance
     return BoundedSeries<Feature<T>>.from(
-        json.map<Feature<T>>((f) => feature<T>(f)));
+        features.map<Feature<T>>((f) => feature<T>(f)));
   }
 
   @override
   FeatureCollection<Feature<T>> featureCollection<T extends Geometry>(
-      dynamic data) {
+      dynamic data,
+      {Range? range}) {
     // expects data of Map<String, dynamic> as returned by json.decode()
     final json = _ensureDecodedMap(data);
 
     if (json['type'] == 'Feature') {
       // just single feature, not collection, but return as a collection anyway
       return FeatureCollection<Feature<T>>.of(
-        features: BoundedSeries<Feature<T>>.from([feature<T>(json)]),
+        features: featureSeries<T>([json], range: range),
       );
     } else {
       // excepting a collection
@@ -207,11 +218,51 @@ class GeoJsonFactory<PointType extends Point>
       // create a feature collection
       return FeatureCollection<Feature<T>>.of(
         // required series of features (allowed to be empty)
-        features: featureSeries<T>(json['features']),
+        features: featureSeries<T>(json['features'], range: range),
 
         // nullable bounds object
         bounds: bbox,
       );
     }
+  }
+
+  @override
+  int featureCount(dynamic data, {Range? range}) {
+    final json = _ensureDecodedMap(data);
+    final list;
+    if (json['type'] == 'Feature') {
+      list = [json];
+    } else {
+      if (json['type'] != 'FeatureCollection') {
+        throw FormatException('Not valid GeoJSON FeatureCollection.');
+      }
+      list = json['features'];
+    }
+    return _listByRange(_ensureDecodedList(list)).length;
+  }
+
+  Iterable _listByRange(List json, {Range? range}) {
+    final items;
+    if (range != null) {
+      final count = json.length;
+      if (range.start >= count) {
+        // range is out of bounds, do not throw, just return empty set
+        items = List.empty();
+      } else {
+        final limit = range.limit;
+        if (limit != null && limit >= 0) {
+          // range by "start" (first index) and "limit" (max number of items)
+          items =
+              json.getRange(range.start, math.min(range.start + limit, count));
+        } else {
+          // range by "start" (first index) only, open ended
+          items = json.skip(range.start);
+        }
+      }
+    } else {
+      // no range set, so simple take all items json content has
+      items = json;
+    }
+    return items;
   }
 }

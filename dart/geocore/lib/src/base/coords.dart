@@ -40,6 +40,12 @@ abstract class _Coordinates extends _Measured {
 
   /// True for 3D points (that is having Z coordinate).
   bool get is3D;
+
+  /// Writes coordinate values to [buffer] delimited by [delimiter].
+  void writeValues(StringSink buffer, {String delimiter = ','});
+
+  /// Returns coordinate values as a string delimimited by [delimiter].
+  String valuesAsString({String delimiter = ','});
 }
 
 /// An interface to create [Geometry] instances of the type [T].

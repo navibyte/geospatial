@@ -4,30 +4,84 @@
 
 **Geodata** is a library package for [Dart](https://dart.dev/) and 
 [Flutter](https://flutter.dev/) mobile developers to help on accessing 
-[OGC API](https://ogcapi.ogc.org/) and other geospatial data sources. 
+[GeoJSON](https://geojson.org/) and other geospatial data sources. 
 
-Currently the package has a partial (and still quite limited) support for 
-[OGC API Features](https://ogcapi.ogc.org/features/) services with functions
-to read metadata and feature items.
+Key features:
+* Client-side data source abstractions
+  * common geospatial Web APIs
+  * geospatial feature services
+* Data source implementations to read geospatial features
+  * [GeoJSON](https://geojson.org/) features from Web APIs or files
+  * [OGC API Features](https://ogcapi.ogc.org/features/) based services
+* Also (partially) conforming to following standards
+  * [OGC API Common](https://ogcapi.ogc.org/common/)
 
-## :package: Package
+**This package is at BETA stage, interfaces not fully final yet.** 
 
-This is a [Dart](https://dart.dev/) code package named `geodata` under the 
-[geospatial](https://github.com/navibyte/geospatial) repository. 
+## :keyboard: Usage
 
-**This package is at the alpha-stage, breaking changes are possible.** 
+This sample shows to read GeoJSON features from a web resource using a HTTP 
+fetcher, and from a local file using a file fetcher.
 
-The package is associated with and depending on the
-[datatools](https://pub.dev/packages/datatools) package containing 
-non-geospatial Web API data structures and utilities that are extended
-and utilized by the `geodata` package to provide client-side access for
-geospatial APIs. 
+Please see other [examples](example/geodata_example.dart) too.
 
-This package also utilizes the [geocore](https://pub.dev/packages/geocore) 
-package for geometry, metadata and feature data structures and 
-[GeoJSON](https://geojson.org/) parser, and the 
-[attributes](https://pub.dev/packages/attributes) package for non-geospatial
-data structures. 
+```dart
+import 'package:datatools/fetch_http.dart';
+import 'package:datatools/fetch_file.dart';
+
+import 'package:geodata/geojson_features.dart';
+
+void main(List<String> args) async {
+  // read GeoJSON for earthquakes from web using HTTP fetcher
+  print('GeoJSON features from HTTP');
+  await _readFeatures(
+    HttpFetcher.simple(endpoints: [
+      Uri.parse('https://earthquake.usgs.gov/earthquakes/feed/v1.0/')
+    ]),
+    'summary/2.5_day.geojson',
+  );
+
+  // same thing but files using a file fetcher to read a local file
+  print('');
+  print('GeoJSON features from file');
+  await _readFeatures(
+    FileFetcher.basePath('test/usgs'),
+    'summary/2.5_day.geojson',
+  );
+}
+
+Future<void> _readFeatures(Fetcher client, String collectionId) async {
+  // create feature source using the given Fetch API client
+  final source = FeatureSourceGeoJSON.of(
+    client: client,
+    meta: DataSourceMeta.collectionIds([collectionId], title: 'Earthquakes'),
+  );
+
+  // read features with error handling
+  try {
+    // get items or features from collection id, maximum 5 features returned
+    final items = await source.items(
+      collectionId,
+      filter: FeatureFilter(limit: 5),
+    );
+
+    // do something with features, in this sample just print them out
+    items.features.forEach((f) {
+      print('Feature with id: ${f.id}');
+      print('  geometry: ${f.geometry}');
+      print('  properties:');
+      f.properties.map.forEach((key, value) {
+        print('    $key: $value');
+      });
+    });
+  } on OriginException catch (e) {
+    print('Origin exception: ' +
+        (e.isNotFound ? 'not found' : 'status code ${e.statusCode}'));
+  } catch (e) {
+    print('Other exception: $e');
+  }
+}
+```
 
 ## :electric_plug: Installing
 
@@ -43,35 +97,44 @@ In the `pubspec.yaml` of your project add the dependency:
 
 ```yaml
 dependencies:
-  geodata: ^0.4.1-nullsafety.0  
+  geodata: ^0.5.0-nullsafety.0  
 ```
 
-Please note that following dependencies used by `geodata` (indirect dependencies
-via [datatools](https://pub.dev/packages/datatools)) are not yet migrated
-to [null-safety](https://dart.dev/null-safety) or null-safety version is not
-depended from the `datatools` package: 
+All dependencies used by `geodata` are also ready for 
+[null-safety](https://dart.dev/null-safety)!
 
-* [http](https://pub.dev/packages/http)
-* [http_parser](https://pub.dev/packages/http_parser)
+## :package: Package
+
+This is a [Dart](https://dart.dev/) code package named `geodata` under the 
+[geospatial](https://github.com/navibyte/geospatial) repository. 
+
+The package is associated with and depending on the
+[datatools](https://pub.dev/packages/datatools) package containing 
+non-geospatial tools to fetch data from HTTP and file resources. The `geodata` 
+package then provides client-side access for geospatial APIs and data sources. 
+
+This package also utilizes the [geocore](https://pub.dev/packages/geocore) 
+package for geometry, metadata and feature data structures and 
+[GeoJSON](https://geojson.org/) parser, and the 
+[attributes](https://pub.dev/packages/attributes) package for non-geospatial
+data structures. 
 
 ## :card_file_box: Libraries
 
 The package contains following mini-libraries:
 
-Library                  | Description 
------------------------- | -----------
-**model_base**           | Data structures for client access of generic Web API clients.
-**model_common**         | Data structures for client access of common geospatial Web APIs.
-**model_features**       | Data structures for client access of "geospatial features" Web APIs.
-**provider_common**      | An abstract client-side data provider to read common geospatial Web APIs.
-**provider_features**    | An abstract client-side data provider to read "geospatial features" APIs.
-**source_oapi_common**   | An abstract client-side data provider to read OGC API Common services.
-**source_oapi_features** | A client-side data provider to read services conforming to OGC API Features.
+Library               | Description 
+----------------------| -----------
+**api_common**        | Data source abstraction for client access of common geospatial Web APIs.
+**api_features**      | Data source abstraction for client access of geospatial features Web APIs.
+**geojson_features**  | A client-side data source to read [GeoJSON](https://geojson.org/) features from a Web API or files.
+**oapi_common**       | Data source abstraction for client access of [OGC API Common](https://ogcapi.ogc.org/common/) based services.
+**oapi_features**     | A client-side data source to read features from [OGC API Features](https://ogcapi.ogc.org/features/) services.
 
 For example to access a mini library you should use an import like:
 
 ```dart
-import 'package:geodata/source_oapi_features.dart';
+import 'package:geodata/oapi_features.dart';
 ```
 
 To use all libraries of the package:
@@ -79,62 +142,6 @@ To use all libraries of the package:
 ```dart
 import 'package:geodata/geodata.dart';
 ```
-
-## :keyboard: Usage
-
-An example how to setup an API client and a provider for 
-[OGC API Features](https://ogcapi.ogc.org/features/) service.
-
-Imports:
-
-```dart
-import 'package:datatools/datatools.dart';
-import 'package:geodata/geodata.dart';
-```
-
-Setting up an API client and a feature provider:
-
-```dart
-// Create an API client accessing HTTP endpoints.
-final client = HttpApiClient.endpoints([
-  Endpoint.url(baseURL),
-]);
-
-// Create a feature provider for OGC API Features (OAPIF).
-final provider = FeatureProviderOAPIF.client(client);
-```
-
-Now it's possible to access metadata (the provider implementation calls 
-a landing page or '/', '/conformance' and '/collections' resources under a
-base URL and combines all metadata fetched):
-
-```dart
-// Read metadata 
-final meta = await provider.meta();
-
-// do something with meta data accessed
-```
-
-Fetching items (or features of a OGC API Features service) as paged sets:
-
-```dart
-// Get feature resource for a collection by id
-final resource = await provider.collection(collectionId);
-
-// fetch feature items as paged results with max 10 features on one query
-final items1 = await resource.itemsPaged(FeatureFilter(limit: 10));
-
-// do something with feature items fetched
-
-// check for next set (of max 10 features) and fetch it too if available
-if (items1.hasNext) {
-  final items2 = await items1.next();
-
-  // do something with next set of feature items fetched
-}
-```
-
-Please see full [example code](example/geodata_example.dart) for more details.
 
 ## :house_with_garden: Authors
 

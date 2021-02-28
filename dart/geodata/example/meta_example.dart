@@ -6,18 +6,17 @@
 
 import 'package:equatable/equatable.dart';
 
-import 'package:datatools/client_base.dart';
-import 'package:datatools/client_http.dart';
+import 'package:datatools/fetch_http.dart';
 
-import 'package:geodata/model_common.dart';
-import 'package:geodata/source_oapi_features.dart';
+import 'package:geodata/geojson_features.dart';
+import 'package:geodata/oapi_features.dart';
 
 /*
 To test run this from command line: 
 
-dart --no-sound-null-safety example/meta_example.dart https://demo.pygeoapi.io/master
-dart --no-sound-null-safety example/meta_example.dart https://www.ldproxy.nrw.de/kataster
-dart --no-sound-null-safety example/meta_example.dart https://weather.obs.fmibeta.com
+dart example/meta_example.dart https://demo.pygeoapi.io/master/
+dart example/meta_example.dart https://www.ldproxy.nrw.de/kataster/
+dart example/meta_example.dart https://weather.obs.fmibeta.com/
 
 */
 
@@ -30,7 +29,7 @@ void main(List<String> args) async {
   for (var baseURL in args) {
     try {
       final meta = await _readMeta(baseURL);
-      _printProvider(meta);
+      _printSource(meta);
     } catch (e, st) {
       print('Calling $baseURL failed: $e');
       print(st);
@@ -38,26 +37,34 @@ void main(List<String> args) async {
   }
 }
 
-Future<ProviderMeta> _readMeta(String baseURL) async {
-  // Create an API client accessing HTTP endpoints.
-  final client = HttpApiClient.endpoints([
-    Endpoint.url(baseURL),
-  ]);
-
-  // Create a feature provider for OGC API Features (OAPIF).
-  final provider = FeatureProviderOAPIF.client(client);
+Future<DataSourceMeta> _readMeta(String baseURL) async {
+  // Create a feature provider for OGC API Features (OAPIF) using an API
+  // client accessing an HTTP endpoint.
+  final provider = FeatureServiceOAPIF.of(
+    client: HttpFetcher.simple(
+      endpoints: [Uri.parse(baseURL)],
+    ),
+  );
 
   // Read metadata
   return provider.meta();
 }
 
-void _printProvider(ProviderMeta meta) {
+void _printSource(DataSourceMeta meta) {
   print('');
   print('*****');
-  print(meta.title);
-  if (meta.description != null) print('  ${meta.description}');
-  print('  BaseURL: ${meta.links.byRel('self')?.href}');
-  print('  API description: ${meta.links.serviceDesc()?.href}');
+  _printResource(meta);
+  final links = meta.links;
+  if (links.self().isNotEmpty) {
+    print('  BaseURL: ${links.self().first.href}');
+  }
+  var service = links.serviceDesc();
+  if (service.isEmpty) {
+    service = links.service();
+  }
+  if (service.isNotEmpty) {
+    print('  API description: ${service.first.href}');
+  }
   print('');
   print('Conformance classes:');
   meta.conformance.forEach((e) => print('  $e'));
@@ -69,8 +76,7 @@ void _printProvider(ProviderMeta meta) {
 }
 
 void _printCollection(CollectionMeta meta) {
-  print('  ${meta.id} (${meta.title})');
-  if (meta.description != null) print('    ${meta.description}');
+  _printResource(meta);
   final extent = meta.extent;
   if (extent != null) {
     print('    extent crs: ${extent.crs.id}');
@@ -84,4 +90,13 @@ void _printCollection(CollectionMeta meta) {
       }
     }
   }
+}
+
+void _printResource(ResourceMeta meta) {
+  if (meta is CollectionMeta) {
+    print('  ${meta.id} (${meta.title})');
+  } else {
+    print('  ${meta.title}');
+  }
+  if (meta.description != null) print('    ${meta.description}');
 }

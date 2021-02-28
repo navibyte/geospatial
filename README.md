@@ -1,6 +1,6 @@
-# :compass: Geospatial toolkit for Dart 
+# :compass: Geospatial tools for Dart 
 
-[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause) [![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/navibyte.svg?style=social&label=Follow%20%40navibyte)](https://twitter.com/navibyte)
 
 **Geospatial** data structures, tools and utilities for 
 [Dart](https://dart.dev/) and [Flutter](https://flutter.dev/) mobile developers.
@@ -13,7 +13,7 @@ Latest package releases:
 Package @ pub.dev | Version | Documentation | Example code 
 ----------------- | --------| ------------- | -----------
 :spiral_notepad: [attributes](https://pub.dev/packages/attributes) | [![pub package](https://img.shields.io/pub/v/attributes.svg)](https://pub.dev/packages/attributes) | [API reference](https://pub.dev/documentation/attributes/latest/) | [Example](https://pub.dev/packages/attributes/example)
-:cloud: [datatools](https://pub.dev/packages/datatools) | [![pub package](https://img.shields.io/pub/v/datatools.svg)](https://pub.dev/packages/datatools) | [API reference](https://pub.dev/documentation/datatools/latest/) | 
+:cloud: [datatools](https://pub.dev/packages/datatools) | [![pub package](https://img.shields.io/pub/v/datatools.svg)](https://pub.dev/packages/datatools) | [API reference](https://pub.dev/documentation/datatools/latest/) | [Example](https://pub.dev/packages/datatools/example)
 :globe_with_meridians: [geocore](https://pub.dev/packages/geocore) | [![pub package](https://img.shields.io/pub/v/geocore.svg)](https://pub.dev/packages/geocore) | [API reference](https://pub.dev/documentation/geocore/latest/) | [Example](https://pub.dev/packages/geocore/example)
 :earth_americas: [geodata](https://pub.dev/packages/geodata) | [![pub package](https://img.shields.io/pub/v/geodata.svg)](https://pub.dev/packages/geodata) | [API reference](https://pub.dev/documentation/geodata/latest/) | [Example](https://pub.dev/packages/geodata/example)
 
@@ -25,7 +25,7 @@ Please see the official
 [null-safety migration guide](https://dart.dev/null-safety/migration-guide)
 how to switch to the latest beta release of Dart or Flutter SDKs.
 
-## Code
+## :page_facing_up: Code
 
 **This repository is at the alpha-stage, breaking changes are possible.**
 
@@ -34,10 +34,42 @@ packages:
 
 Code @ GitHub | SDK | Description 
 ------------- | --- | -----------
-:spiral_notepad: [attributes](dart/attributes) | Dart | Data structures and utilities for identifiers, value maps and dynamic data objects.
-:cloud: [datatools](dart/datatools) | Dart | Metadata structures and utilities to access Web APIs.
+:spiral_notepad: [attributes](dart/attributes) | Dart | Data structures and utilities for values, identifiers and entities.
+:cloud: [datatools](dart/datatools) | Dart | Utilities to fetch data from HTTP and file resources and other data sources.
 :globe_with_meridians: [geocore](dart/geocore) | Dart | Geospatial data structures (features, geometry and metadata) and utilities ([GeoJSON](https://geojson.org/) parser). 
-:earth_americas: [geodata](dart/geodata) | Dart | A geospatial client reading [OGC API](https://ogcapi.ogc.org/) and other data sources.
+:earth_americas: [geodata](dart/geodata) | Dart | A geospatial client to read ([GeoJSON](https://geojson.org/) and other geospatial data sources. 
+
+## :newspaper_roll: News
+
+2021-02-28 
+* the first alpha version 0.5.0-nullsafety.0
+* preparing to stabilize null-safety features as described by the official blog:
+  * [Preparing the Dart and Flutter ecosystem for null safety](https://medium.com/dartlang/preparing-the-dart-and-flutter-ecosystem-for-null-safety-e550ce72c010)
+* [datatools](https://pub.dev/packages/datatools) totally refactored
+  * Fetch API abstraction (content, control data, exceptions, fetch interface).
+  * Fetch API binding to HTTP and HTTPS resources (using [http](https://pub.dev/packages/http)).
+  * Fetch API binding to file resources (based on `dart:io`).
+* [geodata](https://pub.dev/packages/geodata) also refactored, now with data source implementations:
+  * [GeoJSON](https://geojson.org/) features from Web APIs or files
+  * [OGC API Features](https://ogcapi.ogc.org/features/) based services
+* other cleanup on other packages too
+
+2021-01-10 
+* latest alpha version 0.4.1-nullsafety.0
+* Point classes in [geocore](dart/geocore) refactored to have `num` getters 
+
+2021-01-05 
+* alpha version 0.4.0-nullsafety.0
+* refactored some code to new packages:
+  * [attributes](https://pub.dev/packages/attributes)
+  * [datatools](https://pub.dev/packages/datatools)
+
+2020-11-29 
+* initial alpha version 0.1.0-nullsafety.0
+* designed to Dart [null-safety](https://dart.dev/null-safety) from start
+* the first version with following packages
+  * [geocore](https://pub.dev/packages/geocore)
+  * [geodata](https://pub.dev/packages/geodata)
 
 ## :house_with_garden: Authors
 
@@ -84,6 +116,7 @@ Packages
 Null-safety:
 * Dart [null-safety](https://dart.dev/null-safety)
 * The official [null-safety migration guide](https://dart.dev/null-safety/migration-guide)
+* [Preparing the Dart and Flutter ecosystem for null safety](https://medium.com/dartlang/preparing-the-dart-and-flutter-ecosystem-for-null-safety-e550ce72c010)
 
 Guidelines
 * [Effective Dart](https://dart.dev/guides/language/effective-dart)
@@ -106,4 +139,5 @@ Package @ pub.dev | Code @ GitHub | Description
 [http_parser](https://pub.dev/packages/http_parser) | [dart-lang/http_parser](https://github.com/dart-lang/http_parser) | A platform-independent Dart package for parsing and serializing HTTP formats.
 [intl](https://pub.dev/packages/intl) | [dart-lang/intl](https://github.com/dart-lang/intl) | Internationalization and localization support.
 [meta](https://pub.dev/packages/meta) | [dart-lang/sdk](https://github.com/dart-lang/sdk/tree/master/pkg/meta) | This package defines annotations that can be used by the tools that are shipped with the Dart SDK.
+[path](https://pub.dev/packages/path) | [dart-lang/path](https://github.com/dart-lang/path) | A string-based path manipulation library.
 [synchronized](https://pub.dev/packages/synchronized) | [tekartik/synchronized.dart](https://github.com/tekartik/synchronized.dart/tree/master/synchronized) | Basic lock mechanism to prevent concurrent access to asynchronous code.

@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// Data structures for identifiers, value maps and dynamic data objects.
+/// Data structures and utilities for values, identifiers and entities.
 ///
 /// Usage: import `package:attributes/attributes.dart`
 library attributes;

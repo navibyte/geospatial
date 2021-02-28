@@ -1,3 +1,31 @@
+## 0.5.0-nullsafety.0
+
+- BETA version 0.5.0 with breaking changes compared to 0.4.1
+- Quite extensive refactoring and partially fully rewritten
+- [Resource metadata domain model in "geodata" package #18](https://github.com/navibyte/geospatial/issues/18)
+- [Client-side support for calling reading GeoJSON web or file resource #10](https://github.com/navibyte/geospatial/issues/10)
+- Mini-libraries provided by the package refactored:
+  - api_common
+    - Data source abstraction for client access of common geospatial Web APIs.
+  - api_features
+    - Data source abstraction for client access of geospatial features Web APIs.
+  - geojson_features
+    - A client-side data source to read GeoJSON features from a Web API or files.
+  - oapi_common
+    - Data source abstraction for client access of OGC API Common based services.
+  - oapi_features
+    - A client-side data source to read features from OGC API Features services.
+- Code also restructured under lib/src
+  - api
+    - base
+    - common
+    - features
+  - geojson
+    - features
+  - oapi
+    - common
+    - features
+ 
 ## 0.4.1-nullsafety.0
 
 - Alpha version 0.4.1 with minor feature/private code changes compared to 0.4.0

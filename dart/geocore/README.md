@@ -48,66 +48,7 @@ Key features:
 * Geospatial data parsers
   * Implementation to parse GeoJSON from text strings.
 
-## :package: Package
-
-This is a [Dart](https://dart.dev/) code package named `geocore` under the 
-[geospatial](https://github.com/navibyte/geospatial) repository. 
-
-**This package is at the alpha-stage, breaking changes are possible.** 
-
-The package is associated with and depending on the 
-[attributes](https://pub.dev/packages/attributes) package containing 
-non-geospatial data structures that are extended and utilized by the 
-`geocore` to provide geospatial data structures and utilities. 
-
-The package is used by the [geodata](https://pub.dev/packages/geodata) package
-that provides a geospatial client for fetching data from different data sources.
-
-## :electric_plug: Installing
-
-The package supports Dart [null-safety](https://dart.dev/null-safety) and 
-using it requires the latest SDK from a beta channel. However your package using
-it doesn't have to be migrated to null-safety yet.    
-
-Please see the official 
-[null-safety migration guide](https://dart.dev/null-safety/migration-guide)
-how to switch to the latest beta release of Dart or Flutter SDKs.
-
-In the `pubspec.yaml` of your project add the dependency:
-
-```yaml
-dependencies:
-  geocore: ^0.4.1-nullsafety.0
-```
-
-All dependencies used by `geocore` are also ready for 
-[null-safety](https://dart.dev/null-safety)!
-
-## :card_file_box: Libraries
-
-The package contains following mini-libraries:
-
-Library              | Description 
--------------------- | -----------
-**base**             | Geometry classes including points, bounds, line strings, polygons and more.
-**crs**              | Classes to represent coordinate reference system (CRS) identifiers.
-**feature**          | Feature and FeatureCollection to handle dynamic geospatial data objects.
-**geo**              | Geographic points and bounds classes to represent longitude-latitude data
-**meta_extent**      | Metadata structures to handle extents with spatial and temporal parts.
-**parse_factory**    | Base interfaces and implementations for geospatial data factories.
-**parse_geojson**    | Geospatial data factory implementation to parse GeoJSON from text strings.
-
-For example to access a mini library you should use an import like:
-
-```dart
-import 'package:geocore/base.dart';
-```
-
-To use all libraries of the package:
-
-```dart
-import 'package:geocore/geocore.dart';
-```
+**This package is at BETA stage, interfaces not fully final yet.** 
 
 ## :keyboard: Usage
 
@@ -210,6 +151,65 @@ use cases.
 When geospatial geometries and features are not needed, then 
 the [attributes](https://pub.dev/packages/attributes) package might be 
 useful for representing dynamic data objects, property maps and identifiers. 
+
+## :electric_plug: Installing
+
+The package supports Dart [null-safety](https://dart.dev/null-safety) and 
+using it requires the latest SDK from a beta channel. However your package using
+it doesn't have to be migrated to null-safety yet.    
+
+Please see the official 
+[null-safety migration guide](https://dart.dev/null-safety/migration-guide)
+how to switch to the latest beta release of Dart or Flutter SDKs.
+
+In the `pubspec.yaml` of your project add the dependency:
+
+```yaml
+dependencies:
+  geocore: ^0.5.0-nullsafety.0
+```
+
+All dependencies used by `geocore` are also ready for 
+[null-safety](https://dart.dev/null-safety)!
+
+## :package: Package
+
+This is a [Dart](https://dart.dev/) code package named `geocore` under the 
+[geospatial](https://github.com/navibyte/geospatial) repository. 
+
+The package is associated with and depending on the 
+[attributes](https://pub.dev/packages/attributes) package containing 
+non-geospatial data structures that are extended and utilized by the 
+`geocore` to provide geospatial data structures and utilities. 
+
+The package is used by the [geodata](https://pub.dev/packages/geodata) package
+that provides a geospatial client for fetching data from different data sources.
+
+## :card_file_box: Libraries
+
+The package contains following mini-libraries:
+
+Library              | Description 
+-------------------- | -----------
+**base**             | Geometry classes including points, bounds, line strings, polygons and more.
+**crs**              | Classes to represent coordinate reference system (CRS) identifiers.
+**feature**          | Feature and FeatureCollection to handle dynamic geospatial data objects.
+**geo**              | Geographic points and bounds classes to represent longitude-latitude data
+**meta_extent**      | Metadata structures to handle extents with spatial and temporal parts.
+**parse_factory**    | Base interfaces and implementations for geospatial data factories.
+**parse_geojson**    | Geospatial data factory implementation to parse GeoJSON from text strings.
+
+For example to access a mini library you should use an import like:
+
+```dart
+import 'package:geocore/base.dart';
+```
+
+To use all libraries of the package:
+
+```dart
+import 'package:geocore/geocore.dart';
+```
 
 ## :house_with_garden: Authors
 

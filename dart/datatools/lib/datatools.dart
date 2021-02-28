@@ -4,10 +4,20 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// Metadata structures and utilities to access Web APIs and other data sources.
+/// Fetch API abstraction with binding to HTTP and HTTPS resources.
+///
+/// Usage: import `package:datatools/datatools.dart`
+///
+/// Exports following mini-libraries at once:
+/// - `package:datatools/fetch_api.dart`
+/// - `package:datatools/fetch_http.dart`
+/// - `package:datatools/meta_link.dart`
+///
+/// However does NOT export the following (that must be imported explicitely):
+/// - `package:datatools/fetch_file.dart`
 library datatools;
 
 // Export mini-libraries forming the whole "datatools" library.
-export 'client_base.dart';
-export 'client_http.dart';
+export 'fetch_api.dart';
+export 'fetch_http.dart';
 export 'meta_link.dart';

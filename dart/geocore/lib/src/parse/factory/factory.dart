@@ -7,6 +7,8 @@
 import '../../base.dart';
 import '../../feature.dart';
 
+import 'range.dart';
+
 /// A function to parse bounds from [coords] and using [pointFactory].
 ///
 /// Throws FormatException if cannot create bounds.
@@ -44,13 +46,20 @@ abstract class GeoFactory {
   /// Parses a series of features from a [data] object.
   ///
   /// Throws FormatException if parsing fails.
-  BoundedSeries<Feature<T>> featureSeries<T extends Geometry>(dynamic data);
+  BoundedSeries<Feature<T>> featureSeries<T extends Geometry>(dynamic data,
+      {Range? range});
 
   /// Parses a feature collection from a [data] object.
   ///
   /// Throws FormatException if parsing fails.
   FeatureCollection<Feature<T>> featureCollection<T extends Geometry>(
-      dynamic data);
+      dynamic data,
+      {Range? range});
+
+  /// Count number of features on a collection parsed from a [data] object.
+  ///
+  /// Throws FormatException if parsing fails.
+  int featureCount(dynamic data, {Range? range});
 }
 
 /// A base implementation of [GeoFactory] with point and feature factories.

@@ -1,6 +1,6 @@
 name: geodata
-description: A geospatial client reading OGC API and other geospatial data sources.   
-version: 0.4.1-nullsafety.0
+description: A geospatial client to read GeoJSON and other geospatial data sources.   
+version: 0.5.0-nullsafety.0
 repository: https://github.com/navibyte/geospatial
 homepage: https://github.com/navibyte/geospatial/tree/main/dart/geodata
 
@@ -9,21 +9,26 @@ environment:
 
 dependencies:
   equatable: ^2.0.0-nullsafety.0
-  meta: ^1.3.0-nullsafety.6
-  synchronized: ^3.0.0-nullsafety.1
+  meta: ^1.3.0
+  synchronized: ^3.0.0
 
-  attributes: ^0.4.0-nullsafety.0
+  #meta: ^1.3.0-nullsafety.6
+  #synchronized: ^3.0.0-nullsafety.1
+
+  attributes: ^0.5.0-nullsafety.0
   #attributes: 
   #  path: ../attributes
 
-  datatools: ^0.4.0-nullsafety.0
+  datatools: ^0.5.0-nullsafety.0
   #datatools: 
   #  path: ../datatools
 
-  geocore: ^0.4.1-nullsafety.0
+  geocore: ^0.5.0-nullsafety.0
   #geocore: 
   #  path: ../geocore
 
 dev_dependencies:
-  pedantic: ^1.10.0-nullsafety.3
-  test: ^1.16.0-nullsafety.12
+  pedantic: ^1.10.0
+  test: ^1.16.4
+  #pedantic: ^1.10.0-nullsafety.3
+  #test: ^1.16.0-nullsafety.12

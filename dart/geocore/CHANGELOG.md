@@ -1,3 +1,9 @@
+## 0.5.0-nullsafety.0
+
+- BETA version 0.5.0 with (relative small) breaking changes compared to 0.4.1
+- Enhancing geospatial data factories, for example range filter
+- Bounds and Point with new methods: writeValues and valuesAsString
+
 ## 0.4.1-nullsafety.0
 
 - Alpha version 0.4.1 with minor feature changes compared to 0.4.0

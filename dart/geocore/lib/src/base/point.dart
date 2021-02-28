@@ -79,6 +79,21 @@ abstract class Point<C extends num> extends Geometry
       return 0.0 as C;
     }
   }
+
+  @override
+  void writeValues(StringSink buf, {String delimiter = ','}) {
+    for (var i = 0; i < coordinateDimension; i++) {
+      if (i > 0) buf.write(delimiter);
+      buf.write(this[i]);
+    }
+  }
+
+  @override
+  String valuesAsString({String delimiter = ','}) {
+    final buf = StringBuffer();
+    writeValues(buf, delimiter: delimiter);
+    return buf.toString();
+  }
 }
 
 /// A private implementation for an empty point with coordinate zero values.

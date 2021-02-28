@@ -8,24 +8,24 @@ import 'package:equatable/equatable.dart';
 
 import 'package:attributes/entity.dart';
 import 'package:attributes/values.dart';
-import 'package:datatools/client_base.dart';
-import 'package:datatools/client_http.dart';
+import 'package:datatools/fetch_http.dart';
 import 'package:geocore/geo.dart';
 import 'package:geocore/feature.dart';
 
-import 'package:geodata/model_features.dart';
-import 'package:geodata/source_oapi_features.dart';
+import 'package:geodata/geojson_features.dart';
+import 'package:geodata/oapi_features.dart';
 
 /*
 To test run this from command line: 
 
-dart --no-sound-null-safety example/geodata_example.dart https://demo.pygeoapi.io/master lakes 2 items
-dart --no-sound-null-safety example/geodata_example.dart https://demo.pygeoapi.io/master lakes 2 items id 3
-dart --no-sound-null-safety example/geodata_example.dart https://www.ldproxy.nrw.de/kataster verwaltungseinheit 2 items bbox 7,50.6,7.2,50.8
-dart --no-sound-null-safety example/geodata_example.dart https://weather.obs.fmibeta.com fmi_aws_observations 2 items bbox 23,62,24,63
+GeoJSON (file) resource as a data source:
+dart example/geodata_example.dart geojson https://earthquake.usgs.gov/earthquakes/feed/v1.0/ summary/2.5_day.geojson 3 items
 
-Please not that even if this package is null-safe, some dependencies are not 
-yet. So running code from the package is not sound-null-safe.
+OGC API Features data sources:
+dart example/geodata_example.dart oapif https://demo.pygeoapi.io/master/ lakes 2 items
+dart example/geodata_example.dart oapif https://demo.pygeoapi.io/master/ lakes 2 items id 3
+dart example/geodata_example.dart oapif https://www.ldproxy.nrw.de/kataster/ verwaltungseinheit 2 items bbox 7,50.6,7.2,50.8
+dart example/geodata_example.dart oapif https://weather.obs.fmibeta.com/ fmi_aws_observations 2 items bbox 23,62,24,63
 
 More demo APIs (however this page seems to be somewhat outdated, be careful!):
 https://github.com/opengeospatial/ogcapi-features/blob/master/implementations.md
@@ -41,32 +41,34 @@ void main(List<String> args) async {
   EquatableConfig.stringify = true;
 
   // check enough args
-  if (args.length < 2) {
+  if (args.length < 3) {
     print(
-        'Args: {baseUrl} {collectionIds} [limit] [operation] [param] [value]');
+        'Args: {source} {baseUrl} {collectionIds} [limit] [operation] [param] [value]');
+    print('Allowed sources: oapif, geojson');
     return;
   }
 
   // parse args
-  final baseURL = args[0];
-  final collectionIds = args[1].split(',');
-  final limit = args.length >= 3 ? int.tryParse(args[2]) ?? -1 : _defaultLimit;
-  final operation = args.length >= 4 ? args[3] : _defaultOperation;
+  final sourceType = args[0];
+  final baseURL = args[1];
+  final collectionIds = args[2].split(',');
+  final limit = args.length >= 4 ? int.tryParse(args[3]) : _defaultLimit;
+  final operation = args.length >= 5 ? args[4] : _defaultOperation;
   var maxPagedResults = _defaultMaxPagedResults;
   var filter = FeatureFilter(
     limit: limit,
   );
-  if (args.length >= 6) {
-    switch (args[4]) {
+  if (args.length >= 7) {
+    switch (args[5]) {
       case 'id':
         filter = FeatureFilter(
           limit: limit,
-          id: Identifier.fromString(args[5]),
+          id: Identifier.fromString(args[6]),
         );
         maxPagedResults = 1;
         break;
       case 'bbox':
-        final bbox = args[5].split(',');
+        final bbox = args[6].split(',');
         if (bbox.length == 4 || bbox.length == 6) {
           filter = FeatureFilter(
             limit: limit,
@@ -78,26 +80,43 @@ void main(List<String> args) async {
   }
 
   try {
-    // Create an API client accessing HTTP endpoints.
-    final client = HttpApiClient.endpoints([
-      Endpoint.url(baseURL),
-    ]);
+    // Create a fetcher to read data from an endpoint.
+    final client = HttpFetcher.simple(
+      endpoints: [Uri.parse(baseURL)],
+    );
 
-    // Create a feature provider for OGC API Features (OAPIF).
-    final provider = FeatureProviderOAPIF.client(client);
+    // Create a feature source for plain GeoJSON or OGC API Features (OAPIF)
+    final FeatureSource source;
+    switch (sourceType) {
+      case 'geojson':
+        // GeoJSON source for a plain resource (the resource provides only
+        // items, metadata is setup here as statically)
+        source = FeatureSourceGeoJSON.of(
+            client: client,
+            meta: DataSourceMeta.collectionIds(
+              collectionIds,
+              title: 'Sample GeoJSON service',
+            ));
+        break;
+      case 'oapif':
+        // OGC API Features source (the service provides both meta and items)
+        source = FeatureServiceOAPIF.of(
+          client: client,
+        );
+        break;
+      default:
+        throw ArgumentError('Unknow source type $sourceType');
+    }
 
     // Loop over all collections
     for (var collectionId in collectionIds) {
-      // Get feature resource for a collection by id
-      final resource = await provider.collection(collectionId);
-
       // Execute an operation
       switch (operation) {
         case 'items':
           // fetch feature items as paged results, max rounds by maxPagedResults
           var round = 0;
           var available = true;
-          var items = await resource.itemsPaged(filter: filter);
+          var items = await source.itemsPaged(collectionId, filter: filter);
           do {
             _printFeatures(items.current);
             if (items.hasNext) {

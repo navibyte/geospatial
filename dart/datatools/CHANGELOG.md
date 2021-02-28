@@ -1,3 +1,35 @@
+## 0.5.0-nullsafety.0
+
+- BETA version 0.5.0 with breaking changes compared to 0.4.0
+- Quite extensive refactoring and partially fully rewritten
+- New dependency: `path` (^1.8.0-nullsafety.3)
+- Changed dependency: `http_parser` (^4.0.0-nullsafety)
+- Changed dependency: `http` (^0.13.0-nullsafety.0)
+- [Link meta data lists #17](https://github.com/navibyte/geospatial/issues/17)
+- [Client-side support for calling reading GeoJSON web or file resource #10](https://github.com/navibyte/geospatial/issues/10)
+- Mini-libraries provided by the package refactored:
+  - fetch_api
+    - Fetch API abstraction (content, control data, exceptions, fetch interface).
+  - fetch_file
+    - Fetch API binding to file resources.
+  - fetch_http
+    - Fetch API binding to HTTP and HTTPS resources.
+  - meta_link
+    - Metadata structures to handle links.
+- Code also restructured under lib/src
+  - api
+    - content
+    - control
+    - exceptions
+    - fetch
+    - resolver
+  - file
+    - fetch
+  - http
+    - fetch
+  - meta
+    - link
+          
 ## 0.4.0-nullsafety.0
 
 - Initial alpha version 0.4.0 (version starting with aligment to other packages)

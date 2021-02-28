@@ -1,3 +1,7 @@
+## 0.5.0-nullsafety.0
+
+- BETA version 0.5.0 without any breaking changes compared to 0.4.0
+
 ## 0.4.0-nullsafety.0
 
 - Initial alpha version 0.4.0 (version starting with aligment to other packages)
