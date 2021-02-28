@@ -27,7 +27,7 @@ how to switch to the latest beta release of Dart or Flutter SDKs.
 
 ## :page_facing_up: Code
 
-**This repository is at the alpha-stage, breaking changes are possible.**
+**This repository is at BETA stage, interfaces not fully final yet.** 
 
 This repository contains the following [Dart](https://dart.dev/) code 
 packages:
@@ -36,13 +36,13 @@ Code @ GitHub | SDK | Description
 ------------- | --- | -----------
 :spiral_notepad: [attributes](dart/attributes) | Dart | Data structures and utilities for values, identifiers and entities.
 :cloud: [datatools](dart/datatools) | Dart | Utilities to fetch data from HTTP and file resources and other data sources.
-:globe_with_meridians: [geocore](dart/geocore) | Dart | Geospatial data structures (features, geometry and metadata) and utilities ([GeoJSON](https://geojson.org/) parser). 
+:globe_with_meridians: [geocore](dart/geocore) | Dart | Geospatial data structures (features, geometry and metadata) and utilities [GeoJSON](https://geojson.org/) parser). 
 :earth_americas: [geodata](dart/geodata) | Dart | A geospatial client to read ([GeoJSON](https://geojson.org/) and other geospatial data sources. 
 
 ## :newspaper_roll: News
 
 2021-02-28 
-* the first alpha version 0.5.0-nullsafety.0
+* the first BETA version 0.5.0
 * preparing to stabilize null-safety features as described by the official blog:
   * [Preparing the Dart and Flutter ecosystem for null safety](https://medium.com/dartlang/preparing-the-dart-and-flutter-ecosystem-for-null-safety-e550ce72c010)
 * [datatools](https://pub.dev/packages/datatools) totally refactored
@@ -55,17 +55,17 @@ Code @ GitHub | SDK | Description
 * other cleanup on other packages too
 
 2021-01-10 
-* latest alpha version 0.4.1-nullsafety.0
+* latest alpha version 0.4.1
 * Point classes in [geocore](dart/geocore) refactored to have `num` getters 
 
-2021-01-05 
-* alpha version 0.4.0-nullsafety.0
+2021-01-03 
+* alpha version 0.4.0
 * refactored some code to new packages:
   * [attributes](https://pub.dev/packages/attributes)
   * [datatools](https://pub.dev/packages/datatools)
 
 2020-11-29 
-* initial alpha version 0.1.0-nullsafety.0
+* initial alpha version 0.1.0
 * designed to Dart [null-safety](https://dart.dev/null-safety) from start
 * the first version with following packages
   * [geocore](https://pub.dev/packages/geocore)
