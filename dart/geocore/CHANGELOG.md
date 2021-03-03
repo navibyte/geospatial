@@ -1,3 +1,7 @@
+## 0.5.0
+
+- BETA version 0.5.0 with stable null-safety requiring the stable Dart 2.12
+
 ## 0.5.0-nullsafety.0
 
 - BETA version 0.5.0 with (relative small) breaking changes compared to 0.4.1

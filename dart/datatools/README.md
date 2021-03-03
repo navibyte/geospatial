@@ -1,4 +1,4 @@
-# :cloud: Datatools
+# Datatools
 
 [![pub package](https://img.shields.io/pub/v/datatools.svg)](https://pub.dev/packages/datatools) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
@@ -14,7 +14,7 @@ Key features:
 
 **This package is at BETA stage, interfaces not fully final yet.** 
 
-## :keyboard: Usage
+## Usage
 
 Please, see more detailed examples on 
 [sample code](example/datatools_example.dart).
@@ -44,27 +44,25 @@ Setting up a HTTP fetcher, fetching JSON, and also handling errors:
   }
 ```
 
-## :electric_plug: Installing
+## Installing
 
 The package supports Dart [null-safety](https://dart.dev/null-safety) and 
-using it requires the latest SDK from a beta channel. However your package using
-it doesn't have to be migrated to null-safety yet.    
-
-Please see the official 
-[null-safety migration guide](https://dart.dev/null-safety/migration-guide)
-how to switch to the latest beta release of Dart or Flutter SDKs.
+using it requires at least
+[Dart 2.12](https://medium.com/dartlang/announcing-dart-2-12-499a6e689c87)
+from the stable channel. Please see the official 
+[null-safety migration guide](https://dart.dev/null-safety/migration-guide).
 
 In the `pubspec.yaml` of your project add the dependency:
 
 ```yaml
 dependencies:
-  datatools: ^0.5.0-nullsafety.0  
+  datatools: ^0.5.0  
 ```
 
 All dependencies used by `datatools` are also ready for 
 [null-safety](https://dart.dev/null-safety)!
 
-## :package: Package
+## Package
 
 This is a [Dart](https://dart.dev/) code package named `datatools` under the 
 [geospatial](https://github.com/navibyte/geospatial) repository. 
@@ -75,7 +73,7 @@ contains non-geospatial tools to fetch data from HTTP and file resources. The
 `geodata` package then provides client-side access for geospatial APIs and data
 sources. 
 
-## :card_file_box: Libraries
+## Libraries
 
 The package contains following mini-libraries:
 
@@ -102,14 +100,14 @@ package:
 import 'package:datatools/datatools.dart';
 ```
 
-## :house_with_garden: Authors
+## Authors
 
 This project is authored by [Navibyte](https://navibyte.com).
 
 More information and other links are available at the
 [geospatial](https://github.com/navibyte/geospatial) repository from GitHub. 
 
-## :copyright: License
+## License
 
 This project is licensed under the "BSD-3-Clause"-style license.
 

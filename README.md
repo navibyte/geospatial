@@ -17,13 +17,11 @@ Package @ pub.dev | Version | Documentation | Example code
 :globe_with_meridians: [geocore](https://pub.dev/packages/geocore) | [![pub package](https://img.shields.io/pub/v/geocore.svg)](https://pub.dev/packages/geocore) | [API reference](https://pub.dev/documentation/geocore/latest/) | [Example](https://pub.dev/packages/geocore/example)
 :earth_americas: [geodata](https://pub.dev/packages/geodata) | [![pub package](https://img.shields.io/pub/v/geodata.svg)](https://pub.dev/packages/geodata) | [API reference](https://pub.dev/documentation/geodata/latest/) | [Example](https://pub.dev/packages/geodata/example)
 
-All packages supports Dart [null-safety](https://dart.dev/null-safety) and using
-them requires the latest SDK from a beta channel. However your package using
-them doesn't have to be migrated to null-safety yet.    
-
-Please see the official 
-[null-safety migration guide](https://dart.dev/null-safety/migration-guide)
-how to switch to the latest beta release of Dart or Flutter SDKs.
+All packages supports Dart [null-safety](https://dart.dev/null-safety) and 
+using them requires at least
+[Dart 2.12](https://medium.com/dartlang/announcing-dart-2-12-499a6e689c87)
+from the stable channel. Please see the official 
+[null-safety migration guide](https://dart.dev/null-safety/migration-guide).
 
 ## :page_facing_up: Code
 
@@ -37,9 +35,12 @@ Code @ GitHub | SDK | Description
 :spiral_notepad: [attributes](dart/attributes) | Dart | Data structures and utilities for values, identifiers and entities.
 :cloud: [datatools](dart/datatools) | Dart | Utilities to fetch data from HTTP and file resources and other data sources.
 :globe_with_meridians: [geocore](dart/geocore) | Dart | Geospatial data structures (features, geometry and metadata) and utilities [GeoJSON](https://geojson.org/) parser). 
-:earth_americas: [geodata](dart/geodata) | Dart | A geospatial client to read ([GeoJSON](https://geojson.org/) and other geospatial data sources. 
+:earth_americas: [geodata](dart/geodata) | Dart | A geospatial client to read [§GeoJSON](https://geojson.org/) and other geospatial data sources. 
 
 ## :newspaper_roll: News
+
+2021-03-03
+* BETA version 0.5.0 with stable sound null-safety on all packages requiring the stable [Dart 2.12](https://medium.com/dartlang/announcing-dart-2-12-499a6e689c87)
 
 2021-02-28 
 * the first BETA version 0.5.0
@@ -109,6 +110,11 @@ W3C
 SDKs:
 * [Dart](https://dart.dev/)
 * [Flutter](https://flutter.dev/) 
+
+Latest on SDKs
+* [Dart 2.12](https://medium.com/dartlang/announcing-dart-2-12-499a6e689c87)
+* [Flutter 2](https://developers.googleblog.com/2021/03/announcing-flutter-2.html)
+* [What’s New in Flutter 2](https://medium.com/flutter/whats-new-in-flutter-2-0-fe8e95ecc65)
 
 Packages
 * [pub.dev](https://pub.dev/)
