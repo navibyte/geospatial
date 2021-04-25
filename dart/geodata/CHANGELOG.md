@@ -1,3 +1,10 @@
+## 0.6.0
+
+- BETA version 0.6.0 with minor breaking changes
+- [Lint rules and analysis options updated](https://github.com/navibyte/geospatial/issues/8)
+- Also `implicit-casts` and `implicit-dynamic` to false requiring code changes
+- many other smaller changes and optimizations partially due issues #8 
+
 ## 0.5.0
 
 - BETA version 0.5.0 with stable null-safety requiring the stable Dart 2.12

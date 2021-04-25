@@ -31,7 +31,7 @@ import 'package:datatools/fetch_file.dart';
 
 import 'package:geodata/geojson_features.dart';
 
-void main(List<String> args) async {
+Future<void> main(List<String> args) async {
   // read GeoJSON for earthquakes from web using HTTP fetcher
   print('GeoJSON features from HTTP');
   await _readFeatures(
@@ -66,18 +66,18 @@ Future<void> _readFeatures(Fetcher client, String collectionId) async {
     );
 
     // do something with features, in this sample just print them out
-    items.features.forEach((f) {
+    for (final f in items.features) {
       print('Feature with id: ${f.id}');
       print('  geometry: ${f.geometry}');
       print('  properties:');
-      f.properties.map.forEach((key, value) {
-        print('    $key: $value');
-      });
-    });
+      for (final key in f.properties.keys) {
+        print('    $key: ${f.properties[key]}');
+      }
+    }
   } on OriginException catch (e) {
-    print('Origin exception: ' +
-        (e.isNotFound ? 'not found' : 'status code ${e.statusCode}'));
-  } catch (e) {
+    final msg = e.isNotFound ? 'not found' : 'status code ${e.statusCode}';
+    print('Origin exception: $msg');
+  } on Exception catch (e) {
     print('Other exception: $e');
   }
 }
@@ -95,7 +95,7 @@ In the `pubspec.yaml` of your project add the dependency:
 
 ```yaml
 dependencies:
-  geodata: ^0.5.0  
+  geodata: ^0.6.0  
 ```
 
 All dependencies used by `geodata` are also ready for 

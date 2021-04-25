@@ -4,7 +4,8 @@
 //   https://tools.ietf.org/html/rfc7946
 
 /// GeoJSON sample feature from: https://geojson.org/
-const geojsonFeature = '''{
+const geojsonFeature = '''
+{
   "type": "Feature",
   "geometry": {
     "type": "Point",
@@ -16,7 +17,8 @@ const geojsonFeature = '''{
 }''';
 
 /// GeoJSON sample feature collection from: https://tools.ietf.org/html/rfc7946
-const geojsonFeatureCollection = '''{
+const geojsonFeatureCollection = '''
+{
        "type": "FeatureCollection",
        "features": [{
            "type": "Feature",
@@ -66,7 +68,8 @@ const geojsonFeatureCollection = '''{
    }''';
 
 /// GeoJSON sample feature with bbox from: https://tools.ietf.org/html/rfc7946
-const geojsonBboxFeature = '''{
+const geojsonBboxFeature = '''
+{
        "type": "Feature",
        "bbox": [-10.0, -10.0, 10.0, 10.0],
        "geometry": {
@@ -83,7 +86,8 @@ const geojsonBboxFeature = '''{
    }''';
 
 /// GeoJSON sample feature with bbox from: https://tools.ietf.org/html/rfc7946
-const geojsonBboxFeatureCollection = '''{
+const geojsonBboxFeatureCollection = '''
+{
        "type": "FeatureCollection",
        "bbox": [100.0, 0.0, -100.0, 105.0, 1.0, 0.0],
        "features": [
@@ -91,7 +95,8 @@ const geojsonBboxFeatureCollection = '''{
    }''';
 
 /// GeoJSON sample feature with extended elements from: https://tools.ietf.org/html/rfc7946
-const geojsonExtendedFeature = ''' {
+const geojsonExtendedFeature = '''
+{
        "type": "Feature",
        "id": "f2",
        "geometry": {

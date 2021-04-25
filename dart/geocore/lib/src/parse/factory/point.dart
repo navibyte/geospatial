@@ -73,11 +73,9 @@ class _CreateGeoPoint implements PointFactory<GeoPoint> {
   }
 
   @override
-  GeoPoint newWith({num x = 0.0, num y = 0.0, num? z, num? m}) {
-    return z != null
-        ? GeoPoint3.lonLatElev(x.toDouble(), y.toDouble(), z.toDouble())
-        : GeoPoint2.lonLat(x.toDouble(), y.toDouble());
-  }
+  GeoPoint newWith({num x = 0.0, num y = 0.0, num? z, num? m}) => z != null
+      ? GeoPoint3.lonLatElev(x.toDouble(), y.toDouble(), z.toDouble())
+      : GeoPoint2.lonLat(x.toDouble(), y.toDouble());
 }
 
 class _CreateGeoPointAllowingM extends _CreateGeoPoint {
@@ -135,11 +133,9 @@ class _CreateProjectedPoint implements PointFactory {
   }
 
   @override
-  Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) {
-    return z != null
-        ? Point3.xyz(x.toDouble(), y.toDouble(), z.toDouble())
-        : Point2.xy(x.toDouble(), y.toDouble());
-  }
+  Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) => z != null
+      ? Point3.xyz(x.toDouble(), y.toDouble(), z.toDouble())
+      : Point2.xy(x.toDouble(), y.toDouble());
 }
 
 class _CreateProjectedPointAllowingM extends _CreateProjectedPoint {
@@ -239,7 +235,5 @@ class _CreateAnyPointAllowingM implements PointFactory {
   }
 }
 
-FormatException _notValidPoint(Iterable coords, {int? offset, int? length}) {
-  return FormatException(
-      'Not a valid point with ${coords.length} coordinates.');
-}
+FormatException _notValidPoint(Iterable coords, {int? offset, int? length}) =>
+    FormatException('Not a valid point with ${coords.length} coordinates.');

@@ -22,7 +22,9 @@ class GeometryCollection<T extends Geometry> extends Geometry
     // looping through all items. Should be overridden to provide more efficient
     // implementation as needed.
     var dim = 0;
-    geometries.forEach((element) => dim = math.max(dim, element.dimension));
+    for (final element in geometries) {
+      dim = math.max(dim, element.dimension);
+    }
     return dim;
   }
 

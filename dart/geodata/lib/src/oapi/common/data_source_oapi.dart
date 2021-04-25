@@ -23,7 +23,7 @@ import '../../api/common.dart';
 /// See: https://ogcapi.ogc.org/common/
 ///
 /// This is an abstract base data source that should be extended by concrete
-/// implementations. For example [FeatureSourceOAPIF] extends [DataSourceOAPI]
+/// implementations. For example `FeatureSourceOAPIF` extends [DataSourceOAPI]
 /// to to provide support for the OGC API Features standard.
 abstract class DataSourceOAPI<M extends DataSourceMeta>
     implements DataSource<M> {
@@ -37,24 +37,24 @@ abstract class DataSourceOAPI<M extends DataSourceMeta>
   final Fetcher client;
 
   @override
-  Future<M> meta() async {
-    return _meta ??= await _metaLock.synchronized<M>(() async {
-      // a client accepting JSON content
-      final c = client.headers({'accept': 'application/json'});
+  Future<M> meta() async => _meta ??= await _metaLock.synchronized<M>(() async {
+        // a client accepting JSON content
+        final c = client.headers({'accept': 'application/json'});
 
-      // combine ProviderMeta object from different meta resources just fetched
-      return metaFromJson(
-        // read the landing page of OAPI service
-        landing: await c.fetchJson(Uri(path: '')),
+        // combine meta object from different meta resources just fetched
+        return metaFromJson(
+          // read the landing page of OAPI service
+          landing: await c.fetchJson(Uri(path: '')) as Map<String, dynamic>,
 
-        // read "conformance"
-        conformance: await c.fetchJson(Uri(path: 'conformance')),
+          // read "conformance"
+          conformance: await c.fetchJson(Uri(path: 'conformance'))
+              as Map<String, dynamic>,
 
-        // read "collections"
-        collections: await c.fetchJson(Uri(path: 'collections')),
-      );
-    });
-  }
+          // read "collections"
+          collections: await c.fetchJson(Uri(path: 'collections'))
+              as Map<String, dynamic>,
+        );
+      });
 
   /// Combines meta from different metadata resources returning instance of [M].
   ///
@@ -65,14 +65,15 @@ abstract class DataSourceOAPI<M extends DataSourceMeta>
     required Map<String, dynamic> conformance,
     required Map<String, dynamic> collections,
   }) {
-    final links = Links.fromJson(landing['links']);
+    final links = Links.fromJson(landing['links'] as List);
     return createMeta(
       links: links,
       conformance: _conformanceFromJson(conformance),
       collections: _collectionsFromJson(collections),
-      title:
-          landing['title'] ?? links.self().first.title ?? 'An OGC API service',
-      description: landing['description'],
+      title: landing['title'] as String? ??
+          links.self().first.title ??
+          'An OGC API service',
+      description: landing['description'] as String?,
     );
   }
 
@@ -99,18 +100,20 @@ List<String> _conformanceFromJson(Map<String, dynamic> json) =>
 /// Parses a '/collections' meta data from a OGC API service.
 List<CollectionMeta> _collectionsFromJson(Map<String, dynamic> json) {
   final list = json['collections'] as List;
-  return List.from(list.map((e) => _collectionFromJson(e)));
+  return List.from(list.map<CollectionMeta>(
+      (dynamic e) => _collectionFromJson(e as Map<String, dynamic>)));
 }
 
 /// Parses a '/collections/{collectionId}' meta data from a OGC API service.
 CollectionMeta _collectionFromJson(Map<String, dynamic> json) {
-  final links = Links.fromJson(json['links']);
-  final extent = json['extent'];
-  final id = json['id'] ?? json['name']; // "name" not really standard
+  final links = Links.fromJson(json['links'] as List);
+  final extent = json['extent'] as Map<String, dynamic>?;
+  final id = json['id'] as String? ??
+      json['name'] as String; // "name" not really standard
   return CollectionMeta(
     id: Identifier.fromString(id),
-    title: json['title'] ?? links.self().first.title ?? id,
-    description: json['description'],
+    title: json['title'] as String? ?? links.self().first.title ?? id,
+    description: json['description'] as String?,
     links: links,
     extent: extent != null ? _extentFromJson(extent) : null,
   );
@@ -118,40 +121,46 @@ CollectionMeta _collectionFromJson(Map<String, dynamic> json) {
 
 /// Parses [Extent] data structure from a json snippet.
 Extent _extentFromJson(Map<String, dynamic> json) {
-  final spatial = json['spatial'];
+  final dynamic spatial = json['spatial'];
   final spatialIsMap = spatial is Map<String, dynamic>;
-  final crs = CRS.id((spatialIsMap ? spatial['crs'] : null) ?? idCRS84);
+  final crs = CRS.id((spatialIsMap
+          ? (spatial as Map<String, dynamic>)['crs'] as String?
+          : null) ??
+      idCRS84);
 
   // try to parse bboxes
-  var allBounds;
-  final bbox = spatialIsMap ? spatial['bbox'] : null;
+  Iterable<GeoBounds> allBounds;
+  final bbox =
+      spatialIsMap ? (spatial as Map<String, dynamic>)['bbox'] as List? : null;
   if (bbox != null && bbox is List) {
     // by standard: "bbox" is a list of bboxes
-    allBounds = bbox.map((e) => GeoBounds.from(e.cast<num>()));
+    allBounds =
+        bbox.map((dynamic e) => GeoBounds.from((e as Iterable).cast<num>()));
   } else {
     // not standard: assume "spatial" as one bbox
     try {
-      allBounds = [GeoBounds.from(spatial.cast<num>())];
-    } catch (e) {
+      allBounds = [GeoBounds.from((spatial as Iterable).cast<num>())];
+    } on Exception {
       // fallback
       allBounds = [GeoBounds.world()];
     }
   }
 
   // try to parse temporal intervals
-  var allIntervals;
-  final temporal = json['temporal'];
+  Iterable<Interval>? allIntervals;
+  final dynamic temporal = json['temporal'];
   if (temporal != null) {
-    final interval =
+    final dynamic interval =
         temporal is Map<String, dynamic> ? temporal['interval'] : null;
     if (interval != null && interval is List) {
       // by standard: "interval" is a list of intervals
-      allIntervals = interval.map((e) => Interval.fromJson(e));
+      allIntervals =
+          interval.map((dynamic e) => Interval.fromJson(e as Iterable));
     } else {
       // not standard: assume "temporal" as one interval
       try {
-        allIntervals = [Interval.fromJson(temporal)];
-      } catch (e) {
+        allIntervals = [Interval.fromJson(temporal as Iterable)];
+      } on Exception {
         // no fallback need, just no temporal interval then
       }
     }
@@ -177,7 +186,8 @@ Extent _extentFromJson(Map<String, dynamic> json) {
   (Maybe still WFS 3.0)
 
     "extent" : {
-      "spatial" : [ 5.61272621360749, 50.2373512077239, 9.58963433710139, 52.5286304537795 ],
+      "spatial" : [ 5.61272621360749, 50.2373512077239, 9.58963433710139, 
+                    52.5286304537795 ],
       "temporal" : [ "2018-05-18T14:45:44Z", "2021-01-01T11:58:21Z" ]
     },
 

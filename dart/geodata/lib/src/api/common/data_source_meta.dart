@@ -23,14 +23,13 @@ class DataSourceMeta extends ResourceMeta {
 
   /// Create metadata for a data source from [collections] and optional [title].
   factory DataSourceMeta.collectionIds(Iterable<String> collectionIds,
-      {required String title}) {
-    return DataSourceMeta(
-      title: title,
-      links: Links.empty(),
-      conformance: [],
-      collections: collectionIds.map((id) => CollectionMeta.id(id)),
-    );
-  }
+          {required String title}) =>
+      DataSourceMeta(
+        title: title,
+        links: Links.empty(),
+        conformance: const [],
+        collections: collectionIds.map((id) => CollectionMeta.id(id)),
+      );
 
   /// Conformance classes this data source is conforming to.
   final Iterable<String> conformance;

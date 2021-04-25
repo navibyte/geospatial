@@ -114,7 +114,7 @@ abstract class GeoFactoryBase<PointType extends Point> extends GeoFactory {
   /// Throws FormatException if cannot create a series or points on it.
   PointSeries<PointType> pointSeries(Iterable points) =>
       PointSeries<PointType>.from(
-          points.map<PointType>((coords) => point(coords)));
+          points.map<PointType>((dynamic coords) => point(coords as Iterable)));
 
   /// Parses a line string from series of [points].
   ///
@@ -130,7 +130,7 @@ abstract class GeoFactoryBase<PointType extends Point> extends GeoFactory {
           {LineStringType type = LineStringType.any}) =>
       BoundedSeries<LineString<PointType>>.from(
           lineStrings.map<LineString<PointType>>(
-              (points) => lineString(points, type: type)));
+              (dynamic points) => lineString(points as Iterable, type: type)));
 
   /// Parses a polygon from a series of rings (closed and simple line strings).
   ///
@@ -142,8 +142,8 @@ abstract class GeoFactoryBase<PointType extends Point> extends GeoFactory {
   ///
   /// Throws FormatException if cannot create a series of polygons.
   BoundedSeries<Polygon<PointType>> polygonSeries(Iterable polygons) =>
-      BoundedSeries<Polygon<PointType>>.from(
-          polygons.map<Polygon<PointType>>((rings) => polygon(rings)));
+      BoundedSeries<Polygon<PointType>>.from(polygons.map<Polygon<PointType>>(
+          (dynamic rings) => polygon(rings as Iterable)));
 
   /// Parses a multi point geometry from [points].
   ///
@@ -167,7 +167,8 @@ abstract class GeoFactoryBase<PointType extends Point> extends GeoFactory {
   ///
   /// Throws FormatException if cannot create a a series of geometrie.
   BoundedSeries<T> geometrySeries<T extends Geometry>(Iterable geometries) =>
-      BoundedSeries<T>.from(geometries.map<T>((geom) => geometry<T>(geom)));
+      BoundedSeries<T>.from(
+          geometries.map<T>((dynamic geom) => geometry<T>(geom)));
 
   /// Parses a geometry collection from [geometries].
   ///

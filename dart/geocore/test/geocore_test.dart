@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+// ignore_for_file: avoid_types_on_closure_parameters
+
 import 'package:test/test.dart';
 
 import 'package:equatable/equatable.dart';
@@ -24,7 +26,7 @@ void main() {
     test('Basic feature', () {
       final f = geoJSON.feature(geojsonFeature);
       expect(f.geometry, GeoPoint2.from([125.6, 10.1]));
-      expect(f.properties['name'], 'Dinagat Islands');
+      expect(f.properties.getString('name'), 'Dinagat Islands');
     });
 
     test('Basic feature collection', () {
@@ -32,15 +34,16 @@ void main() {
       expect(fc.features.length, 3);
       expect(fc.features[0].geometry, GeoPoint2.from([102.0, 0.5]));
       expect(fc.features[1].geometry,
-          (g) => (g as LineString).chain[0] == GeoPoint2.from([102.0, 0.0]));
-      expect(fc.features[1].properties['prop1'], 0.0);
-      expect(fc.features[2].geometry, (g) {
-        final exterior = (g as Polygon).exterior;
+          (LineString g) => g.chain[0] == GeoPoint2.from([102.0, 0.0]));
+      expect(fc.features[1].properties.getDouble('prop1'), 0.0);
+      expect(fc.features[2].geometry, (Polygon g) {
+        final exterior = g.exterior;
         return exterior.dimension == 2 &&
             exterior.chain.isClosed &&
             exterior.chain[2] == GeoPoint2.from([101.0, 1.0]);
       });
-      expect(fc.features[2].properties['prop1']['this'], 'that');
+      expect(
+          fc.features[2].properties.getMap('prop1').getString('this'), 'that');
 
       final intersect1 = fc.features
           .intersectByBounds(GeoBounds.bboxLonLat(101.05, 0.4, 102.05, 0.5));
@@ -61,7 +64,7 @@ void main() {
 
     test('Basic feature with bbox', () {
       final f = geoJSON.feature(geojsonBboxFeature);
-      expect((f.geometry as Polygon).exterior.chain[3],
+      expect((f.geometry as Polygon?)?.exterior.chain[3],
           GeoPoint2.from([-10.0, -10.0]));
       expect(f.bounds, GeoBounds.bboxLonLat(-10.0, -10.0, 10.0, 10.0));
     });

@@ -49,7 +49,7 @@ abstract class Feature<T extends Geometry> extends Entity implements Bounded {
   /// If an optional [bounds] for a new feature is not provided then [geometry]
   /// bounds is used also as feature bounds when accessed.
   factory Feature.view(
-          {dynamic? id,
+          {Object? id,
           required Map<String, dynamic> properties,
           T? geometry,
           Bounds? bounds}) =>

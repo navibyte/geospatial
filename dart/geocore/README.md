@@ -92,12 +92,14 @@ The sample code:
   final fc = geoJSON.featureCollection(sample);
 
   // loop through features and print id, geometry and properties for each
-  fc.features.forEach((f) {
+  for (final f in fc.features) {
     print('Feature with id: ${f.id}');
     print('  geometry: ${f.geometry}');
     print('  properties:');
-    f.properties.map.forEach((key, value) => print('    $key: $value'));
-  });
+    for (final key in f.properties.keys) {
+      print('    $key: ${f.properties[key]}');
+    }
+  }
 ```
 
 At this stage the package supports reading following GeoJSON elements:
@@ -129,7 +131,7 @@ The sample code:
   final f = Feature.view(
     id: 'ROG',
     geometry: GeoPoint3.from([-0.0014, 51.4778, 45.0]),
-    properties: {
+    properties: <String, dynamic>{
       'title': 'Royal Observatory',
       'place': 'Greenwich',
       'city': 'London',
@@ -164,7 +166,7 @@ In the `pubspec.yaml` of your project add the dependency:
 
 ```yaml
 dependencies:
-  geocore: ^0.5.0
+  geocore: ^0.6.0
 ```
 
 All dependencies used by `geocore` are also ready for 

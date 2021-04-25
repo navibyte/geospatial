@@ -9,7 +9,7 @@ part of 'base.dart';
 /// An private interface with members telling whethen an object is measureable.
 ///
 /// Known (public) sub classes: [Point], [PointFactory], [Bounds],
-/// [BoundsFactory].
+/// `BoundsFactory`.
 abstract class _Measured {
   const _Measured();
 

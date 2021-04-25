@@ -89,7 +89,7 @@ mixin PointSeriesMixin<T extends Point> implements PointSeries<T> {
       bounds ??
       _LazyBounds.calculate(() {
         final builder = BoundsBuilder();
-        source.forEach((p) => builder.addPoint(p));
+        source.forEach(builder.addPoint);
         return builder.bounds;
       });
 }

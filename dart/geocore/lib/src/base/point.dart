@@ -43,11 +43,9 @@ abstract class Point<C extends num> extends Geometry
   /// Sub classes may override the default implementation to provide more
   /// efficient approach. It's also allowed to return internal data storage
   /// for coordinate values.
-  List<C> get values {
-    // create fixed length list and set coordinate values on it
-    return List<C>.generate(coordinateDimension, (i) => this[i],
-        growable: false);
-  }
+  List<C> get values =>
+      // create fixed length list and set coordinate values on it
+      List<C>.generate(coordinateDimension, (i) => this[i], growable: false);
 
   /// X coordinate as type [C] extending `num`.
   C get x;
@@ -83,7 +81,9 @@ abstract class Point<C extends num> extends Geometry
   @override
   void writeValues(StringSink buf, {String delimiter = ','}) {
     for (var i = 0; i < coordinateDimension; i++) {
-      if (i > 0) buf.write(delimiter);
+      if (i > 0) {
+        buf.write(delimiter);
+      }
       buf.write(this[i]);
     }
   }

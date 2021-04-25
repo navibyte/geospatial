@@ -4,7 +4,10 @@
 
 **Geospatial** data structures, tools and utilities for 
 [Dart](https://dart.dev/) and [Flutter](https://flutter.dev/) mobile developers.
-Contains also some non-geospatial library packages.
+
+Please see also generic (non-geospatial) data structures, tools and utilities at
+the separate [Dataflow tools for Dart](https://github.com/navibyte/dataflow)
+repository.
 
 Packages and documentation are published at [pub.dev](https://pub.dev/). 
 
@@ -12,10 +15,17 @@ Latest package releases:
 
 Package @ pub.dev | Version | Documentation | Example code 
 ----------------- | --------| ------------- | -----------
-:spiral_notepad: [attributes](https://pub.dev/packages/attributes) | [![pub package](https://img.shields.io/pub/v/attributes.svg)](https://pub.dev/packages/attributes) | [API reference](https://pub.dev/documentation/attributes/latest/) | [Example](https://pub.dev/packages/attributes/example)
-:cloud: [datatools](https://pub.dev/packages/datatools) | [![pub package](https://img.shields.io/pub/v/datatools.svg)](https://pub.dev/packages/datatools) | [API reference](https://pub.dev/documentation/datatools/latest/) | [Example](https://pub.dev/packages/datatools/example)
 :globe_with_meridians: [geocore](https://pub.dev/packages/geocore) | [![pub package](https://img.shields.io/pub/v/geocore.svg)](https://pub.dev/packages/geocore) | [API reference](https://pub.dev/documentation/geocore/latest/) | [Example](https://pub.dev/packages/geocore/example)
 :earth_americas: [geodata](https://pub.dev/packages/geodata) | [![pub package](https://img.shields.io/pub/v/geodata.svg)](https://pub.dev/packages/geodata) | [API reference](https://pub.dev/documentation/geodata/latest/) | [Example](https://pub.dev/packages/geodata/example)
+
+Previously part of this repository, but starting from the version 0.6.0 code for
+these is hosted at the [dataflow](https://github.com/navibyte/dataflow)
+repository:
+
+Package @ pub.dev | Version | Documentation | Example code 
+----------------- | --------| ------------- | -----------
+:spiral_notepad: [attributes](https://pub.dev/packages/attributes) | [![pub package](https://img.shields.io/pub/v/attributes.svg)](https://pub.dev/packages/attributes) | [API reference](https://pub.dev/documentation/attributes/latest/) | [Example](https://pub.dev/packages/attributes/example)
+:cloud: [datatools](https://pub.dev/packages/datatools) | [![pub package](https://img.shields.io/pub/v/datatools.svg)](https://pub.dev/packages/datatools) | [API reference](https://pub.dev/documentation/datatools/latest/) | [Example](https://pub.dev/packages/datatools/example)
 
 All packages supports Dart [null-safety](https://dart.dev/null-safety) and 
 using them requires at least
@@ -32,12 +42,18 @@ packages:
 
 Code @ GitHub | SDK | Description 
 ------------- | --- | -----------
-:spiral_notepad: [attributes](dart/attributes) | Dart | Data structures and utilities for values, identifiers and entities.
-:cloud: [datatools](dart/datatools) | Dart | Utilities to fetch data from HTTP and file resources and other data sources.
 :globe_with_meridians: [geocore](dart/geocore) | Dart | Geospatial data structures (features, geometry and metadata) and utilities [GeoJSON](https://geojson.org/) parser). 
 :earth_americas: [geodata](dart/geodata) | Dart | A geospatial client to read [§GeoJSON](https://geojson.org/) and other geospatial data sources. 
 
 ## :newspaper_roll: News
+
+2021-04-25
+* BETA version 0.6.0
+* Some code packages were moved out from this repository to the new [dataflow](https://github.com/navibyte/dataflow) repository as they are not *geospatial* at all
+  * [attributes](https://pub.dev/packages/attributes)
+  * [datatools](https://pub.dev/packages/datatools)
+* [Lint rules and analysis options updated](https://github.com/navibyte/geospatial/issues/8)
+* Also `implicit-casts` and `implicit-dynamic` set to false requiring code changes
 
 2021-03-03
 * BETA version 0.5.0 with stable sound null-safety on all packages requiring the stable [Dart 2.12](https://medium.com/dartlang/announcing-dart-2-12-499a6e689c87)
@@ -135,15 +151,11 @@ Roadmaps
 There are thousands of excellent libraries available at 
 [pub.dev](https://pub.dev/).
 
-Here listed only those that are used (depended) by code packages of this 
-repository:
+Here listed only those that are used (depended directly) by code packages of
+this repository:
 
 Package @ pub.dev | Code @ GitHub | Description
 ----------------- | ------------- | -----------
 [equatable](https://pub.dev/packages/equatable) | [felangel/equatable](https://github.com/felangel/equatable) | Simplify Equality Comparisons | A Dart abstract class that helps to implement equality without needing to explicitly override == and hashCode.
-[http](https://pub.dev/packages/http) | [dart-lang/http](https://github.com/dart-lang/http) | A composable API for making HTTP requests in Dart.
-[http_parser](https://pub.dev/packages/http_parser) | [dart-lang/http_parser](https://github.com/dart-lang/http_parser) | A platform-independent Dart package for parsing and serializing HTTP formats.
-[intl](https://pub.dev/packages/intl) | [dart-lang/intl](https://github.com/dart-lang/intl) | Internationalization and localization support.
 [meta](https://pub.dev/packages/meta) | [dart-lang/sdk](https://github.com/dart-lang/sdk/tree/master/pkg/meta) | This package defines annotations that can be used by the tools that are shipped with the Dart SDK.
-[path](https://pub.dev/packages/path) | [dart-lang/path](https://github.com/dart-lang/path) | A string-based path manipulation library.
 [synchronized](https://pub.dev/packages/synchronized) | [tekartik/synchronized.dart](https://github.com/tekartik/synchronized.dart/tree/master/synchronized) | Basic lock mechanism to prevent concurrent access to asynchronous code.

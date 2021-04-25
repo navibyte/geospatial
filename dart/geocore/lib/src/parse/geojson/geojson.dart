@@ -10,8 +10,8 @@ import 'dart:math' as math;
 import 'package:attributes/entity.dart';
 
 import '../../base.dart';
-import '../../geo.dart';
 import '../../feature.dart';
+import '../../geo.dart';
 import '../factory.dart';
 
 /// The default GeoJSON factory instace assuming geographic CRS80 coordinates.
@@ -65,31 +65,35 @@ class GeoJsonFactory<PointType extends Point>
         );
 
   Map<String, dynamic> _ensureDecodedMap(dynamic data) {
+    final dynamic decoded;
     if (data is String) {
       try {
-        data = json.decode(data);
-      } catch (e) {
+        decoded = json.decode(data);
+      } on Exception catch (e) {
         throw FormatException('Unknown encoding for GeoJSON ($e).');
       }
+    } else {
+      decoded = data;
     }
-    if (data is Map<String, dynamic>) {
-      return data;
+    if (decoded is Map<String, dynamic>) {
+      return decoded;
     }
     throw FormatException('Unknown encoding for GeoJSON.');
   }
 
-  List _ensureDecodedList(dynamic data) {
+  Iterable _ensureDecodedIterable(dynamic data) {
+    final dynamic decoded;
     if (data is String) {
       try {
-        data = json.decode(data);
-      } catch (e) {
+        decoded = json.decode(data);
+      } on Exception catch (e) {
         throw FormatException('Unknown encoding for GeoJSON ($e).');
       }
+    } else {
+      decoded = data;
     }
-    if (data is List) {
-      return data;
-    } else if (data is Iterable) {
-      return List.unmodifiable(data);
+    if (decoded is Iterable) {
+      return decoded;
     }
     throw FormatException('Unknown encoding for GeoJSON.');
   }
@@ -98,28 +102,70 @@ class GeoJsonFactory<PointType extends Point>
   T geometry<T extends Geometry>(dynamic data) {
     // expects data of Map<String, dynamic> as returned by json.decode()
     final json = _ensureDecodedMap(data);
-    var geom;
+    dynamic geom;
     switch (json['type']) {
       case 'Point':
-        geom = point(json['coordinates']);
+        // expected 'coordinates' data like : [100.0, 100.0, 10.0]
+        geom = point(json['coordinates'] as Iterable);
         break;
       case 'LineString':
-        geom = lineString(json['coordinates']);
+        // expected 'coordinates' data like :
+        // [
+        //   [100.0, 100.0, 10.0],
+        //   [200.0, 200.0, 20.0]
+        // ]
+        geom = lineString(json['coordinates'] as Iterable);
         break;
       case 'Polygon':
-        geom = polygon(json['coordinates']);
+        // expected 'coordinates' data like :
+        // [
+        //   [
+        //     [100.0, 100.0, 10.0],
+        //     [200.0, 200.0, 20.0]
+        //     [100.0, 200.0, 20.0]
+        //     [100.0, 100.0, 10.0],
+        //   ]
+        // ]
+        geom = polygon(json['coordinates'] as Iterable);
         break;
       case 'MultiPoint':
-        geom = multiPoint(json['coordinates']);
+        // expected 'coordinates' data like :
+        // [
+        //   [100.0, 100.0, 10.0],
+        //   [200.0, 200.0, 20.0]
+        // ]
+        geom = multiPoint(json['coordinates'] as Iterable);
         break;
       case 'MultiLineString':
-        geom = multiLineString(json['coordinates']);
+        // expected 'coordinates' data like :
+        // [
+        //   [
+        //     [100.0, 100.0, 10.0],
+        //     [200.0, 200.0, 20.0]
+        //   ],
+        //   [
+        //     [300.0, 300.0, 30.0],
+        //     [400.0, 400.0, 40.0]
+        //   ]
+        // ]
+        geom = multiLineString(json['coordinates'] as Iterable);
         break;
       case 'MultiPolygon':
-        geom = multiPolygon(json['coordinates']);
+        // expected 'coordinates' data like :
+        // [
+        //   [
+        //     [
+        //       [100.0, 100.0, 10.0],
+        //       [200.0, 200.0, 20.0]
+        //       [100.0, 200.0, 20.0]
+        //       [100.0, 100.0, 10.0],
+        //     ]
+        //   ]
+        // ]
+        geom = multiPolygon(json['coordinates'] as Iterable);
         break;
       case 'GeometryCollection':
-        geom = geometryCollection(json['geometries']);
+        geom = geometryCollection(json['geometries'] as Iterable);
         break;
     }
     if (geom is T) {
@@ -141,18 +187,18 @@ class GeoJsonFactory<PointType extends Point>
     // - id read from GeoJSON is int : wrap on Identifier
     // - otherwise : convert read value to String and wrap on Identifier
     // (GeoJSON allows num and String types for ids)
-    final idJson = json['id'];
+    final dynamic idJson = json['id'];
     final id = idJson != null
         ? Identifier.from(idJson is int ? idJson : idJson.toString())
         : null;
 
     // parse optional geometry for this feature
-    final geomJson = json['geometry'];
+    final dynamic geomJson = json['geometry'];
     final geom = geomJson != null ? geometry<T>(geomJson) : null;
 
     // parse optional bbox
     // (bbox is not required on GeoJSON and not on Feature either)
-    final bboxJson = json['bbox'];
+    final bboxJson = json['bbox'] as Iterable?;
     final bbox = bboxJson != null ? bounds(bboxJson) : null;
 
     // create a feature using the factory function
@@ -162,7 +208,8 @@ class GeoJsonFactory<PointType extends Point>
 
       // map of properties may be missing on GeoJSON, but for a feature
       // non-null map (even empty) is required
-      properties: json['properties'] ?? {},
+      properties:
+          json['properties'] as Map<String, dynamic>? ?? <String, dynamic>{},
 
       // nullable geometry object
       geometry: geom,
@@ -181,7 +228,7 @@ class GeoJsonFactory<PointType extends Point>
   BoundedSeries<Feature<T>> featureSeries<T extends Geometry>(dynamic data,
       {Range? range}) {
     // expects data of List as returned by json.decode()
-    final json = _ensureDecodedList(data);
+    final json = _ensureDecodedIterable(data);
 
     // figure out what range (or all) of features should be returned on a series
     final features = _listByRange(json, range: range);
@@ -189,7 +236,7 @@ class GeoJsonFactory<PointType extends Point>
     // create series of features from the range selected above and map
     // JSON object of each feature to Feature instance
     return BoundedSeries<Feature<T>>.from(
-        features.map<Feature<T>>((f) => feature<T>(f)));
+        features.map<Feature<T>>((dynamic f) => feature<T>(f)));
   }
 
   @override
@@ -212,7 +259,7 @@ class GeoJsonFactory<PointType extends Point>
 
       // parse optional bbox
       // (bbox is not required on GeoJSON and not on FeatureCollection either)
-      final bboxJson = json['bbox'];
+      final bboxJson = json['bbox'] as Iterable?;
       final bbox = bboxJson != null ? bounds(bboxJson) : null;
 
       // create a feature collection
@@ -229,31 +276,35 @@ class GeoJsonFactory<PointType extends Point>
   @override
   int featureCount(dynamic data, {Range? range}) {
     final json = _ensureDecodedMap(data);
-    final list;
+    final List list;
     if (json['type'] == 'Feature') {
-      list = [json];
+      list = <dynamic>[json];
     } else {
       if (json['type'] != 'FeatureCollection') {
         throw FormatException('Not valid GeoJSON FeatureCollection.');
       }
-      list = json['features'];
+      list = json['features'] as List;
     }
-    return _listByRange(_ensureDecodedList(list)).length;
+    return _listByRange(list).length;
   }
 
-  Iterable _listByRange(List json, {Range? range}) {
-    final items;
+  Iterable<dynamic> _listByRange(Iterable json, {Range? range}) {
+    final Iterable items;
     if (range != null) {
       final count = json.length;
       if (range.start >= count) {
         // range is out of bounds, do not throw, just return empty set
-        items = List.empty();
+        items = Iterable<dynamic>.empty();
       } else {
         final limit = range.limit;
         if (limit != null && limit >= 0) {
           // range by "start" (first index) and "limit" (max number of items)
-          items =
-              json.getRange(range.start, math.min(range.start + limit, count));
+          final end = math.min(range.start + limit, count);
+          if (json is List) {
+            items = json.getRange(range.start, end);
+          } else {
+            items = json.skip(range.start).take(end - range.start);
+          }
         } else {
           // range by "start" (first index) only, open ended
           items = json.skip(range.start);

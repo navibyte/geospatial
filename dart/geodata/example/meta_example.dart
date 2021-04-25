@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+// ignore_for_file: avoid_print, avoid_catches_without_on_clauses
+
 import 'package:equatable/equatable.dart';
 
 import 'package:datatools/fetch_http.dart';
@@ -21,12 +23,12 @@ dart example/meta_example.dart https://weather.obs.fmibeta.com/
 */
 
 /// A simple example to read metadata from standard OGC API Features services.
-void main(List<String> args) async {
+Future<void> main(List<String> args) async {
   // configure Equatable to apply toString() default impls
   EquatableConfig.stringify = true;
 
   // loop over all test URLs (from the arguments) and read meta data for each
-  for (var baseURL in args) {
+  for (final baseURL in args) {
     try {
       final meta = await _readMeta(baseURL);
       _printSource(meta);
@@ -67,12 +69,12 @@ void _printSource(DataSourceMeta meta) {
   }
   print('');
   print('Conformance classes:');
-  meta.conformance.forEach((e) => print('  $e'));
+  for (final e in meta.conformance) {
+    print('  $e');
+  }
   print('');
   print('Collections:');
-  for (var coll in meta.collections) {
-    _printCollection(coll);
-  }
+  meta.collections.forEach(_printCollection);
 }
 
 void _printCollection(CollectionMeta meta) {
@@ -80,11 +82,11 @@ void _printCollection(CollectionMeta meta) {
   final extent = meta.extent;
   if (extent != null) {
     print('    extent crs: ${extent.crs.id}');
-    for (var bounds in extent.allBounds) {
+    for (final bounds in extent.allBounds) {
       print('    spatial bbox min: ${bounds.min.values}');
       print('    spatial bbox max: ${bounds.max.values}');
     }
-    for (var interval in extent.allIntervals) {
+    for (final interval in extent.allIntervals) {
       if (!interval.isOpen) {
         print('    temporal interval: $interval');
       }
@@ -98,5 +100,7 @@ void _printResource(ResourceMeta meta) {
   } else {
     print('  ${meta.title}');
   }
-  if (meta.description != null) print('    ${meta.description}');
+  if (meta.description != null) {
+    print('    ${meta.description}');
+  }
 }

@@ -33,19 +33,18 @@ class FeatureSourceGeoJSON implements FeatureSource {
 
   @override
   Future<FeatureItems> items(String collectionId,
-      {FeatureFilter? filter}) async {
-    return (await itemsPaged(collectionId, filter: filter)).current;
-  }
+          {FeatureFilter? filter}) async =>
+      (await itemsPaged(collectionId, filter: filter)).current;
 
   @override
   Future<Paged<FeatureItems>> itemsPaged(String collectionId,
       {FeatureFilter? filter}) async {
     // read "{collectionId}", parse JSON and get number of features
-    final json = (await client.fetchJson(Uri(path: collectionId)));
+    final dynamic json = await client.fetchJson(Uri(path: collectionId));
     final count = geoJSON.featureCount(json);
 
     // analyze if only a range should be returned on a "first page" or all items
-    final range;
+    final Range? range;
     if (filter?.limit != null) {
       range = Range(start: 0, limit: filter?.limit);
     } else {

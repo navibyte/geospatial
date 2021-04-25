@@ -17,9 +17,7 @@ class Instant with EquatableMixin {
   /// The input [str] must be formatted according to RFC 3339.
   ///
   /// Throws FormatException if an interval cannot be parsed.
-  factory Instant.parse(String str) {
-    return Instant(DateTime.parse(str));
-  }
+  factory Instant.parse(String str) => Instant(DateTime.parse(str));
 
   /// The time stamp of this instant.
   final DateTime time;
@@ -32,19 +30,13 @@ class Instant with EquatableMixin {
 @immutable
 class Interval with EquatableMixin {
   /// Creates a closed interval with [start] and [end] time stamps.
-  const Interval.closed(DateTime start, DateTime end)
-      : start = start,
-        end = end;
+  const Interval.closed(this.start, this.end);
 
   /// Creates an open ended interval with the [start] time stamp.
-  const Interval.openEnd(DateTime start)
-      : start = start,
-        end = null;
+  const Interval.openEnd(this.start) : end = null;
 
   /// Creates an open started interval with the [end] time stamp.
-  const Interval.openStart(DateTime end)
-      : start = null,
-        end = end;
+  const Interval.openStart(this.end) : start = null;
 
   /// Creates a fully open interval with [start] and [end] set to null.
   const Interval.open()
@@ -59,7 +51,7 @@ class Interval with EquatableMixin {
   factory Interval.parse(String str) {
     final parts = str.split('/');
     if (parts.length == 2) {
-      return Interval.fromJson([parts[0], parts[1]]);
+      return Interval.fromJson(<String>[parts[0], parts[1]]);
     }
     throw FormatException('Invalid interval "$str".');
   }
@@ -71,10 +63,10 @@ class Interval with EquatableMixin {
   /// For other lengths than 2 an ArgumentError is thrown.
   ///
   /// Throws FormatException if an interval cannot be parsed.
-  factory Interval.fromJson(List parts) {
+  factory Interval.fromJson(Iterable parts) {
     if (parts.length == 2) {
-      final start = parts[0];
-      final end = parts[1];
+      final start = parts.elementAt(0) as String?;
+      final end = parts.elementAt(1) as String?;
       if (start == null || start.isEmpty || start == '..') {
         if (end == null || end.isEmpty || end == '..') {
           return Interval.open();

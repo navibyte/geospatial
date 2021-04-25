@@ -210,11 +210,15 @@ class _LazyBounds<T extends Point> extends Bounds<T> {
   Bounds newFrom(Iterable<num> coords, {int? offset, int? length}) =>
       _ensureBounds().newFrom(coords, offset: offset, length: length);
 
+/*
+  // See lint => avoid_equals_and_hash_code_on_mutable_classes
+
   @override
   bool operator ==(Object other) => _ensureBounds() == other;
 
   @override
   int get hashCode => _ensureBounds().hashCode;
+*/
 }
 
 const _emptyBounds = _EmptyBounds();

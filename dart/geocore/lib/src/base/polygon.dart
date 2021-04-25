@@ -22,11 +22,11 @@ class Polygon<T extends Point> extends Geometry with EquatableMixin {
     if (rings.isEmpty) {
       throw ArgumentError('Polygon must have exterior ring.');
     }
-    rings.forEach((ring) {
+    for (final ring in rings) {
       if (ring.type != LineStringType.ring) {
         throw ArgumentError('Not a linear ring.');
       }
-    });
+    }
     return rings;
   }
 

@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+// ignore_for_file: avoid_print, avoid_redundant_argument_values
+
 import 'package:equatable/equatable.dart';
 
 import 'package:geocore/geocore.dart';
@@ -57,12 +59,14 @@ void _parseGeoJSON() {
   final fc = geoJSON.featureCollection(sample);
 
   // loop through features and print id, geometry and properties for each
-  fc.features.forEach((f) {
+  for (final f in fc.features) {
     print('Feature with id: ${f.id}');
     print('  geometry: ${f.geometry}');
     print('  properties:');
-    f.properties.map.forEach((key, value) => print('    $key: $value'));
-  });
+    for (final key in f.properties.keys) {
+      print('    $key: ${f.properties[key]}');
+    }
+  }
 }
 
 void _basicStructures() {
@@ -73,7 +77,7 @@ void _basicStructures() {
   print(Feature.view(
     id: 'ROG',
     geometry: GeoPoint3.from([-0.0014, 51.4778, 45.0]),
-    properties: {
+    properties: <String, dynamic>{
       'title': 'Royal Observatory',
       'place': 'Greenwich',
       'city': 'London',
@@ -134,8 +138,8 @@ void _basicStructures() {
     Point3i.xyz(708221, 5707225, 45)
   ]);
   print(points);
-  print(
-      'Testing int coord value: ${points[2].x} ${points[2].y} (type: ${points[2].z.runtimeType})');
+  print('Testing int coord value: '
+      '${points[2].x} ${points[2].y} (type: ${points[2].z.runtimeType})');
 
   // Temporal intervals (open, open-started, open-ended, closed)
   print(Interval.open());
@@ -156,6 +160,6 @@ void _basicStructures() {
   print(Extent.single(
     crs: CRS84,
     bounds: GeoBounds.bboxLonLat(-180.0, -90.0, 180.0, 90.0),
-    interval: Interval.fromJson(['..', '2020-10-31']),
+    interval: Interval.fromJson(<dynamic>['..', '2020-10-31']),
   ));
 }

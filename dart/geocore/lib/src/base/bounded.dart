@@ -55,7 +55,9 @@ mixin BoundedSeriesMixin<T extends Bounded> implements BoundedSeries<T> {
       bounds ??
       _LazyBounds.calculate(() {
         final builder = BoundsBuilder();
-        source.forEach((element) => builder.addBounds(element.bounds));
+        for (final element in source) {
+          builder.addBounds(element.bounds);
+        }
         return builder.bounds;
       });
 }

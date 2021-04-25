@@ -4,6 +4,9 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+// ignore_for_file: avoid_print
+// ignore_for_file: avoid_catches_without_on_clauses
+
 import 'package:equatable/equatable.dart';
 
 import 'package:attributes/entity.dart';
@@ -36,14 +39,14 @@ const _defaultLimit = 2;
 const _defaultMaxPagedResults = 2;
 
 /// A simple example to read features from standard OGC API Features services.
-void main(List<String> args) async {
+Future<void> main(List<String> args) async {
   // configure Equatable to apply toString() default impls
   EquatableConfig.stringify = true;
 
   // check enough args
   if (args.length < 3) {
-    print(
-        'Args: {source} {baseUrl} {collectionIds} [limit] [operation] [param] [value]');
+    print('Args: {source} {baseUrl} {collectionIds} '
+        '[limit] [operation] [param] [value]');
     print('Allowed sources: oapif, geojson');
     return;
   }
@@ -72,7 +75,7 @@ void main(List<String> args) async {
         if (bbox.length == 4 || bbox.length == 6) {
           filter = FeatureFilter(
             limit: limit,
-            bounds: GeoBounds.from(bbox.map<num>((e) => valueToDouble(e))),
+            bounds: GeoBounds.from(bbox.map<num>(valueToDouble)),
           );
         }
         break;
@@ -109,7 +112,7 @@ void main(List<String> args) async {
     }
 
     // Loop over all collections
-    for (var collectionId in collectionIds) {
+    for (final collectionId in collectionIds) {
       // Execute an operation
       switch (operation) {
         case 'items':
@@ -141,12 +144,14 @@ void _printFeatures(FeatureItems items) {
     print('  number matched ${items.meta.numberMatched}');
     print('  number returned ${items.meta.numberReturned}');
   }
-  items.features.forEach((f) => _printFeature(f));
+  items.features.forEach(_printFeature);
 }
 
 void _printFeature(Feature f) {
   print('Feature with id: ${f.id}');
   print('  geometry: ${f.geometry}');
   print('  properties:');
-  f.properties.map.forEach((key, value) => print('    $key: $value'));
+  for (final key in f.properties.keys) {
+    print('    $key: ${f.properties[key]}');
+  }
 }

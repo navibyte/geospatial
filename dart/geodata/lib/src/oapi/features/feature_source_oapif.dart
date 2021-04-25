@@ -27,25 +27,23 @@ class FeatureServiceOAPIF extends DataSourceOAPI implements FeatureSource {
 
   @override
   DataSourceMeta createMeta(
-      {required String title,
-      String? description,
-      required Links links,
-      required List<String> conformance,
-      required List<CollectionMeta> collections}) {
-    return DataSourceMeta(
-      title: title,
-      description: description,
-      links: links,
-      conformance: conformance,
-      collections: collections,
-    );
-  }
+          {required String title,
+          String? description,
+          required Links links,
+          required List<String> conformance,
+          required List<CollectionMeta> collections}) =>
+      DataSourceMeta(
+        title: title,
+        description: description,
+        links: links,
+        conformance: conformance,
+        collections: collections,
+      );
 
   @override
   Future<FeatureItems> items(String collectionId,
-      {FeatureFilter? filter}) async {
-    return (await itemsPaged(collectionId, filter: filter)).current;
-  }
+          {FeatureFilter? filter}) async =>
+      (await itemsPaged(collectionId, filter: filter)).current;
 
   @override
   Future<Paged<FeatureItems>> itemsPaged(String collectionId,
@@ -53,9 +51,9 @@ class FeatureServiceOAPIF extends DataSourceOAPI implements FeatureSource {
     // read "collections/{collectionId}/items" and return as paged response
 
     // resolve key-value parameters needed for a items request
-    final params;
+    final Map<String, dynamic> params;
     if (filter == null) {
-      params = {
+      params = <String, dynamic>{
         //'f': 'json',
       };
     } else {
@@ -65,7 +63,7 @@ class FeatureServiceOAPIF extends DataSourceOAPI implements FeatureSource {
       final crs = filter.crs;
       final boundsCrs = filter.boundsCrs;
       final bounds = filter.bounds?.valuesAsString();
-      params = {
+      params = <String, dynamic>{
         //'f': 'json',
         if (limit != null) 'limit': limit.toString(),
         if (crs != null) 'crs': crs.id,
@@ -102,10 +100,10 @@ class _PagedFeaturesOAPIF extends Paged<FeatureItems> {
     if (!body.hasType('application', 'geo+json', 'json')) {
       throw FormatException('GeoJSON content required.');
     }
-    final json = await body.decodeJson();
+    final json = await body.decodeJson() as Map<String, dynamic>;
 
     // check also for an optional "next" link
-    final links = Links.fromJson(json['links']);
+    final links = Links.fromJson(json['links'] as Iterable);
     final next = links.next(type: 'application/geo+json');
 
     // parse feature items (meta + actual features) and return a paged result
@@ -139,18 +137,20 @@ class _PagedFeaturesOAPIF extends Paged<FeatureItems> {
 }
 
 /// Parses a "collections/{id}/items" feature items from a OGC API service.
-FeatureItems _featureItemsFromJson(Map<String, dynamic> json) => FeatureItems(
-      collection: geoJSON.featureCollection(json),
-      meta: ItemsMeta(
-        timeStamp: _parseTimeStamp(json['timeStamp']) ?? DateTime.now(),
-        numberMatched: json['numberMatched'],
-        numberReturned: json['numberReturned'],
-      ),
-    );
+FeatureItems _featureItemsFromJson(Map<String, dynamic> json) {
+  return FeatureItems(
+    collection: geoJSON.featureCollection(json),
+    meta: ItemsMeta(
+      timeStamp: _parseTimeStamp(json['timeStamp']) ?? DateTime.now(),
+      numberMatched: json['numberMatched'] as int?,
+      numberReturned: json['numberReturned'] as int?,
+    ),
+  );
+}
 
 DateTime? _parseTimeStamp(dynamic data) {
   if (data != null) {
-    return DateTime.tryParse(data);
+    return DateTime.tryParse(data as String);
   }
   return null;
 }
