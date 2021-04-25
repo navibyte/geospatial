@@ -43,7 +43,7 @@ packages:
 Code @ GitHub | SDK | Description 
 ------------- | --- | -----------
 :globe_with_meridians: [geocore](dart/geocore) | Dart | Geospatial data structures (features, geometry and metadata) and utilities [GeoJSON](https://geojson.org/) parser). 
-:earth_americas: [geodata](dart/geodata) | Dart | A geospatial client to read [§GeoJSON](https://geojson.org/) and other geospatial data sources. 
+:earth_americas: [geodata](dart/geodata) | Dart | A geospatial client to read [GeoJSON](https://geojson.org/) and other geospatial data sources. 
 
 ## :newspaper_roll: News
 
