@@ -41,6 +41,32 @@ class Point2 extends Point<num> with EquatableMixin {
     );
   }
 
+  /// A point parsed from [text] with coordinates in order: x, y.
+  ///
+  /// If [parser] is null, then WKT [text] like "10.0 20.0" is expected.
+  ///
+  /// Throws FormatException if cannot parse.
+  factory Point2.parse(String text, {ParseCoords? parser}) => parser != null
+      ? Point2.from(parser.call(text))
+      : parseWktPoint<Point2>(text, Point2.geometry);
+
+  /// A point parsed from [text] with coordinates in order: x, y.
+  ///
+  /// If [parser] is null, then WKT [text] like "10.0 20.0" is expected.
+  ///
+  /// Returns null if cannot parse.
+  static Point2? tryParse(String text, {ParseCoords? parser}) {
+    try {
+      return Point2.parse(text, parser: parser);
+    } on Exception {
+      return null;
+    }
+  }
+
+  /// A [PointFactory] creating [Point2] instances.
+  static const PointFactory<Point2> geometry =
+      CastingPointFactory<Point2>(Point2.origin());
+
   final num _x, _y;
 
   @override
@@ -117,6 +143,32 @@ class Point2m extends Point2 {
     );
   }
 
+  /// A point parsed from [text] with coordinates in order: x, y, m.
+  ///
+  /// If [parser] is null, then WKT [text] like "10.0 20.0 5" is expected.
+  ///
+  /// Throws FormatException if cannot parse.
+  factory Point2m.parse(String text, {ParseCoords? parser}) => parser != null
+      ? Point2m.from(parser.call(text))
+      : parseWktPoint<Point2m>(text, Point2m.geometry);
+
+  /// A point parsed from [text] with coordinates in order: x, y, m.
+  ///
+  /// If [parser] is null, then WKT [text] like "10.0 20.0 5" is expected.
+  ///
+  /// Returns null if cannot parse.
+  static Point2m? tryParse(String text, {ParseCoords? parser}) {
+    try {
+      return Point2m.parse(text, parser: parser);
+    } on Exception {
+      return null;
+    }
+  }
+
+  /// A [PointFactory] creating [Point2m] instances.
+  static const PointFactory<Point2m> geometry =
+      CastingPointFactory<Point2m>(Point2m.origin());
+
   final num _m;
 
   @override
@@ -182,6 +234,32 @@ class Point3 extends Point2 {
       coords.elementAt(start + 2),
     );
   }
+
+  /// A point parsed from [text] with coordinates in order: x, y, z.
+  ///
+  /// If [parser] is null, then WKT [text] like "10.0 20.0 30.0" is expected.
+  ///
+  /// Throws FormatException if cannot parse.
+  factory Point3.parse(String text, {ParseCoords? parser}) => parser != null
+      ? Point3.from(parser.call(text))
+      : parseWktPoint<Point3>(text, Point3.geometry);
+
+  /// A point parsed from [text] with coordinates in order: x, y, z.
+  ///
+  /// If [parser] is null, then WKT [text] like "10.0 20.0 30.0" is expected.
+  ///
+  /// Returns null if cannot parse.
+  static Point3? tryParse(String text, {ParseCoords? parser}) {
+    try {
+      return Point3.parse(text, parser: parser);
+    } on Exception {
+      return null;
+    }
+  }
+
+  /// A [PointFactory] creating [Point3] instances.
+  static const PointFactory<Point3> geometry =
+      CastingPointFactory<Point3>(Point3.origin());
 
   final num _z;
 
@@ -253,6 +331,32 @@ class Point3m extends Point3 {
     );
   }
 
+  /// A point parsed from [text] with coordinates in order: x, y, z, m.
+  ///
+  /// If [parser] is null, then WKT [text] like "10.0 20.0 30.0 5" is expected.
+  ///
+  /// Throws FormatException if cannot parse.
+  factory Point3m.parse(String text, {ParseCoords? parser}) => parser != null
+      ? Point3m.from(parser.call(text))
+      : parseWktPoint<Point3m>(text, Point3m.geometry);
+
+  /// A point parsed from [text] with coordinates in order: x, y, z, m.
+  ///
+  /// If [parser] is null, then WKT [text] like "10.0 20.0 30.0 5" is expected.
+  ///
+  /// Returns null if cannot parse.
+  static Point3m? tryParse(String text, {ParseCoords? parser}) {
+    try {
+      return Point3m.parse(text, parser: parser);
+    } on Exception {
+      return null;
+    }
+  }
+
+  /// A [PointFactory] creating [Point3m] instances.
+  static const PointFactory<Point3m> geometry =
+      CastingPointFactory<Point3m>(Point3m.origin());
+
   final num _m;
 
   @override
@@ -320,6 +424,32 @@ class Point2i extends Point<int> with EquatableMixin {
       coords.elementAt(start + 1).round(),
     );
   }
+
+  /// A point parsed from [text] with coordinates in order: x, y.
+  ///
+  /// If [parser] is null, then WKT [text] like "10 20" is expected.
+  ///
+  /// Throws FormatException if cannot parse.
+  factory Point2i.parse(String text, {ParseCoordsInt? parser}) => parser != null
+      ? Point2i.from(parser.call(text))
+      : parseWktPoint<Point2i>(text, Point2i.geometry);
+
+  /// A point parsed from [text] with coordinates in order: x, y.
+  ///
+  /// If [parser] is null, then WKT [text] like "10 20" is expected.
+  ///
+  /// Returns null if cannot parse.
+  static Point2i? tryParse(String text, {ParseCoordsInt? parser}) {
+    try {
+      return Point2i.parse(text, parser: parser);
+    } on Exception {
+      return null;
+    }
+  }
+
+  /// A [PointFactory] creating [Point2i] instances.
+  static const PointFactory<Point2i> geometry =
+      CastingPointFactory<Point2i>(Point2i.origin());
 
   final int _x, _y;
 
@@ -402,6 +532,32 @@ class Point3i extends Point2i {
       coords.elementAt(start + 2).round(),
     );
   }
+
+  /// A point parsed from [text] with coordinates in order: x, y, z.
+  ///
+  /// If [parser] is null, then WKT [text] like "10 20 30" is expected.
+  ///
+  /// Throws FormatException if cannot parse.
+  factory Point3i.parse(String text, {ParseCoordsInt? parser}) => parser != null
+      ? Point3i.from(parser.call(text))
+      : parseWktPoint<Point3i>(text, Point3i.geometry);
+
+  /// A point parsed from [text] with coordinates in order: x, y, z.
+  ///
+  /// If [parser] is null, then WKT [text] like "10 20 30" is expected.
+  ///
+  /// Returns null if cannot parse.
+  static Point3i? tryParse(String text, {ParseCoordsInt? parser}) {
+    try {
+      return Point3i.parse(text, parser: parser);
+    } on Exception {
+      return null;
+    }
+  }
+
+  /// A [PointFactory] creating [Point3i] instances.
+  static const PointFactory<Point3i> geometry =
+      CastingPointFactory<Point3i>(Point3i.origin());
 
   final int _z;
 

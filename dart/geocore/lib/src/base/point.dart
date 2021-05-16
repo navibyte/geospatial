@@ -15,7 +15,7 @@ abstract class Point<C extends num> extends Geometry
   const Point();
 
   /// Create an empty point.
-  factory Point.empty({bool is3D, bool hasM}) = _PointEmpty;
+  factory Point.empty({bool is3D, bool hasM}) = _PointEmpty<C>;
 
   @override
   int get dimension => 0;
@@ -99,7 +99,7 @@ abstract class Point<C extends num> extends Geometry
 /// A private implementation for an empty point with coordinate zero values.
 /// The implementation may change in future.
 @immutable
-class _PointEmpty<C extends num> extends Point<C> {
+class _PointEmpty<C extends num> extends Point<C> with EquatableMixin {
   const _PointEmpty({this.is3D = false, this.hasM = false});
 
   @override
@@ -118,10 +118,10 @@ class _PointEmpty<C extends num> extends Point<C> {
   bool get isNotEmpty => false;
 
   @override
-  int get coordinateDimension => is3D ? 3 : 2;
+  int get coordinateDimension => spatialDimension + (hasM ? 1 : 0);
 
   @override
-  int get spatialDimension => coordinateDimension + (hasM ? 1 : 0);
+  int get spatialDimension => is3D ? 3 : 2;
 
   @override
   C operator [](int i) => _zero();
@@ -137,4 +137,7 @@ class _PointEmpty<C extends num> extends Point<C> {
 
   @override
   Point newFrom(Iterable<num> coords, {int? offset, int? length}) => this;
+
+  @override
+  List<Object?> get props => [is3D, hasM];
 }

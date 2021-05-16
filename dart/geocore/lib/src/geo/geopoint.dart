@@ -11,6 +11,7 @@ import 'package:meta/meta.dart';
 
 import '../base.dart';
 import '../utils/geography.dart';
+import '../utils/wkt.dart';
 
 /// A geographic position with longitude, latitude and optional elevation.
 ///
@@ -70,6 +71,32 @@ class GeoPoint2 extends GeoPoint with EquatableMixin {
       coords.elementAt(start + 1).toDouble(),
     );
   }
+
+  /// A point parsed from [text] with coordinates in order: lon, lat.
+  ///
+  /// If [parser] is null, then WKT [text] like "10.0 20.0" is expected.
+  ///
+  /// Throws FormatException if cannot parse.
+  factory GeoPoint2.parse(String text, {ParseCoords? parser}) => parser != null
+      ? GeoPoint2.from(parser.call(text))
+      : parseWktPoint<GeoPoint2>(text, GeoPoint2.geometry);
+
+  /// A point parsed from [text] with coordinates in order: lon, lat.
+  ///
+  /// If [parser] is null, then WKT [text] like "10.0 20.0" is expected.
+  ///
+  /// Returns null if cannot parse.
+  static GeoPoint2? tryParse(String text, {ParseCoords? parser}) {
+    try {
+      return GeoPoint2.parse(text, parser: parser);
+    } on Exception {
+      return null;
+    }
+  }
+
+  /// A [PointFactory] creating [GeoPoint2] instances.
+  static const PointFactory<GeoPoint2> geometry =
+      CastingPointFactory<GeoPoint2>(GeoPoint2.origin());
 
   final double _lon, _lat;
 
@@ -166,6 +193,32 @@ class GeoPoint2m extends GeoPoint2 {
     );
   }
 
+  /// A point parsed from [text] with coordinates in order: lon, lat, m.
+  ///
+  /// If [parser] is null, then WKT [text] like "10.0 20.0 5" is expected.
+  ///
+  /// Throws FormatException if cannot parse.
+  factory GeoPoint2m.parse(String text, {ParseCoords? parser}) => parser != null
+      ? GeoPoint2m.from(parser.call(text))
+      : parseWktPoint<GeoPoint2m>(text, GeoPoint2m.geometry);
+
+  /// A point parsed from [text] with coordinates in order: lon, lat, m.
+  ///
+  /// If [parser] is null, then WKT [text] like "10.0 20.0 5" is expected.
+  ///
+  /// Returns null if cannot parse.
+  static GeoPoint2m? tryParse(String text, {ParseCoords? parser}) {
+    try {
+      return GeoPoint2m.parse(text, parser: parser);
+    } on Exception {
+      return null;
+    }
+  }
+
+  /// A [PointFactory] creating [GeoPoint2m] instances.
+  static const PointFactory<GeoPoint2m> geometry =
+      CastingPointFactory<GeoPoint2m>(GeoPoint2m.origin());
+
   @override
   final double m;
 
@@ -237,6 +290,32 @@ class GeoPoint3 extends GeoPoint2 {
       coords.elementAt(start + 2).toDouble(),
     );
   }
+
+  /// A point parsed from [text] with coordinates in order: lon, lat, elev.
+  ///
+  /// If [parser] is null, then WKT [text] like "10.0 20.0 30.0" is expected.
+  ///
+  /// Throws FormatException if cannot parse.
+  factory GeoPoint3.parse(String text, {ParseCoords? parser}) => parser != null
+      ? GeoPoint3.from(parser.call(text))
+      : parseWktPoint<GeoPoint3>(text, GeoPoint3.geometry);
+
+  /// A point parsed from [text] with coordinates in order: lon, lat, elev.
+  ///
+  /// If [parser] is null, then WKT [text] like "10.0 20.0 30.0" is expected.
+  ///
+  /// Returns null if cannot parse.
+  static GeoPoint3? tryParse(String text, {ParseCoords? parser}) {
+    try {
+      return GeoPoint3.parse(text, parser: parser);
+    } on Exception {
+      return null;
+    }
+  }
+
+  /// A [PointFactory] creating [GeoPoint3] instances.
+  static const PointFactory<GeoPoint3> geometry =
+      CastingPointFactory<GeoPoint3>(GeoPoint3.origin());
 
   final double _elev;
 
@@ -324,6 +403,32 @@ class GeoPoint3m extends GeoPoint3 {
       coords.elementAt(start + 3).toDouble(),
     );
   }
+
+  /// A point parsed from [text] with coordinates in order: lon, lat, elev, m.
+  ///
+  /// If [parser] is null, then WKT [text] like "10.0 20.0 30.0 5" is expected.
+  ///
+  /// Throws FormatException if cannot parse.
+  factory GeoPoint3m.parse(String text, {ParseCoords? parser}) => parser != null
+      ? GeoPoint3m.from(parser.call(text))
+      : parseWktPoint<GeoPoint3m>(text, GeoPoint3m.geometry);
+
+  /// A point parsed from [text] with coordinates in order: lon, lat, elev, m.
+  ///
+  /// If [parser] is null, then WKT [text] like "10.0 20.0 30.0 5" is expected.
+  ///
+  /// Returns null if cannot parse.
+  static GeoPoint3m? tryParse(String text, {ParseCoords? parser}) {
+    try {
+      return GeoPoint3m.parse(text, parser: parser);
+    } on Exception {
+      return null;
+    }
+  }
+
+  /// A [PointFactory] creating [GeoPoint3m] instances.
+  static const PointFactory<GeoPoint3m> geometry =
+      CastingPointFactory<GeoPoint3m>(GeoPoint3m.origin());
 
   @override
   final double m;

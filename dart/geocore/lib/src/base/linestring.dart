@@ -18,20 +18,41 @@ enum LineStringType {
 /// A line string containing a chain of points.
 @immutable
 class LineString<T extends Point> extends Geometry with EquatableMixin {
-  /// Creates a line string from [chain] of points conforming by [type].
+  /// Create [LineString] from [chain] of points conforming by [type].
   LineString(this.chain, {this.type = LineStringType.any}) {
     validate();
   }
 
-  /// Creates a line string from [chain] of points (0 or >= 2 items).
-  factory LineString.any(PointSeries<T> chain) =>
-      LineString(chain, type: LineStringType.any);
+  /// Create [LineString] from [chain] of points (0 or >= 2 items).
+  factory LineString.any(PointSeries<T> chain) => LineString<T>(chain);
 
-  /// Creates a linear ring from a closed and simple [chain] of points.
+  /// Create a linear ring from a closed and simple [chain] of points.
   ///
   /// There must be zero or at least four points in the chain.
   factory LineString.ring(PointSeries<T> chain) =>
-      LineString(chain, type: LineStringType.ring);
+      LineString<T>(chain, type: LineStringType.ring);
+
+  /// Create [LineString] from [values] with a chain of points.
+  ///
+  /// An optional [bounds] can be provided or it's lazy calculated if null.
+  factory LineString.make(
+          Iterable<Iterable<num>> values, PointFactory<T> pointFactory,
+          {LineStringType type = LineStringType.any, Bounds? bounds}) =>
+      LineString<T>(PointSeries<T>.make(values, pointFactory, bounds: bounds),
+          type: type);
+
+  /// Create [LineString] parsed from [text] with a chain of points.
+  ///
+  /// If [parser] is null, then WKT [text] like "25.1 53.1, 25.2 53.2" is
+  /// expected.
+  ///
+  /// Throws FormatException if cannot parse.
+  factory LineString.parse(String text, PointFactory<T> pointFactory,
+          {LineStringType type = LineStringType.any,
+          ParseCoordsList? parser}) =>
+      parser != null
+          ? LineString<T>.make(parser.call(text), pointFactory, type: type)
+          : parseWktLineString<T>(text, pointFactory, type: type);
 
   @protected
   void validate() {

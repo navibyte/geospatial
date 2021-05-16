@@ -31,7 +31,7 @@ abstract class Feature<T extends Geometry> extends Entity implements Bounded {
           required PropertyMap properties,
           T? geometry,
           Bounds? bounds}) =>
-      _FeatureBase(
+      _FeatureBase<T>(
         id: id,
         geometry: geometry,
         properties: properties,
@@ -53,7 +53,7 @@ abstract class Feature<T extends Geometry> extends Entity implements Bounded {
           required Map<String, dynamic> properties,
           T? geometry,
           Bounds? bounds}) =>
-      _FeatureBase(
+      _FeatureBase<T>(
         id: Identifier.idOrNull(id),
         properties: PropertyMap.view(properties),
         geometry: geometry,

@@ -44,7 +44,7 @@ abstract class Geometry extends Bounded {
 /// An empty (non-existent) geometry as an private implementation.
 /// The implementation may change in future.
 @immutable
-class _EmptyGeometry extends Geometry {
+class _EmptyGeometry extends Geometry with EquatableMixin {
   const _EmptyGeometry();
 
   @override
@@ -58,4 +58,7 @@ class _EmptyGeometry extends Geometry {
 
   @override
   Bounds get bounds => Bounds.empty();
+
+  @override
+  List<Object?> get props => [];
 }

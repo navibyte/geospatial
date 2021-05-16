@@ -9,12 +9,13 @@ part of 'base.dart';
 /// A base interface for a series of points with getters to access point items.
 ///
 /// A series of points could represents a geometry path, a line string,
-/// a polygon, a multi point, a vertex array or any other collection for points.
+/// an outer or inner linear ring of a polygon, a multi point, a vertex array or
+/// any other collection for points.
 abstract class PointSeries<T extends Point>
     extends _BatchedSeries<PointSeries<T>, T> {
   const PointSeries();
 
-  /// Create an [PointSeries] instance backed by [source].
+  /// Create a [PointSeries] instance backed by [source].
   ///
   /// An optional [bounds] can be provided or it's lazy calculated if null.
   factory PointSeries.view(Iterable<T> source, {Bounds? bounds}) =
@@ -25,6 +26,28 @@ abstract class PointSeries<T extends Point>
   /// An optional [bounds] can be provided or it's lazy calculated if null.
   factory PointSeries.from(Iterable<T> source, {Bounds? bounds}) =>
       PointSeries<T>.view(List<T>.unmodifiable(source), bounds: bounds);
+
+  /// Create [PointSeries] from [values] with a list of points.
+  ///
+  /// An optional [bounds] can be provided or it's lazy calculated if null.
+  factory PointSeries.make(
+          Iterable<Iterable<num>> values, PointFactory<T> pointFactory,
+          {Bounds? bounds}) =>
+      PointSeries<T>.from(
+          values.map<T>((coords) => pointFactory.newFrom(coords)),
+          bounds: bounds);
+
+  /// Create [PointSeries] parsed from [text] with a list of points.
+  ///
+  /// If [parser] is null, then WKT [text] like "25.1 53.1, 25.2 53.2" or
+  /// "(25.1 53.1), (25.2 53.2)" is expected.
+  ///
+  /// Throws FormatException if cannot parse.
+  factory PointSeries.parse(String text, PointFactory<T> pointFactory,
+          {ParseCoordsList? parser}) =>
+      parser != null
+          ? PointSeries<T>.make(parser.call(text), pointFactory)
+          : parseWktPointSeries<T>(text, pointFactory);
 
   /// X coordinate as num at [index].
   ///

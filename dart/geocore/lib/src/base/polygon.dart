@@ -9,12 +9,35 @@ part of 'base.dart';
 /// A polygon with an exterior and optional interior boundaries.
 @immutable
 class Polygon<T extends Point> extends Geometry with EquatableMixin {
-  /// Create a polygon from [rings] with at least exterior boundary at index 0.
+  /// Create [Polygon] from [rings] with at least exterior boundary at index 0.
   ///
   /// Contains also interior boundaries if length is >= 2.
   ///
   /// A polygon is considered empty if the exterior is empty.
-  Polygon(BoundedSeries<LineString<T>> rings) : rings = validate(rings);
+  Polygon(BoundedSeries<LineString<T>> rings) : rings = validate<T>(rings);
+
+  /// Create [Polygon] from [values] with a list of rings.
+  ///
+  /// An optional [bounds] can be provided or it's lazy calculated if null.
+  factory Polygon.make(Iterable<Iterable<Iterable<num>>> values,
+          PointFactory<T> pointFactory, {Bounds? bounds}) =>
+      Polygon<T>(BoundedSeries.from(
+          values.map<LineString<T>>((pointSeries) => LineString<T>.make(
+              pointSeries, pointFactory,
+              type: LineStringType.ring)),
+          bounds: bounds));
+
+  /// Create [Polygon] parsed from [text] with a list of rings.
+  ///
+  /// If [parser] is null, then WKT [text] like
+  /// "(1 1, 1 2, 2 1, 1 1), (1.1 1.1, 1.1 1.2, 1.2 1.1, 1.1 1.1)" is expected.
+  ///
+  /// Throws FormatException if cannot parse.
+  factory Polygon.parse(String text, PointFactory<T> pointFactory,
+          {ParseCoordsListList? parser}) =>
+      parser != null
+          ? Polygon<T>.make(parser.call(text), pointFactory)
+          : parseWktPolygon<T>(text, pointFactory);
 
   /// Validate [rings] to have at least one exterior and all must be rings.
   static BoundedSeries<LineString<T>> validate<T extends Point>(

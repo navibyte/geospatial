@@ -42,10 +42,17 @@ packages:
 
 Code @ GitHub | SDK | Description 
 ------------- | --- | -----------
-:globe_with_meridians: [geocore](dart/geocore) | Dart | Geospatial data structures (features, geometry and metadata) and utilities [GeoJSON](https://geojson.org/) parser). 
+:globe_with_meridians: [geocore](dart/geocore) | Dart | Geospatial data structures (features, geometry and metadata) and utilities ([GeoJSON](https://geojson.org/) and partial support for [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)). 
 :earth_americas: [geodata](dart/geodata) | Dart | A geospatial client to read [GeoJSON](https://geojson.org/) and other geospatial data sources. 
 
 ## :newspaper_roll: News
+
+2021-05-16
+* [geocore](dart/geocore) with new BETA version 0.6.1
+  * initial support for [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) or WKT
+  * Also easier to use factories for points, line strings, polygons, etc.
+    * Make geometries from arrays of num values.
+    * Parse geometries from text with default implementation based on WKT.
 
 2021-04-25
 * BETA version 0.6.0

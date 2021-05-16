@@ -1,3 +1,14 @@
+## 0.6.1
+
+- BETA version 0.6.1 with partial support for [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) or WKT
+- Also easier to use factories for points, line strings, polygons, etc.
+  - Make geometries from arrays of num values.
+  - Parse geometries from text with default implementation based on WKT.
+    - Other text encodings can be implemented using custom parsers. 
+- [Initial WKT support](https://github.com/navibyte/geospatial/issues/22)
+- [Easier constructor to make point and other geometry instances.](https://github.com/navibyte/geospatial/issues/23)    
+- Some other minor fixes.    
+
 ## 0.6.0
 
 - BETA version 0.6.0 with minor breaking changes

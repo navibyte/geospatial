@@ -17,3 +17,4 @@ export 'geo.dart';
 export 'meta_extent.dart';
 export 'parse_factory.dart';
 export 'parse_geojson.dart';
+export 'parse_wkt.dart';

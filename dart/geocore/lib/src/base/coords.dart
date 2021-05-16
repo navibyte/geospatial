@@ -6,6 +6,46 @@
 
 part of 'base.dart';
 
+/// A function to parse coordinate values from [text].
+///
+/// Such values can be used to create for example point geometries.
+///
+/// Throws FormatException if cannot parse.
+typedef ParseCoords = Iterable<num> Function(String text);
+
+/// A function to parse coordinate values as integers from [text].
+///
+/// Such values can be used to create for example point geometries.
+///
+/// Throws FormatException if cannot parse.
+typedef ParseCoordsInt = Iterable<int> Function(String text);
+
+/// A function to parse a list of coordinate values from [text].
+///
+/// Such values can be used to create for example point series or linear
+/// strings.
+///
+/// Throws FormatException if cannot parse.
+typedef ParseCoordsList = Iterable<Iterable<num>> Function(String text);
+
+/// A function to parse a list of a list of coordinate values from [text].
+///
+/// Such values can be used to create for example a list of rings (or closed
+/// liner strings) for a polygon.
+///
+/// Throws FormatException if cannot parse.
+typedef ParseCoordsListList = Iterable<Iterable<Iterable<num>>> Function(
+    String text);
+
+/// A function to parse a list of a list of a list of coordinates from [text].
+///
+/// Such values can be used to create for example a multi polygon with each
+/// polygon containg a list of rings (or closed liner strings).
+///
+/// Throws FormatException if cannot parse.
+typedef ParseCoordsListListList = Iterable<Iterable<Iterable<Iterable<num>>>>
+    Function(String text);
+
 /// An private interface with members telling whethen an object is measureable.
 ///
 /// Known (public) sub classes: [Point], [PointFactory], [Bounds],
@@ -100,4 +140,24 @@ abstract class PointFactory<T extends Point> extends CoordinateFactory<T> {
   /// coordinate value members as this.
   @override
   T newFrom(Iterable<num> coords, {int? offset, int? length});
+}
+
+/// A [PointFactory] that casts points created by [wrapped] to the type [T].
+///
+/// The [wrapped] point factory MUST return instance castable to [T].
+class CastingPointFactory<T extends Point> implements PointFactory<T> {
+  const CastingPointFactory(this.wrapped);
+
+  final PointFactory wrapped;
+
+  @override
+  bool get hasM => wrapped.hasM;
+
+  @override
+  T newFrom(Iterable<num> coords, {int? offset, int? length}) =>
+      wrapped.newFrom(coords, offset: offset, length: length) as T;
+
+  @override
+  T newWith({num x = 0.0, num y = 0.0, num? z, num? m}) =>
+      wrapped.newWith(x: x, y: y, z: z, m: m) as T;
 }

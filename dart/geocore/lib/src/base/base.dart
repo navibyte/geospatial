@@ -12,6 +12,7 @@ import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
 import '../utils/bounds.dart';
+import '../utils/wkt.dart';
 
 part 'batched.dart';
 part 'bounded.dart';

@@ -80,4 +80,70 @@ void main() {
       expect(f.id?.toString(), 'f2');
     });
   });
+
+  group('Geometry tests using GeoPoint2', () {
+    setUp(() {
+      // NOP
+    });
+
+    final a2 = GeoPoint2.lonLat(25.1, 53.1);
+    final b2 = GeoPoint2.lonLat(25.2, 53.2);
+
+    test('GeoPoint2', () {
+      expect(GeoPoint2.latLon(53.1, 25.1), a2);
+      expect(GeoPoint2.from([25.1, 53.1]), a2);
+      expect(GeoPoint2.parse('25.1 53.1'), a2);
+      expect(GeoPoint2.parse('25.1, 53.1', parser: _parseCoordsTest), a2);
+    });
+
+    test('PointSeries<GeoPoint2>', () {
+      final expected = PointSeries.from([a2, b2]);
+      expect(
+          PointSeries.make([
+            [25.1, 53.1],
+            [25.2, 53.2]
+          ], GeoPoint2.geometry),
+          expected);
+      expect(PointSeries.parse('25.1 53.1, 25.2 53.2', GeoPoint2.geometry),
+          expected);
+      expect(
+          PointSeries.parse('25.1, 53.1, 25.2, 53.2', GeoPoint2.geometry,
+              parser: _parseCoordsListTest(2)),
+          expected);
+    });
+
+    test('MultiPoint<GeoPoint2>', () {
+      final expected = MultiPoint(PointSeries.from([a2, b2]));
+      expect(
+          MultiPoint.make([
+            [25.1, 53.1],
+            [25.2, 53.2]
+          ], GeoPoint2.geometry),
+          expected);
+      expect(MultiPoint.parse('25.1 53.1, 25.2 53.2', GeoPoint2.geometry),
+          expected);
+      expect(MultiPoint.parse('(25.1 53.1), (25.2 53.2)', GeoPoint2.geometry),
+          expected);
+      expect(
+          MultiPoint.parse('25.1, 53.1, 25.2, 53.2', GeoPoint2.geometry,
+              parser: _parseCoordsListTest(2)),
+          expected);
+    });
+  });
 }
+
+Iterable<num> _parseCoordsTest(String text) =>
+    text.trim().split(',').map<num>((c) => double.parse(c.trim()));
+
+ParseCoordsList _parseCoordsListTest(int coordDim) => (String text) {
+      final splitted = text.trim().split(',');
+      final result = <Iterable<num>>[];
+      for (var i = 0; i + (coordDim - 1) < splitted.length; i += coordDim) {
+        final coord = <num>[];
+        for (var j = 0; j < coordDim; j++) {
+          coord.add(double.parse(splitted[i + j]));
+        }
+        result.add(coord);
+      }
+      return result;
+    };
