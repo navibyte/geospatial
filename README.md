@@ -135,6 +135,7 @@ Future enhancement **candidates** for [geocore](dart/geocore), not in any order:
 * [Add EWKT support, handle axis order when reading WKT #29](https://github.com/navibyte/geospatial/issues/29)
 * [Coordinate transformations on core classes and reading datasource #15](https://github.com/navibyte/geospatial/issues/15)
 * [Add support for other geometry classes known by WKT #30](https://github.com/navibyte/geospatial/issues/30)
+* [Define consistent mini library exports with base classes included #31](https://github.com/navibyte/geospatial/issues/31)
 
 See [other issues](https://github.com/navibyte/geospatial/issues) too.
 
