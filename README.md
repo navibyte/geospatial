@@ -126,7 +126,7 @@ from the stable channel. Please see the official
   * [geocore](https://pub.dev/packages/geocore)
   * [geodata](https://pub.dev/packages/geodata)
 
-## Roadmap
+## :building_construction: Roadmap
 
 Future enhancement **candidates** for [geocore](dart/geocore), not in any order:
 * [Optimizations and consistency for geometry, feature and meta classes #27](https://github.com/navibyte/geospatial/issues/27) 
