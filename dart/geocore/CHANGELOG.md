@@ -1,3 +1,9 @@
+## 0.6.2
+
+- BETA version 0.6.2 with documentation updates
+- [Documentation updates with explaining features, geometries and other classes #25](https://github.com/navibyte/geospatial/issues/25)
+- [Factory and other fixes on Bounds, GeometryCollection, Instant etc. #26](https://github.com/navibyte/geospatial/issues/26)
+
 ## 0.6.1
 
 - BETA version 0.6.1 with partial support for [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) or WKT

@@ -13,6 +13,18 @@ class GeometryCollection<T extends Geometry> extends Geometry
   /// Creates [GeometryCollection] from [geometries].
   GeometryCollection(this.geometries);
 
+  /// Create an [GeometryCollection] instance backed by [source].
+  ///
+  /// An optional [bounds] can be provided or it's lazy calculated if null.
+  factory GeometryCollection.view(Iterable<T> source, {Bounds? bounds}) =>
+      GeometryCollection(BoundedSeries<T>.view(source, bounds: bounds));
+
+  /// Create an immutable [GeometryCollection] with items copied from [source].
+  ///
+  /// An optional [bounds] can be provided or it's lazy calculated if null.
+  factory GeometryCollection.from(Iterable<T> source, {Bounds? bounds}) =>
+      GeometryCollection(BoundedSeries<T>.from(source, bounds: bounds));
+
   /// All the [geometries] for this multi point.
   final BoundedSeries<T> geometries;
 
@@ -144,8 +156,8 @@ class MultiPolygon<T extends Point> extends Geometry with EquatableMixin {
   /// Create [MultiPolygon] from [text] with a list of rings for polygons.
   ///
   /// If [parser] is null, then WKT [text] like
-  /// "((1 1, 1 2, 2 1, 1 1), (1.1 1.1, 1.1 1.2, 1.2 1.1, 1.1 1.1))" is
-  /// expected.
+  /// "((40 15, 50 50, 15 45, 40 15)), ((80 55, 90 90, 55 85, 50 55, 80 55))"
+  /// is expected.
   ///
   /// Throws FormatException if cannot parse.
   factory MultiPolygon.parse(String text, PointFactory<T> pointFactory,

@@ -17,6 +17,28 @@ abstract class Bounds<T extends Point> extends Geometry
   /// Create bounds with required (and non-empty) [min] and [max] points.
   factory Bounds.of({required T min, required T max}) = BoundsBase;
 
+  /// Create [Bounds] from [values] with two points (both a list of nums).
+  factory Bounds.make(
+          Iterable<Iterable<num>> values, PointFactory<T> pointFactory) =>
+      Bounds<T>.of(
+          min: pointFactory.newFrom(values.elementAt(0)),
+          max: pointFactory.newFrom(values.elementAt(1)));
+
+  /// Create [Bounds] parsed from [text] with two points.
+  ///
+  /// If [parser] is null, then WKT [text] like "25.1 53.1, 25.2 53.2" is
+  /// expected.
+  factory Bounds.parse(String text, PointFactory<T> pointFactory,
+      {ParseCoordsList? parser}) {
+    if (parser != null) {
+      final coordsList = parser.call(text);
+      return Bounds<T>.make(coordsList, pointFactory);
+    } else {
+      final points = parseWktPointSeries(text, pointFactory);
+      return Bounds<T>.of(min: points[0], max: points[1]);
+    }
+  }
+
   /// Return an [empty] bounds that does not intersect with any other bounds.
   static Bounds empty() => _emptyBounds;
 

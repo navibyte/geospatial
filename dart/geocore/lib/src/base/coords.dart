@@ -103,14 +103,14 @@ abstract class CoordinateFactory<T extends Geometry> implements _Measured {
       {int? offset, int? length}) {
     if ((offset == null && length != null) ||
         (offset != null && length == null)) {
-      throw ArgumentError('Offset and length must be both null or non-null');
+      throw FormatException('Offset and length must be both null or non-null');
     }
     final start = offset ?? 0;
     final len = length ?? coords.length;
     if (start < 0 ||
         start + atLeastLen - 1 >= coords.length ||
         atLeastLen > len) {
-      throw RangeError('Coords segment out of range');
+      throw FormatException('Coords segment out of range');
     }
   }
 }

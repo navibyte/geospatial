@@ -14,10 +14,20 @@ class Instant with EquatableMixin {
 
   /// Creates an instant from a string.
   ///
-  /// The input [str] must be formatted according to RFC 3339.
+  /// The input [text] must be formatted according to RFC 3339. See
+  /// `DateTime.parse` for reference of valid inputs.
   ///
   /// Throws FormatException if an interval cannot be parsed.
-  factory Instant.parse(String str) => Instant(DateTime.parse(str));
+  factory Instant.parse(String text) => Instant(DateTime.parse(text));
+
+  /// Creates an instant from a string or returns null if cannot parse.
+  ///
+  /// The input [text] must be formatted according to RFC 3339. See
+  /// `DateTime.parse` for reference of valid inputs.
+  static Instant? tryParse(String text) {
+    final t = DateTime.tryParse(text);
+    return t != null ? Instant(t) : null;
+  }
 
   /// The time stamp of this instant.
   final DateTime time;
@@ -43,22 +53,10 @@ class Interval with EquatableMixin {
       : start = null,
         end = null;
 
-  /// An interval of a string ('../end', 'start/..' or 'start/end').
-  ///
-  /// Start and end time stamps must be formatted according to RFC 3339.
-  ///
-  /// Throws FormatException if an interval cannot be parsed.
-  factory Interval.parse(String str) {
-    final parts = str.split('/');
-    if (parts.length == 2) {
-      return Interval.fromJson(<String>[parts[0], parts[1]]);
-    }
-    throw FormatException('Invalid interval "$str".');
-  }
-
   /// An interval of a string the list of [parts] (length must be exactly 2).
   ///
-  /// Start and end time stamps must be formatted according to RFC 3339.
+  /// Start and end time stamps must be formatted according to RFC 3339. See
+  /// `DateTime.parse` for reference of valid inputs for start and end parts.
   ///
   /// For other lengths than 2 an ArgumentError is thrown.
   ///
@@ -80,6 +78,34 @@ class Interval with EquatableMixin {
       }
     }
     throw ArgumentError.value(parts, '');
+  }
+
+  /// An interval of a string ('../end', 'start/..' or 'start/end').
+  ///
+  /// Start and end time stamps must be formatted according to RFC 3339. See
+  /// `DateTime.parse` for reference of valid inputs for start and end parts.
+  ///
+  /// Throws FormatException if an interval cannot be parsed.
+  factory Interval.parse(String text) {
+    final parts = text.split('/');
+    if (parts.length == 2) {
+      return Interval.fromJson(<String>[parts[0], parts[1]]);
+    }
+    throw FormatException('Invalid interval "$text".');
+  }
+
+  /// An interval of a string ('../end', 'start/..' or 'start/end').
+  ///
+  /// Start and end time stamps must be formatted according to RFC 3339. See
+  /// `DateTime.parse` for reference of valid inputs for start and end parts.
+  ///
+  /// Returns null if an interval cannot be parsed.
+  static Interval? tryParse(String text) {
+    try {
+      return Interval.parse(text);
+    } on Exception {
+      return null;
+    }
   }
 
   /// The start time of the interval. If null then the interval is open started.

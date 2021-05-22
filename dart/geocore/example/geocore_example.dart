@@ -5,6 +5,7 @@
 // Docs: https://github.com/navibyte/geospatial
 
 // ignore_for_file: avoid_print, avoid_redundant_argument_values
+// ignore_for_file: cascade_invocations
 
 import 'package:equatable/equatable.dart';
 
@@ -22,8 +23,6 @@ void main() {
 
   // call simple demos
   _parseGeoJSON();
-  _parseWkt();
-  _basicStructures();
   _readmeIntro();
 }
 
@@ -71,109 +70,9 @@ void _parseGeoJSON() {
   }
 }
 
-void _parseWkt() {
-  print(wktGeographic.parse('POINT (125.6 10.1)'));
-  print(wktGeographic.parse('MULTIPOLYGON (((1 1, 1 2, 2 1, 1 1)), '
-      '((3 3, 3 4, 4 3, 3 3)))'));
-}
-
-void _basicStructures() {
-  print('');
-  print('Create some basic data structures.');
-
-  // Geospatial feature with id, geometry and properties
-  print(Feature.view(
-    id: 'ROG',
-    geometry: GeoPoint3.from([-0.0014, 51.4778, 45.0]),
-    properties: <String, dynamic>{
-      'title': 'Royal Observatory',
-      'place': 'Greenwich',
-      'city': 'London',
-      'isMuseum': true,
-      'code': '000',
-      'founded': 1675,
-      'prime': DateTime.utc(1884, 10, 22),
-      'measure': 5.79,
-    },
-  ));
-
-  // Geographic points (lon-lat, lon-lat-m, lon-lat-elev, lon-lat-elev-m)
-  print(GeoPoint2.lonLat(-0.0014, 51.4778));
-  print(GeoPoint2m.lonLatM(-0.0014, 51.4778, 123.0));
-  print(GeoPoint3.lonLatElev(-0.0014, 51.4778, 45.0));
-  print(GeoPoint3m.lonLatElevM(-0.0014, 51.4778, 45.0, 123.0));
-
-  // Geographic points (lat-lon, lat-lon-m, lat-lon-elev, lat-lon-elev-m)
-  print(GeoPoint2.latLon(51.4778, -0.0014));
-  print(GeoPoint2m.latLonM(51.4778, -0.0014, 123.0));
-  print(GeoPoint3.latLonElev(51.4778, -0.0014, 45.0));
-  print(GeoPoint3m.latLonElevM(51.4778, -0.0014, 45.0, 123.0));
-
-  // Geographic bounds represented as Bounds<GeoPoint>
-  print(Bounds.of(
-      min: GeoPoint2.lonLat(-180.0, -90.0),
-      max: GeoPoint2.lonLat(180.0, 90.0)));
-  print(Bounds.of(
-      min: GeoPoint3.lonLatElev(-180.0, -90.0, 50.0),
-      max: GeoPoint3.lonLatElev(180.0, 90.0, 100.0)));
-  print(Bounds.of(
-      min: GeoPoint2.latLon(-90.0, -180.0),
-      max: GeoPoint2.latLon(90.0, 180.0)));
-
-  // Geographic bounds as GeoBounds (that implements Bounds<GeoPoint>)
-  print(GeoBounds.world());
-  print(GeoBounds.bboxLonLat(-180.0, -90.0, 180.0, 90.0));
-  print(GeoBounds.bboxLonLatElev(-180.0, -90.0, 50.0, 180.0, 90.0, 100.0));
-
-  // Projected points (XY, XYM, XYZ and XYZM) using doubles
-  print(Point2.xy(708221.0, 5707225.0));
-  print(Point2m.xym(708221.0, 5707225.0, 123.0));
-  print(Point3.xyz(708221.0, 5707225.0, 45.0));
-  print(Point3m.xyzm(708221.0, 5707225.0, 45.0, 123.0));
-
-  // Projected points (XY, XYZ) using integers
-  print(Point2i.xy(708221, 5707225));
-  print(Point3i.xyz(708221, 5707225, 45));
-
-  // Series of points containg all types of points
-  final points = PointSeries<Point>.view([
-    // coords stored as double, GeoPoint3 implements Point<double>
-    GeoPoint3.origin(),
-    // coords stored as num (given as double or int),
-    // Point2 implements Point<num>
-    Point2.xy(708221.0, 5707225),
-    // coords stored as int, Point3i implements Point<int>
-    Point3i.xyz(708221, 5707225, 45)
-  ]);
-  print(points);
-  print('Testing int coord value: '
-      '${points[2].x} ${points[2].y} (type: ${points[2].z.runtimeType})');
-
-  // Temporal intervals (open, open-started, open-ended, closed)
-  print(Interval.open());
-  print(Interval.openStart(DateTime.utc(2020, 10, 31)));
-  print(Interval.openEnd(DateTime.utc(2020, 10, 01)));
-  print(
-      Interval.closed(DateTime.utc(2020, 10, 01), DateTime.utc(2020, 10, 31)));
-
-  // Temporal instant
-  print(Instant.parse('2020-10-31'));
-
-  // Coordinate reference system (identifiers)
-  print(CRS84);
-  print(CRS84h);
-  print(CRS.id('urn:ogc:def:crs:EPSG::4326'));
-
-  // Extent with spatial and temporal parts
-  print(Extent.single(
-    crs: CRS84,
-    bounds: GeoBounds.bboxLonLat(-180.0, -90.0, 180.0, 90.0),
-    interval: Interval.fromJson(<dynamic>['..', '2020-10-31']),
-  ));
-}
-
 void _readmeIntro() {
-  // Some samples for README.
+  // Some samples for README
+  //    (https://github.com/navibyte/geospatial/tree/main/dart/geocore).
   // Note that following samples are just created, not used, even printed.
 
   // -----------
@@ -306,4 +205,123 @@ void _readmeIntro() {
   MultiPolygon.parse(
       '((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5))',
       GeoPoint2.geometry);
+
+  // A geometry collection can contain any other geometry types. Items for such
+  // a collection can be constructed using different ways.
+  GeometryCollection.from(<Geometry>[
+    // A point with integer values using a constructor with named parameters.
+    Point2i(x: 40, y: 10),
+    // A line string made from a list of points (each a list of nums).
+    LineString.make([
+      [10, 10],
+      [20, 20],
+      [10, 40]
+    ], Point2i.geometry),
+    // A polygon parsed from WKT compatible text.
+    Polygon.parse('(40 40, 20 45, 45 30, 40 40)', Point2i.geometry)
+  ]);
+
+  GeometryCollection.from(<Geometry>[
+    Point2i(x: 40, y: 10),
+    LineString.make([
+      [10, 10],
+      [20, 20],
+      [10, 40]
+    ], Point2i.geometry),
+    Polygon.parse('(40 40, 20 45, 45 30, 40 40)', Point2i.geometry)
+  ]);
+
+  // -----------
+
+  // Bounds (2D) or bounding box from minimum and maximum 2D projected points.
+  Bounds.of(min: Point2(x: 10.0, y: 10.0), max: Point2(x: 20.0, y: 20.0));
+
+  // Bounds (3D) made from a list of list of nums.
+  Bounds.make([
+    [10.0, 10.0, 10.0],
+    [20.0, 20.0, 20.0]
+  ], Point3.geometry);
+
+  // Bounds (3D with measure) parsed from WKT compatible text.
+  Bounds.parse('10.0 10.0 10.0 5.0, 20.0 20.0 20.0 5.0', Point3m.geometry);
+
+  // -----------
+
+  // Geographical bounds (-20.0 .. 20.0 in longitude, 50.0 .. 60.0 in latitude).
+  GeoBounds.bboxLonLat(-20.0, 50.0, 20.0, 60.0);
+
+  // The same bounds created of 2D geographic point instances.
+  GeoBounds.of(
+      min: GeoPoint2(lon: -20.0, lat: 50.0),
+      max: GeoPoint2(lon: 20.0, lat: 60.0));
+
+  // -----------
+
+  // Temporal instants can be created from `DateTime` or parsed from text.
+  Instant(DateTime.utc(2020, 10, 31, 09, 30));
+  Instant.parse('2020-10-31 09:30Z');
+
+  // -----------
+
+  // Temporal intervals (open-started, open-ended, closed).
+  Interval.openStart(DateTime.utc(2020, 10, 31));
+  Interval.openEnd(DateTime.utc(2020, 10, 01));
+  Interval.closed(DateTime.utc(2020, 10, 01), DateTime.utc(2020, 10, 31));
+
+  // Same intervals parsed (by the "start/end" format, ".." for open limits).
+  Interval.parse('../2020-10-31');
+  Interval.parse('2020-10-01/..');
+  Interval.parse('2020-10-01/2020-10-31');
+
+  // -----------
+
+  // An extent with spatial (WGS 84 longitude-latitude) and temporal parts.
+  Extent.single(
+    crs: CRS84,
+    bounds: GeoBounds.bboxLonLat(-20.0, 50.0, 20.0, 60.0),
+    interval: Interval.parse('../2020-10-31'),
+  );
+
+  // An extent with multiple spatial bounds and temporal interval segments.
+  Extent.multi(crs: CRS84, allBounds: [
+    GeoBounds.bboxLonLat(-20.0, 50.0, 20.0, 60.0),
+    GeoBounds.bboxLonLat(40.0, 50.0, 60.0, 60.0),
+  ], allIntervals: [
+    Interval.parse('2020-10-01/2020-10-05'),
+    Interval.parse('2020-10-27/2020-10-31'),
+  ]);
+
+  // -----------
+
+  // Geospatial feature with an identification, a point geometry and properties.
+  Feature.view(
+    id: 'ROG',
+    geometry: GeoPoint3(lon: -0.0014, lat: 51.4778, elev: 45.0),
+    properties: <String, dynamic>{
+      'title': 'Royal Observatory',
+      'place': 'Greenwich',
+      'city': 'London',
+      'isMuseum': true,
+      'code': '000',
+      'founded': 1675,
+      'prime': DateTime.utc(1884, 10, 22),
+      'measure': 5.79,
+    },
+  );
+
+  // -----------
+
+  // Parse projected points from WKT (result is different concrete classes).
+  wktProjected.parse('POINT (100.0 200.0)'); // => Point2
+  wktProjected.parse('POINT M (100.0 200.0 5.0)'); // => Point2m
+  wktProjected.parse('POINT (100.0 200.0 300.0)'); // => Point3
+  wktProjected.parse('POINT Z (100.0 200.0 300.0)'); // => Point3
+  wktProjected.parse('POINT ZM (100.0 200.0 300.0 5.0)'); // => Point3m
+
+  // Parse geographical line string, from (10.0 50.0) to (11.0 51.0).
+  wktGeographic.parse('LINESTRING (10.0 50.0, 11.0 51.0)');
+
+  // Parse geographical polygon with a hole.
+  wktGeographic.parse('POLYGON ((40 15, 50 50, 15 45, 10 15, 40 15),'
+      ' (25 25, 25 40, 35 30, 25 25))');
 }

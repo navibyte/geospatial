@@ -2,12 +2,52 @@
 
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause) [![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/navibyte.svg?style=social&label=Follow%20%40navibyte)](https://twitter.com/navibyte)
 
+<a title="Stefan Kühn (Fotograf), CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Azimutalprojektion-schief_kl-cropped.png"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/projections/azimutal/Azimutalprojektion-schief_kl-cropped.png" align="right"></a>
+
 **Geospatial** data structures, tools and utilities for 
 [Dart](https://dart.dev/) and [Flutter](https://flutter.dev/) mobile developers.
+
+**This repository is at BETA stage, interfaces not fully final yet.** 
+
+The [geocore](https://pub.dev/packages/geocore) library package, based on
+Dart code hosted by this repository, provides geospatial data 
+structures (features, geometry and metadata) and utilities to parse
+[GeoJSON](https://geojson.org/) and [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)
+(Well-known text representation of geometry) data. The package also supports
+representing both geographic (decimal degrees or longitude-latitude) and 
+projected (or cartesian XYZ) coordinates in 2D and 3D. 
+
+Some samples from the [geocore](https://pub.dev/packages/geocore) package, 
+please see the package itself for more documentation:
+
+<br clear=“right”/>
+
+Geometry    | Shape       | Samples to create instances
+----------- | ----------- | ---------------------------
+Point       | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_Point.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_Point.svg"></a> | `Point2(x: 30.0, y: 10.0)`<br>`Point2.from([30.0, 10.0])`<br>`Point2.parse('30 10')`
+LineString  | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_LineString.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_LineString.svg"></a> | `LineString.parse('30 10, 10 30, 40 40', Point2.geometry)`
+Polygon     | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_Polygon.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_Polygon.svg"></a> | `Polygon.parse('(30 10, 40 40, 20 40, 10 20, 30 10)', Point2.geometry)`
+Polygon (with a hole) | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_Polygon_with_hole.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_Polygon_with_hole.svg"></a> | `Polygon.parse('(35 10, 45 45, 15 40, 10 20, 35 10), (20 30, 35 35, 30 20, 20 30)', Point2.geometry)`
+
+As another library package, [geodata](https://pub.dev/packages/geodata) provides
+a geospatial API client supporting reading [GeoJSON](https://geojson.org/)
+and other geospatial data sources from web and file sources.
 
 Please see also generic (non-geospatial) data structures, tools and utilities at
 the separate [Dataflow tools for Dart](https://github.com/navibyte/dataflow)
 repository.
+
+## :page_facing_up: Code
+
+This repository contains the following [Dart](https://dart.dev/) code 
+packages:
+
+Code @ GitHub | SDK | Description 
+------------- | --- | -----------
+:globe_with_meridians: [geocore](dart/geocore) | Dart | Geospatial data structures (features, geometry and metadata) and utilities ([GeoJSON](https://geojson.org/) and partial support for [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)). 
+:earth_americas: [geodata](dart/geodata) | Dart | A geospatial API client to read [GeoJSON](https://geojson.org/) and other geospatial data sources. 
+
+## :package: Packages
 
 Packages and documentation are published at [pub.dev](https://pub.dev/). 
 
@@ -19,7 +59,7 @@ Package @ pub.dev | Version | Documentation | Example code
 :earth_americas: [geodata](https://pub.dev/packages/geodata) | [![pub package](https://img.shields.io/pub/v/geodata.svg)](https://pub.dev/packages/geodata) | [API reference](https://pub.dev/documentation/geodata/latest/) | [Example](https://pub.dev/packages/geodata/example)
 
 Previously part of this repository, but starting from the version 0.6.0 code for
-these is hosted at the [dataflow](https://github.com/navibyte/dataflow)
+these are hosted at the [dataflow](https://github.com/navibyte/dataflow)
 repository:
 
 Package @ pub.dev | Version | Documentation | Example code 
@@ -33,19 +73,10 @@ using them requires at least
 from the stable channel. Please see the official 
 [null-safety migration guide](https://dart.dev/null-safety/migration-guide).
 
-## :page_facing_up: Code
-
-**This repository is at BETA stage, interfaces not fully final yet.** 
-
-This repository contains the following [Dart](https://dart.dev/) code 
-packages:
-
-Code @ GitHub | SDK | Description 
-------------- | --- | -----------
-:globe_with_meridians: [geocore](dart/geocore) | Dart | Geospatial data structures (features, geometry and metadata) and utilities ([GeoJSON](https://geojson.org/) and partial support for [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)). 
-:earth_americas: [geodata](dart/geodata) | Dart | A geospatial client to read [GeoJSON](https://geojson.org/) and other geospatial data sources. 
-
 ## :newspaper_roll: News
+
+2021-05-22
+* [geocore](dart/geocore) with new BETA version 0.6.2 (updated documentation)
 
 2021-05-16
 * [geocore](dart/geocore) with new BETA version 0.6.1
@@ -95,6 +126,18 @@ Code @ GitHub | SDK | Description
   * [geocore](https://pub.dev/packages/geocore)
   * [geodata](https://pub.dev/packages/geodata)
 
+## Roadmap
+
+Future enhancement **candidates** for [geocore](dart/geocore), not in any order:
+* [Optimizations and consistency for geometry, feature and meta classes #27](https://github.com/navibyte/geospatial/issues/27) 
+* [Coordinate reference system (CRS) identifiers enhanced #28](https://github.com/navibyte/geospatial/issues/28)
+* [WKT parser - add support for parsing GEOMETRYCOLLECTION #24](https://github.com/navibyte/geospatial/issues/24)
+* [Add EWKT support, handle axis order when reading WKT #29](https://github.com/navibyte/geospatial/issues/29)
+* [Coordinate transformations on core classes and reading datasource #15](https://github.com/navibyte/geospatial/issues/15)
+* [Add support for other geometry classes known by WKT #30](https://github.com/navibyte/geospatial/issues/30)
+
+See [other issues](https://github.com/navibyte/geospatial/issues) too.
+
 ## :house_with_garden: Authors
 
 This project is authored by [Navibyte](https://navibyte.com).
@@ -105,7 +148,6 @@ This project is licensed under the "BSD-3-Clause"-style license.
 
 Please see the [LICENSE](LICENSE).
 
-
 ## :star: Links and other resources
 
 Some external links and other resources.
@@ -114,6 +156,7 @@ Some external links and other resources.
 
 Geospatial:
 * [GeoJSON](https://geojson.org/) based on [RFC 7946](https://tools.ietf.org/html/rfc7946)
+* [Simple Feature Access - Part 1: Common Architecture](https://www.ogc.org/standards/sfa)
 * [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) (Well-known text representation of geometry)  
 * [Coordinate Reference Systems](https://www.w3.org/2015/spatial/wiki/Coordinate_Reference_Systems) by W3C
 * [EPSG](https://epsg.org/home.html) (Geodetic Parameter Dataset)

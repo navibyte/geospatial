@@ -30,7 +30,8 @@ class Polygon<T extends Point> extends Geometry with EquatableMixin {
   /// Create [Polygon] parsed from [text] with a list of rings.
   ///
   /// If [parser] is null, then WKT [text] like
-  /// "(1 1, 1 2, 2 1, 1 1), (1.1 1.1, 1.1 1.2, 1.2 1.1, 1.1 1.1)" is expected.
+  /// "(40 15, 50 50, 15 45, 10 15, 40 15), (25 25, 25 40, 35 30, 25 25)"
+  /// is expected.
   ///
   /// Throws FormatException if cannot parse.
   factory Polygon.parse(String text, PointFactory<T> pointFactory,
