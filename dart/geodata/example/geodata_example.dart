@@ -9,7 +9,6 @@
 
 import 'package:equatable/equatable.dart';
 
-import 'package:attributes/entity.dart';
 import 'package:attributes/values.dart';
 import 'package:datatools/fetch_http.dart';
 import 'package:geocore/geo.dart';
@@ -75,7 +74,7 @@ Future<void> main(List<String> args) async {
         if (bbox.length == 4 || bbox.length == 6) {
           filter = FeatureFilter(
             limit: limit,
-            bounds: GeoBounds.from(bbox.map<num>(valueToDouble)),
+            bounds: GeoBounds.from(bbox.map<num>(toDoubleValue)),
           );
         }
         break;

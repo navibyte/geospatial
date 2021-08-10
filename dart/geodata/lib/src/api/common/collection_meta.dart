@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:attributes/entity.dart';
+import 'package:attributes/values.dart';
 import 'package:datatools/meta_link.dart';
 import 'package:geocore/meta_extent.dart';
 

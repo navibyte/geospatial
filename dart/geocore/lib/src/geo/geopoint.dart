@@ -4,8 +4,6 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'dart:math';
-
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 

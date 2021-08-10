@@ -43,7 +43,7 @@ void main() {
             exterior.chain[2] == GeoPoint2.from([101.0, 1.0]);
       });
       expect(
-          fc.features[2].properties.getMap('prop1').getString('this'), 'that');
+          fc.features[2].properties.object('prop1').getString('this'), 'that');
 
       final intersect1 = fc.features
           .intersectByBounds(GeoBounds.bboxLonLat(101.05, 0.4, 102.05, 0.5));

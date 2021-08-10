@@ -1,10 +1,6 @@
-# Geodata
+<h2 align="center">GeoJSON and OGC API clients for Dart</h2>
 
 [![pub package](https://img.shields.io/pub/v/geodata.svg)](https://pub.dev/packages/geodata) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
-
-**Geodata** is a library package for [Dart](https://dart.dev/) and 
-[Flutter](https://flutter.dev/) mobile developers to help on accessing 
-[GeoJSON](https://geojson.org/) and other geospatial data sources. 
 
 Key features:
 * Client-side data source abstractions
@@ -95,7 +91,7 @@ In the `pubspec.yaml` of your project add the dependency:
 
 ```yaml
 dependencies:
-  geodata: ^0.6.0  
+  geodata: ^0.7.0 
 ```
 
 All dependencies used by `geodata` are also ready for 

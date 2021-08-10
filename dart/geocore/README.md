@@ -1,11 +1,9 @@
-# Geocore
+<h2 align="center">Geospatial data structures and parsers</h2>
 
 [![pub package](https://img.shields.io/pub/v/geocore.svg)](https://pub.dev/packages/geocore) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
-**Geocore** is a library package for [Dart](https://dart.dev/) and 
-[Flutter](https://flutter.dev/) mobile developers providing geospatial data 
-structures (features, geometry and metadata) and utilities to parse
-[GeoJSON](https://geojson.org/) and [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)
+Geospatial data structures (features, geometry and metadata) and utilities to
+parse [GeoJSON](https://geojson.org/) and [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) 
 (Well-known text representation of geometry) data.
 
 The package supports representing both **geographic** (decimal degrees or 
@@ -535,7 +533,7 @@ In the `pubspec.yaml` of your project add the dependency:
 
 ```yaml
 dependencies:
-  geocore: ^0.6.2
+  geocore: ^0.7.0
 ```
 
 All dependencies used by `geocore` are also ready for 

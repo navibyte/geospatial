@@ -235,5 +235,6 @@ class _CreateAnyPointAllowingM implements PointFactory {
   }
 }
 
-FormatException _notValidPoint(Iterable coords, {int? offset, int? length}) =>
+FormatException _notValidPoint(Iterable<num> coords,
+        {int? offset, int? length}) =>
     FormatException('Not a valid point with ${coords.length} coordinates.');

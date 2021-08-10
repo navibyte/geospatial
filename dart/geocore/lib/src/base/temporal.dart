@@ -61,7 +61,7 @@ class Interval with EquatableMixin {
   /// For other lengths than 2 an ArgumentError is thrown.
   ///
   /// Throws FormatException if an interval cannot be parsed.
-  factory Interval.fromJson(Iterable parts) {
+  factory Interval.fromJson(Iterable<Object?> parts) {
     if (parts.length == 2) {
       final start = parts.elementAt(0) as String?;
       final end = parts.elementAt(1) as String?;

@@ -44,7 +44,7 @@ packages:
 
 Code @ GitHub | SDK | Description 
 ------------- | --- | -----------
-:globe_with_meridians: [geocore](dart/geocore) | Dart | Geospatial data structures (features, geometry and metadata) and utilities ([GeoJSON](https://geojson.org/) and partial support for [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)). 
+:globe_with_meridians: [geocore](dart/geocore) | Dart | Geospatial data structures (features, geometry and metadata) and parsers ([GeoJSON](https://geojson.org/) and partial support for [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)). 
 :earth_americas: [geodata](dart/geodata) | Dart | A geospatial API client to read [GeoJSON](https://geojson.org/) and other geospatial data sources. 
 
 ## :package: Packages
@@ -74,6 +74,13 @@ from the stable channel. Please see the official
 [null-safety migration guide](https://dart.dev/null-safety/migration-guide).
 
 ## :newspaper_roll: News
+
+2021-08-10
+* BETA version 0.7.0
+* Mostly relatively small changes, but required (breaking) changes due
+  * updated dependency 0.7.1 on [attributes](https://pub.dev/packages/attributes)
+    * required changes visible in Feature class and GeoJSON factories
+* [Official Dart lint rules applied with recommend set](https://github.com/navibyte/geospatial/issues/32)
 
 2021-05-22
 * [geocore](dart/geocore) with new BETA version 0.6.2 (updated documentation)
@@ -179,7 +186,8 @@ SDKs:
 * [Flutter](https://flutter.dev/) 
 
 Latest on SDKs
-* [Dart 2.12](https://medium.com/dartlang/announcing-dart-2-12-499a6e689c87)
+* [Dart 2.13](https://medium.com/dartlang/announcing-dart-2-13-c6d547b57067) with new type aliases and more
+* [Dart 2.12](https://medium.com/dartlang/announcing-dart-2-12-499a6e689c87) with sound null safety
 * [Flutter 2](https://developers.googleblog.com/2021/03/announcing-flutter-2.html)
 * [What’s New in Flutter 2](https://medium.com/flutter/whats-new-in-flutter-2-0-fe8e95ecc65)
 

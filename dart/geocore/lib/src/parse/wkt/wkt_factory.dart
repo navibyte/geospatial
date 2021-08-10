@@ -4,8 +4,6 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'dart:math';
-
 import '../../base.dart';
 import '../../geo.dart';
 import '../../utils/wkt.dart';

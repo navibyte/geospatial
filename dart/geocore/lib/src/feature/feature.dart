@@ -8,7 +8,6 @@ import 'package:meta/meta.dart';
 
 import 'package:equatable/equatable.dart';
 
-import 'package:attributes/collection.dart';
 import 'package:attributes/entity.dart';
 
 import '../base.dart';
@@ -28,7 +27,7 @@ abstract class Feature<T extends Geometry> extends Entity implements Bounded {
   /// bounds is used also as feature bounds when accessed.
   factory Feature.of(
           {Identifier? id,
-          required PropertyMap properties,
+          required DataObject properties,
           T? geometry,
           Bounds? bounds}) =>
       _FeatureBase<T>(
@@ -50,12 +49,12 @@ abstract class Feature<T extends Geometry> extends Entity implements Bounded {
   /// bounds is used also as feature bounds when accessed.
   factory Feature.view(
           {Object? id,
-          required Map<String, dynamic> properties,
+          required Map<String, Object?> properties,
           T? geometry,
           Bounds? bounds}) =>
       _FeatureBase<T>(
         id: Identifier.idOrNull(id),
-        properties: PropertyMap.view(properties),
+        properties: DataObject.view(properties),
         geometry: geometry,
         bounds: bounds,
       );
@@ -70,7 +69,7 @@ class _FeatureBase<T extends Geometry> extends EntityBase
     implements Feature<T> {
   const _FeatureBase(
       {Identifier? id,
-      required PropertyMap properties,
+      required DataObject properties,
       required this.geometry,
       Bounds? bounds})
       : _featureBounds = bounds,

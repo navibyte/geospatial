@@ -8,7 +8,7 @@ import 'package:meta/meta.dart';
 
 import 'package:synchronized/synchronized.dart';
 
-import 'package:attributes/entity.dart';
+import 'package:attributes/values.dart';
 import 'package:datatools/fetch_api.dart';
 import 'package:datatools/meta_link.dart';
 import 'package:geocore/base.dart';

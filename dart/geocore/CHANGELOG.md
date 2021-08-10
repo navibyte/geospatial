@@ -1,3 +1,14 @@
+## 0.7.0
+
+- BETA version 0.7.0 with minor breaking changes
+- Use `Map<String, Object?>` instead of `Map<String, dynamic>` as properties
+  - Factory: `Feature.view()`
+  - Function typedef: `CreateFeature`
+- updated dependency 0.7.1 on [attributes](https://pub.dev/packages/attributes)
+    - required changes visible in Feature class and GeoJSON factories
+- [Official Dart lint rules applied with recommend set #32](https://github.com/navibyte/geospatial/issues/32)
+
+
 ## 0.6.2
 
 - BETA version 0.6.2 with documentation updates

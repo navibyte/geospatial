@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// Geospatial data structures (features, geometry and metadata) and utilities.
+/// Geospatial data structures (features, geometry and metadata) and parsers.
 ///
 /// Usage: import `package:geocore/geocore.dart`
 library geocore;

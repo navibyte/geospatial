@@ -8,7 +8,7 @@ import 'package:meta/meta.dart';
 
 import 'package:equatable/equatable.dart';
 
-import 'package:attributes/entity.dart';
+import 'package:attributes/values.dart';
 
 /// A filter defines a query for filtering items of some collection resource.
 @immutable
