@@ -54,6 +54,9 @@ class LineString<T extends Point> extends Geometry with EquatableMixin {
           ? LineString<T>.make(parser.call(text), pointFactory, type: type)
           : parseWktLineString<T>(text, pointFactory, type: type);
 
+  /// Throws if [chain] and [type] contains values not valid for a line string.
+  /// 
+  /// This method is designed to be used only on constructors.
   @protected
   void validate() {
     if (chain.isEmpty) return;

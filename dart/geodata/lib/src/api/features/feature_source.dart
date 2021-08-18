@@ -9,6 +9,7 @@ import '../features.dart';
 
 /// A feature source to access data source providing geospatial feature objects.
 abstract class FeatureSource<M extends DataSourceMeta> extends DataSource<M> {
+  /// Default `const` constructor to allow extending this abstract class.
   const FeatureSource();
 
   /// Fetches features matching [filter] from a feature collection resource.

@@ -12,6 +12,7 @@ part of 'base.dart';
 /// `double` or `int`.
 abstract class Point<C extends num> extends Geometry
     implements _Coordinates, PointFactory {
+  /// Default `const` constructor to allow extending this abstract class.
   const Point();
 
   /// Create an empty point.

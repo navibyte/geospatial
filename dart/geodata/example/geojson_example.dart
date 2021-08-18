@@ -46,7 +46,7 @@ Future<void> _readFeatures(Fetcher client, String collectionId) async {
     // get items or features from collection id, maximum 5 features returned
     final items = await source.items(
       collectionId,
-      filter: FeatureFilter(limit: 5),
+      filter: const FeatureFilter(limit: 5),
     );
 
     // do something with features, in this sample just print them out

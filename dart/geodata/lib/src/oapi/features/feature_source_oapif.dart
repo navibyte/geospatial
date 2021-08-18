@@ -98,7 +98,7 @@ class _PagedFeaturesOAPIF extends Paged<FeatureItems> {
   static Future<_PagedFeaturesOAPIF> parse(Fetcher client, Content body) async {
     // decode JSON content (supposed to be GeoJSON)
     if (!body.hasType('application', 'geo+json', 'json')) {
-      throw FormatException('GeoJSON content required.');
+      throw const FormatException('GeoJSON content required.');
     }
     final json = await body.decodeJson() as Map<String, dynamic>;
 

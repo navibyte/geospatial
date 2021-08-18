@@ -67,7 +67,7 @@ class Interval with EquatableMixin {
       final end = parts.elementAt(1) as String?;
       if (start == null || start.isEmpty || start == '..') {
         if (end == null || end.isEmpty || end == '..') {
-          return Interval.open();
+          return const Interval.open();
         } else {
           return Interval.openStart(DateTime.parse(end));
         }

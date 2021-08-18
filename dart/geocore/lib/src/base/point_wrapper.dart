@@ -13,8 +13,10 @@ part of 'base.dart';
 @immutable
 class PointWrapper<T extends Point<C>, C extends num> extends Point<C>
     with EquatableMixin {
+  /// Create a point wrapping another [point].
   const PointWrapper(this.point);
 
+  /// The wrapped [point].
   final T point;
 
   @override

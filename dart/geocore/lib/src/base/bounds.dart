@@ -12,6 +12,7 @@ typedef CalculateBounds<T extends Point> = Bounds<T> Function();
 /// A base interface for bounds (aka a bounding box in 2D).
 abstract class Bounds<T extends Point> extends Geometry
     implements _Coordinates, CoordinateFactory<Bounds> {
+  /// Default `const` constructor to allow extending this abstract class.
   const Bounds();
 
   /// Create bounds with required (and non-empty) [min] and [max] points.

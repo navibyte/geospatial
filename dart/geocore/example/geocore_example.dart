@@ -4,8 +4,12 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+// NOTE : lint rules disabled for the purpose of making sample code readable
+//
 // ignore_for_file: avoid_print, avoid_redundant_argument_values
 // ignore_for_file: cascade_invocations
+// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_literals_to_create_immutables
 
 import 'package:equatable/equatable.dart';
 

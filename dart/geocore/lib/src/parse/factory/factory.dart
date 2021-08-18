@@ -31,6 +31,7 @@ typedef CreateFeature = Feature<T> Function<T extends Geometry>(
 ///
 /// The factory class and all its sub classes must be stateless.
 abstract class GeoFactory {
+  /// Default `const` constructor to allow extending this abstract class.
   const GeoFactory();
 
   /// Parses a geometry from a [data] object.

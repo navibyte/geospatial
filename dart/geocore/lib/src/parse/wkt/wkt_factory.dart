@@ -43,6 +43,7 @@ const wktProjected = WktFactory<Point>(
 ///
 /// See [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry).
 class WktFactory<PointType extends Point> {
+  /// Create a factory with [pointFactory].
   const WktFactory({required this.pointFactory});
 
   /// A function to return a factory creating points from coordinate values.
@@ -61,7 +62,7 @@ class WktFactory<PointType extends Point> {
   /// Throws FormatException if parsing fails.
   Geometry parse<T extends PointType>(Object data) {
     if (data is! String) {
-      throw FormatException('Unknown data.');
+      throw const FormatException('Unknown data.');
     }
     final trimmed = data.trim();
     for (var type = 0; type < _types.length; type++) {

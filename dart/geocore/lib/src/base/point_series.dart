@@ -13,6 +13,7 @@ part of 'base.dart';
 /// any other collection for points.
 abstract class PointSeries<T extends Point>
     extends _BatchedSeries<PointSeries<T>, T> {
+  /// Default `const` constructor to allow extending this abstract class.
   const PointSeries();
 
   /// Create a [PointSeries] instance backed by [source].

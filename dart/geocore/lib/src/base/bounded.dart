@@ -8,6 +8,7 @@ part of 'base.dart';
 
 /// A base interface for classes that know their [bounds].
 abstract class Bounded {
+  /// Default `const` constructor to allow extending this abstract class.
   const Bounded();
 
   /// The [bounds] geometry for this object.
@@ -23,6 +24,7 @@ abstract class Bounded {
 /// A base interface for a series (list) of bounded items of type [T].
 abstract class BoundedSeries<T extends Bounded>
     extends _BatchedSeries<BoundedSeries<T>, T> {
+  /// Default `const` constructor to allow extending this abstract class.
   const BoundedSeries();
 
   /// Create an [BoundedSeries] instance backed by [source].

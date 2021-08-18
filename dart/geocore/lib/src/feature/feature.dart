@@ -19,6 +19,7 @@ import '../base.dart';
 ///
 /// Supports representing data from GeoJSON (https://geojson.org/) features.
 abstract class Feature<T extends Geometry> extends Entity implements Bounded {
+  /// Default `const` constructor to allow extending this abstract class.
   const Feature();
 
   /// A new feature of optional [id], [properties], [geometry] and [bounds].
@@ -89,6 +90,7 @@ class _FeatureBase<T extends Geometry> extends EntityBase
 
 /// A feature collection with a series of features.
 abstract class FeatureCollection<T extends Feature> extends Bounded {
+  /// Default `const` constructor to allow extending this abstract class.
   const FeatureCollection();
 
   /// Creates a feature collection from a series of [features].

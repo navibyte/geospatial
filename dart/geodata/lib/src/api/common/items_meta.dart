@@ -11,6 +11,7 @@ import 'package:equatable/equatable.dart';
 /// Metadata about a collection of items.
 @immutable
 class ItemsMeta with EquatableMixin {
+  /// Create a meta instance.
   const ItemsMeta(
       {required this.timeStamp, this.numberMatched, this.numberReturned});
 

@@ -26,6 +26,7 @@ enum CRSType {
 /// by W3C.
 @immutable
 class CRS with EquatableMixin {
+  /// Create a crs of [id], [name] and [type].
   const CRS(this.id, this.name, this.type);
 
   /// Returns a [CRS] instance for a CRS by [id].
@@ -65,6 +66,8 @@ const CRS84 = CRS(
   'WGS 84 longitude-latitude',
   CRSType.geographic,
 );
+
+/// The `CRS80` identifier.
 const idCRS84 = 'http://www.opengis.net/def/crs/OGC/1.3/CRS84';
 
 /// The 'WGS 84 longitude-latitude-height' coordinate reference system.
@@ -77,4 +80,6 @@ const CRS84h = CRS(
   'WGS 84 longitude-latitude-height',
   CRSType.geographic,
 );
+
+/// The `CRS80h` identifier.
 const idCRS84h = 'http://www.opengis.net/def/crs/OGC/0/CRS84h';

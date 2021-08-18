@@ -99,18 +99,22 @@ abstract class CoordinateFactory<T extends Geometry> implements _Measured {
   /// [coords] to be used for setting values on a new geometry.
   T newFrom(Iterable<num> coords, {int? offset, int? length});
 
+  /// Throw if [coords] do not have [atLeastLen] values.
+  ///
+  /// Use optional [offset] and [length] params to define a segment on [coords].
   static void checkCoords(int atLeastLen, Iterable<num> coords,
       {int? offset, int? length}) {
     if ((offset == null && length != null) ||
         (offset != null && length == null)) {
-      throw FormatException('Offset and length must be both null or non-null');
+      throw const FormatException(
+          'Offset and length must be both null or non-null');
     }
     final start = offset ?? 0;
     final len = length ?? coords.length;
     if (start < 0 ||
         start + atLeastLen - 1 >= coords.length ||
         atLeastLen > len) {
-      throw FormatException('Coords segment out of range');
+      throw const FormatException('Coords segment out of range');
     }
   }
 }
@@ -142,22 +146,23 @@ abstract class PointFactory<T extends Point> extends CoordinateFactory<T> {
   T newFrom(Iterable<num> coords, {int? offset, int? length});
 }
 
-/// A [PointFactory] that casts points created by [wrapped] to the type [T].
+/// A [PointFactory] that casts points created by [_wrapped] to the type [T].
 ///
-/// The [wrapped] point factory MUST return instance castable to [T].
+/// The [_wrapped] point factory MUST return instance castable to [T].
 class CastingPointFactory<T extends Point> implements PointFactory<T> {
-  const CastingPointFactory(this.wrapped);
+  /// Create a point factory wrapping a [_wrapped] point factory.
+  const CastingPointFactory(this._wrapped);
 
-  final PointFactory wrapped;
+  final PointFactory _wrapped;
 
   @override
-  bool get hasM => wrapped.hasM;
+  bool get hasM => _wrapped.hasM;
 
   @override
   T newFrom(Iterable<num> coords, {int? offset, int? length}) =>
-      wrapped.newFrom(coords, offset: offset, length: length) as T;
+      _wrapped.newFrom(coords, offset: offset, length: length) as T;
 
   @override
   T newWith({num x = 0.0, num y = 0.0, num? z, num? m}) =>
-      wrapped.newWith(x: x, y: y, z: z, m: m) as T;
+      _wrapped.newWith(x: x, y: y, z: z, m: m) as T;
 }

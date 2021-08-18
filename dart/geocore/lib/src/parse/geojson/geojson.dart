@@ -54,6 +54,9 @@ Feature<T> _defaultFeatureFactory<T extends Geometry>(
 /// See [The GeoJSON Format - RFC 7946](https://tools.ietf.org/html/rfc7946).
 class GeoJsonFactory<PointType extends Point>
     extends GeoFactoryBase<PointType> {
+  /// Create a factory with [pointFactory] and [boundsFactory].
+  /// 
+  /// An optional [featureFactory] can be given also.
   const GeoJsonFactory(
       {required PointFactory<PointType> pointFactory,
       required CreateBounds<PointType> boundsFactory,
@@ -78,7 +81,7 @@ class GeoJsonFactory<PointType extends Point>
     if (decoded is Map<String, dynamic>) {
       return decoded;
     }
-    throw FormatException('Unknown encoding for GeoJSON.');
+    throw const FormatException('Unknown encoding for GeoJSON.');
   }
 
   Iterable<dynamic> _ensureDecodedIterable(dynamic data) {
@@ -95,7 +98,7 @@ class GeoJsonFactory<PointType extends Point>
     if (decoded is Iterable) {
       return decoded;
     }
-    throw FormatException('Unknown encoding for GeoJSON.');
+    throw const FormatException('Unknown encoding for GeoJSON.');
   }
 
   @override
@@ -171,7 +174,7 @@ class GeoJsonFactory<PointType extends Point>
     if (geom is T) {
       return geom;
     }
-    throw FormatException('Not valid GeoJSON geometry.');
+    throw const FormatException('Not valid GeoJSON geometry.');
   }
 
   @override
@@ -179,7 +182,7 @@ class GeoJsonFactory<PointType extends Point>
     // expects data of Map<String, dynamic> as returned by json.decode()
     final json = _ensureDecodedMap(data);
     if (json['type'] != 'Feature') {
-      throw FormatException('Not valid GeoJSON Feature.');
+      throw const FormatException('Not valid GeoJSON Feature.');
     }
 
     // parse id as FeatureId or null
@@ -253,7 +256,7 @@ class GeoJsonFactory<PointType extends Point>
     } else {
       // excepting a collection
       if (json['type'] != 'FeatureCollection') {
-        throw FormatException('Not valid GeoJSON FeatureCollection.');
+        throw const FormatException('Not valid GeoJSON FeatureCollection.');
       }
 
       // parse optional bbox
@@ -280,7 +283,7 @@ class GeoJsonFactory<PointType extends Point>
       list = <dynamic>[json];
     } else {
       if (json['type'] != 'FeatureCollection') {
-        throw FormatException('Not valid GeoJSON FeatureCollection.');
+        throw const FormatException('Not valid GeoJSON FeatureCollection.');
       }
       list = json['features'] as List;
     }
@@ -293,7 +296,7 @@ class GeoJsonFactory<PointType extends Point>
       final count = json.length;
       if (range.start >= count) {
         // range is out of bounds, do not throw, just return empty set
-        items = Iterable<dynamic>.empty();
+        items = const Iterable<dynamic>.empty();
       } else {
         final limit = range.limit;
         if (limit != null && limit >= 0) {

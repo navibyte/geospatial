@@ -4,6 +4,9 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_literals_to_create_immutables
+
 import 'package:test/test.dart';
 
 import 'package:equatable/equatable.dart';

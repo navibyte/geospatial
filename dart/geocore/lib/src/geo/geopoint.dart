@@ -21,6 +21,7 @@ import '../utils/wkt.dart';
 /// Extends [Point] class. Properties have equality (in context of this
 /// library): [lon] == [x], [lat] == [y], [elev] == [z]
 abstract class GeoPoint extends Point<double> {
+  /// Default `const` constructor to allow extending this abstract class.
   const GeoPoint();
 
   /// The longitude coordinate. Equals to [x] property.

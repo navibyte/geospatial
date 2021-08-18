@@ -27,6 +27,7 @@ import '../../api/common.dart';
 /// to to provide support for the OGC API Features standard.
 abstract class DataSourceOAPI<M extends DataSourceMeta>
     implements DataSource<M> {
+  /// Default `const` constructor to allow extending this abstract class.
   DataSourceOAPI({required this.client});
 
   M? _meta;
@@ -142,7 +143,7 @@ Extent _extentFromJson(Map<String, dynamic> json) {
       allBounds = [GeoBounds.from((spatial as Iterable).cast<num>())];
     } on Exception {
       // fallback
-      allBounds = [GeoBounds.world()];
+      allBounds = [const GeoBounds.world()];
     }
   }
 

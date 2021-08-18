@@ -8,6 +8,7 @@ import 'data_source_meta.dart';
 
 /// A data source (like an API service or other resource).
 abstract class DataSource<M extends DataSourceMeta> {
+  /// Default `const` constructor to allow extending this abstract class.
   const DataSource();
 
   /// Overview metadata for this data source.

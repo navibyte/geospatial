@@ -185,9 +185,10 @@ class _CreateAnyPoint implements PointFactory {
   @override
   Point newFrom(Iterable<num> coords, {int? offset, int? length}) {
     if (expectedCRS.type == CRSType.geographic) {
-      return _CreateGeoPoint().newFrom(coords, offset: offset, length: length);
+      return const _CreateGeoPoint()
+          .newFrom(coords, offset: offset, length: length);
     } else {
-      return _CreateProjectedPoint()
+      return const _CreateProjectedPoint()
           .newFrom(coords, offset: offset, length: length);
     }
   }
@@ -195,9 +196,9 @@ class _CreateAnyPoint implements PointFactory {
   @override
   Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) {
     if (expectedCRS.type == CRSType.geographic) {
-      return _CreateGeoPoint().newWith(x: x, y: y, z: z, m: m);
+      return const _CreateGeoPoint().newWith(x: x, y: y, z: z, m: m);
     } else {
-      return _CreateProjectedPoint().newWith(x: x, y: y, z: z, m: m);
+      return const _CreateProjectedPoint().newWith(x: x, y: y, z: z, m: m);
     }
   }
 }
