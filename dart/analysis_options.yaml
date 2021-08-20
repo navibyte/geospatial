@@ -1,4 +1,4 @@
-# Analysis options / lint rules (2021-08-16)
+# Analysis options / lint rules (2021-08-18)
 # 
 # Documentation (official for Dart)
 #     https://pub.dev/packages/lints
@@ -13,9 +13,14 @@
 #         Some of comments originated from this blog.
 #     https://rydmike.com/blog => My Flutter Linting Preferences (Jan 10, 2021)
 #         Some of comments originated from this blog.
+# 
+# Comparisons of different lints
 #     https://twitter.com/RydMike/status/1426310690965532678
 #         Updated lint rules comparison (Aug 14, 2021)
 #         Notes about "very_good_analysis" 2.3.0+
+#
+# Applied package
+#     https://pub.dev/packages/very_good_analysis
 
 include: package:very_good_analysis/analysis_options.yaml
 
@@ -31,14 +36,12 @@ analyzer:
     # See => https://github.com/dart-lang/language/blob/master/resources/type-system/strict-raw-types.md
     strict-raw-types: true
 
+# Note this are enabled already by "very_good_analysis" but good to note here:
 #  strong-mode:
-#    # Explained best here => https://dash-overflow.net/articles/getting_started/
 #    implicit-casts: false
-#
-#    # Explained best here => https://dash-overflow.net/articles/getting_started/
 #    implicit-dynamic: false
 
-# Some rules imported from "very_good_analysis" disabled
+# Some rules that were enabled by "very_good_analysis" disabled here
 linter:
   rules:
     # "DO avoid relative imports for files in lib/."
@@ -48,8 +51,12 @@ linter:
 
     # "DO use int literals rather than the corresponding double literal."
     # It's better to use 0.0 or 342.0 for doubles than 0 and 342.
+    # For example in code setting geospatial coordinates, like latitude and
+    # longitude, it feels more natural using double literals always.
     prefer_int_literals: false
 
     # "DO sort pub dependencies in pubspec.yaml."
     # Yes do sort most of time, but sometimes better to organize logically.
-    sort_pub_dependencies: false
+    # For example first sorted list of packages from external vendors, then 
+    # next sorted list of custom packages. 
+    sort_pub_dependencies: false    
