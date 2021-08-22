@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-// ignore_for_file: avoid_print, avoid_catches_without_on_clauses
+// ignore_for_file: avoid_print
 
 import 'package:equatable/equatable.dart';
 

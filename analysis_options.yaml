@@ -1,4 +1,4 @@
-# Analysis options / lint rules (2021-08-18)
+# Analysis options / lint rules (2021-08-22 / "packages edition")
 # 
 # Documentation (official for Dart)
 #     https://pub.dev/packages/lints
@@ -49,11 +49,26 @@ linter:
     # So disable this rule. However "avoid_relative_lib_imports" is enabled.
     always_use_package_imports: false
 
+    # "AVOID returning null from members whose return type is bool, double, int, 
+    #  or num."
+    # As dart-lint is commenting, this rule has lost it's meaning after proper
+    # null-safety support on Dart. And there are valid cases for returning nulls
+    # even for primitive types.
+    avoid_returning_null: false
+
     # "DO use int literals rather than the corresponding double literal."
     # It's better to use 0.0 or 342.0 for doubles than 0 and 342.
     # For example in code setting geospatial coordinates, like latitude and
     # longitude, it feels more natural using double literals always.
     prefer_int_literals: false
+
+    # "DO sort constructor declarations before other members."
+    # This rule is very opionated. Sometimes for domain data classes with lot
+    # of contructors and named factories, it would be nices to put field members
+    # first, then constructors. However for most of other cases the rule might
+    # be good.
+    # See also discussion on lint: https://github.com/passsy/dart-lint/issues/1
+    sort_constructors_first: false
 
     # "DO sort pub dependencies in pubspec.yaml."
     # Yes do sort most of time, but sometimes better to organize logically.

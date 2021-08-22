@@ -301,7 +301,7 @@ void _readmeIntro() {
   Feature.view(
     id: 'ROG',
     geometry: GeoPoint3(lon: -0.0014, lat: 51.4778, elev: 45.0),
-    properties: <String, dynamic>{
+    properties: {
       'title': 'Royal Observatory',
       'place': 'Greenwich',
       'city': 'London',
