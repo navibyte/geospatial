@@ -10,7 +10,7 @@ environment:
 
 dependencies:
   equatable: ^2.0.0
-  meta: ^1.3.0
+  meta: ^1.7.0
   synchronized: ^3.0.0
 
   #attributes: ^0.8.0-pre.1

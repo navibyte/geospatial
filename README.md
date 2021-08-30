@@ -7,8 +7,6 @@
 **Geospatial** data structures, tools and utilities for 
 [Dart](https://dart.dev/) and [Flutter](https://flutter.dev/) mobile developers.
 
-**This repository is at BETA stage, interfaces not fully final yet.** 
-
 The [geocore](https://pub.dev/packages/geocore) library package, based on
 Dart code hosted by this repository, provides geospatial data 
 structures (features, geometry and metadata) and utilities to parse
@@ -16,6 +14,20 @@ structures (features, geometry and metadata) and utilities to parse
 (Well-known text representation of geometry) data. The package also supports
 representing both geographic (decimal degrees or longitude-latitude) and 
 projected (or cartesian XYZ) coordinates in 2D and 3D. 
+
+## :package: Packages
+
+[Dart](https://dart.dev/) code packages published at 
+[pub.dev](https://pub.dev/publishers/navibyte.com/packages):
+
+Code           | Package | Description 
+-------------- | --------| -----------
+:globe_with_meridians: [geocore](dart/geocore) | [![pub package](https://img.shields.io/pub/v/geocore.svg)](https://pub.dev/packages/geocore) | Geospatial data structures (features, geometry and metadata) and parsers ([GeoJSON](https://geojson.org/) and partial support for [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)).
+:earth_americas: [geodata](dart/geodata) | [![pub package](https://img.shields.io/pub/v/geodata.svg)](https://pub.dev/packages/geodata) | A geospatial API client to read [GeoJSON](https://geojson.org/) and [OGC API Features](https://ogcapi.ogc.org/features/) data sources. 
+
+**Code packages are at BETA stage, interfaces not fully final yet.** 
+
+## Sample
 
 Some samples from the [geocore](https://pub.dev/packages/geocore) package, 
 please see the package itself for more documentation:
@@ -36,42 +48,6 @@ and other geospatial data sources from web and file sources.
 Please see also generic (non-geospatial) data structures, tools and utilities at
 the separate [Dataflow tools for Dart](https://github.com/navibyte/dataflow)
 repository.
-
-## :page_facing_up: Code
-
-This repository contains the following [Dart](https://dart.dev/) code 
-packages:
-
-Code @ GitHub | SDK | Description 
-------------- | --- | -----------
-:globe_with_meridians: [geocore](dart/geocore) | Dart | Geospatial data structures (features, geometry and metadata) and parsers ([GeoJSON](https://geojson.org/) and partial support for [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)). 
-:earth_americas: [geodata](dart/geodata) | Dart | A geospatial API client to read [GeoJSON](https://geojson.org/) and other geospatial data sources. 
-
-## :package: Packages
-
-Packages and documentation are published at [pub.dev](https://pub.dev/). 
-
-Latest package releases:
-
-Package @ pub.dev | Version | Documentation | Example code 
------------------ | --------| ------------- | -----------
-:globe_with_meridians: [geocore](https://pub.dev/packages/geocore) | [![pub package](https://img.shields.io/pub/v/geocore.svg)](https://pub.dev/packages/geocore) | [API reference](https://pub.dev/documentation/geocore/latest/) | [Example](https://pub.dev/packages/geocore/example)
-:earth_americas: [geodata](https://pub.dev/packages/geodata) | [![pub package](https://img.shields.io/pub/v/geodata.svg)](https://pub.dev/packages/geodata) | [API reference](https://pub.dev/documentation/geodata/latest/) | [Example](https://pub.dev/packages/geodata/example)
-
-Previously part of this repository, but starting from the version 0.6.0 code for
-these are hosted at the [dataflow](https://github.com/navibyte/dataflow)
-repository:
-
-Package @ pub.dev | Version | Documentation | Example code 
------------------ | --------| ------------- | -----------
-:spiral_notepad: [attributes](https://pub.dev/packages/attributes) | [![pub package](https://img.shields.io/pub/v/attributes.svg)](https://pub.dev/packages/attributes) | [API reference](https://pub.dev/documentation/attributes/latest/) | [Example](https://pub.dev/packages/attributes/example)
-:cloud: [datatools](https://pub.dev/packages/datatools) | [![pub package](https://img.shields.io/pub/v/datatools.svg)](https://pub.dev/packages/datatools) | [API reference](https://pub.dev/documentation/datatools/latest/) | [Example](https://pub.dev/packages/datatools/example)
-
-All packages supports Dart [null-safety](https://dart.dev/null-safety) and 
-using them requires at least
-[Dart 2.12](https://medium.com/dartlang/announcing-dart-2-12-499a6e689c87)
-from the stable channel. Please see the official 
-[null-safety migration guide](https://dart.dev/null-safety/migration-guide).
 
 ## :newspaper_roll: News
 
