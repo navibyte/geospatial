@@ -6,12 +6,11 @@
 
 // ignore_for_file: avoid_print
 
-import 'package:equatable/equatable.dart';
-
 import 'package:attributes/values.dart';
 import 'package:datatools/fetch_http.dart';
-import 'package:geocore/geo.dart';
+import 'package:equatable/equatable.dart';
 import 'package:geocore/feature.dart';
+import 'package:geocore/geo.dart';
 
 import 'package:geodata/geojson_features.dart';
 import 'package:geodata/oapi_features.dart';

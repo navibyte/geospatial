@@ -4,11 +4,11 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:meta/meta.dart';
+import 'package:attributes/values.dart';
 
 import 'package:equatable/equatable.dart';
 
-import 'package:attributes/values.dart';
+import 'package:meta/meta.dart';
 
 /// A filter defines a query for filtering items of some collection resource.
 @immutable

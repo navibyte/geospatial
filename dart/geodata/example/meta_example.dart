@@ -6,9 +6,9 @@
 
 // ignore_for_file: avoid_print
 
-import 'package:equatable/equatable.dart';
-
 import 'package:datatools/fetch_http.dart';
+
+import 'package:equatable/equatable.dart';
 
 import 'package:geodata/geojson_features.dart';
 import 'package:geodata/oapi_features.dart';

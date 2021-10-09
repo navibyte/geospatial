@@ -8,11 +8,11 @@
 // ignore_for_file: prefer_const_constructors
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
-import 'package:test/test.dart';
-
 import 'package:equatable/equatable.dart';
 
 import 'package:geocore/geocore.dart';
+
+import 'package:test/test.dart';
 
 import 'geojson_sample.dart';
 

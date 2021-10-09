@@ -4,9 +4,9 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:meta/meta.dart';
-
 import 'package:equatable/equatable.dart';
+
+import 'package:meta/meta.dart';
 
 /// The type of the coordinate reference system.
 enum CRSType {

@@ -10,8 +10,8 @@
 To test run this from command line: dart example/geojson_example.dart 
 */
 
-import 'package:datatools/fetch_http.dart';
 import 'package:datatools/fetch_file.dart';
+import 'package:datatools/fetch_http.dart';
 
 import 'package:geodata/geojson_features.dart';
 

@@ -46,11 +46,17 @@ abstract class GeoFactory {
 
   /// Parses a series of features from a [data] object.
   ///
+  /// An optional [range] specificies start offset and optional limit count
+  /// specifying a feature range to be returned on a collection.
+  ///
   /// Throws FormatException if parsing fails.
   BoundedSeries<Feature<T>> featureSeries<T extends Geometry>(dynamic data,
       {Range? range});
 
   /// Parses a feature collection from a [data] object.
+  ///
+  /// An optional [range] specificies start offset and optional limit count
+  /// specifying a feature range to be returned on a collection.
   ///
   /// Throws FormatException if parsing fails.
   FeatureCollection<Feature<T>> featureCollection<T extends Geometry>(
@@ -58,6 +64,9 @@ abstract class GeoFactory {
       {Range? range});
 
   /// Count number of features on a collection parsed from a [data] object.
+  ///
+  /// An optional [range] specificies start offset and optional limit count
+  /// specifying a feature range to be counted on a collection.
   ///
   /// Throws FormatException if parsing fails.
   int featureCount(dynamic data, {Range? range});

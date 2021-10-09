@@ -1,6 +1,8 @@
-## 0.8.0
+## 0.7.1
 
+- BETA version 0.7.1
 - [Apply very_good_analysis 2.3.0+ lint rules #33](https://github.com/navibyte/geospatial/issues/33)
+- [WKT parser - add support for parsing GEOMETRYCOLLECTION #24](https://github.com/navibyte/geospatial/issues/24)
 
 ## 0.7.0
 
@@ -11,7 +13,6 @@
 - updated dependency 0.7.1 on [attributes](https://pub.dev/packages/attributes)
     - required changes visible in Feature class and GeoJSON factories
 - [Official Dart lint rules applied with recommend set #32](https://github.com/navibyte/geospatial/issues/32)
-
 
 ## 0.6.2
 

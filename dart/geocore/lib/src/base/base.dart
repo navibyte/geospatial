@@ -7,9 +7,9 @@
 import 'dart:collection';
 import 'dart:math' as math;
 
-import 'package:meta/meta.dart';
-
 import 'package:equatable/equatable.dart';
+
+import 'package:meta/meta.dart';
 
 import '../utils/bounds.dart';
 import '../utils/wkt.dart';

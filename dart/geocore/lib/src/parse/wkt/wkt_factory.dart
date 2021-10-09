@@ -16,7 +16,7 @@ import '../factory.dart';
 /// [GeoPoint3], [GeoPoint3m].
 ///
 /// Supported WKT geometry types: 'POINT', 'LINESTRING', 'POLYGON',
-/// 'MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON'.
+/// 'MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON', 'GEOMETRYCOLLECTION'.
 ///
 /// See [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry).
 const wktGeographic = WktFactory<GeoPoint>(
@@ -29,7 +29,7 @@ const wktGeographic = WktFactory<GeoPoint>(
 /// [Point3m].
 ///
 /// Supported WKT geometry types: 'POINT', 'LINESTRING', 'POLYGON',
-/// 'MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON'.
+/// 'MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON', 'GEOMETRYCOLLECTION'.
 ///
 /// See [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry).
 const wktProjected = WktFactory<Point>(
@@ -39,7 +39,7 @@ const wktProjected = WktFactory<Point>(
 /// A geospatial object factory capable of parsing WKT geometries from text.
 ///
 /// Supported WKT geometry types: 'POINT', 'LINESTRING', 'POLYGON',
-/// 'MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON'.
+/// 'MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON', 'GEOMETRYCOLLECTION'.
 ///
 /// See [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry).
 class WktFactory<PointType extends Point> {
@@ -52,87 +52,38 @@ class WktFactory<PointType extends Point> {
   /// custom point instances.
   final PointFactory<PointType> Function({required bool expectM}) pointFactory;
 
-  PointFactory<T> _resolve<T extends PointType>({required bool expectM}) =>
-      T == PointType
-          ? pointFactory(expectM: expectM) as PointFactory<T>
-          : CastingPointFactory<T>(pointFactory(expectM: expectM));
-
-  /// Parses a geometry from a [data] object.
+  /// Parses a single geometry from a [data] object.
   ///
   /// Throws FormatException if parsing fails.
   Geometry parse<T extends PointType>(Object data) {
     if (data is! String) {
       throw const FormatException('Unknown data.');
     }
-    final trimmed = data.trim();
-    for (var type = 0; type < _types.length; type++) {
-      if (trimmed.startsWith(_types[type])) {
-        var i = _types[type].length;
-        var expectM = false;
-        var expectZ = false;
-        while (i < trimmed.length) {
-          final c = trimmed[i];
-          switch (c) {
-            case 'M':
-              expectM = true;
-              break;
-            case 'Z':
-              expectZ = true;
-              break;
-            case 'E':
-              if (trimmed.startsWith('EMPTY', i)) {
-                switch (type) {
-                  case 0: // POINT
-                    return Point.empty(is3D: expectZ, hasM: expectM);
-                  default:
-                    // todo : more specific empty geometries?
-                    return Geometry.empty();
-                }
-              } else {
-                throw invalidWkt(trimmed);
-              }
-            case '(':
-              if (trimmed[trimmed.length - 1] == ')') {
-                final data = trimmed.substring(i + 1, trimmed.length - 1);
-                final pf = _resolve<T>(expectM: expectM);
-                switch (type) {
-                  case 0: // POINT
-                    return parseWktPoint<T>(data, pf);
-                  case 1: // LINESTRING
-                    return parseWktLineString<T>(data, pf);
-                  case 2: // POLYGON
-                    return parseWktPolygon<T>(data, pf);
-                  case 3: // MULTIPOINT
-                    return parseWktMultiPoint<T>(data, pf);
-                  case 4: // MULTILINESTRING
-                    return parseWktMultiLineString<T>(data, pf);
-                  case 5: // MULTIPOLYGON
-                    return parseWktMultiPolygon<T>(data, pf);
-                }
-              } else {
-                throw invalidWkt(trimmed);
-              }
-              break;
-            default:
-              if (!_isBlank(c)) throw invalidWkt(trimmed);
-          }
-          i++;
-        }
-        break;
-      }
+    return parseNextWktGeometry<T>(
+      data,
+      resolve: ({required bool expectM}) => T == PointType
+          ? pointFactory(expectM: expectM) as PointFactory<T>
+          : CastingPointFactory<T>(pointFactory(expectM: expectM)),
+    );
+  }
+
+  /// Parses all geometries from a [data] object.
+  ///
+  /// An optional [range] specificies start offset and optional limit count
+  /// specifying a geometry object range to be returned on a collection.
+  ///
+  /// Throws FormatException if parsing fails.
+  BoundedSeries<Geometry> parseAll<T extends PointType>(Object data,
+      {Range? range}) {
+    if (data is! String) {
+      throw const FormatException('Unknown data.');
     }
-    throw invalidWkt(trimmed);
+    return parseWktGeometrySeries<T>(
+      data,
+      resolve: ({required bool expectM}) => T == PointType
+          ? pointFactory(expectM: expectM) as PointFactory<T>
+          : CastingPointFactory<T>(pointFactory(expectM: expectM)),
+      range: range,
+    );
   }
 }
-
-const _types = <String>[
-  'POINT',
-  'LINESTRING',
-  'POLYGON',
-  'MULTIPOINT',
-  'MULTILINESTRING',
-  'MULTIPOLYGON'
-  // todo : 'GEOMETRYCOLLECTION'
-];
-
-bool _isBlank(String str) => str.trim().isEmpty;

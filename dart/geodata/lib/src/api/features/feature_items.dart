@@ -4,12 +4,12 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:meta/meta.dart';
-
 import 'package:equatable/equatable.dart';
 
 import 'package:geocore/base.dart';
 import 'package:geocore/feature.dart';
+
+import 'package:meta/meta.dart';
 
 import '../common.dart';
 

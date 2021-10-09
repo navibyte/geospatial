@@ -7,11 +7,11 @@
 // ignore_for_file: prefer_const_constructors
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
-import 'package:test/test.dart';
-
 import 'package:equatable/equatable.dart';
 
 import 'package:geocore/geocore.dart';
+
+import 'package:test/test.dart';
 
 void main() {
   // configure Equatable to apply toString() default impls
@@ -423,6 +423,115 @@ void main() {
               '(30 20, 20 15, 20 25, 30 20))',
               GeoPoint2.geometry),
           multiPolygon2);
+
+      // GEOMETRYCOLLECTION(POINT(4 6),LINESTRING(4 6,7 10))
+      // GeometryCollection contains Point types and Point2 are concrete types.
+      final geometryCollection1 = GeometryCollection.from(<Geometry>[
+        Point2.from([4.0, 6.0]),
+        LineString.make(
+          [
+            [4.0, 6.0],
+            [7.0, 10.0]
+          ],
+          Point2.geometry,
+        )
+      ]);
+      expect(
+          wktProjected.parse<Point2>('GEOMETRYCOLLECTION(POINT(4 6), '
+              'LINESTRING(4 6,7 10))'),
+          geometryCollection1);
+      // also some geometry series tests with different separators
+      // (each wkt token each separated with blanks/linefeeds/commas)
+      expect(wktProjected.parseAll<Point2>('POINT(4 6), LINESTRING(4 6,7 10)'),
+          geometryCollection1.geometries);
+      expect(wktProjected.parseAll<Point2>('''
+      POINT(4 6)  
+      LINESTRING(4 6,7 10)
+      '''), geometryCollection1.geometries);
+      expect(wktProjected.parseAll<Point2>('''
+      ,
+
+      POINT(4 6)  
+      
+      ,
+
+      LINESTRING(4 6,7 10)
+      '''), geometryCollection1.geometries);
+
+      /// Geometries with empty ones on WKT text.
+      expect(wktProjected.parseAll<Point>('''
+      POINT ZM (1 1 5 60)
+      POINT EMPTY
+      POINT M (1 1 80)
+      MULTIPOLYGON EMPTY
+      '''), <Geometry>[
+        Point3m.from([1.0, 1.0, 5.0, 60.0]),
+        Point.empty(),
+        Point2m.from([1.0, 1.0, 80.0]),
+        Geometry.empty() // todo : "multipolygon empty" more specific
+      ]);
+
+      // Other geometry collection sample from wikipedia.
+      expect(
+          wktProjected.parse<Point2>('''
+      GEOMETRYCOLLECTION (
+            POINT (40 10),
+            LINESTRING 
+              (10 10, 20 20, 10 40),
+            POLYGON ((40 40, 
+                    20 45, 
+                    45 30, 
+                    40 40))
+      )
+      '''),
+          GeometryCollection.from(<Geometry>[
+            Point2.parse('40 10'),
+            LineString<Point2>.parse('10 10, 20 20, 10 40', Point2.geometry),
+            Polygon<Point2>.parse(
+                '(40 40, 20 45, 45 30, 40 40)', Point2.geometry)
+          ]));
+    });
+
+    test('WKT range limits', () {
+      const wktTest = '''
+      POINT (1 1)
+      POINT (2 2)
+      POINT (3 3)
+      POINT (4 4)
+      POINT (5 5)
+      ''';
+
+      expect(wktGeographic.parseAll<GeoPoint2>(wktTest), <Geometry>[
+        GeoPoint2.from([1, 1]),
+        GeoPoint2.from([2, 2]),
+        GeoPoint2.from([3, 3]),
+        GeoPoint2.from([4, 4]),
+        GeoPoint2.from([5, 5]),
+      ]);
+
+      expect(
+          wktGeographic.parseAll<GeoPoint2>(wktTest,
+              range: Range(start: 1, limit: 2)),
+          <Geometry>[
+            GeoPoint2.from([2, 2]),
+            GeoPoint2.from([3, 3]),
+          ]);
+
+      expect(
+          wktGeographic.parseAll<GeoPoint2>(wktTest, range: Range(start: 2)),
+          <Geometry>[
+            GeoPoint2.from([3, 3]),
+            GeoPoint2.from([4, 4]),
+            GeoPoint2.from([5, 5]),
+          ]);
+
+      expect(
+          wktGeographic.parseAll<GeoPoint2>(wktTest,
+              range: Range(start: 0, limit: 2)),
+          <Geometry>[
+            GeoPoint2.from([1, 1]),
+            GeoPoint2.from([2, 2]),
+          ]);
     });
   });
 }

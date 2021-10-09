@@ -4,11 +4,11 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:meta/meta.dart';
+import 'package:attributes/entity.dart';
 
 import 'package:equatable/equatable.dart';
 
-import 'package:attributes/entity.dart';
+import 'package:meta/meta.dart';
 
 import '../base.dart';
 

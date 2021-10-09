@@ -4,10 +4,6 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:meta/meta.dart';
-
-import 'package:synchronized/synchronized.dart';
-
 import 'package:attributes/values.dart';
 import 'package:datatools/fetch_api.dart';
 import 'package:datatools/meta_link.dart';
@@ -15,6 +11,10 @@ import 'package:geocore/base.dart';
 import 'package:geocore/crs.dart';
 import 'package:geocore/geo.dart';
 import 'package:geocore/meta_extent.dart';
+
+import 'package:meta/meta.dart';
+
+import 'package:synchronized/synchronized.dart';
 
 import '../../api/common.dart';
 

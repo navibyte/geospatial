@@ -1,6 +1,6 @@
 <h2 align="center">GeoJSON and OGC API clients for Dart</h2>
 
-[![pub package](https://img.shields.io/pub/v/geodata.svg)](https://pub.dev/packages/geodata) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+[![pub package](https://img.shields.io/pub/v/geodata.svg)](https://pub.dev/packages/geodata) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause) [![style: very good analysis](https://img.shields.io/badge/style-very_good_analysis-B22C89.svg)](https://pub.dev/packages/very_good_analysis)
 
 Key features:
 * Client-side data source abstractions
@@ -84,14 +84,13 @@ Future<void> _readFeatures(Fetcher client, String collectionId) async {
 The package supports Dart [null-safety](https://dart.dev/null-safety) and 
 using it requires at least
 [Dart 2.12](https://medium.com/dartlang/announcing-dart-2-12-499a6e689c87)
-from the stable channel. Please see the official 
-[null-safety migration guide](https://dart.dev/null-safety/migration-guide).
+from the stable channel. 
 
 In the `pubspec.yaml` of your project add the dependency:
 
 ```yaml
 dependencies:
-  geodata: ^0.7.0 
+  geodata: ^0.7.1 
 ```
 
 All dependencies used by `geodata` are also ready for 

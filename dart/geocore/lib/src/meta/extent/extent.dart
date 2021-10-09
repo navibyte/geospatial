@@ -4,9 +4,9 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:meta/meta.dart';
-
 import 'package:equatable/equatable.dart';
+
+import 'package:meta/meta.dart';
 
 import '../../base.dart';
 import '../../crs.dart';

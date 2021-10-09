@@ -1,6 +1,6 @@
 <h2 align="center">Geospatial data structures and parsers</h2>
 
-[![pub package](https://img.shields.io/pub/v/geocore.svg)](https://pub.dev/packages/geocore) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+[![pub package](https://img.shields.io/pub/v/geocore.svg)](https://pub.dev/packages/geocore) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause) [![style: very good analysis](https://img.shields.io/badge/style-very_good_analysis-B22C89.svg)](https://pub.dev/packages/very_good_analysis)
 
 Geospatial data structures (features, geometry and metadata) and utilities to
 parse [GeoJSON](https://geojson.org/) and [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) 
@@ -264,16 +264,24 @@ There is also `GeometryCollection`:
   // a collection can be constructed using different ways.
   GeometryCollection.from(<Geometry>[
     // A point with integer values using a constructor with named parameters.
-    Point2i(x: 40, y: 10),
+    Point2(x: 40, y: 10),
     // A line string made from a list of points (each a list of nums).
     LineString.make([
       [10, 10],
       [20, 20],
       [10, 40]
-    ], Point2i.geometry),
+    ], Point2.geometry),
     // A polygon parsed from WKT compatible text.
-    Polygon.parse('(40 40, 20 45, 45 30, 40 40)', Point2i.geometry)
+    Polygon.parse('(40 40, 20 45, 45 30, 40 40)', Point2.geometry)
   ]);
+
+  // A geometry collection can also be parsed from WKT text.
+  wktProjected.parse<Point2>('''
+      GEOMETRYCOLLECTION (
+        POINT (40 10),
+        LINESTRING (10 10, 20 20, 10 40),
+        POLYGON ((40 40, 20 45, 45 30, 40 40)))
+      ''');
 ```
 
 ### Spatial bounds
@@ -526,14 +534,13 @@ This is a [Dart](https://dart.dev/) code package named `geocore` under the
 The package supports Dart [null-safety](https://dart.dev/null-safety) and 
 using it requires at least
 [Dart 2.12](https://medium.com/dartlang/announcing-dart-2-12-499a6e689c87)
-from the stable channel. Please see the official 
-[null-safety migration guide](https://dart.dev/null-safety/migration-guide).
+from the stable channel. 
 
 In the `pubspec.yaml` of your project add the dependency:
 
 ```yaml
 dependencies:
-  geocore: ^0.7.0
+  geocore: ^0.7.1
 ```
 
 All dependencies used by `geocore` are also ready for 

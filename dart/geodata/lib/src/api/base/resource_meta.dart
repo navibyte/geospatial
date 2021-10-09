@@ -4,11 +4,11 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:meta/meta.dart';
+import 'package:datatools/meta_link.dart';
 
 import 'package:equatable/equatable.dart';
 
-import 'package:datatools/meta_link.dart';
+import 'package:meta/meta.dart';
 
 /// Basic meta data about some resource.
 @immutable

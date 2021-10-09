@@ -1,6 +1,6 @@
 # :compass: Geospatial tools for Dart 
 
-[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause) [![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/navibyte.svg?style=social&label=Follow%20%40navibyte)](https://twitter.com/navibyte)
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause) [![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/navibyte.svg?style=social&label=Follow%20%40navibyte)](https://twitter.com/navibyte) [![style: very good analysis](https://img.shields.io/badge/style-very_good_analysis-B22C89.svg)](https://pub.dev/packages/very_good_analysis)
 
 <a title="Stefan Kühn (Fotograf), CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Azimutalprojektion-schief_kl-cropped.png"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/projections/azimutal/Azimutalprojektion-schief_kl-cropped.png" align="right"></a>
 
@@ -23,7 +23,7 @@ projected (or cartesian XYZ) coordinates in 2D and 3D.
 Code           | Package | Description 
 -------------- | --------| -----------
 :globe_with_meridians: [geocore](dart/geocore) | [![pub package](https://img.shields.io/pub/v/geocore.svg)](https://pub.dev/packages/geocore) | Geospatial data structures (features, geometry and metadata) and parsers ([GeoJSON](https://geojson.org/) and partial support for [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)).
-:earth_americas: [geodata](dart/geodata) | [![pub package](https://img.shields.io/pub/v/geodata.svg)](https://pub.dev/packages/geodata) | A geospatial API client to read [GeoJSON](https://geojson.org/) and [OGC API Features](https://ogcapi.ogc.org/features/) data sources. 
+:earth_americas: [geodata](dart/geodata) | [![pub package](https://img.shields.io/pub/v/geodata.svg)](https://pub.dev/packages/geodata) | A geospatial API client to read [GeoJSON](https://geojson.org/) and other geospatial data sources. 
 
 **Code packages are at BETA stage, interfaces not fully final yet.** 
 
@@ -42,14 +42,24 @@ Polygon     | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/li
 Polygon (with a hole) | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_Polygon_with_hole.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_Polygon_with_hole.svg"></a> | `Polygon.parse('(35 10, 45 45, 15 40, 10 20, 35 10), (20 30, 35 35, 30 20, 20 30)', Point2.geometry)`
 
 As another library package, [geodata](https://pub.dev/packages/geodata) provides
-a geospatial API client supporting reading [GeoJSON](https://geojson.org/)
-and other geospatial data sources from web and file sources.
+a geospatial API client supporting reading [GeoJSON](https://geojson.org/), and 
+other geospatial data sources (like partial and initial support for
+[OGC API Features](https://ogcapi.ogc.org/features/)) from web and file sources.
 
 Please see also generic (non-geospatial) data structures, tools and utilities at
 the separate [Dataflow tools for Dart](https://github.com/navibyte/dataflow)
-repository.
+repository providing source code for 
+[attributes](https://pub.dev/packages/attributes) and
+[datatools](https://pub.dev/packages/datatools) packages.
 
 ## :newspaper_roll: News
+
+2021-10-09
+* BETA version 0.7.1
+* Changes on [geocore](https://pub.dev/packages/geocore):
+  * [WKT parser - add support for parsing GEOMETRYCOLLECTION #24](https://github.com/navibyte/geospatial/issues/24)
+* Changes on all packages:
+  * [Apply very_good_analysis 2.3.0+ lint rules #33](https://github.com/navibyte/geospatial/issues/33)
 
 2021-08-10
 * BETA version 0.7.0
@@ -114,11 +124,15 @@ repository.
 Future enhancement **candidates** for [geocore](dart/geocore), not in any order:
 * [Optimizations and consistency for geometry, feature and meta classes #27](https://github.com/navibyte/geospatial/issues/27) 
 * [Coordinate reference system (CRS) identifiers enhanced #28](https://github.com/navibyte/geospatial/issues/28)
-* [WKT parser - add support for parsing GEOMETRYCOLLECTION #24](https://github.com/navibyte/geospatial/issues/24)
 * [Add EWKT support, handle axis order when reading WKT #29](https://github.com/navibyte/geospatial/issues/29)
 * [Coordinate transformations on core classes and reading datasource #15](https://github.com/navibyte/geospatial/issues/15)
 * [Add support for other geometry classes known by WKT #30](https://github.com/navibyte/geospatial/issues/30)
 * [Define consistent mini library exports with base classes included #31](https://github.com/navibyte/geospatial/issues/31)
+* [Add support for empty geometries other than Point and abstract Geometry #35](https://github.com/navibyte/geospatial/issues/35)
+
+Some **candidates** also for [geodata](dart/geodata):
+* [Add support for reading geospatial features from in-memory storages #34](https://github.com/navibyte/geospatial/issues/34)
+* [Full client-side support for calling OGC API Features service according to Part 1 + 2 #9](https://github.com/navibyte/geospatial/issues/9)
 
 See [other issues](https://github.com/navibyte/geospatial/issues) too.
 
