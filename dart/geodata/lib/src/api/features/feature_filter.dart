@@ -13,9 +13,13 @@ import '../base.dart';
 /// A feature filter used for geospatial feature queries.
 class FeatureFilter extends Filter {
   /// A new feature filter.
-  const FeatureFilter(
-      {Identifier? id, int? limit, this.crs, this.boundsCrs, this.bounds})
-      : super(id: id, limit: limit);
+  const FeatureFilter({
+    Identifier? id,
+    int? limit,
+    this.crs,
+    this.boundsCrs,
+    this.bounds,
+  }) : super(id: id, limit: limit);
 
   /// An optional coordinate reference system used by result geometries.
   final CRS? crs;

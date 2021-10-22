@@ -52,8 +52,10 @@ mixin BoundedSeriesMixin<T extends Bounded> implements BoundedSeries<T> {
   /// small series of bounded objects is initialized right a way, and for large
   /// series with lazy calculations).
   @protected
-  static Bounds initBounds<T extends Bounded>(Iterable<T> source,
-          {Bounds? bounds}) =>
+  static Bounds initBounds<T extends Bounded>(
+    Iterable<T> source, {
+    Bounds? bounds,
+  }) =>
       bounds ??
       _LazyBounds.calculate(() {
         final builder = BoundsBuilder();
@@ -69,8 +71,10 @@ mixin BoundedSeriesMixin<T extends Bounded> implements BoundedSeries<T> {
 class _BoundedSeriesView<T extends Bounded>
     extends _BatchedSeriesView<BoundedSeries<T>, T> with BoundedSeriesMixin<T> {
   _BoundedSeriesView(Iterable<T> source, {Bounds? bounds})
-      : super(source,
-            bounds: BoundedSeriesMixin.initBounds(source, bounds: bounds));
+      : super(
+          source,
+          bounds: BoundedSeriesMixin.initBounds(source, bounds: bounds),
+        );
 
   @override
   BoundedSeries<T> intersectByBounds(Bounds bounds) =>
@@ -78,5 +82,6 @@ class _BoundedSeriesView<T extends Bounded>
 
   @override
   BoundedSeries<T> intersectByBounds2D(Bounds bounds) => _BoundedSeriesView(
-      where((element) => bounds.intersects2D(element.bounds)));
+        where((element) => bounds.intersects2D(element.bounds)),
+      );
 }

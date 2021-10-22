@@ -60,8 +60,10 @@ class MultiPoint<T extends Point> extends Geometry with EquatableMixin {
   ///
   /// An optional [bounds] can be provided or it's lazy calculated if null.
   factory MultiPoint.make(
-          Iterable<Iterable<num>> values, PointFactory<T> pointFactory,
-          {Bounds? bounds}) =>
+    Iterable<Iterable<num>> values,
+    PointFactory<T> pointFactory, {
+    Bounds? bounds,
+  }) =>
       MultiPoint<T>(PointSeries<T>.make(values, pointFactory, bounds: bounds));
 
   /// Create [MultiPoint] parsed from [text] with a list of points.
@@ -70,8 +72,11 @@ class MultiPoint<T extends Point> extends Geometry with EquatableMixin {
   /// expected.
   ///
   /// Throws FormatException if cannot parse.
-  factory MultiPoint.parse(String text, PointFactory<T> pointFactory,
-          {ParseCoordsList? parser}) =>
+  factory MultiPoint.parse(
+    String text,
+    PointFactory<T> pointFactory, {
+    ParseCoordsList? parser,
+  }) =>
       parser != null
           ? MultiPoint<T>.make(parser.call(text), pointFactory)
           : parseWktMultiPoint<T>(text, pointFactory);
@@ -101,13 +106,24 @@ class MultiLineString<T extends Point> extends Geometry with EquatableMixin {
   /// Create [MultiLineString] from [values] with line strings.
   ///
   /// An optional [bounds] can be provided or it's lazy calculated if null.
-  factory MultiLineString.make(Iterable<Iterable<Iterable<num>>> values,
-          PointFactory<T> pointFactory,
-          {LineStringType type = LineStringType.any, Bounds? bounds}) =>
-      MultiLineString<T>(BoundedSeries.from(
-          values.map<LineString<T>>((pointSeries) =>
-              LineString<T>.make(pointSeries, pointFactory, type: type)),
-          bounds: bounds));
+  factory MultiLineString.make(
+    Iterable<Iterable<Iterable<num>>> values,
+    PointFactory<T> pointFactory, {
+    LineStringType type = LineStringType.any,
+    Bounds? bounds,
+  }) =>
+      MultiLineString<T>(
+        BoundedSeries.from(
+          values.map<LineString<T>>(
+            (pointSeries) => LineString<T>.make(
+              pointSeries,
+              pointFactory,
+              type: type,
+            ),
+          ),
+          bounds: bounds,
+        ),
+      );
 
   /// Create [MultiLineString] parsed from [text] with line strings.
   ///
@@ -115,8 +131,11 @@ class MultiLineString<T extends Point> extends Geometry with EquatableMixin {
   /// "(25.1 53.1, 25.2 53.2), (35.1 63.1, 35.2 63.2)" is expected.
   ///
   /// Throws FormatException if cannot parse.
-  factory MultiLineString.parse(String text, PointFactory<T> pointFactory,
-          {ParseCoordsListList? parser}) =>
+  factory MultiLineString.parse(
+    String text,
+    PointFactory<T> pointFactory, {
+    ParseCoordsListList? parser,
+  }) =>
       parser != null
           ? MultiLineString<T>.make(parser.call(text), pointFactory)
           : parseWktMultiLineString<T>(text, pointFactory);
@@ -146,12 +165,22 @@ class MultiPolygon<T extends Point> extends Geometry with EquatableMixin {
   /// Create [MultiPolygon] from [values] with a list of rings for polygons.
   ///
   /// An optional [bounds] can be provided or it's lazy calculated if null.
-  factory MultiPolygon.make(Iterable<Iterable<Iterable<Iterable<num>>>> values,
-          PointFactory<T> pointFactory, {Bounds? bounds}) =>
-      MultiPolygon<T>(BoundedSeries.from(
+  factory MultiPolygon.make(
+    Iterable<Iterable<Iterable<Iterable<num>>>> values,
+    PointFactory<T> pointFactory, {
+    Bounds? bounds,
+  }) =>
+      MultiPolygon<T>(
+        BoundedSeries.from(
           values.map<Polygon<T>>(
-              (polygon) => Polygon<T>.make(polygon, pointFactory)),
-          bounds: bounds));
+            (polygon) => Polygon<T>.make(
+              polygon,
+              pointFactory,
+            ),
+          ),
+          bounds: bounds,
+        ),
+      );
 
   /// Create [MultiPolygon] from [text] with a list of rings for polygons.
   ///
@@ -160,8 +189,11 @@ class MultiPolygon<T extends Point> extends Geometry with EquatableMixin {
   /// is expected.
   ///
   /// Throws FormatException if cannot parse.
-  factory MultiPolygon.parse(String text, PointFactory<T> pointFactory,
-          {ParseCoordsListListList? parser}) =>
+  factory MultiPolygon.parse(
+    String text,
+    PointFactory<T> pointFactory, {
+    ParseCoordsListListList? parser,
+  }) =>
       parser != null
           ? MultiPolygon<T>.make(parser.call(text), pointFactory)
           : parseWktMultiPolygon<T>(text, pointFactory);

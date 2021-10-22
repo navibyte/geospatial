@@ -23,7 +23,6 @@ Please see other [examples](example/geodata_example.dart) too.
 
 ```dart
 import 'package:datatools/fetch_http.dart';
-import 'package:datatools/fetch_file.dart';
 
 import 'package:geodata/geojson_features.dart';
 
@@ -31,17 +30,11 @@ Future<void> main(List<String> args) async {
   // read GeoJSON for earthquakes from web using HTTP fetcher
   print('GeoJSON features from HTTP');
   await _readFeatures(
-    HttpFetcher.simple(endpoints: [
-      Uri.parse('https://earthquake.usgs.gov/earthquakes/feed/v1.0/')
-    ]),
-    'summary/2.5_day.geojson',
-  );
-
-  // same thing but files using a file fetcher to read a local file
-  print('');
-  print('GeoJSON features from file');
-  await _readFeatures(
-    FileFetcher.basePath('test/usgs'),
+    HttpFetcher.simple(
+      endpoints: [
+        Uri.parse('https://earthquake.usgs.gov/earthquakes/feed/v1.0/')
+      ],
+    ),
     'summary/2.5_day.geojson',
   );
 }
@@ -58,7 +51,7 @@ Future<void> _readFeatures(Fetcher client, String collectionId) async {
     // get items or features from collection id, maximum 5 features returned
     final items = await source.items(
       collectionId,
-      filter: FeatureFilter(limit: 5),
+      filter: const FeatureFilter(limit: 5),
     );
 
     // do something with features, in this sample just print them out

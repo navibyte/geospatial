@@ -36,10 +36,15 @@ class LineString<T extends Point> extends Geometry with EquatableMixin {
   ///
   /// An optional [bounds] can be provided or it's lazy calculated if null.
   factory LineString.make(
-          Iterable<Iterable<num>> values, PointFactory<T> pointFactory,
-          {LineStringType type = LineStringType.any, Bounds? bounds}) =>
-      LineString<T>(PointSeries<T>.make(values, pointFactory, bounds: bounds),
-          type: type);
+    Iterable<Iterable<num>> values,
+    PointFactory<T> pointFactory, {
+    LineStringType type = LineStringType.any,
+    Bounds? bounds,
+  }) =>
+      LineString<T>(
+        PointSeries<T>.make(values, pointFactory, bounds: bounds),
+        type: type,
+      );
 
   /// Create [LineString] parsed from [text] with a chain of points.
   ///
@@ -47,9 +52,12 @@ class LineString<T extends Point> extends Geometry with EquatableMixin {
   /// expected.
   ///
   /// Throws FormatException if cannot parse.
-  factory LineString.parse(String text, PointFactory<T> pointFactory,
-          {LineStringType type = LineStringType.any,
-          ParseCoordsList? parser}) =>
+  factory LineString.parse(
+    String text,
+    PointFactory<T> pointFactory, {
+    LineStringType type = LineStringType.any,
+    ParseCoordsList? parser,
+  }) =>
       parser != null
           ? LineString<T>.make(parser.call(text), pointFactory, type: type)
           : parseWktLineString<T>(text, pointFactory, type: type);
@@ -69,7 +77,7 @@ class LineString<T extends Point> extends Geometry with EquatableMixin {
           throw ArgumentError('A linear ring must be closed.');
         }
         break;
-      default:
+      case LineStringType.any:
         if (chain.length < 2) {
           throw ArgumentError('LineString must have 0 or >= 2 points.');
         }

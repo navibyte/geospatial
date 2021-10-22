@@ -26,45 +26,61 @@ class GeoBounds extends BoundsBase<GeoPoint> with EquatableMixin {
   /// World bounds (longitude: -180.0 to 180.0, latitude: -90.0 to 90.0).
   const GeoBounds.world()
       : this.of(
-            min: const GeoPoint2.lonLat(-180.0, -90.0),
-            max: const GeoPoint2.lonLat(180.0, 90.0));
+          min: const GeoPoint2.lonLat(-180.0, -90.0),
+          max: const GeoPoint2.lonLat(180.0, 90.0),
+        );
 
   /// With minimum and maximum pairs of longitude and latitude (+optional elev).
-  GeoBounds.bbox(
-      {required double minLon,
-      required double minLat,
-      double? minElev,
-      required double maxLon,
-      required double maxLat,
-      double? maxElev})
-      : this.of(
-            min: minElev != null
-                ? GeoPoint3.lonLatElev(minLon, minLat, minElev)
-                : GeoPoint2.lonLat(minLon, minLat),
-            max: maxElev != null
-                ? GeoPoint3.lonLatElev(maxLon, maxLat, maxElev)
-                : GeoPoint2.lonLat(maxLon, maxLat));
+  GeoBounds.bbox({
+    required double minLon,
+    required double minLat,
+    double? minElev,
+    required double maxLon,
+    required double maxLat,
+    double? maxElev,
+  }) : this.of(
+          min: minElev != null
+              ? GeoPoint3.lonLatElev(minLon, minLat, minElev)
+              : GeoPoint2.lonLat(minLon, minLat),
+          max: maxElev != null
+              ? GeoPoint3.lonLatElev(maxLon, maxLat, maxElev)
+              : GeoPoint2.lonLat(maxLon, maxLat),
+        );
 
   /// With minimum and maximum pairs of longitude and latitude.
   GeoBounds.bboxLonLat(
-      double minLon, double minLat, double maxLon, double maxLat)
-      : this.of(
-            min: GeoPoint2.lonLat(minLon, minLat),
-            max: GeoPoint2.lonLat(maxLon, maxLat));
+    double minLon,
+    double minLat,
+    double maxLon,
+    double maxLat,
+  ) : this.of(
+          min: GeoPoint2.lonLat(minLon, minLat),
+          max: GeoPoint2.lonLat(maxLon, maxLat),
+        );
 
   /// With minimum and maximum sets of longitude, latitude and elevation.
-  GeoBounds.bboxLonLatElev(double minLon, double minLat, double minElev,
-      double maxLon, double maxLat, double maxElev)
-      : this.of(
-            min: GeoPoint3.lonLatElev(minLon, minLat, minElev),
-            max: GeoPoint3.lonLatElev(maxLon, maxLat, maxElev));
+  GeoBounds.bboxLonLatElev(
+    double minLon,
+    double minLat,
+    double minElev,
+    double maxLon,
+    double maxLat,
+    double maxElev,
+  ) : this.of(
+          min: GeoPoint3.lonLatElev(minLon, minLat, minElev),
+          max: GeoPoint3.lonLatElev(maxLon, maxLat, maxElev),
+        );
 
   /// With minimum and maximum pairs of latitude and longitude.
   GeoBounds.bboxLatLon(
-      double minLat, double minLon, double maxLat, double maxLon)
-      : this.of(
-            min: GeoPoint2.latLon(minLat, minLon),
-            max: GeoPoint2.latLon(maxLat, maxLon));
+    double minLat,
+    double minLon,
+    double maxLat,
+    double maxLon,
+  ) : this.of(
+          min: GeoPoint2.latLon(minLat, minLon),
+          max: GeoPoint2.latLon(maxLat, maxLon),
+        );
 
   /// With [coords] containing min and max sets of lon, lat and optional elev.
   ///
@@ -97,8 +113,9 @@ class GeoBounds extends BoundsBase<GeoPoint> with EquatableMixin {
     final len = length ?? coords.length;
     final pointLen = len ~/ 2;
     return GeoBounds.of(
-        min: min.newFrom(coords, offset: start, length: pointLen) as GeoPoint,
-        max: max.newFrom(coords, offset: start + pointLen, length: pointLen)
-            as GeoPoint);
+      min: min.newFrom(coords, offset: start, length: pointLen) as GeoPoint,
+      max: max.newFrom(coords, offset: start + pointLen, length: pointLen)
+          as GeoPoint,
+    );
   }
 }

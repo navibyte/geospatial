@@ -42,8 +42,10 @@ Future<void> main(List<String> args) async {
 
   // check enough args
   if (args.length < 3) {
-    print('Args: {source} {baseUrl} {collectionIds} '
-        '[limit] [operation] [param] [value]');
+    print(
+      'Args: {source} {baseUrl} {collectionIds} '
+      '[limit] [operation] [param] [value]',
+    );
     print('Allowed sources: oapif, geojson');
     return;
   }
@@ -92,11 +94,12 @@ Future<void> main(List<String> args) async {
         // GeoJSON source for a plain resource (the resource provides only
         // items, metadata is setup here as statically)
         source = FeatureSourceGeoJSON.of(
-            client: client,
-            meta: DataSourceMeta.collectionIds(
-              collectionIds,
-              title: 'Sample GeoJSON service',
-            ));
+          client: client,
+          meta: DataSourceMeta.collectionIds(
+            collectionIds,
+            title: 'Sample GeoJSON service',
+          ),
+        );
         break;
       case 'oapif':
         // OGC API Features source (the service provides both meta and items)

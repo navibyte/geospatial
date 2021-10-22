@@ -12,8 +12,11 @@ import 'package:meta/meta.dart';
 @immutable
 class ItemsMeta with EquatableMixin {
   /// Create a meta instance.
-  const ItemsMeta(
-      {required this.timeStamp, this.numberMatched, this.numberReturned});
+  const ItemsMeta({
+    required this.timeStamp,
+    this.numberMatched,
+    this.numberReturned,
+  });
 
   /// The time stamp
   final DateTime timeStamp;

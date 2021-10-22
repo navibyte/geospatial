@@ -19,9 +19,11 @@ Future<void> main(List<String> args) async {
   // read GeoJSON for earthquakes from web using HTTP fetcher
   print('GeoJSON features from HTTP');
   await _readFeatures(
-    HttpFetcher.simple(endpoints: [
-      Uri.parse('https://earthquake.usgs.gov/earthquakes/feed/v1.0/')
-    ]),
+    HttpFetcher.simple(
+      endpoints: [
+        Uri.parse('https://earthquake.usgs.gov/earthquakes/feed/v1.0/')
+      ],
+    ),
     'summary/2.5_day.geojson',
   );
 

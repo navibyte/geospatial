@@ -26,11 +26,12 @@ abstract class Feature<T extends Geometry> extends Entity implements Bounded {
   ///
   /// If an optional [bounds] for a new feature is not provided then [geometry]
   /// bounds is used also as feature bounds when accessed.
-  factory Feature.of(
-          {Identifier? id,
-          required DataObject properties,
-          T? geometry,
-          Bounds? bounds}) =>
+  factory Feature.of({
+    Identifier? id,
+    required DataObject properties,
+    T? geometry,
+    Bounds? bounds,
+  }) =>
       _FeatureBase<T>(
         id: id,
         geometry: geometry,
@@ -48,11 +49,12 @@ abstract class Feature<T extends Geometry> extends Entity implements Bounded {
   ///
   /// If an optional [bounds] for a new feature is not provided then [geometry]
   /// bounds is used also as feature bounds when accessed.
-  factory Feature.view(
-          {Object? id,
-          required Map<String, Object?> properties,
-          T? geometry,
-          Bounds? bounds}) =>
+  factory Feature.view({
+    Object? id,
+    required Map<String, Object?> properties,
+    T? geometry,
+    Bounds? bounds,
+  }) =>
       _FeatureBase<T>(
         id: Identifier.idOrNull(id),
         properties: DataObject.view(properties),
@@ -68,12 +70,12 @@ abstract class Feature<T extends Geometry> extends Entity implements Bounded {
 /// The implementation may change in future.
 class _FeatureBase<T extends Geometry> extends EntityBase
     implements Feature<T> {
-  const _FeatureBase(
-      {Identifier? id,
-      required DataObject properties,
-      required this.geometry,
-      Bounds? bounds})
-      : _featureBounds = bounds,
+  const _FeatureBase({
+    Identifier? id,
+    required DataObject properties,
+    required this.geometry,
+    Bounds? bounds,
+  })  : _featureBounds = bounds,
         super(id: id, properties: properties);
 
   final Bounds? _featureBounds;
@@ -97,9 +99,10 @@ abstract class FeatureCollection<T extends Feature> extends Bounded {
   ///
   /// If an optional [bounds] for a new feature collection is not provided then
   /// bounds of the series of [features] is used also as collection bounds.
-  factory FeatureCollection.of(
-      {required BoundedSeries<T> features,
-      Bounds? bounds}) = _FeatureCollectionBase<T>;
+  factory FeatureCollection.of({
+    required BoundedSeries<T> features,
+    Bounds? bounds,
+  }) = _FeatureCollectionBase<T>;
 
   /// All the [features] for this collection.
   BoundedSeries<T> get features;

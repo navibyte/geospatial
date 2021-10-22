@@ -19,13 +19,23 @@ class Polygon<T extends Point> extends Geometry with EquatableMixin {
   /// Create [Polygon] from [values] with a list of rings.
   ///
   /// An optional [bounds] can be provided or it's lazy calculated if null.
-  factory Polygon.make(Iterable<Iterable<Iterable<num>>> values,
-          PointFactory<T> pointFactory, {Bounds? bounds}) =>
-      Polygon<T>(BoundedSeries.from(
-          values.map<LineString<T>>((pointSeries) => LineString<T>.make(
-              pointSeries, pointFactory,
-              type: LineStringType.ring)),
-          bounds: bounds));
+  factory Polygon.make(
+    Iterable<Iterable<Iterable<num>>> values,
+    PointFactory<T> pointFactory, {
+    Bounds? bounds,
+  }) =>
+      Polygon<T>(
+        BoundedSeries.from(
+          values.map<LineString<T>>(
+            (pointSeries) => LineString<T>.make(
+              pointSeries,
+              pointFactory,
+              type: LineStringType.ring,
+            ),
+          ),
+          bounds: bounds,
+        ),
+      );
 
   /// Create [Polygon] parsed from [text] with a list of rings.
   ///
@@ -34,15 +44,19 @@ class Polygon<T extends Point> extends Geometry with EquatableMixin {
   /// is expected.
   ///
   /// Throws FormatException if cannot parse.
-  factory Polygon.parse(String text, PointFactory<T> pointFactory,
-          {ParseCoordsListList? parser}) =>
+  factory Polygon.parse(
+    String text,
+    PointFactory<T> pointFactory, {
+    ParseCoordsListList? parser,
+  }) =>
       parser != null
           ? Polygon<T>.make(parser.call(text), pointFactory)
           : parseWktPolygon<T>(text, pointFactory);
 
   /// Validate [rings] to have at least one exterior and all must be rings.
   static BoundedSeries<LineString<T>> validate<T extends Point>(
-      BoundedSeries<LineString<T>> rings) {
+    BoundedSeries<LineString<T>> rings,
+  ) {
     if (rings.isEmpty) {
       throw ArgumentError('Polygon must have exterior ring.');
     }

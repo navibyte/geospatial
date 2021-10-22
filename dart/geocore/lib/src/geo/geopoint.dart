@@ -372,12 +372,12 @@ class GeoPoint3m extends GeoPoint3 {
   /// Longitude is normalized to the range `[-180.0, 180.0[` using the formula
   /// `(lon + 180.0) % 360.0 - 180.0` and latitude is clamped to the
   /// range `[-90.0, 90.0]`.
-  const GeoPoint3m(
-      {required double lon,
-      required double lat,
-      required double elev,
-      required this.m})
-      : super(lon: lon, lat: lat, elev: elev);
+  const GeoPoint3m({
+    required double lon,
+    required double lat,
+    required double elev,
+    required this.m,
+  }) : super(lon: lon, lat: lat, elev: elev);
 
   /// A geographic position, coordinates in order [lon], [lat], [elev], [m].
   const GeoPoint3m.lonLatElevM(double lon, double lat, double elev, double m)

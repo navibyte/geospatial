@@ -8,8 +8,10 @@ import '../../base.dart';
 import '../../geo.dart';
 
 /// A function to create geographic bounds from [coords] with [pointFactory].
-GeoBounds geoBoundsFactory(Iterable<num> coords,
-    {required PointFactory<GeoPoint> pointFactory}) {
+GeoBounds geoBoundsFactory(
+  Iterable<num> coords, {
+  required PointFactory<GeoPoint> pointFactory,
+}) {
   final pointCoordsLen = coords.length ~/ 2;
   return GeoBounds.of(
     min: pointFactory.newFrom(
@@ -26,8 +28,10 @@ GeoBounds geoBoundsFactory(Iterable<num> coords,
 }
 
 /// A function to create any [Bounds] object from [coords] with [pointFactory].
-Bounds anyBoundsFactory(Iterable<num> coords,
-    {required PointFactory pointFactory}) {
+Bounds anyBoundsFactory(
+  Iterable<num> coords, {
+  required PointFactory pointFactory,
+}) {
   final pointCoordsLen = coords.length ~/ 2;
   return Bounds.of(
     min: pointFactory.newFrom(

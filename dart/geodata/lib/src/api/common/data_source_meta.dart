@@ -13,17 +13,19 @@ import 'collection_meta.dart';
 /// Metadata for a data source (like an API service or other resource).
 class DataSourceMeta extends ResourceMeta {
   /// Create metadata for a data source.
-  const DataSourceMeta(
-      {required String title,
-      String? description,
-      required Links links,
-      required this.conformance,
-      required this.collections})
-      : super(title: title, description: description, links: links);
+  const DataSourceMeta({
+    required String title,
+    String? description,
+    required Links links,
+    required this.conformance,
+    required this.collections,
+  }) : super(title: title, description: description, links: links);
 
   /// Create metadata for a data source from [collections] and optional [title].
-  factory DataSourceMeta.collectionIds(Iterable<String> collectionIds,
-          {required String title}) =>
+  factory DataSourceMeta.collectionIds(
+    Iterable<String> collectionIds, {
+    required String title,
+  }) =>
       DataSourceMeta(
         title: title,
         links: Links.empty(),

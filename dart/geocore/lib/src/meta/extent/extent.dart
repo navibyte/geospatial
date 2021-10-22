@@ -16,27 +16,33 @@ import '../../geo.dart';
 @immutable
 class Extent with EquatableMixin {
   /// Extent with [crs], at least one bounds and intervals (with >= 0 items).
-  const Extent(
-      {required this.crs, required this.allBounds, required this.allIntervals});
+  const Extent({
+    required this.crs,
+    required this.allBounds,
+    required this.allIntervals,
+  });
 
   /// Extent with [crs], exactly one [bounds] and an optional [interval].
-  Extent.single(
-      {required CRS crs, required GeoBounds bounds, Interval? interval})
-      : this(
-            crs: crs,
-            allBounds: [bounds],
-            allIntervals:
-                interval != null ? [interval] : const Iterable.empty());
+  Extent.single({
+    required CRS crs,
+    required GeoBounds bounds,
+    Interval? interval,
+  }) : this(
+          crs: crs,
+          allBounds: [bounds],
+          allIntervals: interval != null ? [interval] : const Iterable.empty(),
+        );
 
   /// Extent with [crs], at least one bounds and optional intervals.
-  const Extent.multi(
-      {required CRS crs,
-      required Iterable<GeoBounds> allBounds,
-      Iterable<Interval>? allIntervals})
-      : this(
-            crs: crs,
-            allBounds: allBounds,
-            allIntervals: allIntervals ?? const Iterable.empty());
+  const Extent.multi({
+    required CRS crs,
+    required Iterable<GeoBounds> allBounds,
+    Iterable<Interval>? allIntervals,
+  }) : this(
+          crs: crs,
+          allBounds: allBounds,
+          allIntervals: allIntervals ?? const Iterable.empty(),
+        );
 
   /// The coordinate reference system for bounds items of this extent.
   final CRS crs;

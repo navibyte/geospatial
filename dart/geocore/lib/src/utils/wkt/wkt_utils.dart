@@ -55,7 +55,9 @@ T parseWktPoint<T extends Point>(String point, PointFactory<T> pointFactory) =>
 ///
 /// Throws FormatException if parsing fails.
 T parseWktPointInt<T extends Point>(
-        String point, PointFactory<T> pointFactory) =>
+  String point,
+  PointFactory<T> pointFactory,
+) =>
     pointFactory.newFrom(parseWktCoordsInt(point));
 
 /// Parses a series of points of [T] from [pointSeries].
@@ -65,10 +67,14 @@ T parseWktPointInt<T extends Point>(
 ///
 /// Throws FormatException if parsing fails.
 PointSeries<T> parseWktPointSeries<T extends Point>(
-        String pointSeries, PointFactory<T> pointFactory) =>
-    PointSeries<T>.from(pointSeries
-        .split(',')
-        .map<T>((point) => pointFactory.newFrom(parseWktCoords(point))));
+  String pointSeries,
+  PointFactory<T> pointFactory,
+) =>
+    PointSeries<T>.from(
+      pointSeries
+          .split(',')
+          .map<T>((point) => pointFactory.newFrom(parseWktCoords(point))),
+    );
 
 /// Parses a line string with points of [T] from [lineString].
 ///
@@ -79,8 +85,10 @@ PointSeries<T> parseWktPointSeries<T extends Point>(
 ///
 /// Throws FormatException if parsing fails.
 LineString<T> parseWktLineString<T extends Point>(
-        String lineString, PointFactory<T> pointFactory,
-        {LineStringType type = LineStringType.any}) =>
+  String lineString,
+  PointFactory<T> pointFactory, {
+  LineStringType type = LineStringType.any,
+}) =>
     LineString<T>(parseWktPointSeries<T>(lineString, pointFactory), type: type);
 
 /// Parses a series of line strings with points of [T] from [lineStringSeries].
@@ -94,8 +102,10 @@ LineString<T> parseWktLineString<T extends Point>(
 ///
 /// Throws FormatException if parsing fails.
 BoundedSeries<LineString<T>> parseWktLineStringSeries<T extends Point>(
-    String lineStringSeries, PointFactory<T> pointFactory,
-    {LineStringType type = LineStringType.any}) {
+  String lineStringSeries,
+  PointFactory<T> pointFactory, {
+  LineStringType type = LineStringType.any,
+}) {
   final lineStrings = <LineString<T>>[];
   var ls = 0;
   while (ls < lineStringSeries.length) {
@@ -104,9 +114,13 @@ BoundedSeries<LineString<T>> parseWktLineStringSeries<T extends Point>(
       if (le == -1) {
         throw invalidWkt(lineStringSeries);
       } else {
-        lineStrings.add(parseWktLineString<T>(
-            lineStringSeries.substring(ls + 1, le), pointFactory,
-            type: type));
+        lineStrings.add(
+          parseWktLineString<T>(
+            lineStringSeries.substring(ls + 1, le),
+            pointFactory,
+            type: type,
+          ),
+        );
         ls = le;
       }
     }
@@ -125,9 +139,16 @@ BoundedSeries<LineString<T>> parseWktLineStringSeries<T extends Point>(
 ///
 /// Throws FormatException if parsing fails.
 Polygon<T> parseWktPolygon<T extends Point>(
-        String polygon, PointFactory<T> pointFactory) =>
-    Polygon<T>(parseWktLineStringSeries<T>(polygon, pointFactory,
-        type: LineStringType.ring));
+  String polygon,
+  PointFactory<T> pointFactory,
+) =>
+    Polygon<T>(
+      parseWktLineStringSeries<T>(
+        polygon,
+        pointFactory,
+        type: LineStringType.ring,
+      ),
+    );
 
 /// Parses a series of polygons with points of [T] from [polygonSeries].
 ///
@@ -141,7 +162,9 @@ Polygon<T> parseWktPolygon<T extends Point>(
 ///
 /// Throws FormatException if parsing fails.
 BoundedSeries<Polygon<T>> parseWktPolygonSeries<T extends Point>(
-    String polygonSeries, PointFactory<T> pointFactory) {
+  String polygonSeries,
+  PointFactory<T> pointFactory,
+) {
   final polygons = <Polygon<T>>[];
   var ps = 0;
   while (ps < polygonSeries.length) {
@@ -156,9 +179,13 @@ BoundedSeries<Polygon<T>> parseWktPolygonSeries<T extends Point>(
           if (le == -1) {
             throw invalidWkt(polygonSeries);
           } else {
-            lineStrings.add(parseWktLineString<T>(
-                polygonSeries.substring(ls + 1, le), pointFactory,
-                type: LineStringType.ring));
+            lineStrings.add(
+              parseWktLineString<T>(
+                polygonSeries.substring(ls + 1, le),
+                pointFactory,
+                type: LineStringType.ring,
+              ),
+            );
             ls = le;
           }
         }
@@ -185,7 +212,9 @@ BoundedSeries<Polygon<T>> parseWktPolygonSeries<T extends Point>(
 ///
 /// Throws FormatException if parsing fails.
 MultiPoint<T> parseWktMultiPoint<T extends Point>(
-        String multiPoint, PointFactory<T> pointFactory) =>
+  String multiPoint,
+  PointFactory<T> pointFactory,
+) =>
     MultiPoint<T>(parseWktPointSeries<T>(multiPoint, pointFactory));
 
 /// Parses a multi line string with points of [T] from [multiLineString].
@@ -199,10 +228,17 @@ MultiPoint<T> parseWktMultiPoint<T extends Point>(
 ///
 /// Throws FormatException if parsing fails.
 MultiLineString<T> parseWktMultiLineString<T extends Point>(
-        String multiLineString, PointFactory<T> pointFactory,
-        {LineStringType type = LineStringType.any}) =>
+  String multiLineString,
+  PointFactory<T> pointFactory, {
+  LineStringType type = LineStringType.any,
+}) =>
     MultiLineString<T>(
-        parseWktLineStringSeries<T>(multiLineString, pointFactory, type: type));
+      parseWktLineStringSeries<T>(
+        multiLineString,
+        pointFactory,
+        type: type,
+      ),
+    );
 
 /// Parses a multi of polygon with points of [T] from [multiPolygon].
 ///
@@ -216,14 +252,18 @@ MultiLineString<T> parseWktMultiLineString<T extends Point>(
 ///
 /// Throws FormatException if parsing fails.
 MultiPolygon<T> parseWktMultiPolygon<T extends Point>(
-        String multiPolygon, PointFactory<T> pointFactory) =>
+  String multiPolygon,
+  PointFactory<T> pointFactory,
+) =>
     MultiPolygon<T>(parseWktPolygonSeries<T>(multiPolygon, pointFactory));
 
 /// Parses a single geometry with points of [T] from [text].
 ///
 /// Throws FormatException if parsing fails.
-Geometry parseWktGeometry<T extends Point>(String text,
-    {required PointFactory<T> Function({required bool expectM}) resolve}) {
+Geometry parseWktGeometry<T extends Point>(
+  String text, {
+  required PointFactory<T> Function({required bool expectM}) resolve,
+}) {
   for (var type = 0; type < _types.length; type++) {
     if (text.startsWith(_types[type])) {
       var i = _types[type].length;
@@ -288,8 +328,10 @@ Geometry parseWktGeometry<T extends Point>(String text,
 /// Parses a single next available geometry with points of [T] from [text].
 ///
 /// Throws FormatException if parsing fails.
-Geometry parseNextWktGeometry<T extends Point>(String text,
-    {required PointFactory<T> Function({required bool expectM}) resolve}) {
+Geometry parseNextWktGeometry<T extends Point>(
+  String text, {
+  required PointFactory<T> Function({required bool expectM}) resolve,
+}) {
   final start = _findWktTokenStart(text);
   if (start >= 0) {
     final end = _findWktTokenEnd(text, start);
@@ -306,9 +348,11 @@ Geometry parseNextWktGeometry<T extends Point>(String text,
 /// specifying a geometry object range to be returned on a collection.
 ///
 /// Throws FormatException if parsing fails.
-BoundedSeries<Geometry> parseWktGeometrySeries<T extends Point>(String text,
-    {required PointFactory<T> Function({required bool expectM}) resolve,
-    Range? range}) {
+BoundedSeries<Geometry> parseWktGeometrySeries<T extends Point>(
+  String text, {
+  required PointFactory<T> Function({required bool expectM}) resolve,
+  Range? range,
+}) {
   final geometries = <Geometry>[];
   final rangeLimit = range?.limit;
   if (rangeLimit == null || rangeLimit > 0) {
@@ -320,8 +364,12 @@ BoundedSeries<Geometry> parseWktGeometrySeries<T extends Point>(String text,
       final endChar = _findWktTokenEnd(text, startChar);
       if (endChar > startChar) {
         if (rangeStart == null || tokenIndex >= rangeStart) {
-          geometries.add(parseWktGeometry<T>(text.substring(startChar, endChar),
-              resolve: resolve));
+          geometries.add(
+            parseWktGeometry<T>(
+              text.substring(startChar, endChar),
+              resolve: resolve,
+            ),
+          );
           countAdded++;
           if (rangeLimit != null && countAdded >= rangeLimit) {
             break;
@@ -341,10 +389,12 @@ BoundedSeries<Geometry> parseWktGeometrySeries<T extends Point>(String text,
 ///
 /// Throws FormatException if parsing fails.
 GeometryCollection<Geometry> parseWktGeometryCollection<T extends Point>(
-        String text,
-        {required PointFactory<T> Function({required bool expectM}) resolve}) =>
+  String text, {
+  required PointFactory<T> Function({required bool expectM}) resolve,
+}) =>
     GeometryCollection<Geometry>(
-        parseWktGeometrySeries(text, resolve: resolve));
+      parseWktGeometrySeries(text, resolve: resolve),
+    );
 
 int _findWktTokenStart(String text, {int offset = 0}) {
   final len = text.length;

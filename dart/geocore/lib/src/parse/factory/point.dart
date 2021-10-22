@@ -46,8 +46,10 @@ PointFactory anyPointFactory({CRS expectedCRS = CRS84}) =>
 /// Result type candidates for objects created by a factory: [Point2],
 /// [Point2m], [Point3], [Point3m], [GeoPoint2], [GeoPoint2m], [GeoPoint3],
 /// [GeoPoint3m].
-PointFactory<Point> anyPointFactoryAllowingM(
-        {CRS expectedCRS = CRS84, required bool expectM}) =>
+PointFactory<Point> anyPointFactoryAllowingM({
+  CRS expectedCRS = CRS84,
+  required bool expectM,
+}) =>
     _CreateAnyPointAllowingM(expectedCRS: expectedCRS, expectM: expectM);
 
 // -----------------------------------------------------------------------------
@@ -107,9 +109,16 @@ class _CreateGeoPointAllowingM extends _CreateGeoPoint {
     } else {
       return z != null
           ? GeoPoint3m.lonLatElevM(
-              x.toDouble(), y.toDouble(), z.toDouble(), m?.toDouble() ?? 0.0)
+              x.toDouble(),
+              y.toDouble(),
+              z.toDouble(),
+              m?.toDouble() ?? 0.0,
+            )
           : GeoPoint2m.lonLatM(
-              x.toDouble(), y.toDouble(), m?.toDouble() ?? 0.0);
+              x.toDouble(),
+              y.toDouble(),
+              m?.toDouble() ?? 0.0,
+            );
     }
   }
 }
@@ -168,7 +177,11 @@ class _CreateProjectedPointAllowingM extends _CreateProjectedPoint {
     } else {
       return z != null
           ? Point3m.xyzm(
-              x.toDouble(), y.toDouble(), z.toDouble(), m?.toDouble() ?? 0.0)
+              x.toDouble(),
+              y.toDouble(),
+              z.toDouble(),
+              m?.toDouble() ?? 0.0,
+            )
           : Point2m.xym(x.toDouble(), y.toDouble(), m?.toDouble() ?? 0.0);
     }
   }
@@ -204,9 +217,10 @@ class _CreateAnyPoint implements PointFactory {
 }
 
 class _CreateAnyPointAllowingM implements PointFactory {
-  const _CreateAnyPointAllowingM(
-      {this.expectedCRS = CRS84, required bool expectM})
-      : hasM = expectM;
+  const _CreateAnyPointAllowingM({
+    this.expectedCRS = CRS84,
+    required bool expectM,
+  }) : hasM = expectM;
 
   final CRS expectedCRS;
 
@@ -236,6 +250,9 @@ class _CreateAnyPointAllowingM implements PointFactory {
   }
 }
 
-FormatException _notValidPoint(Iterable<num> coords,
-        {int? offset, int? length}) =>
+FormatException _notValidPoint(
+  Iterable<num> coords, {
+  int? offset,
+  int? length,
+}) =>
     FormatException('Not a valid point with ${coords.length} coordinates.');

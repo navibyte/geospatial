@@ -20,6 +20,8 @@ abstract class FeatureSource<M extends DataSourceMeta> extends DataSource<M> {
   /// Fetches feature items matching [filter] as paged responses.
   ///
   /// This call returns a first set of feature items with a link to a next set.
-  Future<Paged<FeatureItems>> itemsPaged(String collectionId,
-      {FeatureFilter? filter});
+  Future<Paged<FeatureItems>> itemsPaged(
+    String collectionId, {
+    FeatureFilter? filter,
+  });
 }

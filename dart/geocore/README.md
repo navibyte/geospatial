@@ -164,7 +164,9 @@ a multi point, a vertex array or any any other collection for points.
   // Parsing a point series of `GeoPoint` from WKT compatible text with
   // `GeoPoint3` as a concrete point class.
   PointSeries<GeoPoint>.parse(
-      '10.0 11.0 12.0, 20.0 21.0 22.0, 30.0 31.0 32.0', GeoPoint3.geometry);
+    '10.0 11.0 12.0, 20.0 21.0 22.0, 30.0 31.0 32.0',
+    GeoPoint3.geometry,
+  );
 ```
 
 The `PointSeries` class is not extending the `Geometry` class, but it's used by
@@ -192,8 +194,9 @@ Or below are examples of more direct ways to construct line strings:
   );
 
   // Parsing using the WKT factory produces the result as the previous sample.
-  wktProjected.parse<Point3m>('LINESTRING ZM (10.0 11.0 12.0 5.1, '
-      '20.0 21.0 22.0 5.2, 30.0 31.0 32.0 5.3)');
+  wktProjected.parse<Point3m>(
+    'LINESTRING ZM(10.0 11.0 12.0 5.1, 20.0 21.0 22.0 5.2, 30.0 31.0 32.0 5.3)',
+  );
 ```
 
 ### Polygons
@@ -232,9 +235,9 @@ Other ways to construct polygons are familiar from previous samples:
 
   // The same polygon geometry as above, but parsed from a WKT compatible text.
   Polygon.parse(
-      '(35 10, 45 45, 15 40, '
-      '10 20, 35 10) (20 30, 35 35, 30 20, 20 30)',
-      GeoPoint2.geometry);
+    '(35 10, 45 45, 15 40, 10 20, 35 10) (20 30, 35 35, 30 20, 20 30)',
+    GeoPoint2.geometry,
+  );
 ```
 
 ### Multi geometries
@@ -248,13 +251,16 @@ in similar ways described already for other geometries. Also parsed from text:
 
   // A multi line string of `Point2` with two line strings.
   MultiLineString.parse(
-      '(10 10, 20 20, 10 40), (40 40, 30 30, 40 20, 30 10)', Point2.geometry);
+    '(10 10, 20 20, 10 40), (40 40, 30 30, 40 20, 30 10)',
+    Point2.geometry,
+  );
 
-  // A multi polygon of `GeoPoint2` with two polygon (both with exterior 
+  // A multi polygon of `GeoPoint2` with two polygon (both with exterior
   // boundary without holes).
   MultiPolygon.parse(
-      '((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5))',
-      GeoPoint2.geometry);
+    '((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5))',
+    GeoPoint2.geometry,
+  );
 ```
 
 There is also `GeometryCollection`:
@@ -266,22 +272,27 @@ There is also `GeometryCollection`:
     // A point with integer values using a constructor with named parameters.
     Point2(x: 40, y: 10),
     // A line string made from a list of points (each a list of nums).
-    LineString.make([
-      [10, 10],
-      [20, 20],
-      [10, 40]
-    ], Point2.geometry),
+    LineString.make(
+      [
+        [10, 10],
+        [20, 20],
+        [10, 40]
+      ],
+      Point2.geometry,
+    ),
     // A polygon parsed from WKT compatible text.
     Polygon.parse('(40 40, 20 45, 45 30, 40 40)', Point2.geometry)
   ]);
 
   // A geometry collection can also be parsed from WKT text.
-  wktProjected.parse<Point2>('''
+  wktProjected.parse<Point2>(
+    '''
       GEOMETRYCOLLECTION (
         POINT (40 10),
         LINESTRING (10 10, 20 20, 10 40),
         POLYGON ((40 40, 20 45, 45 30, 40 40)))
-      ''');
+      ''',
+  );
 ```
 
 ### Spatial bounds
@@ -296,7 +307,13 @@ Bounds samples with projected or cartesian coordinates:
   Bounds.of(min: Point2(x: 10.0, y: 10.0), max: Point2(x: 20.0, y: 20.0));
 
   // Bounds (3D) made from a list of list of nums.
-  Bounds.make([[10.0, 10.0, 10.0], [20.0, 20.0, 20.0]], Point3.geometry);
+  Bounds.make(
+    [
+      [10.0, 10.0, 10.0],
+      [20.0, 20.0, 20.0]
+    ],
+    Point3.geometry,
+  );
 
   // Bounds (3D with measure) parsed from WKT compatible text.
   Bounds.parse('10.0 10.0 10.0 5.0, 20.0 20.0 20.0 5.0', Point3m.geometry);
@@ -310,8 +327,9 @@ Bounds samples with geographic coordinates:
 
   // The same bounds created of 2D geographic point instances.
   GeoBounds.of(
-      min: GeoPoint2(lon: -20.0, lat: 50.0),
-      max: GeoPoint2(lon: 20.0, lat: 60.0));
+    min: GeoPoint2(lon: -20.0, lat: 50.0),
+    max: GeoPoint2(lon: 20.0, lat: 60.0),
+  );
 ```
 
 ### Temporal instants and intervals
@@ -363,13 +381,17 @@ useful in metadata structures for geospatial data sources.
   );
 
   // An extent with multiple spatial bounds and temporal interval segments.
-  Extent.multi(crs: CRS84, allBounds: [
-    GeoBounds.bboxLonLat(-20.0, 50.0, 20.0, 60.0),
-    GeoBounds.bboxLonLat(40.0, 50.0, 60.0, 60.0),
-  ], allIntervals: [
-    Interval.parse('2020-10-01/2020-10-05'),
-    Interval.parse('2020-10-27/2020-10-31'),
-  ]);
+  Extent.multi(
+    crs: CRS84,
+    allBounds: [
+      GeoBounds.bboxLonLat(-20.0, 50.0, 20.0, 60.0),
+      GeoBounds.bboxLonLat(40.0, 50.0, 60.0, 60.0),
+    ],
+    allIntervals: [
+      Interval.parse('2020-10-01/2020-10-05'),
+      Interval.parse('2020-10-27/2020-10-31'),
+    ],
+  );
 ```
 
 ### Geospatial features
@@ -517,9 +539,11 @@ Samples to parse from WKT text representation of geometry:
   // Parse geographical line string, from (10.0 50.0) to (11.0 51.0).
   wktGeographic.parse('LINESTRING (10.0 50.0, 11.0 51.0)');
 
-  // Parse geographical polygon with a hole. 
-  wktGeographic.parse('POLYGON ((40 15, 50 50, 15 45, 10 15, 40 15),'
-      ' (25 25, 25 40, 35 30, 25 25))');
+  // Parse geographical polygon with a hole.
+  wktGeographic.parse(
+    'POLYGON ((40 15, 50 50, 15 45, 10 15, 40 15),'
+    ' (25 25, 25 40, 35 30, 25 25))',
+  );
 ```
 
 Supported WKT geometry types: `POINT`, `LINESTRING`, `POLYGON`, `MULTIPOINT`, 

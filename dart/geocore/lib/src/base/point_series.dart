@@ -32,11 +32,14 @@ abstract class PointSeries<T extends Point>
   ///
   /// An optional [bounds] can be provided or it's lazy calculated if null.
   factory PointSeries.make(
-          Iterable<Iterable<num>> values, PointFactory<T> pointFactory,
-          {Bounds? bounds}) =>
+    Iterable<Iterable<num>> values,
+    PointFactory<T> pointFactory, {
+    Bounds? bounds,
+  }) =>
       PointSeries<T>.from(
-          values.map<T>((coords) => pointFactory.newFrom(coords)),
-          bounds: bounds);
+        values.map<T>((coords) => pointFactory.newFrom(coords)),
+        bounds: bounds,
+      );
 
   /// Create [PointSeries] parsed from [text] with a list of points.
   ///
@@ -44,8 +47,11 @@ abstract class PointSeries<T extends Point>
   /// "(25.1 53.1), (25.2 53.2)" is expected.
   ///
   /// Throws FormatException if cannot parse.
-  factory PointSeries.parse(String text, PointFactory<T> pointFactory,
-          {ParseCoordsList? parser}) =>
+  factory PointSeries.parse(
+    String text,
+    PointFactory<T> pointFactory, {
+    ParseCoordsList? parser,
+  }) =>
       parser != null
           ? PointSeries<T>.make(parser.call(text), pointFactory)
           : parseWktPointSeries<T>(text, pointFactory);
@@ -108,8 +114,10 @@ mixin PointSeriesMixin<T extends Point> implements PointSeries<T> {
   /// small series of points is initialized right a way, and for large
   /// series with lazy calculations).
   @protected
-  static Bounds initBounds<T extends Point>(Iterable<T> source,
-          {Bounds? bounds}) =>
+  static Bounds initBounds<T extends Point>(
+    Iterable<T> source, {
+    Bounds? bounds,
+  }) =>
       bounds ??
       _LazyBounds.calculate(() {
         final builder = BoundsBuilder();
@@ -123,8 +131,13 @@ mixin PointSeriesMixin<T extends Point> implements PointSeries<T> {
 class _PointSeriesView<T extends Point>
     extends _BatchedSeriesView<PointSeries<T>, T> with PointSeriesMixin<T> {
   _PointSeriesView(Iterable<T> source, {Bounds? bounds})
-      : super(source,
-            bounds: PointSeriesMixin.initBounds<T>(source, bounds: bounds));
+      : super(
+          source,
+          bounds: PointSeriesMixin.initBounds<T>(
+            source,
+            bounds: bounds,
+          ),
+        );
 
   @override
   PointSeries<T> intersectByBounds(Bounds bounds) =>

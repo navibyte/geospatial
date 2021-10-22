@@ -26,12 +26,13 @@ class FeatureServiceOAPIF extends DataSourceOAPI implements FeatureSource {
       FeatureServiceOAPIF._(client);
 
   @override
-  DataSourceMeta createMeta(
-          {required String title,
-          String? description,
-          required Links links,
-          required List<String> conformance,
-          required List<CollectionMeta> collections}) =>
+  DataSourceMeta createMeta({
+    required String title,
+    String? description,
+    required Links links,
+    required List<String> conformance,
+    required List<CollectionMeta> collections,
+  }) =>
       DataSourceMeta(
         title: title,
         description: description,
@@ -41,13 +42,17 @@ class FeatureServiceOAPIF extends DataSourceOAPI implements FeatureSource {
       );
 
   @override
-  Future<FeatureItems> items(String collectionId,
-          {FeatureFilter? filter}) async =>
+  Future<FeatureItems> items(
+    String collectionId, {
+    FeatureFilter? filter,
+  }) async =>
       (await itemsPaged(collectionId, filter: filter)).current;
 
   @override
-  Future<Paged<FeatureItems>> itemsPaged(String collectionId,
-      {FeatureFilter? filter}) async {
+  Future<Paged<FeatureItems>> itemsPaged(
+    String collectionId, {
+    FeatureFilter? filter,
+  }) async {
     // read "collections/{collectionId}/items" and return as paged response
 
     // resolve key-value parameters needed for a items request
@@ -75,14 +80,16 @@ class FeatureServiceOAPIF extends DataSourceOAPI implements FeatureSource {
     // read from client and return paged feature collection response
     final id = filter?.id;
     return _PagedFeaturesOAPIF.parse(
-        client,
-        await client.headers(_acceptGeoJSON).fetch(
-              Uri(
-                  path: id != null
-                      ? 'collections/$collectionId/items/$id'
-                      : 'collections/$collectionId/items',
-                  queryParameters: params),
-            ));
+      client,
+      await client.headers(_acceptGeoJSON).fetch(
+            Uri(
+              path: id != null
+                  ? 'collections/$collectionId/items/$id'
+                  : 'collections/$collectionId/items',
+              queryParameters: params,
+            ),
+          ),
+    );
   }
 }
 
@@ -107,8 +114,11 @@ class _PagedFeaturesOAPIF extends Paged<FeatureItems> {
     final next = links.next(type: 'application/geo+json');
 
     // parse feature items (meta + actual features) and return a paged result
-    return _PagedFeaturesOAPIF(client, _featureItemsFromJson(json),
-        nextURL: next.isNotEmpty ? next.first.href : null);
+    return _PagedFeaturesOAPIF(
+      client,
+      _featureItemsFromJson(json),
+      nextURL: next.isNotEmpty ? next.first.href : null,
+    );
   }
 
   final Fetcher client;

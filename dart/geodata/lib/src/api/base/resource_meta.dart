@@ -14,8 +14,11 @@ import 'package:meta/meta.dart';
 @immutable
 class ResourceMeta with EquatableMixin {
   /// A new resource metadata element with [title], [description] and [links].
-  const ResourceMeta(
-      {required this.title, this.description, required this.links});
+  const ResourceMeta({
+    required this.title,
+    this.description,
+    required this.links,
+  });
 
   /// A required title for a meta element.
   final String title;

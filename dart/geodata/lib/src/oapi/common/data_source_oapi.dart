@@ -82,12 +82,13 @@ abstract class DataSourceOAPI<M extends DataSourceMeta>
   ///
   /// Should be used only by this class and sub classes, so marked @protected.
   @protected
-  M createMeta(
-      {required String title,
-      String? description,
-      required Links links,
-      required List<String> conformance,
-      required List<CollectionMeta> collections});
+  M createMeta({
+    required String title,
+    String? description,
+    required Links links,
+    required List<String> conformance,
+    required List<CollectionMeta> collections,
+  });
 }
 
 // -----------------------------------------------------------------------------
@@ -101,8 +102,11 @@ List<String> _conformanceFromJson(Map<String, dynamic> json) =>
 /// Parses a '/collections' meta data from a OGC API service.
 List<CollectionMeta> _collectionsFromJson(Map<String, dynamic> json) {
   final list = json['collections'] as List;
-  return List.from(list.map<CollectionMeta>(
-      (dynamic e) => _collectionFromJson(e as Map<String, dynamic>)));
+  return List.from(
+    list.map<CollectionMeta>(
+      (dynamic e) => _collectionFromJson(e as Map<String, dynamic>),
+    ),
+  );
 }
 
 /// Parses a '/collections/{collectionId}' meta data from a OGC API service.
@@ -124,10 +128,12 @@ CollectionMeta _collectionFromJson(Map<String, dynamic> json) {
 Extent _extentFromJson(Map<String, dynamic> json) {
   final dynamic spatial = json['spatial'];
   final spatialIsMap = spatial is Map<String, dynamic>;
-  final crs = CRS.id((spatialIsMap
-          ? (spatial as Map<String, dynamic>)['crs'] as String?
-          : null) ??
-      idCRS84);
+  final crs = CRS.id(
+    (spatialIsMap
+            ? (spatial as Map<String, dynamic>)['crs'] as String?
+            : null) ??
+        idCRS84,
+  );
 
   // try to parse bboxes
   Iterable<GeoBounds> allBounds;

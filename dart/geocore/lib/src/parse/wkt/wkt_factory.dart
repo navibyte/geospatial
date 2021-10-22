@@ -73,8 +73,10 @@ class WktFactory<PointType extends Point> {
   /// specifying a geometry object range to be returned on a collection.
   ///
   /// Throws FormatException if parsing fails.
-  BoundedSeries<Geometry> parseAll<T extends PointType>(Object data,
-      {Range? range}) {
+  BoundedSeries<Geometry> parseAll<T extends PointType>(
+    Object data, {
+    Range? range,
+  }) {
     if (data is! String) {
       throw const FormatException('Unknown data.');
     }

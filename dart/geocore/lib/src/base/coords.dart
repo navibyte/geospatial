@@ -35,7 +35,8 @@ typedef ParseCoordsList = Iterable<Iterable<num>> Function(String text);
 ///
 /// Throws FormatException if cannot parse.
 typedef ParseCoordsListList = Iterable<Iterable<Iterable<num>>> Function(
-    String text);
+  String text,
+);
 
 /// A function to parse a list of a list of a list of coordinates from [text].
 ///
@@ -102,12 +103,17 @@ abstract class CoordinateFactory<T extends Geometry> implements _Measured {
   /// Throw if [coords] do not have [atLeastLen] values.
   ///
   /// Use optional [offset] and [length] params to define a segment on [coords].
-  static void checkCoords(int atLeastLen, Iterable<num> coords,
-      {int? offset, int? length}) {
+  static void checkCoords(
+    int atLeastLen,
+    Iterable<num> coords, {
+    int? offset,
+    int? length,
+  }) {
     if ((offset == null && length != null) ||
         (offset != null && length == null)) {
       throw const FormatException(
-          'Offset and length must be both null or non-null');
+        'Offset and length must be both null or non-null',
+      );
     }
     final start = offset ?? 0;
     final len = length ?? coords.length;

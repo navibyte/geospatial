@@ -78,18 +78,22 @@ class BoundsBuilder {
         return !_hasM
             ? Bounds.of(
                 min: p.newWith(x: _minx, y: _miny),
-                max: p.newWith(x: _maxx, y: _maxy))
+                max: p.newWith(x: _maxx, y: _maxy),
+              )
             : Bounds.of(
                 min: p.newWith(x: _minx, y: _miny, m: _minm),
-                max: p.newWith(x: _maxx, y: _maxy, m: _maxm));
+                max: p.newWith(x: _maxx, y: _maxy, m: _maxm),
+              );
       } else if (_spatialDims >= 3) {
         return !_hasM
             ? Bounds.of(
                 min: p.newWith(x: _minx, y: _miny, z: _minz),
-                max: p.newWith(x: _maxx, y: _maxy, z: _maxz))
+                max: p.newWith(x: _maxx, y: _maxy, z: _maxz),
+              )
             : Bounds.of(
                 min: p.newWith(x: _minx, y: _miny, z: _minz, m: _minm),
-                max: p.newWith(x: _maxx, y: _maxy, z: _maxz, m: _maxm));
+                max: p.newWith(x: _maxx, y: _maxy, z: _maxz, m: _maxm),
+              );
       }
     }
     // couldn't calculate, return empty bounds

@@ -18,8 +18,10 @@ class FeatureSourceGeoJSON implements FeatureSource {
   FeatureSourceGeoJSON._(this.client, this._meta);
 
   /// Create a feature source providing GeoJSON using [client] and metadata.
-  factory FeatureSourceGeoJSON.of(
-          {required Fetcher client, required DataSourceMeta meta}) =>
+  factory FeatureSourceGeoJSON.of({
+    required Fetcher client,
+    required DataSourceMeta meta,
+  }) =>
       FeatureSourceGeoJSON._(client, meta);
 
   final DataSourceMeta _meta;
@@ -32,13 +34,17 @@ class FeatureSourceGeoJSON implements FeatureSource {
   Future<DataSourceMeta> meta() async => _meta;
 
   @override
-  Future<FeatureItems> items(String collectionId,
-          {FeatureFilter? filter}) async =>
+  Future<FeatureItems> items(
+    String collectionId, {
+    FeatureFilter? filter,
+  }) async =>
       (await itemsPaged(collectionId, filter: filter)).current;
 
   @override
-  Future<Paged<FeatureItems>> itemsPaged(String collectionId,
-      {FeatureFilter? filter}) async {
+  Future<Paged<FeatureItems>> itemsPaged(
+    String collectionId, {
+    FeatureFilter? filter,
+  }) async {
     // read "{collectionId}", parse JSON and get number of features
     final dynamic json = await client.fetchJson(Uri(path: collectionId));
     final count = geoJSON.featureCount(json);
@@ -62,11 +68,20 @@ class FeatureSourceGeoJSON implements FeatureSource {
 // The implementation may change in future.
 
 class _PagedFeaturesGeoJSON extends Paged<FeatureItems> {
-  _PagedFeaturesGeoJSON(this.features, this.count, this.timeStamp,
-      [this.json, this.nextRange]);
+  _PagedFeaturesGeoJSON(
+    this.features,
+    this.count,
+    this.timeStamp, [
+    this.json,
+    this.nextRange,
+  ]);
 
   factory _PagedFeaturesGeoJSON.parse(
-      dynamic json, int count, DateTime timeStamp, Range? range) {
+    dynamic json,
+    int count,
+    DateTime timeStamp,
+    Range? range,
+  ) {
     // parse feature items for the range and
     final collection = geoJSON.featureCollection(json, range: range);
     final items = FeatureItems(

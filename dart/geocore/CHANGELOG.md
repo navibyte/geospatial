@@ -1,3 +1,7 @@
+## 0.7.2
+
+- [Apply very_good_analysis 2.4.0+ lint rules #36](https://github.com/navibyte/geospatial/issues/36)
+
 ## 0.7.1
 
 - BETA version 0.7.1

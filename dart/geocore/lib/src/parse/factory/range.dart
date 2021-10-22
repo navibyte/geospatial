@@ -15,8 +15,8 @@ import 'package:meta/meta.dart';
 class Range with EquatableMixin {
   /// A new range definition with [start] (>= 0) and optional positive [limit].
   const Range({required this.start, this.limit})
-      : assert(start >= 0),
-        assert(limit == null || limit >= 0);
+      : assert(start >= 0, 'Start index must be >= 0.'),
+        assert(limit == null || limit >= 0, 'Limit must be null or >= 0.');
 
   /// The index to specify the first item (by index) of the range.
   final int start;

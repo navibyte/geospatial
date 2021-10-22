@@ -20,17 +20,23 @@ abstract class Bounds<T extends Point> extends Geometry
 
   /// Create [Bounds] from [values] with two points (both a list of nums).
   factory Bounds.make(
-          Iterable<Iterable<num>> values, PointFactory<T> pointFactory) =>
+    Iterable<Iterable<num>> values,
+    PointFactory<T> pointFactory,
+  ) =>
       Bounds<T>.of(
-          min: pointFactory.newFrom(values.elementAt(0)),
-          max: pointFactory.newFrom(values.elementAt(1)));
+        min: pointFactory.newFrom(values.elementAt(0)),
+        max: pointFactory.newFrom(values.elementAt(1)),
+      );
 
   /// Create [Bounds] parsed from [text] with two points.
   ///
   /// If [parser] is null, then WKT [text] like "25.1 53.1, 25.2 53.2" is
   /// expected.
-  factory Bounds.parse(String text, PointFactory<T> pointFactory,
-      {ParseCoordsList? parser}) {
+  factory Bounds.parse(
+    String text,
+    PointFactory<T> pointFactory, {
+    ParseCoordsList? parser,
+  }) {
     if (parser != null) {
       final coordsList = parser.call(text);
       return Bounds<T>.make(coordsList, pointFactory);
@@ -187,8 +193,9 @@ class BoundsBase<T extends Point> extends Bounds<T> with EquatableMixin {
     final len = length ?? coords.length;
     final pointLen = len ~/ 2;
     return BoundsBase(
-        min: min.newFrom(coords, offset: start, length: pointLen),
-        max: max.newFrom(coords, offset: start + pointLen, length: pointLen));
+      min: min.newFrom(coords, offset: start, length: pointLen),
+      max: max.newFrom(coords, offset: start + pointLen, length: pointLen),
+    );
   }
 }
 
@@ -207,7 +214,9 @@ class _LazyBounds<T extends Point> extends Bounds<T> {
       _LazyBounds(null, calculate);
 
   static Bounds<T>? _validate<T extends Point>(
-      Bounds<T>? bounds, final CalculateBounds<T>? calculate) {
+    Bounds<T>? bounds,
+    final CalculateBounds<T>? calculate,
+  ) {
     if (bounds == null && calculate == null) {
       throw ArgumentError('You must provide either bounds or calculate!');
     }

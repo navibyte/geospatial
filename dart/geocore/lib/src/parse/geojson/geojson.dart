@@ -33,14 +33,19 @@ const geoJSONProjected = GeoJsonFactory<Point>(
 /// The default [CreateFeature] forwarding directly to Feature.view() factory.
 ///
 /// This factory omits [jsonObject] parameter.
-Feature<T> _defaultFeatureFactory<T extends Geometry>(
-        {Object? id,
-        required Map<String, Object?> properties,
-        T? geometry,
-        Bounds? bounds,
-        Map<String, Object?>? jsonObject}) =>
+Feature<T> _defaultFeatureFactory<T extends Geometry>({
+  Object? id,
+  required Map<String, Object?> properties,
+  T? geometry,
+  Bounds? bounds,
+  Map<String, Object?>? jsonObject,
+}) =>
     Feature<T>.view(
-        id: id, properties: properties, geometry: geometry, bounds: bounds);
+      id: id,
+      properties: properties,
+      geometry: geometry,
+      bounds: bounds,
+    );
 
 /// A geospatial object factory capable of parsing GeoJSON data from json.
 ///
@@ -57,11 +62,11 @@ class GeoJsonFactory<PointType extends Point>
   /// Create a factory with [pointFactory] and [boundsFactory].
   ///
   /// An optional [featureFactory] can be given also.
-  const GeoJsonFactory(
-      {required PointFactory<PointType> pointFactory,
-      required CreateBounds<PointType> boundsFactory,
-      CreateFeature featureFactory = _defaultFeatureFactory})
-      : super(
+  const GeoJsonFactory({
+    required PointFactory<PointType> pointFactory,
+    required CreateBounds<PointType> boundsFactory,
+    CreateFeature featureFactory = _defaultFeatureFactory,
+  }) : super(
           pointFactory: pointFactory,
           boundsFactory: boundsFactory,
           featureFactory: featureFactory,
@@ -227,8 +232,10 @@ class GeoJsonFactory<PointType extends Point>
   }
 
   @override
-  BoundedSeries<Feature<T>> featureSeries<T extends Geometry>(dynamic data,
-      {Range? range}) {
+  BoundedSeries<Feature<T>> featureSeries<T extends Geometry>(
+    dynamic data, {
+    Range? range,
+  }) {
     // expects data of List as returned by json.decode()
     final json = _ensureDecodedIterable(data);
 
@@ -238,13 +245,15 @@ class GeoJsonFactory<PointType extends Point>
     // create series of features from the range selected above and map
     // JSON object of each feature to Feature instance
     return BoundedSeries<Feature<T>>.from(
-        features.map<Feature<T>>((dynamic f) => feature<T>(f)));
+      features.map<Feature<T>>((dynamic f) => feature<T>(f)),
+    );
   }
 
   @override
   FeatureCollection<Feature<T>> featureCollection<T extends Geometry>(
-      dynamic data,
-      {Range? range}) {
+    dynamic data, {
+    Range? range,
+  }) {
     // expects data of Map<String, dynamic> as returned by json.decode()
     final json = _ensureDecodedMap(data);
 

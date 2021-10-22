@@ -15,13 +15,13 @@ import '../base.dart';
 /// The [id] of the collection can be used as a path segment in URIs.
 class CollectionMeta extends ResourceMeta {
   /// Create a meta instance.
-  const CollectionMeta(
-      {required this.id,
-      required String title,
-      String? description,
-      required Links links,
-      this.extent})
-      : super(title: title, description: description, links: links);
+  const CollectionMeta({
+    required this.id,
+    required String title,
+    String? description,
+    required Links links,
+    this.extent,
+  }) : super(title: title, description: description, links: links);
 
   /// Create a meta instance from [id] and an optional [title].
   factory CollectionMeta.id(String id, {String? title}) => CollectionMeta(

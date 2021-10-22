@@ -12,20 +12,23 @@ import 'range.dart';
 /// A function to parse bounds from [coords] and using [pointFactory].
 ///
 /// Throws FormatException if cannot create bounds.
-typedef CreateBounds<T extends Point> = Bounds<T> Function(Iterable<num> coords,
-    {required PointFactory<T> pointFactory});
+typedef CreateBounds<T extends Point> = Bounds<T> Function(
+  Iterable<num> coords, {
+  required PointFactory<T> pointFactory,
+});
 
 /// A function to create a feature of [id], [properties], [geometry] + [bounds].
 ///
 /// If a feature is read from JSON data then an optional [jsonObject] contains
 /// an JSON Object for a feature as-is. If source is other than JSON then this
 /// may be unavailable.
-typedef CreateFeature = Feature<T> Function<T extends Geometry>(
-    {Object? id,
-    required Map<String, Object?> properties,
-    T? geometry,
-    Bounds? bounds,
-    Map<String, Object?>? jsonObject});
+typedef CreateFeature = Feature<T> Function<T extends Geometry>({
+  Object? id,
+  required Map<String, Object?> properties,
+  T? geometry,
+  Bounds? bounds,
+  Map<String, Object?>? jsonObject,
+});
 
 /// A factory to create geospatial geometries and features from source data.
 ///
@@ -50,8 +53,10 @@ abstract class GeoFactory {
   /// specifying a feature range to be returned on a collection.
   ///
   /// Throws FormatException if parsing fails.
-  BoundedSeries<Feature<T>> featureSeries<T extends Geometry>(dynamic data,
-      {Range? range});
+  BoundedSeries<Feature<T>> featureSeries<T extends Geometry>(
+    dynamic data, {
+    Range? range,
+  });
 
   /// Parses a feature collection from a [data] object.
   ///
@@ -60,8 +65,9 @@ abstract class GeoFactory {
   ///
   /// Throws FormatException if parsing fails.
   FeatureCollection<Feature<T>> featureCollection<T extends Geometry>(
-      dynamic data,
-      {Range? range});
+    dynamic data, {
+    Range? range,
+  });
 
   /// Count number of features on a collection parsed from a [data] object.
   ///
@@ -77,10 +83,11 @@ abstract class GeoFactory {
 /// This class also introduces some helper methods to parse specific geometries.
 abstract class GeoFactoryBase<PointType extends Point> extends GeoFactory {
   /// A constructor of [GeoFactoryBase] with point and feature factories given.
-  const GeoFactoryBase(
-      {required this.pointFactory,
-      required this.boundsFactory,
-      required this.featureFactory});
+  const GeoFactoryBase({
+    required this.pointFactory,
+    required this.boundsFactory,
+    required this.featureFactory,
+  });
 
   /// A factory to create point objects from coordinate values.
   ///
@@ -115,33 +122,40 @@ abstract class GeoFactoryBase<PointType extends Point> extends GeoFactory {
   /// or `int` objects).
   ///
   /// Throws FormatException if cannot create bounds.
-  Bounds<PointType> bounds(Iterable<dynamic> coords) =>
-      boundsFactory(coords is Iterable<num> ? coords : coords.cast<num>(),
-          pointFactory: pointFactory);
+  Bounds<PointType> bounds(Iterable<dynamic> coords) => boundsFactory(
+        coords is Iterable<num> ? coords : coords.cast<num>(),
+        pointFactory: pointFactory,
+      );
 
   /// Parses a series of [points] (an iterable of iterables of nums).
   ///
   /// Throws FormatException if cannot create a series or points on it.
   PointSeries<PointType> pointSeries(Iterable<dynamic> points) =>
       PointSeries<PointType>.from(
-          points.map<PointType>((dynamic coords) => point(coords as Iterable)));
+        points.map<PointType>((dynamic coords) => point(coords as Iterable)),
+      );
 
   /// Parses a line string from series of [points].
   ///
   /// Throws FormatException if cannot create a line string.
-  LineString<PointType> lineString(Iterable<dynamic> points,
-          {LineStringType type = LineStringType.any}) =>
+  LineString<PointType> lineString(
+    Iterable<dynamic> points, {
+    LineStringType type = LineStringType.any,
+  }) =>
       LineString<PointType>(pointSeries(points), type: type);
 
   /// Parses a series of line strings.
   ///
   /// Throws FormatException if cannot create a series of line strings.
   BoundedSeries<LineString<PointType>> lineStringSeries(
-          Iterable<dynamic> lineStrings,
-          {LineStringType type = LineStringType.any}) =>
+    Iterable<dynamic> lineStrings, {
+    LineStringType type = LineStringType.any,
+  }) =>
       BoundedSeries<LineString<PointType>>.from(
-          lineStrings.map<LineString<PointType>>(
-              (dynamic points) => lineString(points as Iterable, type: type)));
+        lineStrings.map<LineString<PointType>>(
+          (dynamic points) => lineString(points as Iterable, type: type),
+        ),
+      );
 
   /// Parses a polygon from a series of rings (closed and simple line strings).
   ///
@@ -153,8 +167,11 @@ abstract class GeoFactoryBase<PointType extends Point> extends GeoFactory {
   ///
   /// Throws FormatException if cannot create a series of polygons.
   BoundedSeries<Polygon<PointType>> polygonSeries(Iterable<dynamic> polygons) =>
-      BoundedSeries<Polygon<PointType>>.from(polygons.map<Polygon<PointType>>(
-          (dynamic rings) => polygon(rings as Iterable)));
+      BoundedSeries<Polygon<PointType>>.from(
+        polygons.map<Polygon<PointType>>(
+          (dynamic rings) => polygon(rings as Iterable),
+        ),
+      );
 
   /// Parses a multi point geometry from [points].
   ///
@@ -178,15 +195,18 @@ abstract class GeoFactoryBase<PointType extends Point> extends GeoFactory {
   ///
   /// Throws FormatException if cannot create a a series of geometrie.
   BoundedSeries<T> geometrySeries<T extends Geometry>(
-          Iterable<dynamic> geometries) =>
+    Iterable<dynamic> geometries,
+  ) =>
       BoundedSeries<T>.from(
-          geometries.map<T>((dynamic geom) => geometry<T>(geom)));
+        geometries.map<T>((dynamic geom) => geometry<T>(geom)),
+      );
 
   /// Parses a geometry collection from [geometries].
   ///
   /// Throws FormatException if cannot create a geometry collection.
   GeometryCollection<T> geometryCollection<T extends Geometry>(
-          Iterable<dynamic> geometries) =>
+    Iterable<dynamic> geometries,
+  ) =>
       GeometryCollection<T>(geometrySeries<T>(geometries));
 }
 
