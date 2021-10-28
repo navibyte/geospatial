@@ -132,6 +132,21 @@ void main() {
           expected);
     });
   });
+
+  group('Point values printed as String', () {
+    const p3dec = Point3.xyz(10.1, 20.217, 30.73942);
+    const p3 = Point3.xyz(10.001, 20.000, 30);
+    const p3i = Point3i.xyz(10, 20, 30);
+
+    test('toWktCoord with Point3 and Point3i', () {
+      expect(p3dec.toWktCoords(), '10.1 20.217 30.73942');
+      expect(p3dec.toWktCoords(fractionDigits: 0), '10 20 31');
+      expect(p3dec.toWktCoords(fractionDigits: 3), '10.100 20.217 30.739');
+      expect(p3.toWktCoords(fractionDigits: 3), '10.001 20 30');
+      expect(p3.toWktCoords(fractionDigits: 2), '10.00 20 30');
+      expect(p3i.toWktCoords(fractionDigits: 2), '10 20 30');
+    });
+  });
 }
 
 Iterable<num> _parseCoordsTest(String text) =>

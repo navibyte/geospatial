@@ -1,6 +1,7 @@
 ## 0.7.2
 
 - [Apply very_good_analysis 2.4.0+ lint rules #36](https://github.com/navibyte/geospatial/issues/36)
+- [Enhance methods of Point returning coordinate values as String #37](https://github.com/navibyte/geospatial/issues/37)
 
 ## 0.7.1
 

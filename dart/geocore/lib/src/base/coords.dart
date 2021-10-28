@@ -83,10 +83,21 @@ abstract class _Coordinates extends _Measured {
   bool get is3D;
 
   /// Writes coordinate values to [buffer] delimited by [delimiter].
-  void writeValues(StringSink buffer, {String delimiter = ','});
+  ///
+  /// Use [fractionDigits] to set a number of decimals to nums with decimals.
+  void writeValues(
+    StringSink buffer, {
+    String delimiter = ',',
+    int? fractionDigits,
+  });
 
   /// Returns coordinate values as a string delimimited by [delimiter].
-  String valuesAsString({String delimiter = ','});
+  ///
+  /// Use [fractionDigits] to set a number of decimals to nums with decimals.
+  String valuesAsString({
+    String delimiter = ',',
+    int? fractionDigits,
+  });
 }
 
 /// An interface to create [Geometry] instances of the type [T].

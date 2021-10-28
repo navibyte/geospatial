@@ -76,16 +76,20 @@ abstract class Bounds<T extends Point> extends Geometry
   bool get hasM => min.hasM && max.hasM;
 
   @override
-  void writeValues(StringSink buf, {String delimiter = ','}) {
-    min.writeValues(buf, delimiter: delimiter);
+  void writeValues(
+    StringSink buf, {
+    String delimiter = ',',
+    int? fractionDigits,
+  }) {
+    min.writeValues(buf, delimiter: delimiter, fractionDigits: fractionDigits);
     buf.write(delimiter);
-    max.writeValues(buf, delimiter: delimiter);
+    max.writeValues(buf, delimiter: delimiter, fractionDigits: fractionDigits);
   }
 
   @override
-  String valuesAsString({String delimiter = ','}) {
+  String valuesAsString({String delimiter = ',', int? fractionDigits}) {
     final buf = StringBuffer();
-    writeValues(buf, delimiter: delimiter);
+    writeValues(buf, delimiter: delimiter, fractionDigits: fractionDigits);
     return buf.toString();
   }
 

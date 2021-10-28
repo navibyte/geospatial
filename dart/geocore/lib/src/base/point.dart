@@ -80,21 +80,38 @@ abstract class Point<C extends num> extends Geometry
   }
 
   @override
-  void writeValues(StringSink buf, {String delimiter = ','}) {
+  void writeValues(
+    StringSink buf, {
+    String delimiter = ',',
+    int? fractionDigits,
+  }) {
     for (var i = 0; i < coordinateDimension; i++) {
       if (i > 0) {
         buf.write(delimiter);
       }
-      buf.write(this[i]);
+      if (fractionDigits != null) {
+        buf.write(toStringAsFixedWhenDecimals(this[i], fractionDigits));
+      } else {
+        buf.write(this[i]);
+      }
     }
   }
 
   @override
-  String valuesAsString({String delimiter = ','}) {
+  String valuesAsString({
+    String delimiter = ',',
+    int? fractionDigits,
+  }) {
     final buf = StringBuffer();
-    writeValues(buf, delimiter: delimiter);
+    writeValues(buf, delimiter: delimiter, fractionDigits: fractionDigits);
     return buf.toString();
   }
+
+  /// Returns WKT coords (ie. "35 10" for a point with x=35 and y=10).
+  /// 
+  /// Use [fractionDigits] to set a number of decimals to nums with decimals.
+  String toWktCoords({int? fractionDigits}) =>
+      valuesAsString(delimiter: ' ', fractionDigits: fractionDigits);
 }
 
 /// A private implementation for an empty point with coordinate zero values.

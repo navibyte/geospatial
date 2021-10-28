@@ -12,6 +12,7 @@ import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 import '../utils/bounds.dart';
+import '../utils/num.dart';
 import '../utils/wkt.dart';
 
 part 'batched.dart';
