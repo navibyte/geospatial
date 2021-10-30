@@ -10,10 +10,10 @@ import '../../parse/factory.dart';
 final _splitByWhitespace = RegExp(r'\s+');
 
 /// Create an exception telling [wkt] text is invalid.
-FormatException invalidWkt(String wkt) => FormatException('Invalid wkt: $wkt');
+FormatException _invalidWkt(String wkt) => FormatException('Invalid wkt: $wkt');
 
 /// Create an exception telling [coords] text is invalid.
-FormatException invalidCoords(String coords) =>
+FormatException _invalidCoords(String coords) =>
     FormatException('Invalid coords: $coords');
 
 /// Parses a num iterable from [coords] with values separated by white space.
@@ -21,7 +21,7 @@ Iterable<num> parseWktCoords(String coords) {
   final parts = _omitParenthesis(coords.trim()).split(_splitByWhitespace);
   // todo : need to know expected coord dim
   if (parts.length < 2) {
-    throw invalidCoords(coords);
+    throw _invalidCoords(coords);
   }
   return parts.map<num>(double.parse);
 }
@@ -39,7 +39,7 @@ Iterable<num> parseWktCoords(String coords) {
 Iterable<int> parseWktCoordsInt(String coords) {
   final parts = _omitParenthesis(coords.trim()).split(_splitByWhitespace);
   if (parts.length < 2) {
-    throw invalidCoords(coords);
+    throw _invalidCoords(coords);
   }
   return parts
       .map<int>((value) => int.tryParse(value) ?? double.parse(value).round());
@@ -112,7 +112,7 @@ BoundedSeries<LineString<T>> parseWktLineStringSeries<T extends Point>(
     if (lineStringSeries[ls] == '(') {
       final le = lineStringSeries.indexOf(')', ls);
       if (le == -1) {
-        throw invalidWkt(lineStringSeries);
+        throw _invalidWkt(lineStringSeries);
       } else {
         lineStrings.add(
           parseWktLineString<T>(
@@ -177,7 +177,7 @@ BoundedSeries<Polygon<T>> parseWktPolygonSeries<T extends Point>(
         } else if (polygonSeries[ls] == '(') {
           final le = polygonSeries.indexOf(')', ls);
           if (le == -1) {
-            throw invalidWkt(polygonSeries);
+            throw _invalidWkt(polygonSeries);
           } else {
             lineStrings.add(
               parseWktLineString<T>(
@@ -193,7 +193,7 @@ BoundedSeries<Polygon<T>> parseWktPolygonSeries<T extends Point>(
       }
       final pe = polygonSeries.indexOf(')', ls);
       if (pe == -1) {
-        throw invalidWkt(polygonSeries);
+        throw _invalidWkt(polygonSeries);
       } else {
         polygons
             .add(Polygon<T>(BoundedSeries<LineString<T>>.from(lineStrings)));
@@ -288,7 +288,7 @@ Geometry parseWktGeometry<T extends Point>(
                   return Geometry.empty();
               }
             } else {
-              throw invalidWkt(text);
+              throw _invalidWkt(text);
             }
           case '(':
             if (text[text.length - 1] == ')') {
@@ -311,18 +311,18 @@ Geometry parseWktGeometry<T extends Point>(
                   return parseWktGeometryCollection<T>(data, resolve: resolve);
               }
             } else {
-              throw invalidWkt(text);
+              throw _invalidWkt(text);
             }
             break;
           default:
-            if (!_isBlank(c)) throw invalidWkt(text);
+            if (!_isBlank(c)) throw _invalidWkt(text);
         }
         i++;
       }
       break;
     }
   }
-  throw invalidWkt(text);
+  throw _invalidWkt(text);
 }
 
 /// Parses a single next available geometry with points of [T] from [text].
@@ -339,7 +339,7 @@ Geometry parseNextWktGeometry<T extends Point>(
       return parseWktGeometry<T>(text.substring(start, end), resolve: resolve);
     }
   }
-  throw invalidWkt(text);
+  throw _invalidWkt(text);
 }
 
 /// Parses a series of geometries with points of [T] from [text].
@@ -378,7 +378,7 @@ BoundedSeries<Geometry> parseWktGeometrySeries<T extends Point>(
         startChar = endChar;
         tokenIndex++;
       } else {
-        throw invalidWkt(text);
+        throw _invalidWkt(text);
       }
     }
   }

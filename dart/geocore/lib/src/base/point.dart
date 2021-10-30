@@ -107,11 +107,27 @@ abstract class Point<C extends num> extends Geometry
     return buf.toString();
   }
 
-  /// Returns WKT coords (ie. "35 10" for a point with x=35 and y=10).
-  /// 
+  /// Returns coordinate values as text separated by [delimiter].
+  ///
+  /// If [delimiter] is not provided, values are separated by whitespace. For 
+  /// example "10.1 20.2" is returned for a point with x=10.1 and y=20.2.
+  ///
   /// Use [fractionDigits] to set a number of decimals to nums with decimals.
+  String toText({
+    String delimiter = ' ',
+    int? fractionDigits,
+  }) {
+    final buf = StringBuffer();
+    writeValues(buf, delimiter: delimiter, fractionDigits: fractionDigits);
+    return buf.toString();
+  }
+
+  /// Returns WKT coords (ie. "35 10" for a point with x=35 and y=10).
+  ///
+  /// Use [fractionDigits] to set a number of decimals to nums with decimals.
+  @Deprecated('Use toText instead')
   String toWktCoords({int? fractionDigits}) =>
-      valuesAsString(delimiter: ' ', fractionDigits: fractionDigits);
+      toText(fractionDigits: fractionDigits);
 }
 
 /// A private implementation for an empty point with coordinate zero values.

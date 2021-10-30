@@ -41,6 +41,21 @@ class Point2 extends Point<num> with EquatableMixin {
     );
   }
 
+  /// A point parsed from [text] with coordinates given in order: x, y.
+  ///
+  /// Coordinate values in [text] are separated by [delimiter]. For example
+  /// `Point2.fromText('10.0;20.0', delimiter: ';')` returns the same point as
+  /// `Point2.xy(10.0, 20.0)`.
+  ///
+  /// If [delimiter] is not provided, values are separated by whitespace.
+  ///
+  /// Throws FormatException if cannot parse.
+  factory Point2.fromText(
+    String text, {
+    Pattern? delimiter,
+  }) =>
+      Point2.from(parseNumValuesFromText(text, delimiter: delimiter));
+
   /// A point parsed from [text] with coordinates in order: x, y.
   ///
   /// If [parser] is null, then WKT [text] like "10.0 20.0" is expected.
@@ -143,6 +158,23 @@ class Point2m extends Point2 {
     );
   }
 
+  /// A point parsed from [text] with coordinates given in order: x, y, m.
+  ///
+  /// Coordinate values in [text] are separated by [delimiter]. For example
+  /// `Point2m.fromText('10.0;20.0;5', delimiter: ';')` returns the same point
+  /// as `Point2m.xym(10.0, 20.0, 5)`.
+  ///
+  /// If [delimiter] is not provided, values are separated by whitespace.
+  ///
+  /// Throws FormatException if cannot parse.
+  factory Point2m.fromText(
+    String text, {
+    Pattern? delimiter,
+  }) =>
+      Point2m.from(
+        parseNumValuesFromText(text, delimiter: delimiter, minCount: 3),
+      );
+
   /// A point parsed from [text] with coordinates in order: x, y, m.
   ///
   /// If [parser] is null, then WKT [text] like "10.0 20.0 5" is expected.
@@ -234,6 +266,23 @@ class Point3 extends Point2 {
       coords.elementAt(start + 2),
     );
   }
+
+  /// A point parsed from [text] with coordinates given in order: x, y, z.
+  ///
+  /// Coordinate values in [text] are separated by [delimiter]. For example
+  /// `Point3.fromText('10.0;20.0;30.0', delimiter: ';')` returns the same point
+  /// as `Point3.xyz(10.0, 20.0, 30.0)`.
+  ///
+  /// If [delimiter] is not provided, values are separated by whitespace.
+  ///
+  /// Throws FormatException if cannot parse.
+  factory Point3.fromText(
+    String text, {
+    Pattern? delimiter,
+  }) =>
+      Point3.from(
+        parseNumValuesFromText(text, delimiter: delimiter, minCount: 3),
+      );
 
   /// A point parsed from [text] with coordinates in order: x, y, z.
   ///
@@ -331,6 +380,23 @@ class Point3m extends Point3 {
     );
   }
 
+  /// A point parsed from [text] with coordinates given in order: x, y, z, m.
+  ///
+  /// Coordinate values in [text] are separated by [delimiter]. For example
+  /// `Point3m.fromText('10.0;20.0;30.0;5', delimiter: ';')` returns the same
+  /// point as `Point3m.xyzm(10.0, 20.0, 30.0, 5)`.
+  ///
+  /// If [delimiter] is not provided, values are separated by whitespace.
+  ///
+  /// Throws FormatException if cannot parse.
+  factory Point3m.fromText(
+    String text, {
+    Pattern? delimiter,
+  }) =>
+      Point3m.from(
+        parseNumValuesFromText(text, delimiter: delimiter, minCount: 4),
+      );
+
   /// A point parsed from [text] with coordinates in order: x, y, z, m.
   ///
   /// If [parser] is null, then WKT [text] like "10.0 20.0 30.0 5" is expected.
@@ -424,6 +490,21 @@ class Point2i extends Point<int> with EquatableMixin {
       coords.elementAt(start + 1).round(),
     );
   }
+
+  /// A point parsed from [text] with coordinates given in order: x, y.
+  ///
+  /// Coordinate values in [text] are separated by [delimiter]. For example
+  /// `Point2i.fromText('10;20', delimiter: ';')` returns the same point as
+  /// `Point2i.xy(10, 20)`.
+  ///
+  /// If [delimiter] is not provided, values are separated by whitespace.
+  ///
+  /// Throws FormatException if cannot parse.
+  factory Point2i.fromText(
+    String text, {
+    Pattern? delimiter,
+  }) =>
+      Point2i.from(parseIntValuesFromText(text, delimiter: delimiter));
 
   /// A point parsed from [text] with coordinates in order: x, y.
   ///
@@ -532,6 +613,23 @@ class Point3i extends Point2i {
       coords.elementAt(start + 2).round(),
     );
   }
+
+  /// A point parsed from [text] with coordinates given in order: x, y, z.
+  ///
+  /// Coordinate values in [text] are separated by [delimiter]. For example
+  /// `Point3i.fromText('10;20;30', delimiter: ';')` returns the same point as
+  /// `Point3i.xyz(10, 20, 30)`.
+  ///
+  /// If [delimiter] is not provided, values are separated by whitespace.
+  ///
+  /// Throws FormatException if cannot parse.
+  factory Point3i.fromText(
+    String text, {
+    Pattern? delimiter,
+  }) =>
+      Point3i.from(
+        parseIntValuesFromText(text, delimiter: delimiter, minCount: 3),
+      );
 
   /// A point parsed from [text] with coordinates in order: x, y, z.
   ///

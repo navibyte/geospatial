@@ -138,13 +138,67 @@ void main() {
     const p3 = Point3.xyz(10.001, 20.000, 30);
     const p3i = Point3i.xyz(10, 20, 30);
 
-    test('toWktCoord with Point3 and Point3i', () {
-      expect(p3dec.toWktCoords(), '10.1 20.217 30.73942');
-      expect(p3dec.toWktCoords(fractionDigits: 0), '10 20 31');
-      expect(p3dec.toWktCoords(fractionDigits: 3), '10.100 20.217 30.739');
-      expect(p3.toWktCoords(fractionDigits: 3), '10.001 20 30');
-      expect(p3.toWktCoords(fractionDigits: 2), '10.00 20 30');
-      expect(p3i.toWktCoords(fractionDigits: 2), '10 20 30');
+    test('toText with Point3 and Point3i', () {
+      expect(p3dec.toText(), '10.1 20.217 30.73942');
+      expect(p3dec.toText(fractionDigits: 0), '10 20 31');
+      expect(p3dec.toText(fractionDigits: 3), '10.100 20.217 30.739');
+      expect(p3.toText(fractionDigits: 3), '10.001 20 30');
+      expect(p3.toText(fractionDigits: 2), '10.00 20 30');
+      expect(p3i.toText(fractionDigits: 2), '10 20 30');
+    });
+  });
+
+  group('Parsing point objects from text', () {
+    test('Point.fromText tests', () {
+      expect(
+          Point2.fromText('10.1;20.2', delimiter: ';'), Point2.xy(10.1, 20.2));
+      expect(Point2m.fromText('10.1;20.2;5.0', delimiter: ';'),
+          Point2m.xym(10.1, 20.2, 5.0));
+      expect(Point3.fromText('10.1;20.2;30.3', delimiter: ';'),
+          Point3.xyz(10.1, 20.2, 30.3));
+      expect(Point3m.fromText('10.1;20.2;30.3;5.0', delimiter: ';'),
+          Point3m.xyzm(10.1, 20.2, 30.3, 5.0));
+      expect(Point2i.fromText('10.1;20.2', delimiter: ';'), Point2i.xy(10, 20));
+      expect(Point3i.fromText('10.1;20.2;30.3', delimiter: ';'),
+          Point3i.xyz(10, 20, 30));
+    });
+
+    test('GeoPoint.fromText tests', () {
+      expect(GeoPoint2.fromText('10.1;20.2', delimiter: ';'),
+          GeoPoint2.lonLat(10.1, 20.2));
+      expect(GeoPoint2m.fromText('10.1;20.2;5.0', delimiter: ';'),
+          GeoPoint2m.lonLatM(10.1, 20.2, 5.0));
+      expect(GeoPoint3.fromText('10.1;20.2;30.3', delimiter: ';'),
+          GeoPoint3.lonLatElev(10.1, 20.2, 30.3));
+      expect(GeoPoint3m.fromText('10.1;20.2;30.3;5.0', delimiter: ';'),
+          GeoPoint3m.lonLatElevM(10.1, 20.2, 30.3, 5.0));
+    });
+
+    test('GeoPoint2.fromText tests with different delimiters and space', () {
+      expect(
+        () => GeoPoint2.fromText('10.1;20.2', delimiter: ''),
+        throwsFormatException,
+      );
+      expect(
+        GeoPoint2.fromText(' 10.1 ; 20.2 ', delimiter: ';'),
+        GeoPoint2.lonLat(10.1, 20.2),
+      );
+      expect(
+        GeoPoint2.fromText('     10.1    20.2 ', delimiter: RegExp(r'\s+')),
+        GeoPoint2.lonLat(10.1, 20.2),
+      );
+      expect(
+        GeoPoint2.fromText('     10.1    20.2 '),
+        GeoPoint2.lonLat(10.1, 20.2),
+      );
+      expect(
+        GeoPoint2.fromText('     10.1 20.2 ', delimiter: ' '),
+        GeoPoint2.lonLat(10.1, 20.2),
+      );
+      expect(
+        () => GeoPoint2.fromText('     10.1    20.2 ', delimiter: ' '),
+        throwsFormatException,
+      );
     });
   });
 }

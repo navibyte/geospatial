@@ -82,7 +82,7 @@ abstract class _Coordinates extends _Measured {
   /// True for 3D points (that is having Z coordinate).
   bool get is3D;
 
-  /// Writes coordinate values to [buffer] delimited by [delimiter].
+  /// Writes coordinate values to [buffer] separated by [delimiter].
   ///
   /// Use [fractionDigits] to set a number of decimals to nums with decimals.
   void writeValues(
@@ -91,7 +91,7 @@ abstract class _Coordinates extends _Measured {
     int? fractionDigits,
   });
 
-  /// Returns coordinate values as a string delimimited by [delimiter].
+  /// Returns coordinate values as a string separated by [delimiter].
   ///
   /// Use [fractionDigits] to set a number of decimals to nums with decimals.
   String valuesAsString({

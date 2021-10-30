@@ -9,6 +9,7 @@ import 'package:meta/meta.dart';
 
 import '../base.dart';
 import '../utils/geography.dart';
+import '../utils/num.dart';
 import '../utils/wkt.dart';
 
 /// A geographic position with longitude, latitude and optional elevation.
@@ -70,6 +71,21 @@ class GeoPoint2 extends GeoPoint with EquatableMixin {
       coords.elementAt(start + 1).toDouble(),
     );
   }
+
+  /// A point parsed from [text] with coordinates given in order: lon, lat.
+  ///
+  /// Coordinate values in [text] are separated by [delimiter]. For example
+  /// `GeoPoint2.fromText('10.0;20.0', delimiter: ';')` returns the same point
+  /// as `GeoPoint2.lonLat(10.0, 20.0)`.
+  ///
+  /// If [delimiter] is not provided, values are separated by whitespace.
+  ///
+  /// Throws FormatException if cannot parse.
+  factory GeoPoint2.fromText(
+    String text, {
+    Pattern? delimiter,
+  }) =>
+      GeoPoint2.from(parseNumValuesFromText(text, delimiter: delimiter));
 
   /// A point parsed from [text] with coordinates in order: lon, lat.
   ///
@@ -192,6 +208,23 @@ class GeoPoint2m extends GeoPoint2 {
     );
   }
 
+  /// A point parsed from [text] with coordinates given in order: lon, lat, m.
+  ///
+  /// Coordinate values in [text] are separated by [delimiter]. For example
+  /// `GeoPoint2m.fromText('10.0;20.0;5', delimiter: ';')` returns the same
+  /// point as `GeoPoint2m.lonLatM(10.0, 20.0, 5)`.
+  ///
+  /// If [delimiter] is not provided, values are separated by whitespace.
+  ///
+  /// Throws FormatException if cannot parse.
+  factory GeoPoint2m.fromText(
+    String text, {
+    Pattern? delimiter,
+  }) =>
+      GeoPoint2m.from(
+        parseNumValuesFromText(text, delimiter: delimiter, minCount: 3),
+      );
+
   /// A point parsed from [text] with coordinates in order: lon, lat, m.
   ///
   /// If [parser] is null, then WKT [text] like "10.0 20.0 5" is expected.
@@ -289,6 +322,23 @@ class GeoPoint3 extends GeoPoint2 {
       coords.elementAt(start + 2).toDouble(),
     );
   }
+
+  /// A point parsed from [text] with coords given in order: lon, lat, elev.
+  ///
+  /// Coordinate values in [text] are separated by [delimiter]. For example
+  /// `GeoPoint3.fromText('10.0;20.0;30.0', delimiter: ';')` returns the same
+  /// point as `GeoPoint3.lonLatElev(10.0, 20.0, 30.0)`.
+  ///
+  /// If [delimiter] is not provided, values are separated by whitespace.
+  ///
+  /// Throws FormatException if cannot parse.
+  factory GeoPoint3.fromText(
+    String text, {
+    Pattern? delimiter,
+  }) =>
+      GeoPoint3.from(
+        parseNumValuesFromText(text, delimiter: delimiter, minCount: 3),
+      );
 
   /// A point parsed from [text] with coordinates in order: lon, lat, elev.
   ///
@@ -402,6 +452,23 @@ class GeoPoint3m extends GeoPoint3 {
       coords.elementAt(start + 3).toDouble(),
     );
   }
+
+  /// A point parsed from [text] with coords given in order: lon, lat, elev, m.
+  ///
+  /// Coordinate values in [text] are separated by [delimiter]. For example
+  /// `GeoPoint3m.fromText('10.0;20.0;30.0;5', delimiter: ';')` returns the same
+  /// point as `GeoPoint3m.lonLatElevM(10.0, 20.0, 30.0, 5)`.
+  ///
+  /// If [delimiter] is not provided, values are separated by whitespace.
+  ///
+  /// Throws FormatException if cannot parse.
+  factory GeoPoint3m.fromText(
+    String text, {
+    Pattern? delimiter,
+  }) =>
+      GeoPoint3m.from(
+        parseNumValuesFromText(text, delimiter: delimiter, minCount: 4),
+      );
 
   /// A point parsed from [text] with coordinates in order: lon, lat, elev, m.
   ///
