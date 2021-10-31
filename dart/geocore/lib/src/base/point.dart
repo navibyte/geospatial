@@ -109,7 +109,7 @@ abstract class Point<C extends num> extends Geometry
 
   /// Returns coordinate values as text separated by [delimiter].
   ///
-  /// If [delimiter] is not provided, values are separated by whitespace. For 
+  /// If [delimiter] is not provided, values are separated by whitespace. For
   /// example "10.1 20.2" is returned for a point with x=10.1 and y=20.2.
   ///
   /// Use [fractionDigits] to set a number of decimals to nums with decimals.

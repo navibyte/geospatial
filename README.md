@@ -54,6 +54,12 @@ repository providing source code for
 
 ## :newspaper_roll: News
 
+2021-10-31
+* BETA version 0.7.2 [geocore](https://pub.dev/packages/geocore): 
+  * Some text serialization enhancements on Point coordinate values: [#37](https://github.com/navibyte/geospatial/issues/37) and [#38](https://github.com/navibyte/geospatial/issues/38)
+* Changes on all packages:
+  * [Apply very_good_analysis 2.4.0+ lint rules #36](https://github.com/navibyte/geospatial/issues/36)
+
 2021-10-09
 * BETA version 0.7.1
 * Changes on [geocore](https://pub.dev/packages/geocore):

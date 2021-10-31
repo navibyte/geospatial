@@ -3,7 +3,6 @@ description: Geospatial data structures (features, geometry and metadata) and pa
 version: 0.7.2
 repository: https://github.com/navibyte/geospatial
 homepage: https://github.com/navibyte/geospatial/tree/main/dart/geocore
-publish_to: none
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
@@ -12,9 +11,9 @@ dependencies:
   equatable: ^2.0.0
   meta: ^1.7.0
 
-  #attributes: ^0.8.1
-  attributes: 
-    path: ../../../dataflow/dart/attributes
+  attributes: ^0.8.0
+  #attributes: 
+  #  path: ../../../dataflow/dart/attributes
     
 dev_dependencies:
   test: ^1.16.4
