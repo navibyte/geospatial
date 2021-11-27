@@ -23,7 +23,7 @@ typedef CreateBounds<T extends Point> = Bounds<T> Function(
 /// an JSON Object for a feature as-is. If source is other than JSON then this
 /// may be unavailable.
 typedef CreateFeature = Feature<T> Function<T extends Geometry>({
-  Object? id,
+  String? id,
   required Map<String, Object?> properties,
   T? geometry,
   Bounds? bounds,

@@ -4,7 +4,6 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:attributes/values.dart';
 import 'package:datatools/meta_link.dart';
 import 'package:geocore/meta_extent.dart';
 
@@ -25,7 +24,7 @@ class CollectionMeta extends ResourceMeta {
 
   /// Create a meta instance from [id] and an optional [title].
   factory CollectionMeta.id(String id, {String? title}) => CollectionMeta(
-        id: Identifier.fromString(id),
+        id: id,
         links: Links.empty(),
         title: title ?? id,
       );
@@ -33,7 +32,7 @@ class CollectionMeta extends ResourceMeta {
   /// The required [id] of the collection.
   ///
   /// In some APIs this [id] could be used as a path segment on URI references.
-  final Identifier id;
+  final String id;
 
   /// An optional geospatial [extent] for this collection.
   final Extent? extent;

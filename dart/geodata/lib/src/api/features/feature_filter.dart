@@ -4,7 +4,6 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:attributes/values.dart';
 import 'package:geocore/base.dart';
 import 'package:geocore/crs.dart';
 
@@ -14,7 +13,7 @@ import '../base.dart';
 class FeatureFilter extends Filter {
   /// A new feature filter.
   const FeatureFilter({
-    Identifier? id,
+    String? id,
     int? limit,
     this.crs,
     this.boundsCrs,

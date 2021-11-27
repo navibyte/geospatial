@@ -4,8 +4,6 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:attributes/entity.dart';
-
 import 'package:equatable/equatable.dart';
 
 import 'package:meta/meta.dart';
@@ -14,71 +12,82 @@ import '../base.dart';
 
 /// A feature is a geospatial entity with [id], [properties] and [geometry].
 ///
-/// The [Feature] class extends [Entity] that can be used to represent
-/// non-geospatial data object with id and properties.
-///
 /// Supports representing data from GeoJSON (https://geojson.org/) features.
-abstract class Feature<T extends Geometry> extends Entity implements Bounded {
+abstract class Feature<T extends Geometry> implements Bounded {
   /// Default `const` constructor to allow extending this abstract class.
   const Feature();
 
   /// A new feature of optional [id], [properties], [geometry] and [bounds].
   ///
+  /// The [properties] is copied as `Map.of(properties)` to a feature.
+  ///
   /// If an optional [bounds] for a new feature is not provided then [geometry]
   /// bounds is used also as feature bounds when accessed.
   factory Feature.of({
-    Identifier? id,
-    required DataObject properties,
+    String? id,
+    required Map<String, Object?> properties,
     T? geometry,
     Bounds? bounds,
   }) =>
       _FeatureBase<T>(
         id: id,
         geometry: geometry,
-        properties: properties,
+        properties: Map.of(properties),
         bounds: bounds,
       );
 
   /// A new feature of optional [id], and [properties], [geometry] and [bounds].
   ///
-  /// This factory allows [id] to be null or an instance of [Identifier],
-  /// `String`, `BigInt` or `int`. In other cases an ArgumentError is thrown.
-  ///
-  /// The [properties] is used as a source view for a feature. Any changes on
+  /// The [properties] is used as a reference by a feature. Any changes on
   /// source reflect also on feature properties.
   ///
   /// If an optional [bounds] for a new feature is not provided then [geometry]
   /// bounds is used also as feature bounds when accessed.
   factory Feature.view({
-    Object? id,
+    String? id,
     required Map<String, Object?> properties,
     T? geometry,
     Bounds? bounds,
   }) =>
       _FeatureBase<T>(
-        id: Identifier.idOrNull(id),
-        properties: DataObject.view(properties),
+        id: id,
+        properties: properties,
         geometry: geometry,
         bounds: bounds,
       );
 
-  /// An optional [geometry] for this feature.
+  /// An optional identifier for this feature.
+  ///
+  /// Note that an identifier could be textual or a number but reprensented here
+  /// as a nullable String object.
+  String? get id;
+
+  /// Required properties for this feature allowed to be empty.
+  Map<String, Object?> get properties;
+
+  /// An optional geometry for this feature.
   Geometry? get geometry;
 }
 
 /// Private implementation of [Feature].
 /// The implementation may change in future.
-class _FeatureBase<T extends Geometry> extends EntityBase
+class _FeatureBase<T extends Geometry>
+    with EquatableMixin
     implements Feature<T> {
   const _FeatureBase({
-    Identifier? id,
-    required DataObject properties,
+    this.id,
+    required this.properties,
     required this.geometry,
     Bounds? bounds,
-  })  : _featureBounds = bounds,
-        super(id: id, properties: properties);
+  }) : _featureBounds = bounds;
 
   final Bounds? _featureBounds;
+
+  @override
+  final String? id;
+
+  @override
+  final Map<String, Object?> properties;
 
   @override
   final T? geometry;

@@ -1,3 +1,8 @@
+## 0.8.0
+
+⚠️ Breaking changes
+- [Refactor Feature class inheritance and types of id and properties members #39](https://github.com/navibyte/geospatial/issues/39)
+
 ## 0.7.2
 
 - [Apply very_good_analysis 2.4.0+ lint rules #36](https://github.com/navibyte/geospatial/issues/36)

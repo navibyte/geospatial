@@ -20,7 +20,7 @@ abstract class _BatchedSeries<S extends _BatchedSeries<S, T>, T> extends Bounded
 
   /// Returns a new lazy series where items intersects with [bounds].
   ///
-  /// Even if a item on this series has a complex geometry, only bounds
+  /// Even if an item on this series has a complex geometry, only bounds
   /// of that geometry is tested (intersection) with the given [bounds].
   ///
   /// Those items that has empty bounds are not matched.
@@ -28,7 +28,7 @@ abstract class _BatchedSeries<S extends _BatchedSeries<S, T>, T> extends Bounded
 
   /// Returns a new lazy series where items intersects with [bounds] in 2D.
   ///
-  /// Even if a item on this series has a complex geometry, only bounds
+  /// Even if an item on this series has a complex geometry, only bounds
   /// of that geometry is tested (intersection) with the given [bounds].
   ///
   /// Those items that has empty bounds are not matched.

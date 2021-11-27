@@ -4,7 +4,6 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:attributes/values.dart';
 import 'package:datatools/fetch_api.dart';
 import 'package:datatools/meta_link.dart';
 import 'package:geocore/base.dart';
@@ -116,7 +115,7 @@ CollectionMeta _collectionFromJson(Map<String, dynamic> json) {
   final id = json['id'] as String? ??
       json['name'] as String; // "name" not really standard
   return CollectionMeta(
-    id: Identifier.fromString(id),
+    id: id,
     title: json['title'] as String? ?? links.self().first.title ?? id,
     description: json['description'] as String?,
     links: links,

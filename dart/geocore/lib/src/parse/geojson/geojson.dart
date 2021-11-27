@@ -7,8 +7,6 @@
 import 'dart:convert';
 import 'dart:math' as math;
 
-import 'package:attributes/entity.dart';
-
 import '../../base.dart';
 import '../../feature.dart';
 import '../../geo.dart';
@@ -34,7 +32,7 @@ const geoJSONProjected = GeoJsonFactory<Point>(
 ///
 /// This factory omits [jsonObject] parameter.
 Feature<T> _defaultFeatureFactory<T extends Geometry>({
-  Object? id,
+  String? id,
   required Map<String, Object?> properties,
   T? geometry,
   Bounds? bounds,
@@ -190,15 +188,10 @@ class GeoJsonFactory<PointType extends Point>
       throw const FormatException('Not valid GeoJSON Feature.');
     }
 
-    // parse id as FeatureId or null
-    // - id read from GeoJSON is null : null as id
-    // - id read from GeoJSON is int : wrap on Identifier
-    // - otherwise : convert read value to String and wrap on Identifier
-    // (GeoJSON allows num and String types for ids)
-    final dynamic idJson = json['id'];
-    final id = idJson != null
-        ? Identifier.from(idJson is int ? idJson : idJson.toString())
-        : null;
+    // parse id as String?
+    // (GeoJSON allows num and String types for ids - both represented here 
+    // as String)
+    final id = json['id']?.toString();
 
     // parse optional geometry for this feature
     final dynamic geomJson = json['geometry'];

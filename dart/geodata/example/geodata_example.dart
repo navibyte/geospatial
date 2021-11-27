@@ -6,7 +6,6 @@
 
 // ignore_for_file: avoid_print
 
-import 'package:attributes/values.dart';
 import 'package:datatools/fetch_http.dart';
 import 'package:equatable/equatable.dart';
 import 'package:geocore/feature.dart';
@@ -65,7 +64,7 @@ Future<void> main(List<String> args) async {
       case 'id':
         filter = FeatureFilter(
           limit: limit,
-          id: Identifier.fromString(args[6]),
+          id: args[6],
         );
         maxPagedResults = 1;
         break;
@@ -74,7 +73,7 @@ Future<void> main(List<String> args) async {
         if (bbox.length == 4 || bbox.length == 6) {
           filter = FeatureFilter(
             limit: limit,
-            bounds: GeoBounds.from(bbox.map<num>(toDoubleValue)),
+            bounds: GeoBounds.from(bbox.map<num>(double.parse)),
           );
         }
         break;

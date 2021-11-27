@@ -4,8 +4,6 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:attributes/values.dart';
-
 import 'package:equatable/equatable.dart';
 
 import 'package:meta/meta.dart';
@@ -16,11 +14,11 @@ class Filter with EquatableMixin {
   /// A new filter with optional [id] and optional positive [limit].
   const Filter({this.id, this.limit});
 
-  /// An optional [id] to specify an item on a collection resource.
+  /// An optional identifier to specify an item on a collection resource
   ///
-  /// An identifier can be represented either as `String`, `int` or `BigInt`,
-  /// wrapped on an [Identifier] instance.
-  final Identifier? id;
+  /// Note that an identifier could be textual or a number but reprensented here
+  /// as a nullable String object.
+  final String? id;
 
   /// An optional [limit] setting maximum number of items returned.
   ///

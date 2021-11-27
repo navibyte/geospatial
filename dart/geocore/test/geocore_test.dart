@@ -28,7 +28,7 @@ void main() {
     test('Basic feature', () {
       final f = geoJSON.feature(geojsonFeature);
       expect(f.geometry, GeoPoint2.from([125.6, 10.1]));
-      expect(f.properties.getString('name'), 'Dinagat Islands');
+      expect(f.properties['name'], 'Dinagat Islands');
     });
 
     test('Basic feature collection', () {
@@ -37,15 +37,15 @@ void main() {
       expect(fc.features[0].geometry, GeoPoint2.from([102.0, 0.5]));
       expect(fc.features[1].geometry,
           (LineString g) => g.chain[0] == GeoPoint2.from([102.0, 0.0]));
-      expect(fc.features[1].properties.getDouble('prop1'), 0.0);
+      expect(fc.features[1].properties['prop1'], 0.0);
       expect(fc.features[2].geometry, (Polygon g) {
         final exterior = g.exterior;
         return exterior.dimension == 2 &&
             exterior.chain.isClosed &&
             exterior.chain[2] == GeoPoint2.from([101.0, 1.0]);
       });
-      expect(
-          fc.features[2].properties.object('prop1').getString('this'), 'that');
+      final prop1 = fc.features[2].properties['prop1']! as Map<String, Object?>;
+      expect(prop1['this'], 'that');
 
       final intersect1 = fc.features
           .intersectByBounds(GeoBounds.bboxLonLat(101.05, 0.4, 102.05, 0.5));
