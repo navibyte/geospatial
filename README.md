@@ -57,7 +57,7 @@ other geospatial data sources (like partial and initial support for
 ## :newspaper_roll: News
 
 2021-12-04
-* The first pre-release of the upcoming 0.8.0 version of [geocore](https://pub.dev/packages/geocore/versions/0.8.0-a.2), see [changelog](blob/main/dart/geocore/CHANGELOG.md#080) for details
+* The first pre-release of the upcoming 0.8.0 version of [geocore](https://pub.dev/packages/geocore/versions/0.8.0-a.2), see [changelog](dart/geocore/CHANGELOG.md#080) for details
   * breaking changes with Feature classes, removed dependency to the [attributes](https://pub.dev/packages/attributes) package
   * also the preview of coordinate transformation abstractions and other enhancements
 
