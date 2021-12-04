@@ -69,9 +69,9 @@ abstract class Feature<T extends Geometry> implements Bounded {
   Geometry? get geometry;
 
   /// Returns a new feature with geometry projected using [transform].
-  /// 
+  ///
   /// Projects [geometry] of this feature. Other members, [id] and [properties],
-  /// are set without modifications to a new feature object. 
+  /// are set without modifications to a new feature object.
   @override
   Feature<T> project(TransformPoint transform);
 }

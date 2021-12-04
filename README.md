@@ -9,17 +9,17 @@
 
 Key features of the [geocore](https://pub.dev/packages/geocore) library package, based on Dart code hosted by this repository:
 
-🚀 geospatial data structures (geometry, features and metadata)
-🌐 geographic coordinates (longitude-latitude)
-🗺️ projected coordinates (cartesian XYZ)
-🔷 geometry primitives (bounds or bbox, point, line string, polygon)
-🧩 multi geometries (multi point, multi line string, multi polygon, geometry collections)
-⭐ feature objects (with id, properties and geometry) and feature collections
-📅 temporal data structures (instant, interval)
-🌎 [GeoJSON](https://geojson.org/) data parser
-🪧 [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) 
+* 🚀 geospatial data structures (geometry, features and metadata)
+* 🌐 geographic coordinates (longitude-latitude)
+* 🗺️ projected coordinates (cartesian XYZ)
+* 🔷 geometry primitives (bounds or bbox, point, line string, polygon)
+* 🧩 multi geometries (multi point, multi line string, multi polygon, geometry collections)
+* ⭐ feature objects (with id, properties and geometry) and feature collections
+* 📅 temporal data structures (instant, interval)
+* 🌎 [GeoJSON](https://geojson.org/) data parser
+* 🪧 [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) 
 (Well-known text representation of geometry) data parser 
-🏗️ coordinate transformation abstraction to project points, geometries and features
+* 🏗️ coordinate transformation abstraction to project points, geometries and features
 
 See [geocore](dart/geocore) code and docs for more information.
 
@@ -57,7 +57,7 @@ other geospatial data sources (like partial and initial support for
 ## :newspaper_roll: News
 
 2021-12-04
-* The first pre-release of the upcoming 0.8.0 version of [geocore](https://pub.dev/packages/geocore/versions/0.8.0-a.1), see [changelog](blob/main/dart/geocore/CHANGELOG.md#080) for details
+* The first pre-release of the upcoming 0.8.0 version of [geocore](https://pub.dev/packages/geocore/versions/0.8.0-a.2), see [changelog](blob/main/dart/geocore/CHANGELOG.md#080) for details
   * breaking changes with Feature classes, removed dependency to the [attributes](https://pub.dev/packages/attributes) package
   * also the preview of coordinate transformation abstractions and other enhancements
 

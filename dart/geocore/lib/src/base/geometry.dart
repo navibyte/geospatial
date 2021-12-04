@@ -42,8 +42,8 @@ abstract class Geometry extends Bounded {
   bool get isNotEmpty => !isEmpty;
 
   /// Returns a new geometry with all points projected using [transform].
-  /// 
-  /// The projected geometry object must be of the same geometry type with this 
+  ///
+  /// The projected geometry object must be of the same geometry type with this
   /// object.
   @override
   Geometry project(TransformPoint transform);

@@ -11,9 +11,9 @@ typedef TransformPoint = T Function<T extends Point>(T source);
 
 // -----------------------------------------------------------------------------
 // Some basic transformation functions (like translate, scale, rotate).
-// Not meant to be complete set of transformation. 
-// 
-// Geospatial projections between coordinate reference systems on other 
+// Not meant to be complete set of transformation.
+//
+// Geospatial projections between coordinate reference systems on other
 // packages.
 
 /// Returns a function to translate points by delta values of each axis.

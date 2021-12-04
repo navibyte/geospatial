@@ -2,18 +2,19 @@
 
 [![pub package](https://img.shields.io/pub/v/geocore.svg)](https://pub.dev/packages/geocore) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause) [![style: very good analysis](https://img.shields.io/badge/style-very_good_analysis-B22C89.svg)](https://pub.dev/packages/very_good_analysis)
 
-Key features:
-🚀 geospatial data structures (geometry, features and metadata)
-🌐 geographic coordinates (longitude-latitude)
-🗺️ projected coordinates (cartesian XYZ)
-🔷 geometry primitives (bounds or bbox, point, line string, polygon)
-🧩 multi geometries (multi point, multi line string, multi polygon, geometry collections)
-⭐ feature objects (with id, properties and geometry) and feature collections
-📅 temporal data structures (instant, interval)
-🌎 [GeoJSON](https://geojson.org/) data parser
-🪧 [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) 
+## Features
+
+* 🚀 geospatial data structures (geometry, features and metadata)
+* 🌐 geographic coordinates (longitude-latitude)
+* 🗺️ projected coordinates (cartesian XYZ)
+* 🔷 geometry primitives (bounds or bbox, point, line string, polygon)
+* 🧩 multi geometries (multi point, multi line string, multi polygon, geometry collections)
+* ⭐ feature objects (with id, properties and geometry) and feature collections
+* 📅 temporal data structures (instant, interval)
+* 🌎 [GeoJSON](https://geojson.org/) data parser
+* 🪧 [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) 
 (Well-known text representation of geometry) data parser 
-🏗️ coordinate transformation abstraction to project points, geometries and features
+* 🏗️ coordinate transformation abstraction to project points, geometries and features
 
 **This package is at BETA stage, interfaces not fully final yet.** 
 
@@ -642,7 +643,7 @@ In the `pubspec.yaml` of your project add the dependency:
 
 ```yaml
 dependencies:
-  geocore: ^0.8.0-a.1
+  geocore: ^0.8.0-a.2
 ```
 
 All dependencies used by `geocore` are also ready for 

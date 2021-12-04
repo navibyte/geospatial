@@ -189,7 +189,7 @@ class GeoJsonFactory<PointType extends Point>
     }
 
     // parse id as String?
-    // (GeoJSON allows num and String types for ids - both represented here 
+    // (GeoJSON allows num and String types for ids - both represented here
     // as String)
     final id = json['id']?.toString();
 

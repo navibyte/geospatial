@@ -9,8 +9,8 @@ part of 'base.dart';
 /// A private base interface for "batched series" defining spatial operations.
 ///
 /// Known sub classes: [BoundedSeries], [PointSeries].
-abstract class _BatchedSeries<S extends _BatchedSeries<S, T>, T>
-    extends Bounded implements Iterable<T> {
+abstract class _BatchedSeries<S extends _BatchedSeries<S, T>, T> extends Bounded
+    implements Iterable<T> {
   const _BatchedSeries();
 
   /// Returns an item of the type T at [index].

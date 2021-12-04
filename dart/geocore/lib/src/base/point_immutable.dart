@@ -458,7 +458,6 @@ class Point3m extends Point3 {
     }
   }
 
-
   @override
   final num m;
 

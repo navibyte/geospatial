@@ -113,7 +113,7 @@ void _readmeIntro() {
   // Returns a point of the same type, but no previous values are preserved
   // (result here is Point3m.xyzm(1.0, 2.0, 3.0, 0.0)) with default 0.0 for m).
   source.newWith(x: 1.0, y: 2.0, z: 3.0);
- 
+
   // This returns also Point3m.xyzm(1.0, 2.0, 3.0, 0.0)).
   source.newFrom([1.0, 2.0, 3.0, 0.0]);
 
