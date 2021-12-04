@@ -138,17 +138,17 @@ abstract class CoordinateFactory<T extends Geometry> implements _Measured {
 
 /// An interface to create [Point] instances of the type [T].
 abstract class PointFactory<T extends Point> extends CoordinateFactory<T> {
-  /// Creates a new [Point] instance of a type compatible with this object.
+  /// Creates a new point instance of a type compatible with this object.
   ///
   /// Values for a new point are given by required [x] and [y] values, and
   /// optional [z] and [z] values as applicable or an implementing class.
   ///
   /// When [newWith] is implemented by the [Point] class itself or it's
   /// descentants then a returned instance must be of the type with same
-  /// coordinate value members as this.
+  /// coordinate value members as this object has.
   T newWith({num x = 0.0, num y = 0.0, num? z, num? m});
 
-  /// Creates a new [Point] instance of a type compatible with this object.
+  /// Creates a new point instance of a type compatible with this object.
   ///
   /// Values for a new point are given by [coords] containing `num` values
   /// (that is `double` or `int`). By default 0 is used as an offset and length
@@ -158,7 +158,7 @@ abstract class PointFactory<T extends Point> extends CoordinateFactory<T> {
   ///
   /// When [newFrom] is implemented by the [Point] class itself or it's
   /// descentants then a returned instance must be of the type with same
-  /// coordinate value members as this.
+  /// coordinate value members as this object has.
   @override
   T newFrom(Iterable<num> coords, {int? offset, int? length});
 }

@@ -103,6 +103,22 @@ void _readmeIntro() {
 
   // -----------
 
+  // A sample point with x, y, z and m coordinates.
+  final source = Point3m.xyzm(708221.0, 5707225.0, 45.0, 123.0);
+
+  // Return new points of the same type by changing only some coordinate values.
+  source.copyWith(m: 150.0);
+  source.copyWith(x: 708221.7, z: 46.2);
+
+  // Returns a point of the same type, but no previous values are preserved
+  // (result here is Point3m.xyzm(1.0, 2.0, 3.0, 0.0)) with default 0.0 for m).
+  source.newWith(x: 1.0, y: 2.0, z: 3.0);
+ 
+  // This returns also Point3m.xyzm(1.0, 2.0, 3.0, 0.0)).
+  source.newFrom([1.0, 2.0, 3.0, 0.0]);
+
+  // -----------
+
   // Geographic point with longitude, latitude, elevation and measure.
   GeoPoint3m(lon: -0.0014, lat: 51.4778, elev: 45.0, m: 123.0);
   GeoPoint3m.lonLatElevM(-0.0014, 51.4778, 45.0, 123.0);
@@ -163,9 +179,15 @@ void _readmeIntro() {
     Point3m.geometry,
   );
 
-  // Parsing using the WKT factory produces the result as the previous sample.
+  // Using the WKT factory produces the same result as the previous sample.
   wktProjected.parse<Point3m>(
     'LINESTRING ZM(10.0 11.0 12.0 5.1, 20.0 21.0 22.0 5.2, 30.0 31.0 32.0 5.3)',
+  );
+
+  // Also this sample, parsing from WKT compatible text, gives the same result.
+  LineString.parse(
+    '10.0 11.0 12.0 5.1, 20.0 21.0 22.0 5.2, 30.0 31.0 32.0 5.3',
+    Point3m.geometry,
   );
 
   // -----------
@@ -347,4 +369,21 @@ void _readmeIntro() {
     'POLYGON ((40 15, 50 50, 15 45, 10 15, 40 15),'
     ' (25 25, 25 40, 35 30, 25 25))',
   );
+
+  // -----------
+
+  // Create a point and project it with a custom translation that returns
+  // `Point3m.xyzm(110.0, 220.0, 50.0, 1.25)` after projection.
+  Point3m.xyzm(100.0, 200.0, 50.0, 1.25).project(_sampleFixedTranslate);
+
+  // The same transform function can be used to project also geometry objects.
+  LineString.parse('100.0 200.0, 400.0 500.0', Point2.geometry)
+      .project(_sampleFixedTranslate);
+
+  // This returns a line string that has same coordinate values as:
+  // LineString.parse('110.0 220.0, 410.0 520.0', Point2.geometry)
 }
+
+/// Translates X by 10.0 and Y by 20.0, other coordinates (Z and M) not changed.
+T _sampleFixedTranslate<T extends Point>(T source) =>
+    source.copyWith(x: source.x + 10.0, y: source.y + 20.0) as T;

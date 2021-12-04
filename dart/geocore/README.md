@@ -2,14 +2,18 @@
 
 [![pub package](https://img.shields.io/pub/v/geocore.svg)](https://pub.dev/packages/geocore) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause) [![style: very good analysis](https://img.shields.io/badge/style-very_good_analysis-B22C89.svg)](https://pub.dev/packages/very_good_analysis)
 
-Geospatial data structures (features, geometry and metadata) and utilities to
-parse [GeoJSON](https://geojson.org/) and [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) 
-(Well-known text representation of geometry) data.
-
-The package supports representing both **geographic** (decimal degrees or 
-longitude-latitude) and **projected** (or cartesian XYZ) coordinates in 2D and
-3D. There are also classes for temporal data (instants and intervals) and
-feature objects (or geospatial entities) containing properties and geometry.
+Key features:
+🚀 geospatial data structures (geometry, features and metadata)
+🌐 geographic coordinates (longitude-latitude)
+🗺️ projected coordinates (cartesian XYZ)
+🔷 geometry primitives (bounds or bbox, point, line string, polygon)
+🧩 multi geometries (multi point, multi line string, multi polygon, geometry collections)
+⭐ feature objects (with id, properties and geometry) and feature collections
+📅 temporal data structures (instant, interval)
+🌎 [GeoJSON](https://geojson.org/) data parser
+🪧 [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) 
+(Well-known text representation of geometry) data parser 
+🏗️ coordinate transformation abstraction to project points, geometries and features
 
 **This package is at BETA stage, interfaces not fully final yet.** 
 
@@ -93,6 +97,25 @@ For example `Point3` can be created in many ways:
 ```
 
 All other point classes have similar constructors.
+
+If you have a point instance of one of the point classes, then there are some 
+methods that help to create another instance of the same type.
+
+```dart
+  // A sample point with x, y, z and m coordinates.
+  final source = Point3m.xyzm(708221.0, 5707225.0, 45.0, 123.0);
+
+  // Return new points of the same type by changing only some coordinate values.
+  source.copyWith(m: 150.0);
+  source.copyWith(x: 708221.7, z: 46.2);
+
+  // Returns a point of the same type, but no previous values are preserved
+  // (result here is Point3m.xyzm(1.0, 2.0, 3.0, 0.0)) with default 0.0 for m).
+  source.newWith(x: 1.0, y: 2.0, z: 3.0);
+ 
+  // This returns also Point3m.xyzm(1.0, 2.0, 3.0, 0.0)).
+  source.newFrom([1.0, 2.0, 3.0, 0.0]);
+```
 
 ### Geographic points
 
@@ -193,9 +216,15 @@ Or below are examples of more direct ways to construct line strings:
     Point3m.geometry,
   );
 
-  // Parsing using the WKT factory produces the result as the previous sample.
+  // Using the WKT factory produces the same result as the previous sample.
   wktProjected.parse<Point3m>(
     'LINESTRING ZM(10.0 11.0 12.0 5.1, 20.0 21.0 22.0 5.2, 30.0 31.0 32.0 5.3)',
+  );
+
+  // Also this sample, parsing from WKT compatible text, gives the same result.
+  LineString.parse(
+    '10.0 11.0 12.0 5.1, 20.0 21.0 22.0 5.2, 30.0 31.0 32.0 5.3',
+    Point3m.geometry,
   );
 ```
 
@@ -406,14 +435,8 @@ also an identifier and other attributes (or properties) along with a geometry.
 
 <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Simple_vector_map.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/Simple_vector_map.svg"></a>
 
-The external [attributes](https://pub.dev/packages/attributes) package has 
-a `Entity` class that represents a structured data entity that has an optional 
-identification by an `Identifier` object and contains associated property values
-in a `PropertyMap` object.
 
-The `Feature` class of this package extends `Entity`, and has also geospatial
-`geometry` and `bounds` as fields along with `id` and `properties` fields. That
-is a *feature* is a geospatial *entity* object.
+The `Feature` class of this package has geospatial `geometry` and `bounds` as fields along with `id` and `properties` fields. 
 
 ```dart
   // Geospatial feature with an identification, a point geometry and properties.
@@ -547,8 +570,63 @@ Samples to parse from WKT text representation of geometry:
 ```
 
 Supported WKT geometry types: `POINT`, `LINESTRING`, `POLYGON`, `MULTIPOINT`, 
-`MULTILINESTRING`, `MULTIPOLYGON`. Please note that `GEOMETRYCOLLECTION` is not
-(yet) supported.
+`MULTILINESTRING`, `MULTIPOLYGON` and `GEOMETRYCOLLECTION`.
+
+### Coordinate projections
+
+**This feature is work-in-progress**
+
+Geographical and cartesian points, geometry objects, features and feature
+collections can be projected using coordinate transformations.
+
+Currently this package provides a consistent abstraction. Classes used to 
+represent objects mentioned above contain `project(TransformPoint transform)` method returning a projected object. The transform function is defined as:
+
+```dart
+/// A function to transform the [source] point to a transformed point.
+typedef TransformPoint = T Function<T extends Point>(T source);
+```
+
+There are some basic geometry transformation provided by the package.
+
+For example to translate points you can use:
+
+```dart
+/// Returns a function to translate points by delta values of each axis.
+TransformPoint translatePoint<C extends num>({C? dx, C? dy, C? dz, C? dm});
+```
+
+Similarily `scalePoint`, `scalePointBy` and `rotatePoint2D` returns functions to
+project points by scaling with axis-specific factors, scaling with a constant 
+factor, or rotating in 2D.
+
+It's quite simple to define a custom transform function too:
+
+```dart
+/// Translates X by 10.0 and Y by 20.0, other coordinates (Z and M) not changed.
+T _sampleFixedTranslate<T extends Point>(T source) =>
+    source.copyWith(x: source.x + 10.0, y: source.y + 20.0) as T;
+```
+
+Now this function can be used to project points and other geometries:
+
+```dart
+  // Create a point and project it with a custom translation that returns
+  // `Point3m.xyzm(110.0, 220.0, 50.0, 1.25)` after projection.
+  Point3m.xyzm(100.0, 200.0, 50.0, 1.25).project(_sampleFixedTranslate);
+
+  // The same transform function can be used to project also geometry objects.
+  LineString.parse('100.0 200.0, 400.0 500.0', Point2.geometry)
+      .project(_sampleFixedTranslate);
+
+  // This returns a line string that has same coordinate values as: 
+  // LineString.parse('110.0 220.0, 410.0 520.0', Point2.geometry)
+```
+
+Please note that currently there is no support for geospatial transformations
+between coordinate reference systems on this package. However a custom tranform 
+function as described above could be wired to delegate tranformation to other
+packages as necessary.
 
 ## Package
 
@@ -564,16 +642,11 @@ In the `pubspec.yaml` of your project add the dependency:
 
 ```yaml
 dependencies:
-  geocore: ^0.7.1
+  geocore: ^0.8.0-a.1
 ```
 
 All dependencies used by `geocore` are also ready for 
 [null-safety](https://dart.dev/null-safety)!
-
-The package is associated with and depending on the 
-[attributes](https://pub.dev/packages/attributes) package containing 
-non-geospatial data structures that are extended and utilized by the 
-`geocore` to provide geospatial data structures and utilities. 
 
 ## Libraries
 

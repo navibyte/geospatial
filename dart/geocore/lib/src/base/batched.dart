@@ -9,8 +9,8 @@ part of 'base.dart';
 /// A private base interface for "batched series" defining spatial operations.
 ///
 /// Known sub classes: [BoundedSeries], [PointSeries].
-abstract class _BatchedSeries<S extends _BatchedSeries<S, T>, T> extends Bounded
-    implements Iterable<T> {
+abstract class _BatchedSeries<S extends _BatchedSeries<S, T>, T>
+    extends Bounded implements Iterable<T> {
   const _BatchedSeries();
 
   /// Returns an item of the type T at [index].
@@ -18,21 +18,34 @@ abstract class _BatchedSeries<S extends _BatchedSeries<S, T>, T> extends Bounded
   /// Throws RangeError if [index] is out of bounds.
   T operator [](int index);
 
-  /// Returns a new lazy series where items intersects with [bounds].
+  /// Returns a new series where items intersects with [bounds].
+  ///
+  /// The intersected series is populated by default. If [lazy] is set true then
+  /// returns a new lazy series with items intersected lazily.
   ///
   /// Even if an item on this series has a complex geometry, only bounds
   /// of that geometry is tested (intersection) with the given [bounds].
   ///
   /// Those items that has empty bounds are not matched.
-  S intersectByBounds(Bounds bounds);
+  S intersectByBounds(Bounds bounds, {bool lazy = false});
 
-  /// Returns a new lazy series where items intersects with [bounds] in 2D.
+  /// Returns a new series where items intersects with [bounds] in 2D.
+  ///
+  /// The intersected series is populated by default. If [lazy] is set true then
+  /// returns a new lazy series with items intersected lazily.
   ///
   /// Even if an item on this series has a complex geometry, only bounds
   /// of that geometry is tested (intersection) with the given [bounds].
   ///
   /// Those items that has empty bounds are not matched.
-  S intersectByBounds2D(Bounds bounds);
+  S intersectByBounds2D(Bounds bounds, {bool lazy = false});
+
+  /// Returns a new series projected from this series using [transform].
+  ///
+  /// The projected series is populated by default. If [lazy] is set true then
+  /// returns a new lazy series with points of the series projected lazily.
+  @override
+  S project(TransformPoint transform, {bool lazy = false});
 }
 
 /// Private implementation of [_BatchedSeries] based on UnmodifiableListView.

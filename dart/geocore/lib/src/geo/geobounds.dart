@@ -107,15 +107,20 @@ class GeoBounds extends BoundsBase<GeoPoint> with EquatableMixin {
   }
 
   @override
-  Bounds newFrom(Iterable<num> coords, {int? offset, int? length}) {
+  GeoBounds newFrom(Iterable<num> coords, {int? offset, int? length}) {
     CoordinateFactory.checkCoords(4, coords, offset: offset, length: length);
     final start = offset ?? 0;
     final len = length ?? coords.length;
     final pointLen = len ~/ 2;
     return GeoBounds.of(
-      min: min.newFrom(coords, offset: start, length: pointLen) as GeoPoint,
-      max: max.newFrom(coords, offset: start + pointLen, length: pointLen)
-          as GeoPoint,
+      min: min.newFrom(coords, offset: start, length: pointLen),
+      max: max.newFrom(coords, offset: start + pointLen, length: pointLen),
     );
   }
+
+  @override
+  GeoBounds project(TransformPoint transform) => GeoBounds.of(
+        min: min.project(transform),
+        max: max.project(transform),
+      );
 }

@@ -101,5 +101,9 @@ class LineString<T extends Point> extends Geometry with EquatableMixin {
   Bounds get bounds => chain.bounds;
 
   @override
-  List<Object?> get props => [chain];
+  LineString<T> project(TransformPoint transform) =>
+      LineString(chain.project(transform, lazy: false), type: type);
+
+  @override
+  List<Object?> get props => [type, chain];
 }

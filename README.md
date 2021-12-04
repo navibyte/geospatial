@@ -7,13 +7,21 @@
 **Geospatial** data structures, tools and utilities for 
 [Dart](https://dart.dev/) and [Flutter](https://flutter.dev/) mobile developers.
 
-The [geocore](https://pub.dev/packages/geocore) library package, based on
-Dart code hosted by this repository, provides geospatial data 
-structures (features, geometry and metadata) and utilities to parse
-[GeoJSON](https://geojson.org/) and [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)
-(Well-known text representation of geometry) data. The package also supports
-representing both geographic (decimal degrees or longitude-latitude) and 
-projected (or cartesian XYZ) coordinates in 2D and 3D. 
+Key features of the [geocore](https://pub.dev/packages/geocore) library package, based on Dart code hosted by this repository:
+
+🚀 geospatial data structures (geometry, features and metadata)
+🌐 geographic coordinates (longitude-latitude)
+🗺️ projected coordinates (cartesian XYZ)
+🔷 geometry primitives (bounds or bbox, point, line string, polygon)
+🧩 multi geometries (multi point, multi line string, multi polygon, geometry collections)
+⭐ feature objects (with id, properties and geometry) and feature collections
+📅 temporal data structures (instant, interval)
+🌎 [GeoJSON](https://geojson.org/) data parser
+🪧 [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) 
+(Well-known text representation of geometry) data parser 
+🏗️ coordinate transformation abstraction to project points, geometries and features
+
+See [geocore](dart/geocore) code and docs for more information.
 
 ## :package: Packages
 
@@ -46,13 +54,12 @@ a geospatial API client supporting reading [GeoJSON](https://geojson.org/), and
 other geospatial data sources (like partial and initial support for
 [OGC API Features](https://ogcapi.ogc.org/features/)) from web and file sources.
 
-Please see also generic (non-geospatial) data structures, tools and utilities at
-the separate [Dataflow tools for Dart](https://github.com/navibyte/dataflow)
-repository providing source code for 
-[attributes](https://pub.dev/packages/attributes) and
-[datatools](https://pub.dev/packages/datatools) packages.
-
 ## :newspaper_roll: News
+
+2021-12-04
+* The first pre-release of the upcoming 0.8.0 version of [geocore](https://pub.dev/packages/geocore/versions/0.8.0-a.1), see [changelog](blob/main/dart/geocore/CHANGELOG.md#080) for details
+  * breaking changes with Feature classes, removed dependency to the [attributes](https://pub.dev/packages/attributes) package
+  * also the preview of coordinate transformation abstractions and other enhancements
 
 2021-10-31
 * BETA version 0.7.2 [geocore](https://pub.dev/packages/geocore): 

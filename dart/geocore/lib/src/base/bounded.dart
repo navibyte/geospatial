@@ -19,6 +19,11 @@ abstract class Bounded {
   /// Bounds returned can be "empty" when isEmpty returns true - if so such
   /// bounds does not intersect with any other bounds.
   Bounds get bounds;
+
+  /// Returns a new bounded object with all points projected using [transform].
+  ///
+  /// The projected bounded object must be of the same type with this object.
+  Bounded project(TransformPoint transform);
 }
 
 /// A base interface for a series (list) of bounded items of type [T].
@@ -77,11 +82,26 @@ class _BoundedSeriesView<T extends Bounded>
         );
 
   @override
-  BoundedSeries<T> intersectByBounds(Bounds bounds) =>
-      _BoundedSeriesView(where((element) => bounds.intersects(element.bounds)));
+  BoundedSeries<T> intersectByBounds(Bounds bounds, {bool lazy = false}) {
+    final intersected = where((element) => bounds.intersects(element.bounds));
+    return _BoundedSeriesView(
+      lazy ? intersected : intersected.toList(growable: false),
+    );
+  }
 
   @override
-  BoundedSeries<T> intersectByBounds2D(Bounds bounds) => _BoundedSeriesView(
-        where((element) => bounds.intersects2D(element.bounds)),
-      );
+  BoundedSeries<T> intersectByBounds2D(Bounds bounds, {bool lazy = false}) {
+    final intersected = where((element) => bounds.intersects2D(element.bounds));
+    return _BoundedSeriesView(
+      lazy ? intersected : intersected.toList(growable: false),
+    );
+  }
+
+  @override
+  BoundedSeries<T> project(TransformPoint transform, {bool lazy = false}) {
+    final projected = map<T>((bounded) => bounded.project(transform) as T);
+    return _BoundedSeriesView(
+      lazy ? projected : projected.toList(growable: false),
+    );
+  }
 }

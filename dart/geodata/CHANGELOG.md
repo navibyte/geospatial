@@ -1,5 +1,7 @@
 ## 0.8.0
 
+(beta-release 0.8.0 currently under development at version 0.8.0-a.1)
+
 ⚠️ Breaking changes
 - [Refactor Feature class inheritance and types of id and properties members #39](https://github.com/navibyte/geospatial/issues/39)
 

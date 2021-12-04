@@ -1,7 +1,21 @@
 ## 0.8.0
 
-⚠️ Breaking changes
+(beta-release 0.8.0 currently under development at version 0.8.0-a.1)
+
+⚠️ Breaking changes:
 - [Refactor Feature class inheritance and types of id and properties members #39](https://github.com/navibyte/geospatial/issues/39)
+- [Define more specific return type on newWith and newFrom methods of Point sub classes #41](https://github.com/navibyte/geospatial/issues/41)
+- [Populate results by default when intersecting with bounds on point and bounded series #42](https://github.com/navibyte/geospatial/issues/42)
+
+🧩 Features:
+- [Add copyWith method to Point classes #43](https://github.com/navibyte/geospatial/issues/43)
+- Initial support and abstractions for [Coordinate transformations on core classes and reading datasource #15](https://github.com/navibyte/geospatial/issues/15)
+- [Test point equality in 2D or 3D by tolerance in Point class #47](https://github.com/navibyte/geospatial/issues/47)
+- [Check if point series is closed by tolerance #48](https://github.com/navibyte/geospatial/issues/48)
+
+🛠 Refactoring:
+- [Refactor coordinate value members of immutable Point classes #44](https://github.com/navibyte/geospatial/issues/44)
+- [Elev and m coordinate values as default in some GeoPoint classes #45](https://github.com/navibyte/geospatial/issues/45)
 
 ## 0.7.2
 

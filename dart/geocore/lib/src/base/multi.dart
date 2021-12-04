@@ -48,6 +48,10 @@ class GeometryCollection<T extends Geometry> extends Geometry
 
   @override
   List<Object?> get props => [geometries];
+
+  @override
+  GeometryCollection<T> project(TransformPoint transform) =>
+      GeometryCollection(geometries.project(transform, lazy: false));
 }
 
 /// A multi point geometry.
@@ -95,6 +99,10 @@ class MultiPoint<T extends Point> extends Geometry with EquatableMixin {
 
   @override
   List<Object?> get props => [points];
+
+  @override
+  MultiPoint<T> project(TransformPoint transform) =>
+      MultiPoint(points.project(transform, lazy: false));
 }
 
 /// A multi line string geometry.
@@ -154,6 +162,10 @@ class MultiLineString<T extends Point> extends Geometry with EquatableMixin {
 
   @override
   List<Object?> get props => [lineStrings];
+
+  @override
+  MultiLineString<T> project(TransformPoint transform) =>
+      MultiLineString(lineStrings.project(transform, lazy: false));
 }
 
 /// A multi polygon geometry.
@@ -212,4 +224,8 @@ class MultiPolygon<T extends Point> extends Geometry with EquatableMixin {
 
   @override
   List<Object?> get props => [polygons];
+
+  @override
+  MultiPolygon<T> project(TransformPoint transform) =>
+      MultiPolygon(polygons.project(transform, lazy: false));
 }

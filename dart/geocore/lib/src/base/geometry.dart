@@ -40,6 +40,13 @@ abstract class Geometry extends Bounded {
 
   /// True if this geometry is NOT considered empty without data or coordinates.
   bool get isNotEmpty => !isEmpty;
+
+  /// Returns a new geometry with all points projected using [transform].
+  /// 
+  /// The projected geometry object must be of the same geometry type with this 
+  /// object.
+  @override
+  Geometry project(TransformPoint transform);
 }
 
 /// An empty (non-existent) geometry as an private implementation.
@@ -59,6 +66,9 @@ class _EmptyGeometry extends Geometry with EquatableMixin {
 
   @override
   Bounds get bounds => Bounds.empty();
+
+  @override
+  Geometry project(TransformPoint transform) => this;
 
   @override
   List<Object?> get props => [];

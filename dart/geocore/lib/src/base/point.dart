@@ -63,12 +63,49 @@ abstract class Point<C extends num> extends Geometry
   /// Could be associated with a 2D point (x, y, m) or a 3D point (x, y, z, m).
   C get m => _zero();
 
-  /// True if this point equals with [other] point in 2D.
-  bool equals2D(Point other) =>
-      isNotEmpty && other.isNotEmpty && x == other.x && y == other.y;
+  /// True if this point equals with [other] point in 2D by testing x and y.
+  ///
+  /// If [toleranceHoriz] is given, then differences on x and y coordinate
+  /// values between this and [other] must be <= tolerance. Otherwise value
+  /// must be exactly same.
+  ///
+  /// Tolerance values must be null or positive (>= 0).
+  bool equals2D(Point other, {num? toleranceHoriz}) {
+    assert(
+      toleranceHoriz == null || toleranceHoriz >= 0.0,
+      'Tolerance must be null or positive (>= 0)',
+    );
+    if (isEmpty || other.isEmpty) {
+      return false;
+    }
+    return toleranceHoriz != null
+        ? (x - other.x).abs() <= toleranceHoriz &&
+            (y - other.y).abs() <= toleranceHoriz
+        : x == other.x && y == other.y;
+  }
 
-  /// True if this point equals with [other] point in 3D.
-  bool equals3D(Point other) => equals2D(other) && z == other.z;
+  /// True if this point equals with [other] point in 3D by testing x, y and z.
+  ///
+  /// If [toleranceHoriz] is given, then differences on x and y coordinate
+  /// values between this and [other] must be <= tolerance. Otherwise value
+  /// must be exactly same.
+  ///
+  /// The tolerance for z coordinate values is given by an optional
+  /// [toleranceVert] value.
+  ///
+  /// Tolerance values must be null or positive (>= 0).
+  bool equals3D(Point other, {num? toleranceHoriz, num? toleranceVert}) {
+    assert(
+      toleranceVert == null || toleranceVert >= 0.0,
+      'Tolerance must be null or positive (>= 0)',
+    );
+    if (!equals2D(other, toleranceHoriz: toleranceHoriz)) {
+      return false;
+    }
+    return toleranceVert != null
+        ? (z - other.z).abs() <= toleranceVert
+        : z == other.z;
+  }
 
   /// Returns zero value of the type [C] that can be `num`, `double` or `int`.
   C _zero() {
@@ -122,12 +159,28 @@ abstract class Point<C extends num> extends Geometry
     return buf.toString();
   }
 
+/*
   /// Returns WKT coords (ie. "35 10" for a point with x=35 and y=10).
   ///
   /// Use [fractionDigits] to set a number of decimals to nums with decimals.
   @Deprecated('Use toText instead')
   String toWktCoords({int? fractionDigits}) =>
       toText(fractionDigits: fractionDigits);
+*/
+
+  /// Copies this point with the compatible type and sets given coordinates.
+  ///
+  /// Optional [x], [y], [z] and [m] values, when given, override values of
+  /// this point object. If the type of this point does not have a certain
+  /// value, then it's ignored.
+  Point copyWith({num? x, num? y, num? z, num? m});
+
+  /// Returns a new point projected from this point using [transform].
+  ///
+  /// The projected point object must be of the type with same coordinate value
+  /// members as this object has.
+  @override
+  Point project(TransformPoint transform);
 }
 
 /// A private implementation for an empty point with coordinate zero values.
@@ -171,6 +224,12 @@ class _PointEmpty<C extends num> extends Point<C> with EquatableMixin {
 
   @override
   Point newFrom(Iterable<num> coords, {int? offset, int? length}) => this;
+
+  @override
+  Point copyWith({num? x, num? y, num? z, num? m}) => this;
+
+  @override
+  Point project(TransformPoint transform) => this;
 
   @override
   List<Object?> get props => [is3D, hasM];

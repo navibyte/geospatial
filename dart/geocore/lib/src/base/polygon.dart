@@ -91,4 +91,8 @@ class Polygon<T extends Point> extends Geometry with EquatableMixin {
   /// A series of interior rings (holes for this polygon) with 0 to N elements.
   BoundedSeries<LineString<T>> get interior =>
       BoundedSeries<LineString<T>>.view(rings.skip(1));
+
+  @override
+  Polygon<T> project(TransformPoint transform) =>
+      Polygon(rings.project(transform, lazy: false));
 }

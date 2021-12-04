@@ -38,6 +38,29 @@ abstract class GeoPoint extends Point<double> {
 
   /// Distance (in meters) to another geographic point.
   double distanceTo(GeoPoint other);
+
+  /// Copies this point with the compatible type and sets given coordinates.
+  ///
+  /// Optional [x], [y], [z] and [m] values, when given, override values of
+  /// this point object. If the type of this point does not have a certain
+  /// value, then it's ignored.
+  ///
+  /// Properties have equality (in context of this library): [lon] == [x],
+  /// [lat] == [y], [elev] == [z]
+  @override
+  GeoPoint copyWith({num? x, num? y, num? z, num? m});
+
+  @override
+  GeoPoint newWith({num x = 0.0, num y = 0.0, num? z, num? m});
+
+  @override
+  GeoPoint newFrom(Iterable<num> coords, {int? offset, int? length});
+
+  /// Returns a new geo point projected from this point using [transform].
+  ///
+  /// The projected geo point object must be of the same type with this object.
+  @override
+  GeoPoint project(TransformPoint transform);
 }
 
 /// An immutable geographic position with longitude and latitude.
@@ -49,8 +72,8 @@ class GeoPoint2 extends GeoPoint with EquatableMixin {
   /// `(lon + 180.0) % 360.0 - 180.0` and latitude is clamped to the
   /// range `[-90.0, 90.0]`.
   const GeoPoint2({required double lon, required double lat})
-      : _lon = (lon + 180.0) % 360.0 - 180.0,
-        _lat = lat < -90.0 ? -90.0 : (lat > 90.0 ? 90.0 : lat);
+      : lon = (lon + 180.0) % 360.0 - 180.0,
+        lat = lat < -90.0 ? -90.0 : (lat > 90.0 ? 90.0 : lat);
 
   /// A geographic position with coordinates given in order [lon], [lat].
   const GeoPoint2.lonLat(double lon, double lat) : this(lon: lon, lat: lat);
@@ -60,8 +83,8 @@ class GeoPoint2 extends GeoPoint with EquatableMixin {
 
   /// A geographic position at the origin (0.0, 0.0).
   const GeoPoint2.origin()
-      : _lon = 0.0,
-        _lat = 0.0;
+      : lon = 0.0,
+        lat = 0.0;
 
   /// A geographic position from [coords] given in order: lon, lat.
   factory GeoPoint2.from(Iterable<num> coords, {int? offset}) {
@@ -113,10 +136,8 @@ class GeoPoint2 extends GeoPoint with EquatableMixin {
   static const PointFactory<GeoPoint2> geometry =
       CastingPointFactory<GeoPoint2>(GeoPoint2.origin());
 
-  final double _lon, _lat;
-
   @override
-  List<Object?> get props => [_lon, _lat];
+  List<Object?> get props => [lon, lat];
 
   @override
   bool get isEmpty => false;
@@ -137,52 +158,61 @@ class GeoPoint2 extends GeoPoint with EquatableMixin {
   double operator [](int i) {
     switch (i) {
       case 0:
-        return _lon;
+        return lon;
       case 1:
-        return _lat;
+        return lat;
       default:
         return 0.0;
     }
   }
 
   @override
-  double get x => _lon;
+  double get x => lon;
 
   @override
-  double get y => _lat;
+  double get y => lat;
 
   @override
-  double get lon => _lon;
+  final double lon;
 
   @override
-  double get lat => _lat;
+  final double lat;
 
   @override
   double distanceTo(GeoPoint other) =>
-      distanceHaversine(_lon, _lat, other.lon, other.lat);
+      distanceHaversine(lon, lat, other.lon, other.lat);
 
   @override
-  Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) => GeoPoint2(
+  GeoPoint2 copyWith({num? x, num? y, num? z, num? m}) => GeoPoint2(
+        lon: (x ?? lon).toDouble(),
+        lat: (y ?? lat).toDouble(),
+      );
+
+  @override
+  GeoPoint2 newWith({num x = 0.0, num y = 0.0, num? z, num? m}) => GeoPoint2(
         lon: x.toDouble(),
         lat: y.toDouble(),
       );
 
   @override
-  Point newFrom(Iterable<num> coords, {int? offset, int? length}) {
+  GeoPoint2 newFrom(Iterable<num> coords, {int? offset, int? length}) {
     CoordinateFactory.checkCoords(2, coords, offset: offset, length: length);
     return GeoPoint2.from(coords, offset: offset);
   }
+
+  @override
+  GeoPoint2 project(TransformPoint transform) => transform(this);
 }
 
 /// An immutable geographic position with longitude, latitude and m (measure).
 @immutable
 class GeoPoint2m extends GeoPoint2 {
-  /// A geographic position from [lon], [lat] and [m].
+  /// A geographic position from [lon], [lat] and [m] (m is zero by default).
   ///
   /// Longitude is normalized to the range `[-180.0, 180.0[` using the formula
   /// `(lon + 180.0) % 360.0 - 180.0` and latitude is clamped to the
   /// range `[-90.0, 90.0]`.
-  const GeoPoint2m({required double lon, required double lat, required this.m})
+  const GeoPoint2m({required double lon, required double lat, this.m = 0.0})
       : super(lon: lon, lat: lat);
 
   /// A geographic position with coordinates given in order [lon], [lat], [m].
@@ -252,10 +282,7 @@ class GeoPoint2m extends GeoPoint2 {
       CastingPointFactory<GeoPoint2m>(GeoPoint2m.origin());
 
   @override
-  final double m;
-
-  @override
-  List<Object?> get props => [_lon, _lat, m];
+  List<Object?> get props => [lon, lat, m];
 
   @override
   int get coordinateDimension => 3;
@@ -267,9 +294,9 @@ class GeoPoint2m extends GeoPoint2 {
   double operator [](int i) {
     switch (i) {
       case 0:
-        return _lon;
+        return lon;
       case 1:
-        return _lat;
+        return lat;
       case 2:
         return m;
       default:
@@ -278,39 +305,49 @@ class GeoPoint2m extends GeoPoint2 {
   }
 
   @override
-  Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) => GeoPoint2m(
+  final double m;
+
+  @override
+  GeoPoint2m copyWith({num? x, num? y, num? z, num? m}) => GeoPoint2m(
+        lon: (x ?? lon).toDouble(),
+        lat: (y ?? lat).toDouble(),
+        m: (m ?? this.m).toDouble(),
+      );
+
+  @override
+  GeoPoint2m newWith({num x = 0.0, num y = 0.0, num? z, num? m}) => GeoPoint2m(
         lon: x.toDouble(),
         lat: y.toDouble(),
         m: m?.toDouble() ?? 0.0,
       );
 
   @override
-  Point newFrom(Iterable<num> coords, {int? offset, int? length}) {
+  GeoPoint2m newFrom(Iterable<num> coords, {int? offset, int? length}) {
     CoordinateFactory.checkCoords(3, coords, offset: offset, length: length);
     return GeoPoint2m.from(coords, offset: offset);
   }
+
+  @override
+  GeoPoint2m project(TransformPoint transform) => transform(this);
 }
 
 /// An immutable geographic position with longitude, latitude and elevation.
 class GeoPoint3 extends GeoPoint2 {
   /// A geographic position from [lon], [lat] and [elev].
-  const GeoPoint3({required double lon, required double lat, double elev = 0.0})
-      : _elev = elev,
-        super(lon: lon, lat: lat);
+  const GeoPoint3({required double lon, required double lat, this.elev = 0.0})
+      : super(lon: lon, lat: lat);
 
   /// A geographic position, coordinates given in order [lon], [lat], [elev].
-  const GeoPoint3.lonLatElev(double lon, double lat, double elev)
-      : _elev = elev,
-        super(lon: lon, lat: lat);
+  const GeoPoint3.lonLatElev(double lon, double lat, this.elev)
+      : super(lon: lon, lat: lat);
 
   /// A geographic position, coordinates given in order [lat], [lon], [elev].
-  const GeoPoint3.latLonElev(double lat, double lon, double elev)
-      : _elev = elev,
-        super(lon: lon, lat: lat);
+  const GeoPoint3.latLonElev(double lat, double lon, this.elev)
+      : super(lon: lon, lat: lat);
 
   /// A geographic position at the origin (0.0, 0.0, 0.0).
   const GeoPoint3.origin()
-      : _elev = 0.0,
+      : elev = 0.0,
         super.origin();
 
   /// A geographic position from [coords], given in order: lon, lat, elev.
@@ -366,10 +403,8 @@ class GeoPoint3 extends GeoPoint2 {
   static const PointFactory<GeoPoint3> geometry =
       CastingPointFactory<GeoPoint3>(GeoPoint3.origin());
 
-  final double _elev;
-
   @override
-  List<Object?> get props => [_lon, _lat, _elev];
+  List<Object?> get props => [lon, lat, elev];
 
   @override
   int get coordinateDimension => 3;
@@ -384,34 +419,44 @@ class GeoPoint3 extends GeoPoint2 {
   double operator [](int i) {
     switch (i) {
       case 0:
-        return _lon;
+        return lon;
       case 1:
-        return _lat;
+        return lat;
       case 2:
-        return _elev;
+        return elev;
       default:
         return 0.0;
     }
   }
 
   @override
-  double get z => _elev;
+  double get z => elev;
 
   @override
-  double get elev => _elev;
+  final double elev;
 
   @override
-  Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) => GeoPoint3(
+  GeoPoint3 copyWith({num? x, num? y, num? z, num? m}) => GeoPoint3(
+        lon: (x ?? lon).toDouble(),
+        lat: (y ?? lat).toDouble(),
+        elev: (z ?? elev).toDouble(),
+      );
+
+  @override
+  GeoPoint3 newWith({num x = 0.0, num y = 0.0, num? z, num? m}) => GeoPoint3(
         lon: x.toDouble(),
         lat: y.toDouble(),
         elev: z?.toDouble() ?? 0.0,
       );
 
   @override
-  Point newFrom(Iterable<num> coords, {int? offset, int? length}) {
+  GeoPoint3 newFrom(Iterable<num> coords, {int? offset, int? length}) {
     CoordinateFactory.checkCoords(3, coords, offset: offset, length: length);
     return GeoPoint3.from(coords, offset: offset);
   }
+
+  @override
+  GeoPoint3 project(TransformPoint transform) => transform(this);
 }
 
 /// An immutable geographic position with longitude, latitude, elev and m.
@@ -425,8 +470,8 @@ class GeoPoint3m extends GeoPoint3 {
   const GeoPoint3m({
     required double lon,
     required double lat,
-    required double elev,
-    required this.m,
+    double elev = 0.0,
+    this.m = 0.0,
   }) : super(lon: lon, lat: lat, elev: elev);
 
   /// A geographic position, coordinates in order [lon], [lat], [elev], [m].
@@ -497,10 +542,7 @@ class GeoPoint3m extends GeoPoint3 {
       CastingPointFactory<GeoPoint3m>(GeoPoint3m.origin());
 
   @override
-  final double m;
-
-  @override
-  List<Object?> get props => [_lon, _lat, _elev, m];
+  List<Object?> get props => [lon, lat, elev, m];
 
   @override
   int get coordinateDimension => 4;
@@ -512,9 +554,9 @@ class GeoPoint3m extends GeoPoint3 {
   double operator [](int i) {
     switch (i) {
       case 0:
-        return _lon;
+        return lon;
       case 1:
-        return _lat;
+        return lat;
       case 2:
         return elev;
       case 3:
@@ -525,7 +567,18 @@ class GeoPoint3m extends GeoPoint3 {
   }
 
   @override
-  Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) => GeoPoint3m(
+  final double m;
+
+  @override
+  GeoPoint3m copyWith({num? x, num? y, num? z, num? m}) => GeoPoint3m(
+        lon: (x ?? lon).toDouble(),
+        lat: (y ?? lat).toDouble(),
+        elev: (z ?? elev).toDouble(),
+        m: (m ?? this.m).toDouble(),
+      );
+
+  @override
+  GeoPoint3m newWith({num x = 0.0, num y = 0.0, num? z, num? m}) => GeoPoint3m(
         lon: x.toDouble(),
         lat: y.toDouble(),
         elev: z?.toDouble() ?? 0.0,
@@ -533,8 +586,11 @@ class GeoPoint3m extends GeoPoint3 {
       );
 
   @override
-  Point newFrom(Iterable<num> coords, {int? offset, int? length}) {
+  GeoPoint3m newFrom(Iterable<num> coords, {int? offset, int? length}) {
     CoordinateFactory.checkCoords(4, coords, offset: offset, length: length);
     return GeoPoint3m.from(coords, offset: offset);
   }
+
+  @override
+  GeoPoint3m project(TransformPoint transform) => transform(this);
 }

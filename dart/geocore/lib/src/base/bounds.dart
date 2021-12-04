@@ -11,7 +11,7 @@ typedef CalculateBounds<T extends Point> = Bounds<T> Function();
 
 /// A base interface for bounds (aka a bounding box in 2D).
 abstract class Bounds<T extends Point> extends Geometry
-    implements _Coordinates, CoordinateFactory<Bounds> {
+    implements _Coordinates, CoordinateFactory<Bounds<T>> {
   /// Default `const` constructor to allow extending this abstract class.
   const Bounds();
 
@@ -56,7 +56,7 @@ abstract class Bounds<T extends Point> extends Geometry
   T get max;
 
   @override
-  Bounds get bounds => this;
+  Bounds<T> get bounds => this;
 
   @override
   int get dimension => 1;
@@ -92,6 +92,10 @@ abstract class Bounds<T extends Point> extends Geometry
     writeValues(buf, delimiter: delimiter, fractionDigits: fractionDigits);
     return buf.toString();
   }
+
+  /// Returns new bounds projected from this bounds using [transform].
+  @override
+  Bounds<T> project(TransformPoint transform);
 
   /// Returns true if this bounds intesects with [other] bounds in 2D.
   ///
@@ -191,16 +195,22 @@ class BoundsBase<T extends Point> extends Bounds<T> with EquatableMixin {
   T get max => _max;
 
   @override
-  Bounds newFrom(Iterable<num> coords, {int? offset, int? length}) {
+  Bounds<T> newFrom(Iterable<num> coords, {int? offset, int? length}) {
     CoordinateFactory.checkCoords(4, coords, offset: offset, length: length);
     final start = offset ?? 0;
     final len = length ?? coords.length;
     final pointLen = len ~/ 2;
     return BoundsBase(
-      min: min.newFrom(coords, offset: start, length: pointLen),
-      max: max.newFrom(coords, offset: start + pointLen, length: pointLen),
+      min: min.newFrom(coords, offset: start, length: pointLen) as T,
+      max: max.newFrom(coords, offset: start + pointLen, length: pointLen) as T,
     );
   }
+
+  @override
+  Bounds<T> project(TransformPoint transform) => BoundsBase(
+        min: min.project(transform) as T,
+        max: max.project(transform) as T,
+      );
 }
 
 /// [Bounds] with values calculated when first needed if not initialized.
@@ -243,8 +253,12 @@ class _LazyBounds<T extends Point> extends Bounds<T> {
   T get max => _ensureBounds().max;
 
   @override
-  Bounds newFrom(Iterable<num> coords, {int? offset, int? length}) =>
+  Bounds<T> newFrom(Iterable<num> coords, {int? offset, int? length}) =>
       _ensureBounds().newFrom(coords, offset: offset, length: length);
+
+  @override
+  Bounds<T> project(TransformPoint transform) =>
+      _ensureBounds().project(transform);
 
 /*
   // See lint => avoid_equals_and_hash_code_on_mutable_classes
@@ -277,4 +291,7 @@ class _EmptyBounds extends Bounds {
 
   @override
   Bounds newFrom(Iterable<num> coords, {int? offset, int? length}) => this;
+
+  @override
+  Bounds project(TransformPoint transform) => this;
 }

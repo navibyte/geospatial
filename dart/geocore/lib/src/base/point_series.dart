@@ -85,12 +85,19 @@ abstract class PointSeries<T extends Point>
 
   /// True if the first and last point equals in 2D.
   bool get isClosed;
+
+  /// True if the first and last point equals in 2D within [toleranceHoriz].
+  bool isClosedBy(num toleranceHoriz);
 }
 
 /// A partial implementation of [PointSeries] as a mixin.
 mixin PointSeriesMixin<T extends Point> implements PointSeries<T> {
   @override
   bool get isClosed => length >= 2 && first.equals2D(last);
+
+  @override
+  bool isClosedBy(num toleranceHoriz) =>
+      length >= 2 && first.equals2D(last, toleranceHoriz: toleranceHoriz);
 
   @override
   num x(int index) => this[index].x;
@@ -140,10 +147,26 @@ class _PointSeriesView<T extends Point>
         );
 
   @override
-  PointSeries<T> intersectByBounds(Bounds bounds) =>
-      _PointSeriesView(where((point) => bounds.intersectsPoint(point)));
+  PointSeries<T> intersectByBounds(Bounds bounds, {bool lazy = false}) {
+    final intersected = where((point) => bounds.intersectsPoint(point));
+    return _PointSeriesView(
+      lazy ? intersected : intersected.toList(growable: false),
+    );
+  }
 
   @override
-  PointSeries<T> intersectByBounds2D(Bounds bounds) =>
-      _PointSeriesView(where((point) => bounds.intersectsPoint2D(point)));
+  PointSeries<T> intersectByBounds2D(Bounds bounds, {bool lazy = false}) {
+    final intersected = where((point) => bounds.intersectsPoint2D(point));
+    return _PointSeriesView(
+      lazy ? intersected : intersected.toList(growable: false),
+    );
+  }
+
+  @override
+  PointSeries<T> project(TransformPoint transform, {bool lazy = false}) {
+    final projected = map((point) => point.project(transform) as T);
+    return _PointSeriesView(
+      lazy ? projected : projected.toList(growable: false),
+    );
+  }
 }

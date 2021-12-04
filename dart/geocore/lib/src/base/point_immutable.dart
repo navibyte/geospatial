@@ -18,19 +18,15 @@ part of 'base.dart';
 @immutable
 class Point2 extends Point<num> with EquatableMixin {
   /// A point at given [x] and [y].
-  const Point2({required num x, required num y})
-      : _x = x,
-        _y = y;
+  const Point2({required this.x, required this.y});
 
   /// A point with coordinates given in order [x], [y].
-  const Point2.xy(num x, num y)
-      : _x = x,
-        _y = y;
+  const Point2.xy(this.x, this.y);
 
   /// A point at the origin (0.0, 0.0).
   const Point2.origin()
-      : _x = 0.0,
-        _y = 0.0;
+      : x = 0.0,
+        y = 0.0;
 
   /// A point from [coords] given in order: x, y.
   factory Point2.from(Iterable<num> coords, {int? offset}) {
@@ -82,10 +78,8 @@ class Point2 extends Point<num> with EquatableMixin {
   static const PointFactory<Point2> geometry =
       CastingPointFactory<Point2>(Point2.origin());
 
-  final num _x, _y;
-
   @override
-  List<Object?> get props => [_x, _y];
+  List<Object?> get props => [x, y];
 
   @override
   bool get isEmpty => false;
@@ -106,46 +100,52 @@ class Point2 extends Point<num> with EquatableMixin {
   num operator [](int i) {
     switch (i) {
       case 0:
-        return _x;
+        return x;
       case 1:
-        return _y;
+        return y;
       default:
         return 0.0;
     }
   }
 
   @override
-  num get x => _x;
+  final num x;
 
   @override
-  num get y => _y;
+  final num y;
 
   @override
-  Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) =>
+  Point2 newWith({num x = 0.0, num y = 0.0, num? z, num? m}) =>
       Point2(x: x, y: y);
 
   @override
-  Point newFrom(Iterable<num> coords, {int? offset, int? length}) {
+  Point2 newFrom(Iterable<num> coords, {int? offset, int? length}) {
     CoordinateFactory.checkCoords(2, coords, offset: offset, length: length);
     return Point2.from(coords, offset: offset);
   }
+
+  @override
+  Point2 copyWith({num? x, num? y, num? z, num? m}) => Point2(
+        x: x ?? this.x,
+        y: y ?? this.y,
+      );
+
+  @override
+  Point2 project(TransformPoint transform) => transform(this);
 }
 
 /// An immutable point with X, Y and M as num values.
 class Point2m extends Point2 {
-  /// A point at given [x] and [y] ([m] is zero by default).
-  const Point2m({required num x, required num y, num m = 0.0})
-      : _m = m,
-        super(x: x, y: y);
+  /// A point at given [x], [y] and [m] (m is zero by default).
+  const Point2m({required num x, required num y, this.m = 0.0})
+      : super(x: x, y: y);
 
   /// A point with coordinates given in order [x], [y], [m].
-  const Point2m.xym(num x, num y, num m)
-      : _m = m,
-        super(x: x, y: y);
+  const Point2m.xym(num x, num y, this.m) : super(x: x, y: y);
 
   /// A point at the origin (0.0, 0.0, 0.0).
   const Point2m.origin()
-      : _m = 0.0,
+      : m = 0.0,
         super.origin();
 
   /// A point from [coords] given in order: x, y, m.
@@ -201,10 +201,8 @@ class Point2m extends Point2 {
   static const PointFactory<Point2m> geometry =
       CastingPointFactory<Point2m>(Point2m.origin());
 
-  final num _m;
-
   @override
-  List<Object?> get props => [_x, _y, _m];
+  List<Object?> get props => [x, y, m];
 
   @override
   int get coordinateDimension => 3;
@@ -216,45 +214,52 @@ class Point2m extends Point2 {
   num operator [](int i) {
     switch (i) {
       case 0:
-        return _x;
+        return x;
       case 1:
-        return _y;
+        return y;
       case 2:
-        return _m;
+        return m;
       default:
         return 0.0;
     }
   }
 
   @override
-  num get m => _m;
+  final num m;
 
   @override
-  Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) =>
+  Point2m copyWith({num? x, num? y, num? z, num? m}) => Point2m(
+        x: x ?? this.x,
+        y: y ?? this.y,
+        m: m ?? this.m,
+      );
+
+  @override
+  Point2m newWith({num x = 0.0, num y = 0.0, num? z, num? m}) =>
       Point2m(x: x, y: y, m: m ?? 0.0);
 
   @override
-  Point newFrom(Iterable<num> coords, {int? offset, int? length}) {
+  Point2m newFrom(Iterable<num> coords, {int? offset, int? length}) {
     CoordinateFactory.checkCoords(3, coords, offset: offset, length: length);
     return Point2m.from(coords, offset: offset);
   }
+
+  @override
+  Point2m project(TransformPoint transform) => transform(this);
 }
 
 /// An immutable point with X, Y and Z as num values.
 class Point3 extends Point2 {
-  /// A point at given [x] and [y] ([z] is zero by default).
-  const Point3({required num x, required num y, num z = 0.0})
-      : _z = z,
-        super(x: x, y: y);
+  /// A point at given [x], [y] and [z] (z is zero by default).
+  const Point3({required num x, required num y, this.z = 0.0})
+      : super(x: x, y: y);
 
   /// A point with coordinates given in order [x], [y], [z].
-  const Point3.xyz(num x, num y, num z)
-      : _z = z,
-        super(x: x, y: y);
+  const Point3.xyz(num x, num y, this.z) : super(x: x, y: y);
 
   /// A point at the origin (0.0, 0.0, 0.0).
   const Point3.origin()
-      : _z = 0.0,
+      : z = 0.0,
         super.origin();
 
   /// A point from [coords] given in order: x, y, m.
@@ -310,10 +315,8 @@ class Point3 extends Point2 {
   static const PointFactory<Point3> geometry =
       CastingPointFactory<Point3>(Point3.origin());
 
-  final num _z;
-
   @override
-  List<Object?> get props => [_x, _y, _z];
+  List<Object?> get props => [x, y, z];
 
   @override
   int get coordinateDimension => 3;
@@ -328,45 +331,52 @@ class Point3 extends Point2 {
   num operator [](int i) {
     switch (i) {
       case 0:
-        return _x;
+        return x;
       case 1:
-        return _y;
+        return y;
       case 2:
-        return _z;
+        return z;
       default:
         return 0.0;
     }
   }
 
   @override
-  num get z => _z;
+  final num z;
 
   @override
-  Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) =>
+  Point3 copyWith({num? x, num? y, num? z, num? m}) => Point3(
+        x: x ?? this.x,
+        y: y ?? this.y,
+        z: z ?? this.z,
+      );
+
+  @override
+  Point3 newWith({num x = 0.0, num y = 0.0, num? z, num? m}) =>
       Point3(x: x, y: y, z: z ?? 0.0);
 
   @override
-  Point newFrom(Iterable<num> coords, {int? offset, int? length}) {
+  Point3 newFrom(Iterable<num> coords, {int? offset, int? length}) {
     CoordinateFactory.checkCoords(3, coords, offset: offset, length: length);
     return Point3.from(coords, offset: offset);
   }
+
+  @override
+  Point3 project(TransformPoint transform) => transform(this);
 }
 
 /// An immutable point with X, Y, Z and M as num values.
 class Point3m extends Point3 {
-  /// A point at given [x] and [y] ([z] and [m] are zero by default).
-  const Point3m({required num x, required num y, num z = 0.0, num m = 0.0})
-      : _m = m,
-        super(x: x, y: y, z: z);
+  /// A point at given [x], [y], [z] and [m] (z and m are zero by default).
+  const Point3m({required num x, required num y, num z = 0.0, this.m = 0.0})
+      : super(x: x, y: y, z: z);
 
   /// A point with coordinates given in order [x], [y], [z], [m].
-  const Point3m.xyzm(num x, num y, num z, num m)
-      : _m = m,
-        super(x: x, y: y, z: z);
+  const Point3m.xyzm(num x, num y, num z, this.m) : super(x: x, y: y, z: z);
 
   /// A point at the origin (0.0, 0.0, 0.0, 0.0).
   const Point3m.origin()
-      : _m = 0.0,
+      : m = 0.0,
         super.origin();
 
   /// A point from [coords] given in order: x, y, z, m.
@@ -423,10 +433,8 @@ class Point3m extends Point3 {
   static const PointFactory<Point3m> geometry =
       CastingPointFactory<Point3m>(Point3m.origin());
 
-  final num _m;
-
   @override
-  List<Object?> get props => [_x, _y, _z, _m];
+  List<Object?> get props => [x, y, z, m];
 
   @override
   int get coordinateDimension => 4;
@@ -438,49 +446,57 @@ class Point3m extends Point3 {
   num operator [](int i) {
     switch (i) {
       case 0:
-        return _x;
+        return x;
       case 1:
-        return _y;
+        return y;
       case 2:
-        return _z;
+        return z;
       case 3:
-        return _m;
+        return m;
       default:
         return 0.0;
     }
   }
 
-  @override
-  num get m => _m;
 
   @override
-  Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) =>
+  final num m;
+
+  @override
+  Point3m copyWith({num? x, num? y, num? z, num? m}) => Point3m(
+        x: x ?? this.x,
+        y: y ?? this.y,
+        z: z ?? this.z,
+        m: m ?? this.m,
+      );
+
+  @override
+  Point3m newWith({num x = 0.0, num y = 0.0, num? z, num? m}) =>
       Point3m(x: x, y: y, z: z ?? 0.0, m: m ?? 0.0);
 
   @override
-  Point newFrom(Iterable<num> coords, {int? offset, int? length}) {
+  Point3m newFrom(Iterable<num> coords, {int? offset, int? length}) {
     CoordinateFactory.checkCoords(4, coords, offset: offset, length: length);
     return Point3m.from(coords, offset: offset);
   }
+
+  @override
+  Point3m project(TransformPoint transform) => transform(this);
 }
 
 /// An immutable point with X and Y as integer values.
 @immutable
 class Point2i extends Point<int> with EquatableMixin {
   /// A point at given [x] and [y].
-  const Point2i({required int x, required int y})
-      : _x = x,
-        _y = y;
+  const Point2i({required this.x, required this.y});
 
   /// A point with coordinates given in order [x], [y].
-  const Point2i.xy(int x, int y)
-      : _x = x,
-        _y = y;
+  const Point2i.xy(this.x, this.y);
 
   /// A point at the origin (0, 0).
   const Point2i.origin()
-      : _x = 0,
-        _y = 0;
+      : x = 0,
+        y = 0;
 
   /// A point from [coords] given in order: x, y.
   factory Point2i.from(Iterable<num> coords, {int? offset}) {
@@ -532,10 +548,8 @@ class Point2i extends Point<int> with EquatableMixin {
   static const PointFactory<Point2i> geometry =
       CastingPointFactory<Point2i>(Point2i.origin());
 
-  final int _x, _y;
-
   @override
-  List<Object?> get props => [_x, _y];
+  List<Object?> get props => [x, y];
 
   @override
   bool get isEmpty => false;
@@ -556,19 +570,19 @@ class Point2i extends Point<int> with EquatableMixin {
   int operator [](int i) {
     switch (i) {
       case 0:
-        return _x;
+        return x;
       case 1:
-        return _y;
+        return y;
       default:
         return 0;
     }
   }
 
   @override
-  int get x => _x;
+  final int x;
 
   @override
-  int get y => _y;
+  final int y;
 
   @override
   int get z => 0;
@@ -577,31 +591,37 @@ class Point2i extends Point<int> with EquatableMixin {
   int get m => 0;
 
   @override
-  Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) =>
+  Point2i copyWith({num? x, num? y, num? z, num? m}) => Point2i(
+        x: x?.round() ?? this.x,
+        y: y?.round() ?? this.y,
+      );
+
+  @override
+  Point2i newWith({num x = 0.0, num y = 0.0, num? z, num? m}) =>
       Point2i(x: x.round(), y: y.round());
 
   @override
-  Point newFrom(Iterable<num> coords, {int? offset, int? length}) {
+  Point2i newFrom(Iterable<num> coords, {int? offset, int? length}) {
     CoordinateFactory.checkCoords(2, coords, offset: offset, length: length);
     return Point2i.from(coords, offset: offset);
   }
+
+  @override
+  Point2i project(TransformPoint transform) => transform(this);
 }
 
 /// An immutable point with X, Y and Z as integer values.
 class Point3i extends Point2i {
-  /// A point at given [x] and [y] ([z] is zero by default).
-  const Point3i({required int x, required int y, int z = 0})
-      : _z = z,
-        super(x: x, y: y);
+  /// A point at given [x], [y] and [z] (z is zero by default).
+  const Point3i({required int x, required int y, this.z = 0})
+      : super(x: x, y: y);
 
   /// A point with coordinates given in order: x, y, z.
-  const Point3i.xyz(int x, int y, int z)
-      : _z = z,
-        super(x: x, y: y);
+  const Point3i.xyz(int x, int y, this.z) : super(x: x, y: y);
 
   /// A point at the origin (0, 0, 0).
   const Point3i.origin()
-      : _z = 0,
+      : z = 0,
         super.origin();
 
   /// A point from [coords] given in order [x], [y], [z].
@@ -657,10 +677,8 @@ class Point3i extends Point2i {
   static const PointFactory<Point3i> geometry =
       CastingPointFactory<Point3i>(Point3i.origin());
 
-  final int _z;
-
   @override
-  List<Object?> get props => [_x, _y, _z];
+  List<Object?> get props => [x, y, z];
 
   @override
   int get coordinateDimension => 3;
@@ -675,26 +693,36 @@ class Point3i extends Point2i {
   int operator [](int i) {
     switch (i) {
       case 0:
-        return _x;
+        return x;
       case 1:
-        return _y;
+        return y;
       case 2:
-        return _z;
+        return z;
       default:
         return 0;
     }
   }
 
   @override
-  int get z => _z;
+  final int z;
 
   @override
-  Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) =>
+  Point3i copyWith({num? x, num? y, num? z, num? m}) => Point3i(
+        x: x?.round() ?? this.x,
+        y: y?.round() ?? this.y,
+        z: z?.round() ?? this.z,
+      );
+
+  @override
+  Point3i newWith({num x = 0.0, num y = 0.0, num? z, num? m}) =>
       Point3i(x: x.round(), y: y.round(), z: z?.round() ?? 0);
 
   @override
-  Point newFrom(Iterable<num> coords, {int? offset, int? length}) {
+  Point3i newFrom(Iterable<num> coords, {int? offset, int? length}) {
     CoordinateFactory.checkCoords(3, coords, offset: offset, length: length);
     return Point3i.from(coords, offset: offset);
   }
+
+  @override
+  Point3i project(TransformPoint transform) => transform(this);
 }

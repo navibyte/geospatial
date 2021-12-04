@@ -34,4 +34,8 @@ class FeatureItems<T extends Feature> extends FeatureCollection<T>
 
   @override
   Bounds get bounds => collection.bounds;
+
+  @override
+  FeatureItems<T> project(TransformPoint transform) =>
+      FeatureItems(collection: collection.project(transform), meta: meta);
 }

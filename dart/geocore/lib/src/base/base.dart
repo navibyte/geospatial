@@ -28,3 +28,4 @@ part 'point_wrapper.dart';
 part 'point.dart';
 part 'polygon.dart';
 part 'temporal.dart';
+part 'transform.dart';
