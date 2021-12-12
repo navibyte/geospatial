@@ -183,6 +183,27 @@ abstract class Point<C extends num> extends Geometry
   Point project(TransformPoint transform);
 }
 
+/// A read-only cartesian (or projected) point with coordinate value getters.
+///
+/// Coordinate values of type [C] are either `num` (allowing `double` or `int`),
+/// `double` or `int`.
+abstract class CartesianPoint<C extends num> extends Point<C> {
+  /// Default `const` constructor to allow extending this abstract class.
+  const CartesianPoint();
+
+  @override
+  CartesianPoint copyWith({num? x, num? y, num? z, num? m});
+
+  @override
+  CartesianPoint newWith({num x = 0.0, num y = 0.0, num? z, num? m});
+
+  @override
+  CartesianPoint newFrom(Iterable<num> coords, {int? offset, int? length});
+
+  @override
+  CartesianPoint project(TransformPoint transform);
+}
+
 /// A private implementation for an empty point with coordinate zero values.
 /// The implementation may change in future.
 @immutable

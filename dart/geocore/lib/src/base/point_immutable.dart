@@ -16,7 +16,7 @@ part of 'base.dart';
 
 /// An immutable point with X and Y as num values.
 @immutable
-class Point2 extends Point<num> with EquatableMixin {
+class Point2 extends CartesianPoint<num> with EquatableMixin {
   /// A point at given [x] and [y].
   const Point2({required this.x, required this.y});
 
@@ -502,7 +502,7 @@ class Point3m extends Point3 {
 
 /// An immutable point with X and Y as integer values.
 @immutable
-class Point2i extends Point<int> with EquatableMixin {
+class Point2i extends CartesianPoint<int> with EquatableMixin {
   /// A point at given [x] and [y].
   const Point2i({required this.x, required this.y});
 

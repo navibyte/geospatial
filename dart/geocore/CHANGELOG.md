@@ -12,6 +12,7 @@
 - Initial support and abstractions for [Coordinate transformations on core classes and reading datasource #15](https://github.com/navibyte/geospatial/issues/15)
 - [Test point equality in 2D or 3D by tolerance in Point class #47](https://github.com/navibyte/geospatial/issues/47)
 - [Check if point series is closed by tolerance #48](https://github.com/navibyte/geospatial/issues/48)
+- [Add CartesianPoint to the Point-class hierarchy #54](https://github.com/navibyte/geospatial/issues/54)
 
 🛠 Refactoring:
 - [Refactor coordinate value members of immutable Point classes #44](https://github.com/navibyte/geospatial/issues/44)
