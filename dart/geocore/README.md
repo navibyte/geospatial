@@ -31,19 +31,19 @@ the samples of the Wikipedia source):
 Geometry    | Shape       | Samples to create instances
 ----------- | ----------- | ---------------------------
 Point       | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_Point.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_Point.svg"></a> | `Point2(x: 30.0, y: 10.0)`<br>`Point2.from([30.0, 10.0])`<br>`Point2.parse('30 10')`
-LineString  | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_LineString.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_LineString.svg"></a> | `LineString.parse('30 10, 10 30, 40 40', Point2.geometry)`
-Polygon     | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_Polygon.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_Polygon.svg"></a> | `Polygon.parse('(30 10, 40 40, 20 40, 10 20, 30 10)', Point2.geometry)`
-Polygon (with a hole) | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_Polygon_with_hole.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_Polygon_with_hole.svg"></a> | `Polygon.parse('(35 10, 45 45, 15 40, 10 20, 35 10), (20 30, 35 35, 30 20, 20 30)', Point2.geometry)`
+LineString  | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_LineString.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_LineString.svg"></a> | `LineString.parse('30 10, 10 30, 40 40', Point2.coordinates)`
+Polygon     | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_Polygon.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_Polygon.svg"></a> | `Polygon.parse('(30 10, 40 40, 20 40, 10 20, 30 10)', Point2.coordinates)`
+Polygon (with a hole) | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_Polygon_with_hole.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_Polygon_with_hole.svg"></a> | `Polygon.parse('(35 10, 45 45, 15 40, 10 20, 35 10), (20 30, 35 35, 30 20, 20 30)', Point2.coordinates)`
 
 Also multipart geometry classes are provided:
 
 Geometry    | Shape       | Samples to create instances
 ----------- | ----------- | ---------------------------
-MultiPoint  | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_MultiPoint.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_MultiPoint.svg"></a> | `MultiPoint.parse('10 40, 40 30, 20 20, 30 10', Point2.geometry)`
-MultiLineString  | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_MultiLineString.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_MultiLineString.svg"></a> | `MultiLineString.parse('(10 10, 20 20, 10 40), (40 40, 30 30, 40 20, 30 10)', Point2.geometry)`
-MultiPolygon | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_MultiPolygon.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_MultiPolygon.svg"></a> | `MultiPolygon.parse('((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5))', Point2.geometry)`
-MultiPolygon (with a hole) | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_MultiPolygon_with_hole.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_MultiPolygon_with_hole.svg"></a> | `MultiPolygon.parse('((40 40, 20 45, 45 30, 40 40)), ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35),(30 20, 20 15, 20 25, 30 20))', Point2.geometry)`
-GeometryCollection | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_GeometryCollection.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_GeometryCollection.svg"></a> | `GeometryCollection.from(<Geometry>[Point2i(x: 40, y: 10), LineString.make([[10, 10], [20, 20], [10, 40]], Point2i.geometry), Polygon.parse('(40 40, 20 45, 45 30, 40 40)', Point2i.geometry)])`
+MultiPoint  | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_MultiPoint.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_MultiPoint.svg"></a> | `MultiPoint.parse('10 40, 40 30, 20 20, 30 10', Point2.coordinates)`
+MultiLineString  | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_MultiLineString.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_MultiLineString.svg"></a> | `MultiLineString.parse('(10 10, 20 20, 10 40), (40 40, 30 30, 40 20, 30 10)', Point2.coordinates)`
+MultiPolygon | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_MultiPolygon.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_MultiPolygon.svg"></a> | `MultiPolygon.parse('((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5))', Point2.coordinates)`
+MultiPolygon (with a hole) | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_MultiPolygon_with_hole.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_MultiPolygon_with_hole.svg"></a> | `MultiPolygon.parse('((40 40, 20 45, 45 30, 40 40)), ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35),(30 20, 20 15, 20 25, 30 20))', Point2.coordinates)`
+GeometryCollection | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_GeometryCollection.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_GeometryCollection.svg"></a> | `GeometryCollection.from(<Geometry>[Point2i(x: 40, y: 10), LineString.make([[10, 10], [20, 20], [10, 40]], Point2i.coordinates), Polygon.parse('(40 40, 20 45, 45 30, 40 40)', Point2i.coordinates)])`
 
 Geometry types introduced above are based on the 
 [Simple Feature Access - Part 1: Common Architecture](https://www.ogc.org/standards/sfa)
@@ -128,11 +128,19 @@ measure (`m`) coordinates are optional.
 <a title="Djexplo, CC0, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Latitude_and_Longitude_of_the_Earth.svg"><img alt="Latitude and Longitude of the Earth" src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/coordinates/geographic/Latitude_and_Longitude_of_the_Earth.svg"></a>
 
 Class        | Coordinates   | lon | lat | elev | m 
+             |               | (x) | (y) | (z)  | m 
 ------------ | ------------- | --- | --- | ---- | -
 `GeoPoint2`  | `double`      | +   | +   |      |  
 `GeoPoint2m` | `double`      | +   | +   |      | + 
 `GeoPoint3`  | `double`      | +   | +   | +    |  
 `GeoPoint3m` | `double`      | +   | +   | +    | + 
+
+In the context of this package geographic coordinate axes are related with axes
+defined in the base `Point`-class: 
+
+* Longitude: `lon` == `x`
+* Latitude: `lat` == `y`
+* Elevation: `elev` == `z`
 
 See below how to create `GeoPoint3m` instances (other classes in similar ways):
 
@@ -182,14 +190,14 @@ a multi point, a vertex array or any any other collection for points.
     ],
     // This is `PointFactory` that converts `Iterable<num>` to a point instance,
     // in this example using a factory creating `Point3` instances.
-    Point3.geometry,
+    Point3.coordinates,
   );
 
   // Parsing a point series of `GeoPoint` from WKT compatible text with
   // `GeoPoint3` as a concrete point class.
   PointSeries<GeoPoint>.parse(
     '10.0 11.0 12.0, 20.0 21.0 22.0, 30.0 31.0 32.0',
-    GeoPoint3.geometry,
+    GeoPoint3.coordinates,
   );
 ```
 
@@ -214,7 +222,7 @@ Or below are examples of more direct ways to construct line strings:
       [20.0, 21.0, 22.0, 5.2],
       [30.0, 31.0, 32.0, 5.3],
     ],
-    Point3m.geometry,
+    Point3m.coordinates,
   );
 
   // Using the WKT factory produces the same result as the previous sample.
@@ -225,7 +233,7 @@ Or below are examples of more direct ways to construct line strings:
   // Also this sample, parsing from WKT compatible text, gives the same result.
   LineString.parse(
     '10.0 11.0 12.0 5.1, 20.0 21.0 22.0 5.2, 30.0 31.0 32.0 5.3',
-    Point3m.geometry,
+    Point3m.coordinates,
   );
 ```
 
@@ -260,13 +268,13 @@ Other ways to construct polygons are familiar from previous samples:
         [20, 30]
       ],
     ],
-    GeoPoint2.geometry,
+    GeoPoint2.coordinates,
   );
 
   // The same polygon geometry as above, but parsed from a WKT compatible text.
   Polygon.parse(
     '(35 10, 45 45, 15 40, 10 20, 35 10) (20 30, 35 35, 30 20, 20 30)',
-    GeoPoint2.geometry,
+    GeoPoint2.coordinates,
   );
 ```
 
@@ -277,19 +285,19 @@ in similar ways described already for other geometries. Also parsed from text:
 
 ```dart
   // A multi point of `GeoPoint2` with four lon-lat points.
-  MultiPoint.parse('10 40, 40 30, 20 20, 30 10', GeoPoint2.geometry);
+  MultiPoint.parse('10 40, 40 30, 20 20, 30 10', GeoPoint2.coordinates);
 
   // A multi line string of `Point2` with two line strings.
   MultiLineString.parse(
     '(10 10, 20 20, 10 40), (40 40, 30 30, 40 20, 30 10)',
-    Point2.geometry,
+    Point2.coordinates,
   );
 
   // A multi polygon of `GeoPoint2` with two polygon (both with exterior
   // boundary without holes).
   MultiPolygon.parse(
     '((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5))',
-    GeoPoint2.geometry,
+    GeoPoint2.coordinates,
   );
 ```
 
@@ -308,10 +316,10 @@ There is also `GeometryCollection`:
         [20, 20],
         [10, 40]
       ],
-      Point2.geometry,
+      Point2.coordinates,
     ),
     // A polygon parsed from WKT compatible text.
-    Polygon.parse('(40 40, 20 45, 45 30, 40 40)', Point2.geometry)
+    Polygon.parse('(40 40, 20 45, 45 30, 40 40)', Point2.coordinates)
   ]);
 
   // A geometry collection can also be parsed from WKT text.
@@ -342,11 +350,11 @@ Bounds samples with projected or cartesian coordinates:
       [10.0, 10.0, 10.0],
       [20.0, 20.0, 20.0]
     ],
-    Point3.geometry,
+    Point3.coordinates,
   );
 
   // Bounds (3D with measure) parsed from WKT compatible text.
-  Bounds.parse('10.0 10.0 10.0 5.0, 20.0 20.0 20.0 5.0', Point3m.geometry);
+  Bounds.parse('10.0 10.0 10.0 5.0, 20.0 20.0 20.0 5.0', Point3m.coordinates);
 ```
 
 Bounds samples with geographic coordinates:
@@ -617,11 +625,11 @@ Now this function can be used to project points and other geometries:
   Point3m.xyzm(100.0, 200.0, 50.0, 1.25).project(_sampleFixedTranslate);
 
   // The same transform function can be used to project also geometry objects.
-  LineString.parse('100.0 200.0, 400.0 500.0', Point2.geometry)
+  LineString.parse('100.0 200.0, 400.0 500.0', Point2.coordinates)
       .project(_sampleFixedTranslate);
 
   // This returns a line string that has same coordinate values as: 
-  // LineString.parse('110.0 220.0, 410.0 520.0', Point2.geometry)
+  // LineString.parse('110.0 220.0, 410.0 520.0', Point2.coordinates)
 ```
 
 Please note that currently there is no support for geospatial transformations

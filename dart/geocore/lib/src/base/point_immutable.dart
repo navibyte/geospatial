@@ -59,7 +59,7 @@ class Point2 extends Point<num> with EquatableMixin {
   /// Throws FormatException if cannot parse.
   factory Point2.parse(String text, {ParseCoords? parser}) => parser != null
       ? Point2.from(parser.call(text))
-      : parseWktPoint<Point2>(text, Point2.geometry);
+      : parseWktPoint<Point2>(text, Point2.coordinates);
 
   /// A point parsed from [text] with coordinates in order: x, y.
   ///
@@ -75,8 +75,13 @@ class Point2 extends Point<num> with EquatableMixin {
   }
 
   /// A [PointFactory] creating [Point2] instances.
-  static const PointFactory<Point2> geometry =
+  static const PointFactory<Point2> coordinates =
       CastingPointFactory<Point2>(Point2.origin());
+
+  /// A [PointFactory] creating [Point2] instances.
+  ///
+  @Deprecated('Use coordinates instead')
+  static const PointFactory<Point2> geometry = coordinates;
 
   @override
   List<Object?> get props => [x, y];
@@ -182,7 +187,7 @@ class Point2m extends Point2 {
   /// Throws FormatException if cannot parse.
   factory Point2m.parse(String text, {ParseCoords? parser}) => parser != null
       ? Point2m.from(parser.call(text))
-      : parseWktPoint<Point2m>(text, Point2m.geometry);
+      : parseWktPoint<Point2m>(text, Point2m.coordinates);
 
   /// A point parsed from [text] with coordinates in order: x, y, m.
   ///
@@ -198,8 +203,12 @@ class Point2m extends Point2 {
   }
 
   /// A [PointFactory] creating [Point2m] instances.
-  static const PointFactory<Point2m> geometry =
+  static const PointFactory<Point2m> coordinates =
       CastingPointFactory<Point2m>(Point2m.origin());
+
+  /// A [PointFactory] creating [Point2m] instances.
+  @Deprecated('Use coordinates instead')
+  static const PointFactory<Point2m> geometry = coordinates;
 
   @override
   List<Object?> get props => [x, y, m];
@@ -296,7 +305,7 @@ class Point3 extends Point2 {
   /// Throws FormatException if cannot parse.
   factory Point3.parse(String text, {ParseCoords? parser}) => parser != null
       ? Point3.from(parser.call(text))
-      : parseWktPoint<Point3>(text, Point3.geometry);
+      : parseWktPoint<Point3>(text, Point3.coordinates);
 
   /// A point parsed from [text] with coordinates in order: x, y, z.
   ///
@@ -312,8 +321,12 @@ class Point3 extends Point2 {
   }
 
   /// A [PointFactory] creating [Point3] instances.
-  static const PointFactory<Point3> geometry =
+  static const PointFactory<Point3> coordinates =
       CastingPointFactory<Point3>(Point3.origin());
+
+  /// A [PointFactory] creating [Point3] instances.
+  @Deprecated('Use coordinates instead')
+  static const PointFactory<Point3> geometry = coordinates;
 
   @override
   List<Object?> get props => [x, y, z];
@@ -414,7 +427,7 @@ class Point3m extends Point3 {
   /// Throws FormatException if cannot parse.
   factory Point3m.parse(String text, {ParseCoords? parser}) => parser != null
       ? Point3m.from(parser.call(text))
-      : parseWktPoint<Point3m>(text, Point3m.geometry);
+      : parseWktPoint<Point3m>(text, Point3m.coordinates);
 
   /// A point parsed from [text] with coordinates in order: x, y, z, m.
   ///
@@ -430,8 +443,12 @@ class Point3m extends Point3 {
   }
 
   /// A [PointFactory] creating [Point3m] instances.
-  static const PointFactory<Point3m> geometry =
+  static const PointFactory<Point3m> coordinates =
       CastingPointFactory<Point3m>(Point3m.origin());
+
+  /// A [PointFactory] creating [Point3m] instances.
+  @Deprecated('Use coordinates instead')
+  static const PointFactory<Point3m> geometry = coordinates;
 
   @override
   List<Object?> get props => [x, y, z, m];
@@ -528,7 +545,7 @@ class Point2i extends Point<int> with EquatableMixin {
   /// Throws FormatException if cannot parse.
   factory Point2i.parse(String text, {ParseCoordsInt? parser}) => parser != null
       ? Point2i.from(parser.call(text))
-      : parseWktPoint<Point2i>(text, Point2i.geometry);
+      : parseWktPoint<Point2i>(text, Point2i.coordinates);
 
   /// A point parsed from [text] with coordinates in order: x, y.
   ///
@@ -544,8 +561,12 @@ class Point2i extends Point<int> with EquatableMixin {
   }
 
   /// A [PointFactory] creating [Point2i] instances.
-  static const PointFactory<Point2i> geometry =
+  static const PointFactory<Point2i> coordinates =
       CastingPointFactory<Point2i>(Point2i.origin());
+
+  /// A [PointFactory] creating [Point2i] instances.
+  @Deprecated('Use coordinates instead')
+  static const PointFactory<Point2i> geometry = coordinates;
 
   @override
   List<Object?> get props => [x, y];
@@ -657,7 +678,7 @@ class Point3i extends Point2i {
   /// Throws FormatException if cannot parse.
   factory Point3i.parse(String text, {ParseCoordsInt? parser}) => parser != null
       ? Point3i.from(parser.call(text))
-      : parseWktPoint<Point3i>(text, Point3i.geometry);
+      : parseWktPoint<Point3i>(text, Point3i.coordinates);
 
   /// A point parsed from [text] with coordinates in order: x, y, z.
   ///
@@ -673,8 +694,12 @@ class Point3i extends Point2i {
   }
 
   /// A [PointFactory] creating [Point3i] instances.
-  static const PointFactory<Point3i> geometry =
+  static const PointFactory<Point3i> coordinates =
       CastingPointFactory<Point3i>(Point3i.origin());
+
+  /// A [PointFactory] creating [Point3i] instances.
+  @Deprecated('Use coordinates instead')
+  static const PointFactory<Point3i> geometry = coordinates;
 
   @override
   List<Object?> get props => [x, y, z];

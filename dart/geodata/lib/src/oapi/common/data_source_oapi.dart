@@ -138,7 +138,7 @@ Extent _extentFromJson(Map<String, dynamic> json) {
   Iterable<GeoBounds> allBounds;
   final bbox =
       spatialIsMap ? (spatial as Map<String, dynamic>)['bbox'] as List? : null;
-  if (bbox != null && bbox is List) {
+  if (bbox != null) {
     // by standard: "bbox" is a list of bboxes
     allBounds =
         bbox.map((dynamic e) => GeoBounds.from((e as Iterable).cast<num>()));

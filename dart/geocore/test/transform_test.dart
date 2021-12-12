@@ -127,9 +127,9 @@ void main() {
 
     test('LineString classes (with cartesian points)', () {
       expect(
-        LineString.parse('30 10, 10 30, 40 40', Point2.geometry)
+        LineString.parse('30 10, 10 30, 40 40', Point2.coordinates)
             .project(translate1),
-        LineString.parse('31 12, 11 32, 41 42', Point2.geometry),
+        LineString.parse('31 12, 11 32, 41 42', Point2.coordinates),
       );
     });
 
@@ -138,12 +138,12 @@ void main() {
         Polygon.parse(
           '(30 10 100, 40 40 110,'
           ' 20 40 120, 10 20 130, 30 10 100)',
-          Point3.geometry,
+          Point3.coordinates,
         ).project(translate1),
         Polygon.parse(
           '(31 12 103, 41 42 113,'
           ' 21 42 123, 11 22 133, 31 12 103)',
-          Point3.geometry,
+          Point3.coordinates,
         ),
       );
     });
@@ -152,11 +152,11 @@ void main() {
       expect(
         MultiPoint<GeoPoint>.parse(
           '10 40, 40 30, 20 20, 30 10',
-          GeoPoint2.geometry,
+          GeoPoint2.coordinates,
         ).project(translate1),
         MultiPoint<GeoPoint>.parse(
           '11 42, 41 32, 21 22, 31 12',
-          GeoPoint2.geometry,
+          GeoPoint2.coordinates,
         ),
       );
     });
@@ -166,12 +166,12 @@ void main() {
         MultiLineString<Point>.parse(
           '(10 10 100 5, 20 20 100 5, 10 40 100 5), '
           '(40 40 100 5, 30 30 100 5, 40 20 100 5, 30 10 100 5)',
-          GeoPoint3m.geometry,
+          GeoPoint3m.coordinates,
         ).project(translate1),
         MultiLineString<Point>.parse(
           '(11 12 103 9, 21 22 103 9, 11 42 103 9), '
           '(41 42 103 9, 31 32 103 9, 41 22 103 9, 31 12 103 9)',
-          GeoPoint3m.geometry,
+          GeoPoint3m.coordinates,
         ),
       );
     });
@@ -181,12 +181,12 @@ void main() {
         MultiPolygon<GeoPoint>.parse(
           '((30 20 10, 45 40 20, 10 40 30, 30 20 40)), '
           '((15 5 50, 40 10 60, 10 20 70, 5 10 80, 15 5 90))',
-          GeoPoint2m.geometry,
+          GeoPoint2m.coordinates,
         ).project(translate1),
         MultiPolygon<GeoPoint>.parse(
           '((31 22 14, 46 42 24, 11 42 34, 31 22 44)), '
           '((16 7 54, 41 12 64, 11 22 74, 6 12 84, 16 7 94))',
-          GeoPoint2m.geometry,
+          GeoPoint2m.coordinates,
         ),
       );
     });
@@ -197,22 +197,22 @@ void main() {
           Point2.parse('40 10'),
           LineString<Point3>.parse(
             '10 10 50, 20 20 60, 10 40 50',
-            Point3.geometry,
+            Point3.coordinates,
           ),
           Polygon<Point3m>.parse(
             '(40 40 -10 110, 20 45 -20 120, 45 30 -30 130, 40 40 -40 140)',
-            Point3m.geometry,
+            Point3m.coordinates,
           )
         ]).project(translate1),
         GeometryCollection.from(<Geometry>[
           Point2.parse('41 12'),
           LineString<Point3>.parse(
             '11 12 53, 21 22 63, 11 42 53',
-            Point3.geometry,
+            Point3.coordinates,
           ),
           Polygon<Point3m>.parse(
             '(41 42 -7 114, 21 47 -17 124, 46 32 -27 134, 41 42 -37 144)',
-            Point3m.geometry,
+            Point3m.coordinates,
           )
         ]),
       );

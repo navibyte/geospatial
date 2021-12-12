@@ -146,14 +146,15 @@ void main() {
           [10.0, 30.0],
           [40.0, 40.0]
         ],
-        Point2.geometry,
+        Point2.coordinates,
       );
       expect(
           wktProjected.parse('LINESTRING (30 10, 10 30, 40 40)'), lineString);
       expect(
-          LineString<Point>.parse('(30 10), (10 30), (40 40)', Point2.geometry),
+          LineString<Point>.parse(
+              '(30 10), (10 30), (40 40)', Point2.coordinates),
           lineString);
-      expect(LineString<Point>.parse('30 10, 10 30, 40 40', Point2.geometry),
+      expect(LineString<Point>.parse('30 10, 10 30, 40 40', Point2.coordinates),
           lineString);
 
       // Same as previous but container point type more specific.
@@ -164,13 +165,14 @@ void main() {
           [10.0, 30.0],
           [40.0, 40.0]
         ],
-        GeoPoint2.geometry,
+        GeoPoint2.coordinates,
       );
       expect(wktGeographic.parse<GeoPoint2>('LINESTRING (30 10, 10 30, 40 40)'),
           lineString2);
-      expect(LineString.parse('(30 10), (10 30), (40 40)', GeoPoint2.geometry),
+      expect(
+          LineString.parse('(30 10), (10 30), (40 40)', GeoPoint2.coordinates),
           lineString2);
-      expect(LineString.parse('30 10, 10 30, 40 40', GeoPoint2.geometry),
+      expect(LineString.parse('30 10, 10 30, 40 40', GeoPoint2.coordinates),
           lineString2);
 
       // POLYGON ((30 10 100, 40 40 110, 20 40 120, 10 20 130, 30 10 100))
@@ -186,7 +188,7 @@ void main() {
             [30.0, 10.0, 100.0]
           ],
         ],
-        Point3.geometry,
+        Point3.coordinates,
       );
       expect(
           wktProjected.parse<Point3>('POLYGON ((30 10 100, 40 40 110,'
@@ -196,7 +198,7 @@ void main() {
           Polygon.parse(
               '(30 10 100, 40 40 110,'
               ' 20 40 120, 10 20 130, 30 10 100)',
-              Point3.geometry),
+              Point3.coordinates),
           polygon1);
 
       // POLYGON ((30 10 5, 40 40 6, 20 40 7, 10 20 8, 30 10 5))
@@ -212,7 +214,7 @@ void main() {
             [30.0, 10.0, 5.0]
           ],
         ],
-        Point2m.geometry,
+        Point2m.coordinates,
       );
       expect(
           wktProjected.parse<Point2>('POLYGON M ((30 10 5, 40 40 6,'
@@ -222,7 +224,7 @@ void main() {
           Polygon<Point2>.parse(
               '(30 10 5, 40 40 6,'
               ' 20 40 7, 10 20 8, 30 10 5)',
-              Point2m.geometry),
+              Point2m.coordinates),
           polygon2);
 
       // POLYGON ((30 10 100 5, 40 40 110 6, 20 40 120 7,
@@ -239,7 +241,7 @@ void main() {
             [30.0, 10.0, 100.0, 5.0]
           ],
         ],
-        GeoPoint3m.geometry,
+        GeoPoint3m.coordinates,
       );
       expect(
           wktGeographic.parse('POLYGON ZM ((30 10 100 5, 40 40 110 6,'
@@ -249,7 +251,7 @@ void main() {
           Polygon<GeoPoint>.parse(
               '(30 10 100 5, 40 40 110 6,'
               ' 20 40 120 7, 10 20 130 8, 30 10 100 5)',
-              GeoPoint3m.geometry),
+              GeoPoint3m.coordinates),
           polygon3);
 
       // POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10),
@@ -271,7 +273,7 @@ void main() {
             [20, 30]
           ],
         ],
-        GeoPoint2.geometry,
+        GeoPoint2.coordinates,
       );
       expect(
           wktGeographic.parse<GeoPoint2>('POLYGON ((35 10, 45 45, 15 40, '
@@ -281,7 +283,7 @@ void main() {
           Polygon.parse(
               '(35 10, 45 45, 15 40, '
               '10 20, 35 10) (20 30, 35 35, 30 20, 20 30)',
-              GeoPoint2.geometry),
+              GeoPoint2.coordinates),
           polygon4);
 
       // MULTIPOINT ((10 40), (40 30), (20 20), (30 10))
@@ -294,7 +296,7 @@ void main() {
           [20, 20],
           [30, 10]
         ],
-        GeoPoint2.geometry,
+        GeoPoint2.coordinates,
       );
       expect(
           wktGeographic.parse('MULTIPOINT ((10 40), (40 30), '
@@ -302,13 +304,13 @@ void main() {
           multiPoint1);
       expect(
           MultiPoint<GeoPoint>.parse(
-              '(10 40), (40 30), (20 20), (30 10)', GeoPoint2.geometry),
+              '(10 40), (40 30), (20 20), (30 10)', GeoPoint2.coordinates),
           multiPoint1);
       expect(wktGeographic.parse('MULTIPOINT (10 40, 40 30, 20 20, 30 10)'),
           multiPoint1);
       expect(
           MultiPoint<GeoPoint>.parse(
-              '10 40, 40 30, 20 20, 30 10', GeoPoint2.geometry),
+              '10 40, 40 30, 20 20, 30 10', GeoPoint2.coordinates),
           multiPoint1);
 
       // MULTILINESTRING ((10 10, 20 20, 10 40),
@@ -328,7 +330,7 @@ void main() {
             [30.0, 10.0]
           ],
         ],
-        Point2.geometry,
+        Point2.coordinates,
       );
       expect(
           wktProjected.parse('MULTILINESTRING ((10 10, 20 20, 10 40), '
@@ -338,7 +340,7 @@ void main() {
           MultiLineString<Point>.parse(
               '(10 10, 20 20, 10 40), '
               '(40 40, 30 30, 40 20, 30 10)',
-              Point2.geometry),
+              Point2.coordinates),
           multiLineString1);
 
       // MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)),
@@ -364,7 +366,7 @@ void main() {
             ],
           ],
         ],
-        GeoPoint2.geometry,
+        GeoPoint2.coordinates,
       );
       expect(
           wktGeographic.parse('MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)), '
@@ -374,7 +376,7 @@ void main() {
           MultiPolygon<GeoPoint>.parse(
               '((30 20, 45 40, 10 40, 30 20)), '
               '((15 5, 40 10, 10 20, 5 10, 15 5))',
-              GeoPoint2.geometry),
+              GeoPoint2.coordinates),
           multiPolygon1);
 
       // MULTIPOLYGON (((40 40, 20 45, 45 30, 40 40)),
@@ -408,7 +410,7 @@ void main() {
             ],
           ],
         ],
-        GeoPoint2.geometry,
+        GeoPoint2.coordinates,
       );
       expect(
           wktGeographic
@@ -421,7 +423,7 @@ void main() {
               '((40 40, 20 45, 45 30, 40 40)), '
               '((20 35, 10 30, 10 10, 30 5, 45 20, 20 35), '
               '(30 20, 20 15, 20 25, 30 20))',
-              GeoPoint2.geometry),
+              GeoPoint2.coordinates),
           multiPolygon2);
 
       // GEOMETRYCOLLECTION(POINT(4 6),LINESTRING(4 6,7 10))
@@ -433,7 +435,7 @@ void main() {
             [4.0, 6.0],
             [7.0, 10.0]
           ],
-          Point2.geometry,
+          Point2.coordinates,
         )
       ]);
       expect(
@@ -486,9 +488,9 @@ void main() {
       '''),
           GeometryCollection.from(<Geometry>[
             Point2.parse('40 10'),
-            LineString<Point2>.parse('10 10, 20 20, 10 40', Point2.geometry),
+            LineString<Point2>.parse('10 10, 20 20, 10 40', Point2.coordinates),
             Polygon<Point2>.parse(
-                '(40 40, 20 45, 45 30, 40 40)', Point2.geometry)
+                '(40 40, 20 45, 45 30, 40 40)', Point2.coordinates)
           ]));
     });
 

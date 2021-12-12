@@ -157,14 +157,14 @@ void _readmeIntro() {
     ],
     // This is `PointFactory` that converts `Iterable<num>` to a point instance,
     // in this example using a factory creating `Point3` instances.
-    Point3.geometry,
+    Point3.coordinates,
   );
 
   // Parsing a point series of `GeoPoint` from WKT compatible text with
   // `GeoPoint3` as a concrete point class.
   PointSeries<GeoPoint>.parse(
     '10.0 11.0 12.0, 20.0 21.0 22.0, 30.0 31.0 32.0',
-    GeoPoint3.geometry,
+    GeoPoint3.coordinates,
   );
 
   // -----------
@@ -176,7 +176,7 @@ void _readmeIntro() {
       [20.0, 21.0, 22.0, 5.2],
       [30.0, 31.0, 32.0, 5.3],
     ],
-    Point3m.geometry,
+    Point3m.coordinates,
   );
 
   // Using the WKT factory produces the same result as the previous sample.
@@ -187,7 +187,7 @@ void _readmeIntro() {
   // Also this sample, parsing from WKT compatible text, gives the same result.
   LineString.parse(
     '10.0 11.0 12.0 5.1, 20.0 21.0 22.0 5.2, 30.0 31.0 32.0 5.3',
-    Point3m.geometry,
+    Point3m.coordinates,
   );
 
   // -----------
@@ -211,31 +211,31 @@ void _readmeIntro() {
         [20, 30]
       ],
     ],
-    GeoPoint2.geometry,
+    GeoPoint2.coordinates,
   );
 
   // The same polygon geometry as above, but parsed from a WKT compatible text.
   Polygon.parse(
     '(35 10, 45 45, 15 40, 10 20, 35 10) (20 30, 35 35, 30 20, 20 30)',
-    GeoPoint2.geometry,
+    GeoPoint2.coordinates,
   );
 
   // -----------
 
   // A multi point of `GeoPoint2` with four lon-lat points.
-  MultiPoint.parse('10 40, 40 30, 20 20, 30 10', GeoPoint2.geometry);
+  MultiPoint.parse('10 40, 40 30, 20 20, 30 10', GeoPoint2.coordinates);
 
   // A multi line string of `Point2` with two line strings.
   MultiLineString.parse(
     '(10 10, 20 20, 10 40), (40 40, 30 30, 40 20, 30 10)',
-    Point2.geometry,
+    Point2.coordinates,
   );
 
   // A multi polygon of `GeoPoint2` with two polygon (both with exterior
   // boundary without holes).
   MultiPolygon.parse(
     '((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5))',
-    GeoPoint2.geometry,
+    GeoPoint2.coordinates,
   );
 
   // -----------
@@ -252,10 +252,10 @@ void _readmeIntro() {
         [20, 20],
         [10, 40]
       ],
-      Point2.geometry,
+      Point2.coordinates,
     ),
     // A polygon parsed from WKT compatible text.
-    Polygon.parse('(40 40, 20 45, 45 30, 40 40)', Point2.geometry)
+    Polygon.parse('(40 40, 20 45, 45 30, 40 40)', Point2.coordinates)
   ]);
 
   // A geometry collection can also be parsed from WKT text.
@@ -279,11 +279,11 @@ void _readmeIntro() {
       [10.0, 10.0, 10.0],
       [20.0, 20.0, 20.0]
     ],
-    Point3.geometry,
+    Point3.coordinates,
   );
 
   // Bounds (3D with measure) parsed from WKT compatible text.
-  Bounds.parse('10.0 10.0 10.0 5.0, 20.0 20.0 20.0 5.0', Point3m.geometry);
+  Bounds.parse('10.0 10.0 10.0 5.0, 20.0 20.0 20.0 5.0', Point3m.coordinates);
 
   // -----------
 
@@ -377,7 +377,7 @@ void _readmeIntro() {
   Point3m.xyzm(100.0, 200.0, 50.0, 1.25).project(_sampleFixedTranslate);
 
   // The same transform function can be used to project also geometry objects.
-  LineString.parse('100.0 200.0, 400.0 500.0', Point2.geometry)
+  LineString.parse('100.0 200.0, 400.0 500.0', Point2.coordinates)
       .project(_sampleFixedTranslate);
 
   // This returns a line string that has same coordinate values as:

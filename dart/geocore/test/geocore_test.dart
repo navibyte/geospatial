@@ -104,12 +104,12 @@ void main() {
           PointSeries.make([
             [25.1, 53.1],
             [25.2, 53.2]
-          ], GeoPoint2.geometry),
+          ], GeoPoint2.coordinates),
           expected);
-      expect(PointSeries.parse('25.1 53.1, 25.2 53.2', GeoPoint2.geometry),
+      expect(PointSeries.parse('25.1 53.1, 25.2 53.2', GeoPoint2.coordinates),
           expected);
       expect(
-          PointSeries.parse('25.1, 53.1, 25.2, 53.2', GeoPoint2.geometry,
+          PointSeries.parse('25.1, 53.1, 25.2, 53.2', GeoPoint2.coordinates,
               parser: _parseCoordsListTest(2)),
           expected);
     });
@@ -120,14 +120,15 @@ void main() {
           MultiPoint.make([
             [25.1, 53.1],
             [25.2, 53.2]
-          ], GeoPoint2.geometry),
+          ], GeoPoint2.coordinates),
           expected);
-      expect(MultiPoint.parse('25.1 53.1, 25.2 53.2', GeoPoint2.geometry),
-          expected);
-      expect(MultiPoint.parse('(25.1 53.1), (25.2 53.2)', GeoPoint2.geometry),
+      expect(MultiPoint.parse('25.1 53.1, 25.2 53.2', GeoPoint2.coordinates),
           expected);
       expect(
-          MultiPoint.parse('25.1, 53.1, 25.2, 53.2', GeoPoint2.geometry,
+          MultiPoint.parse('(25.1 53.1), (25.2 53.2)', GeoPoint2.coordinates),
+          expected);
+      expect(
+          MultiPoint.parse('25.1, 53.1, 25.2, 53.2', GeoPoint2.coordinates,
               parser: _parseCoordsListTest(2)),
           expected);
     });

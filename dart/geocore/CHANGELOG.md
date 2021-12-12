@@ -1,6 +1,6 @@
 ## 0.8.0
 
-(beta-release 0.8.0 currently under development at version 0.8.0-a.2)
+(beta-release 0.8.0 currently under development at version 0.8.0-a.3)
 
 ⚠️ Breaking changes:
 - [Refactor Feature class inheritance and types of id and properties members #39](https://github.com/navibyte/geospatial/issues/39)
@@ -16,6 +16,7 @@
 🛠 Refactoring:
 - [Refactor coordinate value members of immutable Point classes #44](https://github.com/navibyte/geospatial/issues/44)
 - [Elev and m coordinate values as default in some GeoPoint classes #45](https://github.com/navibyte/geospatial/issues/45)
+- [Rename point factories of Point classes #49](https://github.com/navibyte/geospatial/issues/49)
 
 ## 0.7.2
 

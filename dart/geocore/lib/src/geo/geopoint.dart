@@ -117,7 +117,7 @@ class GeoPoint2 extends GeoPoint with EquatableMixin {
   /// Throws FormatException if cannot parse.
   factory GeoPoint2.parse(String text, {ParseCoords? parser}) => parser != null
       ? GeoPoint2.from(parser.call(text))
-      : parseWktPoint<GeoPoint2>(text, GeoPoint2.geometry);
+      : parseWktPoint<GeoPoint2>(text, GeoPoint2.coordinates);
 
   /// A point parsed from [text] with coordinates in order: lon, lat.
   ///
@@ -133,8 +133,12 @@ class GeoPoint2 extends GeoPoint with EquatableMixin {
   }
 
   /// A [PointFactory] creating [GeoPoint2] instances.
-  static const PointFactory<GeoPoint2> geometry =
+  static const PointFactory<GeoPoint2> coordinates =
       CastingPointFactory<GeoPoint2>(GeoPoint2.origin());
+
+  /// A [PointFactory] creating [GeoPoint2] instances.
+  @Deprecated('Use coordinates instead')
+  static const PointFactory<GeoPoint2> geometry = coordinates;
 
   @override
   List<Object?> get props => [lon, lat];
@@ -262,7 +266,7 @@ class GeoPoint2m extends GeoPoint2 {
   /// Throws FormatException if cannot parse.
   factory GeoPoint2m.parse(String text, {ParseCoords? parser}) => parser != null
       ? GeoPoint2m.from(parser.call(text))
-      : parseWktPoint<GeoPoint2m>(text, GeoPoint2m.geometry);
+      : parseWktPoint<GeoPoint2m>(text, GeoPoint2m.coordinates);
 
   /// A point parsed from [text] with coordinates in order: lon, lat, m.
   ///
@@ -277,9 +281,13 @@ class GeoPoint2m extends GeoPoint2 {
     }
   }
 
-  /// A [PointFactory] creating [GeoPoint2m] instances.
-  static const PointFactory<GeoPoint2m> geometry =
+ /// A [PointFactory] creating [GeoPoint2m] instances.
+  static const PointFactory<GeoPoint2m> coordinates =
       CastingPointFactory<GeoPoint2m>(GeoPoint2m.origin());
+
+  /// A [PointFactory] creating [GeoPoint2m] instances.
+  @Deprecated('Use coordinates instead')
+  static const PointFactory<GeoPoint2m> geometry = coordinates;
 
   @override
   List<Object?> get props => [lon, lat, m];
@@ -384,7 +392,7 @@ class GeoPoint3 extends GeoPoint2 {
   /// Throws FormatException if cannot parse.
   factory GeoPoint3.parse(String text, {ParseCoords? parser}) => parser != null
       ? GeoPoint3.from(parser.call(text))
-      : parseWktPoint<GeoPoint3>(text, GeoPoint3.geometry);
+      : parseWktPoint<GeoPoint3>(text, GeoPoint3.coordinates);
 
   /// A point parsed from [text] with coordinates in order: lon, lat, elev.
   ///
@@ -400,8 +408,12 @@ class GeoPoint3 extends GeoPoint2 {
   }
 
   /// A [PointFactory] creating [GeoPoint3] instances.
-  static const PointFactory<GeoPoint3> geometry =
+  static const PointFactory<GeoPoint3> coordinates =
       CastingPointFactory<GeoPoint3>(GeoPoint3.origin());
+
+  /// A [PointFactory] creating [GeoPoint3] instances.
+  @Deprecated('Use coordinates instead')
+  static const PointFactory<GeoPoint3> geometry = coordinates;
 
   @override
   List<Object?> get props => [lon, lat, elev];
@@ -522,7 +534,7 @@ class GeoPoint3m extends GeoPoint3 {
   /// Throws FormatException if cannot parse.
   factory GeoPoint3m.parse(String text, {ParseCoords? parser}) => parser != null
       ? GeoPoint3m.from(parser.call(text))
-      : parseWktPoint<GeoPoint3m>(text, GeoPoint3m.geometry);
+      : parseWktPoint<GeoPoint3m>(text, GeoPoint3m.coordinates);
 
   /// A point parsed from [text] with coordinates in order: lon, lat, elev, m.
   ///
@@ -538,8 +550,12 @@ class GeoPoint3m extends GeoPoint3 {
   }
 
   /// A [PointFactory] creating [GeoPoint3m] instances.
-  static const PointFactory<GeoPoint3m> geometry =
+  static const PointFactory<GeoPoint3m> coordinates =
       CastingPointFactory<GeoPoint3m>(GeoPoint3m.origin());
+
+  /// A [PointFactory] creating [GeoPoint3m] instances.
+  @Deprecated('Use coordinates instead')
+  static const PointFactory<GeoPoint3m> geometry = coordinates;
 
   @override
   List<Object?> get props => [lon, lat, elev, m];
