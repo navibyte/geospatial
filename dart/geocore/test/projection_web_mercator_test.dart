@@ -26,7 +26,9 @@ void main() {
         _expectProjected(point2.project(toWgs84), geoPoint2);
         _expectProjected(pointWrapper.project(toWgs84), geoPoint2);
         _expectProjected(
-            point2.project(toWgs84), GeoPoint3(lon: coords[0], lat: coords[1]));
+          point2.project(toWgs84),
+          GeoPoint3(lon: coords[0], lat: coords[1]),
+        );
         _expectProjected(
           Point3(x: coords[2], y: coords[3], z: 30.0).project(toWgs84),
           GeoPoint2(lon: coords[0], lat: coords[1]),

@@ -109,7 +109,7 @@ class LineString<T extends Point> extends Geometry with EquatableMixin {
   /// When [factory] is provided, then target points of [R] are created using
   /// that as a point factory. Otherwise [project] uses it's own factory.
   LineString<R> project<R extends Point>(
-    ProjectPoint<T, R> project, {
+    ProjectPoint<R> project, {
     bool lazy = false,
     PointFactory<R>? to,
   }) =>

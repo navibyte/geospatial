@@ -58,13 +58,6 @@ abstract class GeoPoint extends Point<double> {
 
   @override
   GeoPoint transform(TransformPoint transform);
-
-  @override
-  R project<R extends Point>(
-    ProjectPoint<GeoPoint, R> project, {
-    PointFactory<R>? to,
-  }) =>
-      project(this, to: to);
 }
 
 /// An immutable geographic position with longitude and latitude.

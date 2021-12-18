@@ -187,9 +187,10 @@ abstract class Point<C extends num> extends Geometry
   /// When [to] is provided, then target points of [R] are created using
   /// that as a point factory. Otherwise [project] uses it's own factory.
   R project<R extends Point>(
-    ProjectPoint<Point, R> project, {
+    ProjectPoint<R> project, {
     PointFactory<R>? to,
-  });
+  }) =>
+      project(this, to: to);
 }
 
 /// A read-only cartesian (or projected) point with coordinate value getters.
@@ -211,13 +212,6 @@ abstract class CartesianPoint<C extends num> extends Point<C> {
 
   @override
   CartesianPoint transform(TransformPoint transform);
-
-  @override
-  R project<R extends Point>(
-    ProjectPoint<CartesianPoint, R> project, {
-    PointFactory<R>? to,
-  }) =>
-      project(this, to: to);
 }
 
 /// A private implementation for an empty point with coordinate zero values.
@@ -270,7 +264,7 @@ class _PointEmpty<C extends num> extends Point<C> with EquatableMixin {
 
   @override
   R project<R extends Point>(
-    ProjectPoint<Point, R> project, {
+    ProjectPoint<R> project, {
     PointFactory<R>? to,
   }) =>
       throw const FormatException('Cannot project empty point.');

@@ -97,7 +97,7 @@ abstract class PointSeries<T extends Point>
   /// When [to] is provided, then target points of [R] are created using
   /// that as a point factory. Otherwise [project] uses it's own factory.
   PointSeries<R> project<R extends Point>(
-    ProjectPoint<T, R> project, {
+    ProjectPoint<R> project, {
     bool lazy = false,
     PointFactory<R>? to,
   });
@@ -185,7 +185,7 @@ class _PointSeriesView<T extends Point>
 
   @override
   PointSeries<R> project<R extends Point>(
-    ProjectPoint<T, R> project, {
+    ProjectPoint<R> project, {
     bool lazy = false,
     PointFactory<R>? to,
   }) {

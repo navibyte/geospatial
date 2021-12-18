@@ -29,13 +29,13 @@ import 'geopoint.dart';
 /// Other coordinates, if available in the source and if expected to target
 /// coordinates, are then copied (`elev` => `z` and `m` => `m`) without any
 /// changes.
-ProjectPoint<GeoPoint, R> wgs84ToWebMercator<R extends CartesianPoint>(
+ProjectPoint<R> wgs84ToWebMercator<R extends CartesianPoint>(
   PointFactory<R> factory,
 ) =>
-    (GeoPoint source, {PointFactory<R>? to}) {
+    (Point source, {PointFactory<R>? to}) {
       // source coordinates
-      final lon = source.lon;
-      final lat = source.lat;
+      final lon = source.x; // longitude is at x 
+      final lat = source.y; // latitude is at y
 
       // project (lon, lat) to (x, y)
       final x = lon * 20037508.34 / 180.0;
@@ -64,10 +64,10 @@ ProjectPoint<GeoPoint, R> wgs84ToWebMercator<R extends CartesianPoint>(
 /// Other coordinates, if available in the source and if expected to target
 /// coordinates, are then copied  (`z` => `elev` and `m` => `m`) without any
 /// changes.
-ProjectPoint<CartesianPoint, R> webMercatorToWgs84<R extends GeoPoint>(
+ProjectPoint<R> webMercatorToWgs84<R extends GeoPoint>(
   PointFactory<R> factory,
 ) =>
-    (CartesianPoint source, {PointFactory<R>? to}) {
+    (Point source, {PointFactory<R>? to}) {
       // source coordinates
       final x = source.x;
       final y = source.y;
