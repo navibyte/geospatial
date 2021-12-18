@@ -41,12 +41,25 @@ abstract class Geometry extends Bounded {
   /// True if this geometry is NOT considered empty without data or coordinates.
   bool get isNotEmpty => !isEmpty;
 
-  /// Returns a new geometry with all points projected using [transform].
+  /// Returns a new geometry with all points transformed using [transform].
   ///
-  /// The projected geometry object must be of the same geometry type with this
-  /// object.
+  /// The transformed geometry object must be of the same geometry type with
+  /// this object.
   @override
-  Geometry project(TransformPoint transform);
+  Geometry transform(TransformPoint transform);
+
+/* 
+  todo: how to define this right? 
+
+  /// Returns a new geometry with all points projected using [project] function.
+  ///
+  /// When [factory] is provided, then target points of [R] are created using
+  /// that as a point factory. Otherwise [project] uses it's own factory.
+  Geometry project<R extends Point>(
+    ProjectPoint<Point, R> project, [
+    PointFactory<R>? factory,
+  ]);
+*/
 }
 
 /// An empty (non-existent) geometry as an private implementation.
@@ -68,7 +81,16 @@ class _EmptyGeometry extends Geometry with EquatableMixin {
   Bounds get bounds => Bounds.empty();
 
   @override
-  Geometry project(TransformPoint transform) => this;
+  Geometry transform(TransformPoint transform) => this;
+
+/*
+  @override
+  Geometry project<R extends Point>(
+    ProjectPoint<Point, R> project, [
+    PointFactory<R>? factory,
+  ]) =>
+      throw const FormatException('Cannot project empty geometry.');
+*/
 
   @override
   List<Object?> get props => [];

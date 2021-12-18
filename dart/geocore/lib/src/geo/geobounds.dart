@@ -119,8 +119,8 @@ class GeoBounds extends BoundsBase<GeoPoint> with EquatableMixin {
   }
 
   @override
-  GeoBounds project(TransformPoint transform) => GeoBounds.of(
-        min: min.project(transform),
-        max: max.project(transform),
+  GeoBounds transform(TransformPoint transform) => GeoBounds.of(
+        min: min.transform(transform),
+        max: max.transform(transform),
       );
 }

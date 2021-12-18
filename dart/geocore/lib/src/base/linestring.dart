@@ -101,8 +101,19 @@ class LineString<T extends Point> extends Geometry with EquatableMixin {
   Bounds get bounds => chain.bounds;
 
   @override
-  LineString<T> project(TransformPoint transform) =>
-      LineString(chain.project(transform, lazy: false), type: type);
+  LineString<T> transform(TransformPoint transform) =>
+      LineString(chain.transform(transform, lazy: false), type: type);
+
+  /// Returns a new line string with points projected using [project] function.
+  ///
+  /// When [factory] is provided, then target points of [R] are created using
+  /// that as a point factory. Otherwise [project] uses it's own factory.
+  LineString<R> project<R extends Point>(
+    ProjectPoint<T, R> project, {
+    bool lazy = false,
+    PointFactory<R>? to,
+  }) =>
+      LineString(chain.project(project, lazy: false, to: to), type: type);
 
   @override
   List<Object?> get props => [type, chain];

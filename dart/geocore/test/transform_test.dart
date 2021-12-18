@@ -20,62 +20,63 @@ void main() {
   // configure Equatable to apply toString() default impls
   EquatableConfig.stringify = true;
 
-  group('Test projections with simple translate', () {
+  group('Test transformations with simple translate', () {
     final translate1 = translatePoint(dx: 1.0, dy: 2.0, dz: 3.0, dm: 4.0);
     test('Immutable point classes (cartesian points)', () {
       expect(
-        Point2.xy(10.0, 20.0).project(translate1),
+        Point2.xy(10.0, 20.0).transform(translate1),
         Point2.xy(11.0, 22.0),
       );
       expect(
-        Point2m.xym(10.0, 20.0, 40.0).project(translate1),
+        Point2m.xym(10.0, 20.0, 40.0).transform(translate1),
         Point2m.xym(11.0, 22.0, 44.0),
       );
       expect(
-        Point3.xyz(10.0, 20.0, 30.0).project(translate1),
+        Point3.xyz(10.0, 20.0, 30.0).transform(translate1),
         Point3.xyz(11.0, 22.0, 33.0),
       );
       expect(
-        Point3m.xyzm(10.0, 20.0, 30.0, 40.0).project(translate1),
+        Point3m.xyzm(10.0, 20.0, 30.0, 40.0).transform(translate1),
         Point3m.xyzm(11.0, 22.0, 33.0, 44.0),
       );
       expect(
-        Point2i.xy(10, 20).project(translate1),
+        Point2i.xy(10, 20).transform(translate1),
         Point2i.xy(11, 22),
       );
       expect(
-        Point3i.xyz(10, 20, 30).project(translate1),
+        Point3i.xyz(10, 20, 30).transform(translate1),
         Point3i.xyz(11, 22, 33),
       );
     });
 
     test('Immutable geo point classes (geographical points)', () {
       expect(
-        GeoPoint2.lonLat(10.0, 20.0).project(translate1),
+        GeoPoint2.lonLat(10.0, 20.0).transform(translate1),
         GeoPoint2.lonLat(11.0, 22.0),
       );
       expect(
-        GeoPoint2m.lonLatM(10.0, 20.0, 40.0).project(translate1),
+        GeoPoint2m.lonLatM(10.0, 20.0, 40.0).transform(translate1),
         GeoPoint2m.lonLatM(11.0, 22.0, 44.0),
       );
       expect(
-        GeoPoint3.lonLatElev(10.0, 20.0, 30.0).project(translate1),
+        GeoPoint3.lonLatElev(10.0, 20.0, 30.0).transform(translate1),
         GeoPoint3.lonLatElev(11.0, 22.0, 33.0),
       );
       expect(
-        GeoPoint3m.lonLatElevM(10.0, 20.0, 30.0, 40.0).project(translate1),
+        GeoPoint3m.lonLatElevM(10.0, 20.0, 30.0, 40.0).transform(translate1),
         GeoPoint3m.lonLatElevM(11.0, 22.0, 33.0, 44.0),
       );
     });
 
     test('Point wrappers (cartesian or geographical points)', () {
       expect(
-        PointWrapper(Point3m.xyzm(10.0, 20.0, 30.0, 40.0)).project(translate1),
+        PointWrapper(Point3m.xyzm(10.0, 20.0, 30.0, 40.0))
+            .transform(translate1),
         Point3m.xyzm(11.0, 22.0, 33.0, 44.0),
       );
       expect(
         PointWrapper(GeoPoint3m.lonLatElevM(10.0, 20.0, 30.0, 40.0))
-            .project(translate1),
+            .transform(translate1),
         GeoPoint3m.lonLatElevM(11.0, 22.0, 33.0, 44.0),
       );
     });
@@ -85,7 +86,7 @@ void main() {
         Bounds.of(
           min: Point2.xy(10.0, 20.0),
           max: Point2.xy(110.0, 120.0),
-        ).project(translate1),
+        ).transform(translate1),
         Bounds.of(
           min: Point2.xy(11.0, 22.0),
           max: Point2.xy(111.0, 122.0),
@@ -95,7 +96,7 @@ void main() {
         Bounds.of(
           min: Point3.xyz(10.0, 20.0, 30.0),
           max: Point3.xyz(110.0, 120.0, 130.0),
-        ).project(translate1),
+        ).transform(translate1),
         Bounds.of(
           min: Point3.xyz(11.0, 22.0, 33.0),
           max: Point3.xyz(111.0, 122.0, 133.0),
@@ -105,7 +106,7 @@ void main() {
         Bounds.of(
           min: Point3i.xyz(10, 20, 30),
           max: Point3i.xyz(110, 120, 130),
-        ).project(translate1),
+        ).transform(translate1),
         Bounds.of(
           min: Point3i.xyz(11, 22, 33),
           max: Point3i.xyz(111, 122, 133),
@@ -115,12 +116,12 @@ void main() {
 
     test('Immutable bounds classes (with geographical points)', () {
       expect(
-        GeoBounds.bboxLonLat(10.0, 20.0, 110.0, 120.0).project(translate1),
+        GeoBounds.bboxLonLat(10.0, 20.0, 110.0, 120.0).transform(translate1),
         GeoBounds.bboxLonLat(11.0, 22.0, 111.0, 122.0),
       );
       expect(
         GeoBounds.bboxLonLatElev(10.0, 20.0, 30.0, 110.0, 120.0, 130.0)
-            .project(translate1),
+            .transform(translate1),
         GeoBounds.bboxLonLatElev(11.0, 22.0, 33.0, 111.0, 122.0, 133.0),
       );
     });
@@ -128,7 +129,7 @@ void main() {
     test('LineString classes (with cartesian points)', () {
       expect(
         LineString.parse('30 10, 10 30, 40 40', Point2.coordinates)
-            .project(translate1),
+            .transform(translate1),
         LineString.parse('31 12, 11 32, 41 42', Point2.coordinates),
       );
     });
@@ -139,7 +140,7 @@ void main() {
           '(30 10 100, 40 40 110,'
           ' 20 40 120, 10 20 130, 30 10 100)',
           Point3.coordinates,
-        ).project(translate1),
+        ).transform(translate1),
         Polygon.parse(
           '(31 12 103, 41 42 113,'
           ' 21 42 123, 11 22 133, 31 12 103)',
@@ -153,7 +154,7 @@ void main() {
         MultiPoint<GeoPoint>.parse(
           '10 40, 40 30, 20 20, 30 10',
           GeoPoint2.coordinates,
-        ).project(translate1),
+        ).transform(translate1),
         MultiPoint<GeoPoint>.parse(
           '11 42, 41 32, 21 22, 31 12',
           GeoPoint2.coordinates,
@@ -167,7 +168,7 @@ void main() {
           '(10 10 100 5, 20 20 100 5, 10 40 100 5), '
           '(40 40 100 5, 30 30 100 5, 40 20 100 5, 30 10 100 5)',
           GeoPoint3m.coordinates,
-        ).project(translate1),
+        ).transform(translate1),
         MultiLineString<Point>.parse(
           '(11 12 103 9, 21 22 103 9, 11 42 103 9), '
           '(41 42 103 9, 31 32 103 9, 41 22 103 9, 31 12 103 9)',
@@ -182,7 +183,7 @@ void main() {
           '((30 20 10, 45 40 20, 10 40 30, 30 20 40)), '
           '((15 5 50, 40 10 60, 10 20 70, 5 10 80, 15 5 90))',
           GeoPoint2m.coordinates,
-        ).project(translate1),
+        ).transform(translate1),
         MultiPolygon<GeoPoint>.parse(
           '((31 22 14, 46 42 24, 11 42 34, 31 22 44)), '
           '((16 7 54, 41 12 64, 11 22 74, 6 12 84, 16 7 94))',
@@ -203,7 +204,7 @@ void main() {
             '(40 40 -10 110, 20 45 -20 120, 45 30 -30 130, 40 40 -40 140)',
             Point3m.coordinates,
           )
-        ]).project(translate1),
+        ]).transform(translate1),
         GeometryCollection.from(<Geometry>[
           Point2.parse('41 12'),
           LineString<Point3>.parse(
@@ -219,7 +220,7 @@ void main() {
     });
 
     test('Feature', () {
-      final f = geoJSON.feature(geojsonFeature).project(translate1);
+      final f = geoJSON.feature(geojsonFeature).transform(translate1);
       expect(f.geometry, GeoPoint2.lonLat(126.6, 12.1));
       expect(f.properties['name'], 'Dinagat Islands');
     });
@@ -227,7 +228,7 @@ void main() {
     test('FeatureCollection', () {
       final fc = geoJSON
           .featureCollection(geojsonFeatureCollection)
-          .project(translate1);
+          .transform(translate1);
       expect(fc.features.length, 3);
       expect(fc.features[0].geometry, GeoPoint2.lonLat(103.0, 2.5));
       expect(
@@ -242,11 +243,11 @@ void main() {
 
     test('Point classes', () {
       expect(
-        Point3m.xyzm(10.0, 20.0, 30.0, 40.0).project(scale1),
+        Point3m.xyzm(10.0, 20.0, 30.0, 40.0).transform(scale1),
         Point3m.xyzm(26.0, 60.0, 120.0, 200.0),
       );
       expect(
-        Point3i.xyz(10, 20, 30).project(scale1),
+        Point3i.xyz(10, 20, 30).transform(scale1),
         Point3i.xyz(26, 60, 120),
       );
     });
@@ -257,11 +258,11 @@ void main() {
 
     test('Point classes', () {
       expect(
-        Point3m.xyzm(10.0, 20.0, 30.0, 40.0).project(scale1),
+        Point3m.xyzm(10.0, 20.0, 30.0, 40.0).transform(scale1),
         Point3m.xyzm(15.0, 30.0, 45.0, 60.0),
       );
       expect(
-        Point3i.xyz(10, 20, 30).project(scale1),
+        Point3i.xyz(10, 20, 30).transform(scale1),
         Point3i.xyz(15, 30, 45),
       );
     });
@@ -284,7 +285,7 @@ void main() {
           cy: t[2],
         );
         expect(
-          Point3.xyz(t[3], t[4], 30.0).project(rot),
+          Point3.xyz(t[3], t[4], 30.0).transform(rot),
           (Point3 val) => val.equals2D(
             Point3.xyz(t[5], t[6], 30.0),
             toleranceHoriz: 1e-8,

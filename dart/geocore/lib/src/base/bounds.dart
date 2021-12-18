@@ -93,9 +93,9 @@ abstract class Bounds<T extends Point> extends Geometry
     return buf.toString();
   }
 
-  /// Returns new bounds projected from this bounds using [transform].
+  /// Returns new bounds transformed from this bounds using [transform].
   @override
-  Bounds<T> project(TransformPoint transform);
+  Bounds<T> transform(TransformPoint transform);
 
   /// Returns true if this bounds intesects with [other] bounds in 2D.
   ///
@@ -207,9 +207,9 @@ class BoundsBase<T extends Point> extends Bounds<T> with EquatableMixin {
   }
 
   @override
-  Bounds<T> project(TransformPoint transform) => BoundsBase(
-        min: min.project(transform) as T,
-        max: max.project(transform) as T,
+  Bounds<T> transform(TransformPoint transform) => BoundsBase(
+        min: min.transform(transform) as T,
+        max: max.transform(transform) as T,
       );
 }
 
@@ -257,8 +257,8 @@ class _LazyBounds<T extends Point> extends Bounds<T> {
       _ensureBounds().newFrom(coords, offset: offset, length: length);
 
   @override
-  Bounds<T> project(TransformPoint transform) =>
-      _ensureBounds().project(transform);
+  Bounds<T> transform(TransformPoint transform) =>
+      _ensureBounds().transform(transform);
 
 /*
   // See lint => avoid_equals_and_hash_code_on_mutable_classes
@@ -293,5 +293,5 @@ class _EmptyBounds extends Bounds {
   Bounds newFrom(Iterable<num> coords, {int? offset, int? length}) => this;
 
   @override
-  Bounds project(TransformPoint transform) => this;
+  Bounds transform(TransformPoint transform) => this;
 }

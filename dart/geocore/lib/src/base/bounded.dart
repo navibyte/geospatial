@@ -20,10 +20,10 @@ abstract class Bounded {
   /// bounds does not intersect with any other bounds.
   Bounds get bounds;
 
-  /// Returns a new bounded object with all points projected using [transform].
+  /// Returns a new object with all points transformed using [transform].
   ///
-  /// The projected bounded object must be of the same type with this object.
-  Bounded project(TransformPoint transform);
+  /// The transformed bounded object must be of the same type with this object.
+  Bounded transform(TransformPoint transform);
 }
 
 /// A base interface for a series (list) of bounded items of type [T].
@@ -98,10 +98,10 @@ class _BoundedSeriesView<T extends Bounded>
   }
 
   @override
-  BoundedSeries<T> project(TransformPoint transform, {bool lazy = false}) {
-    final projected = map<T>((bounded) => bounded.project(transform) as T);
+  BoundedSeries<T> transform(TransformPoint transform, {bool lazy = false}) {
+    final transformed = map<T>((bounded) => bounded.transform(transform) as T);
     return _BoundedSeriesView(
-      lazy ? projected : projected.toList(growable: false),
+      lazy ? transformed : transformed.toList(growable: false),
     );
   }
 }

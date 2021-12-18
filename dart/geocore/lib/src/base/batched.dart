@@ -40,12 +40,12 @@ abstract class _BatchedSeries<S extends _BatchedSeries<S, T>, T> extends Bounded
   /// Those items that has empty bounds are not matched.
   S intersectByBounds2D(Bounds bounds, {bool lazy = false});
 
-  /// Returns a new series projected from this series using [transform].
+  /// Returns a new series with all points transformed using [transform].
   ///
-  /// The projected series is populated by default. If [lazy] is set true then
-  /// returns a new lazy series with points of the series projected lazily.
+  /// The transformed series is populated by default. If [lazy] is set true then
+  /// returns a new lazy series with points of the series transformed lazily.
   @override
-  S project(TransformPoint transform, {bool lazy = false});
+  S transform(TransformPoint transform, {bool lazy = false});
 }
 
 /// Private implementation of [_BatchedSeries] based on UnmodifiableListView.

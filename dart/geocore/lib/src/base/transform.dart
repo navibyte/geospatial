@@ -6,8 +6,24 @@
 
 part of 'base.dart';
 
-/// A function to transform the [source] point to a transformed point.
+/// A function to transform the [source] point of [T] to a point of [T].
+///
+/// Target points of [T] are created using [source] as a point factory.
 typedef TransformPoint = T Function<T extends Point>(T source);
+
+/// A function to project the [source] point of [T] to a point of [R].
+///
+/// When [to] is provided, then target points of [R] are created using that
+/// as a point factory. Otherwise a projection function uses it's own factory.
+///
+/// Note that a function could implement for example a map projection from
+/// geographical points to projected cartesian points, or an inverse
+/// projection (or an "unprojection") from projected cartesian points to
+/// geographical points. Both are called here "project point" functions.
+typedef ProjectPoint<T extends Point, R extends Point> = R Function(
+  T source, {
+  PointFactory<R>? to,
+});
 
 // -----------------------------------------------------------------------------
 // Some basic transformation functions (like translate, scale, rotate).

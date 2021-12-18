@@ -90,12 +90,16 @@ void main() {
 
     final a2 = GeoPoint2.lonLat(25.1, 53.1);
     final b2 = GeoPoint2.lonLat(25.2, 53.2);
+    final c2 = GeoPoint2(lon: -180.0, lat: -90.0);
 
     test('GeoPoint2', () {
       expect(GeoPoint2.latLon(53.1, 25.1), a2);
       expect(GeoPoint2.from([25.1, 53.1]), a2);
       expect(GeoPoint2.parse('25.1 53.1'), a2);
       expect(GeoPoint2.parse('25.1, 53.1', parser: _parseCoordsTest), a2);
+
+      expect(c2, GeoPoint2(lon: 180.0, lat: -90.0));
+      expect(c2.lon, -180.0);
     });
 
     test('PointSeries<GeoPoint2>', () {

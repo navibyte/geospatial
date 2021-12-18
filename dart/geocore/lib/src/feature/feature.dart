@@ -68,12 +68,12 @@ abstract class Feature<T extends Geometry> implements Bounded {
   /// An optional geometry for this feature.
   Geometry? get geometry;
 
-  /// Returns a new feature with geometry projected using [transform].
+  /// Returns a new feature with geometry transformed using [transform].
   ///
-  /// Projects [geometry] of this feature. Other members, [id] and [properties],
-  /// are set without modifications to a new feature object.
+  /// Transforms only [geometry] of this feature. Other members, [id] and
+  /// [properties], are set without modifications to a new feature object.
   @override
-  Feature<T> project(TransformPoint transform);
+  Feature<T> transform(TransformPoint transform);
 }
 
 /// Private implementation of [Feature].
@@ -106,11 +106,11 @@ class _FeatureBase<T extends Geometry>
   Bounds get bounds => _featureBounds ?? geometry?.bounds ?? Bounds.empty();
 
   @override
-  Feature<T> project(TransformPoint transform) => _FeatureBase(
+  Feature<T> transform(TransformPoint transform) => _FeatureBase(
         id: id,
         properties: properties,
-        geometry: geometry?.project(transform) as T?,
-        bounds: _featureBounds?.project(transform),
+        geometry: geometry?.transform(transform) as T?,
+        bounds: _featureBounds?.transform(transform),
       );
 }
 
@@ -133,7 +133,7 @@ abstract class FeatureCollection<T extends Feature> extends Bounded {
 
   /// Returns a new collection with features projected using [transform].
   @override
-  FeatureCollection<T> project(TransformPoint transform);
+  FeatureCollection<T> transform(TransformPoint transform);
 }
 
 /// Private implementation of [FeatureCollection].
@@ -156,9 +156,9 @@ class _FeatureCollectionBase<T extends Feature> extends FeatureCollection<T>
   Bounds get bounds => _collectionBounds ?? features.bounds;
 
   @override
-  FeatureCollection<T> project(TransformPoint transform) =>
+  FeatureCollection<T> transform(TransformPoint transform) =>
       _FeatureCollectionBase(
-        features: features.project(transform, lazy: false),
-        bounds: _collectionBounds?.project(transform),
+        features: features.transform(transform, lazy: false),
+        bounds: _collectionBounds?.transform(transform),
       );
 }

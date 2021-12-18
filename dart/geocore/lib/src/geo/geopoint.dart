@@ -56,11 +56,15 @@ abstract class GeoPoint extends Point<double> {
   @override
   GeoPoint newFrom(Iterable<num> coords, {int? offset, int? length});
 
-  /// Returns a new geo point projected from this point using [transform].
-  ///
-  /// The projected geo point object must be of the same type with this object.
   @override
-  GeoPoint project(TransformPoint transform);
+  GeoPoint transform(TransformPoint transform);
+
+  @override
+  R project<R extends Point>(
+    ProjectPoint<GeoPoint, R> project, {
+    PointFactory<R>? to,
+  }) =>
+      project(this, to: to);
 }
 
 /// An immutable geographic position with longitude and latitude.
@@ -205,7 +209,7 @@ class GeoPoint2 extends GeoPoint with EquatableMixin {
   }
 
   @override
-  GeoPoint2 project(TransformPoint transform) => transform(this);
+  GeoPoint2 transform(TransformPoint transform) => transform(this);
 }
 
 /// An immutable geographic position with longitude, latitude and m (measure).
@@ -281,7 +285,7 @@ class GeoPoint2m extends GeoPoint2 {
     }
   }
 
- /// A [PointFactory] creating [GeoPoint2m] instances.
+  /// A [PointFactory] creating [GeoPoint2m] instances.
   static const PointFactory<GeoPoint2m> coordinates =
       CastingPointFactory<GeoPoint2m>(GeoPoint2m.origin());
 
@@ -336,7 +340,7 @@ class GeoPoint2m extends GeoPoint2 {
   }
 
   @override
-  GeoPoint2m project(TransformPoint transform) => transform(this);
+  GeoPoint2m transform(TransformPoint transform) => transform(this);
 }
 
 /// An immutable geographic position with longitude, latitude and elevation.
@@ -468,7 +472,7 @@ class GeoPoint3 extends GeoPoint2 {
   }
 
   @override
-  GeoPoint3 project(TransformPoint transform) => transform(this);
+  GeoPoint3 transform(TransformPoint transform) => transform(this);
 }
 
 /// An immutable geographic position with longitude, latitude, elev and m.
@@ -608,5 +612,5 @@ class GeoPoint3m extends GeoPoint3 {
   }
 
   @override
-  GeoPoint3m project(TransformPoint transform) => transform(this);
+  GeoPoint3m transform(TransformPoint transform) => transform(this);
 }

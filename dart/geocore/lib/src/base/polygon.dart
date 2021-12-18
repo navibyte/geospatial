@@ -93,6 +93,6 @@ class Polygon<T extends Point> extends Geometry with EquatableMixin {
       BoundedSeries<LineString<T>>.view(rings.skip(1));
 
   @override
-  Polygon<T> project(TransformPoint transform) =>
-      Polygon(rings.project(transform, lazy: false));
+  Polygon<T> transform(TransformPoint transform) =>
+      Polygon(rings.transform(transform, lazy: false));
 }

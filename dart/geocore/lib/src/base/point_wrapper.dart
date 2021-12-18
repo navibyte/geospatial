@@ -68,5 +68,12 @@ class PointWrapper<T extends Point<C>, C extends num> extends Point<C>
       point.newFrom(coords, offset: offset, length: length) as T;
 
   @override
-  T project(TransformPoint transform) => point.project(transform) as T;
+  T transform(TransformPoint transform) => point.transform(transform) as T;
+
+  @override
+  R project<R extends Point>(
+    ProjectPoint<T, R> project, {
+    PointFactory<R>? to,
+  }) =>
+      project(point, to: to);
 }

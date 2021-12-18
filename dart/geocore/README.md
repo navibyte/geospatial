@@ -589,7 +589,8 @@ Geographical and cartesian points, geometry objects, features and feature
 collections can be projected using coordinate transformations.
 
 Currently this package provides a consistent abstraction. Classes used to 
-represent objects mentioned above contain `project(TransformPoint transform)` method returning a projected object. The transform function is defined as:
+represent objects mentioned above contain `transform(TransformPoint transform)` 
+method returning a projected object. The transform function is defined as:
 
 ```dart
 /// A function to transform the [source] point to a transformed point.
@@ -620,22 +621,21 @@ T _sampleFixedTranslate<T extends Point>(T source) =>
 Now this function can be used to project points and other geometries:
 
 ```dart
-  // Create a point and project it with a custom translation that returns
+  // Create a point and transform it with a custom translation that returns
   // `Point3m.xyzm(110.0, 220.0, 50.0, 1.25)` after projection.
-  Point3m.xyzm(100.0, 200.0, 50.0, 1.25).project(_sampleFixedTranslate);
+  Point3m.xyzm(100.0, 200.0, 50.0, 1.25).transform(_sampleFixedTranslate);
 
-  // The same transform function can be used to project also geometry objects.
+  // The same transform function can be used to transform also geometry objects.
   LineString.parse('100.0 200.0, 400.0 500.0', Point2.coordinates)
-      .project(_sampleFixedTranslate);
+      .transform(_sampleFixedTranslate);
 
-  // This returns a line string that has same coordinate values as: 
-  // LineString.parse('110.0 220.0, 410.0 520.0', Point2.coordinates)
+  // This returns a line string that has same coordinate values as:
+  // LineString.parse('110.0 220.0, 410.0 520.0', Point2.geometry)
 ```
 
-Please note that currently there is no support for geospatial transformations
-between coordinate reference systems on this package. However a custom tranform 
-function as described above could be wired to delegate tranformation to other
-packages as necessary.
+Please note that currently there is not yet support for geospatial
+transformations between coordinate reference systems on this package. Some 
+support is **currently under development**. 
 
 ## Package
 
@@ -651,7 +651,7 @@ In the `pubspec.yaml` of your project add the dependency:
 
 ```yaml
 dependencies:
-  geocore: ^0.8.0-a.2
+  geocore: ^0.8.0-a.3
 ```
 
 All dependencies used by `geocore` are also ready for 

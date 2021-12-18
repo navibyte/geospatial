@@ -372,13 +372,13 @@ void _readmeIntro() {
 
   // -----------
 
-  // Create a point and project it with a custom translation that returns
+  // Create a point and transform it with a custom translation that returns
   // `Point3m.xyzm(110.0, 220.0, 50.0, 1.25)` after projection.
-  Point3m.xyzm(100.0, 200.0, 50.0, 1.25).project(_sampleFixedTranslate);
+  Point3m.xyzm(100.0, 200.0, 50.0, 1.25).transform(_sampleFixedTranslate);
 
-  // The same transform function can be used to project also geometry objects.
+  // The same transform function can be used to transform also geometry objects.
   LineString.parse('100.0 200.0, 400.0 500.0', Point2.coordinates)
-      .project(_sampleFixedTranslate);
+      .transform(_sampleFixedTranslate);
 
   // This returns a line string that has same coordinate values as:
   // LineString.parse('110.0 220.0, 410.0 520.0', Point2.geometry)

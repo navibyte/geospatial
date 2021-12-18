@@ -88,6 +88,19 @@ abstract class PointSeries<T extends Point>
 
   /// True if the first and last point equals in 2D within [toleranceHoriz].
   bool isClosedBy(num toleranceHoriz);
+
+  /// Returns a new series with all points projected using [project] function.
+  ///
+  /// The projected series is populated by default. If [lazy] is set true then
+  /// returns a new lazy series with points of the series projected lazily.
+  ///
+  /// When [to] is provided, then target points of [R] are created using
+  /// that as a point factory. Otherwise [project] uses it's own factory.
+  PointSeries<R> project<R extends Point>(
+    ProjectPoint<T, R> project, {
+    bool lazy = false,
+    PointFactory<R>? to,
+  });
 }
 
 /// A partial implementation of [PointSeries] as a mixin.
@@ -163,8 +176,20 @@ class _PointSeriesView<T extends Point>
   }
 
   @override
-  PointSeries<T> project(TransformPoint transform, {bool lazy = false}) {
-    final projected = map((point) => point.project(transform) as T);
+  PointSeries<T> transform(TransformPoint transform, {bool lazy = false}) {
+    final transformed = map((point) => point.transform(transform) as T);
+    return _PointSeriesView(
+      lazy ? transformed : transformed.toList(growable: false),
+    );
+  }
+
+  @override
+  PointSeries<R> project<R extends Point>(
+    ProjectPoint<T, R> project, {
+    bool lazy = false,
+    PointFactory<R>? to,
+  }) {
+    final projected = map((point) => project(point, to: to));
     return _PointSeriesView(
       lazy ? projected : projected.toList(growable: false),
     );
