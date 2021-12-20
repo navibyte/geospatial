@@ -8,25 +8,30 @@ part of 'base.dart';
 
 /// A geometry collection.
 @immutable
-class GeometryCollection<T extends Geometry> extends Geometry
+class GeometryCollection<E extends Geometry> extends Geometry
     with EquatableMixin {
   /// Creates [GeometryCollection] from [geometries].
-  GeometryCollection(this.geometries);
+  GeometryCollection(Iterable<E> geometries)
+      : geometries = geometries is BoundedSeries<E>
+            ? geometries
+            : BoundedSeries.view(geometries);
 
   /// Create an [GeometryCollection] instance backed by [source].
   ///
   /// An optional [bounds] can be provided or it's lazy calculated if null.
-  factory GeometryCollection.view(Iterable<T> source, {Bounds? bounds}) =>
-      GeometryCollection(BoundedSeries<T>.view(source, bounds: bounds));
+  @Deprecated('Use default constructor instead')
+  factory GeometryCollection.view(Iterable<E> source, {Bounds? bounds}) =>
+      GeometryCollection(BoundedSeries<E>.view(source, bounds: bounds));
 
   /// Create an immutable [GeometryCollection] with items copied from [source].
   ///
   /// An optional [bounds] can be provided or it's lazy calculated if null.
-  factory GeometryCollection.from(Iterable<T> source, {Bounds? bounds}) =>
-      GeometryCollection(BoundedSeries<T>.from(source, bounds: bounds));
+  @Deprecated('Use default constructor instead')
+  factory GeometryCollection.from(Iterable<E> source, {Bounds? bounds}) =>
+      GeometryCollection(BoundedSeries<E>.from(source, bounds: bounds));
 
-  /// All the [geometries] for this multi point.
-  final BoundedSeries<T> geometries;
+  /// All [geometries] for this geometry collection.
+  final BoundedSeries<E> geometries;
 
   @override
   int get dimension {
@@ -50,25 +55,41 @@ class GeometryCollection<T extends Geometry> extends Geometry
   List<Object?> get props => [geometries];
 
   @override
-  GeometryCollection<T> transform(TransformPoint transform) =>
-      GeometryCollection(geometries.transform(transform, lazy: false));
+  GeometryCollection<E> transform(TransformPoint transformation) =>
+      GeometryCollection(geometries.transform(transformation, lazy: false));
+
+  @override
+  GeometryCollection project<R extends Point>(
+    ProjectPoint<R> projection, {
+    PointFactory<R>? to,
+  }) =>
+      // Note: returns GeometryCollection, not GeometryCollection<E> as
+      // projected geometries could be other than E as a result of some
+      // projections.
+      GeometryCollection(
+        geometries.convert<Geometry>(
+          (geom) => geom.project(projection, to: to),
+          lazy: false,
+        ),
+      );
 }
 
 /// A multi point geometry.
 @immutable
-class MultiPoint<T extends Point> extends Geometry with EquatableMixin {
+class MultiPoint<E extends Point> extends Geometry with EquatableMixin {
   /// Create [MultiPoint] from [points].
-  MultiPoint(this.points);
+  MultiPoint(Iterable<E> points)
+      : points = points is PointSeries<E> ? points : PointSeries.view(points);
 
   /// Create [MultiPoint] from [values] with a list of points.
   ///
   /// An optional [bounds] can be provided or it's lazy calculated if null.
   factory MultiPoint.make(
     Iterable<Iterable<num>> values,
-    PointFactory<T> pointFactory, {
+    PointFactory<E> pointFactory, {
     Bounds? bounds,
   }) =>
-      MultiPoint<T>(PointSeries<T>.make(values, pointFactory, bounds: bounds));
+      MultiPoint<E>(PointSeries<E>.make(values, pointFactory, bounds: bounds));
 
   /// Create [MultiPoint] parsed from [text] with a list of points.
   ///
@@ -78,15 +99,15 @@ class MultiPoint<T extends Point> extends Geometry with EquatableMixin {
   /// Throws FormatException if cannot parse.
   factory MultiPoint.parse(
     String text,
-    PointFactory<T> pointFactory, {
+    PointFactory<E> pointFactory, {
     ParseCoordsList? parser,
   }) =>
       parser != null
-          ? MultiPoint<T>.make(parser.call(text), pointFactory)
-          : parseWktMultiPoint<T>(text, pointFactory);
+          ? MultiPoint<E>.make(parser.call(text), pointFactory)
+          : parseWktMultiPoint<E>(text, pointFactory);
 
   /// All the [points] for this multi point.
-  final PointSeries<T> points;
+  final PointSeries<E> points;
 
   @override
   int get dimension => 0;
@@ -101,15 +122,25 @@ class MultiPoint<T extends Point> extends Geometry with EquatableMixin {
   List<Object?> get props => [points];
 
   @override
-  MultiPoint<T> transform(TransformPoint transform) =>
-      MultiPoint(points.transform(transform, lazy: false));
+  MultiPoint<E> transform(TransformPoint transformation) =>
+      MultiPoint(points.transform(transformation, lazy: false));
+
+  @override
+  MultiPoint<R> project<R extends Point>(
+    ProjectPoint<R> projection, {
+    PointFactory<R>? to,
+  }) =>
+      MultiPoint(points.project(projection, lazy: false, to: to));
 }
 
 /// A multi line string geometry.
 @immutable
 class MultiLineString<T extends Point> extends Geometry with EquatableMixin {
   /// Create a multi line string from [lineStrings].
-  MultiLineString(this.lineStrings);
+  MultiLineString(Iterable<LineString<T>> lineStrings)
+      : lineStrings = lineStrings is BoundedSeries<LineString<T>>
+            ? lineStrings
+            : BoundedSeries.view(lineStrings);
 
   /// Create [MultiLineString] from [values] with line strings.
   ///
@@ -164,15 +195,30 @@ class MultiLineString<T extends Point> extends Geometry with EquatableMixin {
   List<Object?> get props => [lineStrings];
 
   @override
-  MultiLineString<T> transform(TransformPoint transform) =>
-      MultiLineString(lineStrings.transform(transform, lazy: false));
+  MultiLineString<T> transform(TransformPoint transformation) =>
+      MultiLineString(lineStrings.transform(transformation, lazy: false));
+
+  @override
+  MultiLineString<R> project<R extends Point>(
+    ProjectPoint<R> projection, {
+    PointFactory<R>? to,
+  }) =>
+      MultiLineString<R>(
+        BoundedSeries.from(
+          lineStrings
+              .map((lineString) => lineString.project(projection, to: to)),
+        ),
+      );
 }
 
 /// A multi polygon geometry.
 @immutable
 class MultiPolygon<T extends Point> extends Geometry with EquatableMixin {
   /// Create [MultiPolygon] from [polygons].
-  MultiPolygon(this.polygons);
+  MultiPolygon(Iterable<Polygon<T>> polygons)
+      : polygons = polygons is BoundedSeries<Polygon<T>>
+            ? polygons
+            : BoundedSeries.view(polygons);
 
   /// Create [MultiPolygon] from [values] with a list of rings for polygons.
   ///
@@ -226,6 +272,17 @@ class MultiPolygon<T extends Point> extends Geometry with EquatableMixin {
   List<Object?> get props => [polygons];
 
   @override
-  MultiPolygon<T> transform(TransformPoint transform) =>
-      MultiPolygon(polygons.transform(transform, lazy: false));
+  MultiPolygon<T> transform(TransformPoint transformation) =>
+      MultiPolygon(polygons.transform(transformation, lazy: false));
+
+  @override
+  MultiPolygon<R> project<R extends Point>(
+    ProjectPoint<R> projection, {
+    PointFactory<R>? to,
+  }) =>
+      MultiPolygon<R>(
+        BoundedSeries.from(
+          polygons.map((polygon) => polygon.project(projection, to: to)),
+        ),
+      );
 }

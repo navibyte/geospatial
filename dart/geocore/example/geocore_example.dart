@@ -242,7 +242,7 @@ void _readmeIntro() {
 
   // A geometry collection can contain any other geometry types. Items for such
   // a collection can be constructed using different ways.
-  GeometryCollection.from(<Geometry>[
+  GeometryCollection([
     // A point with integer values using a constructor with named parameters.
     Point2(x: 40, y: 10),
     // A line string made from a list of points (each a list of nums).

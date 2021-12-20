@@ -68,12 +68,25 @@ abstract class Feature<T extends Geometry> implements Bounded {
   /// An optional geometry for this feature.
   Geometry? get geometry;
 
-  /// Returns a new feature with geometry transformed using [transform].
+  /// Returns a new feature with geometry transformed using [transformation].
   ///
   /// Transforms only [geometry] of this feature. Other members, [id] and
   /// [properties], are set without modifications to a new feature object.
   @override
-  Feature<T> transform(TransformPoint transform);
+  Feature<T> transform(TransformPoint transformation);
+
+  /// Returns a new feature with geometry projected using [projection].
+  ///
+  /// When [to] is provided, then target points of [R] are created using
+  /// that as a point factory. Otherwise [projection] uses it's own factory.
+  ///
+  /// Transforms only [geometry] of this feature. Other members, [id] and
+  /// [properties], are set without modifications to a new feature object.
+  @override
+  Feature project<R extends Point>(
+    ProjectPoint<R> projection, {
+    PointFactory<R>? to,
+  });
 }
 
 /// Private implementation of [Feature].
@@ -106,16 +119,26 @@ class _FeatureBase<T extends Geometry>
   Bounds get bounds => _featureBounds ?? geometry?.bounds ?? Bounds.empty();
 
   @override
-  Feature<T> transform(TransformPoint transform) => _FeatureBase(
+  Feature<T> transform(TransformPoint transformation) => _FeatureBase(
         id: id,
         properties: properties,
-        geometry: geometry?.transform(transform) as T?,
-        bounds: _featureBounds?.transform(transform),
+        geometry: geometry?.transform(transformation) as T?,
+      );
+
+  @override
+  Feature project<R extends Point>(
+    ProjectPoint<R> projection, {
+    PointFactory<R>? to,
+  }) =>
+      _FeatureBase(
+        id: id,
+        properties: properties,
+        geometry: geometry?.project<R>(projection, to: to),
       );
 }
 
 /// A feature collection with a series of features.
-abstract class FeatureCollection<T extends Feature> extends Bounded {
+abstract class FeatureCollection<E extends Feature> extends Bounded {
   /// Default `const` constructor to allow extending this abstract class.
   const FeatureCollection();
 
@@ -124,30 +147,43 @@ abstract class FeatureCollection<T extends Feature> extends Bounded {
   /// If an optional [bounds] for a new feature collection is not provided then
   /// bounds of the series of [features] is used also as collection bounds.
   factory FeatureCollection.of({
-    required BoundedSeries<T> features,
+    required Iterable<E> features,
     Bounds? bounds,
-  }) = _FeatureCollectionBase<T>;
+  }) = _FeatureCollectionBase<E>;
 
   /// All the [features] for this collection.
-  BoundedSeries<T> get features;
+  BoundedSeries<E> get features;
 
-  /// Returns a new collection with features projected using [transform].
+  /// Returns a new collection with features transformed using [transformation].
   @override
-  FeatureCollection<T> transform(TransformPoint transform);
+  FeatureCollection<E> transform(TransformPoint transformation);
+
+  /// Returns a new collection with features projected using [projection].
+  ///
+  /// When [to] is provided, then target points of [R] are created using
+  /// that as a point factory. Otherwise [projection] uses it's own factory.
+  @override
+  FeatureCollection project<R extends Point>(
+    ProjectPoint<R> projection, {
+    PointFactory<R>? to,
+  });
 }
 
 /// Private implementation of [FeatureCollection].
 /// The implementation may change in future.
 @immutable
-class _FeatureCollectionBase<T extends Feature> extends FeatureCollection<T>
+class _FeatureCollectionBase<E extends Feature> extends FeatureCollection<E>
     with EquatableMixin {
-  const _FeatureCollectionBase({required this.features, Bounds? bounds})
-      : _collectionBounds = bounds;
+  _FeatureCollectionBase({required Iterable<E> features, Bounds? bounds})
+      : features = features is BoundedSeries<E>
+            ? features
+            : BoundedSeries.view(features),
+        _collectionBounds = bounds;
 
   final Bounds? _collectionBounds;
 
   @override
-  final BoundedSeries<T> features;
+  final BoundedSeries<E> features;
 
   @override
   List<Object?> get props => [features];
@@ -156,9 +192,25 @@ class _FeatureCollectionBase<T extends Feature> extends FeatureCollection<T>
   Bounds get bounds => _collectionBounds ?? features.bounds;
 
   @override
-  FeatureCollection<T> transform(TransformPoint transform) =>
+  FeatureCollection<E> transform(TransformPoint transformation) =>
       _FeatureCollectionBase(
-        features: features.transform(transform, lazy: false),
-        bounds: _collectionBounds?.transform(transform),
+        features: features.transform(
+          transformation,
+          lazy: false,
+        ),
+      );
+
+  @override
+  FeatureCollection project<R extends Point>(
+    ProjectPoint<R> projection, {
+    PointFactory<R>? to,
+  }) =>
+      // Note: returns FeatureCollection, not FeatureCollection<E> as projected
+      // feature elements could be other than E as a result of some projections.
+      _FeatureCollectionBase(
+        features: features.convert<Feature>(
+          (feature) => feature.project(projection, to: to),
+          lazy: false,
+        ),
       );
 }

@@ -6,47 +6,73 @@
 
 part of 'base.dart';
 
-/// A base interface for classes that know their [bounds].
-abstract class Bounded {
+/// An internal base interface for classes that know their [bounds].
+///
+/// This is extended by [Bounded] and an internal interface [_BatchedSeries].
+abstract class _BoundedBase {
   /// Default `const` constructor to allow extending this abstract class.
-  const Bounded();
+  const _BoundedBase();
 
   /// The [bounds] geometry for this object.
   ///
   /// Please note that in some cases bounds could be pre-calculated but it's
   /// possible that accessing this property may cause extensive calculations.
   ///
-  /// Bounds returned can be "empty" when isEmpty returns true - if so such
+  /// Bounds returned can be "empty" if this object is considered "empty". Such
   /// bounds does not intersect with any other bounds.
   Bounds get bounds;
-
-  /// Returns a new object with all points transformed using [transform].
-  ///
-  /// The transformed bounded object must be of the same type with this object.
-  Bounded transform(TransformPoint transform);
 }
 
-/// A base interface for a series (list) of bounded items of type [T].
-abstract class BoundedSeries<T extends Bounded>
-    extends _BatchedSeries<BoundedSeries<T>, T> {
+/// A base interface for classes that know their [bounds].
+abstract class Bounded extends _BoundedBase {
+  /// Default `const` constructor to allow extending this abstract class.
+  const Bounded();
+
+  /// Returns a new object with all points transformed using [transformation].
+  ///
+  /// The transformed bounded object must be of the same type with this object.
+  Bounded transform(TransformPoint transformation);
+
+  /// Returns a new object with all points projected using [projection].
+  ///
+  /// When [factory] is provided, then target points of [R] are created using
+  /// that as a point factory. Otherwise [projection] uses it's own factory.
+  Bounded project<R extends Point>(
+    ProjectPoint<R> projection, {
+    PointFactory<R>? to,
+  });
+}
+
+/// A base interface for a series (list) of bounded items of type [E].
+abstract class BoundedSeries<E extends Bounded>
+    extends _BatchedSeries<BoundedSeries<E>, E> {
   /// Default `const` constructor to allow extending this abstract class.
   const BoundedSeries();
 
   /// Create an [BoundedSeries] instance backed by [source].
   ///
   /// An optional [bounds] can be provided or it's lazy calculated if null.
-  factory BoundedSeries.view(Iterable<T> source, {Bounds? bounds}) =
-      _BoundedSeriesView<T>;
+  factory BoundedSeries.view(Iterable<E> source, {Bounds? bounds}) =
+      _BoundedSeriesView<E>;
 
   /// Create an immutable [BoundedSeries] with items copied from [source].
   ///
   /// An optional [bounds] can be provided or it's lazy calculated if null.
-  factory BoundedSeries.from(Iterable<T> source, {Bounds? bounds}) =>
-      BoundedSeries<T>.view(List<T>.unmodifiable(source), bounds: bounds);
+  factory BoundedSeries.from(Iterable<E> source, {Bounds? bounds}) =>
+      BoundedSeries<E>.view(List<E>.unmodifiable(source), bounds: bounds);
+
+  /// Returns a new series with all items converted using [conversion] function.
+  ///
+  /// The converted series is populated by default. If [lazy] is set true then
+  /// returns a new lazy series with itmes of the series converted lazily.
+  BoundedSeries<T> convert<T extends Bounded>(
+    T Function(E source) conversion, {
+    bool lazy = false,
+  });
 }
 
 /// A partial implementation of [BoundedSeries] as a mixin.
-mixin BoundedSeriesMixin<T extends Bounded> implements BoundedSeries<T> {
+mixin BoundedSeriesMixin<E extends Bounded> implements BoundedSeries<E> {
   /// Initializes a [Bounds] object for [source] of bounded objects.
   ///
   /// If [bounds] is non-null, then it's returned as is.
@@ -57,8 +83,8 @@ mixin BoundedSeriesMixin<T extends Bounded> implements BoundedSeries<T> {
   /// small series of bounded objects is initialized right a way, and for large
   /// series with lazy calculations).
   @protected
-  static Bounds initBounds<T extends Bounded>(
-    Iterable<T> source, {
+  static Bounds initBounds<E extends Bounded>(
+    Iterable<E> source, {
     Bounds? bounds,
   }) =>
       bounds ??
@@ -73,16 +99,16 @@ mixin BoundedSeriesMixin<T extends Bounded> implements BoundedSeries<T> {
 
 /// Private implementation of [BoundedSeries].
 /// The implementation may change in future.
-class _BoundedSeriesView<T extends Bounded>
-    extends _BatchedSeriesView<BoundedSeries<T>, T> with BoundedSeriesMixin<T> {
-  _BoundedSeriesView(Iterable<T> source, {Bounds? bounds})
+class _BoundedSeriesView<E extends Bounded>
+    extends _BatchedSeriesView<BoundedSeries<E>, E> with BoundedSeriesMixin<E> {
+  _BoundedSeriesView(Iterable<E> source, {Bounds? bounds})
       : super(
           source,
           bounds: BoundedSeriesMixin.initBounds(source, bounds: bounds),
         );
 
   @override
-  BoundedSeries<T> intersectByBounds(Bounds bounds, {bool lazy = false}) {
+  BoundedSeries<E> intersectByBounds(Bounds bounds, {bool lazy = false}) {
     final intersected = where((element) => bounds.intersects(element.bounds));
     return _BoundedSeriesView(
       lazy ? intersected : intersected.toList(growable: false),
@@ -90,7 +116,7 @@ class _BoundedSeriesView<T extends Bounded>
   }
 
   @override
-  BoundedSeries<T> intersectByBounds2D(Bounds bounds, {bool lazy = false}) {
+  BoundedSeries<E> intersectByBounds2D(Bounds bounds, {bool lazy = false}) {
     final intersected = where((element) => bounds.intersects2D(element.bounds));
     return _BoundedSeriesView(
       lazy ? intersected : intersected.toList(growable: false),
@@ -98,10 +124,25 @@ class _BoundedSeriesView<T extends Bounded>
   }
 
   @override
-  BoundedSeries<T> transform(TransformPoint transform, {bool lazy = false}) {
-    final transformed = map<T>((bounded) => bounded.transform(transform) as T);
+  BoundedSeries<E> transform(
+    TransformPoint transformation, {
+    bool lazy = false,
+  }) {
+    final transformed =
+        map<E>((bounded) => bounded.transform(transformation) as E);
     return _BoundedSeriesView(
       lazy ? transformed : transformed.toList(growable: false),
+    );
+  }
+
+  @override
+  BoundedSeries<T> convert<T extends Bounded>(
+    T Function(E source) conversion, {
+    bool lazy = false,
+  }) {
+    final converted = map(conversion);
+    return _BoundedSeriesView(
+      lazy ? converted : converted.toList(growable: false),
     );
   }
 }

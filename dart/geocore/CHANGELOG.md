@@ -14,6 +14,7 @@
 - [Check if point series is closed by tolerance #48](https://github.com/navibyte/geospatial/issues/48)
 - [Add CartesianPoint to the Point-class hierarchy #54](https://github.com/navibyte/geospatial/issues/54)
 - [Coordinate conversion between WGS84 (lon-lat) and Web Mercator projection (meters)](https://github.com/navibyte/geospatial/issues/55)
+- [Add simpler constructors on geometry classes expecting bounded or point series #59](https://github.com/navibyte/geospatial/issues/59)
 
 🛠 Refactoring:
 - [Refactor coordinate value members of immutable Point classes #44](https://github.com/navibyte/geospatial/issues/44)

@@ -9,14 +9,14 @@ part of 'base.dart';
 /// A private base interface for "batched series" defining spatial operations.
 ///
 /// Known sub classes: [BoundedSeries], [PointSeries].
-abstract class _BatchedSeries<S extends _BatchedSeries<S, T>, T> extends Bounded
-    implements Iterable<T> {
+abstract class _BatchedSeries<S extends _BatchedSeries<S, E>, E>
+    extends _BoundedBase implements Iterable<E> {
   const _BatchedSeries();
 
-  /// Returns an item of the type T at [index].
+  /// Returns an item of the type E at [index].
   ///
   /// Throws RangeError if [index] is out of bounds.
-  T operator [](int index);
+  E operator [](int index);
 
   /// Returns a new series where items intersects with [bounds].
   ///
@@ -40,21 +40,20 @@ abstract class _BatchedSeries<S extends _BatchedSeries<S, T>, T> extends Bounded
   /// Those items that has empty bounds are not matched.
   S intersectByBounds2D(Bounds bounds, {bool lazy = false});
 
-  /// Returns a new series with all points transformed using [transform].
+  /// Returns a new series with all points transformed using [transformation].
   ///
   /// The transformed series is populated by default. If [lazy] is set true then
   /// returns a new lazy series with points of the series transformed lazily.
-  @override
-  S transform(TransformPoint transform, {bool lazy = false});
+  S transform(TransformPoint transformation, {bool lazy = false});
 }
 
 /// Private implementation of [_BatchedSeries] based on UnmodifiableListView.
 /// The implementation may change in future.
 ///
 /// Known sub classes: [_BoundedSeriesView], [_PointSeriesView].
-abstract class _BatchedSeriesView<S extends _BatchedSeries<S, T>, T>
-    extends UnmodifiableListView<T> implements _BatchedSeries<S, T> {
-  _BatchedSeriesView(Iterable<T> source, {required this.bounds})
+abstract class _BatchedSeriesView<S extends _BatchedSeries<S, E>, E>
+    extends UnmodifiableListView<E> implements _BatchedSeries<S, E> {
+  _BatchedSeriesView(Iterable<E> source, {required this.bounds})
       : super(source);
 
   @override

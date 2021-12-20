@@ -206,6 +206,142 @@ void main() {
       );
     });
   });
+
+  group('Geometry tests with iterables, point series, and bounded series', () {
+    final points = [
+      Point2.xy(10.0, 11.0),
+      Point2.xy(20.0, 21.0),
+    ];
+    final series = PointSeries.view(points);
+    test('PointSeries', () {
+      expect(PointSeries.from(points), series);
+      expect(
+          PointSeries.make([
+            [10.0, 11.0],
+            [20.0, 21.0]
+          ], Point2.coordinates),
+          series);
+      expect(
+        PointSeries.parse('10 11, 20 21', Point2.coordinates),
+        series,
+      );
+    });
+
+    test('MultiPoint', () {
+      final multiPoint = MultiPoint(points);
+      expect(multiPoint.points, series);
+      expect(MultiPoint(series), multiPoint);
+      expect(
+          MultiPoint.make([
+            [10.0, 11.0],
+            [20.0, 21.0]
+          ], Point2.coordinates),
+          multiPoint);
+      expect(
+        MultiPoint.parse('10 11, 20 21', Point2.coordinates),
+        multiPoint,
+      );
+    });
+    test('LineString', () {
+      final lineString = LineString.any(points);
+      expect(lineString.chain, series);
+      expect(LineString.any(series), lineString);
+      expect(
+          LineString.make([
+            [10.0, 11.0],
+            [20.0, 21.0]
+          ], Point2.coordinates),
+          lineString);
+      expect(
+        LineString.parse('10 11, 20 21', Point2.coordinates),
+        lineString,
+      );
+    });
+  });
+
+  group('Geometry tests with multi line string, polygons, multi polygon', () {
+    final points = [
+      Point2.xy(10.0, 10.0),
+      Point2.xy(5.0, 9.0),
+      Point2.xy(12.0, 4.0),
+      Point2.xy(10.0, 10.0),
+    ];
+    final series = PointSeries.view(points);
+    final lineString = LineString.any(series);
+    final ring = LineString.ring(series);
+
+    test('MultiLineString', () {
+      final multiLineString = MultiLineString(BoundedSeries.from([lineString]));
+      expect(multiLineString.lineStrings.first.chain, series);
+      expect(MultiLineString([lineString]), multiLineString);
+      expect(
+          MultiLineString.make([
+            [
+              [10.0, 10.0],
+              [5.0, 9.0],
+              [12.0, 4.0],
+              [10.0, 10.0]
+            ],
+          ], Point2.coordinates),
+          multiLineString);
+      expect(
+        MultiLineString.parse('(10 10, 5 9, 12 4, 10 10)', Point2.coordinates),
+        multiLineString,
+      );
+    });
+
+    test('Polygon and MultiPolygon and MultiGeometry', () {
+      final polygon = Polygon(BoundedSeries.from([ring]));
+      expect(polygon.exterior.chain, series);
+      expect(Polygon([ring]), polygon);
+      expect(Polygon.fromPoints([points]), polygon);
+      expect(Polygon.fromPoints([series]), polygon);
+      expect(
+          Polygon.make([
+            [
+              [10.0, 10.0],
+              [5.0, 9.0],
+              [12.0, 4.0],
+              [10.0, 10.0]
+            ],
+          ], Point2.coordinates),
+          polygon);
+      expect(
+        Polygon.parse('(10 10, 5 9, 12 4, 10 10)', Point2.coordinates),
+        polygon,
+      );
+
+      final multiPolygon = MultiPolygon(BoundedSeries.from([polygon]));
+      expect(multiPolygon.polygons.first.exterior.chain, series);
+      expect(MultiPolygon([polygon]), multiPolygon);
+      expect(
+          MultiPolygon.make([
+            [
+              [
+                [10.0, 10.0],
+                [5.0, 9.0],
+                [12.0, 4.0],
+                [10.0, 10.0]
+              ],
+            ]
+          ], Point2.coordinates),
+          multiPolygon);
+      expect(
+        MultiPolygon.parse('((10 10, 5 9, 12 4, 10 10))', Point2.coordinates),
+        multiPolygon,
+      );
+
+      final multiGeometry1 =
+          GeometryCollection(BoundedSeries.from([lineString]));
+      expect(multiGeometry1.geometries.first.chain, series);
+      expect(GeometryCollection([lineString]), multiGeometry1);
+
+      final multiGeometry2 =
+          GeometryCollection(BoundedSeries.from([lineString, polygon]));
+      expect((multiGeometry2.geometries.first as LineString).chain, series);
+      expect(GeometryCollection([lineString, polygon]), multiGeometry2);
+    });
+  });
 }
 
 Iterable<num> _parseCoordsTest(String text) =>

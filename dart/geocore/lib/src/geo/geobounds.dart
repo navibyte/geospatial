@@ -15,6 +15,9 @@ import 'geopoint.dart';
 /// Geographic bounds can be represented as Bounds<GeoPoint> or as GeoBounds.
 /// This is a convenience class with helper factory constructors.
 class GeoBounds extends BoundsBase<GeoPoint> with EquatableMixin {
+  /// Create geographic bounds by copying `min` and `max` points from [source].
+  GeoBounds(Bounds<GeoPoint> source) : super(min: source.min, max: source.max);
+
   /// Create geographic bounds with required [min] and [max] points.
   ///
   /// [min] and [max] objects set on the bounds may or may not to be immutable.
@@ -119,8 +122,8 @@ class GeoBounds extends BoundsBase<GeoPoint> with EquatableMixin {
   }
 
   @override
-  GeoBounds transform(TransformPoint transform) => GeoBounds.of(
-        min: min.transform(transform),
-        max: max.transform(transform),
+  GeoBounds transform(TransformPoint transformation) => GeoBounds.of(
+        min: min.transform(transformation),
+        max: max.transform(transformation),
       );
 }

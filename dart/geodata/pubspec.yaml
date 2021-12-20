@@ -17,7 +17,7 @@ dependencies:
   #datatools:
   #  path: ../../../dataflow/dart/datatools
 
-  #geocore: ^0.8.0-a.3
+  #geocore: ^0.8.0-a.4
   geocore: 
     path: ../geocore
 

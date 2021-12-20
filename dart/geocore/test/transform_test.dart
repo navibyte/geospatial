@@ -194,18 +194,20 @@ void main() {
 
     test('GeometryCollection classes (with cartesian points)', () {
       expect(
-        GeometryCollection.from(<Geometry>[
-          Point2.parse('40 10'),
-          LineString<Point3>.parse(
-            '10 10 50, 20 20 60, 10 40 50',
-            Point3.coordinates,
-          ),
-          Polygon<Point3m>.parse(
-            '(40 40 -10 110, 20 45 -20 120, 45 30 -30 130, 40 40 -40 140)',
-            Point3m.coordinates,
-          )
-        ]).transform(translate1),
-        GeometryCollection.from(<Geometry>[
+        GeometryCollection(
+          BoundedSeries<Geometry>.from([
+            Point2.parse('40 10'),
+            LineString<Point3>.parse(
+              '10 10 50, 20 20 60, 10 40 50',
+              Point3.coordinates,
+            ),
+            Polygon<Point3m>.parse(
+              '(40 40 -10 110, 20 45 -20 120, 45 30 -30 130, 40 40 -40 140)',
+              Point3m.coordinates,
+            )
+          ]),
+        ).transform(translate1),
+        GeometryCollection([
           Point2.parse('41 12'),
           LineString<Point3>.parse(
             '11 12 53, 21 22 63, 11 42 53',

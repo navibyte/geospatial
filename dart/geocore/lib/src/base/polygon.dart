@@ -14,7 +14,24 @@ class Polygon<T extends Point> extends Geometry with EquatableMixin {
   /// Contains also interior boundaries if length is >= 2.
   ///
   /// A polygon is considered empty if the exterior is empty.
-  Polygon(BoundedSeries<LineString<T>> rings) : rings = validate<T>(rings);
+  Polygon(Iterable<LineString<T>> rings) : rings = validate<T>(rings);
+
+  /// Create [Polygon] from [rings] with at least exterior boundary at index 0.
+  ///
+  /// Contains also interior boundaries if length is >= 2.
+  ///
+  /// Boundaries in [rings] are represented as iterables of points of [T].
+  Polygon.fromPoints(
+    Iterable<Iterable<T>> rings,
+  ) : this(
+          BoundedSeries.from(
+            rings.map(
+              (ring) => LineString.ring(
+                ring is PointSeries<T> ? ring : PointSeries.view(ring),
+              ),
+            ),
+          ),
+        );
 
   /// Create [Polygon] from [values] with a list of rings.
   ///
@@ -55,7 +72,7 @@ class Polygon<T extends Point> extends Geometry with EquatableMixin {
 
   /// Validate [rings] to have at least one exterior and all must be rings.
   static BoundedSeries<LineString<T>> validate<T extends Point>(
-    BoundedSeries<LineString<T>> rings,
+    Iterable<LineString<T>> rings,
   ) {
     if (rings.isEmpty) {
       throw ArgumentError('Polygon must have exterior ring.');
@@ -65,7 +82,9 @@ class Polygon<T extends Point> extends Geometry with EquatableMixin {
         throw ArgumentError('Not a linear ring.');
       }
     }
-    return rings;
+    return rings is BoundedSeries<LineString<T>>
+        ? rings
+        : BoundedSeries.view(rings);
   }
 
   /// Linear rings with at least exterior boundary at index 0.
@@ -93,6 +112,15 @@ class Polygon<T extends Point> extends Geometry with EquatableMixin {
       BoundedSeries<LineString<T>>.view(rings.skip(1));
 
   @override
-  Polygon<T> transform(TransformPoint transform) =>
-      Polygon(rings.transform(transform, lazy: false));
+  Polygon<T> transform(TransformPoint transformation) =>
+      Polygon(rings.transform(transformation, lazy: false));
+
+  @override
+  Polygon<R> project<R extends Point>(
+    ProjectPoint<R> projection, {
+    PointFactory<R>? to,
+  }) =>
+      Polygon<R>(
+        rings.convert((ring) => ring.project(projection, to: to)),
+      );
 }

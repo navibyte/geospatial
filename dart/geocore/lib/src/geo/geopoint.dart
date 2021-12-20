@@ -57,7 +57,7 @@ abstract class GeoPoint extends Point<double> {
   GeoPoint newFrom(Iterable<num> coords, {int? offset, int? length});
 
   @override
-  GeoPoint transform(TransformPoint transform);
+  GeoPoint transform(TransformPoint transformation);
 }
 
 /// An immutable geographic position with longitude and latitude.
@@ -202,7 +202,7 @@ class GeoPoint2 extends GeoPoint with EquatableMixin {
   }
 
   @override
-  GeoPoint2 transform(TransformPoint transform) => transform(this);
+  GeoPoint2 transform(TransformPoint transformation) => transformation(this);
 }
 
 /// An immutable geographic position with longitude, latitude and m (measure).
@@ -333,7 +333,7 @@ class GeoPoint2m extends GeoPoint2 {
   }
 
   @override
-  GeoPoint2m transform(TransformPoint transform) => transform(this);
+  GeoPoint2m transform(TransformPoint transformation) => transformation(this);
 }
 
 /// An immutable geographic position with longitude, latitude and elevation.
@@ -465,7 +465,7 @@ class GeoPoint3 extends GeoPoint2 {
   }
 
   @override
-  GeoPoint3 transform(TransformPoint transform) => transform(this);
+  GeoPoint3 transform(TransformPoint transformation) => transformation(this);
 }
 
 /// An immutable geographic position with longitude, latitude, elev and m.
@@ -605,5 +605,5 @@ class GeoPoint3m extends GeoPoint3 {
   }
 
   @override
-  GeoPoint3m transform(TransformPoint transform) => transform(this);
+  GeoPoint3m transform(TransformPoint transformation) => transformation(this);
 }

@@ -19,17 +19,18 @@ enum LineStringType {
 @immutable
 class LineString<T extends Point> extends Geometry with EquatableMixin {
   /// Create [LineString] from [chain] of points conforming by [type].
-  LineString(this.chain, {this.type = LineStringType.any}) {
+  LineString(Iterable<T> chain, {this.type = LineStringType.any})
+      : chain = chain is PointSeries<T> ? chain : PointSeries.view(chain) {
     validate();
   }
 
   /// Create [LineString] from [chain] of points (0 or >= 2 items).
-  factory LineString.any(PointSeries<T> chain) => LineString<T>(chain);
+  factory LineString.any(Iterable<T> chain) => LineString<T>(chain);
 
   /// Create a linear ring from a closed and simple [chain] of points.
   ///
   /// There must be zero or at least four points in the chain.
-  factory LineString.ring(PointSeries<T> chain) =>
+  factory LineString.ring(Iterable<T> chain) =>
       LineString<T>(chain, type: LineStringType.ring);
 
   /// Create [LineString] from [values] with a chain of points.
@@ -101,19 +102,15 @@ class LineString<T extends Point> extends Geometry with EquatableMixin {
   Bounds get bounds => chain.bounds;
 
   @override
-  LineString<T> transform(TransformPoint transform) =>
-      LineString(chain.transform(transform, lazy: false), type: type);
+  LineString<T> transform(TransformPoint transformation) =>
+      LineString(chain.transform(transformation, lazy: false), type: type);
 
-  /// Returns a new line string with points projected using [project] function.
-  ///
-  /// When [factory] is provided, then target points of [R] are created using
-  /// that as a point factory. Otherwise [project] uses it's own factory.
+  @override
   LineString<R> project<R extends Point>(
-    ProjectPoint<R> project, {
-    bool lazy = false,
+    ProjectPoint<R> projection, {
     PointFactory<R>? to,
   }) =>
-      LineString(chain.project(project, lazy: false, to: to), type: type);
+      LineString(chain.project(projection, lazy: false, to: to), type: type);
 
   @override
   List<Object?> get props => [type, chain];

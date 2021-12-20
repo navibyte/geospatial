@@ -15,13 +15,13 @@ import '../common.dart';
 
 /// Feature items with wrapped feature collection and metadata.
 @immutable
-class FeatureItems<T extends Feature> extends FeatureCollection<T>
+class FeatureItems<E extends Feature> extends FeatureCollection<E>
     with EquatableMixin {
   /// Create feature items by wrapping [collection] and [meta] data.
   const FeatureItems({required this.collection, required this.meta});
 
   /// The wrapped feature [collection].
-  final FeatureCollection<T> collection;
+  final FeatureCollection<E> collection;
 
   /// The wrapped [meta] data.
   final ItemsMeta meta;
@@ -30,12 +30,24 @@ class FeatureItems<T extends Feature> extends FeatureCollection<T>
   List<Object?> get props => [collection, meta];
 
   @override
-  BoundedSeries<T> get features => collection.features;
+  BoundedSeries<E> get features => collection.features;
 
   @override
   Bounds get bounds => collection.bounds;
 
   @override
-  FeatureItems<T> transform(TransformPoint transform) =>
-      FeatureItems(collection: collection.transform(transform), meta: meta);
+  FeatureItems<E> transform(TransformPoint transformation) => FeatureItems(
+        collection: collection.transform(transformation),
+        meta: meta,
+      );
+
+  @override
+  FeatureCollection project<R extends Point>(
+    ProjectPoint<R> projection, {
+    PointFactory<R>? to,
+  }) =>
+      FeatureItems(
+        collection: collection.project(projection, to: to),
+        meta: meta,
+      );
 }

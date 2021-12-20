@@ -52,9 +52,7 @@ void main() {
       }
     });
 
-    test(
-        'wgs84ToWebMercator(GeoPoint to PointXX) in PointSeries and LineString',
-        () {
+    test('wgs84ToWebMercator(GeoPoint to PointXX) in different geometries', () {
       _testToWebMercatorWithPoints(Point2.coordinates);
       _testToWebMercatorWithPoints(Point2m.coordinates);
       _testToWebMercatorWithPoints(Point3.coordinates);
@@ -63,7 +61,7 @@ void main() {
 
     test(
         'webMercatorToWgs84(CartesianPoint to GeoPointXX)'
-        ' in PointSeries and LineString', () {
+        ' in different geometries', () {
       _testToWgs84WithPoints(GeoPoint2.coordinates);
       _testToWgs84WithPoints(GeoPoint2m.coordinates);
       _testToWgs84WithPoints(GeoPoint3.coordinates);
@@ -91,15 +89,85 @@ void _testToWgs84WithPoints<R extends GeoPoint>(
 ) {
   final toWgs84 = webMercatorToWgs84(factory);
 
-  // point serties
+  // point series and multipoint
   final points = _testWebMercatorPoints();
-  final pointsUnprojected = points.project(toWgs84);
+  final pointsProjected = points.project(toWgs84);
+  final multiPoint = MultiPoint(points);
+  final multiPointProjected = multiPoint.project(toWgs84);
   for (var i = 0; i < points.length; i++) {
     _expectProjected(
-      pointsUnprojected[i],
+      pointsProjected[i],
+      points[i].project(toWgs84),
+    );
+    _expectProjected(
+      multiPointProjected.points[i],
       points[i].project(toWgs84),
     );
   }
+
+  // bounds
+  final bounds = Bounds.of(min: points[0], max: points[1]);
+  final boundsProjected = bounds.project(toWgs84);
+  final boundsProjectedAsGeoBounds = GeoBounds(boundsProjected);
+  _expectProjected(boundsProjectedAsGeoBounds.min, pointsProjected[0]);
+  _expectProjected(boundsProjectedAsGeoBounds.max, pointsProjected[1]);
+
+  // linestring and multilinestring
+  final line = LineString.any(points);
+  final lineProjected = line.project(toWgs84);
+  final multiLine = MultiLineString([line]);
+  final multiLineProjected = multiLine.project(toWgs84);
+  for (var i = 0; i < line.chain.length; i++) {
+    _expectProjected(
+      lineProjected.chain[i],
+      line.chain[i].project(toWgs84),
+    );
+    _expectProjected(
+      multiLineProjected.lineStrings.first.chain[i],
+      line.chain[i].project(toWgs84),
+    );
+  }
+
+  // polygon and multipolygon
+  final rings = _testWebMercatorRings();
+  final polygon = Polygon.fromPoints(rings);
+  final polygonProjected = polygon.project(toWgs84);
+  final multiPolygon = MultiPolygon([polygon]);
+  final multiPolygonProjected = multiPolygon.project(toWgs84);
+  for (var i = 0; i < rings.length; i++) {
+    final projectedRing = polygonProjected.rings[i];
+    final projectedMultiRing = multiPolygonProjected.polygons.first.rings[i];
+    final originalRing = rings.elementAt(i);
+    for (var j = 0; j < originalRing.length; j++) {
+      final match = originalRing.elementAt(i).project(toWgs84);
+      _expectProjected(projectedRing.chain[i], match);
+      _expectProjected(projectedMultiRing.chain[i], match);
+    }
+  }
+
+  // geometry collection
+  final collection = GeometryCollection([polygon]);
+  final collectionProjected = collection.project(toWgs84);
+  expect(collectionProjected.geometries.first, polygonProjected);
+
+  // feature
+  final feature = Feature.of(
+    id: '1',
+    properties: {'prop1': 'a', 'prop2': 100},
+    geometry: line,
+  );
+  final featureProjected = feature.project(toWgs84);
+  expect(featureProjected.geometry, lineProjected);
+  expect(featureProjected.id, '1');
+  expect(featureProjected.properties, {'prop1': 'a', 'prop2': 100});
+
+  // feature collection
+  final fc = FeatureCollection.of(features: [feature]);
+  final fcProjected = fc.project(toWgs84);
+  final fcProjectedFirst = fcProjected.features.first;
+  expect(fcProjectedFirst.geometry, lineProjected);
+  expect(fcProjectedFirst.id, '1');
+  expect(fcProjectedFirst.properties, {'prop1': 'a', 'prop2': 100});
 }
 
 void _testToWebMercatorWithPoints<R extends CartesianPoint>(
@@ -107,27 +175,90 @@ void _testToWebMercatorWithPoints<R extends CartesianPoint>(
 ) {
   final toWebMercator = wgs84ToWebMercator(factory);
 
-  // point serties
+  // point series and multipoint
   final points = _testWgs84Points();
   final pointsProjected = points.project(toWebMercator);
+  final multiPoint = MultiPoint(points);
+  final multiPointProjected = multiPoint.project(toWebMercator);
   for (var i = 0; i < points.length; i++) {
     _expectProjected(
       pointsProjected[i],
       points[i].project(toWebMercator),
-      0.01,
+    );
+    _expectProjected(
+      multiPointProjected.points[i],
+      points[i].project(toWebMercator),
     );
   }
 
-  // linestring
+  // bounds
+  final bounds = Bounds.of(min: points[0], max: points[1]);
+  final boundsProjected = bounds.project(toWebMercator);
+  _expectProjected(boundsProjected.min, pointsProjected[0]);
+  _expectProjected(boundsProjected.max, pointsProjected[1]);
+
+  // geobounds
+  final geoBounds = GeoBounds.of(min: points[0], max: points[1]);
+  final geoBoundsProjected = geoBounds.project(toWebMercator);
+  _expectProjected(geoBoundsProjected.min, pointsProjected[0]);
+  _expectProjected(geoBoundsProjected.max, pointsProjected[1]);
+
+  // linestring and multilinestring
   final line = LineString.any(points);
   final lineProjected = line.project(toWebMercator);
+  final multiLine = MultiLineString([line]);
+  final multiLineProjected = multiLine.project(toWebMercator);
   for (var i = 0; i < line.chain.length; i++) {
     _expectProjected(
       lineProjected.chain[i],
       line.chain[i].project(toWebMercator),
-      0.01,
+    );
+    _expectProjected(
+      multiLineProjected.lineStrings.first.chain[i],
+      line.chain[i].project(toWebMercator),
     );
   }
+
+  // polygon and multipolygon
+  final rings = _testWgs84Rings();
+  final polygon = Polygon.fromPoints(rings);
+  final polygonProjected = polygon.project(toWebMercator);
+  final multiPolygon = MultiPolygon([polygon]);
+  final multiPolygonProjected = multiPolygon.project(toWebMercator);
+  for (var i = 0; i < rings.length; i++) {
+    final projectedRing = polygonProjected.rings[i];
+    final projectedMultiRing = multiPolygonProjected.polygons.first.rings[i];
+    final originalRing = rings.elementAt(i);
+    for (var j = 0; j < originalRing.length; j++) {
+      final match = originalRing.elementAt(i).project(toWebMercator);
+      _expectProjected(projectedRing.chain[i], match);
+      _expectProjected(projectedMultiRing.chain[i], match);
+    }
+  }
+
+  // geometry collection
+  final collection = GeometryCollection([polygon]);
+  final collectionProjected = collection.project(toWebMercator);
+  expect(collectionProjected.geometries.first, polygonProjected);
+
+  // feature
+  final feature = Feature.of(
+    id: '1',
+    properties: {'prop1': 'a', 'prop2': 100},
+    geometry: line,
+  );
+  final featureProjected = feature.project(toWebMercator);
+  expect(featureProjected.geometry, lineProjected);
+  expect(featureProjected.id, '1');
+  expect(featureProjected.properties, {'prop1': 'a', 'prop2': 100});
+
+  // feature collection
+  final fc = FeatureCollection.of(features: [feature]);
+  final fcProjected = fc.project(toWebMercator);
+  final fcProjectedFirst = fcProjected.features.first;
+  expect(fcProjectedFirst.geometry, lineProjected);
+  expect(fcProjectedFirst.id, '1');
+  expect(fcProjectedFirst.properties, {'prop1': 'a', 'prop2': 100});
 }
 
 const _wgs84ToWebMercator = [
@@ -152,3 +283,36 @@ PointSeries<Point2> _testWebMercatorPoints() => PointSeries.from(
           .map((coords) => Point2(x: coords[2], y: coords[3]))
           .toList(growable: false),
     );
+
+const _wgs84ToWebMercatorExterior = [
+  [40.0, 15.0, 4452779.63, 1689200.14],
+  [50.0, 50.0, 5565974.54, 6446275.84],
+  [15.0, 45.0, 1669792.36, 5621521.49],
+  [10.0, 15.0, 1113194.91, 1689200.14],
+  [40.0, 15.0, 4452779.63, 1689200.14],
+];
+
+const _wgs84ToWebMercatorInterior = [
+  [25.0, 25.0, 2782987.27, 2875744.62],
+  [25.0, 40.0, 2782987.27, 4865942.28],
+  [35.0, 30.0, 3896182.18, 3503549.84],
+  [25.0, 25.0, 2782987.27, 2875744.62],
+];
+
+Iterable<Iterable<GeoPoint2>> _testWgs84Rings() => [
+      _wgs84ToWebMercatorExterior
+          .map((coords) => GeoPoint2(lon: coords[0], lat: coords[1]))
+          .toList(growable: false),
+      _wgs84ToWebMercatorInterior
+          .map((coords) => GeoPoint2(lon: coords[0], lat: coords[1]))
+          .toList(growable: false),
+    ];
+
+Iterable<Iterable<Point2>> _testWebMercatorRings() => [
+      _wgs84ToWebMercatorExterior
+          .map((coords) => Point2(x: coords[2], y: coords[3]))
+          .toList(growable: false),
+      _wgs84ToWebMercatorInterior
+          .map((coords) => Point2(x: coords[2], y: coords[3]))
+          .toList(growable: false),
+    ];

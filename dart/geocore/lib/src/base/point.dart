@@ -175,22 +175,23 @@ abstract class Point<C extends num> extends Geometry
   /// value, then it's ignored.
   Point copyWith({num? x, num? y, num? z, num? m});
 
-  /// Returns a new point transformed from this point using [transform].
+  /// Returns a new point transformed from this point using [transformation].
   ///
   /// The transformed point object must be of the type with same coordinate
   /// value members as this object has.
   @override
-  Point transform(TransformPoint transform);
+  Point transform(TransformPoint transformation);
 
-  /// Returns a new point projected from this point using [project] function.
+  /// Returns a new point projected from this point using [projection].
   ///
   /// When [to] is provided, then target points of [R] are created using
-  /// that as a point factory. Otherwise [project] uses it's own factory.
+  /// that as a point factory. Otherwise [projection] uses it's own factory.
+  @override
   R project<R extends Point>(
-    ProjectPoint<R> project, {
+    ProjectPoint<R> projection, {
     PointFactory<R>? to,
   }) =>
-      project(this, to: to);
+      projection(this, to: to);
 }
 
 /// A read-only cartesian (or projected) point with coordinate value getters.
@@ -211,7 +212,7 @@ abstract class CartesianPoint<C extends num> extends Point<C> {
   CartesianPoint newFrom(Iterable<num> coords, {int? offset, int? length});
 
   @override
-  CartesianPoint transform(TransformPoint transform);
+  CartesianPoint transform(TransformPoint transformation);
 }
 
 /// A private implementation for an empty point with coordinate zero values.
@@ -260,11 +261,11 @@ class _PointEmpty<C extends num> extends Point<C> with EquatableMixin {
   Point copyWith({num? x, num? y, num? z, num? m}) => this;
 
   @override
-  Point transform(TransformPoint transform) => this;
+  Point transform(TransformPoint transformation) => this;
 
   @override
   R project<R extends Point>(
-    ProjectPoint<R> project, {
+    ProjectPoint<R> projection, {
     PointFactory<R>? to,
   }) =>
       throw const FormatException('Cannot project empty point.');

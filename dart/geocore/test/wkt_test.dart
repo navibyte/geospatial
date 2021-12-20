@@ -428,7 +428,7 @@ void main() {
 
       // GEOMETRYCOLLECTION(POINT(4 6),LINESTRING(4 6,7 10))
       // GeometryCollection contains Point types and Point2 are concrete types.
-      final geometryCollection1 = GeometryCollection.from(<Geometry>[
+      final geometryCollection1 = GeometryCollection([
         Point2.from([4.0, 6.0]),
         LineString.make(
           [
@@ -486,7 +486,7 @@ void main() {
                     40 40))
       )
       '''),
-          GeometryCollection.from(<Geometry>[
+          GeometryCollection([
             Point2.parse('40 10'),
             LineString<Point2>.parse('10 10, 20 20, 10 40', Point2.coordinates),
             Polygon<Point2>.parse(

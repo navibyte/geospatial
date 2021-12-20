@@ -11,33 +11,33 @@ part of 'base.dart';
 /// A series of points could represents a geometry path, a line string,
 /// an outer or inner linear ring of a polygon, a multi point, a vertex array or
 /// any other collection for points.
-abstract class PointSeries<T extends Point>
-    extends _BatchedSeries<PointSeries<T>, T> {
+abstract class PointSeries<E extends Point>
+    extends _BatchedSeries<PointSeries<E>, E> implements Bounded {
   /// Default `const` constructor to allow extending this abstract class.
   const PointSeries();
 
   /// Create a [PointSeries] instance backed by [source].
   ///
   /// An optional [bounds] can be provided or it's lazy calculated if null.
-  factory PointSeries.view(Iterable<T> source, {Bounds? bounds}) =
-      _PointSeriesView<T>;
+  factory PointSeries.view(Iterable<E> source, {Bounds? bounds}) =
+      _PointSeriesView<E>;
 
   /// Create an immutable [PointSeries] with points copied from [source].
   ///
   /// An optional [bounds] can be provided or it's lazy calculated if null.
-  factory PointSeries.from(Iterable<T> source, {Bounds? bounds}) =>
-      PointSeries<T>.view(List<T>.unmodifiable(source), bounds: bounds);
+  factory PointSeries.from(Iterable<E> source, {Bounds? bounds}) =>
+      PointSeries<E>.view(List<E>.unmodifiable(source), bounds: bounds);
 
   /// Create [PointSeries] from [values] with a list of points.
   ///
   /// An optional [bounds] can be provided or it's lazy calculated if null.
   factory PointSeries.make(
     Iterable<Iterable<num>> values,
-    PointFactory<T> pointFactory, {
+    PointFactory<E> pointFactory, {
     Bounds? bounds,
   }) =>
-      PointSeries<T>.from(
-        values.map<T>((coords) => pointFactory.newFrom(coords)),
+      PointSeries<E>.from(
+        values.map<E>((coords) => pointFactory.newFrom(coords)),
         bounds: bounds,
       );
 
@@ -49,12 +49,12 @@ abstract class PointSeries<T extends Point>
   /// Throws FormatException if cannot parse.
   factory PointSeries.parse(
     String text,
-    PointFactory<T> pointFactory, {
+    PointFactory<E> pointFactory, {
     ParseCoordsList? parser,
   }) =>
       parser != null
-          ? PointSeries<T>.make(parser.call(text), pointFactory)
-          : parseWktPointSeries<T>(text, pointFactory);
+          ? PointSeries<E>.make(parser.call(text), pointFactory)
+          : parseWktPointSeries<E>(text, pointFactory);
 
   /// X coordinate as num at [index].
   ///
@@ -89,22 +89,23 @@ abstract class PointSeries<T extends Point>
   /// True if the first and last point equals in 2D within [toleranceHoriz].
   bool isClosedBy(num toleranceHoriz);
 
-  /// Returns a new series with all points projected using [project] function.
+  /// Returns a new series with all points projected using [projection].
   ///
   /// The projected series is populated by default. If [lazy] is set true then
   /// returns a new lazy series with points of the series projected lazily.
   ///
   /// When [to] is provided, then target points of [R] are created using
-  /// that as a point factory. Otherwise [project] uses it's own factory.
+  /// that as a point factory. Otherwise [projection] uses it's own factory.
+  @override
   PointSeries<R> project<R extends Point>(
-    ProjectPoint<R> project, {
+    ProjectPoint<R> projection, {
     bool lazy = false,
     PointFactory<R>? to,
   });
 }
 
 /// A partial implementation of [PointSeries] as a mixin.
-mixin PointSeriesMixin<T extends Point> implements PointSeries<T> {
+mixin PointSeriesMixin<E extends Point> implements PointSeries<E> {
   @override
   bool get isClosed => length >= 2 && first.equals2D(last);
 
@@ -148,19 +149,19 @@ mixin PointSeriesMixin<T extends Point> implements PointSeries<T> {
 
 /// Private implementation of [PointSeries].
 /// The implementation may change in future.
-class _PointSeriesView<T extends Point>
-    extends _BatchedSeriesView<PointSeries<T>, T> with PointSeriesMixin<T> {
-  _PointSeriesView(Iterable<T> source, {Bounds? bounds})
+class _PointSeriesView<E extends Point>
+    extends _BatchedSeriesView<PointSeries<E>, E> with PointSeriesMixin<E> {
+  _PointSeriesView(Iterable<E> source, {Bounds? bounds})
       : super(
           source,
-          bounds: PointSeriesMixin.initBounds<T>(
+          bounds: PointSeriesMixin.initBounds<E>(
             source,
             bounds: bounds,
           ),
         );
 
   @override
-  PointSeries<T> intersectByBounds(Bounds bounds, {bool lazy = false}) {
+  PointSeries<E> intersectByBounds(Bounds bounds, {bool lazy = false}) {
     final intersected = where((point) => bounds.intersectsPoint(point));
     return _PointSeriesView(
       lazy ? intersected : intersected.toList(growable: false),
@@ -168,7 +169,7 @@ class _PointSeriesView<T extends Point>
   }
 
   @override
-  PointSeries<T> intersectByBounds2D(Bounds bounds, {bool lazy = false}) {
+  PointSeries<E> intersectByBounds2D(Bounds bounds, {bool lazy = false}) {
     final intersected = where((point) => bounds.intersectsPoint2D(point));
     return _PointSeriesView(
       lazy ? intersected : intersected.toList(growable: false),
@@ -176,8 +177,8 @@ class _PointSeriesView<T extends Point>
   }
 
   @override
-  PointSeries<T> transform(TransformPoint transform, {bool lazy = false}) {
-    final transformed = map((point) => point.transform(transform) as T);
+  PointSeries<E> transform(TransformPoint transformation, {bool lazy = false}) {
+    final transformed = map((point) => point.transform(transformation) as E);
     return _PointSeriesView(
       lazy ? transformed : transformed.toList(growable: false),
     );
@@ -185,11 +186,11 @@ class _PointSeriesView<T extends Point>
 
   @override
   PointSeries<R> project<R extends Point>(
-    ProjectPoint<R> project, {
+    ProjectPoint<R> projection, {
     bool lazy = false,
     PointFactory<R>? to,
   }) {
-    final projected = map((point) => project(point, to: to));
+    final projected = map((point) => projection(point, to: to));
     return _PointSeriesView(
       lazy ? projected : projected.toList(growable: false),
     );
