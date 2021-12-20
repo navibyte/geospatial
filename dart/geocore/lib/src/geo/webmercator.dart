@@ -34,7 +34,7 @@ ProjectPoint<R> wgs84ToWebMercator<R extends CartesianPoint>(
 ) =>
     (Point source, {PointFactory<R>? to}) {
       // source coordinates
-      final lon = source.x; // longitude is at x 
+      final lon = source.x; // longitude is at x
       final lat = source.y; // latitude is at y
 
       // project (lon, lat) to (x, y)
