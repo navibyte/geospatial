@@ -651,7 +651,7 @@ In the `pubspec.yaml` of your project add the dependency:
 
 ```yaml
 dependencies:
-  geocore: ^0.8.0-a.4
+  geocore: ^0.8.0-a.5
 ```
 
 All dependencies used by `geocore` are also ready for 

@@ -1,6 +1,6 @@
 ## 0.8.0
 
-(beta-release 0.8.0 currently under development at version 0.8.0-a.4)
+(beta-release 0.8.0 currently under development at version 0.8.0-a.5)
 
 ⚠️ Breaking changes:
 - [Refactor Feature class inheritance and types of id and properties members #39](https://github.com/navibyte/geospatial/issues/39)
@@ -15,6 +15,7 @@
 - [Add CartesianPoint to the Point-class hierarchy #54](https://github.com/navibyte/geospatial/issues/54)
 - [Coordinate conversion between WGS84 (lon-lat) and Web Mercator projection (meters)](https://github.com/navibyte/geospatial/issues/55)
 - [Add simpler constructors on geometry classes expecting bounded or point series #59](https://github.com/navibyte/geospatial/issues/59)
+- [Add projection support provided by the proj4dart package #60](https://github.com/navibyte/geospatial/issues/60)
 
 🛠 Refactoring:
 - [Refactor coordinate value members of immutable Point classes #44](https://github.com/navibyte/geospatial/issues/44)

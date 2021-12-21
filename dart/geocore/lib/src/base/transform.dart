@@ -9,6 +9,8 @@ part of 'base.dart';
 /// A function to transform the [source] point of [T] to a point of [T].
 ///
 /// Target points of [T] are created using [source] as a point factory.
+///
+/// Throws FormatException if cannot transform.
 typedef TransformPoint = T Function<T extends Point>(T source);
 
 /// A function to project the [source] point to a point of [R].
@@ -20,10 +22,33 @@ typedef TransformPoint = T Function<T extends Point>(T source);
 /// geographical points to projected cartesian points, or an inverse
 /// projection (or an "unprojection") from projected cartesian points to
 /// geographical points. Both are called here "project point" functions.
+///
+/// Throws FormatException if cannot project.
 typedef ProjectPoint<R extends Point> = R Function(
   Point source, {
   PointFactory<R>? to,
 });
+
+/// A projection adapter bundles forward and inverse projections.
+mixin ProjectionAdapter<FromPoint extends Point, ToPoint extends Point> {
+  /// The source projection code (like "EPSG:4326").
+  String get fromCode;
+
+  /// The target projection code (like "EPSG:3857").
+  String get toCode;
+
+  /// Returns a projection function projecting from [fromCode] to [toCode].
+  ///
+  /// By default, result points of [R] are created using [factory]. This can be
+  /// overridden by giving another factory when calling a projection function.
+  ProjectPoint<R> forward<R extends ToPoint>(PointFactory<R> factory);
+
+  /// Returns a projection function unprojecting from [toCode] to [fromCode].
+  ///
+  /// By default, result points of [R] are created using [factory]. This can be
+  /// overridden by giving another factory when calling a projection function.
+  ProjectPoint<R> inverse<R extends FromPoint>(PointFactory<R> factory);
+}
 
 // -----------------------------------------------------------------------------
 // Some basic transformation functions (like translate, scale, rotate).

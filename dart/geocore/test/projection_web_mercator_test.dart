@@ -12,28 +12,30 @@ import 'package:geocore/geocore.dart';
 
 import 'package:test/test.dart';
 
+import 'projection_sample.dart';
+
 void main() {
   // configure Equatable to apply toString() default impls
   EquatableConfig.stringify = true;
 
   group('Test projections between WGS84 and Web Mercator', () {
     test('webMercatorToWgs84(CartesianPoint to GeoPoint2)', () {
-      final toWgs84 = webMercatorToWgs84(GeoPoint2.coordinates);
-      for (final coords in _wgs84ToWebMercator) {
+      final toWgs84 = wgs84ToWebMercator.inverse(GeoPoint2.coordinates);
+      for (final coords in wgs84ToWebMercatorData) {
         final point2 = Point2(x: coords[2], y: coords[3]);
         final pointWrapper = PointWrapper(point2);
         final geoPoint2 = GeoPoint2(lon: coords[0], lat: coords[1]);
-        _expectProjected(point2.project(toWgs84), geoPoint2);
-        _expectProjected(pointWrapper.project(toWgs84), geoPoint2);
-        _expectProjected(
+        expectProjected(point2.project(toWgs84), geoPoint2);
+        expectProjected(pointWrapper.project(toWgs84), geoPoint2);
+        expectProjected(
           point2.project(toWgs84),
           GeoPoint3(lon: coords[0], lat: coords[1]),
         );
-        _expectProjected(
+        expectProjected(
           Point3(x: coords[2], y: coords[3], z: 30.0).project(toWgs84),
           GeoPoint2(lon: coords[0], lat: coords[1]),
         );
-        _expectProjected(
+        expectProjected(
           Point3(x: coords[2], y: coords[3], z: 30.0)
               .project(toWgs84, to: GeoPoint3.coordinates),
           GeoPoint3(lon: coords[0], lat: coords[1], elev: 30.0),
@@ -42,13 +44,13 @@ void main() {
     });
 
     test('wgs84ToWebMercator(GeoPoint to Point3)', () {
-      final toWebMercator = wgs84ToWebMercator(Point3.coordinates);
-      for (final coords in _wgs84ToWebMercator) {
+      final toWebMercator = wgs84ToWebMercator.forward(Point3.coordinates);
+      for (final coords in wgs84ToWebMercatorData) {
         final geoPoint3 = GeoPoint3(lon: coords[0], lat: coords[1]);
         final geoPointWrapper = GeoPointWrapper(geoPoint3);
         final point3 = Point3(x: coords[2], y: coords[3]);
-        _expectProjected(geoPoint3.project(toWebMercator), point3, 0.01);
-        _expectProjected(geoPointWrapper.project(toWebMercator), point3, 0.01);
+        expectProjected(geoPoint3.project(toWebMercator), point3, 0.01);
+        expectProjected(geoPointWrapper.project(toWebMercator), point3, 0.01);
       }
     });
 
@@ -70,36 +72,22 @@ void main() {
   });
 }
 
-void _expectProjected<T1 extends Point, T2 extends Point>(
-  T1 actual,
-  T2 expected, [
-  num? tol,
-]) {
-  final equals2D = actual.equals2D(expected, toleranceHoriz: tol ?? 0.0000001);
-  if (!equals2D) {
-    print('$actual $expected');
-  }
-  expect(equals2D, isTrue);
-  expect(actual.z, expected.z);
-  expect(actual.m, expected.m);
-}
-
 void _testToWgs84WithPoints<R extends GeoPoint>(
   PointFactory<R> factory,
 ) {
-  final toWgs84 = webMercatorToWgs84(factory);
+  final toWgs84 = wgs84ToWebMercator.inverse(factory);
 
   // point series and multipoint
-  final points = _testWebMercatorPoints();
+  final points = testWebMercatorPoints();
   final pointsProjected = points.project(toWgs84);
   final multiPoint = MultiPoint(points);
   final multiPointProjected = multiPoint.project(toWgs84);
   for (var i = 0; i < points.length; i++) {
-    _expectProjected(
+    expectProjected(
       pointsProjected[i],
       points[i].project(toWgs84),
     );
-    _expectProjected(
+    expectProjected(
       multiPointProjected.points[i],
       points[i].project(toWgs84),
     );
@@ -109,8 +97,8 @@ void _testToWgs84WithPoints<R extends GeoPoint>(
   final bounds = Bounds.of(min: points[0], max: points[1]);
   final boundsProjected = bounds.project(toWgs84);
   final boundsProjectedAsGeoBounds = GeoBounds(boundsProjected);
-  _expectProjected(boundsProjectedAsGeoBounds.min, pointsProjected[0]);
-  _expectProjected(boundsProjectedAsGeoBounds.max, pointsProjected[1]);
+  expectProjected(boundsProjectedAsGeoBounds.min, pointsProjected[0]);
+  expectProjected(boundsProjectedAsGeoBounds.max, pointsProjected[1]);
 
   // linestring and multilinestring
   final line = LineString.any(points);
@@ -118,18 +106,18 @@ void _testToWgs84WithPoints<R extends GeoPoint>(
   final multiLine = MultiLineString([line]);
   final multiLineProjected = multiLine.project(toWgs84);
   for (var i = 0; i < line.chain.length; i++) {
-    _expectProjected(
+    expectProjected(
       lineProjected.chain[i],
       line.chain[i].project(toWgs84),
     );
-    _expectProjected(
+    expectProjected(
       multiLineProjected.lineStrings.first.chain[i],
       line.chain[i].project(toWgs84),
     );
   }
 
   // polygon and multipolygon
-  final rings = _testWebMercatorRings();
+  final rings = testWebMercatorRings();
   final polygon = Polygon.fromPoints(rings);
   final polygonProjected = polygon.project(toWgs84);
   final multiPolygon = MultiPolygon([polygon]);
@@ -140,8 +128,8 @@ void _testToWgs84WithPoints<R extends GeoPoint>(
     final originalRing = rings.elementAt(i);
     for (var j = 0; j < originalRing.length; j++) {
       final match = originalRing.elementAt(i).project(toWgs84);
-      _expectProjected(projectedRing.chain[i], match);
-      _expectProjected(projectedMultiRing.chain[i], match);
+      expectProjected(projectedRing.chain[i], match);
+      expectProjected(projectedMultiRing.chain[i], match);
     }
   }
 
@@ -173,19 +161,19 @@ void _testToWgs84WithPoints<R extends GeoPoint>(
 void _testToWebMercatorWithPoints<R extends CartesianPoint>(
   PointFactory<R> factory,
 ) {
-  final toWebMercator = wgs84ToWebMercator(factory);
+  final toWebMercator = wgs84ToWebMercator.forward(factory);
 
   // point series and multipoint
-  final points = _testWgs84Points();
+  final points = testWgs84Points();
   final pointsProjected = points.project(toWebMercator);
   final multiPoint = MultiPoint(points);
   final multiPointProjected = multiPoint.project(toWebMercator);
   for (var i = 0; i < points.length; i++) {
-    _expectProjected(
+    expectProjected(
       pointsProjected[i],
       points[i].project(toWebMercator),
     );
-    _expectProjected(
+    expectProjected(
       multiPointProjected.points[i],
       points[i].project(toWebMercator),
     );
@@ -194,14 +182,14 @@ void _testToWebMercatorWithPoints<R extends CartesianPoint>(
   // bounds
   final bounds = Bounds.of(min: points[0], max: points[1]);
   final boundsProjected = bounds.project(toWebMercator);
-  _expectProjected(boundsProjected.min, pointsProjected[0]);
-  _expectProjected(boundsProjected.max, pointsProjected[1]);
+  expectProjected(boundsProjected.min, pointsProjected[0]);
+  expectProjected(boundsProjected.max, pointsProjected[1]);
 
   // geobounds
   final geoBounds = GeoBounds.of(min: points[0], max: points[1]);
   final geoBoundsProjected = geoBounds.project(toWebMercator);
-  _expectProjected(geoBoundsProjected.min, pointsProjected[0]);
-  _expectProjected(geoBoundsProjected.max, pointsProjected[1]);
+  expectProjected(geoBoundsProjected.min, pointsProjected[0]);
+  expectProjected(geoBoundsProjected.max, pointsProjected[1]);
 
   // linestring and multilinestring
   final line = LineString.any(points);
@@ -209,18 +197,18 @@ void _testToWebMercatorWithPoints<R extends CartesianPoint>(
   final multiLine = MultiLineString([line]);
   final multiLineProjected = multiLine.project(toWebMercator);
   for (var i = 0; i < line.chain.length; i++) {
-    _expectProjected(
+    expectProjected(
       lineProjected.chain[i],
       line.chain[i].project(toWebMercator),
     );
-    _expectProjected(
+    expectProjected(
       multiLineProjected.lineStrings.first.chain[i],
       line.chain[i].project(toWebMercator),
     );
   }
 
   // polygon and multipolygon
-  final rings = _testWgs84Rings();
+  final rings = testWgs84Rings();
   final polygon = Polygon.fromPoints(rings);
   final polygonProjected = polygon.project(toWebMercator);
   final multiPolygon = MultiPolygon([polygon]);
@@ -231,8 +219,8 @@ void _testToWebMercatorWithPoints<R extends CartesianPoint>(
     final originalRing = rings.elementAt(i);
     for (var j = 0; j < originalRing.length; j++) {
       final match = originalRing.elementAt(i).project(toWebMercator);
-      _expectProjected(projectedRing.chain[i], match);
-      _expectProjected(projectedMultiRing.chain[i], match);
+      expectProjected(projectedRing.chain[i], match);
+      expectProjected(projectedMultiRing.chain[i], match);
     }
   }
 
@@ -260,59 +248,3 @@ void _testToWebMercatorWithPoints<R extends CartesianPoint>(
   expect(fcProjectedFirst.id, '1');
   expect(fcProjectedFirst.properties, {'prop1': 'a', 'prop2': 100});
 }
-
-const _wgs84ToWebMercator = [
-  [0.0, 0.0, 0.0, 0.0],
-  [8.8472315, 47.3238447, 984869.31, 5995094.90],
-  [-47.592335, -69.493853, -5297954.50, -10905942.09],
-  [120.39284, 30.239245, 13402069.64, 3534339.78],
-  [-179.9999999, -85.051129, -20037508.33, -20037508.63],
-  [179.9999999, 85.051129, 20037508.33, 20037508.63],
-  [-180.0, -85.051129, -20037508.34, -20037508.63],
-  [180.0, 85.051129, -20037508.34, 20037508.63],
-];
-
-PointSeries<GeoPoint2> _testWgs84Points() => PointSeries.from(
-      _wgs84ToWebMercator
-          .map((coords) => GeoPoint2(lon: coords[0], lat: coords[1]))
-          .toList(growable: false),
-    );
-
-PointSeries<Point2> _testWebMercatorPoints() => PointSeries.from(
-      _wgs84ToWebMercator
-          .map((coords) => Point2(x: coords[2], y: coords[3]))
-          .toList(growable: false),
-    );
-
-const _wgs84ToWebMercatorExterior = [
-  [40.0, 15.0, 4452779.63, 1689200.14],
-  [50.0, 50.0, 5565974.54, 6446275.84],
-  [15.0, 45.0, 1669792.36, 5621521.49],
-  [10.0, 15.0, 1113194.91, 1689200.14],
-  [40.0, 15.0, 4452779.63, 1689200.14],
-];
-
-const _wgs84ToWebMercatorInterior = [
-  [25.0, 25.0, 2782987.27, 2875744.62],
-  [25.0, 40.0, 2782987.27, 4865942.28],
-  [35.0, 30.0, 3896182.18, 3503549.84],
-  [25.0, 25.0, 2782987.27, 2875744.62],
-];
-
-Iterable<Iterable<GeoPoint2>> _testWgs84Rings() => [
-      _wgs84ToWebMercatorExterior
-          .map((coords) => GeoPoint2(lon: coords[0], lat: coords[1]))
-          .toList(growable: false),
-      _wgs84ToWebMercatorInterior
-          .map((coords) => GeoPoint2(lon: coords[0], lat: coords[1]))
-          .toList(growable: false),
-    ];
-
-Iterable<Iterable<Point2>> _testWebMercatorRings() => [
-      _wgs84ToWebMercatorExterior
-          .map((coords) => Point2(x: coords[2], y: coords[3]))
-          .toList(growable: false),
-      _wgs84ToWebMercatorInterior
-          .map((coords) => Point2(x: coords[2], y: coords[3]))
-          .toList(growable: false),
-    ];
