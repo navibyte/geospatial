@@ -4,8 +4,9 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '../../base.dart';
-import '../../feature.dart';
+import '/src/base.dart';
+import '/src/data/feature.dart';
+import '/src/data/simple_geometry.dart';
 
 import 'range.dart';
 

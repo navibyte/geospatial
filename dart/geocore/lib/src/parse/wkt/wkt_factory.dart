@@ -4,11 +4,11 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '../../base.dart';
-import '../../geo.dart';
-import '../../utils/wkt.dart';
-
-import '../factory.dart';
+import '/src/base.dart';
+import '/src/coordinates/cartesian.dart';
+import '/src/coordinates/geographic.dart';
+import '/src/parse/factory.dart';
+import '/src/utils/wkt_data.dart';
 
 /// The default WKT factory instace assuming geographic CRS80 coordinates.
 ///

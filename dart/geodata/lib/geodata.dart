@@ -9,6 +9,12 @@
 /// Usage: import `package:geodata/geodata.dart`
 library geodata;
 
+// todo: new mini libraries
+// export 'base.dart';
+// export 'common.dart'; 
+// export 'geojson_features.dart';
+// export 'ogcapi_features.dart';
+
 // Export mini-libraries forming the whole "geodata" library.
 export 'api_common.dart';
 export 'api_features.dart';

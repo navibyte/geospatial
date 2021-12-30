@@ -21,12 +21,12 @@ void main() {
     final adapterWMToWgs84 = Proj4Adapter.resolve('EPSG:3857', 'EPSG:4326');
 
     test('Create projection adapters', () {
-      expect(adapterWgs84ToWM.fromCode, 'EPSG:4326');
-      expect(adapterWgs84ToWM.toCode, 'EPSG:3857');
+      expect(adapterWgs84ToWM.fromCrs, 'EPSG:4326');
+      expect(adapterWgs84ToWM.toCrs, 'EPSG:3857');
       expect(adapterWgs84ToWM.tuple.fromProj.projName, 'longlat');
       expect(adapterWgs84ToWM.tuple.toProj.projName, 'merc');
-      expect(adapterWMToWgs84.fromCode, 'EPSG:3857');
-      expect(adapterWMToWgs84.toCode, 'EPSG:4326');
+      expect(adapterWMToWgs84.fromCrs, 'EPSG:3857');
+      expect(adapterWMToWgs84.toCrs, 'EPSG:4326');
       expect(adapterWMToWgs84.tuple.fromProj.projName, 'merc');
       expect(adapterWMToWgs84.tuple.toProj.projName, 'longlat');
     });
@@ -114,8 +114,8 @@ void main() {
         expect(adapter, isNotNull);
 
         if (adapter != null) {
-          expect(adapter.fromCode, 'EPSG:4326');
-          expect(adapter.toCode, 'EPSG:23700');
+          expect(adapter.fromCrs, 'EPSG:4326');
+          expect(adapter.toCrs, 'EPSG:23700');
 
           const p = Point2(x: 561651.8408065987, y: 172658.61998377228);
           const geo =

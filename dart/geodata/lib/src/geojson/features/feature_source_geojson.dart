@@ -5,9 +5,7 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import 'package:datatools/fetch_api.dart';
-import 'package:geocore/parse_factory.dart';
-import 'package:geocore/parse_geojson.dart';
-
+import 'package:geocore/parse.dart';
 import 'package:meta/meta.dart';
 
 import '../../api/common.dart';

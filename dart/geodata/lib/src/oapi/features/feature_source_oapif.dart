@@ -6,7 +6,7 @@
 
 import 'package:datatools/fetch_api.dart';
 import 'package:datatools/meta_link.dart';
-import 'package:geocore/parse_geojson.dart';
+import 'package:geocore/parse.dart';
 
 import '../../api/common.dart';
 import '../../api/features.dart';
@@ -71,8 +71,8 @@ class FeatureServiceOAPIF extends DataSourceOAPI implements FeatureSource {
       params = <String, dynamic>{
         //'f': 'json',
         if (limit != null) 'limit': limit.toString(),
-        if (crs != null) 'crs': crs.id,
-        if (boundsCrs != null) 'bbox-crs': boundsCrs.id,
+        if (crs != null) 'crs': crs,
+        if (boundsCrs != null) 'bbox-crs': boundsCrs,
         if (bounds != null) 'bbox': bounds,
       };
     }

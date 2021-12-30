@@ -5,8 +5,8 @@
 ## Features
 
 * 🚀 geospatial data structures (geometry, features and metadata)
-* 🌐 geographic coordinates (longitude-latitude)
-* 🗺️ projected coordinates (cartesian XYZ)
+* 🌐 *geographic* coordinates (longitude-latitude)
+* 🗺️ *projected* coordinates (cartesian XYZ)
 * 🔷 geometry primitives (bounds or bbox, point, line string, polygon)
 * 🧩 multi geometries (multi point, multi line string, multi polygon, geometry collections)
 * ⭐ feature objects (with id, properties and geometry) and feature collections
@@ -14,19 +14,43 @@
 * 🌎 [GeoJSON](https://geojson.org/) data parser
 * 🪧 [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) 
 (Well-known text representation of geometry) data parser 
-* 🏗️ coordinate transformation abstraction to project points, geometries and features
+* 🏗️ coordinate transformations and projections (initial support)
+
+## Package
 
 **This package is at BETA stage, interfaces not fully final yet.** 
 
+This is a [Dart](https://dart.dev/) package named `geocore` under the 
+[geospatial](https://github.com/navibyte/geospatial) code repository. 
+
+To use, add the dependency in your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  geocore: ^0.8.0-a.5
+```
+
+The package contains also following mini-libraries, that can be used to import
+only a certain subset instead of the whole **geocore** library:
+
+Library         | Export also | Description 
+--------------- | ----------- | -----------------------------------------------
+**base**        | | Base classes for coordinates, points, bounds, point series and transforms.
+**common**      | | Common data structures (like temporal instants and intervals).
+**coordinates** | base | Cartesian and geographic points with some common coordinate transforms.
+**data**        | base, common, coordinates | Geospatial features and geometries (linestring, polygon, multi geometries).
+**parse**       | base, common, coordinates, data | GeoJSON and WKT (Well-known text representation of geometry) data parsers.
+**proj4d**      | base | Projections provided by the external [proj4dart](https://pub.dev/packages/proj4dart) package.
+
+All the mini-libraries have a dependency to the 
+[equatable](https://pub.dev/packages/equatable) package. The **proj4d** library 
+depends also on the [proj4dart](https://pub.dev/packages/proj4dart) package.
+
 ## Introduction
 
-You might first want to learn basics of geospatial geometry types on the
-Wikipedia page about
-[WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)
-representation of geometry. 
-
 Geometry primitives supported by this library package (with samples adapted from
-the samples of the Wikipedia source):
+the samples of the Wikipedia page about
+[WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)):
 
 Geometry    | Shape       | Samples to create instances
 ----------- | ----------- | ---------------------------
@@ -43,17 +67,108 @@ MultiPoint  | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/li
 MultiLineString  | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_MultiLineString.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_MultiLineString.svg"></a> | `MultiLineString.parse('(10 10, 20 20, 10 40), (40 40, 30 30, 40 20, 30 10)', Point2.coordinates)`
 MultiPolygon | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_MultiPolygon.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_MultiPolygon.svg"></a> | `MultiPolygon.parse('((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5))', Point2.coordinates)`
 MultiPolygon (with a hole) | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_MultiPolygon_with_hole.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_MultiPolygon_with_hole.svg"></a> | `MultiPolygon.parse('((40 40, 20 45, 45 30, 40 40)), ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35),(30 20, 20 15, 20 25, 30 20))', Point2.coordinates)`
-GeometryCollection | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_GeometryCollection.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_GeometryCollection.svg"></a> | `GeometryCollection.from(<Geometry>[Point2i(x: 40, y: 10), LineString.make([[10, 10], [20, 20], [10, 40]], Point2i.coordinates), Polygon.parse('(40 40, 20 45, 45 30, 40 40)', Point2i.coordinates)])`
+GeometryCollection | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_GeometryCollection.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_GeometryCollection.svg"></a> | `GeometryCollection([Point2i(x: 40, y: 10), LineString.make([[10, 10], [20, 20], [10, 40]], Point2i.coordinates), Polygon.parse('(40 40, 20 45, 45 30, 40 40)', Point2i.coordinates)])`
 
 Geometry types introduced above are based on the 
 [Simple Feature Access - Part 1: Common Architecture](https://www.ogc.org/standards/sfa)
 standard by [The Open Geospatial Consortium](https://www.ogc.org/) (OGC).
 
-The next section describes alternative representations for points, with either
-*projected* or *geographic* coordinates. Also other geometry types, metadata
-classes, and feature objects or geospatial entities are discussed below.
+Spatial bounds, temporal instants and intervals, and extents:
 
-## Usage
+```dart
+  Bounds.of(
+    min: Point3i(x: 10, y: 10, z: 3),
+    max: Point3i(x: 20, y: 20, z: 5),
+  );
+  GeoBounds.bboxLonLat(-20.3, 50.2, 20.5, 60.9);
+
+  Instant(DateTime.utc(2020, 10, 31, 09, 30));
+  Interval.parse('2020-10-01/2020-10-31');
+
+  Extent.single(
+    crs: 'EPSG:4326',
+    bounds: GeoBounds.bboxLonLatElev(-20.3, 50.2, 1108.4, 20.5, 60.9, 1251.4),
+    interval: Interval.openStart(DateTime.utc(2020, 10, 31)),
+  );
+```
+
+A feature (a geospatial entity) contains an id, a geometry and properties:
+
+```dart
+  Feature.view(
+    id: 'ROG',
+    geometry: GeoPoint3(lon: -0.0014, lat: 51.4778, elev: 45.0),
+    properties: {
+      'place': 'Greenwich',
+      'city': 'London',
+    },
+  );
+```
+
+Built-in coordinate projections (currently only between WGS84 and Web Mercator):
+
+```dart
+  // From GeoPoint2 (WGS 84 longitude-latitude) to Point2 (Web Mercator metric)
+  final forward = wgs84ToWebMercator.forward(Point2.coordinates);
+  final projected = GeoPoint2(lon: -0.0014, lat: 51.4778).project(forward);
+
+  // From Point2 (Web Mercator metric) to GeoPoint2 (WGS 84 longitude-latitude)
+  final inverse = wgs84ToWebMercator.inverse(GeoPoint2.coordinates);
+  final unprojected = projected.project(inverse);
+```
+
+Coordinate projections based on the external [proj4dart](https://pub.dev/packages/proj4dart) package:
+
+```dart
+  // A projection adapter from WGS84 (EPSG:4326) to EPSG:23700 (with definition)
+  // (based on the sample at https://pub.dev/packages/proj4dart).
+  final adapter = proj4dart(
+    'EPSG:4326',
+    'EPSG:23700',
+    toDef: '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 '
+        '+k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 '
+        '+towgs84=52.17,-71.82,-14.9,0,0,0,0 +units=m +no_defs',
+  );
+
+  // Apply a forward projection to EPSG:23700 with points represented as Point2.
+  GeoPoint2(lon: 17.8880, lat: 46.8922)
+      .project(adapter.forward(Point2.coordinates));
+```
+
+Parsing [GeoJSON](https://geojson.org/) data:
+
+```dart
+  geoJSON.feature(
+    '''
+    {
+      "type": "Feature",
+      "id": "ROG",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.0014, 51.4778, 45.0]  
+      },
+      "properties": {
+        "place": "Greenwich",
+        "city": "London"
+      }
+    }  
+  ''',
+  );
+```
+
+Parsing [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) 
+(Well-known text representation of geometry) data:
+
+```dart
+  wktProjected.parse('LINESTRING (200.1 500.9, 210.2 510.4)');
+
+  wktGeographic.parse(
+    'POLYGON ((40 15, 50 50, 15 45, 10 15, 40 15),'
+    ' (25 25, 25 40, 35 30, 25 25))',
+  );
+```
+
+## User guide
 
 ### Cartesian or projected points
 
@@ -391,20 +506,6 @@ Temporal data can be represented as *instants* (a time stamp) and *intervals*
   Interval.parse('2020-10-01/2020-10-31');
 ```
 
-### Coordinate reference system identifiers
-
-A [Coordinate reference system](https://en.wikipedia.org/wiki/Spatial_reference_system)
-(CRS) is *a coordinate-based local, regional or global system used to locate geographical entities*.
-
-**Currently the support for CRSs in this library is very limited**. However it's 
-possible to create identifiers (with more support coming in future releases):
-
-* CRS object created with an identifier: `CRS.id('urn:ogc:def:crs:EPSG::4326')`
-* `CRS84` constant refers to `http://www.opengis.net/def/crs/OGC/1.3/CRS84`
-  * WGS 84 longitude-latitude
-* `CRS84h` constant refers to `http://www.opengis.net/def/crs/OGC/0/CRS84h`
-  * WGS 84 longitude-latitude-height
-
 ### Extents
 
 Extent objects have both spatial bounds and temporal interval, and they are
@@ -413,14 +514,14 @@ useful in metadata structures for geospatial data sources.
 ```dart
   // An extent with spatial (WGS 84 longitude-latitude) and temporal parts.
   Extent.single(
-    crs: CRS84,
+    crs: 'EPSG:4326',
     bounds: GeoBounds.bboxLonLat(-20.0, 50.0, 20.0, 60.0),
     interval: Interval.parse('../2020-10-31'),
   );
 
   // An extent with multiple spatial bounds and temporal interval segments.
   Extent.multi(
-    crs: CRS84,
+    crs: 'EPSG:4326',
     allBounds: [
       GeoBounds.bboxLonLat(-20.0, 50.0, 20.0, 60.0),
       GeoBounds.bboxLonLat(40.0, 50.0, 60.0, 60.0),
@@ -430,6 +531,139 @@ useful in metadata structures for geospatial data sources.
       Interval.parse('2020-10-27/2020-10-31'),
     ],
   );
+```
+
+The `crs` property in extents above refer to a 
+[Coordinate reference system](https://en.wikipedia.org/wiki/Spatial_reference_system).
+that is *a coordinate-based local, regional or global system used to locate geographical entities*. 
+
+This library does not define any `crs` constants, please refer to registries
+like [The EPSG dataset](https://epsg.org/).
+
+### Projections between coordinate reference systems
+
+See the [introduction](#introduction) for samples projecting geographic points
+to projected points, and vice versa.
+
+A forward or inverse projection is implemented by a function defined as:
+
+```dart
+/// A function to project the [source] point to a point of [R].
+///
+/// When [to] is provided, then target points of [R] are created using that
+/// as a point factory. Otherwise a projection function uses it's own factory.
+///
+/// Note that a function could implement for example a map projection from
+/// geographical points to projected cartesian points, or an inverse
+/// projection (or an "unprojection") from projected cartesian points to
+/// geographical points. Both are called here "project point" functions.
+///
+/// Throws FormatException if cannot project.
+typedef ProjectPoint<R extends Point> = R Function(
+  Point source, {
+  PointFactory<R>? to,
+});
+```
+
+Projection adapters bundle forward and inverse projections, and are used to 
+access "project point" functions.
+
+For example a built-in adapter `wgs84ToWebMercator` can be used to get a forward
+projection and then applied on a geographic point to project it:
+
+```dart
+  final forward = wgs84ToWebMercator.forward(Point2.coordinates);
+  final projected = GeoPoint2(lon: -0.0014, lat: 51.4778).project(forward);
+```
+
+The package has also an adapter to the external 
+[proj4dart](https://pub.dev/packages/proj4dart) package. Adapter instances can
+be accessed using a global function:
+
+```dart
+/// Resolves a projection adapter between [fromCrs] and [toCrs].
+///
+/// As based on the Proj4dart package, it has built-in support for following crs
+/// codes: "EPSG:4326" (with alias "WGS84"), "EPSG:4269", "EPSG:3857" (with
+/// aliases "EPSG:3785", "GOOGLE", "EPSG:900913", "EPSG:102113").
+///
+/// For all other crs codes, also a projection definition must be given via
+/// [fromDef] or [toDef]. Proj4 definition strings, OGC WKT definitions and
+/// ESRI WKT definitions are supported. More info from the Proj4dart package.
+///
+/// Throws FormatException if projections could not be resolved.
+Proj4Adapter proj4dart(
+  String fromCrs,
+  String toCrs, {
+  String? fromDef,
+  String? toDef,
+});
+```
+
+A sample to project from WGS84 to Web Mercator using `proj4dart`:
+
+```dart
+  final adapter = proj4dart('EPSG:4326', 'EPSG:3857');
+  final forward = adapter.forward(Point2.coordinates);
+  final projected = GeoPoint2(lon: -0.0014, lat: 51.4778).project(forward);
+```
+
+Please see the documentation of [proj4dart](https://pub.dev/packages/proj4dart)
+package about it's capabilities, and accuracy of forward and inverse 
+projections.
+
+### Coordinate transformations
+
+Geographical and cartesian points, geometry objects, features and feature
+collections can be transformed also using coordinate transformations.
+
+Currently this package provides a consistent abstraction. Classes used to 
+represent objects mentioned above contain `transform(TransformPoint transform)` 
+method returning a transformed object. The transform function is defined as:
+
+```dart
+/// A function to transform the [source] point to a transformed point.
+typedef TransformPoint = T Function<T extends Point>(T source);
+```
+
+*Transforms* differ from *projections* in the context of this package so that
+`Point` class type on geometries does not change when transforming.  
+
+There are some basic (**initial support**) geometry transforms provided by the 
+package.
+
+For example to translate points you can use:
+
+```dart
+/// Returns a function to translate points by delta values of each axis.
+TransformPoint translatePoint<C extends num>({C? dx, C? dy, C? dz, C? dm});
+```
+
+Similarily `scalePoint`, `scalePointBy` and `rotatePoint2D` returns functions to
+transform points by scaling with axis-specific factors, scaling with a constant 
+factor, or rotating in 2D.
+
+It's quite simple to define a custom transform function too:
+
+```dart
+/// Translates X by 10.0 and Y by 20.0, other coordinates (Z and M) not changed.
+T _sampleFixedTranslate<T extends Point>(T source) =>
+    source.copyWith(x: source.x + 10.0, y: source.y + 20.0) as T;
+```
+
+Now this function can be used to transform points and other geometries:
+
+```dart
+  // Create a point and transform it with a custom translation that returns
+  // `Point3m.xyzm(110.0, 220.0, 50.0, 1.25)` after applying the transform.
+  Point3m.xyzm(100.0, 200.0, 50.0, 1.25).transform(_sampleFixedTranslate);
+
+  // The same transform function can be used to transform also geometry objects.
+  LineString.parse('100.0 200.0, 400.0 500.0', Point2.coordinates)
+      .transform(_sampleFixedTranslate);
+
+  // This returns a line string that has same coordinate values as:
+  // LineString.parse('110.0 220.0, 410.0 520.0', Point2.geometry)
 ```
 
 ### Geospatial features
@@ -482,7 +716,7 @@ Below is an example with sample GeoJSON data and code to parse it.
 Imports:
 
 ```dart
-import 'package:geocore/parse_geojson.dart';
+import 'package:geocore/parse.dart';
 ```
 
 The sample code:
@@ -555,7 +789,7 @@ Global constant | Use cases
 Imports:
 
 ```dart
-import 'package:geocore/parse_wkt.dart';
+import 'package:geocore/parse.dart';
 ```
 
 Samples to parse from WKT text representation of geometry:
@@ -580,109 +814,6 @@ Samples to parse from WKT text representation of geometry:
 
 Supported WKT geometry types: `POINT`, `LINESTRING`, `POLYGON`, `MULTIPOINT`, 
 `MULTILINESTRING`, `MULTIPOLYGON` and `GEOMETRYCOLLECTION`.
-
-### Coordinate projections
-
-**This feature is work-in-progress**
-
-Geographical and cartesian points, geometry objects, features and feature
-collections can be projected using coordinate transformations.
-
-Currently this package provides a consistent abstraction. Classes used to 
-represent objects mentioned above contain `transform(TransformPoint transform)` 
-method returning a projected object. The transform function is defined as:
-
-```dart
-/// A function to transform the [source] point to a transformed point.
-typedef TransformPoint = T Function<T extends Point>(T source);
-```
-
-There are some basic geometry transformation provided by the package.
-
-For example to translate points you can use:
-
-```dart
-/// Returns a function to translate points by delta values of each axis.
-TransformPoint translatePoint<C extends num>({C? dx, C? dy, C? dz, C? dm});
-```
-
-Similarily `scalePoint`, `scalePointBy` and `rotatePoint2D` returns functions to
-project points by scaling with axis-specific factors, scaling with a constant 
-factor, or rotating in 2D.
-
-It's quite simple to define a custom transform function too:
-
-```dart
-/// Translates X by 10.0 and Y by 20.0, other coordinates (Z and M) not changed.
-T _sampleFixedTranslate<T extends Point>(T source) =>
-    source.copyWith(x: source.x + 10.0, y: source.y + 20.0) as T;
-```
-
-Now this function can be used to project points and other geometries:
-
-```dart
-  // Create a point and transform it with a custom translation that returns
-  // `Point3m.xyzm(110.0, 220.0, 50.0, 1.25)` after projection.
-  Point3m.xyzm(100.0, 200.0, 50.0, 1.25).transform(_sampleFixedTranslate);
-
-  // The same transform function can be used to transform also geometry objects.
-  LineString.parse('100.0 200.0, 400.0 500.0', Point2.coordinates)
-      .transform(_sampleFixedTranslate);
-
-  // This returns a line string that has same coordinate values as:
-  // LineString.parse('110.0 220.0, 410.0 520.0', Point2.geometry)
-```
-
-Please note that currently there is not yet support for geospatial
-transformations between coordinate reference systems on this package. Some 
-support is **currently under development**. 
-
-## Package
-
-This is a [Dart](https://dart.dev/) code package named `geocore` under the 
-[geospatial](https://github.com/navibyte/geospatial) repository. 
-
-The package supports Dart [null-safety](https://dart.dev/null-safety) and 
-using it requires at least
-[Dart 2.12](https://medium.com/dartlang/announcing-dart-2-12-499a6e689c87)
-from the stable channel. 
-
-In the `pubspec.yaml` of your project add the dependency:
-
-```yaml
-dependencies:
-  geocore: ^0.8.0-a.5
-```
-
-All dependencies used by `geocore` are also ready for 
-[null-safety](https://dart.dev/null-safety)!
-
-## Libraries
-
-The package contains following mini-libraries:
-
-Library              | Description 
--------------------- | -----------
-**base**             | Geometry classes including points, bounds, line strings, polygons and more.
-**crs**              | Classes to represent coordinate reference system (CRS) identifiers.
-**feature**          | Feature and FeatureCollection to handle dynamic geospatial data objects.
-**geo**              | Geographic points and bounds classes to represent longitude-latitude data
-**meta_extent**      | Metadata structures to handle extents with spatial and temporal parts.
-**parse_factory**    | Base interfaces and implementations for geospatial data factories.
-**parse_geojson**    | Geospatial data factory to parse GeoJSON from text strings.
-**parse_wkt**        | Geospatial data factory to parse WKT from text strings.
-
-For example to access a mini library you should use an import like:
-
-```dart
-import 'package:geocore/base.dart';
-```
-
-To use all libraries of the package:
-
-```dart
-import 'package:geocore/geocore.dart';
-```
 
 ## Authors
 

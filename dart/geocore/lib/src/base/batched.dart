@@ -40,11 +40,11 @@ abstract class _BatchedSeries<S extends _BatchedSeries<S, E>, E>
   /// Those items that has empty bounds are not matched.
   S intersectByBounds2D(Bounds bounds, {bool lazy = false});
 
-  /// Returns a new series with all points transformed using [transformation].
+  /// Returns a new series with all points transformed using [transform].
   ///
   /// The transformed series is populated by default. If [lazy] is set true then
   /// returns a new lazy series with points of the series transformed lazily.
-  S transform(TransformPoint transformation, {bool lazy = false});
+  S transform(TransformPoint transform, {bool lazy = false});
 }
 
 /// Private implementation of [_BatchedSeries] based on UnmodifiableListView.

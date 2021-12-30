@@ -175,12 +175,12 @@ abstract class Point<C extends num> extends Geometry
   /// value, then it's ignored.
   Point copyWith({num? x, num? y, num? z, num? m});
 
-  /// Returns a new point transformed from this point using [transformation].
+  /// Returns a new point transformed from this point using [transform].
   ///
   /// The transformed point object must be of the type with same coordinate
   /// value members as this object has.
   @override
-  Point transform(TransformPoint transformation);
+  Point transform(TransformPoint transform);
 
   /// Returns a new point projected from this point using [projection].
   ///
@@ -192,27 +192,6 @@ abstract class Point<C extends num> extends Geometry
     PointFactory<R>? to,
   }) =>
       projection(this, to: to);
-}
-
-/// A read-only cartesian (or projected) point with coordinate value getters.
-///
-/// Coordinate values of type [C] are either `num` (allowing `double` or `int`),
-/// `double` or `int`.
-abstract class CartesianPoint<C extends num> extends Point<C> {
-  /// Default `const` constructor to allow extending this abstract class.
-  const CartesianPoint();
-
-  @override
-  CartesianPoint copyWith({num? x, num? y, num? z, num? m});
-
-  @override
-  CartesianPoint newWith({num x = 0.0, num y = 0.0, num? z, num? m});
-
-  @override
-  CartesianPoint newFrom(Iterable<num> coords, {int? offset, int? length});
-
-  @override
-  CartesianPoint transform(TransformPoint transformation);
 }
 
 /// A private implementation for an empty point with coordinate zero values.
@@ -261,7 +240,7 @@ class _PointEmpty<C extends num> extends Point<C> with EquatableMixin {
   Point copyWith({num? x, num? y, num? z, num? m}) => this;
 
   @override
-  Point transform(TransformPoint transformation) => this;
+  Point transform(TransformPoint transform) => this;
 
   @override
   R project<R extends Point>(

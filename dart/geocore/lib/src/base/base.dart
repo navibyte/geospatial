@@ -8,24 +8,20 @@ import 'dart:collection';
 import 'dart:math' as math;
 
 import 'package:equatable/equatable.dart';
-
 import 'package:meta/meta.dart';
 
-import '../utils/bounds.dart';
-import '../utils/num.dart';
-import '../utils/wkt.dart';
+import '/src/utils/bounds.dart';
+import '/src/utils/num.dart';
+import '/src/utils/wkt.dart';
 
 part 'batched.dart';
 part 'bounded.dart';
+part 'bounded_series.dart';
 part 'bounds.dart';
 part 'coords.dart';
 part 'geometry.dart';
-part 'linestring.dart';
-part 'multi.dart';
-part 'point_immutable.dart';
 part 'point_series.dart';
 part 'point_wrapper.dart';
 part 'point.dart';
-part 'polygon.dart';
-part 'temporal.dart';
+part 'project.dart';
 part 'transform.dart';

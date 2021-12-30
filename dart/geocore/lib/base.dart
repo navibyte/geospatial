@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// Geometry classes including points, bounds, line strings, polygons and more.
+/// Base classes for coordinates, points, bounds, point series and transforms.
 ///
 /// Usage: import `package:geocore/base.dart`
 library base;

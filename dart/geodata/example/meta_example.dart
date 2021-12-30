@@ -80,7 +80,7 @@ void _printCollection(CollectionMeta meta) {
   _printResource(meta);
   final extent = meta.extent;
   if (extent != null) {
-    print('    extent crs: ${extent.crs.id}');
+    print('    extent crs: ${extent.crs}');
     for (final bounds in extent.allBounds) {
       print('    spatial bbox min: ${bounds.min.values}');
       print('    spatial bbox max: ${bounds.max.values}');

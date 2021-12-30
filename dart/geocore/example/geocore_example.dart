@@ -7,7 +7,7 @@
 // NOTE : lint rules disabled for the purpose of making sample code readable
 //
 // ignore_for_file: avoid_print, avoid_redundant_argument_values
-// ignore_for_file: cascade_invocations
+// ignore_for_file: cascade_invocations, unused_local_variable
 // ignore_for_file: prefer_const_constructors
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
@@ -78,6 +78,91 @@ void _readmeIntro() {
   // Some samples for README
   //    (https://github.com/navibyte/geospatial/tree/main/dart/geocore).
   // Note that following samples are just created, not used, even printed.
+
+  // -----------
+
+  // Spatial bounds, temporal instants and intervals, and extents.
+
+  Bounds.of(
+    min: Point3i(x: 10, y: 10, z: 3),
+    max: Point3i(x: 20, y: 20, z: 5),
+  );
+  GeoBounds.bboxLonLat(-20.3, 50.2, 20.5, 60.9);
+
+  Instant(DateTime.utc(2020, 10, 31, 09, 30));
+  Interval.parse('2020-10-01/2020-10-31');
+
+  Extent.single(
+    crs: 'EPSG:4326',
+    bounds: GeoBounds.bboxLonLatElev(-20.3, 50.2, 1108.4, 20.5, 60.9, 1251.4),
+    interval: Interval.openStart(DateTime.utc(2020, 10, 31)),
+  );
+
+  // A feature (a geospatial entity) contains an id, a geometry and properties:
+
+  Feature.view(
+    id: 'ROG',
+    geometry: GeoPoint3(lon: -0.0014, lat: 51.4778, elev: 45.0),
+    properties: {
+      'place': 'Greenwich',
+      'city': 'London',
+    },
+  );
+
+  // Built-in coordinate projections (currently only between WGS84 and
+  // Web Mercator)
+
+  // From GeoPoint2 (WGS 84 longitude-latitude) to Point2 (Web Mercator metric)
+  final forward = wgs84ToWebMercator.forward(Point2.coordinates);
+  final projected = GeoPoint2(lon: -0.0014, lat: 51.4778).project(forward);
+
+  // From Point2 (Web Mercator metric) to GeoPoint2 (WGS 84 longitude-latitude)
+  final inverse = wgs84ToWebMercator.inverse(GeoPoint2.coordinates);
+  final unprojected = projected.project(inverse);
+
+  // Coordinate projections based on the external proj4dart package.
+
+  // A projection adapter from WGS84 (EPSG:4326) to EPSG:23700 (with definition)
+  // (based on the sample at https://pub.dev/packages/proj4dart).
+  final adapter = proj4dart(
+    'EPSG:4326',
+    'EPSG:23700',
+    toDef: '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 '
+        '+k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 '
+        '+towgs84=52.17,-71.82,-14.9,0,0,0,0 +units=m +no_defs',
+  );
+
+  // Apply a forward projection to EPSG:23700 with points represented as Point2.
+  GeoPoint2(lon: 17.8880, lat: 46.8922)
+      .project(adapter.forward(Point2.coordinates));
+
+  // Parsing GeoJSON data.
+
+  geoJSON.feature(
+    '''
+    {
+      "type": "Feature",
+      "id": "ROG",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.0014, 51.4778, 45.0]  
+      },
+      "properties": {
+        "place": "Greenwich",
+        "city": "London"
+      }
+    }  
+  ''',
+  );
+
+  // Parsing WKT data.
+
+  wktProjected.parse('LINESTRING (200.1 500.9, 210.2 510.4)');
+
+  wktGeographic.parse(
+    'POLYGON ((40 15, 50 50, 15 45, 10 15, 40 15),'
+    ' (25 25, 25 40, 35 30, 25 25))',
+  );
 
   // -----------
 
@@ -316,14 +401,14 @@ void _readmeIntro() {
 
   // An extent with spatial (WGS 84 longitude-latitude) and temporal parts.
   Extent.single(
-    crs: CRS84,
+    crs: 'EPSG:4326',
     bounds: GeoBounds.bboxLonLat(-20.0, 50.0, 20.0, 60.0),
     interval: Interval.parse('../2020-10-31'),
   );
 
   // An extent with multiple spatial bounds and temporal interval segments.
   Extent.multi(
-    crs: CRS84,
+    crs: 'EPSG:4326',
     allBounds: [
       GeoBounds.bboxLonLat(-20.0, 50.0, 20.0, 60.0),
       GeoBounds.bboxLonLat(40.0, 50.0, 60.0, 60.0),

@@ -10,8 +10,8 @@
 Key features of the [geocore](https://pub.dev/packages/geocore) library package, based on Dart code hosted by this repository:
 
 * 🚀 geospatial data structures (geometry, features and metadata)
-* 🌐 geographic coordinates (longitude-latitude)
-* 🗺️ projected coordinates (cartesian XYZ)
+* 🌐 *geographic* coordinates (longitude-latitude)
+* 🗺️ *projected* coordinates (cartesian XYZ)
 * 🔷 geometry primitives (bounds or bbox, point, line string, polygon)
 * 🧩 multi geometries (multi point, multi line string, multi polygon, geometry collections)
 * ⭐ feature objects (with id, properties and geometry) and feature collections
@@ -19,7 +19,7 @@ Key features of the [geocore](https://pub.dev/packages/geocore) library package,
 * 🌎 [GeoJSON](https://geojson.org/) data parser
 * 🪧 [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) 
 (Well-known text representation of geometry) data parser 
-* 🏗️ coordinate transformation abstraction to project points, geometries and features
+* 🏗️ coordinate transformations and projections (initial support)
 
 See [geocore](dart/geocore) code and docs for more information.
 
@@ -30,7 +30,7 @@ See [geocore](dart/geocore) code and docs for more information.
 
 Code           | Package | Description 
 -------------- | --------| -----------
-:globe_with_meridians: [geocore](dart/geocore) | [![pub package](https://img.shields.io/pub/v/geocore.svg)](https://pub.dev/packages/geocore) | Geospatial data structures (features, geometry and metadata) and parsers ([GeoJSON](https://geojson.org/) and partial support for [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)).
+:globe_with_meridians: [geocore](dart/geocore) | [![pub package](https://img.shields.io/pub/v/geocore.svg)](https://pub.dev/packages/geocore) | Geospatial data (points, geometry, features, meta), projections and parsers ([GeoJSON](https://geojson.org/) and partial support for [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)).
 :earth_americas: [geodata](dart/geodata) | [![pub package](https://img.shields.io/pub/v/geodata.svg)](https://pub.dev/packages/geodata) | A geospatial API client to read [GeoJSON](https://geojson.org/) and other geospatial data sources. 
 
 **Code packages are at BETA stage, interfaces not fully final yet.** 
@@ -178,6 +178,7 @@ OGC (The Open Geospatial Consortium) related:
   * [OGC API Features](https://ogcapi.ogc.org/features/)
   * [OGC API Features - demo services](https://github.com/opengeospatial/ogcapi-features/blob/master/implementations.md)
 * [OGC Web API Guidelines](https://github.com/opengeospatial/OGC-Web-API-Guidelines)
+* [Simple Feature Access - Part 1: Common Architecture](https://www.ogc.org/standards/sfa)
 
 W3C
 * [Spatial Data on the Web Best Practices](https://www.w3.org/TR/sdw-bp/)

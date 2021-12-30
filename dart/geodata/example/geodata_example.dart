@@ -8,8 +8,7 @@
 
 import 'package:datatools/fetch_http.dart';
 import 'package:equatable/equatable.dart';
-import 'package:geocore/feature.dart';
-import 'package:geocore/geo.dart';
+import 'package:geocore/data.dart';
 
 import 'package:geodata/geojson_features.dart';
 import 'package:geodata/oapi_features.dart';

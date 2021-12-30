@@ -93,9 +93,9 @@ abstract class Bounds<T extends Point> extends Geometry
     return buf.toString();
   }
 
-  /// Returns new bounds transformed from this bounds using [transformation].
+  /// Returns new bounds transformed from this bounds using [transform].
   @override
-  Bounds<T> transform(TransformPoint transformation);
+  Bounds<T> transform(TransformPoint transform);
 
   @override
   Bounds<R> project<R extends Point>(
@@ -213,9 +213,9 @@ class BoundsBase<T extends Point> extends Bounds<T> with EquatableMixin {
   }
 
   @override
-  Bounds<T> transform(TransformPoint transformation) => BoundsBase(
-        min: min.transform(transformation) as T,
-        max: max.transform(transformation) as T,
+  Bounds<T> transform(TransformPoint transform) => BoundsBase(
+        min: min.transform(transform) as T,
+        max: max.transform(transform) as T,
       );
 
   @override
@@ -273,8 +273,8 @@ class _LazyBounds<T extends Point> extends Bounds<T> {
       _ensureBounds().newFrom(coords, offset: offset, length: length);
 
   @override
-  Bounds<T> transform(TransformPoint transformation) =>
-      _ensureBounds().transform(transformation);
+  Bounds<T> transform(TransformPoint transform) =>
+      _ensureBounds().transform(transform);
 
   @override
   Bounds<R> project<R extends Point>(

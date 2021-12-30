@@ -4,9 +4,9 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '../../base.dart';
-import '../../crs.dart';
-import '../../geo.dart';
+import '/src/base.dart';
+import '/src/coordinates/cartesian.dart';
+import '/src/coordinates/geographic.dart';
 
 /// A constant factory for geographic [GeoPoint] objects without M coordinate.
 ///
@@ -38,8 +38,8 @@ PointFactory projectedPointFactoryAllowingM({required bool expectM}) =>
 ///
 /// Result type candidates for objects created by a factory: [Point2], [Point3],
 /// [GeoPoint2], [GeoPoint3].
-PointFactory anyPointFactory({CRS expectedCRS = CRS84}) =>
-    _CreateAnyPoint(expectedCRS: expectedCRS);
+PointFactory anyPointFactory({bool expectGeographic = true}) =>
+    _CreateAnyPoint(expectGeographic: expectGeographic);
 
 /// Returns a factory for projected and geographic [Point] objects allowing M.
 ///
@@ -47,10 +47,13 @@ PointFactory anyPointFactory({CRS expectedCRS = CRS84}) =>
 /// [Point2m], [Point3], [Point3m], [GeoPoint2], [GeoPoint2m], [GeoPoint3],
 /// [GeoPoint3m].
 PointFactory<Point> anyPointFactoryAllowingM({
-  CRS expectedCRS = CRS84,
+  bool expectGeographic = true,
   required bool expectM,
 }) =>
-    _CreateAnyPointAllowingM(expectedCRS: expectedCRS, expectM: expectM);
+    _CreateAnyPointAllowingM(
+      expectGeographic: expectGeographic,
+      expectM: expectM,
+    );
 
 // -----------------------------------------------------------------------------
 // Private implementation code below.
@@ -188,16 +191,18 @@ class _CreateProjectedPointAllowingM extends _CreateProjectedPoint {
 }
 
 class _CreateAnyPoint implements PointFactory {
-  const _CreateAnyPoint({this.expectedCRS = CRS84});
+  const _CreateAnyPoint({
+    this.expectGeographic = true,
+  });
 
-  final CRS expectedCRS;
+  final bool expectGeographic;
 
   @override
   bool get hasM => false;
 
   @override
   Point newFrom(Iterable<num> coords, {int? offset, int? length}) {
-    if (expectedCRS.type == CRSType.geographic) {
+    if (expectGeographic) {
       return const _CreateGeoPoint()
           .newFrom(coords, offset: offset, length: length);
     } else {
@@ -208,7 +213,7 @@ class _CreateAnyPoint implements PointFactory {
 
   @override
   Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) {
-    if (expectedCRS.type == CRSType.geographic) {
+    if (expectGeographic) {
       return const _CreateGeoPoint().newWith(x: x, y: y, z: z, m: m);
     } else {
       return const _CreateProjectedPoint().newWith(x: x, y: y, z: z, m: m);
@@ -218,18 +223,18 @@ class _CreateAnyPoint implements PointFactory {
 
 class _CreateAnyPointAllowingM implements PointFactory {
   const _CreateAnyPointAllowingM({
-    this.expectedCRS = CRS84,
+    this.expectGeographic = true,
     required bool expectM,
   }) : hasM = expectM;
 
-  final CRS expectedCRS;
+  final bool expectGeographic;
 
   @override
   final bool hasM;
 
   @override
   Point newFrom(Iterable<num> coords, {int? offset, int? length}) {
-    if (expectedCRS.type == CRSType.geographic) {
+    if (expectGeographic) {
       return _CreateGeoPointAllowingM(expectM: hasM)
           .newFrom(coords, offset: offset, length: length);
     } else {
@@ -240,7 +245,7 @@ class _CreateAnyPointAllowingM implements PointFactory {
 
   @override
   Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) {
-    if (expectedCRS.type == CRSType.geographic) {
+    if (expectGeographic) {
       return _CreateGeoPointAllowingM(expectM: hasM)
           .newWith(x: x, y: y, z: z, m: m);
     } else {

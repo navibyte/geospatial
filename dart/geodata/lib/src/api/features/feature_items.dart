@@ -5,10 +5,7 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import 'package:equatable/equatable.dart';
-
-import 'package:geocore/base.dart';
-import 'package:geocore/feature.dart';
-
+import 'package:geocore/data.dart';
 import 'package:meta/meta.dart';
 
 import '../common.dart';
@@ -36,8 +33,8 @@ class FeatureItems<E extends Feature> extends FeatureCollection<E>
   Bounds get bounds => collection.bounds;
 
   @override
-  FeatureItems<E> transform(TransformPoint transformation) => FeatureItems(
-        collection: collection.transform(transformation),
+  FeatureItems<E> transform(TransformPoint transform) => FeatureItems(
+        collection: collection.transform(transform),
         meta: meta,
       );
 

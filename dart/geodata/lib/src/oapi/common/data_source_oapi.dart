@@ -6,13 +6,8 @@
 
 import 'package:datatools/fetch_api.dart';
 import 'package:datatools/meta_link.dart';
-import 'package:geocore/base.dart';
-import 'package:geocore/crs.dart';
-import 'package:geocore/geo.dart';
-import 'package:geocore/meta_extent.dart';
-
+import 'package:geocore/data.dart';
 import 'package:meta/meta.dart';
-
 import 'package:synchronized/synchronized.dart';
 
 import '../../api/common.dart';
@@ -127,12 +122,10 @@ CollectionMeta _collectionFromJson(Map<String, dynamic> json) {
 Extent _extentFromJson(Map<String, dynamic> json) {
   final dynamic spatial = json['spatial'];
   final spatialIsMap = spatial is Map<String, dynamic>;
-  final crs = CRS.id(
-    (spatialIsMap
-            ? (spatial as Map<String, dynamic>)['crs'] as String?
-            : null) ??
-        idCRS84,
-  );
+  final crs = (spatialIsMap
+          ? (spatial as Map<String, dynamic>)['crs'] as String?
+          : null) ??
+      'http://www.opengis.net/def/crs/OGC/1.3/CRS84';
 
   // try to parse bboxes
   Iterable<GeoBounds> allBounds;

@@ -4,18 +4,15 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// Geospatial data structures (features, geometry and metadata) and parsers.
+/// Geospatial data (points, geometry, features, meta), projections and parsers.
 ///
 /// Usage: import `package:geocore/geocore.dart`
 library geocore;
 
 // Export mini-libraries forming the whole "geocore" library.
 export 'base.dart';
-export 'crs.dart';
-export 'feature.dart';
-export 'geo.dart';
-export 'meta_extent.dart';
-export 'parse_factory.dart';
-export 'parse_geojson.dart';
-export 'parse_wkt.dart';
-export 'proj4.dart';
+export 'common.dart';
+export 'coordinates.dart';
+export 'data.dart';
+export 'parse.dart';
+export 'proj4d.dart';

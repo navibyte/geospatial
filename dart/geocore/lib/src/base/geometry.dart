@@ -41,12 +41,12 @@ abstract class Geometry extends Bounded {
   /// True if this geometry is NOT considered empty without data or coordinates.
   bool get isNotEmpty => !isEmpty;
 
-  /// Returns a new geometry with all points transformed using [transformation].
+  /// Returns a new geometry with all points transformed using [transform].
   ///
   /// The transformed geometry object must be of the same geometry type with
   /// this object.
   @override
-  Geometry transform(TransformPoint transformation);
+  Geometry transform(TransformPoint transform);
 
   /// Returns a new geometry with all points projected using [projection].
   ///

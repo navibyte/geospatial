@@ -5,7 +5,6 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import 'package:geocore/base.dart';
-import 'package:geocore/crs.dart';
 
 import '../base.dart';
 
@@ -21,10 +20,10 @@ class FeatureFilter extends Filter {
   }) : super(id: id, limit: limit);
 
   /// An optional coordinate reference system used by result geometries.
-  final CRS? crs;
+  final String? crs;
 
   /// An optional coordinate reference system used by [bounds].
-  final CRS? boundsCrs;
+  final String? boundsCrs;
 
   /// An optional [bounds] as a geospatial bounding filter.
   final Bounds? bounds;

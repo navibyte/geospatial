@@ -177,8 +177,8 @@ class _PointSeriesView<E extends Point>
   }
 
   @override
-  PointSeries<E> transform(TransformPoint transformation, {bool lazy = false}) {
-    final transformed = map((point) => point.transform(transformation) as E);
+  PointSeries<E> transform(TransformPoint transform, {bool lazy = false}) {
+    final transformed = map((point) => point.transform(transform) as E);
     return _PointSeriesView(
       lazy ? transformed : transformed.toList(growable: false),
     );
