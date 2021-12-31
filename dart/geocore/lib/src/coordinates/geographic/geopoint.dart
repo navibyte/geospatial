@@ -19,13 +19,13 @@ abstract class GeoPoint extends Point<double> {
   /// Default `const` constructor to allow extending this abstract class.
   const GeoPoint();
 
-  /// The longitude coordinate. Equals to [x] property.
+  /// The longitude coordinate. Equals to [x].
   double get lon;
 
-  /// The latitude coordinate. Equals to [y] property.
+  /// The latitude coordinate. Equals to [y].
   double get lat;
 
-  /// The elevation (or altitude) coordinate in meters. Equals to [z].
+  /// The elevation (or height or altitude) coordinate in meters. Equals to [z].
   ///
   /// Returns 0.0 if not available.
   double get elev => 0.0;

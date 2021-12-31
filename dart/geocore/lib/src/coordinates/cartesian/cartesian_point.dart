@@ -6,7 +6,7 @@
 
 import '/src/base.dart';
 
-/// A read-only cartesian (or projected) point with coordinate value getters.
+/// A read-only cartesian (or projected) point with [x], [y], [z] and [m].
 ///
 /// Coordinate values of type [C] are either `num` (allowing `double` or `int`),
 /// `double` or `int`.

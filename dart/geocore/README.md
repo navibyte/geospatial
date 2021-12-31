@@ -243,7 +243,7 @@ measure (`m`) coordinates are optional.
 <a title="Djexplo, CC0, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Latitude_and_Longitude_of_the_Earth.svg"><img alt="Latitude and Longitude of the Earth" src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/coordinates/geographic/Latitude_and_Longitude_of_the_Earth.svg"></a>
 
 Class        | Coordinates   | lon | lat | elev | m 
-             |               | (x) | (y) | (z)  | m 
+             |               | (x) | (y) | (z)  | 
 ------------ | ------------- | --- | --- | ---- | -
 `GeoPoint2`  | `double`      | +   | +   |      |  
 `GeoPoint2m` | `double`      | +   | +   |      | + 

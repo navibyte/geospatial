@@ -6,6 +6,7 @@
 - [Refactor Feature class inheritance and types of id and properties members #39](https://github.com/navibyte/geospatial/issues/39)
 - [Define more specific return type on newWith and newFrom methods of Point sub classes #41](https://github.com/navibyte/geospatial/issues/41)
 - [Populate results by default when intersecting with bounds on point and bounded series #42](https://github.com/navibyte/geospatial/issues/42)
+- [Define consistent mini library exports with base classes included #31](https://github.com/navibyte/geospatial/issues/31)
 
 🧩 Features:
 - [Add copyWith method to Point classes #43](https://github.com/navibyte/geospatial/issues/43)
@@ -21,6 +22,10 @@
 - [Refactor coordinate value members of immutable Point classes #44](https://github.com/navibyte/geospatial/issues/44)
 - [Elev and m coordinate values as default in some GeoPoint classes #45](https://github.com/navibyte/geospatial/issues/45)
 - [Rename point factories of Point classes #49](https://github.com/navibyte/geospatial/issues/49)
+
+📚 Documentation:
+- [Readme documentation updates for 0.8.0 release #63](https://github.com/navibyte/geospatial/issues/63)
+- [Document coordinate ordering of Point class #64](https://github.com/navibyte/geospatial/issues/64)
 
 ## 0.7.2
 

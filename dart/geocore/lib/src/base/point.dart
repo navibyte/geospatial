@@ -6,10 +6,27 @@
 
 part of 'base.dart';
 
-/// A read-only point with coordinate value getters.
+/// A read-only point with [x], [y], [z] and [m] coordinate values.
 ///
-/// Coordinate values of type [C] are either `num` (allowing `double` or `int`),
-/// `double` or `int`.
+/// The type [C] of coordinate values is either `num` (allowing `double` or
+/// `int`), `double` or `int`.
+///
+/// This class defines abstract coordinate value getters for [x], [y], [z] and
+/// [m] coordinates. All concrete point implementations must contain [x] and [y]
+/// coordinate values, but [z] and [m] coordinates are optional (with fixed `0`
+/// value when such a coordinate axis is not available).
+///
+/// When a point contains geographic coordinates, then by default [x] represents
+/// *longitude*, [y] represents *latitude*, and [z] represents *elevation*
+/// (or *height*).
+///
+/// A projected map point might be defined as *easting* (E) and *northing*
+/// (N) coordinates. It's suggested that then E == [x] and N == [y], but a
+/// coordinate reference system might specify something else too.
+///
+/// [m] represents a measurement or a value on a linear referencing system (like
+/// time). It could be associated with a 2D point (x, y, m) or a 3D point
+/// (x, y, z, m).
 abstract class Point<C extends num> extends Geometry
     implements _Coordinates, PointFactory {
   /// Default `const` constructor to allow extending this abstract class.
@@ -24,14 +41,15 @@ abstract class Point<C extends num> extends Geometry
   @override
   Bounds get bounds => Bounds.of(min: this, max: this);
 
-  /// A coordinate value by the index [i] as type [C] extending num.
+  /// A coordinate value by the index [i].
   ///
-  /// Coordinate ordering must be: (x, y), (x, y, m), (x, y, z) or (x, y, z, m).
+  /// The coordinate ordering is: (x, y), (x, y, m), (x, y, z) or (x, y, z, m).
   ///
-  /// If a sub class has geographic coordinates, then ordering must be:
+  /// If a point represents geographic coordinates, then the ordering is:
   /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
   ///
-  /// Or for Easting and Northing projected coordinates ordering is:
+  /// For easting (E) and northing (N) projected coordinates the ordering is
+  /// (unless otherwise specified by a coordinate reference system):
   /// (E, N), (E, N, m), (E, N, z) or (E, N, z, m).
   C operator [](int i);
 
@@ -39,7 +57,8 @@ abstract class Point<C extends num> extends Geometry
   ///
   /// The default implementation creates a fixed length `List<C>` with
   /// length equaling to [coordinateDimension]. Then [] operator is used to
-  /// populate coordinate values.
+  /// populate coordinate values (see it's documentation for the coordinate 
+  /// ordering).
   ///
   /// Sub classes may override the default implementation to provide more
   /// efficient approach. It's also allowed to return internal data storage
@@ -48,19 +67,26 @@ abstract class Point<C extends num> extends Geometry
       // create fixed length list and set coordinate values on it
       List<C>.generate(coordinateDimension, (i) => this[i], growable: false);
 
-  /// X coordinate as type [C] extending `num`.
+  /// The x coordinate.
+  ///
+  /// For geographic coordinates x represents *longitude*.
   C get x;
 
-  /// Y coordinate as type [C] extending `num`.
+  /// The y coordinate.
+  ///
+  /// For geographic coordinates y represents *latitude*.
   C get y;
 
-  /// Z coordinate as type [C] extending `num`. Returns zero if not available.
+  /// The z coordinate. Returns zero (`0`) if not available.
+  ///
+  /// For geographic coordinates z represents *elevation*.
   C get z => _zero();
 
-  /// M coordinate as type [C] extending `num`. Returns zero if not available.
+  /// The M ("measure") coordinate. Returns zero (`0`)  if not available.
   ///
-  /// [m] represents a value on a linear referencing system (like time).
-  /// Could be associated with a 2D point (x, y, m) or a 3D point (x, y, z, m).
+  /// [m] represents a measurement or a value on a linear referencing system
+  /// (like time). It could be associated with a 2D point (x, y, m) or a 3D
+  /// point (x, y, z, m).
   C get m => _zero();
 
   /// True if this point equals with [other] point in 2D by testing x and y.
