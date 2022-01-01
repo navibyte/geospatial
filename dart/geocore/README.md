@@ -27,7 +27,7 @@ To use, add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geocore: ^0.8.0-a.5
+  geocore: ^0.8.0-a.6
 ```
 
 The package contains also following mini-libraries, that can be used to import
@@ -76,10 +76,8 @@ standard by [The Open Geospatial Consortium](https://www.ogc.org/) (OGC).
 Spatial bounds, temporal instants and intervals, and extents:
 
 ```dart
-  Bounds.of(
-    min: Point3i(x: 10, y: 10, z: 3),
-    max: Point3i(x: 20, y: 20, z: 5),
-  );
+  Bounds.of(min: Point2(x: 10.1, y: 10.1), max: Point2(x: 20.2, y: 20.2));
+  Bounds.of(min: Point3i(x: 10, y: 10, z: 3), max: Point3i(x: 20, y: 20, z: 5));
   GeoBounds.bboxLonLat(-20.3, 50.2, 20.5, 60.9);
 
   Instant(DateTime.utc(2020, 10, 31, 09, 30));
@@ -242,13 +240,12 @@ measure (`m`) coordinates are optional.
 
 <a title="Djexplo, CC0, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Latitude_and_Longitude_of_the_Earth.svg"><img alt="Latitude and Longitude of the Earth" src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/coordinates/geographic/Latitude_and_Longitude_of_the_Earth.svg"></a>
 
-Class        | Coordinates   | lon | lat | elev | m 
-             |               | (x) | (y) | (z)  | 
------------- | ------------- | --- | --- | ---- | -
-`GeoPoint2`  | `double`      | +   | +   |      |  
-`GeoPoint2m` | `double`      | +   | +   |      | + 
-`GeoPoint3`  | `double`      | +   | +   | +    |  
-`GeoPoint3m` | `double`      | +   | +   | +    | + 
+Class        | Coordinates   | lon (x) | lat (y) | elev (z) | m 
+------------ | ------------- | ------- | ------- | -------- | -
+`GeoPoint2`  | `double`      |    +    |    +    |          |  
+`GeoPoint2m` | `double`      |    +    |    +    |          | + 
+`GeoPoint3`  | `double`      |    +    |    +    |    +     |  
+`GeoPoint3m` | `double`      |    +    |    +    |    +     | + 
 
 In the context of this package geographic coordinate axes are related with axes
 defined in the base `Point`-class: 
@@ -534,7 +531,7 @@ useful in metadata structures for geospatial data sources.
 ```
 
 The `crs` property in extents above refer to a 
-[Coordinate reference system](https://en.wikipedia.org/wiki/Spatial_reference_system).
+[Coordinate reference system](https://en.wikipedia.org/wiki/Spatial_reference_system) 
 that is *a coordinate-based local, regional or global system used to locate geographical entities*. 
 
 This library does not define any `crs` constants, please refer to registries

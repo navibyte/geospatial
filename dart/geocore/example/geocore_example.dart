@@ -83,10 +83,8 @@ void _readmeIntro() {
 
   // Spatial bounds, temporal instants and intervals, and extents.
 
-  Bounds.of(
-    min: Point3i(x: 10, y: 10, z: 3),
-    max: Point3i(x: 20, y: 20, z: 5),
-  );
+  Bounds.of(min: Point2(x: 10.1, y: 10.1), max: Point2(x: 20.2, y: 20.2));
+  Bounds.of(min: Point3i(x: 10, y: 10, z: 3), max: Point3i(x: 20, y: 20, z: 5));
   GeoBounds.bboxLonLat(-20.3, 50.2, 20.5, 60.9);
 
   Instant(DateTime.utc(2020, 10, 31, 09, 30));
