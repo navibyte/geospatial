@@ -26,6 +26,7 @@
 📚 Documentation:
 - [Readme documentation updates for 0.8.0 release #63](https://github.com/navibyte/geospatial/issues/63)
 - [Document coordinate ordering of Point class #64](https://github.com/navibyte/geospatial/issues/64)
+- [Update copyright clauses (years 2020-2022) and licenses #66](https://github.com/navibyte/geospatial/issues/66)
 
 ## 0.7.2
 

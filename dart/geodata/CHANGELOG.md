@@ -2,8 +2,11 @@
 
 (beta-release 0.8.0 currently under development at version 0.8.0-a.5)
 
-⚠️ Breaking changes
+⚠️ Breaking changes:
 - [Refactor Feature class inheritance and types of id and properties members #39](https://github.com/navibyte/geospatial/issues/39)
+
+📚 Documentation:
+- [Update copyright clauses (years 2020-2022) and licenses #66](https://github.com/navibyte/geospatial/issues/66)
 
 ## 0.7.2
 
