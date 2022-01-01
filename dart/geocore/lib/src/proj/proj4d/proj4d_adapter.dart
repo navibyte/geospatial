@@ -35,7 +35,7 @@ class Proj4Adapter with ProjectionAdapter<Point, Point> {
   /// Resolves a projection adapter between [fromCode] and [toCode].
   ///
   /// As based on the Proj4dart package, it has built-in support for following
-  /// crs codes: "EPSG:4326" (with alias "WGS84"), "EPSG:4269", "EPSG:3857" 
+  /// crs codes: "EPSG:4326" (with alias "WGS84"), "EPSG:4269", "EPSG:3857"
   /// (with aliases "EPSG:3785", "GOOGLE", "EPSG:900913", "EPSG:102113").
   ///
   /// For all other crs codes, also a projection definition must be given via

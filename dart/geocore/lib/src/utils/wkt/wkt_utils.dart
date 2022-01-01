@@ -72,7 +72,6 @@ PointSeries<T> parseWktPointSeries<T extends Point>(
           .map<T>((point) => pointFactory.newFrom(parseWktCoords(point))),
     );
 
-
 String _omitParenthesis(String str) => str.startsWith('(') && str.endsWith(')')
     ? str.substring(1, str.length - 1)
     : str;

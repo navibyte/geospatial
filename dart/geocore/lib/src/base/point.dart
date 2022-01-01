@@ -57,7 +57,7 @@ abstract class Point<C extends num> extends Geometry
   ///
   /// The default implementation creates a fixed length `List<C>` with
   /// length equaling to [coordinateDimension]. Then [] operator is used to
-  /// populate coordinate values (see it's documentation for the coordinate 
+  /// populate coordinate values (see it's documentation for the coordinate
   /// ordering).
   ///
   /// Sub classes may override the default implementation to provide more

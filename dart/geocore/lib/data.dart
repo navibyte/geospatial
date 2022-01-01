@@ -5,10 +5,10 @@
 // Docs: https://github.com/navibyte/geospatial
 
 /// Geospatial features and geometries (linestring, polygon, multi geometries).
-/// 
+///
 /// This library exports also all classes of `package:geocore/base.dart`,
 /// `package:geocore/common.dart` and `package:geocore/coordinates.dart`.
-/// 
+///
 /// Usage: import `package:geocore/data.dart`
 library data;
 

@@ -9,7 +9,7 @@
 /// This library exports also all classes of `package:geocore/base.dart`,
 /// `package:geocore/common.dart`, `package:geocore/coordinates.dart` and
 /// `package:geocore/data.dart`.
-/// 
+///
 /// Usage: import `package:geocore/parse.dart`
 library parse;
 

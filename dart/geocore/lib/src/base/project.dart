@@ -23,13 +23,13 @@ typedef ProjectPoint<R extends Point> = R Function(
 });
 
 /// A projection adapter bundles forward and inverse projections.
-/// 
+///
 /// Using [FromPoint] and [ToPoint] it's possible to specify more accurate
 /// `Point` class type be used on an adapter implementation.
-/// 
+///
 /// The [FromPoint] type specifies a type for source points of `forward` and
 /// target points of `inverse` projections.
-/// 
+///
 /// The [ToPoint] type specifies a type for target points of `forward` and
 /// source points of `inverse` projections.
 mixin ProjectionAdapter<FromPoint extends Point, ToPoint extends Point> {

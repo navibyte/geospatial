@@ -5,7 +5,7 @@
 // Docs: https://github.com/navibyte/geospatial
 
 /// Projections provided by the external `proj4dart` package.
-/// 
+///
 /// The `geocore` package implements a projection adapter that acts as a wrapper
 /// and uses internally the projection and coordinate reference system support
 /// of the `proj4dart` package to which there's a dependency.

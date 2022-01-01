@@ -5,7 +5,7 @@
 // Docs: https://github.com/navibyte/geospatial
 
 /// Cartesian and geographic points with some common coordinate transforms.
-/// 
+///
 /// This library exports also all classes of `package:geocore/base.dart`.
 ///
 /// Usage: import `package:geocore/coordinates.dart`
