@@ -1,9 +1,11 @@
 ## 0.8.0
 
-(beta-release 0.8.0 currently under development at version 0.8.0-a.6)
+(beta-release 0.8.0 currently under development at version 0.8.0-a.7)
 
 ⚠️ Breaking changes:
 - [Refactor Feature class inheritance and types of id and properties members #39](https://github.com/navibyte/geospatial/issues/39)
+- [Restructuring web api client for geospatial data #46](https://github.com/navibyte/geospatial/issues/46)
+- [Use http package instead of datatools in API clients #65](https://github.com/navibyte/geospatial/issues/65)
 
 📚 Documentation:
 - [Update copyright clauses (years 2020-2022) and licenses #66](https://github.com/navibyte/geospatial/issues/66)

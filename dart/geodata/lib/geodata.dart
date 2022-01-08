@@ -4,20 +4,13 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// A geospatial client to read GeoJSON and other geospatial data sources.
+/// A geospatial client to read GeoJSON and OGC API Features data sources.
 ///
 /// Usage: import `package:geodata/geodata.dart`
 library geodata;
 
-// todo: new mini libraries
-// export 'base.dart';
-// export 'common.dart'; 
-// export 'geojson_features.dart';
-// export 'ogcapi_features.dart';
-
 // Export mini-libraries forming the whole "geodata" library.
-export 'api_common.dart';
-export 'api_features.dart';
-export 'geojson_features.dart';
-export 'oapi_common.dart';
-export 'oapi_features.dart';
+export 'common.dart'; 
+export 'core.dart'; 
+export 'geojson_client.dart';
+export 'ogcapi_features_client.dart';

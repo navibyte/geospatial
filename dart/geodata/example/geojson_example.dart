@@ -10,49 +10,38 @@
 To test run this from command line: dart example/geojson_example.dart 
 */
 
-import 'package:datatools/fetch_file.dart';
-import 'package:datatools/fetch_http.dart';
-
-import 'package:geodata/geojson_features.dart';
+import 'package:geodata/geojson_client.dart';
 
 Future<void> main(List<String> args) async {
-  // read GeoJSON for earthquakes from web using HTTP fetcher
+  // read GeoJSON for earthquakes from web using HTTP(S)
   print('GeoJSON features from HTTP');
   await _readFeatures(
-    HttpFetcher.simple(
-      endpoints: [
-        Uri.parse('https://earthquake.usgs.gov/earthquakes/feed/v1.0/')
-      ],
+    geoJsonHttpClient(
+      location: Uri.parse(
+        'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/'
+        '2.5_day.geojson',
+      ),
     ),
-    'summary/2.5_day.geojson',
   );
 
-  // same thing but files using a file fetcher to read a local file
+  // same thing but reading a local file
   print('');
   print('GeoJSON features from file');
   await _readFeatures(
-    FileFetcher.basePath('test/usgs'),
-    'summary/2.5_day.geojson',
+    geoJsonFileClient(path: 'test/usgs/summary/2.5_day.geojson'),
   );
 }
 
-Future<void> _readFeatures(Fetcher client, String collectionId) async {
-  // create feature source using the given Fetch API client
-  final source = FeatureSourceGeoJSON.of(
-    client: client,
-    meta: DataSourceMeta.collectionIds([collectionId], title: 'Earthquakes'),
-  );
-
+Future<void> _readFeatures(FeatureSource source) async {
   // read features with error handling
   try {
-    // get items or features from collection id, maximum 5 features returned
+    // get items or features from a source, maximum 5 features returned
     final items = await source.items(
-      collectionId,
-      filter: const FeatureFilter(limit: 5),
+      const FeatureItemsQuery(limit: 5),
     );
 
     // do something with features, in this sample just print them out
-    for (final f in items.features) {
+    for (final f in items.collection.features) {
       print('Feature with id: ${f.id}');
       print('  geometry: ${f.geometry}');
       print('  properties:');
@@ -60,10 +49,16 @@ Future<void> _readFeatures(Fetcher client, String collectionId) async {
         print('    $key: ${f.properties[key]}');
       }
     }
-  } on OriginException catch (e) {
-    final msg = e.isNotFound ? 'not found' : 'status code ${e.statusCode}';
-    print('Origin exception: $msg');
-  } on Exception catch (e) {
-    print('Other exception: $e');
+  } on FeatureException catch (e) {
+    print('Reading GeoJSON resource failed: ${e.failure.name}');
+    if (e.cause != null) {
+      print('Cause: ${e.cause}');
+    }
+    if (e.trace != null) {
+      print(e.trace);
+    }
+  } catch (e, st) {
+    print('Reading GeoJSON resource failed: $e');
+    print(st);
   }
 }

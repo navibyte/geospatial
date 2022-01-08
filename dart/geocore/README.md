@@ -27,7 +27,7 @@ To use, add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geocore: ^0.8.0-a.6
+  geocore: ^0.8.0-a.7
 ```
 
 The package contains also following mini-libraries, that can be used to import

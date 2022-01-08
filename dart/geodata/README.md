@@ -13,7 +13,36 @@
 * Also (partially) conforming to following standards
   * [OGC API Common](https://ogcapi.ogc.org/common/)
 
+## Package
+
 **This package is at BETA stage, interfaces not fully final yet.** 
+
+This is a [Dart](https://dart.dev/) package named `geodata` under the 
+[geospatial](https://github.com/navibyte/geospatial) code repository. 
+
+To use, add the dependency in your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  geodata: ^0.8.0-a.7
+```
+
+The package contains also following mini-libraries, that can be used to import
+only a certain subset instead of the whole **geodata** library:
+
+Library            | Export also | Description 
+------------------ | ----------- | -----------------------------------------------
+**common**         | | Common data structures and helpers (for links, metadata, paged responses).
+**core**           | | Metadata and data source abstractions of geospatial Web APIs (ie. features).
+**geojson_client** | common, core | A client-side data source to read GeoJSON data from web and file resources.
+**ogcapi_features_client** |  common, core | A client-side data source to read features from OGC API Features services.
+
+All the mini-libraries have dependencies to 
+[equatable](https://pub.dev/packages/equatable) and 
+[geocore](https://pub.dev/packages/geocore) packages. The **geojson_client**
+and **ogcapi_features_client** libraries depends also on the
+[http](https://pub.dev/packages/http) package. The **geojson_client** package
+uses `dart:io` functions for file access too.
 
 ## Usage
 
@@ -23,40 +52,31 @@ fetcher, and from a local file using a file fetcher.
 Please see other [examples](example/geodata_example.dart) too.
 
 ```dart
-import 'package:datatools/fetch_http.dart';
-
-import 'package:geodata/geojson_features.dart';
+import 'package:geodata/geojson_client.dart';
 
 Future<void> main(List<String> args) async {
-  // read GeoJSON for earthquakes from web using HTTP fetcher
+  // read GeoJSON for earthquakes from web using HTTP(S)
   print('GeoJSON features from HTTP');
   await _readFeatures(
-    HttpFetcher.simple(
-      endpoints: [
-        Uri.parse('https://earthquake.usgs.gov/earthquakes/feed/v1.0/')
-      ],
+    geoJsonHttpClient(
+      location: Uri.parse(
+        'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/'
+        '2.5_day.geojson',
+      ),
     ),
-    'summary/2.5_day.geojson',
   );
 }
 
-Future<void> _readFeatures(Fetcher client, String collectionId) async {
-  // create feature source using the given Fetch API client
-  final source = FeatureSourceGeoJSON.of(
-    client: client,
-    meta: DataSourceMeta.collectionIds([collectionId], title: 'Earthquakes'),
-  );
-
+Future<void> _readFeatures(FeatureSource source) async {
   // read features with error handling
   try {
-    // get items or features from collection id, maximum 5 features returned
+    // get items or features from a source, maximum 5 features returned
     final items = await source.items(
-      collectionId,
-      filter: const FeatureFilter(limit: 5),
+      const FeatureItemsQuery(limit: 5),
     );
 
     // do something with features, in this sample just print them out
-    for (final f in items.features) {
+    for (final f in items.collection.features) {
       print('Feature with id: ${f.id}');
       print('  geometry: ${f.geometry}');
       print('  properties:');
@@ -64,70 +84,19 @@ Future<void> _readFeatures(Fetcher client, String collectionId) async {
         print('    $key: ${f.properties[key]}');
       }
     }
-  } on OriginException catch (e) {
-    final msg = e.isNotFound ? 'not found' : 'status code ${e.statusCode}';
-    print('Origin exception: $msg');
-  } on Exception catch (e) {
-    print('Other exception: $e');
+  } on FeatureException catch (e) {
+    print('Reading GeoJSON resource failed: ${e.failure.name}');
+    if (e.cause != null) {
+      print('Cause: ${e.cause}');
+    }
+    if (e.trace != null) {
+      print(e.trace);
+    }
+  } catch (e, st) {
+    print('Reading GeoJSON resource failed: $e');
+    print(st);
   }
 }
-```
-
-## Installing
-
-The package supports Dart [null-safety](https://dart.dev/null-safety) and 
-using it requires at least
-[Dart 2.12](https://medium.com/dartlang/announcing-dart-2-12-499a6e689c87)
-from the stable channel. 
-
-In the `pubspec.yaml` of your project add the dependency:
-
-```yaml
-dependencies:
-  geodata: ^0.7.1 
-```
-
-All dependencies used by `geodata` are also ready for 
-[null-safety](https://dart.dev/null-safety)!
-
-## Package
-
-This is a [Dart](https://dart.dev/) code package named `geodata` under the 
-[geospatial](https://github.com/navibyte/geospatial) repository. 
-
-The package is associated with and depending on the
-[datatools](https://pub.dev/packages/datatools) package containing 
-non-geospatial tools to fetch data from HTTP and file resources. The `geodata` 
-package then provides client-side access for geospatial APIs and data sources. 
-
-This package also utilizes the [geocore](https://pub.dev/packages/geocore) 
-package for geometry, metadata and feature data structures and 
-[GeoJSON](https://geojson.org/) parser, and the 
-[attributes](https://pub.dev/packages/attributes) package for non-geospatial
-data structures. 
-
-## Libraries
-
-The package contains following mini-libraries:
-
-Library               | Description 
-----------------------| -----------
-**api_common**        | Data source abstraction for client access of common geospatial Web APIs.
-**api_features**      | Data source abstraction for client access of geospatial features Web APIs.
-**geojson_features**  | A client-side data source to read [GeoJSON](https://geojson.org/) features from a Web API or files.
-**oapi_common**       | Data source abstraction for client access of [OGC API Common](https://ogcapi.ogc.org/common/) based services.
-**oapi_features**     | A client-side data source to read features from [OGC API Features](https://ogcapi.ogc.org/features/) services.
-
-For example to access a mini library you should use an import like:
-
-```dart
-import 'package:geodata/oapi_features.dart';
-```
-
-To use all libraries of the package:
-
-```dart
-import 'package:geodata/geodata.dart';
 ```
 
 ## Authors
@@ -143,4 +112,3 @@ This project is licensed under the "BSD-3-Clause"-style license.
 
 Please see the 
 [LICENSE](https://github.com/navibyte/geospatial/blob/main/LICENSE).
-

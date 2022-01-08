@@ -1,6 +1,6 @@
 name: geodata
-description: A geospatial client to read GeoJSON and other geospatial data sources.   
-version: 0.8.0-a.6
+description: A geospatial client to read GeoJSON and OGC API Features data sources.   
+version: 0.8.0-a.7
 repository: https://github.com/navibyte/geospatial
 homepage: https://github.com/navibyte/geospatial/tree/main/dart/geodata
 publish_to: none
@@ -10,14 +10,12 @@ environment:
 
 dependencies:
   equatable: ^2.0.3 
+  http: ^0.13.4
   meta: ^1.7.0
-  synchronized: ^3.0.0
+  
+  #synchronized: ^3.0.0
 
-  datatools: ^0.8.0
-  #datatools:
-  #  path: ../../../dataflow/dart/datatools
-
-  #geocore: ^0.8.0-a.5
+  #geocore: ^0.8.0-a.7
   geocore: 
     path: ../geocore
 
