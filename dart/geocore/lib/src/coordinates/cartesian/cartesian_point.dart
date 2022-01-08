@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/base.dart';
+import '/src/base/geometry.dart';
 
 /// A read-only cartesian (or projected) point with [x], [y], [z] and [m].
 ///

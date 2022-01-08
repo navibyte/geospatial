@@ -7,7 +7,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-import '/src/base.dart';
+import '/src/base/geometry.dart';
 import '/src/common/temporal.dart';
 import '/src/coordinates/geographic.dart';
 

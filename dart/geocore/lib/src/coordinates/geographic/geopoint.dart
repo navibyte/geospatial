@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/base.dart';
+import '/src/base/geometry.dart';
 
 /// A geographic position with longitude, latitude and optional elevation.
 ///

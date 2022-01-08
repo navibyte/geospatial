@@ -6,7 +6,7 @@
 
 import 'dart:math' as math;
 
-import '/src/base.dart';
+import '/src/base/geometry.dart';
 
 // Some basic transformation functions (like translate, scale, rotate).
 // Not meant to be complete set of transformation.

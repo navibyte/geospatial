@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-part of 'base.dart';
+part of 'base_geometry.dart';
 
 /// An internal base interface for classes that know their [bounds].
 ///

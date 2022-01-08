@@ -9,4 +9,4 @@
 /// Usage: import `package:geocore/base.dart`
 library base;
 
-export 'src/base.dart';
+export 'src/base/geometry.dart';

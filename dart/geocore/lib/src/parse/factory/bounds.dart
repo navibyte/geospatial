@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/base.dart';
+import '/src/base/geometry.dart';
 import '/src/coordinates/geographic.dart';
 
 /// A function to create geographic bounds from [coords] with [pointFactory].

@@ -6,7 +6,7 @@
 
 import 'dart:math' as math;
 
-import '/src/base.dart';
+import '/src/base/geometry.dart';
 import '/src/coordinates/cartesian.dart';
 import '/src/coordinates/geographic.dart';
 

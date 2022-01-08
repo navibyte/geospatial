@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-part of 'base.dart';
+part of 'base_geometry.dart';
 
 /// A function to project the [source] point to a point of [R].
 ///
