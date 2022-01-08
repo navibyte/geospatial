@@ -8,7 +8,7 @@ import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 import '/src/base/geometry.dart';
-import '/src/common/temporal.dart';
+import '/src/base/temporal.dart';
 import '/src/coordinates/geographic.dart';
 
 /// Geospatial extent with at least one [allBounds] and optional [allIntervals].

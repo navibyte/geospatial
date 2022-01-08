@@ -10,12 +10,12 @@
 Key features of the [geocore](https://pub.dev/packages/geocore) library package, based on Dart code hosted by this repository:
 
 * 🚀 geospatial data structures (geometry, features and metadata)
+* 📅 temporal data structures (instant, interval)
 * 🌐 *geographic* coordinates (longitude-latitude)
 * 🗺️ *projected* coordinates (cartesian XYZ)
 * 🔷 geometry primitives (bounds or bbox, point, line string, polygon)
 * 🧩 multi geometries (multi point, multi line string, multi polygon, geometry collections)
 * ⭐ feature objects (with id, properties and geometry) and feature collections
-* 📅 temporal data structures (instant, interval)
 * 🌎 [GeoJSON](https://geojson.org/) data parser
 * 🪧 [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) 
 (Well-known text representation of geometry) data parser 

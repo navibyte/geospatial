@@ -6,14 +6,13 @@
 
 /// Geospatial features and geometries (linestring, polygon, multi geometries).
 ///
-/// This library exports also all classes of `package:geocore/base.dart`,
-/// `package:geocore/common.dart` and `package:geocore/coordinates.dart`.
+/// This library exports also all classes of `package:geocore/base.dart` and
+/// `package:geocore/coordinates.dart`.
 ///
 /// Usage: import `package:geocore/data.dart`
 library data;
 
 export 'base.dart';
-export 'common.dart';
 export 'coordinates.dart';
 
 export 'src/data/crs.dart';

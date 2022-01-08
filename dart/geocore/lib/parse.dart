@@ -7,14 +7,12 @@
 /// GeoJSON and WKT (Well-known text representation of geometry) data parsers.
 ///
 /// This library exports also all classes of `package:geocore/base.dart`,
-/// `package:geocore/common.dart`, `package:geocore/coordinates.dart` and
-/// `package:geocore/data.dart`.
+/// `package:geocore/coordinates.dart` and `package:geocore/data.dart`.
 ///
 /// Usage: import `package:geocore/parse.dart`
 library parse;
 
 export 'base.dart';
-export 'common.dart';
 export 'coordinates.dart';
 export 'data.dart';
 

@@ -5,12 +5,12 @@
 ## Features
 
 * 🚀 geospatial data structures (geometry, features and metadata)
+* 📅 temporal data structures (instant, interval)
 * 🌐 *geographic* coordinates (longitude-latitude)
 * 🗺️ *projected* coordinates (cartesian XYZ)
 * 🔷 geometry primitives (bounds or bbox, point, line string, polygon)
 * 🧩 multi geometries (multi point, multi line string, multi polygon, geometry collections)
 * ⭐ feature objects (with id, properties and geometry) and feature collections
-* 📅 temporal data structures (instant, interval)
 * 🌎 [GeoJSON](https://geojson.org/) data parser
 * 🪧 [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) 
 (Well-known text representation of geometry) data parser 
@@ -35,11 +35,10 @@ only a certain subset instead of the whole **geocore** library:
 
 Library         | Export also | Description 
 --------------- | ----------- | -----------------------------------------------
-**base**        | | Base classes for coordinates, points, bounds, point series and transforms.
-**common**      | | Common data structures (like temporal instants and intervals).
+**base**        | | Base classes for geospatial geometries and temporal objects.
 **coordinates** | base | Cartesian and geographic points with some common coordinate transforms.
-**data**        | base, common, coordinates | Geospatial features and geometries (linestring, polygon, multi geometries).
-**parse**       | base, common, coordinates, data | GeoJSON and WKT (Well-known text representation of geometry) data parsers.
+**data**        | base, coordinates | Geospatial features and geometries (linestring, polygon, multi geometries).
+**parse**       | base, coordinates, data | GeoJSON and WKT (Well-known text representation of geometry) data parsers.
 **proj4d**      | base | Projections provided by the external [proj4dart](https://pub.dev/packages/proj4dart) package.
 
 All the mini-libraries have a dependency to the 

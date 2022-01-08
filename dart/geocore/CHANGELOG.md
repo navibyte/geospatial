@@ -7,6 +7,7 @@
 - [Define more specific return type on newWith and newFrom methods of Point sub classes #41](https://github.com/navibyte/geospatial/issues/41)
 - [Populate results by default when intersecting with bounds on point and bounded series #42](https://github.com/navibyte/geospatial/issues/42)
 - [Define consistent mini library exports with base classes included #31](https://github.com/navibyte/geospatial/issues/31)
+- [Move temporal classes to "base" mini-library #69](https://github.com/navibyte/geospatial/issues/69)
 
 🧩 Features:
 - [Add copyWith method to Point classes #43](https://github.com/navibyte/geospatial/issues/43)
