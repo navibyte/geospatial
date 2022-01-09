@@ -10,7 +10,7 @@
 library geodata;
 
 // Export mini-libraries forming the whole "geodata" library.
-export 'common.dart'; 
-export 'core.dart'; 
+export 'common.dart';
+export 'core.dart';
 export 'geojson_client.dart';
 export 'ogcapi_features_client.dart';

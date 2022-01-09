@@ -11,7 +11,7 @@ import '/src/core/features.dart';
 
 /// A result from a feature source containing [feature] and [meta] data.
 ///
-/// This class extends [FeatureItem] defining some getters ([links]) that are 
+/// This class extends [FeatureItem] defining some getters ([links]) that are
 /// OGC API Features specific.
 class OGCFeatureItem extends FeatureItem with LinksAware {
   /// Create a feature item instance with [feature] and optional [meta].

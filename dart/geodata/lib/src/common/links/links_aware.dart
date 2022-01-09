@@ -8,7 +8,6 @@ import 'links.dart';
 
 /// A mixin aware of links.
 mixin LinksAware {
-
   /// Links related to this object.
   Links get links => const Links.empty();
 }

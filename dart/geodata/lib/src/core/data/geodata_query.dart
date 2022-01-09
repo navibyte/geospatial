@@ -10,7 +10,7 @@ mixin GeodataQuery {
   String? get crs;
 
   /// Optional extra parameters to be appended to a query.
-  /// 
+  ///
   /// Note that such parameters that are defined in other members of this class
   /// or it's sub type, override any parameter on [extraParams], if available.
   /// So use this only for parameters that are not defined by geodata queries.

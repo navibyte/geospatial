@@ -5,7 +5,7 @@
 // Docs: https://github.com/navibyte/geospatial
 
 /// A client-side data source to read features from OGC API Features services.
-/// 
+///
 /// This library exports also all classes of `package:geodata/common.dart` and
 /// `package:geodata/core.dart`.
 ///

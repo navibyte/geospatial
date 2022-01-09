@@ -28,15 +28,13 @@ class Links with EquatableMixin {
   /// Creates a metadata container for links from JSON data.
   ///
   ///
-  /// Items of the [data] iterable are allowed to be `Map<String, Object?>` 
-  /// (containing link attributes) or `String` (containing only a `href` part 
+  /// Items of the [data] iterable are allowed to be `Map<String, Object?>`
+  /// (containing link attributes) or `String` (containing only a `href` part
   /// of a link).
   ///
   /// Throws `FormatException` if cannot parse data.
   factory Links.fromData(Iterable<Object?> data) => Links(
-        data
-            .map((e) => Link.fromData(e))
-            .toList(growable: false),
+        data.map((e) => Link.fromData(e)).toList(growable: false),
       );
 
   @override

@@ -56,6 +56,11 @@ other geospatial data sources (like partial and initial support for
 
 ## :newspaper_roll: News
 
+2022-01-09
+* The pre-release version `0.8.0-a.7` of the upcoming BETA-release 0.8.0
+   * [geocore](https://pub.dev/packages/geocore/versions/0.8.0-a.7), see [changelog](dart/geocore/CHANGELOG.md#080) for details
+   * [geodata](https://pub.dev/packages/geodata/versions/0.8.0-a.7), see [changelog](dart/geodata/CHANGELOG.md#080) for details
+
 2021-12-04
 * The first pre-release of the upcoming 0.8.0 version of [geocore](https://pub.dev/packages/geocore/versions/0.8.0-a.2), see [changelog](dart/geocore/CHANGELOG.md#080) for details
   * breaking changes with Feature classes, removed dependency to the [attributes](https://pub.dev/packages/attributes) package
@@ -220,5 +225,7 @@ this repository:
 Package @ pub.dev | Code @ GitHub | Description
 ----------------- | ------------- | -----------
 [equatable](https://pub.dev/packages/equatable) | [felangel/equatable](https://github.com/felangel/equatable) | Simplify Equality Comparisons | A Dart abstract class that helps to implement equality without needing to explicitly override == and hashCode.
+[http](https://pub.dev/packages/http) | [dart-lang/http](https://github.com/dart-lang/http) | A composable API for making HTTP requests in Dart.
 [meta](https://pub.dev/packages/meta) | [dart-lang/sdk](https://github.com/dart-lang/sdk/tree/master/pkg/meta) | This package defines annotations that can be used by the tools that are shipped with the Dart SDK.
+[proj4dart](https://pub.dev/packages/proj4dart) | [maRci002/proj4dart](https://github.com/maRci002/proj4dart) | Proj4dart is a Dart library to transform point coordinates from one coordinate system to another, including datum transformations (Dart version of proj4js/proj4js).
 [synchronized](https://pub.dev/packages/synchronized) | [tekartik/synchronized.dart](https://github.com/tekartik/synchronized.dart/tree/master/synchronized) | Basic lock mechanism to prevent concurrent access to asynchronous code.

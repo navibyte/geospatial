@@ -30,7 +30,7 @@ dependencies:
 The package contains also following mini-libraries, that can be used to import
 only a certain subset instead of the whole **geodata** library:
 
-Library            | Export also | Description 
+Library            | Exports also | Description 
 ------------------ | ----------- | -----------------------------------------------
 **common**         | | Common data structures and helpers (for links, metadata, paged responses).
 **core**           | | Metadata and data source abstractions of geospatial Web APIs (ie. features).

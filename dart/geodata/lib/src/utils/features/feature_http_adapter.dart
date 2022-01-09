@@ -69,7 +69,7 @@ class FeatureHttpAdapter {
             }
           }
 
-          // decode JSON and expect it to contain JSON Object 
+          // decode JSON and expect it to contain JSON Object
           final data = json.decode(response.body) as Map<String, Object?>;
 
           // map JSON Object to an entity

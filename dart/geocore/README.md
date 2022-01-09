@@ -33,7 +33,7 @@ dependencies:
 The package contains also following mini-libraries, that can be used to import
 only a certain subset instead of the whole **geocore** library:
 
-Library         | Export also | Description 
+Library         | Exports also | Description 
 --------------- | ----------- | -----------------------------------------------
 **base**        | | Base classes for geospatial geometries and temporal objects.
 **coordinates** | base | Cartesian and geographic points with some common coordinate transforms.
