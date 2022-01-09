@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-part of 'base_geometry.dart';
+part of 'spatial.dart';
 
 /// A read-only point with [x], [y], [z] and [m] coordinate values.
 ///

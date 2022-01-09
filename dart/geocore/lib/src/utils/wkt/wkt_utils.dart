@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/base/geometry.dart';
+import '/src/base/spatial.dart';
 
 final _splitByWhitespace = RegExp(r'\s+');
 

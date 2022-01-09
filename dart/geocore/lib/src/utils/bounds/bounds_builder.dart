@@ -6,7 +6,7 @@
 
 import 'dart:math' as math;
 
-import '/src/base/geometry.dart';
+import '/src/base/spatial.dart';
 
 /// A helper class to calculate [bounds] for a set of points and other bounds.
 ///

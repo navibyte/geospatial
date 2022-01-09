@@ -7,7 +7,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-import '/src/base/geometry.dart';
+import '/src/base/spatial.dart';
 import '/src/utils/wkt_data.dart';
 
 /// The type for the line string.

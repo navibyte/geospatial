@@ -6,7 +6,7 @@
 
 import 'package:equatable/equatable.dart';
 
-import '/src/base/geometry.dart';
+import '/src/base/spatial.dart';
 
 import 'geopoint.dart';
 import 'geopoint_immutable.dart';

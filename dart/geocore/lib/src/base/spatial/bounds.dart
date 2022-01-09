@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-part of 'base_geometry.dart';
+part of 'spatial.dart';
 
 /// A function to calculate bounds for some object like a geometry.
 typedef CalculateBounds<T extends Point> = Bounds<T> Function();

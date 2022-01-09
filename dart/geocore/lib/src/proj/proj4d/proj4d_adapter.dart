@@ -6,7 +6,7 @@
 
 import 'package:proj4dart/proj4dart.dart' as p4d;
 
-import '/src/base/geometry.dart';
+import '/src/base/spatial.dart';
 
 /// Resolves a projection adapter between [fromCrs] and [toCrs].
 ///

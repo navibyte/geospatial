@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-part of 'base_geometry.dart';
+part of 'spatial.dart';
 
 /// A base interface for a series of points with getters to access point items.
 ///
