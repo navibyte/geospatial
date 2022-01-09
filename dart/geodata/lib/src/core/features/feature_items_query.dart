@@ -18,6 +18,7 @@ class FeatureItemsQuery with GeodataQuery, EquatableMixin {
     this.crs,
     this.boundsCrs,
     this.bounds,
+    this.datetime,
     this.limit,
     this.extraParams,
   });
@@ -30,6 +31,9 @@ class FeatureItemsQuery with GeodataQuery, EquatableMixin {
 
   /// An optional [bounds] as a geospatial bounding filter (like `bbox`).
   final Bounds? bounds;
+
+  /// An optional datetime as a temporal object (instant or interval).
+  final Temporal? datetime;
 
   /// An optional [limit] setting maximum number of items returned.
   ///

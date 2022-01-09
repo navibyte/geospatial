@@ -18,6 +18,7 @@
 - [Coordinate conversion between WGS84 (lon-lat) and Web Mercator projection (meters)](https://github.com/navibyte/geospatial/issues/55)
 - [Add simpler constructors on geometry classes expecting bounded or point series #59](https://github.com/navibyte/geospatial/issues/59)
 - [Add projection support provided by the proj4dart package #60](https://github.com/navibyte/geospatial/issues/60)
+- [Common base class or interface for temporal Instant and Interval classes #70](https://github.com/navibyte/geospatial/issues/70)
 
 🛠 Refactoring:
 - [Refactor coordinate value members of immutable Point classes #44](https://github.com/navibyte/geospatial/issues/44)

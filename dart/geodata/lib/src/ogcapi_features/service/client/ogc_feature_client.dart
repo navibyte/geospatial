@@ -189,12 +189,14 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
     final crs = query.crs;
     final boundsCrs = query.boundsCrs;
     final bounds = query.bounds?.valuesAsString();
+    final datetime = query.datetime?.toText();
     var params = <String, String>{
       //'f': 'json',
       if (limit != null) 'limit': limit.toString(),
       if (crs != null) 'crs': crs,
       if (boundsCrs != null) 'bbox-crs': boundsCrs,
       if (bounds != null) 'bbox': bounds,
+      if (datetime != null) 'datetime': datetime,
     };
     if (query.extraParams != null) {
       params = Map.of(query.extraParams!)..addAll(params);
@@ -359,11 +361,11 @@ Extent _extentFromData(Map<String, Object?> data) {
     if (interval != null && interval is Iterable<Object?>) {
       // by standard: "interval" is a list of intervals
       allIntervals =
-          interval.map((e) => Interval.fromJson(e! as Iterable<Object?>));
+          interval.map((e) => Interval.fromData(e! as Iterable<Object?>));
     } else {
       // not standard: assume "temporal" as one interval
       try {
-        allIntervals = [Interval.fromJson(temporal as Iterable<Object?>)];
+        allIntervals = [Interval.fromData(temporal as Iterable<Object?>)];
       } catch (_) {
         // no fallback need, just no temporal interval then
       }
