@@ -1,11 +1,13 @@
 # :compass: Geospatial tools for Dart 
 
-[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause) [![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/navibyte.svg?style=social&label=Follow%20%40navibyte)](https://twitter.com/navibyte) [![style: very good analysis](https://img.shields.io/badge/style-very_good_analysis-B22C89.svg)](https://pub.dev/packages/very_good_analysis) ![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white) ![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause) [![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/navibyte.svg?style=social&label=Follow%20%40navibyte)](https://twitter.com/navibyte) [![style: very good analysis](https://img.shields.io/badge/style-very_good_analysis-B22C89.svg)](https://pub.dev/packages/very_good_analysis) 
 
 <a title="Stefan Kühn (Fotograf), CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Azimutalprojektion-schief_kl-cropped.png"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/projections/azimutal/Azimutalprojektion-schief_kl-cropped.png" align="right"></a>
 
 **Geospatial** data structures, tools and utilities for 
 [Dart](https://dart.dev/) and [Flutter](https://flutter.dev/) mobile developers.
+
+![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white) ![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)
 
 Key features of the [geocore](https://pub.dev/packages/geocore) library package, based on Dart code hosted by this repository:
 
@@ -139,20 +141,13 @@ other geospatial data sources (like partial and initial support for
 
 ## :building_construction: Roadmap
 
-Future enhancement **candidates** for [geocore](dart/geocore), not in any order:
-* [Optimizations and consistency for geometry, feature and meta classes #27](https://github.com/navibyte/geospatial/issues/27) 
-* [Coordinate reference system (CRS) identifiers enhanced #28](https://github.com/navibyte/geospatial/issues/28)
-* [Add EWKT support, handle axis order when reading WKT #29](https://github.com/navibyte/geospatial/issues/29)
-* [Coordinate transformations on core classes and reading datasource #15](https://github.com/navibyte/geospatial/issues/15)
-* [Add support for other geometry classes known by WKT #30](https://github.com/navibyte/geospatial/issues/30)
-* [Define consistent mini library exports with base classes included #31](https://github.com/navibyte/geospatial/issues/31)
-* [Add support for empty geometries other than Point and abstract Geometry #35](https://github.com/navibyte/geospatial/issues/35)
+See [issues](https://github.com/navibyte/geospatial/issues).
 
-Some **candidates** also for [geodata](dart/geodata):
-* [Add support for reading geospatial features from in-memory storages #34](https://github.com/navibyte/geospatial/issues/34)
-* [Full client-side support for calling OGC API Features service according to Part 1 + 2 #9](https://github.com/navibyte/geospatial/issues/9)
+Currently the BETA-version 0.8.0 is under development, pre-release versions 
+available at pub.dev for [geocore](https://pub.dev/packages/geocore/versions) and 
+[geodata](https://pub.dev/packages/geodata/versions).
 
-See [other issues](https://github.com/navibyte/geospatial/issues) too.
+Targeting version 1.0.0 by August 2022.
 
 ## :house_with_garden: Authors
 
@@ -195,6 +190,8 @@ SDKs:
 * [Flutter](https://flutter.dev/) 
 
 Latest on SDKs
+* [Dart 2.15](https://medium.com/dartlang/dart-2-15-7e7a598e508a) with fast concurrency, constructor tear-offs, improved enums, and more
+* [Dart 2.14](https://medium.com/dartlang/announcing-dart-2-14-b48b9bb2fb67) with Apple Silicon support, default lints etc.
 * [Dart 2.13](https://medium.com/dartlang/announcing-dart-2-13-c6d547b57067) with new type aliases and more
 * [Dart 2.12](https://medium.com/dartlang/announcing-dart-2-12-499a6e689c87) with sound null safety
 * [Flutter 2](https://developers.googleblog.com/2021/03/announcing-flutter-2.html)
