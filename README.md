@@ -7,7 +7,7 @@
 **Geospatial** data structures, tools and utilities for 
 [Dart](https://dart.dev/) and [Flutter](https://flutter.dev/) mobile developers.
 
-![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white) ![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)
+[![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev/) [![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)](https://flutter.dev/)
 
 Key features of the [geocore](https://pub.dev/packages/geocore) library package, based on Dart code hosted by this repository:
 
