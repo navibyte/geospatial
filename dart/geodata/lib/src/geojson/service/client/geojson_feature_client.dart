@@ -4,8 +4,6 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'dart:io' show File;
-
 import 'package:geocore/parse.dart';
 import 'package:http/http.dart' as http;
 
@@ -36,22 +34,24 @@ FeatureSource geoJsonHttpClient({
       ),
     );
 
-/// A client for accessing a `GeoJSON` file resource at [path].
+/// A client for accessing a `GeoJSON` feature collection from [source];
 ///
-/// The required [path] should refer to a file resource containing GeoJSON
-/// compliant data.
-FeatureSource geoJsonFileClient({required String path}) =>
-    _GeoJSONFeatureSource(File(path));
+/// The source function returns a future that fetches data from a file, a web
+/// resource or other sources. Contents must be GeoJSON compliant data.
+FeatureSource geoJsonFutureClient(Future<String> Function() source) =>
+    _GeoJSONFeatureSource(source);
 
 // -----------------------------------------------------------------------------
 // Private implementation code below.
 // The implementation may change in future.
 
 class _GeoJSONFeatureSource implements FeatureSource {
-  const _GeoJSONFeatureSource(this.location, {this.adapter});
+  const _GeoJSONFeatureSource(this.source, {this.adapter});
 
-  // location can be Uri (for a web resource) or File (for a file resource)
-  final Object location;
+  // source can be
+  //    `Uri` (a location for a web resource)
+  //    `Future<String> Function()` (for any async resource like file)
+  final Object source;
 
   // todo: final String sourceCrs;
 
@@ -96,19 +96,19 @@ class _GeoJSONFeatureSource implements FeatureSource {
 
   @override
   Future<Paged<FeatureItems>> itemsPaged(FeatureItemsQuery query) {
-    final loc = location;
+    final src = source;
 
     // fetch data as JSON Object + parse GeoJSON feature or feature collection
-    if (loc is Uri) {
+    if (src is Uri) {
       // read web resource and convert to entity
       return adapter!.getEntityFromJsonObject(
-        loc,
+        src,
         toEntity: (data) => _parseFeatureItems(query, data),
       );
-    } else if (loc is File) {
-      // read file resource and convert to entity
+    } else if (src is Future<String> Function()) {
+      // read a future returned by a function
       return readEntityFromJsonObject(
-        loc,
+        src,
         toEntity: (data) => _parseFeatureItems(query, data),
       );
     }

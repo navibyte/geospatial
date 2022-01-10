@@ -5,23 +5,20 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import 'dart:convert';
-import 'dart:io' show File;
 
 import '/src/core/features.dart';
 
-/// Maps a JSON Object read from [location] to an entity using [toEntity].
+/// Maps a JSON Object read from [source] to an entity using [toEntity].
+///
+/// The source function returns a future that fetches data from a file, a web
+/// resource or other sources. Contents must be GeoJSON compliant data.
 Future<T> readEntityFromJsonObject<T>(
-  File location, {
+  Future<String> Function() source, {
   required T Function(Map<String, Object?> data) toEntity,
 }) async {
   try {
-    // ensure a file exists
-    if (!location.existsSync()) {
-      throw const FeatureException(FeatureFailure.notFound);
-    }
-
-    // read file contents as text
-    final text = await location.readAsString();
+    // read contents as text
+    final text = await source();
 
     // decode JSON and expect it to contain JSON Object as `Map<String, Object?`
     final data = json.decode(text) as Map<String, Object?>;

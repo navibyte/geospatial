@@ -10,6 +10,9 @@
 To test run this from command line: dart example/geojson_example.dart 
 */
 
+// importing `dart:io` not supported on the Flutter web platform
+import 'dart:io' show File;
+
 import 'package:geodata/geojson_client.dart';
 
 Future<void> main(List<String> args) async {
@@ -28,7 +31,9 @@ Future<void> main(List<String> args) async {
   print('');
   print('GeoJSON features from file');
   await _readFeatures(
-    geoJsonFileClient(path: 'test/usgs/summary/2.5_day.geojson'),
+    geoJsonFutureClient(
+      () async => File('test/usgs/summary/2.5_day.geojson').readAsString(),
+    ),
   );
 }
 
