@@ -54,7 +54,7 @@ abstract class Geometry extends Bounded {
   /// that as a point factory. Otherwise [projection] uses it's own factory.
   @override
   Geometry project<R extends Point>(
-    ProjectPoint<R> projection, {
+    Projection<R> projection, {
     PointFactory<R>? to,
   });
 }
@@ -82,7 +82,7 @@ class _EmptyGeometry extends Geometry with EquatableMixin {
 
   @override
   Geometry project<R extends Point>(
-    ProjectPoint<R> projection, {
+    Projection<R> projection, {
     PointFactory<R>? to,
   }) =>
       throw const FormatException('Cannot project empty geometry.');

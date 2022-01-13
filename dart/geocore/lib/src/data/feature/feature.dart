@@ -83,7 +83,7 @@ abstract class Feature<T extends Geometry> implements Bounded {
   /// [properties], are set without modifications to a new feature object.
   @override
   Feature project<R extends Point>(
-    ProjectPoint<R> projection, {
+    Projection<R> projection, {
     PointFactory<R>? to,
   });
 }
@@ -127,7 +127,7 @@ class _FeatureBase<T extends Geometry>
 
   @override
   Feature project<R extends Point>(
-    ProjectPoint<R> projection, {
+    Projection<R> projection, {
     PointFactory<R>? to,
   }) =>
       _FeatureBase(

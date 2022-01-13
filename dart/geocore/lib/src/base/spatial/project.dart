@@ -17,10 +17,32 @@ part of 'spatial.dart';
 /// geographical points. Both are called here "project point" functions.
 ///
 /// Throws FormatException if cannot project.
+@Deprecated('Use Projection mixin instead')
 typedef ProjectPoint<R extends Point> = R Function(
   Point source, {
   PointFactory<R>? to,
 });
+
+/// A mixin defining an interface for (geospatial) projections.
+///
+/// A class that implements this mixin may provide for example a map projection
+/// from geographical points to projected cartesian points, or an inverse
+/// projection (or an "unprojection") from projected cartesian points to
+/// geographical points. Both are called simply "projections" here.
+/// 
+/// The mixin specifies only `projectPoint` function, but it can be extended in
+/// future to project using other data structures than points also (like
+/// `projectPointSeries` etc.). If extended, then the mixin provides a default
+/// implementation for any new methods.
+mixin Projection<R extends Point> {
+  /// Projects the [source] point to a point of [R].
+  ///
+  /// When [to] is provided, then target points of [R] are created using that
+  /// as a point factory. Otherwise a projection uses it's own factory.
+  ///
+  /// Throws FormatException if cannot project.
+  R projectPoint(Point source, {PointFactory<R>? to});
+}
 
 /// A projection adapter bundles forward and inverse projections.
 ///
@@ -39,15 +61,15 @@ mixin ProjectionAdapter<FromPoint extends Point, ToPoint extends Point> {
   /// The target coordinate reference system (or projection), ie. "EPSG:3857".
   String get toCrs;
 
-  /// Returns a projection function projecting from [fromCrs] to [toCrs].
+  /// Returns a projection that projects from [fromCrs] to [toCrs].
   ///
   /// By default, result points of [R] are created using [factory]. This can be
-  /// overridden by giving another factory when calling a projection function.
-  ProjectPoint<R> forward<R extends ToPoint>(PointFactory<R> factory);
+  /// overridden by giving another factory when using a projection.
+  Projection<R> forward<R extends ToPoint>(PointFactory<R> factory);
 
-  /// Returns a projection function unprojecting from [toCrs] to [fromCrs].
+  /// Returns a projection that unprojects from [toCrs] to [fromCrs].
   ///
   /// By default, result points of [R] are created using [factory]. This can be
-  /// overridden by giving another factory when calling a projection function.
-  ProjectPoint<R> inverse<R extends FromPoint>(PointFactory<R> factory);
+  /// overridden by giving another factory when using a projection.
+  Projection<R> inverse<R extends FromPoint>(PointFactory<R> factory);
 }

@@ -69,7 +69,7 @@ class GeometryCollection<E extends Geometry> extends Geometry
 
   @override
   GeometryCollection project<R extends Point>(
-    ProjectPoint<R> projection, {
+    Projection<R> projection, {
     PointFactory<R>? to,
   }) =>
       // Note: returns GeometryCollection, not GeometryCollection<E> as
@@ -136,7 +136,7 @@ class MultiPoint<E extends Point> extends Geometry with EquatableMixin {
 
   @override
   MultiPoint<R> project<R extends Point>(
-    ProjectPoint<R> projection, {
+    Projection<R> projection, {
     PointFactory<R>? to,
   }) =>
       MultiPoint(points.project(projection, lazy: false, to: to));
@@ -209,7 +209,7 @@ class MultiLineString<T extends Point> extends Geometry with EquatableMixin {
 
   @override
   MultiLineString<R> project<R extends Point>(
-    ProjectPoint<R> projection, {
+    Projection<R> projection, {
     PointFactory<R>? to,
   }) =>
       MultiLineString<R>(
@@ -286,7 +286,7 @@ class MultiPolygon<T extends Point> extends Geometry with EquatableMixin {
 
   @override
   MultiPolygon<R> project<R extends Point>(
-    ProjectPoint<R> projection, {
+    Projection<R> projection, {
     PointFactory<R>? to,
   }) =>
       MultiPolygon<R>(

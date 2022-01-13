@@ -38,7 +38,7 @@ abstract class FeatureCollection<E extends Feature> extends Bounded {
   /// that as a point factory. Otherwise [projection] uses it's own factory.
   @override
   FeatureCollection project<R extends Point>(
-    ProjectPoint<R> projection, {
+    Projection<R> projection, {
     PointFactory<R>? to,
   });
 }
@@ -76,7 +76,7 @@ class _FeatureCollectionBase<E extends Feature> extends FeatureCollection<E>
 
   @override
   FeatureCollection project<R extends Point>(
-    ProjectPoint<R> projection, {
+    Projection<R> projection, {
     PointFactory<R>? to,
   }) =>
       // Note: returns FeatureCollection, not FeatureCollection<E> as projected

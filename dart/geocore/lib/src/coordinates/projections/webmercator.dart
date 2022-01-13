@@ -19,15 +19,15 @@ import '/src/coordinates/geographic.dart';
 
 /// A projection adapter between WGS84 geographic and Web Mercator points.
 ///
-/// Use `forward` of the adapter to return a conversion function as:
+/// Use `forward` of the adapter to return a projection for:
 /// * source: `lon` and `lat` coordinates ("EPSG:4326" / WGS84)
 /// * target: `x` and `y` coordinates ("EPSG:3857" / Web Mercator)
 ///
-/// Use `inverse` of the adapter to return a conversion function as:
+/// Use `inverse` of the adapter to return a projection for:
 /// * source: `x` and `y` coordinates ("EPSG:3857" / Web Mercator)
 /// * target: `lon` and `lat` coordinates ("EPSG:4326" / WGS84)
 ///
-/// Other coordinates, if available in the source and if expected to target
+/// Other coordinates, if available in the source and if expected for target
 /// coordinates, are just copied (`elev` <=> `z` and `m` <=> `m`) without any
 /// changes.
 const ProjectionAdapter<GeoPoint, CartesianPoint> wgs84ToWebMercator =
@@ -44,51 +44,70 @@ class _Wgs84ToWebMercatorAdapter
   String get toCrs => 'EPSG:3857';
 
   @override
-  ProjectPoint<R> forward<R extends CartesianPoint>(
+  Projection<R> forward<R extends CartesianPoint>(
     PointFactory<R> factory,
   ) =>
-      (Point source, {PointFactory<R>? to}) {
-        // source coordinates
-        final lon = source.x; // longitude is at x
-        final lat = source.y; // latitude is at y
-
-        // project (lon, lat) to (x, y)
-        final x = lon * 20037508.34 / 180.0;
-        final y0 = math.log(math.tan((90.0 + lat) * math.pi / 360.0)) /
-            (math.pi / 180.0);
-        final y = y0 * 20037508.34 / 180;
-
-        // return a projected point with optional z and m coordinates unchanged
-        return (to ?? factory).newWith(
-          x: x,
-          y: y,
-          z: source.z,
-          m: source.m,
-        );
-      };
+      _Wgs84ToWebMercatorProjection(factory);
 
   @override
-  ProjectPoint<R> inverse<R extends GeoPoint>(
+  Projection<R> inverse<R extends GeoPoint>(
     PointFactory<R> factory,
   ) =>
-      (Point source, {PointFactory<R>? to}) {
-        // source coordinates
-        final x = source.x;
-        final y = source.y;
+      _WebMercatorToWgs84Projection(factory);
+}
 
-        // unproject (x, y) to (lon, lat)
-        final lon = (x / 20037508.34) * 180.0;
-        final lat0 = (y / 20037508.34) * 180.0;
-        final lat = 180.0 /
-            math.pi *
-            (2 * math.atan(math.exp(lat0 * math.pi / 180.0)) - math.pi / 2);
+class _Wgs84ToWebMercatorProjection<R extends CartesianPoint>
+    with Projection<R> {
+  const _Wgs84ToWebMercatorProjection(this.factory);
 
-        // return an unprojected point with optional z and m coords unchanged
-        return (to ?? factory).newWith(
-          x: lon,
-          y: lat,
-          z: source.z,
-          m: source.m,
-        );
-      };
+  final PointFactory<R> factory;
+
+  @override
+  R projectPoint(Point source, {PointFactory<R>? to}) {
+    // source coordinates
+    final lon = source.x; // longitude is at x
+    final lat = source.y; // latitude is at y
+
+    // project (lon, lat) to (x, y)
+    final x = lon * 20037508.34 / 180.0;
+    final y0 =
+        math.log(math.tan((90.0 + lat) * math.pi / 360.0)) / (math.pi / 180.0);
+    final y = y0 * 20037508.34 / 180;
+
+    // return a projected point with optional z and m coordinates unchanged
+    return (to ?? factory).newWith(
+      x: x,
+      y: y,
+      z: source.z,
+      m: source.m,
+    );
+  }
+}
+
+class _WebMercatorToWgs84Projection<R extends GeoPoint> with Projection<R> {
+  const _WebMercatorToWgs84Projection(this.factory);
+
+  final PointFactory<R> factory;
+
+  @override
+  R projectPoint(Point source, {PointFactory<R>? to}) {
+    // source coordinates
+    final x = source.x;
+    final y = source.y;
+
+    // unproject (x, y) to (lon, lat)
+    final lon = (x / 20037508.34) * 180.0;
+    final lat0 = (y / 20037508.34) * 180.0;
+    final lat = 180.0 /
+        math.pi *
+        (2 * math.atan(math.exp(lat0 * math.pi / 180.0)) - math.pi / 2);
+
+    // return an unprojected point with optional z and m coords unchanged
+    return (to ?? factory).newWith(
+      x: lon,
+      y: lat,
+      z: source.z,
+      m: source.m,
+    );
+  }
 }

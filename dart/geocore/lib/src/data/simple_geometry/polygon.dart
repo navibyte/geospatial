@@ -123,7 +123,7 @@ class Polygon<T extends Point> extends Geometry with EquatableMixin {
 
   @override
   Polygon<R> project<R extends Point>(
-    ProjectPoint<R> projection, {
+    Projection<R> projection, {
     PointFactory<R>? to,
   }) =>
       Polygon<R>(

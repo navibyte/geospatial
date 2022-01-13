@@ -53,8 +53,8 @@ class Proj4Adapter with ProjectionAdapter<Point, Point> {
         fromCode,
         toCode,
         p4d.ProjectionTuple(
-          fromProj: _resolveProjection(fromCode, fromDef),
-          toProj: _resolveProjection(toCode, toDef),
+          fromProj: _resolveProj4dProjection(fromCode, fromDef),
+          toProj: _resolveProj4dProjection(toCode, toDef),
         ),
       );
 
@@ -97,74 +97,63 @@ class Proj4Adapter with ProjectionAdapter<Point, Point> {
   final String toCrs;
 
   @override
-  ProjectPoint<R> forward<R extends Point>(PointFactory<R> factory) =>
-      (Point source, {PointFactory<R>? to}) {
-        // source coordinates (as a Point instance of proj4dart)
-        // (if geographical source coords: longitude is at x, latitude is at y)
-        final hasZ = source.is3D;
-        final point = hasZ
-            ? p4d.Point.withZ(
-                x: source.x.toDouble(),
-                y: source.y.toDouble(),
-                z: source.z.toDouble(),
-              )
-            : p4d.Point(
-                x: source.x.toDouble(),
-                y: source.y.toDouble(),
-              );
-
-        // project using forward projection of the tuple
-        final p4d.Point projected;
-        try {
-          projected = tuple.forward(point);
-        } catch (e) {
-          throw FormatException('Error projecting a point', e);
-        }
-
-        // return a projected point with m coordinate unchanged
-        return (to ?? factory).newWith(
-          x: projected.x,
-          y: projected.y,
-          z: projected.z,
-          m: source.m,
-        );
-      };
+  Projection<R> forward<R extends Point>(PointFactory<R> factory) =>
+      _ProjectionProxy(factory: factory, tuple: tuple, inverse: false);
 
   @override
-  ProjectPoint<R> inverse<R extends Point>(PointFactory<R> factory) =>
-      (Point source, {PointFactory<R>? to}) {
-        // source coordinates (as a Point instance of proj4dart)
-        final hasZ = source.is3D;
-        final point = hasZ
-            ? p4d.Point.withZ(
-                x: source.x.toDouble(),
-                y: source.y.toDouble(),
-                z: source.z.toDouble(),
-              )
-            : p4d.Point(
-                x: source.x.toDouble(),
-                y: source.y.toDouble(),
-              );
-
-        // (un)project using inverse projection of the tuple
-        final p4d.Point projected;
-        try {
-          projected = tuple.inverse(point);
-        } catch (e) {
-          throw FormatException('Error (un)projecting a point', e);
-        }
-
-        // return an (un)projected point with optional m coordinate unchanged
-        return (to ?? factory).newWith(
-          x: projected.x,
-          y: projected.y,
-          z: projected.z,
-          m: source.m,
-        );
-      };
+  Projection<R> inverse<R extends Point>(PointFactory<R> factory) =>
+      _ProjectionProxy(factory: factory, tuple: tuple, inverse: true);
 }
 
-p4d.Projection _resolveProjection(String crs, [String? def]) {
+class _ProjectionProxy<R extends Point> with Projection<R> {
+  _ProjectionProxy({
+    required this.factory,
+    required this.tuple,
+    required this.inverse,
+  });
+
+  final PointFactory<R> factory;
+  final p4d.ProjectionTuple tuple;
+  final bool inverse;
+
+  @override
+  R projectPoint(Point source, {PointFactory<R>? to}) {
+    // source coordinates (as a Point instance of proj4dart)
+    // (if geographical source coords: longitude is at x, latitude is at y)
+    final hasZ = source.is3D;
+    final point = hasZ
+        ? p4d.Point.withZ(
+            x: source.x.toDouble(),
+            y: source.y.toDouble(),
+            z: source.z.toDouble(),
+          )
+        : p4d.Point(
+            x: source.x.toDouble(),
+            y: source.y.toDouble(),
+          );
+
+    // project using forward or inverse projection of the tuple
+    final p4d.Point projected;
+    try {
+      projected = inverse ? tuple.inverse(point) : tuple.forward(point);
+    } catch (e) {
+      throw FormatException(
+        inverse ? 'Error (un)projecting a point' : 'Error projecting a point',
+        e,
+      );
+    }
+
+    // return a projected (or unprojected) point with m coordinate unchanged
+    return (to ?? factory).newWith(
+      x: projected.x,
+      y: projected.y,
+      z: projected.z,
+      m: source.m,
+    );
+  }
+}
+
+p4d.Projection _resolveProj4dProjection(String crs, [String? def]) {
   p4d.Projection? proj;
   try {
     // when no definition given, first check if a projection for code exists

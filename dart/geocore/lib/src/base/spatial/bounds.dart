@@ -99,7 +99,7 @@ abstract class Bounds<T extends Point> extends Geometry
 
   @override
   Bounds<R> project<R extends Point>(
-    ProjectPoint<R> projection, {
+    Projection<R> projection, {
     PointFactory<R>? to,
   });
 
@@ -220,7 +220,7 @@ class BoundsBase<T extends Point> extends Bounds<T> with EquatableMixin {
 
   @override
   Bounds<R> project<R extends Point>(
-    ProjectPoint<R> projection, {
+    Projection<R> projection, {
     PointFactory<R>? to,
   }) =>
       BoundsBase(
@@ -278,7 +278,7 @@ class _LazyBounds<T extends Point> extends Bounds<T> {
 
   @override
   Bounds<R> project<R extends Point>(
-    ProjectPoint<R> projection, {
+    Projection<R> projection, {
     PointFactory<R>? to,
   }) =>
       _ensureBounds().project(projection, to: to);
@@ -320,7 +320,7 @@ class _EmptyBounds extends Bounds {
 
   @override
   Bounds<R> project<R extends Point>(
-    ProjectPoint<R> projection, {
+    Projection<R> projection, {
     PointFactory<R>? to,
   }) =>
       throw const FormatException('Cannot project empty bounds.');

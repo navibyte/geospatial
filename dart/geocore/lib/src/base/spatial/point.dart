@@ -214,10 +214,10 @@ abstract class Point<C extends num> extends Geometry
   /// that as a point factory. Otherwise [projection] uses it's own factory.
   @override
   R project<R extends Point>(
-    ProjectPoint<R> projection, {
+    Projection<R> projection, {
     PointFactory<R>? to,
   }) =>
-      projection(this, to: to);
+      projection.projectPoint(this, to: to);
 }
 
 /// A private implementation for an empty point with coordinate zero values.
@@ -270,7 +270,7 @@ class _PointEmpty<C extends num> extends Point<C> with EquatableMixin {
 
   @override
   R project<R extends Point>(
-    ProjectPoint<R> projection, {
+    Projection<R> projection, {
     PointFactory<R>? to,
   }) =>
       throw const FormatException('Cannot project empty point.');

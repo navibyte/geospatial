@@ -38,7 +38,7 @@ abstract class Bounded extends _BoundedBase {
   /// When [factory] is provided, then target points of [R] are created using
   /// that as a point factory. Otherwise [projection] uses it's own factory.
   Bounded project<R extends Point>(
-    ProjectPoint<R> projection, {
+    Projection<R> projection, {
     PointFactory<R>? to,
   });
 }

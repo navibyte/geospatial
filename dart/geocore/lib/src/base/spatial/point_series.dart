@@ -98,7 +98,7 @@ abstract class PointSeries<E extends Point>
   /// that as a point factory. Otherwise [projection] uses it's own factory.
   @override
   PointSeries<R> project<R extends Point>(
-    ProjectPoint<R> projection, {
+    Projection<R> projection, {
     bool lazy = false,
     PointFactory<R>? to,
   });
@@ -186,11 +186,11 @@ class _PointSeriesView<E extends Point>
 
   @override
   PointSeries<R> project<R extends Point>(
-    ProjectPoint<R> projection, {
+    Projection<R> projection, {
     bool lazy = false,
     PointFactory<R>? to,
   }) {
-    final projected = map((point) => projection(point, to: to));
+    final projected = map((point) => projection.projectPoint(point, to: to));
     return _PointSeriesView(
       lazy ? projected : projected.toList(growable: false),
     );
