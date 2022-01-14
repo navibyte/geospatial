@@ -13,50 +13,62 @@ import '/src/coordinates/geographic.dart';
 import '/src/data/feature.dart';
 import '/src/parse/factory.dart';
 
-/// A GeoJSON factory using [points] factory to create any points of [T].
+/// A GeoJSON factory using [point] factory to create any points of [T].
 ///
 /// Use [geoJsonGeographic] instead of this if points created should be
 /// geographic coordinates, or [geoJsonCartesian] if points should be projected
 /// or cartesian coordinates.
 ///
-/// Optionally you can set [bounds] to define a specific factory for `Bounds`.
+/// Use [bounds] to specify a factory for `Bounds` objects.
+/// 
+/// Use [feature] to define a factory for `Feature` objects.
 GeoJsonFactory<T> geoJson<T extends Point>(
-  PointFactory<T> points, {
+  PointFactory<T> point, {
   CreateBounds<T>? bounds,
+  CreateFeature? feature,
 }) =>
     GeoJsonFactory<T>(
-      pointFactory: points,
+      pointFactory: point,
       boundsFactory: bounds ?? Bounds.fromCoords,
+      featureFactory: feature,
     );
 
-/// A GeoJSON factory using [points] factory to create geographic points of [T].
+/// A GeoJSON factory using [point] factory to create geographic points of [T].
 ///
 /// Use [geoJsonCartesian] instead of this if points created should be projected
 /// or cartesian coordinates, or [geoJson] if points can be anything.
 ///
-/// Optionally you can set [bounds] to define a specific factory for `Bounds`.
+/// Use [bounds] to specify a factory for `Bounds` objects.
+/// 
+/// Use [feature] to define a factory for `Feature` objects.
 GeoJsonFactory<T> geoJsonGeographic<T extends GeoPoint>(
-  PointFactory<T> points, {
+  PointFactory<T> point, {
   CreateBounds<T>? bounds,
+  CreateFeature? feature,
 }) =>
     GeoJsonFactory<T>(
-      pointFactory: points,
+      pointFactory: point,
       boundsFactory: bounds ?? GeoBounds.fromCoords,
+      featureFactory: feature,
     );
 
-/// A GeoJSON factory using [points] factory to create cartesian points of [T].
+/// A GeoJSON factory using [point] factory to create cartesian points of [T].
 ///
 /// Use [geoJsonGeographic] instead of this if points created should be
 /// geographic coordinates, or [geoJson] if points can be anything.
 ///
-/// Optionally you can set [bounds] to define a specific factory for `Bounds`.
+/// Use [bounds] to specify a factory for `Bounds` objects.
+/// 
+/// Use [feature] to define a factory for `Feature` objects.
 GeoJsonFactory<T> geoJsonCartesian<T extends CartesianPoint>(
-  PointFactory<T> points, {
+  PointFactory<T> point, {
   CreateBounds<T>? bounds,
+  CreateFeature? feature,
 }) =>
     GeoJsonFactory<T>(
-      pointFactory: points,
+      pointFactory: point,
       boundsFactory: bounds ?? Bounds.fromCoords,
+      featureFactory: feature,
     );
 
 /// The default GeoJSON factory instace assuming geographic CRS80 coordinates.
@@ -112,11 +124,11 @@ class GeoJsonFactory<PointType extends Point>
   const GeoJsonFactory({
     required PointFactory<PointType> pointFactory,
     required CreateBounds<PointType> boundsFactory,
-    CreateFeature featureFactory = _defaultFeatureFactory,
+    CreateFeature? featureFactory,
   }) : super(
           pointFactory: pointFactory,
           boundsFactory: boundsFactory,
-          featureFactory: featureFactory,
+          featureFactory: featureFactory ?? _defaultFeatureFactory,
         );
 
   Map<String, dynamic> _ensureDecodedMap(dynamic data) {

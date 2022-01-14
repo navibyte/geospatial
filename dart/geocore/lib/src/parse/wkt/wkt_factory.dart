@@ -10,9 +10,9 @@ import '/src/coordinates/geographic.dart';
 import '/src/parse/factory.dart';
 import '/src/utils/wkt_data.dart';
 
-/// Creates a WKT factory instace using the [points] factory.
+/// Creates a WKT factory instace using the [point] factory.
 ///
-/// An optional [pointsWithM] factory can be given to instantiate any point
+/// An optional [pointWithM] factory can be given to instantiate any point
 /// objects with M coordinates.
 ///
 /// Supported WKT geometry types: 'POINT', 'LINESTRING', 'POLYGON',
@@ -20,12 +20,12 @@ import '/src/utils/wkt_data.dart';
 ///
 /// See [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry).
 WktFactory<T> wkt<T extends Point>(
-  PointFactory<T> points, [
-  PointFactory<T>? pointsWithM,
+  PointFactory<T> point, [
+  PointFactory<T>? pointWithM,
 ]) =>
     WktFactory<T>(
       pointFactory: ({required bool expectM}) =>
-          expectM ? pointsWithM ?? points : points,
+          expectM ? pointWithM ?? point : point,
     );
 
 /// The default WKT factory instace assuming geographic CRS80 coordinates.
