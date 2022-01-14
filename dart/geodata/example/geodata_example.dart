@@ -17,7 +17,7 @@ To test run this from command line:
 
 GeoJSON (web / http) resource as a data source:
 dart example/geodata_example.dart geojson https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/ 2.5_day.geojson,significant_week.geojson 3 items
-dart example/geodata_example.dart geojson https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/ significant_week.geojson 3 items id us7000g9zq
+dart example/geodata_example.dart geojson https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/ significant_week.geojson 3 items id us7000gaqu
 
 OGC API Features data sources:
 dart example/geodata_example.dart ogcfeat https://demo.pygeoapi.io/master/ lakes 2 items
@@ -62,24 +62,30 @@ Future<void> main(List<String> args) async {
   var maxPagedResults = _defaultMaxPagedResults;
 
   // parse query
-  GeodataQuery query = FeatureItemsQuery(
-    limit: limit,
-  );
+  GeodataQuery query = serviceType != 'geojson'
+      ? FeatureItemsQuery(
+          limit: limit,
+        )
+      : BasicFeatureItemsQuery(
+          limit: limit,
+        );
   if (args.length >= 7) {
     switch (args[5]) {
       case 'id':
-        query = FeatureItemQuery(
+        query = BasicFeatureItemQuery(
           id: args[6],
         );
         maxPagedResults = 1;
         break;
       case 'bbox':
-        final bbox = args[6].split(',');
-        if (bbox.length == 4 || bbox.length == 6) {
-          query = FeatureItemsQuery(
-            limit: limit,
-            bounds: GeoBounds.from(bbox.map<num>(double.parse)),
-          );
+        if (serviceType != 'geojson') {
+          final bbox = args[6].split(',');
+          if (bbox.length == 4 || bbox.length == 6) {
+            query = FeatureItemsQuery(
+              limit: limit,
+              bounds: GeoBounds.from(bbox.map<num>(double.parse)),
+            );
+          }
         }
         break;
     }
@@ -102,9 +108,9 @@ Future<void> main(List<String> args) async {
           switch (operation) {
             case 'items':
               // get actual data, a single feature or features
-              if (query is FeatureItemsQuery) {
+              if (query is BasicFeatureItemsQuery) {
                 await _callItemsPaged(source, query, maxPagedResults);
-              } else if (query is FeatureItemQuery) {
+              } else if (query is BasicFeatureItemQuery) {
                 await _callItemById(source, query);
               }
               break;
@@ -152,7 +158,7 @@ Future<void> main(List<String> args) async {
               // get actual data, a single feature or features
               if (query is FeatureItemsQuery) {
                 await _callItemsPaged(source, query, maxPagedResults);
-              } else if (query is FeatureItemQuery) {
+              } else if (query is BasicFeatureItemQuery) {
                 await _callItemById(source, query);
               }
             }
@@ -179,8 +185,8 @@ Future<void> main(List<String> args) async {
 }
 
 Future<bool> _callItemById(
-  FeatureSource source,
-  FeatureItemQuery query,
+  BasicFeatureSource source,
+  BasicFeatureItemQuery query,
 ) async {
   // fetch feature item
   final item = await source.item(query);
@@ -189,13 +195,18 @@ Future<bool> _callItemById(
 }
 
 Future<bool> _callItemsPaged(
-  FeatureSource source,
-  FeatureItemsQuery query,
+  BasicFeatureSource source,
+  BasicFeatureItemsQuery query,
   int maxPagedResults,
 ) async {
   // fetch feature items as paged results, max rounds by maxPagedResults
   var round = 0;
-  Paged<FeatureItems>? page = await source.itemsPaged(query);
+  Paged<FeatureItems>? page;
+  if (source is FeatureSource && query is FeatureItemsQuery) {
+    page = await source.itemsPaged(query);
+  } else {
+    page = await source.itemsAllPaged(query: query);
+  }
   while (page != null && round++ < maxPagedResults) {
     _printFeatures(page.current);
     page = await page.next();

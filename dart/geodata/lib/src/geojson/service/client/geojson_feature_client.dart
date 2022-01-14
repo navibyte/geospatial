@@ -29,7 +29,7 @@ import '/src/utils/features.dart';
 /// `geoJsonCartesian(cartesianPoints)` as a parser. Or if expecting specific
 /// type of points, you could also use a factory like
 /// `geoJson(Point3.coordinates)`.
-FeatureSource geoJsonHttpClient({
+BasicFeatureSource geoJsonHttpClient({
   required Uri location,
   http.Client? client,
   Map<String, String>? headers,
@@ -56,7 +56,7 @@ FeatureSource geoJsonHttpClient({
 /// `geoJsonCartesian(cartesianPoints)` as a parser. Or if expecting specific
 /// type of points, you could also use a factory like
 /// `geoJson(Point3.coordinates)`.
-FeatureSource geoJsonFutureClient(
+BasicFeatureSource geoJsonFutureClient(
   Future<String> Function() source, {
   GeoJsonFactory? parser,
 }) =>
@@ -69,7 +69,7 @@ FeatureSource geoJsonFutureClient(
 // Private implementation code below.
 // The implementation may change in future.
 
-class _GeoJSONFeatureSource implements FeatureSource {
+class _GeoJSONFeatureSource implements BasicFeatureSource {
   const _GeoJSONFeatureSource(
     this.source, {
     this.adapter,
@@ -89,10 +89,10 @@ class _GeoJSONFeatureSource implements FeatureSource {
   final GeoJsonFactory parser;
 
   @override
-  Future<FeatureItem> item(FeatureItemQuery query) async {
+  Future<FeatureItem> item(BasicFeatureItemQuery query) async {
     // get items as paged response
-    Paged<FeatureItems>? page = await itemsPaged(
-      FeatureItemsQuery(
+    Paged<FeatureItems>? page = await itemsAllPaged(
+      query: BasicFeatureItemsQuery(
         crs: query.crs,
         extraParams: query.extraParams,
       ),
@@ -121,11 +121,11 @@ class _GeoJSONFeatureSource implements FeatureSource {
   }
 
   @override
-  Future<FeatureItems> items(FeatureItemsQuery query) async =>
-      (await itemsPaged(query)).current;
+  Future<FeatureItems> itemsAll({BasicFeatureItemsQuery? query}) async =>
+      (await itemsAllPaged(query: query)).current;
 
   @override
-  Future<Paged<FeatureItems>> itemsPaged(FeatureItemsQuery query) {
+  Future<Paged<FeatureItems>> itemsAllPaged({BasicFeatureItemsQuery? query}) {
     final src = source;
 
     // fetch data as JSON Object + parse GeoJSON feature or feature collection
@@ -149,7 +149,7 @@ class _GeoJSONFeatureSource implements FeatureSource {
 }
 
 _GeoJSONPagedFeaturesItems _parseFeatureItems(
-  FeatureItemsQuery query,
+  BasicFeatureItemsQuery? query,
   Map<String, Object?> data,
   GeoJsonFactory parser,
 ) {
@@ -157,15 +157,13 @@ _GeoJSONPagedFeaturesItems _parseFeatureItems(
 
   // analyze if only a first set or all items should be returned
   final Range? range;
-  if (query.limit != null) {
+  if (query != null && query.limit != null) {
     // first set
     range = Range(start: 0, limit: query.limit);
   } else {
     // no limit => all features
     range = null;
   }
-
-  // todo:  filter data using query params (crs, boundsCrs, bounds, limit)
 
   // return as paged collection (paging through already fetched data)
   return _GeoJSONPagedFeaturesItems.parse(parser, data, count, range);

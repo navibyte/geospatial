@@ -23,13 +23,13 @@ import '/src/utils/features.dart';
 ///
 /// When given [headers] are injected to http requests (however some can be
 /// overridden by the feature service implementation).
-/// 
+///
 /// An optional [parser] argument specifies a GeoJSON parser. If not given then
-/// `geoJsonGeographic(geographicPoints)` defined by the 
+/// `geoJsonGeographic(geographicPoints)` defined by the
 /// `package:geocore/parse.dart` package is used as a default. When excpecting
-/// cartesian or projected coordinates, you might want to use 
+/// cartesian or projected coordinates, you might want to use
 /// `geoJsonCartesian(cartesianPoints)` as a parser. Or if expecting specific
-/// type of points, you could also use a factory like 
+/// type of points, you could also use a factory like
 /// `geoJson(Point3.coordinates)`.
 OGCFeatureService ogcApiFeaturesHttpClient({
   required Uri endpoint,
@@ -152,7 +152,7 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
   }
 
   @override
-  Future<OGCFeatureItem> item(FeatureItemQuery query) async {
+  Future<OGCFeatureItem> item(BasicFeatureItemQuery query) async {
     // read "collections/{collectionId}/items/{query.id}"
 
     // form a query url
@@ -189,6 +189,16 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
       },
     );
   }
+
+  @override
+  Future<OGCFeatureItems> itemsAll({BasicFeatureItemsQuery? query}) =>
+      items(FeatureItemsQuery.fromBasicOpt(query));
+
+  @override
+  Future<Paged<OGCFeatureItems>> itemsAllPaged({
+    BasicFeatureItemsQuery? query,
+  }) =>
+      itemsPaged(FeatureItemsQuery.fromBasicOpt(query));
 
   @override
   Future<OGCFeatureItems> items(FeatureItemsQuery query) async =>

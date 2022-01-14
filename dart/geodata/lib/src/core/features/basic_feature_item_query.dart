@@ -9,11 +9,11 @@ import 'package:meta/meta.dart';
 
 import '/src/core/data.dart';
 
-/// A query defining parameters for requesting a feature from a feature source.
+/// A query for requesting a feature from a basic feature source.
 @immutable
-class FeatureItemQuery with GeodataQuery, EquatableMixin {
+class BasicFeatureItemQuery with GeodataQuery, EquatableMixin {
   /// Create a new feature item query with the required [id].
-  const FeatureItemQuery({
+  const BasicFeatureItemQuery({
     required this.id,
     this.crs,
     this.extraParams,

@@ -67,12 +67,12 @@ Future<void> main(List<String> args) async {
   );
 }
 
-Future<void> _readFeatures(FeatureSource source) async {
+Future<void> _readFeatures(BasicFeatureSource source) async {
   // read features with error handling
   try {
     // get items or features from a source, maximum 5 features returned
-    final items = await source.items(
-      const FeatureItemsQuery(limit: 5),
+    final items = await source.itemsAll(
+      query: const BasicFeatureItemsQuery(limit: 5),
     );
 
     // do something with features, in this sample just print them out

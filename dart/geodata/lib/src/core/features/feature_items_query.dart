@@ -4,27 +4,29 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:equatable/equatable.dart';
 import 'package:geocore/base.dart';
-import 'package:meta/meta.dart';
 
-import '/src/core/data.dart';
+import 'basic_feature_items_query.dart';
 
 /// A query defining parameters for requesting features from a feature source.
-@immutable
-class FeatureItemsQuery with GeodataQuery, EquatableMixin {
+class FeatureItemsQuery extends BasicFeatureItemsQuery {
   /// Create a new feature items query with optional query parameters.
   const FeatureItemsQuery({
-    this.crs,
+    String? crs,
     this.boundsCrs,
     this.bounds,
     this.datetime,
-    this.limit,
-    this.extraParams,
-  });
+    int? limit,
+    Map<String, String>? extraParams,
+  }) : super(crs: crs, limit: limit, extraParams: extraParams);
 
-  @override
-  final String? crs;
+  /// Create a new feature items query from an optional basic [query].
+  factory FeatureItemsQuery.fromBasicOpt(BasicFeatureItemsQuery? query) =>
+      FeatureItemsQuery(
+        crs: query?.crs,
+        limit: query?.limit,
+        extraParams: query?.extraParams,
+      );
 
   /// An optional coordinate reference system used by [bounds].
   final String? boundsCrs;
@@ -34,14 +36,6 @@ class FeatureItemsQuery with GeodataQuery, EquatableMixin {
 
   /// An optional datetime as a temporal object (instant or interval).
   final Temporal? datetime;
-
-  /// An optional [limit] setting maximum number of items returned.
-  ///
-  /// If given, must be a positive integer.
-  final int? limit;
-
-  @override
-  final Map<String, String>? extraParams;
 
   @override
   List<Object?> get props => [crs, boundsCrs, bounds, limit, extraParams];

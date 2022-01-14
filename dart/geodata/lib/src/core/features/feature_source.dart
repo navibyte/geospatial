@@ -6,20 +6,16 @@
 
 import '/src/common/paged.dart';
 
+import 'basic_feature_source.dart';
 import 'feature_exception.dart';
 import 'feature_item.dart';
-import 'feature_item_query.dart';
 import 'feature_items.dart';
 import 'feature_items_query.dart';
 
 /// A feature source providing geospatial features.
 abstract class FeatureSource<ItemType extends FeatureItem,
-    ItemsType extends FeatureItems> {
-  /// Fetches a single feature by id (set in [query]) from this source.
-  ///
-  /// Throws [FeatureException] in a case of a failure.
-  Future<ItemType> item(FeatureItemQuery query);
-
+        ItemsType extends FeatureItems>
+    extends BasicFeatureSource<ItemType, ItemsType> {
   /// Fetches features matching [query] from this source.
   ///
   /// This call accesses only one set of feature items (number of returned items
@@ -28,7 +24,7 @@ abstract class FeatureSource<ItemType extends FeatureItem,
   /// Throws [FeatureException] in a case of a failure.
   Future<ItemsType> items(FeatureItemsQuery query);
 
-  /// Fetches features (as paged sets) matching [query] from this source.
+  /// Fetches features as paged sets matching [query] from this source.
   ///
   /// This call returns a first set of feature items (number of returned items
   /// can be limited), with a link to an optional next set of feature items.
