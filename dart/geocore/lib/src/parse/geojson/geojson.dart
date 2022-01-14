@@ -13,20 +13,68 @@ import '/src/coordinates/geographic.dart';
 import '/src/data/feature.dart';
 import '/src/parse/factory.dart';
 
+/// A GeoJSON factory using [points] factory to create any points of [T].
+///
+/// Use [geoJsonGeographic] instead of this if points created should be
+/// geographic coordinates, or [geoJsonCartesian] if points should be projected
+/// or cartesian coordinates.
+///
+/// Optionally you can set [bounds] to define a specific factory for `Bounds`.
+GeoJsonFactory<T> geoJson<T extends Point>(
+  PointFactory<T> points, {
+  CreateBounds<T>? bounds,
+}) =>
+    GeoJsonFactory<T>(
+      pointFactory: points,
+      boundsFactory: bounds ?? Bounds.fromCoords,
+    );
+
+/// A GeoJSON factory using [points] factory to create geographic points of [T].
+///
+/// Use [geoJsonCartesian] instead of this if points created should be projected
+/// or cartesian coordinates, or [geoJson] if points can be anything.
+///
+/// Optionally you can set [bounds] to define a specific factory for `Bounds`.
+GeoJsonFactory<T> geoJsonGeographic<T extends GeoPoint>(
+  PointFactory<T> points, {
+  CreateBounds<T>? bounds,
+}) =>
+    GeoJsonFactory<T>(
+      pointFactory: points,
+      boundsFactory: bounds ?? GeoBounds.fromCoords,
+    );
+
+/// A GeoJSON factory using [points] factory to create cartesian points of [T].
+///
+/// Use [geoJsonGeographic] instead of this if points created should be
+/// geographic coordinates, or [geoJson] if points can be anything.
+///
+/// Optionally you can set [bounds] to define a specific factory for `Bounds`.
+GeoJsonFactory<T> geoJsonCartesian<T extends CartesianPoint>(
+  PointFactory<T> points, {
+  CreateBounds<T>? bounds,
+}) =>
+    GeoJsonFactory<T>(
+      pointFactory: points,
+      boundsFactory: bounds ?? Bounds.fromCoords,
+    );
+
 /// The default GeoJSON factory instace assuming geographic CRS80 coordinates.
 ///
 /// Result type candidates for point objects: [GeoPoint2], [GeoPoint3].
+@Deprecated('Use geoJsonGeographic() or geoJson() instead')
 const geoJSON = GeoJsonFactory<GeoPoint>(
-  pointFactory: geoPointFactory,
-  boundsFactory: geoBoundsFactory,
+  pointFactory: geographicPoints,
+  boundsFactory: GeoBounds.fromCoords,
 );
 
 /// The default GeoJSON factory instace assuming projected coordinates.
 ///
 /// Result type candidates for point objects: [Point2], [Point3].
+@Deprecated('Use geoJsonCartesian() or geoJson() instead')
 const geoJSONProjected = GeoJsonFactory<Point>(
-  pointFactory: projectedPointFactory,
-  boundsFactory: anyBoundsFactory,
+  pointFactory: cartesianPoints,
+  boundsFactory: Bounds.fromCoords,
 );
 
 /// The default [CreateFeature] forwarding directly to Feature.view() factory.

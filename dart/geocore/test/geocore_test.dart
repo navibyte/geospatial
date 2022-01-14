@@ -25,14 +25,16 @@ void main() {
       // NOP
     });
 
+    final parser2D = geoJsonGeographic(GeoPoint2.coordinates);
+    final parser3D = geoJsonGeographic(GeoPoint3.coordinates);
     test('Basic feature', () {
-      final f = geoJSON.feature(geojsonFeature);
+      final f = parser2D.feature(geojsonFeature);
       expect(f.geometry, GeoPoint2.from([125.6, 10.1]));
       expect(f.properties['name'], 'Dinagat Islands');
     });
 
     test('Basic feature collection', () {
-      final fc = geoJSON.featureCollection(geojsonFeatureCollection);
+      final fc = parser2D.featureCollection(geojsonFeatureCollection);
       expect(fc.features.length, 3);
       expect(fc.features[0].geometry, GeoPoint2.from([102.0, 0.5]));
       expect(fc.features[1].geometry,
@@ -65,20 +67,20 @@ void main() {
     });
 
     test('Basic feature with bbox', () {
-      final f = geoJSON.feature(geojsonBboxFeature);
+      final f = parser2D.feature(geojsonBboxFeature);
       expect((f.geometry as Polygon?)?.exterior.chain[3],
           GeoPoint2.from([-10.0, -10.0]));
       expect(f.bounds, GeoBounds.bboxLonLat(-10.0, -10.0, 10.0, 10.0));
     });
 
     test('Basic feature collection with bbox', () {
-      final f = geoJSON.featureCollection(geojsonBboxFeatureCollection);
+      final f = parser3D.featureCollection(geojsonBboxFeatureCollection);
       expect(f.bounds,
           GeoBounds.bboxLonLatElev(100.0, 0.0, -100.0, 105.0, 1.0, 0.0));
     });
 
     test('Basic extended feature', () {
-      final f = geoJSON.feature(geojsonExtendedFeature);
+      final f = parser2D.feature(geojsonExtendedFeature);
       expect(f.id?.toString(), 'f2');
     });
   });

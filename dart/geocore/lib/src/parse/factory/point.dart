@@ -12,41 +12,41 @@ import '/src/coordinates/geographic.dart';
 ///
 /// Result type candidates for objects created by the factory: [GeoPoint2],
 /// [GeoPoint3].
-const PointFactory<GeoPoint> geoPointFactory = _CreateGeoPoint();
+const PointFactory<GeoPoint> geographicPoints = _CreateGeoPoint();
 
 /// Returns a factory for geographic [GeoPoint] objects allowing M coordinate.
 ///
 /// Result type candidates for objects created by a factory: [GeoPoint2],
 /// [GeoPoint2m], [GeoPoint3], [GeoPoint3m].
-PointFactory<GeoPoint> geoPointFactoryAllowingM({required bool expectM}) =>
+PointFactory<GeoPoint> geographicPointsWithM({required bool expectM}) =>
     _CreateGeoPointAllowingM(expectM: expectM);
 
-/// A constant factory for projected [Point] objects without M coordinate.
+/// A constant factory for [CartesianPoint] objects without M coordinate.
 ///
 /// Result type candidates for objects created by the factory: [Point2],
 /// [Point3].
-const PointFactory projectedPointFactory = _CreateProjectedPoint();
+const PointFactory<CartesianPoint> cartesianPoints = _CreateCartesianPoint();
 
-/// Returns a factory for projected [Point] objects allowing M coordinate.
+/// Returns a factory for [CartesianPoint] objects allowing M coordinate.
 ///
 /// Result type candidates for objects created by a factory: [Point2],
 /// [Point2m], [Point3], [Point3m].
-PointFactory projectedPointFactoryAllowingM({required bool expectM}) =>
-    _CreateProjectedPointAllowingM(expectM: expectM);
+PointFactory<CartesianPoint> cartesianPointsWithM({required bool expectM}) =>
+    _CreateCartesianPointAllowingM(expectM: expectM);
 
-/// Returns a factory for projected and geographic [Point] objects without M.
+/// Returns a factory for cartesian and geographic [Point] objects without M.
 ///
 /// Result type candidates for objects created by a factory: [Point2], [Point3],
 /// [GeoPoint2], [GeoPoint3].
-PointFactory anyPointFactory({bool expectGeographic = true}) =>
+PointFactory anyPoints({bool expectGeographic = true}) =>
     _CreateAnyPoint(expectGeographic: expectGeographic);
 
-/// Returns a factory for projected and geographic [Point] objects allowing M.
+/// Returns a factory for cartesian and geographic [Point] objects allowing M.
 ///
 /// Result type candidates for objects created by a factory: [Point2],
 /// [Point2m], [Point3], [Point3m], [GeoPoint2], [GeoPoint2m], [GeoPoint3],
 /// [GeoPoint3m].
-PointFactory<Point> anyPointFactoryAllowingM({
+PointFactory<Point> anyPointsWithM({
   bool expectGeographic = true,
   required bool expectM,
 }) =>
@@ -126,14 +126,14 @@ class _CreateGeoPointAllowingM extends _CreateGeoPoint {
   }
 }
 
-class _CreateProjectedPoint implements PointFactory {
-  const _CreateProjectedPoint();
+class _CreateCartesianPoint implements PointFactory<CartesianPoint> {
+  const _CreateCartesianPoint();
 
   @override
   bool get hasM => false;
 
   @override
-  Point newFrom(Iterable<num> coords, {int? offset, int? length}) {
+  CartesianPoint newFrom(Iterable<num> coords, {int? offset, int? length}) {
     CoordinateFactory.checkCoords(2, coords, offset: offset, length: length);
     final len = length ?? coords.length;
     if (len >= 3) {
@@ -145,20 +145,21 @@ class _CreateProjectedPoint implements PointFactory {
   }
 
   @override
-  Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) => z != null
-      ? Point3.xyz(x.toDouble(), y.toDouble(), z.toDouble())
-      : Point2.xy(x.toDouble(), y.toDouble());
+  CartesianPoint newWith({num x = 0.0, num y = 0.0, num? z, num? m}) =>
+      z != null
+          ? Point3.xyz(x.toDouble(), y.toDouble(), z.toDouble())
+          : Point2.xy(x.toDouble(), y.toDouble());
 }
 
-class _CreateProjectedPointAllowingM extends _CreateProjectedPoint {
-  const _CreateProjectedPointAllowingM({required bool expectM})
+class _CreateCartesianPointAllowingM extends _CreateCartesianPoint {
+  const _CreateCartesianPointAllowingM({required bool expectM})
       : hasM = expectM;
 
   @override
   final bool hasM;
 
   @override
-  Point newFrom(Iterable<num> coords, {int? offset, int? length}) {
+  CartesianPoint newFrom(Iterable<num> coords, {int? offset, int? length}) {
     if (!hasM) {
       return super.newFrom(coords, offset: offset, length: length);
     } else {
@@ -174,7 +175,7 @@ class _CreateProjectedPointAllowingM extends _CreateProjectedPoint {
   }
 
   @override
-  Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) {
+  CartesianPoint newWith({num x = 0.0, num y = 0.0, num? z, num? m}) {
     if (!hasM) {
       return super.newWith(x: x, y: y, z: z, m: m);
     } else {
@@ -206,7 +207,7 @@ class _CreateAnyPoint implements PointFactory {
       return const _CreateGeoPoint()
           .newFrom(coords, offset: offset, length: length);
     } else {
-      return const _CreateProjectedPoint()
+      return const _CreateCartesianPoint()
           .newFrom(coords, offset: offset, length: length);
     }
   }
@@ -216,7 +217,7 @@ class _CreateAnyPoint implements PointFactory {
     if (expectGeographic) {
       return const _CreateGeoPoint().newWith(x: x, y: y, z: z, m: m);
     } else {
-      return const _CreateProjectedPoint().newWith(x: x, y: y, z: z, m: m);
+      return const _CreateCartesianPoint().newWith(x: x, y: y, z: z, m: m);
     }
   }
 }
@@ -238,7 +239,7 @@ class _CreateAnyPointAllowingM implements PointFactory {
       return _CreateGeoPointAllowingM(expectM: hasM)
           .newFrom(coords, offset: offset, length: length);
     } else {
-      return _CreateProjectedPointAllowingM(expectM: hasM)
+      return _CreateCartesianPointAllowingM(expectM: hasM)
           .newFrom(coords, offset: offset, length: length);
     }
   }
@@ -249,7 +250,7 @@ class _CreateAnyPointAllowingM implements PointFactory {
       return _CreateGeoPointAllowingM(expectM: hasM)
           .newWith(x: x, y: y, z: z, m: m);
     } else {
-      return _CreateProjectedPointAllowingM(expectM: hasM)
+      return _CreateCartesianPointAllowingM(expectM: hasM)
           .newWith(x: x, y: y, z: z, m: m);
     }
   }

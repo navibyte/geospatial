@@ -40,15 +40,38 @@ void main() {
     });
 
     test('WKT points using projected points', () {
-      expect(wktProjected.parse('POINT (25.1 53.1)'), Point2.xy(25.1, 53.1));
-      expect(wktProjected.parse('POINT M (25.1 53.1 89.0)'),
+      expect(wktCartesian.parse('POINT (25.1 53.1)'), Point2.xy(25.1, 53.1));
+      expect(wktCartesian.parse('POINT M (25.1 53.1 89.0)'),
           Point2m.xym(25.1, 53.1, 89.0));
-      expect(wktProjected.parse('POINT (25.1 53.1 123.4)'),
+      expect(wktCartesian.parse('POINT (25.1 53.1 123.4)'),
           Point3.xyz(25.1, 53.1, 123.4));
-      expect(wktProjected.parse('POINT Z (25.1 53.1 123.4)'),
+      expect(wktCartesian.parse('POINT Z (25.1 53.1 123.4)'),
           Point3.xyz(25.1, 53.1, 123.4));
-      expect(wktProjected.parse('POINT ZM (25.1 53.1 123.4 89.0)'),
+      expect(wktCartesian.parse('POINT ZM (25.1 53.1 123.4 89.0)'),
           Point3m.xyzm(25.1, 53.1, 123.4, 89.0));
+    });
+
+    test('WKT points using specific point factory', () {
+      final wktParser2Dm = wkt(Point2.coordinates, Point2m.coordinates);
+      expect(wktParser2Dm.parse('POINT (25.1 53.1)'), Point2.xy(25.1, 53.1));
+      expect(wktParser2Dm.parse('POINT M (25.1 53.1 89.0)'),
+          Point2m.xym(25.1, 53.1, 89.0));
+
+      final wktParser3Dm = wkt(Point3.coordinates, Point3m.coordinates);
+      expect(wktParser3Dm.parse('POINT (25.1 53.1 123.4)'),
+          Point3.xyz(25.1, 53.1, 123.4));
+      expect(wktParser3Dm.parse('POINT Z (25.1 53.1 123.4)'),
+          Point3.xyz(25.1, 53.1, 123.4));
+      expect(wktParser3Dm.parse('POINT ZM (25.1 53.1 123.4 89.0)'),
+          Point3m.xyzm(25.1, 53.1, 123.4, 89.0));
+
+      final wktParser3D = wkt(Point3.coordinates);
+      expect(wktParser3D.parse('POINT (25.1 53.1 123.4)'),
+          Point3.xyz(25.1, 53.1, 123.4));
+      expect(wktParser3D.parse('POINT Z (25.1 53.1 123.4)'),
+          Point3.xyz(25.1, 53.1, 123.4));
+      expect(wktParser3D.parse('POINT ZM (25.1 53.1 123.4 89.0)'),
+          Point3.xyz(25.1, 53.1, 123.4));
     });
 
     test('WKT line strings', () {
@@ -115,13 +138,13 @@ void main() {
 
       // POINT (30 10)
       final point1 = Point2.from([30.0, 10.0]);
-      expect(wktProjected.parse('POINT (30 10)'), point1);
+      expect(wktCartesian.parse('POINT (30 10)'), point1);
       expect(Point2.parse('(30 10)'), point1);
       expect(Point2.parse('30 10'), point1);
 
       // POINT ZM (1 1 5 60)
       final point2 = Point3m.from([1.0, 1.0, 5.0, 60.0]);
-      expect(wktProjected.parse('POINT ZM (1 1 5 60)'), point2);
+      expect(wktCartesian.parse('POINT ZM (1 1 5 60)'), point2);
       expect(Point3m.parse('1 1 5 60'), point2);
 
       // POINT M (1 1 80)
@@ -131,7 +154,7 @@ void main() {
 
       // POINT EMPTY
       expect(wktGeographic.parse('POINT EMPTY'), Point.empty());
-      expect(wktProjected.parse('POINT M EMPTY'), Point.empty(hasM: true));
+      expect(wktCartesian.parse('POINT M EMPTY'), Point.empty(hasM: true));
       expect(wktGeographic.parse('POINT Z EMPTY'), Point.empty(is3D: true));
 
       // MULTIPOLYGON EMPTY
@@ -149,7 +172,7 @@ void main() {
         Point2.coordinates,
       );
       expect(
-          wktProjected.parse('LINESTRING (30 10, 10 30, 40 40)'), lineString);
+          wktCartesian.parse('LINESTRING (30 10, 10 30, 40 40)'), lineString);
       expect(
           LineString<Point>.parse(
               '(30 10), (10 30), (40 40)', Point2.coordinates),
@@ -191,7 +214,7 @@ void main() {
         Point3.coordinates,
       );
       expect(
-          wktProjected.parse<Point3>('POLYGON ((30 10 100, 40 40 110,'
+          wktCartesian.parse<Point3>('POLYGON ((30 10 100, 40 40 110,'
               ' 20 40 120, 10 20 130, 30 10 100))'),
           polygon1);
       expect(
@@ -217,7 +240,7 @@ void main() {
         Point2m.coordinates,
       );
       expect(
-          wktProjected.parse<Point2>('POLYGON M ((30 10 5, 40 40 6,'
+          wktCartesian.parse<Point2>('POLYGON M ((30 10 5, 40 40 6,'
               ' 20 40 7, 10 20 8, 30 10 5))'),
           polygon2);
       expect(
@@ -333,7 +356,7 @@ void main() {
         Point2.coordinates,
       );
       expect(
-          wktProjected.parse('MULTILINESTRING ((10 10, 20 20, 10 40), '
+          wktCartesian.parse('MULTILINESTRING ((10 10, 20 20, 10 40), '
               '(40 40, 30 30, 40 20, 30 10))'),
           multiLineString1);
       expect(
@@ -439,18 +462,18 @@ void main() {
         )
       ]);
       expect(
-          wktProjected.parse<Point2>('GEOMETRYCOLLECTION(POINT(4 6), '
+          wktCartesian.parse<Point2>('GEOMETRYCOLLECTION(POINT(4 6), '
               'LINESTRING(4 6,7 10))'),
           geometryCollection1);
       // also some geometry series tests with different separators
       // (each wkt token each separated with blanks/linefeeds/commas)
-      expect(wktProjected.parseAll<Point2>('POINT(4 6), LINESTRING(4 6,7 10)'),
+      expect(wktCartesian.parseAll<Point2>('POINT(4 6), LINESTRING(4 6,7 10)'),
           geometryCollection1.geometries);
-      expect(wktProjected.parseAll<Point2>('''
+      expect(wktCartesian.parseAll<Point2>('''
       POINT(4 6)  
       LINESTRING(4 6,7 10)
       '''), geometryCollection1.geometries);
-      expect(wktProjected.parseAll<Point2>('''
+      expect(wktCartesian.parseAll<Point2>('''
       ,
 
       POINT(4 6)  
@@ -461,7 +484,7 @@ void main() {
       '''), geometryCollection1.geometries);
 
       /// Geometries with empty ones on WKT text.
-      expect(wktProjected.parseAll<Point>('''
+      expect(wktCartesian.parseAll<Point>('''
       POINT ZM (1 1 5 60)
       POINT EMPTY
       POINT M (1 1 80)
@@ -475,7 +498,7 @@ void main() {
 
       // Other geometry collection sample from wikipedia.
       expect(
-          wktProjected.parse<Point2>('''
+          wktCartesian.parse<Point2>('''
       GEOMETRYCOLLECTION (
             POINT (40 10),
             LINESTRING 

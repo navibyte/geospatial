@@ -60,8 +60,9 @@ void _parseGeoJSON() {
     }
   ''';
 
-  // parse FeatureCollection using the default GeoJSON factory
-  final fc = geoJSON.featureCollection(sample);
+  // parse FeatureCollection using a GeoJSON parser with geographic coordinates
+  final geoJsonParser = geoJsonGeographic(geographicPoints);
+  final fc = geoJsonParser.featureCollection(sample);
 
   // loop through features and print id, geometry and properties for each
   for (final f in fc.features) {
@@ -136,7 +137,8 @@ void _readmeIntro() {
 
   // Parsing GeoJSON data.
 
-  geoJSON.feature(
+  final geoJsonParser = geoJsonGeographic(GeoPoint3.coordinates);
+  geoJsonParser.feature(
     '''
     {
       "type": "Feature",
@@ -155,8 +157,15 @@ void _readmeIntro() {
 
   // Parsing WKT data.
 
-  wktProjected.parse('LINESTRING (200.1 500.9, 210.2 510.4)');
+  // Parse using specific point factories for coordinates with and without M
+  final wktParser = wkt(Point2.coordinates, Point2m.coordinates);
+  wktParser.parse('POINT (100.0 200.0)'); // => Point2;
+  wktParser.parse('POINT M (100.0 200.0 5.0)'); // => Point2m;
 
+  // Cartesian (or projected) coordinates (Point2, Point2m, Point3 or Point3m)
+  wktCartesian.parse('LINESTRING (200.1 500.9, 210.2 510.4)');
+
+  // Geographic coordinates (GeoPoint2, GeoPoint2m, GeoPoint3 or GeoPoint3m)
   wktGeographic.parse(
     'POLYGON ((40 15, 50 50, 15 45, 10 15, 40 15),'
     ' (25 25, 25 40, 35 30, 25 25))',
@@ -181,8 +190,8 @@ void _readmeIntro() {
   Point3.tryParse('nop') ?? Point3.parse('708221.0 5707225.0 45.0');
 
   // The same point parsed using the WKT parser for projected geometries.
-  // Here `wktProjected` is a global constant for a WKT factory implementation.
-  wktProjected.parse('POINT Z (708221.0 5707225.0 45.0)');
+  // Here `wktCartesian` is a global constant for a WKT factory implementation.
+  wktCartesian.parse('POINT Z (708221.0 5707225.0 45.0)');
 
   // -----------
 
@@ -263,7 +272,7 @@ void _readmeIntro() {
   );
 
   // Using the WKT factory produces the same result as the previous sample.
-  wktProjected.parse<Point3m>(
+  wktCartesian.parse<Point3m>(
     'LINESTRING ZM(10.0 11.0 12.0 5.1, 20.0 21.0 22.0 5.2, 30.0 31.0 32.0 5.3)',
   );
 
@@ -342,7 +351,7 @@ void _readmeIntro() {
   ]);
 
   // A geometry collection can also be parsed from WKT text.
-  wktProjected.parse<Point2>(
+  wktCartesian.parse<Point2>(
     '''
       GEOMETRYCOLLECTION (
         POINT (40 10),
@@ -438,14 +447,14 @@ void _readmeIntro() {
   // -----------
 
   // Parse projected points from WKT (result is different concrete classes).
-  wktProjected.parse('POINT (100.0 200.0)'); // => Point2
-  wktProjected.parse('POINT M (100.0 200.0 5.0)'); // => Point2m
-  wktProjected.parse('POINT (100.0 200.0 300.0)'); // => Point3
-  wktProjected.parse('POINT Z (100.0 200.0 300.0)'); // => Point3
-  wktProjected.parse('POINT ZM (100.0 200.0 300.0 5.0)'); // => Point3m
+  wktCartesian.parse('POINT (100.0 200.0)'); // => Point2
+  wktCartesian.parse('POINT M (100.0 200.0 5.0)'); // => Point2m
+  wktCartesian.parse('POINT (100.0 200.0 300.0)'); // => Point3
+  wktCartesian.parse('POINT Z (100.0 200.0 300.0)'); // => Point3
+  wktCartesian.parse('POINT ZM (100.0 200.0 300.0 5.0)'); // => Point3m
 
   // Parse geographical line string, from (10.0 50.0) to (11.0 51.0).
-  wktGeographic.parse('LINESTRING (10.0 50.0, 11.0 51.0)');
+  wkt(GeoPoint2.coordinates).parse('LINESTRING (10.0 50.0, 11.0 51.0)');
 
   // Parse geographical polygon with a hole.
   wktGeographic.parse(

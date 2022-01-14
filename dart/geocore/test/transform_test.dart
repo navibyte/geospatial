@@ -221,14 +221,16 @@ void main() {
       );
     });
 
+    final parser2D = geoJsonGeographic(geographicPoints);
+
     test('Feature', () {
-      final f = geoJSON.feature(geojsonFeature).transform(translate1);
+      final f = parser2D.feature(geojsonFeature).transform(translate1);
       expect(f.geometry, GeoPoint2.lonLat(126.6, 12.1));
       expect(f.properties['name'], 'Dinagat Islands');
     });
 
     test('FeatureCollection', () {
-      final fc = geoJSON
+      final fc = parser2D
           .featureCollection(geojsonFeatureCollection)
           .transform(translate1);
       expect(fc.features.length, 3);

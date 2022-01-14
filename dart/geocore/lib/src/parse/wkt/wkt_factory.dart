@@ -10,6 +10,24 @@ import '/src/coordinates/geographic.dart';
 import '/src/parse/factory.dart';
 import '/src/utils/wkt_data.dart';
 
+/// Creates a WKT factory instace using the [points] factory.
+///
+/// An optional [pointsWithM] factory can be given to instantiate any point
+/// objects with M coordinates.
+///
+/// Supported WKT geometry types: 'POINT', 'LINESTRING', 'POLYGON',
+/// 'MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON', 'GEOMETRYCOLLECTION'.
+///
+/// See [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry).
+WktFactory<T> wkt<T extends Point>(
+  PointFactory<T> points, [
+  PointFactory<T>? pointsWithM,
+]) =>
+    WktFactory<T>(
+      pointFactory: ({required bool expectM}) =>
+          expectM ? pointsWithM ?? points : points,
+    );
+
 /// The default WKT factory instace assuming geographic CRS80 coordinates.
 ///
 /// Result type candidates for point objects: [GeoPoint2], [GeoPoint2m],
@@ -20,10 +38,10 @@ import '/src/utils/wkt_data.dart';
 ///
 /// See [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry).
 const wktGeographic = WktFactory<GeoPoint>(
-  pointFactory: geoPointFactoryAllowingM,
+  pointFactory: geographicPointsWithM,
 );
 
-/// The default WKT factory instace assuming projected coordinates.
+/// The default WKT factory instace assuming cartesian or projected coordinates.
 ///
 /// Result type candidates for point objects: [Point2], [Point2m], [Point3],
 /// [Point3m].
@@ -32,8 +50,8 @@ const wktGeographic = WktFactory<GeoPoint>(
 /// 'MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON', 'GEOMETRYCOLLECTION'.
 ///
 /// See [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry).
-const wktProjected = WktFactory<Point>(
-  pointFactory: projectedPointFactoryAllowingM,
+const wktCartesian = WktFactory<Point>(
+  pointFactory: cartesianPointsWithM,
 );
 
 /// A geospatial object factory capable of parsing WKT geometries from text.

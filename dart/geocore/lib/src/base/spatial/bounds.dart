@@ -49,6 +49,31 @@ abstract class Bounds<T extends Point> extends Geometry
   /// Return an [empty] bounds that does not intersect with any other bounds.
   static Bounds empty() => _emptyBounds;
 
+  /// Creates [Bounds] from [coords] using [pointFactory].
+  static Bounds<T> fromCoords<T extends Point>(
+    Iterable<num> coords, {
+    required PointFactory<T> pointFactory,
+    int? offset,
+    int? length,
+  }) {
+    CoordinateFactory.checkCoords(4, coords, offset: offset, length: length);
+    final start = offset ?? 0;
+    final len = length ?? coords.length;
+    final pointLen = len ~/ 2;
+    return Bounds<T>.of(
+      min: pointFactory.newFrom(
+        coords,
+        offset: start,
+        length: pointLen,
+      ),
+      max: pointFactory.newFrom(
+        coords,
+        offset: start + pointLen,
+        length: pointLen,
+      ),
+    );
+  }
+
   /// Minimum point of bounds.
   T get min;
 

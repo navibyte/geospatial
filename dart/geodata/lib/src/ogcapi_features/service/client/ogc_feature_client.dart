@@ -348,7 +348,7 @@ Extent _extentFromData(Map<String, Object?> data) {
       allBounds = [GeoBounds.from((spatial! as Iterable<Object?>).cast<num>())];
     } catch (_) {
       // fallback
-      allBounds = [const GeoBounds.world()];
+      allBounds = [GeoBounds.world()];
     }
   }
 
