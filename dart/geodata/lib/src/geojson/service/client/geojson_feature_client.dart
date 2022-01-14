@@ -21,10 +21,19 @@ import '/src/utils/features.dart';
 ///
 /// When given [headers] are injected to http requests (however some can be
 /// overridden by the feature source implementation).
+///
+/// An optional [parser] argument specifies a GeoJSON parser. If not given then
+/// `geoJsonGeographic(geographicPoints)` defined by the
+/// `package:geocore/parse.dart` package is used as a default. When excpecting
+/// cartesian or projected coordinates, you might want to use
+/// `geoJsonCartesian(cartesianPoints)` as a parser. Or if expecting specific
+/// type of points, you could also use a factory like
+/// `geoJson(Point3.coordinates)`.
 FeatureSource geoJsonHttpClient({
   required Uri location,
   http.Client? client,
   Map<String, String>? headers,
+  GeoJsonFactory? parser,
 }) =>
     _GeoJSONFeatureSource(
       location,
@@ -32,21 +41,40 @@ FeatureSource geoJsonHttpClient({
         client: client,
         headers: headers,
       ),
+      parser: parser ?? geoJsonGeographic(geographicPoints),
     );
 
 /// A client for accessing a `GeoJSON` feature collection from [source];
 ///
 /// The source function returns a future that fetches data from a file, a web
 /// resource or other sources. Contents must be GeoJSON compliant data.
-FeatureSource geoJsonFutureClient(Future<String> Function() source) =>
-    _GeoJSONFeatureSource(source);
+///
+/// An optional [parser] argument specifies a GeoJSON parser. If not given then
+/// `geoJsonGeographic(geographicPoints)` defined by the
+/// `package:geocore/parse.dart` package is used as a default. When excpecting
+/// cartesian or projected coordinates, you might want to use
+/// `geoJsonCartesian(cartesianPoints)` as a parser. Or if expecting specific
+/// type of points, you could also use a factory like
+/// `geoJson(Point3.coordinates)`.
+FeatureSource geoJsonFutureClient(
+  Future<String> Function() source, {
+  GeoJsonFactory? parser,
+}) =>
+    _GeoJSONFeatureSource(
+      source,
+      parser: parser ?? geoJsonGeographic(geographicPoints),
+    );
 
 // -----------------------------------------------------------------------------
 // Private implementation code below.
 // The implementation may change in future.
 
 class _GeoJSONFeatureSource implements FeatureSource {
-  const _GeoJSONFeatureSource(this.source, {this.adapter});
+  const _GeoJSONFeatureSource(
+    this.source, {
+    this.adapter,
+    required this.parser,
+  });
 
   // source can be
   //    `Uri` (a location for a web resource)
@@ -57,6 +85,8 @@ class _GeoJSONFeatureSource implements FeatureSource {
 
   // for a web resource adapter must be set
   final FeatureHttpAdapter? adapter;
+
+  final GeoJsonFactory parser;
 
   @override
   Future<FeatureItem> item(FeatureItemQuery query) async {
@@ -103,13 +133,13 @@ class _GeoJSONFeatureSource implements FeatureSource {
       // read web resource and convert to entity
       return adapter!.getEntityFromJsonObject(
         src,
-        toEntity: (data) => _parseFeatureItems(query, data),
+        toEntity: (data) => _parseFeatureItems(query, data, parser),
       );
     } else if (src is Future<String> Function()) {
       // read a future returned by a function
       return readEntityFromJsonObject(
         src,
-        toEntity: (data) => _parseFeatureItems(query, data),
+        toEntity: (data) => _parseFeatureItems(query, data, parser),
       );
     }
 
@@ -121,8 +151,9 @@ class _GeoJSONFeatureSource implements FeatureSource {
 _GeoJSONPagedFeaturesItems _parseFeatureItems(
   FeatureItemsQuery query,
   Map<String, Object?> data,
+  GeoJsonFactory parser,
 ) {
-  final count = geoJSON.featureCount(data);
+  final count = parser.featureCount(data);
 
   // analyze if only a first set or all items should be returned
   final Range? range;
@@ -137,11 +168,12 @@ _GeoJSONPagedFeaturesItems _parseFeatureItems(
   // todo:  filter data using query params (crs, boundsCrs, bounds, limit)
 
   // return as paged collection (paging through already fetched data)
-  return _GeoJSONPagedFeaturesItems.parse(data, count, range);
+  return _GeoJSONPagedFeaturesItems.parse(parser, data, count, range);
 }
 
 class _GeoJSONPagedFeaturesItems with Paged<FeatureItems> {
   _GeoJSONPagedFeaturesItems(
+    this.parser,
     this.features,
     this.count, [
     this.data,
@@ -149,12 +181,13 @@ class _GeoJSONPagedFeaturesItems with Paged<FeatureItems> {
   ]);
 
   factory _GeoJSONPagedFeaturesItems.parse(
+    GeoJsonFactory parser,
     Map<String, Object?> data,
     int count,
     Range? range,
   ) {
     // parse feature items for the range and
-    final collection = geoJSON.featureCollection(data, range: range);
+    final collection = parser.featureCollection(data, range: range);
     final items = FeatureItems(
       collection,
     );
@@ -173,13 +206,15 @@ class _GeoJSONPagedFeaturesItems with Paged<FeatureItems> {
 
     // return a paged result either with ref to next range or without
     return nextRange != null
-        ? _GeoJSONPagedFeaturesItems(items, count, data, nextRange)
+        ? _GeoJSONPagedFeaturesItems(parser, items, count, data, nextRange)
         : _GeoJSONPagedFeaturesItems(
+            parser,
             items,
             count,
           );
   }
 
+  final GeoJsonFactory parser;
   final FeatureItems features;
   final int count;
 
@@ -197,6 +232,6 @@ class _GeoJSONPagedFeaturesItems with Paged<FeatureItems> {
     if (nextRange == null || data == null) {
       return null;
     }
-    return _GeoJSONPagedFeaturesItems.parse(data!, count, nextRange);
+    return _GeoJSONPagedFeaturesItems.parse(parser, data!, count, nextRange);
   }
 }

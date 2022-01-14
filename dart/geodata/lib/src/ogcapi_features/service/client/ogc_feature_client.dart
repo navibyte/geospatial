@@ -23,10 +23,19 @@ import '/src/utils/features.dart';
 ///
 /// When given [headers] are injected to http requests (however some can be
 /// overridden by the feature service implementation).
+/// 
+/// An optional [parser] argument specifies a GeoJSON parser. If not given then
+/// `geoJsonGeographic(geographicPoints)` defined by the 
+/// `package:geocore/parse.dart` package is used as a default. When excpecting
+/// cartesian or projected coordinates, you might want to use 
+/// `geoJsonCartesian(cartesianPoints)` as a parser. Or if expecting specific
+/// type of points, you could also use a factory like 
+/// `geoJson(Point3.coordinates)`.
 OGCFeatureService ogcApiFeaturesHttpClient({
   required Uri endpoint,
   http.Client? client,
   Map<String, String>? headers,
+  GeoJsonFactory? parser,
 }) =>
     _OGCFeatureClientHttp(
       endpoint,
@@ -34,6 +43,7 @@ OGCFeatureService ogcApiFeaturesHttpClient({
         client: client,
         headers: headers,
       ),
+      parser: parser ?? geoJsonGeographic(geographicPoints),
     );
 
 // -----------------------------------------------------------------------------
@@ -46,10 +56,15 @@ const _nextAndPrevLinkType = 'application/geo+json';
 
 /// A client for accessing `OGC API Features` compliant sources via http(s).
 class _OGCFeatureClientHttp implements OGCFeatureService {
-  const _OGCFeatureClientHttp(this.endpoint, {required this.adapter});
+  const _OGCFeatureClientHttp(
+    this.endpoint, {
+    required this.adapter,
+    required this.parser,
+  });
 
   final Uri endpoint;
   final FeatureHttpAdapter adapter;
+  final GeoJsonFactory parser;
 
   @override
   Future<OGCFeatureSource> collection(String id) =>
@@ -163,7 +178,7 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
         // todo : should allow other geojson parsers / point types too
 
         // parses Feature object from GeoJSON data using the parser of `geocore`
-        final feature = geoJSON.feature(data);
+        final feature = service.parser.feature(data);
 
         // meta as Map<String, Object?> by removing Feature geometry and props
         final meta = Map.of(data)
@@ -204,7 +219,7 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
 
     // read from client and return paged feature collection response
     return _OGCPagedFeaturesItems.parse(
-      service.adapter,
+      service,
       service.endpoint.resolveUri(
         Uri(
           path: 'collections/$collectionId/items',
@@ -217,23 +232,23 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
 
 class _OGCPagedFeaturesItems with Paged<OGCFeatureItems> {
   _OGCPagedFeaturesItems(
-    this.adapter,
+    this.service,
     this.features, {
     this.nextURL,
     this.prevURL,
   });
 
-  final FeatureHttpAdapter adapter;
+  final _OGCFeatureClientHttp service;
   final OGCFeatureItems features;
   final Uri? nextURL;
   final Uri? prevURL;
 
   static Future<_OGCPagedFeaturesItems> parse(
-    FeatureHttpAdapter adapter,
+    _OGCFeatureClientHttp service,
     Uri url,
   ) async {
     // fetch data as JSON Object and parse paged response
-    return adapter.getEntityFromJsonObject(
+    return service.adapter.getEntityFromJsonObject(
       url,
       headers: _acceptGeoJSON,
       expect: _expectGeoJSON,
@@ -254,14 +269,14 @@ class _OGCPagedFeaturesItems with Paged<OGCFeatureItems> {
 
         // parses FeatureCollection object from GeoJSON data using the
         // parser of `geocore`
-        final collection = geoJSON.featureCollection(data);
+        final collection = service.parser.featureCollection(data);
 
         // meta as Map<String, Object?> by removing features
         final meta = Map.of(data)..remove('features');
 
         // parse feature items (meta + actual features), return a paged result
         return _OGCPagedFeaturesItems(
-          adapter,
+          service,
           OGCFeatureItems(collection, meta: Map.unmodifiable(meta)),
           nextURL: nextURL,
           prevURL: prevURL,
@@ -282,7 +297,7 @@ class _OGCPagedFeaturesItems with Paged<OGCFeatureItems> {
     if (url != null) {
       // read data from nextURL and return as paged response
       return _OGCPagedFeaturesItems.parse(
-        adapter,
+        service,
         url,
       );
     } else {
@@ -299,7 +314,7 @@ class _OGCPagedFeaturesItems with Paged<OGCFeatureItems> {
     if (url != null) {
       // read data from prevURL and return as paged response
       return _OGCPagedFeaturesItems.parse(
-        adapter,
+        service,
         url,
       );
     } else {
