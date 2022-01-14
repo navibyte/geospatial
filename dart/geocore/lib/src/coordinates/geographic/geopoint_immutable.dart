@@ -160,7 +160,6 @@ class GeoPoint2 extends GeoPoint with EquatableMixin {
 }
 
 /// An immutable geographic position with longitude, latitude and m (measure).
-@immutable
 class GeoPoint2m extends GeoPoint2 {
   /// A geographic position from [lon], [lat] and [m] (m is zero by default).
   ///
@@ -423,7 +422,6 @@ class GeoPoint3 extends GeoPoint2 {
 }
 
 /// An immutable geographic position with longitude, latitude, elev and m.
-@immutable
 class GeoPoint3m extends GeoPoint3 {
   /// A geographic position from [lon], [lat], [elev] and [m].
   ///

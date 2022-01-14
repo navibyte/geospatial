@@ -4,8 +4,6 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:equatable/equatable.dart';
-
 import '/src/base/spatial.dart';
 import '/src/utils/wkt.dart';
 
@@ -16,7 +14,7 @@ import 'geopoint_immutable.dart';
 ///
 /// Geographic bounds can be represented as Bounds<GeoPoint> or as GeoBounds.
 /// This is a convenience class with helper factory constructors.
-class GeoBounds<T extends GeoPoint> extends BoundsBase<T> with EquatableMixin {
+class GeoBounds<T extends GeoPoint> extends BoundsBase<T> {
   /// Create geographic bounds by copying `min` and `max` points from [source].
   GeoBounds(Bounds<T> source) : super(min: source.min, max: source.max);
 

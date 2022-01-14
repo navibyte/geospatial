@@ -4,12 +4,15 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'package:equatable/equatable.dart';
 import 'package:geocore/data.dart';
+import 'package:meta/meta.dart';
 
 import '/src/common/meta.dart';
 
 /// A result from a feature source containing [feature] and [meta] data.
-class FeatureItem with MetaAware {
+@immutable
+class FeatureItem with MetaAware, EquatableMixin {
   /// Create a feature item instance with [feature] and optional [meta].
   const FeatureItem(this.feature, {Map<String, Object?>? meta})
       : meta = meta ?? const {};
@@ -19,4 +22,7 @@ class FeatureItem with MetaAware {
 
   @override
   final Map<String, Object?> meta;
+
+  @override
+  List<Object?> get props => [feature, meta];
 }

@@ -15,7 +15,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-import '/base.dart';
+import '/src/base/spatial.dart';
 
 import '/src/utils/num.dart';
 import '/src/utils/wkt.dart';

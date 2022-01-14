@@ -322,7 +322,7 @@ class _LazyBounds<T extends Point> extends Bounds<T> {
 const _emptyBounds = _EmptyBounds();
 
 @immutable
-class _EmptyBounds extends Bounds {
+class _EmptyBounds extends Bounds with EquatableMixin {
   const _EmptyBounds();
 
   @override
@@ -349,4 +349,7 @@ class _EmptyBounds extends Bounds {
     PointFactory<R>? to,
   }) =>
       throw const FormatException('Cannot project empty bounds.');
+
+  @override
+  List<Object?> get props => [];
 }
