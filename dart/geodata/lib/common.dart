@@ -12,3 +12,4 @@ library common;
 export 'src/common/links.dart';
 export 'src/common/meta.dart';
 export 'src/common/paged.dart';
+export 'src/common/service.dart';

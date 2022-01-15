@@ -52,7 +52,7 @@ Future<void> _readFeatures(BasicFeatureSource source) async {
         print('    $key: ${f.properties[key]}');
       }
     }
-  } on FeatureException catch (e) {
+  } on ServiceException<FeatureFailure> catch (e) {
     print('Reading GeoJSON resource failed: ${e.failure.name}');
     if (e.cause != null) {
       print('Cause: ${e.cause}');

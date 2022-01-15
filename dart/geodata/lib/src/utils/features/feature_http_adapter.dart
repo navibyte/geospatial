@@ -8,6 +8,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+import '/src/common/service.dart';
 import '/src/core/features.dart';
 
 const _acceptJSON = {'accept': 'application/json'};
@@ -75,17 +76,17 @@ class FeatureHttpAdapter {
           // map JSON Object to an entity
           return toEntity(data);
         case 400:
-          throw const FeatureException(FeatureFailure.badRequest);
+          throw const ServiceException(FeatureFailure.badRequest);
         case 404:
-          throw const FeatureException(FeatureFailure.notFound);
+          throw const ServiceException(FeatureFailure.notFound);
         default:
-          throw const FeatureException(FeatureFailure.queryFailed);
+          throw const ServiceException(FeatureFailure.queryFailed);
       }
-    } on FeatureException {
+    } on ServiceException<FeatureFailure> {
       rethrow;
     } catch (e, st) {
       // other exceptions (including errors)
-      throw FeatureException(FeatureFailure.clientError, cause: e, trace: st);
+      throw ServiceException(FeatureFailure.clientError, cause: e, trace: st);
     }
   }
 

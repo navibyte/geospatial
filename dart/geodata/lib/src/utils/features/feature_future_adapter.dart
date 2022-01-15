@@ -6,6 +6,7 @@
 
 import 'dart:convert';
 
+import '/src/common/service.dart';
 import '/src/core/features.dart';
 
 /// Maps a JSON Object read from [source] to an entity using [toEntity].
@@ -25,10 +26,10 @@ Future<T> readEntityFromJsonObject<T>(
 
     // map JSON Object to an entity
     return toEntity(data);
-  } on FeatureException {
+  } on ServiceException<FeatureFailure> {
     rethrow;
   } catch (e, st) {
     // other exceptions (including errors)
-    throw FeatureException(FeatureFailure.clientError, cause: e, trace: st);
+    throw ServiceException(FeatureFailure.clientError, cause: e, trace: st);
   }
 }

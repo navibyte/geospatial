@@ -165,7 +165,7 @@ Future<void> main(List<String> args) async {
       default:
         throw ArgumentError('Unknow source type $serviceType');
     }
-  } on FeatureException catch (e) {
+  } on ServiceException<FeatureFailure> catch (e) {
     print('Calling $baseURL failed: ${e.failure.name}');
     if (e.cause != null) {
       print('Cause: ${e.cause}');

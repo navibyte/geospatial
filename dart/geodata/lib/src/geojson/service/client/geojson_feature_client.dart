@@ -8,6 +8,7 @@ import 'package:geocore/parse.dart';
 import 'package:http/http.dart' as http;
 
 import '/src/common/paged.dart';
+import '/src/common/service.dart';
 import '/src/core/features.dart';
 import '/src/utils/features.dart';
 
@@ -110,7 +111,7 @@ class _GeoJSONFeatureSource implements BasicFeatureSource {
     }
 
     // did not find a feature by id
-    throw const FeatureException(FeatureFailure.notFound);
+    throw const ServiceException(FeatureFailure.notFound);
   }
 
   @override

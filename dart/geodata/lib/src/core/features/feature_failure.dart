@@ -18,20 +18,3 @@ enum FeatureFailure {
   /// A query failed for undefined reasons.
   queryFailed,
 }
-
-/// An exception that could occur when accessing features.
-class FeatureException implements Exception {
-  /// Create an exception.
-  const FeatureException(this.failure, {this.cause, this.trace});
-
-  /// The failure type.
-  final FeatureFailure failure;
-
-  /// An optional source that caused the exception.
-  ///
-  /// Could be another exception or error instance, or a String object.
-  final Object? cause;
-
-  /// An optional stack trace that is accociated to an optional [cause].
-  final StackTrace? trace;
-}
