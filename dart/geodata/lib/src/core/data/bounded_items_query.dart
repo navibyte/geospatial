@@ -17,10 +17,13 @@ class BoundedItemsQuery extends ItemsQuery {
     this.bounds,
     this.timeFrame,
     int? limit,
-    Map<String, String>? extraParams,
-  }) : super(crs: crs, limit: limit, extraParams: extraParams);
+    Map<String, Object?>? extra,
+  }) : super(crs: crs, limit: limit, extra: extra);
 
   /// A new query with query parameters copied from an optional [query].
+  /// 
+  /// Supports reading [query] parameters from [ItemsQuery] and
+  /// [BoundedItemsQuery].
   ///
   /// If [query] is null, then returns an instance with all parameters set null.
   factory BoundedItemsQuery.fromOpt(ItemsQuery? query) =>
@@ -31,12 +34,12 @@ class BoundedItemsQuery extends ItemsQuery {
               bounds: query.bounds,
               timeFrame: query.timeFrame,
               limit: query.limit,
-              extraParams: query.extraParams,
+              extra: query.extra,
             )
           : BoundedItemsQuery(
               crs: query?.crs,
               limit: query?.limit,
-              extraParams: query?.extraParams,
+              extra: query?.extra,
             );
 
   /// An optional coordinate reference system used by [bounds].
@@ -49,5 +52,5 @@ class BoundedItemsQuery extends ItemsQuery {
   final Temporal? timeFrame;
 
   @override
-  List<Object?> get props => [crs, boundsCrs, bounds, limit, extraParams];
+  List<Object?> get props => [crs, boundsCrs, bounds, timeFrame, limit, extra];
 }

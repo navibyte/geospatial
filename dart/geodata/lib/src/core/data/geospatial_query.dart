@@ -13,19 +13,26 @@ class GeospatialQuery with EquatableMixin {
   /// A base query for requesting data from a geospatial data source.
   const GeospatialQuery({
     this.crs,
-    this.extraParams,
+    this.extra,
   });
 
   /// An optional id defining a coordinate reference system for result data.
   final String? crs;
 
-  /// Optional extra parameters to be appended to a query.
+  /// Optional extra parameters for queries as a data record.
   ///
   /// Note that such parameters that are defined in other members of this class
-  /// or it's sub type, override any parameter on [extraParams], if available.
-  /// Use this only for parameters that are not defined by geospatial queries.
-  final Map<String, String>? extraParams;
+  /// or it's sub type, override any parameter on [extra], if available. Use
+  /// this only for parameters that are not defined by geospatial queries.
+  final Map<String, Object?>? extra;
+
+  /// Optional extra parameters for queries with values mapped to `String`.
+  ///
+  /// This getter maps values from [extra] using the mapper function:
+  /// `(key, value) => MapEntry(key, value.toString())`
+  Map<String, String>? get extraParams =>
+      extra?.map((key, value) => MapEntry(key, value.toString()));
 
   @override
-  List<Object?> get props => [crs, extraParams];
+  List<Object?> get props => [crs, extra];
 }

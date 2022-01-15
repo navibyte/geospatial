@@ -12,8 +12,8 @@ class ItemsQuery extends GeospatialQuery {
   const ItemsQuery({
     String? crs,
     this.limit,
-    final Map<String, String>? extraParams,
-  }) : super(crs: crs, extraParams: extraParams);
+    final Map<String, Object?>? extra,
+  }) : super(crs: crs, extra: extra);
 
   /// An optional [limit] setting maximum number of items returned.
   ///
@@ -21,5 +21,5 @@ class ItemsQuery extends GeospatialQuery {
   final int? limit;
 
   @override
-  List<Object?> get props => [crs, limit, extraParams];
+  List<Object?> get props => [crs, limit, extra];
 }
