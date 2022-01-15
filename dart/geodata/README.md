@@ -71,9 +71,7 @@ Future<void> _readFeatures(BasicFeatureSource source) async {
   // read features with error handling
   try {
     // get items or features from a source, maximum 5 features returned
-    final items = await source.itemsAll(
-      query: const BasicFeatureItemsQuery(limit: 5),
-    );
+    final items = await source.itemsAll(limit: 5);
 
     // do something with features, in this sample just print them out
     for (final f in items.collection.features) {

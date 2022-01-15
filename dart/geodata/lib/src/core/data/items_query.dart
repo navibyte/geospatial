@@ -4,31 +4,21 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
-
 import '/src/core/data.dart';
 
-/// A query for requesting features from a basic feature source.
-@immutable
-class BasicFeatureItemsQuery with GeodataQuery, EquatableMixin {
-  /// Create a new basic feature items query with optional query parameters.
-  const BasicFeatureItemsQuery({
-    this.crs,
+/// A query for requesting items from a geospatial data source.
+class ItemsQuery extends GeospatialQuery {
+  /// A query for requesting items from a geospatial data source.
+  const ItemsQuery({
+    String? crs,
     this.limit,
-    this.extraParams,
-  });
-
-  @override
-  final String? crs;
+    final Map<String, String>? extraParams,
+  }) : super(crs: crs, extraParams: extraParams);
 
   /// An optional [limit] setting maximum number of items returned.
   ///
   /// If given, must be a positive integer.
   final int? limit;
-
-  @override
-  final Map<String, String>? extraParams;
 
   @override
   List<Object?> get props => [crs, limit, extraParams];

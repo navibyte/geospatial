@@ -81,22 +81,15 @@ class _GeoJSONFeatureSource implements BasicFeatureSource {
   //    `Future<String> Function()` (for any async resource like file)
   final Object source;
 
-  // todo: final String sourceCrs;
-
   // for a web resource adapter must be set
   final FeatureHttpAdapter? adapter;
 
   final GeoJsonFactory parser;
 
   @override
-  Future<FeatureItem> item(BasicFeatureItemQuery query) async {
+  Future<FeatureItem> itemById(String id) async {
     // get items as paged response
-    Paged<FeatureItems>? page = await itemsAllPaged(
-      query: BasicFeatureItemsQuery(
-        crs: query.crs,
-        extraParams: query.extraParams,
-      ),
-    );
+    Paged<FeatureItems>? page = await itemsAllPaged();
 
     // loop through pages
     while (page != null) {
@@ -106,7 +99,7 @@ class _GeoJSONFeatureSource implements BasicFeatureSource {
       // loop through features in a returned collection to find a feature by id
       final collection = items.collection;
       for (final f in collection.features) {
-        if (f.id == query.id) {
+        if (f.id == id) {
           // found one, so return it
           return FeatureItem(f);
         }
@@ -121,11 +114,11 @@ class _GeoJSONFeatureSource implements BasicFeatureSource {
   }
 
   @override
-  Future<FeatureItems> itemsAll({BasicFeatureItemsQuery? query}) async =>
-      (await itemsAllPaged(query: query)).current;
+  Future<FeatureItems> itemsAll({int? limit}) async =>
+      (await itemsAllPaged(limit: limit)).current;
 
   @override
-  Future<Paged<FeatureItems>> itemsAllPaged({BasicFeatureItemsQuery? query}) {
+  Future<Paged<FeatureItems>> itemsAllPaged({int? limit}) {
     final src = source;
 
     // fetch data as JSON Object + parse GeoJSON feature or feature collection
@@ -133,13 +126,13 @@ class _GeoJSONFeatureSource implements BasicFeatureSource {
       // read web resource and convert to entity
       return adapter!.getEntityFromJsonObject(
         src,
-        toEntity: (data) => _parseFeatureItems(query, data, parser),
+        toEntity: (data) => _parseFeatureItems(limit, data, parser),
       );
     } else if (src is Future<String> Function()) {
       // read a future returned by a function
       return readEntityFromJsonObject(
         src,
-        toEntity: (data) => _parseFeatureItems(query, data, parser),
+        toEntity: (data) => _parseFeatureItems(limit, data, parser),
       );
     }
 
@@ -149,7 +142,7 @@ class _GeoJSONFeatureSource implements BasicFeatureSource {
 }
 
 _GeoJSONPagedFeaturesItems _parseFeatureItems(
-  BasicFeatureItemsQuery? query,
+  int? limit,
   Map<String, Object?> data,
   GeoJsonFactory parser,
 ) {
@@ -157,9 +150,9 @@ _GeoJSONPagedFeaturesItems _parseFeatureItems(
 
   // analyze if only a first set or all items should be returned
   final Range? range;
-  if (query != null && query.limit != null) {
+  if (limit != null) {
     // first set
-    range = Range(start: 0, limit: query.limit);
+    range = Range(start: 0, limit: limit);
   } else {
     // no limit => all features
     range = null;

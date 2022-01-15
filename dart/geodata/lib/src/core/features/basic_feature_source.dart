@@ -6,8 +6,6 @@
 
 import '/src/common/paged.dart';
 
-import 'basic_feature_item_query.dart';
-import 'basic_feature_items_query.dart';
 import 'feature_exception.dart';
 import 'feature_item.dart';
 import 'feature_items.dart';
@@ -19,24 +17,30 @@ import 'feature_source.dart';
 /// items. The [FeatureSource] extends this with queryable access to items.
 abstract class BasicFeatureSource<ItemType extends FeatureItem,
     ItemsType extends FeatureItems> {
-  /// Fetches a single feature by id (set in [query]) from this source.
+  /// Fetches a single feature by [id] from this source.
   ///
   /// Throws [FeatureException] in a case of a failure.
-  Future<ItemType> item(BasicFeatureItemQuery query);
+  Future<ItemType> itemById(String id);
 
-  /// Fetches all features items from this source with optional [query] params.
+  /// Fetches all features items from this source.
+  ///
+  /// An optional [limit] sets maximum number of items returned. If given, it
+  /// must be a positive integer.
   ///
   /// This call accesses only one set of feature items (number of returned items
   /// can be limited).
   ///
   /// Throws [FeatureException] in a case of a failure.
-  Future<ItemsType> itemsAll({BasicFeatureItemsQuery? query});
+  Future<ItemsType> itemsAll({int? limit});
 
-  /// All features as paged sets from this source with optional [query] params.
+  /// Fetches all features as paged sets from this source.
+  ///
+  /// An optional [limit] sets maximum number of items returned. If given, it
+  /// must be a positive integer.
   ///
   /// This call returns a first set of feature items (number of returned items
   /// can be limited), with a link to an optional next set of feature items.
   ///
   /// Throws [FeatureException] in a case of a failure.
-  Future<Paged<ItemsType>> itemsAllPaged({BasicFeatureItemsQuery? query});
+  Future<Paged<ItemsType>> itemsAllPaged({int? limit});
 }

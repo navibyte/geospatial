@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 import '/src/common/links.dart';
 import '/src/common/paged.dart';
 import '/src/core/base.dart';
-import '/src/core/features.dart';
+import '/src/core/data.dart';
 import '/src/ogcapi_features/model.dart';
 import '/src/utils/features.dart';
 
@@ -152,7 +152,18 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
   }
 
   @override
-  Future<OGCFeatureItem> item(BasicFeatureItemQuery query) async {
+  Future<OGCFeatureItem> itemById(String id) => item(ItemQuery(id: id));
+
+  @override
+  Future<OGCFeatureItems> itemsAll({int? limit}) =>
+      items(BoundedItemsQuery(limit: limit));
+
+  @override
+  Future<Paged<OGCFeatureItems>> itemsAllPaged({int? limit}) =>
+      itemsPaged(BoundedItemsQuery(limit: limit));
+
+  @override
+  Future<OGCFeatureItem> item(ItemQuery query) async {
     // read "collections/{collectionId}/items/{query.id}"
 
     // form a query url
@@ -191,36 +202,26 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
   }
 
   @override
-  Future<OGCFeatureItems> itemsAll({BasicFeatureItemsQuery? query}) =>
-      items(FeatureItemsQuery.fromBasicOpt(query));
-
-  @override
-  Future<Paged<OGCFeatureItems>> itemsAllPaged({
-    BasicFeatureItemsQuery? query,
-  }) =>
-      itemsPaged(FeatureItemsQuery.fromBasicOpt(query));
-
-  @override
-  Future<OGCFeatureItems> items(FeatureItemsQuery query) async =>
+  Future<OGCFeatureItems> items(BoundedItemsQuery query) async =>
       // read only first set of feature items
       (await itemsPaged(query)).current;
 
   @override
-  Future<Paged<OGCFeatureItems>> itemsPaged(FeatureItemsQuery query) async {
+  Future<Paged<OGCFeatureItems>> itemsPaged(BoundedItemsQuery query) async {
     // read "collections/{collectionId}/items" and return as paged response
 
     // form a query url
     final limit = query.limit;
     final crs = query.crs;
-    final boundsCrs = query.boundsCrs;
-    final bounds = query.bounds?.valuesAsString();
-    final datetime = query.datetime?.toText();
+    final bboxCrs = query.boundsCrs;
+    final bbox = query.bounds?.valuesAsString();
+    final datetime = query.timeFrame?.toText();
     var params = <String, String>{
       //'f': 'json',
       if (limit != null) 'limit': limit.toString(),
       if (crs != null) 'crs': crs,
-      if (boundsCrs != null) 'bbox-crs': boundsCrs,
-      if (bounds != null) 'bbox': bounds,
+      if (bboxCrs != null) 'bbox-crs': bboxCrs,
+      if (bbox != null) 'bbox': bbox,
       if (datetime != null) 'datetime': datetime,
     };
     if (query.extraParams != null) {

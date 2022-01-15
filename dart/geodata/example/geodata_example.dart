@@ -62,17 +62,12 @@ Future<void> main(List<String> args) async {
   var maxPagedResults = _defaultMaxPagedResults;
 
   // parse query
-  GeodataQuery query = serviceType != 'geojson'
-      ? FeatureItemsQuery(
-          limit: limit,
-        )
-      : BasicFeatureItemsQuery(
-          limit: limit,
-        );
+  GeospatialQuery query = BoundedItemsQuery(limit: limit);
+
   if (args.length >= 7) {
     switch (args[5]) {
       case 'id':
-        query = BasicFeatureItemQuery(
+        query = ItemQuery(
           id: args[6],
         );
         maxPagedResults = 1;
@@ -81,7 +76,7 @@ Future<void> main(List<String> args) async {
         if (serviceType != 'geojson') {
           final bbox = args[6].split(',');
           if (bbox.length == 4 || bbox.length == 6) {
-            query = FeatureItemsQuery(
+            query = BoundedItemsQuery(
               limit: limit,
               bounds: GeoBounds.from(bbox.map<num>(double.parse)),
             );
@@ -108,9 +103,9 @@ Future<void> main(List<String> args) async {
           switch (operation) {
             case 'items':
               // get actual data, a single feature or features
-              if (query is BasicFeatureItemsQuery) {
+              if (query is BoundedItemsQuery) {
                 await _callItemsPaged(source, query, maxPagedResults);
-              } else if (query is BasicFeatureItemQuery) {
+              } else if (query is ItemQuery) {
                 await _callItemById(source, query);
               }
               break;
@@ -156,9 +151,9 @@ Future<void> main(List<String> args) async {
               _printCollection(meta);
 
               // get actual data, a single feature or features
-              if (query is FeatureItemsQuery) {
+              if (query is BoundedItemsQuery) {
                 await _callItemsPaged(source, query, maxPagedResults);
-              } else if (query is BasicFeatureItemQuery) {
+              } else if (query is ItemQuery) {
                 await _callItemById(source, query);
               }
             }
@@ -186,26 +181,28 @@ Future<void> main(List<String> args) async {
 
 Future<bool> _callItemById(
   BasicFeatureSource source,
-  BasicFeatureItemQuery query,
+  ItemQuery query,
 ) async {
   // fetch feature item
-  final item = await source.item(query);
+  final item = source is FeatureSource
+      ? await source.item(query)
+      : await source.itemById(query.id);
   _printFeature(item.feature);
   return true;
 }
 
 Future<bool> _callItemsPaged(
   BasicFeatureSource source,
-  BasicFeatureItemsQuery query,
+  BoundedItemsQuery query,
   int maxPagedResults,
 ) async {
   // fetch feature items as paged results, max rounds by maxPagedResults
   var round = 0;
   Paged<FeatureItems>? page;
-  if (source is FeatureSource && query is FeatureItemsQuery) {
+  if (source is FeatureSource) {
     page = await source.itemsPaged(query);
   } else {
-    page = await source.itemsAllPaged(query: query);
+    page = await source.itemsAllPaged(limit: query.limit);
   }
   while (page != null && round++ < maxPagedResults) {
     _printFeatures(page.current);
