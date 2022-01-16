@@ -197,6 +197,25 @@ void main() {
       expect(p3.toText(fractionDigits: 2), '10.00 20 30');
       expect(p3i.toText(fractionDigits: 2), '10 20 30');
     });
+
+    test('toStringAs (defaultFormat) with Point3 and Point3i', () {
+      expect(p3dec.toStringAs(), '10.1,20.217,30.73942');
+      expect(p3dec.toStringAs(decimals: 0), '10,20,31');
+      expect(p3dec.toStringAs(decimals: 3), '10.100,20.217,30.739');
+      expect(p3.toStringAs(decimals: 3), '10.001,20,30');
+      expect(p3.toStringAs(decimals: 2), '10.00,20,30');
+      expect(p3i.toStringAs(decimals: 2), '10,20,30');
+    });
+
+    test('toStringAs (wktFormat) with Point3 and Point3i', () {
+      expect(p3dec.toStringAs(format: wktFormat), '10.1 20.217 30.73942');
+      expect(p3dec.toStringAs(format: wktFormat, decimals: 0), '10 20 31');
+      expect(p3dec.toStringAs(format: wktFormat, decimals: 3),
+          '10.100 20.217 30.739');
+      expect(p3.toStringAs(format: wktFormat, decimals: 3), '10.001 20 30');
+      expect(p3.toStringAs(format: wktFormat, decimals: 2), '10.00 20 30');
+      expect(p3i.toStringAs(format: wktFormat, decimals: 2), '10 20 30');
+    });
   });
 
   group('Parsing point objects from text', () {

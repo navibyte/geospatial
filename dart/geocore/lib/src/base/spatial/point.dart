@@ -142,24 +142,42 @@ abstract class Point<C extends num> extends Geometry
     }
   }
 
+  /// Writes coordinate values to [buffer] separated by [delimiter].
+  ///
+  /// Use [fractionDigits] to set a number of decimals to nums with decimals.
+  ///
+  /// A sample with default parameters (for a 3D point):
+  /// `10.1,20.3,30.3`
+  ///
+  /// To get WKT compatible text, set `delimiter` to ` `:
+  /// `10.1 20.2 30.3`
   @override
   void writeValues(
-    StringSink buf, {
+    StringSink buffer, {
     String delimiter = ',',
     int? fractionDigits,
   }) {
     for (var i = 0; i < coordinateDimension; i++) {
       if (i > 0) {
-        buf.write(delimiter);
+        buffer.write(delimiter);
       }
       if (fractionDigits != null) {
-        buf.write(toStringAsFixedWhenDecimals(this[i], fractionDigits));
+        buffer.write(toStringAsFixedWhenDecimals(this[i], fractionDigits));
       } else {
-        buf.write(this[i]);
+        buffer.write(this[i]);
       }
     }
   }
 
+  /// A string representation of coordinate values separated by [delimiter].
+  ///
+  /// Use [fractionDigits] to set a number of decimals to nums with decimals.
+  ///
+  /// A sample with default parameters (for a 3D point):
+  /// `10.1,20.3,30.3`
+  ///
+  /// To get WKT compatible text, set `delimiter` to ` `:
+  /// `10.1 20.2 30.3`
   @override
   String valuesAsString({
     String delimiter = ',',
@@ -170,7 +188,7 @@ abstract class Point<C extends num> extends Geometry
     return buf.toString();
   }
 
-  /// Returns coordinate values as text separated by [delimiter].
+  /// A string representation of coordinate values separated by [delimiter].
   ///
   /// If [delimiter] is not provided, values are separated by whitespace. For
   /// example "10.1 20.2" is returned for a point with x=10.1 and y=20.2.
@@ -185,14 +203,17 @@ abstract class Point<C extends num> extends Geometry
     return buf.toString();
   }
 
-/*
-  /// Returns WKT coords (ie. "35 10" for a point with x=35 and y=10).
-  ///
-  /// Use [fractionDigits] to set a number of decimals to nums with decimals.
-  @Deprecated('Use toText instead')
-  String toWktCoords({int? fractionDigits}) =>
-      toText(fractionDigits: fractionDigits);
-*/
+  @override
+  void writeString(
+    StringSink buffer, {
+    CoordinatesFormat format = defaultFormat,
+    int? decimals,
+  }) =>
+      writeValues(
+        buffer,
+        delimiter: format.valueDelimiter,
+        fractionDigits: decimals ?? format.decimals,
+      );
 
   /// Copies this point with the compatible type and sets given coordinates.
   ///

@@ -57,6 +57,41 @@ abstract class Geometry extends Bounded {
     Projection<R> projection, {
     PointFactory<R>? to,
   });
+
+  /// Writes coordinates to [buffer] as defined by [format].
+  ///
+  /// Use [decimals] to set a number of decimals (not applied if no decimals).
+  void writeString(
+    StringSink buffer, {
+    CoordinatesFormat format = defaultFormat,
+    int? decimals,
+  }) {
+    // todo : not implemented yet on all sub classes!!
+  }
+
+  /// A string representation of coordinates as defined by [format].
+  ///
+  /// Use [decimals] to set a number of decimals (not applied if no decimals).
+  String toStringAs({
+    CoordinatesFormat format = defaultFormat,
+    int? decimals,
+  }) {
+    final buf = StringBuffer();
+    writeString(buf, format: format, decimals: format.decimals ?? decimals);
+    return buf.toString();
+  }
+
+  /// A string representation of coordinates as defined by [defaultFormat].
+  @override
+  String toString() {
+    final buf = StringBuffer();
+    writeString(buf);
+    return buf.toString();
+  }
+
+  // note : toString() implementation may need reimplementation on sub classes
+  //        if Geometry is implemented or some mixin hides this toString impl
+  //        (it might be efficient to provide a specific toString on sub class)
 }
 
 /// An empty (non-existent) geometry as an private implementation.

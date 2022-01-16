@@ -100,22 +100,53 @@ abstract class Bounds<T extends Point> extends Geometry
   @override
   bool get hasM => min.hasM && max.hasM;
 
+  /// Writes coordinate values to [buffer] separated by [delimiter].
+  ///
+  /// Use [fractionDigits] to set a number of decimals to nums with decimals.
+  ///
+  /// A sample with default parameters (for a 2D bounding box):
+  /// `10.1,10.1,20.2,20.2`
   @override
   void writeValues(
-    StringSink buf, {
+    StringSink buffer, {
     String delimiter = ',',
     int? fractionDigits,
   }) {
-    min.writeValues(buf, delimiter: delimiter, fractionDigits: fractionDigits);
-    buf.write(delimiter);
-    max.writeValues(buf, delimiter: delimiter, fractionDigits: fractionDigits);
+    min.writeValues(
+      buffer,
+      delimiter: delimiter,
+      fractionDigits: fractionDigits,
+    );
+    buffer.write(delimiter);
+    max.writeValues(
+      buffer,
+      delimiter: delimiter,
+      fractionDigits: fractionDigits,
+    );
   }
 
+  /// Returns coordinate values as a string separated by [delimiter].
+  ///
+  /// Use [fractionDigits] to set a number of decimals to nums with decimals.
+  ///
+  /// A sample with default parameters (for a 2D bounding box):
+  /// `10.1,10.1,20.2,20.2`
   @override
   String valuesAsString({String delimiter = ',', int? fractionDigits}) {
     final buf = StringBuffer();
     writeValues(buf, delimiter: delimiter, fractionDigits: fractionDigits);
     return buf.toString();
+  }
+
+  @override
+  void writeString(
+    StringSink buffer, {
+    CoordinatesFormat format = defaultFormat,
+    int? decimals,
+  }) {
+    min.writeString(buffer, format: format, decimals: decimals);
+    buffer.write(format.valueDelimiter);
+    max.writeString(buffer, format: format, decimals: decimals);
   }
 
   /// Returns new bounds transformed from this bounds using [transform].

@@ -91,7 +91,7 @@ abstract class _Coordinates extends _Measured {
     int? fractionDigits,
   });
 
-  /// Returns coordinate values as a string separated by [delimiter].
+  /// A string representation of coordinate values separated by [delimiter].
   ///
   /// Use [fractionDigits] to set a number of decimals to nums with decimals.
   String valuesAsString({

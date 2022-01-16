@@ -10,6 +10,7 @@ import 'dart:math' as math;
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
+import '/src/base/format.dart';
 import '/src/utils/bounds.dart';
 import '/src/utils/num.dart';
 import '/src/utils/wkt.dart';
