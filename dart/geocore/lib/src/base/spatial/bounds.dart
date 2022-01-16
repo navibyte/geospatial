@@ -252,6 +252,9 @@ class BoundsBase<T extends Point> extends Bounds<T> with EquatableMixin {
         min: min.project(projection, to: to),
         max: max.project(projection, to: to),
       );
+
+  @override
+  String toString() => valuesAsString();
 }
 
 /// [Bounds] with values calculated when first needed if not initialized.
@@ -317,6 +320,9 @@ class _LazyBounds<T extends Point> extends Bounds<T> {
   @override
   int get hashCode => _ensureBounds().hashCode;
 */
+
+  @override
+  String toString() => valuesAsString();
 }
 
 const _emptyBounds = _EmptyBounds();
@@ -349,6 +355,9 @@ class _EmptyBounds extends Bounds with EquatableMixin {
     PointFactory<R>? to,
   }) =>
       throw const FormatException('Cannot project empty bounds.');
+
+  @override
+  String toString() => valuesAsString();
 
   @override
   List<Object?> get props => [];

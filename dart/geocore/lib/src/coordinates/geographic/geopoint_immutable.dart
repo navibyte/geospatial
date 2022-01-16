@@ -20,10 +20,11 @@ class GeoPoint2 extends GeoPoint with EquatableMixin {
   /// A geographic point from [lon] and [lat].
   ///
   /// Longitude is normalized to the range `[-180.0, 180.0[` using the formula
-  /// `(lon + 180.0) % 360.0 - 180.0` and latitude is clamped to the
-  /// range `[-90.0, 90.0]`.
+  /// `(lon + 180.0) % 360.0 - 180.0` (if outside the range) and latitude is
+  /// clamped to the range `[-90.0, 90.0]`.
   const GeoPoint2({required double lon, required double lat})
-      : lon = (lon + 180.0) % 360.0 - 180.0,
+      : lon =
+            lon >= -180.0 && lon < 180.0 ? lon : (lon + 180.0) % 360.0 - 180.0,
         lat = lat < -90.0 ? -90.0 : (lat > 90.0 ? 90.0 : lat);
 
   /// A geographic position with coordinates given in order [lon], [lat].
@@ -157,6 +158,9 @@ class GeoPoint2 extends GeoPoint with EquatableMixin {
 
   @override
   GeoPoint2 transform(TransformPoint transform) => transform(this);
+
+  @override
+  String toString() => '$lon,$lat';
 }
 
 /// An immutable geographic position with longitude, latitude and m (measure).
@@ -287,6 +291,9 @@ class GeoPoint2m extends GeoPoint2 {
 
   @override
   GeoPoint2m transform(TransformPoint transform) => transform(this);
+
+  @override
+  String toString() => '$lon,$lat,$m';
 }
 
 /// An immutable geographic position with longitude, latitude and elevation.
@@ -419,6 +426,9 @@ class GeoPoint3 extends GeoPoint2 {
 
   @override
   GeoPoint3 transform(TransformPoint transform) => transform(this);
+
+  @override
+  String toString() => '$lon,$lat,$elev';
 }
 
 /// An immutable geographic position with longitude, latitude, elev and m.
@@ -558,4 +568,7 @@ class GeoPoint3m extends GeoPoint3 {
 
   @override
   GeoPoint3m transform(TransformPoint transform) => transform(this);
+
+  @override
+  String toString() => '$lon,$lat,$elev,$m';
 }

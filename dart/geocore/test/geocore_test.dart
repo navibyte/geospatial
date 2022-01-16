@@ -140,6 +140,50 @@ void main() {
     });
   });
 
+  group('Point and Bounds toString', () {
+    test('Cartesian points', () {
+      expect(Point2.xy(1.1, 2.2).toString(), '1.1,2.2');
+      expect(Point2m.xym(1.1, 2.2, 3.3).toString(), '1.1,2.2,3.3');
+      expect(Point3.xyz(1.1, 2.2, 3.3).toString(), '1.1,2.2,3.3');
+      expect(Point3m.xyzm(1.1, 2.2, 3.3, 4.4).toString(), '1.1,2.2,3.3,4.4');
+      expect(Point2i.xy(1, 2).toString(), '1,2');
+      expect(Point3i.xyz(1, 2, 3).toString(), '1,2,3');
+    });
+    test('Geographical points', () {
+      expect(GeoPoint2.lonLat(1.1, 2.2).toString(), '1.1,2.2');
+      expect(GeoPoint2m.lonLatM(1.1, 2.2, 3.3).toString(), '1.1,2.2,3.3');
+      expect(GeoPoint3.lonLatElev(1.1, 2.2, 3.3).toString(), '1.1,2.2,3.3');
+      expect(GeoPoint3m.lonLatElevM(1.1, 2.2, 3.3, 4.4).toString(),
+          '1.1,2.2,3.3,4.4');
+    });
+    test('Bounds', () {
+      expect(
+          Bounds.of(min: Point2.xy(1.1, 2.1), max: Point2.xy(1.5, 2.5))
+              .toString(),
+          '1.1,2.1,1.5,2.5');
+      expect(
+          Bounds.of(
+                  min: Point2m.xym(1.1, 2.1, 3.1),
+                  max: Point2m.xym(1.5, 2.5, 3.5))
+              .toString(),
+          '1.1,2.1,3.1,1.5,2.5,3.5');
+      expect(
+          Bounds.of(
+                  min: Point3.xyz(1.1, 2.1, 3.1),
+                  max: Point3.xyz(1.5, 2.5, 3.5))
+              .toString(),
+          '1.1,2.1,3.1,1.5,2.5,3.5');
+      expect(
+          Bounds.of(min: Point3i.xyz(1, 2, 3), max: Point3i.xyz(2, 3, 4))
+              .toString(),
+          '1,2,3,2,3,4');
+      expect(GeoBounds.bboxLonLat(1.1, 2.1, 1.5, 2.5).toString(),
+          '1.1,2.1,1.5,2.5');
+      expect(GeoBounds.bboxLonLatElev(1.1, 2.1, 3.1, 1.5, 2.5, 3.5).toString(),
+          '1.1,2.1,3.1,1.5,2.5,3.5');
+    });
+  });
+
   group('Point values printed as String', () {
     const p3dec = Point3.xyz(10.1, 20.217, 30.73942);
     const p3 = Point3.xyz(10.001, 20.000, 30);

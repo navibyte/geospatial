@@ -276,5 +276,8 @@ class _PointEmpty<C extends num> extends Point<C> with EquatableMixin {
       throw const FormatException('Cannot project empty point.');
 
   @override
+  String toString() => valuesAsString();
+
+  @override
   List<Object?> get props => [is3D, hasM];
 }

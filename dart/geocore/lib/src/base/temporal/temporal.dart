@@ -23,7 +23,8 @@ abstract class Temporal {
   /// * open ended interval: "<start>/.."
   /// * open started interval: "../<end>"
   /// * open interval: "../.."
-  String toText();
+  @override
+  String toString();
 
   /// Returns true if this *temporal* event occurs fully after [instant].
   ///

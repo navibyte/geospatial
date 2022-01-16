@@ -215,7 +215,7 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
     final crs = query.crs;
     final bboxCrs = query.boundsCrs;
     final bbox = query.bounds?.valuesAsString();
-    final datetime = query.timeFrame?.toText();
+    final datetime = query.timeFrame?.toString();
     var params = <String, String>{
       //'f': 'json',
       if (limit != null) 'limit': limit.toString(),

@@ -76,4 +76,7 @@ class PointWrapper<T extends Point<C>, C extends num> extends Point<C>
     PointFactory<R>? to,
   }) =>
       point.project(projection, to: to);
+
+  @override
+  String toString() => point.toString();
 }

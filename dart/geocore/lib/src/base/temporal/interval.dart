@@ -188,18 +188,18 @@ class _IntervalImpl with EquatableMixin implements Interval {
       isUtc ? this : _IntervalImpl(start?.toUtc(), end?.toUtc());
 
   @override
-  String toText() {
+  String toString() {
     final s = start;
     final e = end;
     if (s != null) {
       if (e != null) {
-        return '${s.toText()}/${e.toText()}';
+        return '${s.toString()}/${e.toString()}';
       } else {
-        return '${s.toText()}/..';
+        return '${s.toString()}/..';
       }
     } else {
       if (e != null) {
-        return '../${e.toText()}';
+        return '../${e.toString()}';
       } else {
         return '../..';
       }

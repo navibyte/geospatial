@@ -145,6 +145,9 @@ class Point2 extends CartesianPoint<num> with EquatableMixin {
 
   @override
   Point2 transform(TransformPoint transform) => transform(this);
+
+  @override
+  String toString() => '$x,$y';
 }
 
 /// An immutable point with X, Y and M as num values.
@@ -263,6 +266,9 @@ class Point2m extends Point2 {
 
   @override
   Point2m transform(TransformPoint transform) => transform(this);
+
+  @override
+  String toString() => '$x,$y,$m';
 }
 
 /// An immutable point with X, Y and Z as num values.
@@ -384,6 +390,9 @@ class Point3 extends Point2 {
 
   @override
   Point3 transform(TransformPoint transform) => transform(this);
+
+  @override
+  String toString() => '$x,$y,$z';
 }
 
 /// An immutable point with X, Y, Z and M as num values.
@@ -506,6 +515,9 @@ class Point3m extends Point3 {
 
   @override
   Point3m transform(TransformPoint transform) => transform(this);
+
+  @override
+  String toString() => '$x,$y,$z,$m';
 }
 
 /// An immutable point with X and Y as integer values.
@@ -636,6 +648,9 @@ class Point2i extends CartesianPoint<int> with EquatableMixin {
 
   @override
   Point2i transform(TransformPoint transform) => transform(this);
+
+  @override
+  String toString() => '$x,$y';
 }
 
 /// An immutable point with X, Y and Z as integer values.
@@ -757,4 +772,7 @@ class Point3i extends Point2i {
 
   @override
   Point3i transform(TransformPoint transform) => transform(this);
+
+  @override
+  String toString() => '$x,$y,$z';
 }

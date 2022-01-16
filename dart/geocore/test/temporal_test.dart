@@ -25,7 +25,7 @@ void main() {
 
     test('Instant', () {
       final instant = Instant(t1);
-      expect(instant.toText(), '2020-10-01T15:45:30.000Z');
+      expect(instant.toString(), '2020-10-01T15:45:30.000Z');
       expect(instant.isAfterTime(t2), false);
       expect(instant.isBeforeTime(t2), true);
       expect(instant.isAfterTime(t1), false);
@@ -35,7 +35,7 @@ void main() {
     test('Interval closed', () {
       final interval = Interval.closed(t2, t4);
       expect(
-        interval.toText(),
+        interval.toString(),
         '2020-10-03T20:30:10.000Z/2020-10-05T01:15:50.000Z',
       );
       expect(interval.isAfterTime(t1), true);
@@ -52,7 +52,7 @@ void main() {
 
     test('Interval open ended', () {
       final interval = Interval.openEnd(t2);
-      expect(interval.toText(), '2020-10-03T20:30:10.000Z/..');
+      expect(interval.toString(), '2020-10-03T20:30:10.000Z/..');
       expect(interval.isAfterTime(t1), true);
       expect(interval.isBeforeTime(t1), false);
       expect(interval.isAfterTime(t2), false);
@@ -67,7 +67,7 @@ void main() {
 
     test('Interval open started', () {
       final interval = Interval.openStart(t4);
-      expect(interval.toText(), '../2020-10-05T01:15:50.000Z');
+      expect(interval.toString(), '../2020-10-05T01:15:50.000Z');
       expect(interval.isAfterTime(t1), false);
       expect(interval.isBeforeTime(t1), false);
       expect(interval.isAfterTime(t2), false);
@@ -82,7 +82,7 @@ void main() {
 
     test('Interval open', () {
       final interval = Interval.open();
-      expect(interval.toText(), '../..');
+      expect(interval.toString(), '../..');
       expect(interval.isAfterTime(t1), false);
       expect(interval.isBeforeTime(t1), false);
       expect(interval.isAfterTime(t2), false);

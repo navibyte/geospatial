@@ -64,7 +64,7 @@ class _InstantDateTime with EquatableMixin implements Instant {
   Instant toUtc() => isUtc ? this : _InstantDateTime(time.toUtc());
 
   @override
-  String toText() => time.toIso8601String();
+  String toString() => time.toIso8601String();
 
   @override
   bool isAfterTime(DateTime timestamp) => time.isAfter(timestamp);

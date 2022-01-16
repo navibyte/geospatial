@@ -10,6 +10,7 @@
 
 import 'package:equatable/equatable.dart';
 
+import 'package:geocore/coordinates.dart';
 import 'package:geodata/core.dart';
 
 import 'package:test/test.dart';
@@ -30,6 +31,10 @@ void main() {
         'double': 93.4245,
         'bool': false,
         'null': null,
+        'instant': Instant.parse('2022-01-15 19:01:22'),
+        'interval': Interval.parse('../2022-01-15 19:01:22'),
+        'bounds':
+            GeoBounds.bboxLonLatElev(-10.1, -20.2, -400.0, 10.1, 20.2, 400.0),
       });
       expect(query.crs, 'EPSG:4326');
       expect(query.extraParams, <String, String>{
@@ -38,9 +43,16 @@ void main() {
         'double': '93.4245',
         'bool': 'false',
         'null': 'null',
+        'instant': '2022-01-15T19:01:22.000',
+        'interval': '../2022-01-15T19:01:22.000',
+        'bounds': '-10.1,-20.2,-400.0,10.1,20.2,400.0',
       });
-      expect(Uri(path: 'a/b', queryParameters: query.extraParams).toString(),
-          'a/b?string=this+is+str&int=123&double=93.4245&bool=false&null=null');
+      expect(
+          Uri(path: 'a/b', queryParameters: query.extraParams).toString(),
+          'a/b?string=this+is+str&int=123&double=93.4245&bool=false&null=null&'
+          'instant=2022-01-15T19%3A01%3A22.000&'
+          'interval=..%2F2022-01-15T19%3A01%3A22.000&'
+          'bounds=-10.1%2C-20.2%2C-400.0%2C10.1%2C20.2%2C400.0');
     });
   });
 }
