@@ -28,6 +28,7 @@ part of 'spatial.dart';
 /// time). It could be associated with a 2D point (x, y, m) or a 3D point
 /// (x, y, z, m).
 abstract class Point<C extends num> extends Geometry
+    with CoordinateFormattableMixin
     implements _Coordinates, PointFactory {
   /// Default `const` constructor to allow extending this abstract class.
   const Point();
@@ -207,7 +208,7 @@ abstract class Point<C extends num> extends Geometry
   @override
   void writeString(
     StringSink buffer, {
-    CoordinatesFormat format = defaultFormat,
+    CoordinateFormat format = defaultFormat,
     int? decimals,
   }) =>
       writeValues(

@@ -23,7 +23,7 @@
 /// * multi polygon (with 2D points):
 ///   * `[[[35,10],[45,45],[15,40],[10,20],[35,10]]]`
 /// * coordinates for other geometries with similar principles
-const defaultFormat = CoordinatesFormat(
+const defaultFormat = CoordinateFormat(
   // decimals: null, (no default value for fraction digits)
   valueDelimiter: ',',
   pointPrefix: '[',
@@ -59,7 +59,7 @@ const defaultFormat = CoordinatesFormat(
 /// Note that WKT does not specify bounding box formatting. In some applications
 /// bounding boxes are formatted as polygons. An example presented above however
 /// format bounding box as a point series of two points (min, max).
-const wktFormat = CoordinatesFormat(
+const wktFormat = CoordinateFormat(
   // decimals: null, (no default value for fraction digits)
   valueDelimiter: ' ',
   pointPrefix: '',
@@ -72,7 +72,7 @@ const wktFormat = CoordinatesFormat(
 );
 
 /// Rules to format string representations of coordinates.
-class CoordinatesFormat {
+class CoordinateFormat {
   /// The number of decimals (not applied on number values without decimals).
   final int? decimals;
 
@@ -101,7 +101,7 @@ class CoordinatesFormat {
   final String itemDelimiter;
 
   /// Creates rules to format string representations of coordinates.
-  const CoordinatesFormat({
+  const CoordinateFormat({
     this.decimals,
     required this.valueDelimiter,
     required this.pointPrefix,

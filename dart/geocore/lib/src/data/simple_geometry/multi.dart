@@ -9,6 +9,7 @@ import 'dart:math' as math;
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
+import '/src/base/format.dart';
 import '/src/base/spatial.dart';
 import '/src/utils/wkt_data.dart';
 
@@ -18,7 +19,7 @@ import 'polygon.dart';
 /// A geometry collection.
 @immutable
 class GeometryCollection<E extends Geometry> extends Geometry
-    with EquatableMixin {
+    with CoordinateFormattableMixin, EquatableMixin {
   /// Creates [GeometryCollection] from [geometries].
   GeometryCollection(Iterable<E> geometries)
       : geometries = geometries is BoundedSeries<E>
@@ -64,6 +65,15 @@ class GeometryCollection<E extends Geometry> extends Geometry
   List<Object?> get props => [geometries];
 
   @override
+  void writeString(
+    StringSink buffer, {
+    CoordinateFormat format = defaultFormat,
+    int? decimals,
+  }) {
+    // todo : not implemented yet on all sub classes!!
+  }
+
+  @override
   GeometryCollection<E> transform(TransformPoint transform) =>
       GeometryCollection(geometries.transform(transform, lazy: false));
 
@@ -85,7 +95,8 @@ class GeometryCollection<E extends Geometry> extends Geometry
 
 /// A multi point geometry.
 @immutable
-class MultiPoint<E extends Point> extends Geometry with EquatableMixin {
+class MultiPoint<E extends Point> extends Geometry
+    with CoordinateFormattableMixin, EquatableMixin {
   /// Create [MultiPoint] from [points].
   MultiPoint(Iterable<E> points)
       : points = points is PointSeries<E> ? points : PointSeries.view(points);
@@ -131,6 +142,15 @@ class MultiPoint<E extends Point> extends Geometry with EquatableMixin {
   List<Object?> get props => [points];
 
   @override
+  void writeString(
+    StringSink buffer, {
+    CoordinateFormat format = defaultFormat,
+    int? decimals,
+  }) {
+    // todo : not implemented yet on all sub classes!!
+  }
+
+  @override
   MultiPoint<E> transform(TransformPoint transform) =>
       MultiPoint(points.transform(transform, lazy: false));
 
@@ -144,7 +164,8 @@ class MultiPoint<E extends Point> extends Geometry with EquatableMixin {
 
 /// A multi line string geometry.
 @immutable
-class MultiLineString<T extends Point> extends Geometry with EquatableMixin {
+class MultiLineString<T extends Point> extends Geometry
+    with CoordinateFormattableMixin, EquatableMixin {
   /// Create a multi line string from [lineStrings].
   MultiLineString(Iterable<LineString<T>> lineStrings)
       : lineStrings = lineStrings is BoundedSeries<LineString<T>>
@@ -204,6 +225,15 @@ class MultiLineString<T extends Point> extends Geometry with EquatableMixin {
   List<Object?> get props => [lineStrings];
 
   @override
+  void writeString(
+    StringSink buffer, {
+    CoordinateFormat format = defaultFormat,
+    int? decimals,
+  }) {
+    // todo : not implemented yet on all sub classes!!
+  }
+
+  @override
   MultiLineString<T> transform(TransformPoint transform) =>
       MultiLineString(lineStrings.transform(transform, lazy: false));
 
@@ -222,7 +252,8 @@ class MultiLineString<T extends Point> extends Geometry with EquatableMixin {
 
 /// A multi polygon geometry.
 @immutable
-class MultiPolygon<T extends Point> extends Geometry with EquatableMixin {
+class MultiPolygon<T extends Point> extends Geometry
+    with CoordinateFormattableMixin, EquatableMixin {
   /// Create [MultiPolygon] from [polygons].
   MultiPolygon(Iterable<Polygon<T>> polygons)
       : polygons = polygons is BoundedSeries<Polygon<T>>
@@ -279,6 +310,15 @@ class MultiPolygon<T extends Point> extends Geometry with EquatableMixin {
 
   @override
   List<Object?> get props => [polygons];
+
+  @override
+  void writeString(
+    StringSink buffer, {
+    CoordinateFormat format = defaultFormat,
+    int? decimals,
+  }) {
+    // todo : not implemented yet on all sub classes!!
+  }
 
   @override
   MultiPolygon<T> transform(TransformPoint transform) =>

@@ -141,7 +141,7 @@ abstract class Bounds<T extends Point> extends Geometry
   @override
   void writeString(
     StringSink buffer, {
-    CoordinatesFormat format = defaultFormat,
+    CoordinateFormat format = defaultFormat,
     int? decimals,
   }) {
     final dec = decimals ?? format.decimals;
@@ -237,7 +237,8 @@ abstract class Bounds<T extends Point> extends Geometry
 
 /// An immutable bounds with min and max points for limits.
 @immutable
-class BoundsBase<T extends Point> extends Bounds<T> with EquatableMixin {
+class BoundsBase<T extends Point> extends Bounds<T>
+    with CoordinateFormattableMixin, EquatableMixin {
   /// Create bounds with required (and non-empty) [min] and [max] points.
   const BoundsBase({required T min, required T max})
       : _min = min,
@@ -290,7 +291,8 @@ class BoundsBase<T extends Point> extends Bounds<T> with EquatableMixin {
 }
 
 /// [Bounds] with values calculated when first needed if not initialized.
-class _LazyBounds<T extends Point> extends Bounds<T> {
+class _LazyBounds<T extends Point> extends Bounds<T>
+    with CoordinateFormattableMixin {
   /// Bounds with nullable [bounds] and a mechanism to [calculate] as needed.
   ///
   /// You must provide either [bounds] or [calculate], both of them cannot be
@@ -360,7 +362,8 @@ class _LazyBounds<T extends Point> extends Bounds<T> {
 const _emptyBounds = _EmptyBounds();
 
 @immutable
-class _EmptyBounds extends Bounds with EquatableMixin {
+class _EmptyBounds extends Bounds
+    with CoordinateFormattableMixin, EquatableMixin {
   const _EmptyBounds();
 
   @override

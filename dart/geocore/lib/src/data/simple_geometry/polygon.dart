@@ -7,6 +7,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
+import '/src/base/format.dart';
 import '/src/base/spatial.dart';
 import '/src/utils/wkt_data.dart';
 
@@ -14,7 +15,8 @@ import 'linestring.dart';
 
 /// A polygon with an exterior and optional interior boundaries.
 @immutable
-class Polygon<T extends Point> extends Geometry with EquatableMixin {
+class Polygon<T extends Point> extends Geometry
+    with CoordinateFormattableMixin, EquatableMixin {
   /// Create [Polygon] from [rings] with at least exterior boundary at index 0.
   ///
   /// Contains also interior boundaries if length is >= 2.
@@ -116,6 +118,15 @@ class Polygon<T extends Point> extends Geometry with EquatableMixin {
   /// A series of interior rings (holes for this polygon) with 0 to N elements.
   BoundedSeries<LineString<T>> get interior =>
       BoundedSeries<LineString<T>>.view(rings.skip(1));
+
+  @override
+  void writeString(
+    StringSink buffer, {
+    CoordinateFormat format = defaultFormat,
+    int? decimals,
+  }) {
+    // todo : not implemented yet on all sub classes!!
+  }
 
   @override
   Polygon<T> transform(TransformPoint transform) =>
