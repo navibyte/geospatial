@@ -12,7 +12,8 @@ part of 'spatial.dart';
 /// an outer or inner linear ring of a polygon, a multi point, a vertex array or
 /// any other collection for points.
 abstract class PointSeries<E extends Point>
-    extends _BatchedSeries<PointSeries<E>, E> implements Bounded {
+    extends _BatchedSeries<PointSeries<E>, E>
+    implements Bounded, CoordinateFormattable {
   /// Default `const` constructor to allow extending this abstract class.
   const PointSeries();
 
@@ -145,12 +146,45 @@ mixin PointSeriesMixin<E extends Point> implements PointSeries<E> {
         source.forEach(builder.addPoint);
         return builder.bounds;
       });
+
+  @override
+  void writeString(
+    StringSink buffer, {
+    CoordinateFormat format = defaultFormat,
+    int? decimals,
+  }) {
+    final pointPrefix = format.pointPrefix;
+    final pointPostfix = format.pointPostfix;
+    final pointDelimiter = format.pointDelimiter;
+    final hasPointPrefix = pointPrefix.isNotEmpty;
+    final hasPointPostfix = pointPostfix.isNotEmpty;
+    var itemsWritten = false;
+    for (final point in this) {
+      if (itemsWritten) {
+        buffer.write(pointDelimiter);
+      } else {
+        itemsWritten = true;
+      }
+      if (hasPointPrefix) {
+        buffer.write(pointPrefix);
+      }
+      point.writeString(
+        buffer,
+        format: format,
+        decimals: decimals,
+      );
+      if (hasPointPostfix) {
+        buffer.write(pointPostfix);
+      }
+    }
+  }
 }
 
 /// Private implementation of [PointSeries].
 /// The implementation may change in future.
 class _PointSeriesView<E extends Point>
-    extends _BatchedSeriesView<PointSeries<E>, E> with PointSeriesMixin<E> {
+    extends _BatchedSeriesView<PointSeries<E>, E>
+    with PointSeriesMixin<E>, CoordinateFormattableMixin {
   _PointSeriesView(Iterable<E> source, {Bounds? bounds})
       : super(
           source,
