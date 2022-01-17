@@ -77,7 +77,16 @@ abstract class Geometry extends Bounded {
     int? decimals,
   }) {
     final buf = StringBuffer();
-    writeString(buf, format: format, decimals: format.decimals ?? decimals);
+    writeString(buf, format: format, decimals: decimals);
+    return buf.toString();
+  }
+
+  /// A string representation of coordinates as defined by [wktFormat].
+  ///
+  /// Use [decimals] to set a number of decimals to nums with decimals.
+  String toStringWkt({int? decimals}) {
+    final buf = StringBuffer();
+    writeString(buf, format: wktFormat, decimals: decimals);
     return buf.toString();
   }
 

@@ -102,7 +102,7 @@ abstract class Bounds<T extends Point> extends Geometry
 
   /// Writes coordinate values to [buffer] separated by [delimiter].
   ///
-  /// Use [fractionDigits] to set a number of decimals to nums with decimals.
+  /// Use [decimals] to set a number of decimals (not applied if no decimals).
   ///
   /// A sample with default parameters (for a 2D bounding box):
   /// `10.1,10.1,20.2,20.2`
@@ -110,31 +110,31 @@ abstract class Bounds<T extends Point> extends Geometry
   void writeValues(
     StringSink buffer, {
     String delimiter = ',',
-    int? fractionDigits,
+    int? decimals,
   }) {
     min.writeValues(
       buffer,
       delimiter: delimiter,
-      fractionDigits: fractionDigits,
+      decimals: decimals,
     );
     buffer.write(delimiter);
     max.writeValues(
       buffer,
       delimiter: delimiter,
-      fractionDigits: fractionDigits,
+      decimals: decimals,
     );
   }
 
   /// Returns coordinate values as a string separated by [delimiter].
   ///
-  /// Use [fractionDigits] to set a number of decimals to nums with decimals.
+  /// Use [decimals] to set a number of decimals (not applied if no decimals).
   ///
   /// A sample with default parameters (for a 2D bounding box):
   /// `10.1,10.1,20.2,20.2`
   @override
-  String valuesAsString({String delimiter = ',', int? fractionDigits}) {
+  String valuesAsString({String delimiter = ',', int? decimals}) {
     final buf = StringBuffer();
-    writeValues(buf, delimiter: delimiter, fractionDigits: fractionDigits);
+    writeValues(buf, delimiter: delimiter, decimals: decimals);
     return buf.toString();
   }
 
@@ -144,9 +144,10 @@ abstract class Bounds<T extends Point> extends Geometry
     CoordinatesFormat format = defaultFormat,
     int? decimals,
   }) {
-    min.writeString(buffer, format: format, decimals: decimals);
-    buffer.write(format.valueDelimiter);
-    max.writeString(buffer, format: format, decimals: decimals);
+    final dec = decimals ?? format.decimals;
+    min.writeString(buffer, format: format, decimals: dec);
+    buffer.write(format.boundsPointDelimiter);
+    max.writeString(buffer, format: format, decimals: dec);
   }
 
   /// Returns new bounds transformed from this bounds using [transform].

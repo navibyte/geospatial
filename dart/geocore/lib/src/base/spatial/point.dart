@@ -144,7 +144,7 @@ abstract class Point<C extends num> extends Geometry
 
   /// Writes coordinate values to [buffer] separated by [delimiter].
   ///
-  /// Use [fractionDigits] to set a number of decimals to nums with decimals.
+  /// Use [decimals] to set a number of decimals (not applied if no decimals).
   ///
   /// A sample with default parameters (for a 3D point):
   /// `10.1,20.3,30.3`
@@ -155,14 +155,14 @@ abstract class Point<C extends num> extends Geometry
   void writeValues(
     StringSink buffer, {
     String delimiter = ',',
-    int? fractionDigits,
+    int? decimals,
   }) {
     for (var i = 0; i < coordinateDimension; i++) {
       if (i > 0) {
         buffer.write(delimiter);
       }
-      if (fractionDigits != null) {
-        buffer.write(toStringAsFixedWhenDecimals(this[i], fractionDigits));
+      if (decimals != null) {
+        buffer.write(toStringAsFixedWhenDecimals(this[i], decimals));
       } else {
         buffer.write(this[i]);
       }
@@ -171,7 +171,7 @@ abstract class Point<C extends num> extends Geometry
 
   /// A string representation of coordinate values separated by [delimiter].
   ///
-  /// Use [fractionDigits] to set a number of decimals to nums with decimals.
+  /// Use [decimals] to set a number of decimals (not applied if no decimals).
   ///
   /// A sample with default parameters (for a 3D point):
   /// `10.1,20.3,30.3`
@@ -181,10 +181,10 @@ abstract class Point<C extends num> extends Geometry
   @override
   String valuesAsString({
     String delimiter = ',',
-    int? fractionDigits,
+    int? decimals,
   }) {
     final buf = StringBuffer();
-    writeValues(buf, delimiter: delimiter, fractionDigits: fractionDigits);
+    writeValues(buf, delimiter: delimiter, decimals: decimals);
     return buf.toString();
   }
 
@@ -194,12 +194,13 @@ abstract class Point<C extends num> extends Geometry
   /// example "10.1 20.2" is returned for a point with x=10.1 and y=20.2.
   ///
   /// Use [fractionDigits] to set a number of decimals to nums with decimals.
+  @Deprecated('Use toStringAs() or toStringWkt() instead')
   String toText({
     String delimiter = ' ',
     int? fractionDigits,
   }) {
     final buf = StringBuffer();
-    writeValues(buf, delimiter: delimiter, fractionDigits: fractionDigits);
+    writeValues(buf, delimiter: delimiter, decimals: fractionDigits);
     return buf.toString();
   }
 
@@ -212,7 +213,7 @@ abstract class Point<C extends num> extends Geometry
       writeValues(
         buffer,
         delimiter: format.valueDelimiter,
-        fractionDigits: decimals ?? format.decimals,
+        decimals: decimals ?? format.decimals,
       );
 
   /// Copies this point with the compatible type and sets given coordinates.

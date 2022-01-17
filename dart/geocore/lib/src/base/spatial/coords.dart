@@ -84,19 +84,19 @@ abstract class _Coordinates extends _Measured {
 
   /// Writes coordinate values to [buffer] separated by [delimiter].
   ///
-  /// Use [fractionDigits] to set a number of decimals to nums with decimals.
+  /// Use [decimals] to set a number of decimals (not applied if no decimals).
   void writeValues(
     StringSink buffer, {
     String delimiter = ',',
-    int? fractionDigits,
+    int? decimals,
   });
 
   /// A string representation of coordinate values separated by [delimiter].
   ///
-  /// Use [fractionDigits] to set a number of decimals to nums with decimals.
+  /// Use [decimals] to set a number of decimals (not applied if no decimals).
   String valuesAsString({
     String delimiter = ',',
-    int? fractionDigits,
+    int? decimals,
   });
 }
 

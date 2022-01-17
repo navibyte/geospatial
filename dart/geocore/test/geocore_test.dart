@@ -140,7 +140,7 @@ void main() {
     });
   });
 
-  group('Point and Bounds toString', () {
+  group('Point toString', () {
     test('Cartesian points', () {
       expect(Point2.xy(1.1, 2.2).toString(), '1.1,2.2');
       expect(Point2m.xym(1.1, 2.2, 3.3).toString(), '1.1,2.2,3.3');
@@ -156,45 +156,52 @@ void main() {
       expect(GeoPoint3m.lonLatElevM(1.1, 2.2, 3.3, 4.4).toString(),
           '1.1,2.2,3.3,4.4');
     });
-    test('Bounds', () {
-      expect(
-          Bounds.of(min: Point2.xy(1.1, 2.1), max: Point2.xy(1.5, 2.5))
-              .toString(),
-          '1.1,2.1,1.5,2.5');
-      expect(
-          Bounds.of(
-                  min: Point2m.xym(1.1, 2.1, 3.1),
-                  max: Point2m.xym(1.5, 2.5, 3.5))
-              .toString(),
-          '1.1,2.1,3.1,1.5,2.5,3.5');
-      expect(
-          Bounds.of(
-                  min: Point3.xyz(1.1, 2.1, 3.1),
-                  max: Point3.xyz(1.5, 2.5, 3.5))
-              .toString(),
-          '1.1,2.1,3.1,1.5,2.5,3.5');
-      expect(
-          Bounds.of(min: Point3i.xyz(1, 2, 3), max: Point3i.xyz(2, 3, 4))
-              .toString(),
-          '1,2,3,2,3,4');
-      expect(GeoBounds.bboxLonLat(1.1, 2.1, 1.5, 2.5).toString(),
-          '1.1,2.1,1.5,2.5');
-      expect(GeoBounds.bboxLonLatElev(1.1, 2.1, 3.1, 1.5, 2.5, 3.5).toString(),
-          '1.1,2.1,3.1,1.5,2.5,3.5');
-    });
   });
 
+  group('Bounds toString and toStringAs', () {
+    test('Bounds', () {
+      final b1 = Bounds.of(min: Point2.xy(1.1, 2.1), max: Point2.xy(1.5, 2.5));
+      final b2 = Bounds.of(
+          min: Point2m.xym(1.1, 2.1, 3.1), max: Point2m.xym(1.5, 2.5, 3.5));
+      final b3 = Bounds.of(
+          min: Point3.xyz(1.1, 2.1, 3.1), max: Point3.xyz(1.5, 2.5, 3.5));
+      final b4 =
+          Bounds.of(min: Point3i.xyz(1, 2, 3), max: Point3i.xyz(2, 3, 4));
+      final b5 = GeoBounds.bboxLonLat(1.1, 2.1, 1.5, 2.5);
+      final b6 = GeoBounds.bboxLonLatElev(1.1, 2.1, 3.1, 1.5, 2.5, 3.5);
+      expect(b1.toString(), '1.1,2.1,1.5,2.5');
+      expect(b1.toStringAs(), '1.1,2.1,1.5,2.5');
+      expect(b1.toStringAs(format: wktFormat), '1.1 2.1,1.5 2.5');
+      expect(b1.toStringAs(format: wktFormat, decimals: 0), '1 2,2 3');
+      expect(
+          b1.toStringAs(format: wktFormat, decimals: 2), '1.10 2.10,1.50 2.50');
+      expect(b2.toString(), '1.1,2.1,3.1,1.5,2.5,3.5');
+      expect(b2.toStringAs(format: wktFormat), '1.1 2.1 3.1,1.5 2.5 3.5');
+      expect(b3.toString(), '1.1,2.1,3.1,1.5,2.5,3.5');
+      expect(b3.toStringWkt(), '1.1 2.1 3.1,1.5 2.5 3.5');
+      expect(b3.toStringWkt(decimals: 1), '1.1 2.1 3.1,1.5 2.5 3.5');
+      expect(b4.toString(), '1,2,3,2,3,4');
+      expect(b5.toString(), '1.1,2.1,1.5,2.5');
+      expect(b6.toString(), '1.1,2.1,3.1,1.5,2.5,3.5');
+    });
+  });
   group('Point values printed as String', () {
     const p3dec = Point3.xyz(10.1, 20.217, 30.73942);
     const p3 = Point3.xyz(10.001, 20.000, 30);
     const p3i = Point3i.xyz(10, 20, 30);
 
     test('toText with Point3 and Point3i', () {
+      // ignore: deprecated_member_use_from_same_package
       expect(p3dec.toText(), '10.1 20.217 30.73942');
+      // ignore: deprecated_member_use_from_same_package
       expect(p3dec.toText(fractionDigits: 0), '10 20 31');
+      // ignore: deprecated_member_use_from_same_package
       expect(p3dec.toText(fractionDigits: 3), '10.100 20.217 30.739');
+      // ignore: deprecated_member_use_from_same_package
       expect(p3.toText(fractionDigits: 3), '10.001 20 30');
+      // ignore: deprecated_member_use_from_same_package
       expect(p3.toText(fractionDigits: 2), '10.00 20 30');
+      // ignore: deprecated_member_use_from_same_package
       expect(p3i.toText(fractionDigits: 2), '10 20 30');
     });
 
@@ -215,6 +222,15 @@ void main() {
       expect(p3.toStringAs(format: wktFormat, decimals: 3), '10.001 20 30');
       expect(p3.toStringAs(format: wktFormat, decimals: 2), '10.00 20 30');
       expect(p3i.toStringAs(format: wktFormat, decimals: 2), '10 20 30');
+    });
+
+    test('toStringWkt with Point3 and Point3i', () {
+      expect(p3dec.toStringWkt(), '10.1 20.217 30.73942');
+      expect(p3dec.toStringWkt(decimals: 0), '10 20 31');
+      expect(p3dec.toStringWkt(decimals: 3), '10.100 20.217 30.739');
+      expect(p3.toStringWkt(decimals: 3), '10.001 20 30');
+      expect(p3.toStringWkt(decimals: 2), '10.00 20 30');
+      expect(p3i.toStringWkt(decimals: 2), '10 20 30');
     });
   });
 
