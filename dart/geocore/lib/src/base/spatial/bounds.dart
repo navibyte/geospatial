@@ -238,7 +238,7 @@ abstract class Bounds<T extends Point> extends Geometry
 /// An immutable bounds with min and max points for limits.
 @immutable
 class BoundsBase<T extends Point> extends Bounds<T>
-    with CoordinateFormattableMixin, EquatableMixin {
+    with EquatableMixin, CoordinateFormattableMixin {
   /// Create bounds with required (and non-empty) [min] and [max] points.
   const BoundsBase({required T min, required T max})
       : _min = min,
@@ -363,7 +363,7 @@ const _emptyBounds = _EmptyBounds();
 
 @immutable
 class _EmptyBounds extends Bounds
-    with CoordinateFormattableMixin, EquatableMixin {
+    with EquatableMixin, CoordinateFormattableMixin {
   const _EmptyBounds();
 
   @override

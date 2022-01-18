@@ -19,7 +19,9 @@ import 'polygon.dart';
 /// A geometry collection.
 @immutable
 class GeometryCollection<E extends Geometry> extends Geometry
-    with CoordinateFormattableMixin, EquatableMixin {
+    with EquatableMixin, CoordinateFormattableMixin {
+  // note : mixins must be on that order (need toString from the latter)
+
   /// Creates [GeometryCollection] from [geometries].
   GeometryCollection(Iterable<E> geometries)
       : geometries = geometries is BoundedSeries<E>
@@ -70,7 +72,26 @@ class GeometryCollection<E extends Geometry> extends Geometry
     CoordinateFormat format = defaultFormat,
     int? decimals,
   }) {
-    // todo : not implemented yet on all sub classes!!
+    final itemPrefix = format.itemPrefix;
+    final itemPostfix = format.itemPostfix;
+    final itemDelimiter = format.itemDelimiter;
+    final hasItemPrefix = itemPrefix.isNotEmpty;
+    final hasItemPostfix = itemPostfix.isNotEmpty;
+    var itemsWritten = false;
+    for (final geom in geometries) {
+      if (itemsWritten) {
+        buffer.write(itemDelimiter);
+      } else {
+        itemsWritten = true;
+      }
+      if (hasItemPrefix) {
+        buffer.write(itemPrefix);
+      }
+      geom.writeString(buffer, format: format, decimals: decimals);
+      if (hasItemPostfix) {
+        buffer.write(itemPostfix);
+      }
+    }
   }
 
   @override
@@ -96,7 +117,9 @@ class GeometryCollection<E extends Geometry> extends Geometry
 /// A multi point geometry.
 @immutable
 class MultiPoint<E extends Point> extends Geometry
-    with CoordinateFormattableMixin, EquatableMixin {
+    with EquatableMixin, CoordinateFormattableMixin {
+  // note : mixins must be on that order (need toString from the latter)
+    
   /// Create [MultiPoint] from [points].
   MultiPoint(Iterable<E> points)
       : points = points is PointSeries<E> ? points : PointSeries.view(points);
@@ -146,9 +169,8 @@ class MultiPoint<E extends Point> extends Geometry
     StringSink buffer, {
     CoordinateFormat format = defaultFormat,
     int? decimals,
-  }) {
-    // todo : not implemented yet on all sub classes!!
-  }
+  }) =>
+      points.writeString(buffer, format: format, decimals: decimals);
 
   @override
   MultiPoint<E> transform(TransformPoint transform) =>
@@ -165,7 +187,9 @@ class MultiPoint<E extends Point> extends Geometry
 /// A multi line string geometry.
 @immutable
 class MultiLineString<T extends Point> extends Geometry
-    with CoordinateFormattableMixin, EquatableMixin {
+    with EquatableMixin, CoordinateFormattableMixin {
+  // note : mixins must be on that order (need toString from the latter)
+    
   /// Create a multi line string from [lineStrings].
   MultiLineString(Iterable<LineString<T>> lineStrings)
       : lineStrings = lineStrings is BoundedSeries<LineString<T>>
@@ -230,7 +254,26 @@ class MultiLineString<T extends Point> extends Geometry
     CoordinateFormat format = defaultFormat,
     int? decimals,
   }) {
-    // todo : not implemented yet on all sub classes!!
+    final itemPrefix = format.itemPrefix;
+    final itemPostfix = format.itemPostfix;
+    final itemDelimiter = format.itemDelimiter;
+    final hasItemPrefix = itemPrefix.isNotEmpty;
+    final hasItemPostfix = itemPostfix.isNotEmpty;
+    var itemsWritten = false;
+    for (final line in lineStrings) {
+      if (itemsWritten) {
+        buffer.write(itemDelimiter);
+      } else {
+        itemsWritten = true;
+      }
+      if (hasItemPrefix) {
+        buffer.write(itemPrefix);
+      }
+      line.writeString(buffer, format: format, decimals: decimals);
+      if (hasItemPostfix) {
+        buffer.write(itemPostfix);
+      }
+    }
   }
 
   @override
@@ -253,7 +296,9 @@ class MultiLineString<T extends Point> extends Geometry
 /// A multi polygon geometry.
 @immutable
 class MultiPolygon<T extends Point> extends Geometry
-    with CoordinateFormattableMixin, EquatableMixin {
+    with EquatableMixin, CoordinateFormattableMixin {
+  // note : mixins must be on that order (need toString from the latter)
+    
   /// Create [MultiPolygon] from [polygons].
   MultiPolygon(Iterable<Polygon<T>> polygons)
       : polygons = polygons is BoundedSeries<Polygon<T>>
@@ -317,7 +362,26 @@ class MultiPolygon<T extends Point> extends Geometry
     CoordinateFormat format = defaultFormat,
     int? decimals,
   }) {
-    // todo : not implemented yet on all sub classes!!
+    final itemPrefix = format.itemPrefix;
+    final itemPostfix = format.itemPostfix;
+    final itemDelimiter = format.itemDelimiter;
+    final hasItemPrefix = itemPrefix.isNotEmpty;
+    final hasItemPostfix = itemPostfix.isNotEmpty;
+    var itemsWritten = false;
+    for (final polygon in polygons) {
+      if (itemsWritten) {
+        buffer.write(itemDelimiter);
+      } else {
+        itemsWritten = true;
+      }
+      if (hasItemPrefix) {
+        buffer.write(itemPrefix);
+      }
+      polygon.writeString(buffer, format: format, decimals: decimals);
+      if (hasItemPostfix) {
+        buffer.write(itemPostfix);
+      }
+    }
   }
 
   @override

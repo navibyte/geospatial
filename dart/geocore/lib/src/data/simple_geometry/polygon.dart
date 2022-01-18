@@ -16,7 +16,9 @@ import 'linestring.dart';
 /// A polygon with an exterior and optional interior boundaries.
 @immutable
 class Polygon<T extends Point> extends Geometry
-    with CoordinateFormattableMixin, EquatableMixin {
+    with EquatableMixin, CoordinateFormattableMixin {
+  // note : mixins must be on that order (need toString from the latter)
+
   /// Create [Polygon] from [rings] with at least exterior boundary at index 0.
   ///
   /// Contains also interior boundaries if length is >= 2.
@@ -125,7 +127,26 @@ class Polygon<T extends Point> extends Geometry
     CoordinateFormat format = defaultFormat,
     int? decimals,
   }) {
-    // todo : not implemented yet on all sub classes!!
+    final itemPrefix = format.itemPrefix;
+    final itemPostfix = format.itemPostfix;
+    final itemDelimiter = format.itemDelimiter;
+    final hasItemPrefix = itemPrefix.isNotEmpty;
+    final hasItemPostfix = itemPostfix.isNotEmpty;
+    var itemsWritten = false;
+    for (final ring in rings) {
+      if (itemsWritten) {
+        buffer.write(itemDelimiter);
+      } else {
+        itemsWritten = true;
+      }
+      if (hasItemPrefix) {
+        buffer.write(itemPrefix);
+      }
+      ring.writeString(buffer, format: format, decimals: decimals);
+      if (hasItemPostfix) {
+        buffer.write(itemPostfix);
+      }
+    }
   }
 
   @override

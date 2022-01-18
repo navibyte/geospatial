@@ -23,7 +23,9 @@ enum LineStringType {
 /// A line string containing a chain of points.
 @immutable
 class LineString<T extends Point> extends Geometry
-    with CoordinateFormattableMixin, EquatableMixin {
+    with EquatableMixin, CoordinateFormattableMixin {
+  // note : mixins must be on that order (need toString from the latter)
+
   /// Create [LineString] from [chain] of points conforming by [type].
   LineString(Iterable<T> chain, {this.type = LineStringType.any})
       : chain = chain is PointSeries<T> ? chain : PointSeries.view(chain) {
@@ -112,9 +114,8 @@ class LineString<T extends Point> extends Geometry
     StringSink buffer, {
     CoordinateFormat format = defaultFormat,
     int? decimals,
-  }) {
-    // todo : not implemented yet on all sub classes!!
-  }
+  }) =>
+      chain.writeString(buffer, format: format, decimals: decimals);
 
   @override
   LineString<T> transform(TransformPoint transform) =>

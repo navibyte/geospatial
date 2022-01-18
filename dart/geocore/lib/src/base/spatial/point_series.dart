@@ -158,12 +158,12 @@ mixin PointSeriesMixin<E extends Point> implements PointSeries<E> {
     final pointDelimiter = format.pointDelimiter;
     final hasPointPrefix = pointPrefix.isNotEmpty;
     final hasPointPostfix = pointPostfix.isNotEmpty;
-    var itemsWritten = false;
+    var pointsWritten = false;
     for (final point in this) {
-      if (itemsWritten) {
+      if (pointsWritten) {
         buffer.write(pointDelimiter);
       } else {
-        itemsWritten = true;
+        pointsWritten = true;
       }
       if (hasPointPrefix) {
         buffer.write(pointPrefix);

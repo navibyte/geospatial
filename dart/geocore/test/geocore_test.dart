@@ -234,6 +234,61 @@ void main() {
     });
   });
 
+  group('PointSeries and simple geometry - toString and toStringAs', () {
+    final points1 = PointSeries.make([
+      [-1.1, -1.1],
+      [2.1, -2.5],
+      [3.5, -3.49]
+    ], Point2.coordinates);
+
+    test('PointSeries', () {
+      expect(points1.toString(), '[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]');
+      expect(points1.toStringAs(), '[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]');
+      expect(points1.toStringAs(decimals: 0), '[-1,-1],[2,-3],[4,-3]');
+      expect(points1.toStringWkt(), '-1.1 -1.1,2.1 -2.5,3.5 -3.49');
+      expect(points1.toStringWkt(decimals: 2),
+          '-1.10 -1.10,2.10 -2.50,3.50 -3.49');
+    });
+
+    final multiPoint1 = MultiPoint(points1);
+    test('MultiPoint', () {
+      expect(multiPoint1.toStringAs(), '[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]');
+      expect(multiPoint1.toStringWkt(decimals: 0), '-1 -1,2 -3,4 -3');
+    });
+
+    final line1 = LineString(points1);
+    final ring1 = LineString.make([
+      [10.1, 10.1],
+      [5, 9],
+      [12, 4],
+      [10.1, 10.1]
+    ], Point2.coordinates, type: LineStringType.ring);
+
+    test('LineString', () {
+      expect(line1.toString(), '[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]');
+      expect(line1.toStringWkt(), '-1.1 -1.1,2.1 -2.5,3.5 -3.49');
+    });
+
+    final multiLine1 = MultiLineString([
+      line1,
+      ring1,
+    ]);
+    test('MultiLineString', () {
+      expect(multiLine1.toStringAs(format: wktFormat),
+          '(-1.1 -1.1,2.1 -2.5,3.5 -3.49),(10.1 10.1,5 9,12 4,10.1 10.1)');
+    });
+
+    final polygon1 = Polygon([ring1]);
+    test('Polygon', () {
+      expect(polygon1.toString(), '[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]');
+      expect(polygon1.toStringWkt(), '(10.1 10.1,5 9,12 4,10.1 10.1)');
+    });
+    test('MultiPolygon', () {
+      expect(polygon1.toStringAs(decimals: 2),
+          '[[10.10,10.10],[5,9],[12,4],[10.10,10.10]]');
+    });
+  });
+
   group('Parsing point objects from text', () {
     test('Point.fromText tests', () {
       expect(
