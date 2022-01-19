@@ -8,7 +8,8 @@ part of 'spatial.dart';
 
 /// A base interface for a series (list) of bounded items of type [E].
 abstract class BoundedSeries<E extends Bounded>
-    extends _BatchedSeries<BoundedSeries<E>, E> {
+    extends _BatchedSeries<BoundedSeries<E>, E>
+    implements CoordinateFormattable {
   /// Default `const` constructor to allow extending this abstract class.
   const BoundedSeries();
 
@@ -58,12 +59,45 @@ mixin BoundedSeriesMixin<E extends Bounded> implements BoundedSeries<E> {
         }
         return builder.bounds;
       });
+
+  @override
+  void writeString(
+    StringSink buffer, {
+    CoordinateFormat format = defaultFormat,
+    int? decimals,
+  }) {
+    final itemPrefix = format.itemPrefix;
+    final itemPostfix = format.itemPostfix;
+    final itemDelimiter = format.itemDelimiter;
+    final hasItemPrefix = itemPrefix.isNotEmpty;
+    final hasItemPostfix = itemPostfix.isNotEmpty;
+    var itemsWritten = false;
+    for (final item in this) {
+      if (itemsWritten) {
+        buffer.write(itemDelimiter);
+      } else {
+        itemsWritten = true;
+      }
+      if (hasItemPrefix) {
+        buffer.write(itemPrefix);
+      }
+      item.writeString(
+        buffer,
+        format: format,
+        decimals: decimals,
+      );
+      if (hasItemPostfix) {
+        buffer.write(itemPostfix);
+      }
+    }
+  }
 }
 
 /// Private implementation of [BoundedSeries].
 /// The implementation may change in future.
 class _BoundedSeriesView<E extends Bounded>
-    extends _BatchedSeriesView<BoundedSeries<E>, E> with BoundedSeriesMixin<E> {
+    extends _BatchedSeriesView<BoundedSeries<E>, E>
+    with BoundedSeriesMixin<E>, CoordinateFormattableMixin {
   _BoundedSeriesView(Iterable<E> source, {Bounds? bounds})
       : super(
           source,

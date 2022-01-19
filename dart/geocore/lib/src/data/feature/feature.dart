@@ -7,6 +7,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
+import '/src/base/format.dart';
 import '/src/base/spatial.dart';
 
 /// A feature is a geospatial entity with [id], [properties] and [geometry].
@@ -92,8 +93,10 @@ abstract class Feature<T extends Geometry> implements Bounded {
 /// The implementation may change in future.
 @immutable
 class _FeatureBase<T extends Geometry>
-    with EquatableMixin
+    with EquatableMixin, CoordinateFormattableMixin
     implements Feature<T> {
+  // note : mixins must be on that order (need toString from the latter)
+
   const _FeatureBase({
     this.id,
     required this.properties,
@@ -117,6 +120,15 @@ class _FeatureBase<T extends Geometry>
 
   @override
   Bounds get bounds => _featureBounds ?? geometry?.bounds ?? Bounds.empty();
+
+  @override
+  void writeString(
+    StringSink buffer, {
+    CoordinateFormat format = defaultFormat,
+    int? decimals,
+  }) {
+    // todo not yet implemented
+  }
 
   @override
   Feature<T> transform(TransformPoint transform) => _FeatureBase(

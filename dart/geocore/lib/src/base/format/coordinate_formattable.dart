@@ -6,9 +6,11 @@
 
 import 'coordinate_format.dart';
 
-/// An interface for objects formattable as coordinates or sets of coordinates.
+/// An interface for formatting objects containing coordinates.
 abstract class CoordinateFormattable {
-  /// Writes coordinates to [buffer] as defined by [format].
+  /// Writes a string representation of this to [buffer], with [format] applied.
+  /// 
+  /// Coordinates are represented as defined by [format].
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
   void writeString(
@@ -17,7 +19,9 @@ abstract class CoordinateFormattable {
     int? decimals,
   });
 
-  /// A string representation of coordinates as defined by [format].
+  /// A string representation of this object, with [format] applied.
+  /// 
+  /// Coordinates are represented as defined by [format].
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
   String toStringAs({
@@ -25,12 +29,16 @@ abstract class CoordinateFormattable {
     int? decimals,
   });
 
-  /// A string representation of coordinates as defined by [wktFormat].
-  ///
-  /// Use [decimals] to set a number of decimals to nums with decimals.
+  /// A string representation of this object, with [wktFormat] applied.
+  /// 
+  /// Coordinates are represented as defined by [wktFormat].
+  /// 
+  /// Use [decimals] to set a number of decimals (not applied if no decimals).
   String toStringWkt({int? decimals});
 
-  /// A string representation of coordinates as defined by [defaultFormat].
+  /// A string representation of this object, with [defaultFormat] applied.
+  /// 
+  /// Coordinates are represented as defined by [defaultFormat].
   @override
   String toString();
 }

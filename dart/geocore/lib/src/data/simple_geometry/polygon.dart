@@ -126,28 +126,8 @@ class Polygon<T extends Point> extends Geometry
     StringSink buffer, {
     CoordinateFormat format = defaultFormat,
     int? decimals,
-  }) {
-    final itemPrefix = format.itemPrefix;
-    final itemPostfix = format.itemPostfix;
-    final itemDelimiter = format.itemDelimiter;
-    final hasItemPrefix = itemPrefix.isNotEmpty;
-    final hasItemPostfix = itemPostfix.isNotEmpty;
-    var itemsWritten = false;
-    for (final ring in rings) {
-      if (itemsWritten) {
-        buffer.write(itemDelimiter);
-      } else {
-        itemsWritten = true;
-      }
-      if (hasItemPrefix) {
-        buffer.write(itemPrefix);
-      }
-      ring.writeString(buffer, format: format, decimals: decimals);
-      if (hasItemPostfix) {
-        buffer.write(itemPostfix);
-      }
-    }
-  }
+  }) =>
+      rings.writeString(buffer, format: format, decimals: decimals);
 
   @override
   Polygon<T> transform(TransformPoint transform) =>

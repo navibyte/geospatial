@@ -12,8 +12,7 @@ part of 'spatial.dart';
 /// an outer or inner linear ring of a polygon, a multi point, a vertex array or
 /// any other collection for points.
 abstract class PointSeries<E extends Point>
-    extends _BatchedSeries<PointSeries<E>, E>
-    implements Bounded, CoordinateFormattable {
+    extends _BatchedSeries<PointSeries<E>, E> implements Bounded {
   /// Default `const` constructor to allow extending this abstract class.
   const PointSeries();
 

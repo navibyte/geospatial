@@ -7,7 +7,7 @@
 part of 'spatial.dart';
 
 /// A base interface for geometry classes.
-abstract class Geometry extends Bounded implements CoordinateFormattable {
+abstract class Geometry extends Bounded {
   /// Default `const` constructor to allow extending this abstract class.
   const Geometry();
 

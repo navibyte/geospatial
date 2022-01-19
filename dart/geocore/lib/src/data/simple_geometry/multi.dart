@@ -71,28 +71,8 @@ class GeometryCollection<E extends Geometry> extends Geometry
     StringSink buffer, {
     CoordinateFormat format = defaultFormat,
     int? decimals,
-  }) {
-    final itemPrefix = format.itemPrefix;
-    final itemPostfix = format.itemPostfix;
-    final itemDelimiter = format.itemDelimiter;
-    final hasItemPrefix = itemPrefix.isNotEmpty;
-    final hasItemPostfix = itemPostfix.isNotEmpty;
-    var itemsWritten = false;
-    for (final geom in geometries) {
-      if (itemsWritten) {
-        buffer.write(itemDelimiter);
-      } else {
-        itemsWritten = true;
-      }
-      if (hasItemPrefix) {
-        buffer.write(itemPrefix);
-      }
-      geom.writeString(buffer, format: format, decimals: decimals);
-      if (hasItemPostfix) {
-        buffer.write(itemPostfix);
-      }
-    }
-  }
+  }) =>
+      geometries.writeString(buffer, format: format, decimals: decimals);
 
   @override
   GeometryCollection<E> transform(TransformPoint transform) =>
@@ -119,7 +99,7 @@ class GeometryCollection<E extends Geometry> extends Geometry
 class MultiPoint<E extends Point> extends Geometry
     with EquatableMixin, CoordinateFormattableMixin {
   // note : mixins must be on that order (need toString from the latter)
-    
+
   /// Create [MultiPoint] from [points].
   MultiPoint(Iterable<E> points)
       : points = points is PointSeries<E> ? points : PointSeries.view(points);
@@ -189,7 +169,7 @@ class MultiPoint<E extends Point> extends Geometry
 class MultiLineString<T extends Point> extends Geometry
     with EquatableMixin, CoordinateFormattableMixin {
   // note : mixins must be on that order (need toString from the latter)
-    
+
   /// Create a multi line string from [lineStrings].
   MultiLineString(Iterable<LineString<T>> lineStrings)
       : lineStrings = lineStrings is BoundedSeries<LineString<T>>
@@ -253,28 +233,8 @@ class MultiLineString<T extends Point> extends Geometry
     StringSink buffer, {
     CoordinateFormat format = defaultFormat,
     int? decimals,
-  }) {
-    final itemPrefix = format.itemPrefix;
-    final itemPostfix = format.itemPostfix;
-    final itemDelimiter = format.itemDelimiter;
-    final hasItemPrefix = itemPrefix.isNotEmpty;
-    final hasItemPostfix = itemPostfix.isNotEmpty;
-    var itemsWritten = false;
-    for (final line in lineStrings) {
-      if (itemsWritten) {
-        buffer.write(itemDelimiter);
-      } else {
-        itemsWritten = true;
-      }
-      if (hasItemPrefix) {
-        buffer.write(itemPrefix);
-      }
-      line.writeString(buffer, format: format, decimals: decimals);
-      if (hasItemPostfix) {
-        buffer.write(itemPostfix);
-      }
-    }
-  }
+  }) =>
+      lineStrings.writeString(buffer, format: format, decimals: decimals);
 
   @override
   MultiLineString<T> transform(TransformPoint transform) =>
@@ -298,7 +258,7 @@ class MultiLineString<T extends Point> extends Geometry
 class MultiPolygon<T extends Point> extends Geometry
     with EquatableMixin, CoordinateFormattableMixin {
   // note : mixins must be on that order (need toString from the latter)
-    
+
   /// Create [MultiPolygon] from [polygons].
   MultiPolygon(Iterable<Polygon<T>> polygons)
       : polygons = polygons is BoundedSeries<Polygon<T>>
@@ -361,28 +321,8 @@ class MultiPolygon<T extends Point> extends Geometry
     StringSink buffer, {
     CoordinateFormat format = defaultFormat,
     int? decimals,
-  }) {
-    final itemPrefix = format.itemPrefix;
-    final itemPostfix = format.itemPostfix;
-    final itemDelimiter = format.itemDelimiter;
-    final hasItemPrefix = itemPrefix.isNotEmpty;
-    final hasItemPostfix = itemPostfix.isNotEmpty;
-    var itemsWritten = false;
-    for (final polygon in polygons) {
-      if (itemsWritten) {
-        buffer.write(itemDelimiter);
-      } else {
-        itemsWritten = true;
-      }
-      if (hasItemPrefix) {
-        buffer.write(itemPrefix);
-      }
-      polygon.writeString(buffer, format: format, decimals: decimals);
-      if (hasItemPostfix) {
-        buffer.write(itemPostfix);
-      }
-    }
-  }
+  }) =>
+      polygons.writeString(buffer, format: format, decimals: decimals);
 
   @override
   MultiPolygon<T> transform(TransformPoint transform) =>
