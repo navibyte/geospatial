@@ -7,21 +7,30 @@
 import 'coordinate_format.dart';
 import 'coordinate_writer.dart';
 
-/// A mixin with the capability to write objects with coordinate data.
-mixin CoordinateWritable {
+/// An interface defining the capability to write objects with coordinate data.
+abstract class CoordinateWritable {
   /// Writes this object to [writer].
   void writeTo(CoordinateWriter writer);
 
   /// A string representation of this object, with [format] applied.
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
+  String toStringAs({CoordinateFormat format = defaultFormat, int? decimals});
+
+  /// A string representation of this object, with the [defaultFormat] applied.
+  @override
+  String toString();
+}
+
+/// A mixin with the base capability to write objects with coordinate data.
+mixin CoordinateWritableMixin implements CoordinateWritable {
+  @override
   String toStringAs({CoordinateFormat format = defaultFormat, int? decimals}) {
     final writer = format.text(decimals: decimals);
     writeTo(writer);
     return writer.toString();
   }
 
-  /// A string representation of this object, with the [defaultFormat] applied.
   @override
   String toString() {
     final writer = defaultFormat.text();
