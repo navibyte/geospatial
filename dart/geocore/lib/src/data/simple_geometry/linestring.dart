@@ -7,7 +7,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-import '/src/base/format.dart';
+import '/src/aspects/schema.dart';
+import '/src/aspects/writer.dart';
 import '/src/base/spatial.dart';
 import '/src/utils/wkt_data.dart';
 
@@ -23,7 +24,7 @@ enum LineStringType {
 /// A line string containing a chain of points.
 @immutable
 class LineString<T extends Point> extends Geometry
-    with EquatableMixin, CoordinateFormattableMixin {
+    with EquatableMixin, CoordinateWritableMixin {
   // note : mixins must be on that order (need toString from the latter)
 
   /// Create [LineString] from [chain] of points conforming by [type].
@@ -110,12 +111,11 @@ class LineString<T extends Point> extends Geometry
   Bounds get bounds => chain.bounds;
 
   @override
-  void writeString(
-    StringSink buffer, {
-    CoordinateFormat format = defaultFormat,
-    int? decimals,
-  }) =>
-      chain.writeString(buffer, format: format, decimals: decimals);
+  void writeTo(CoordinateWriter writer) {
+    writer.geometry(Geom.lineString);
+    chain.writeTo(writer);
+    writer.geometryEnd();
+  }
 
   @override
   LineString<T> transform(TransformPoint transform) =>

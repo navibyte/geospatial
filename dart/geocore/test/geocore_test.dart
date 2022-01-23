@@ -171,15 +171,13 @@ void main() {
       final b6 = GeoBounds.bboxLonLatElev(1.1, 2.1, 3.1, 1.5, 2.5, 3.5);
       expect(b1.toString(), '1.1,2.1,1.5,2.5');
       expect(b1.toStringAs(), '1.1,2.1,1.5,2.5');
-      expect(b1.toStringAs(format: wktFormat), '1.1 2.1,1.5 2.5');
-      expect(b1.toStringAs(format: wktFormat, decimals: 0), '1 2,2 3');
-      expect(
-          b1.toStringAs(format: wktFormat, decimals: 2), '1.10 2.10,1.50 2.50');
+      expect(b1.toStringAs(format: wktLikeFormat), '1.1 2.1,1.5 2.5');
+      expect(b1.toStringAs(format: wktLikeFormat, decimals: 0), '1 2,2 3');
+      expect(b1.toStringAs(format: wktLikeFormat, decimals: 2),
+          '1.10 2.10,1.50 2.50');
       expect(b2.toString(), '1.1,2.1,3.1,1.5,2.5,3.5');
-      expect(b2.toStringAs(format: wktFormat), '1.1 2.1 3.1,1.5 2.5 3.5');
+      expect(b2.toStringAs(format: wktLikeFormat), '1.1 2.1 3.1,1.5 2.5 3.5');
       expect(b3.toString(), '1.1,2.1,3.1,1.5,2.5,3.5');
-      expect(b3.toStringWkt(), '1.1 2.1 3.1,1.5 2.5 3.5');
-      expect(b3.toStringWkt(decimals: 1), '1.1 2.1 3.1,1.5 2.5 3.5');
       expect(b4.toString(), '1,2,3,2,3,4');
       expect(b5.toString(), '1.1,2.1,1.5,2.5');
       expect(b6.toString(), '1.1,2.1,3.1,1.5,2.5,3.5');
@@ -215,22 +213,13 @@ void main() {
     });
 
     test('toStringAs (wktFormat) with Point3 and Point3i', () {
-      expect(p3dec.toStringAs(format: wktFormat), '10.1 20.217 30.73942');
-      expect(p3dec.toStringAs(format: wktFormat, decimals: 0), '10 20 31');
-      expect(p3dec.toStringAs(format: wktFormat, decimals: 3),
+      expect(p3dec.toStringAs(format: wktLikeFormat), '10.1 20.217 30.73942');
+      expect(p3dec.toStringAs(format: wktLikeFormat, decimals: 0), '10 20 31');
+      expect(p3dec.toStringAs(format: wktLikeFormat, decimals: 3),
           '10.100 20.217 30.739');
-      expect(p3.toStringAs(format: wktFormat, decimals: 3), '10.001 20 30');
-      expect(p3.toStringAs(format: wktFormat, decimals: 2), '10.00 20 30');
-      expect(p3i.toStringAs(format: wktFormat, decimals: 2), '10 20 30');
-    });
-
-    test('toStringWkt with Point3 and Point3i', () {
-      expect(p3dec.toStringWkt(), '10.1 20.217 30.73942');
-      expect(p3dec.toStringWkt(decimals: 0), '10 20 31');
-      expect(p3dec.toStringWkt(decimals: 3), '10.100 20.217 30.739');
-      expect(p3.toStringWkt(decimals: 3), '10.001 20 30');
-      expect(p3.toStringWkt(decimals: 2), '10.00 20 30');
-      expect(p3i.toStringWkt(decimals: 2), '10 20 30');
+      expect(p3.toStringAs(format: wktLikeFormat, decimals: 3), '10.001 20 30');
+      expect(p3.toStringAs(format: wktLikeFormat, decimals: 2), '10.00 20 30');
+      expect(p3i.toStringAs(format: wktLikeFormat, decimals: 2), '10 20 30');
     });
   });
 
@@ -245,15 +234,17 @@ void main() {
       expect(points1.toString(), '[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]');
       expect(points1.toStringAs(), '[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]');
       expect(points1.toStringAs(decimals: 0), '[-1,-1],[2,-3],[4,-3]');
-      expect(points1.toStringWkt(), '-1.1 -1.1,2.1 -2.5,3.5 -3.49');
-      expect(points1.toStringWkt(decimals: 2),
+      expect(points1.toStringAs(format: wktLikeFormat),
+          '-1.1 -1.1,2.1 -2.5,3.5 -3.49');
+      expect(points1.toStringAs(format: wktLikeFormat, decimals: 2),
           '-1.10 -1.10,2.10 -2.50,3.50 -3.49');
     });
 
     final multiPoint1 = MultiPoint(points1);
     test('MultiPoint', () {
       expect(multiPoint1.toStringAs(), '[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]');
-      expect(multiPoint1.toStringWkt(decimals: 0), '-1 -1,2 -3,4 -3');
+      expect(multiPoint1.toStringAs(format: wktLikeFormat, decimals: 0),
+          '-1 -1,2 -3,4 -3');
     });
 
     final line1 = LineString(points1);
@@ -266,7 +257,8 @@ void main() {
 
     test('LineString', () {
       expect(line1.toString(), '[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]');
-      expect(line1.toStringWkt(), '-1.1 -1.1,2.1 -2.5,3.5 -3.49');
+      expect(line1.toStringAs(format: wktLikeFormat),
+          '-1.1 -1.1,2.1 -2.5,3.5 -3.49');
     });
 
     final multiLine1 = MultiLineString([
@@ -274,14 +266,15 @@ void main() {
       ring1,
     ]);
     test('MultiLineString', () {
-      expect(multiLine1.toStringAs(format: wktFormat),
+      expect(multiLine1.toStringAs(format: wktLikeFormat),
           '(-1.1 -1.1,2.1 -2.5,3.5 -3.49),(10.1 10.1,5 9,12 4,10.1 10.1)');
     });
 
     final polygon1 = Polygon([ring1]);
     test('Polygon', () {
       expect(polygon1.toString(), '[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]');
-      expect(polygon1.toStringWkt(), '(10.1 10.1,5 9,12 4,10.1 10.1)');
+      expect(polygon1.toStringAs(format: wktLikeFormat),
+          '(10.1 10.1,5 9,12 4,10.1 10.1)');
     });
     test('MultiPolygon', () {
       expect(polygon1.toStringAs(decimals: 2),

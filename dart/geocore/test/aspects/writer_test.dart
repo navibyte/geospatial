@@ -12,12 +12,13 @@ void main() {
   group('Test aspects/writer', () {
     test('Point coordinates', () {
       _testAllWriters(
-        (writer) => writer.point(x: 10.123, y: 20.25),
+        (writer) => writer.coordPoint(x: 10.123, y: 20.25),
         def: '10.123,20.25',
         wktLike: '10.123 20.25',
       );
       _testAllWriters(
-        (writer) => writer.point(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
+        (writer) =>
+            writer.coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
         def: '10.1,20.3,-30.9,-2.0',
         wktLike: '10.123 20.250 -30.950 -1.999',
         defDecimals: 1,
@@ -26,7 +27,7 @@ void main() {
     });
     test('Bounds coordinates', () {
       _testAllWriters(
-        (writer) => writer.bounds(
+        (writer) => writer.coordBounds(
           minX: 10.123,
           minY: 20.25,
           maxX: 12.485,
@@ -36,7 +37,7 @@ void main() {
         wktLike: '10.123 20.25,12.485 25.195',
       );
       _testAllWriters(
-        (writer) => writer.bounds(
+        (writer) => writer.coordBounds(
           minX: 10.123,
           minY: 20.25,
           minZ: -15.09,
@@ -53,11 +54,11 @@ void main() {
     test('PointSeries coordinates', () {
       _testAllWriters(
         (writer) => writer
-          ..pointArray()
-          ..point(x: 10.123, y: 20.25)
-          ..point(x: 10.123, y: 20.25, z: -30.95)
-          ..point(x: 10.123, y: 20.25, m: -1.999)
-          ..pointArrayEnd(),
+          ..coordArray()
+          ..coordPoint(x: 10.123, y: 20.25)
+          ..coordPoint(x: 10.123, y: 20.25, z: -30.95)
+          ..coordPoint(x: 10.123, y: 20.25, m: -1.999)
+          ..coordArrayEnd(),
         def: '[10.123,20.25],[10.123,20.25,-30.95],[10.123,20.25,-1.999]',
         wktLike: '10.123 20.25,10.123 20.25 -30.95,10.123 20.25 -1.999',
       );
@@ -66,7 +67,7 @@ void main() {
       _testAllWriters(
         (writer) => writer
           ..geometry(Geom.point)
-          ..point(x: 10.123, y: 20.25)
+          ..coordPoint(x: 10.123, y: 20.25)
           ..geometryEnd(),
         def: '10.123,20.25',
         wktLike: '10.123 20.25',
@@ -75,12 +76,12 @@ void main() {
     test('MultiPoint geometry', () {
       _testAllWriters(
         (writer) => writer
-          ..geometryArray(Geom.multiPoint)
-          ..geometry(Geom.point)
-          ..point(x: 10.123, y: 20.25)
-          ..point(x: 5.98, y: -3.47)
-          ..geometryEnd()
-          ..geometryArrayEnd(),
+          ..geometry(Geom.multiPoint)
+          ..coordArray()
+          ..coordPoint(x: 10.123, y: 20.25)
+          ..coordPoint(x: 5.98, y: -3.47)
+          ..coordArrayEnd()
+          ..geometryEnd(),
         def: '[10.123,20.25],[5.98,-3.47]',
         wktLike: '10.123 20.25,5.98 -3.47',
       );
@@ -89,11 +90,11 @@ void main() {
       _testAllWriters(
         (writer) => writer
           ..geometry(Geom.lineString)
-          ..pointArray()
-          ..point(x: -1.1, y: -1.1)
-          ..point(x: 2.1, y: -2.5)
-          ..point(x: 3.5, y: -3.49)
-          ..pointArrayEnd()
+          ..coordArray()
+          ..coordPoint(x: -1.1, y: -1.1)
+          ..coordPoint(x: 2.1, y: -2.5)
+          ..coordPoint(x: 3.5, y: -3.49)
+          ..coordArrayEnd()
           ..geometryEnd(),
         def: '[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]',
         wktLike: '-1.1 -1.1,2.1 -2.5,3.5 -3.49',
@@ -102,18 +103,18 @@ void main() {
     test('MultiLineString geometry', () {
       _testAllWriters(
         (writer) => writer
-          ..geometryArray(Geom.multiLineString)
-          ..geometry(Geom.lineString)
-          ..pointArray()
-          ..point(x: -1.1, y: -1.1)
-          ..point(x: 2.1, y: -2.5)
-          ..point(x: 3.5, y: -3.49)
-          ..pointArrayEnd()
-          ..pointArray()
-          ..point(x: 38.19, y: 57.4)
-          ..pointArrayEnd()
-          ..geometryEnd()
-          ..geometryArrayEnd(),
+          ..geometry(Geom.multiLineString)
+          ..coordArray()
+          ..coordArray()
+          ..coordPoint(x: -1.1, y: -1.1)
+          ..coordPoint(x: 2.1, y: -2.5)
+          ..coordPoint(x: 3.5, y: -3.49)
+          ..coordArrayEnd()
+          ..coordArray()
+          ..coordPoint(x: 38.19, y: 57.4)
+          ..coordArrayEnd()
+          ..coordArrayEnd()
+          ..geometryEnd(),
         def: '[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]],[[38.19,57.4]]',
         wktLike: '(-1.1 -1.1,2.1 -2.5,3.5 -3.49),(38.19 57.4)',
       );
@@ -122,14 +123,14 @@ void main() {
       _testAllWriters(
         (writer) => writer
           ..geometry(Geom.polygon)
-          ..pointArrayArray()
-          ..pointArray()
-          ..point(x: 10.1, y: 10.1)
-          ..point(x: 5, y: 9)
-          ..point(x: 12, y: 4)
-          ..point(x: 10.1, y: 10.1)
-          ..pointArrayEnd()
-          ..pointArrayArrayEnd()
+          ..coordArray()
+          ..coordArray()
+          ..coordPoint(x: 10.1, y: 10.1)
+          ..coordPoint(x: 5, y: 9)
+          ..coordPoint(x: 12, y: 4)
+          ..coordPoint(x: 10.1, y: 10.1)
+          ..coordArrayEnd()
+          ..coordArrayEnd()
           ..geometryEnd(),
         def: '[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]',
         wktLike: '(10.1 10.1,5 9,12 4,10.1 10.1)',
@@ -138,20 +139,48 @@ void main() {
     test('MultiPolygon geometry', () {
       _testAllWriters(
         (writer) => writer
-          ..geometryArray(Geom.multiPolygon)
-          ..geometry(Geom.polygon)
-          ..pointArrayArray()
-          ..pointArray()
-          ..point(x: 10.1, y: 10.1)
-          ..point(x: 5, y: 9)
-          ..point(x: 12, y: 4)
-          ..point(x: 10.1, y: 10.1)
-          ..pointArrayEnd()
-          ..pointArrayArrayEnd()
-          ..geometryEnd()
-          ..geometryArrayEnd(),
+          ..geometry(Geom.multiPolygon)
+          ..coordArray()
+          ..coordArray()
+          ..coordArray()
+          ..coordPoint(x: 10.1, y: 10.1)
+          ..coordPoint(x: 5, y: 9)
+          ..coordPoint(x: 12, y: 4)
+          ..coordPoint(x: 10.1, y: 10.1)
+          ..coordArrayEnd()
+          ..coordArrayEnd()
+          ..coordArrayEnd()
+          ..geometryEnd(),
         def: '[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]',
         wktLike: '((10.1 10.1,5 9,12 4,10.1 10.1))',
+      );
+    });
+    test('GeometryCollection geometry', () {
+      _testAllWriters(
+        (writer) => writer
+          ..geometry(Geom.geometryCollection)
+          ..boundedArray()
+          ..geometry(Geom.point)
+          ..coordPoint(x: 10.123, y: 20.25)
+          ..geometryEnd()
+          ..geometry(Geom.polygon)
+          ..coordArray() 
+          ..coordArray()
+          ..coordPoint(x: 10.1, y: 10.1)
+          ..coordPoint(x: 5, y: 9)
+          ..coordPoint(x: 12, y: 4)
+          ..coordPoint(x: 10.1, y: 10.1)
+          ..coordArrayEnd()
+          ..coordArrayEnd()
+          ..geometryEnd()
+          ..boundedArrayEnd()
+          ..geometryEnd(),
+        def: '[10.123,20.25],[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]',
+        wktLike: '(10.123 20.25),((10.1 10.1,5 9,12 4,10.1 10.1))',
+//        def: '[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]',
+//        wktLike: '((10.1 10.1,5 9,12 4,10.1 10.1))',
+ //       def: '[10.123,20.25],[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]',
+ //       wktLike: '(10.123 20.25),((10.1 10.1,5 9,12 4,10.1 10.1))',
       );
     });
   });

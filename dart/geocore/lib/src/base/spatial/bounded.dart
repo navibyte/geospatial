@@ -24,7 +24,7 @@ abstract class _BoundedBase {
 }
 
 /// A base interface for classes that know their [bounds].
-abstract class Bounded extends _BoundedBase implements CoordinateFormattable {
+abstract class Bounded extends _BoundedBase implements CoordinateWritable {
   /// Default `const` constructor to allow extending this abstract class.
   const Bounded();
 

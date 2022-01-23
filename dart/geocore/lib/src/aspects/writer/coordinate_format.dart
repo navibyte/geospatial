@@ -99,15 +99,35 @@ abstract class _BaseTextWriter implements CoordinateWriter {
   final int? decimals;
 
   final List<bool> _hasItemsOnLevel = List.of([false]);
+  final List<bool> _isCoordArrayOnLevel = List.of([false]);
 
   @override
   String toString() => _buffer.toString();
 
-  void _startArray() => _hasItemsOnLevel.add(false);
+  void _startBoundedArray() {
+    _hasItemsOnLevel.add(false);
+    _isCoordArrayOnLevel.add(false);
+  }
 
-  void _endArray() => _hasItemsOnLevel.removeLast();
+  void _endBoundedArray() {
+    _hasItemsOnLevel.removeLast();
+    _isCoordArrayOnLevel.removeLast();
+  }
+
+  void _startCoordArray() {
+    _hasItemsOnLevel.add(false);
+    _isCoordArrayOnLevel.add(true);
+  }
+
+  void _endCoordArray() {
+    _hasItemsOnLevel.removeLast();
+    _isCoordArrayOnLevel.removeLast();
+  }
 
   bool get _notAtRoot => _hasItemsOnLevel.length > 1;
+
+  bool get _atRootOrAtCoordArray =>
+      _isCoordArrayOnLevel.length == 1 || _isCoordArrayOnLevel.last;
 
   bool _markItem() {
     final result = _hasItemsOnLevel.last;
@@ -123,25 +143,6 @@ class _DefaultTextWriter extends _BaseTextWriter {
       : super(buffer: buffer, decimals: decimals);
 
   @override
-  void geometryArray(Geom type) {
-    if (_markItem()) {
-      _buffer.write(',');
-    }
-    if (_notAtRoot) {
-      _buffer.write('[');
-    }
-    _startArray();
-  }
-
-  @override
-  void geometryArrayEnd() {
-    _endArray();
-    if (_notAtRoot) {
-      _buffer.write(']');
-    }
-  }
-
-  @override
   void geometry(Geom type) {
     // nop
   }
@@ -152,45 +153,45 @@ class _DefaultTextWriter extends _BaseTextWriter {
   }
 
   @override
-  void pointArrayArray({int? expectedCount}) {
+  void boundedArray({int? expectedCount}) {
     if (_markItem()) {
       _buffer.write(',');
     }
     if (_notAtRoot) {
       _buffer.write('[');
     }
-    _startArray();
+    _startBoundedArray();
   }
 
   @override
-  void pointArrayArrayEnd() {
-    _endArray();
+  void boundedArrayEnd() {
+    _endBoundedArray();
     if (_notAtRoot) {
       _buffer.write(']');
     }
   }
 
   @override
-  void pointArray({int? expectedCount}) {
+  void coordArray({int? expectedCount}) {
     if (_markItem()) {
       _buffer.write(',');
     }
     if (_notAtRoot) {
       _buffer.write('[');
     }
-    _startArray();
+    _startCoordArray();
   }
 
   @override
-  void pointArrayEnd() {
-    _endArray();
+  void coordArrayEnd() {
+    _endCoordArray();
     if (_notAtRoot) {
       _buffer.write(']');
     }
   }
 
   @override
-  void bounds({
+  void coordBounds({
     required num minX,
     required num minY,
     num? minZ,
@@ -216,7 +217,7 @@ class _DefaultTextWriter extends _BaseTextWriter {
   }
 
   @override
-  void point({
+  void coordPoint({
     required num x,
     required num y,
     num? z,
@@ -280,26 +281,6 @@ class _WktTextWriter extends _BaseTextWriter {
   _WktTextWriter({StringSink? buffer, int? decimals})
       : super(buffer: buffer, decimals: decimals);
 
-
-  @override
-  void geometryArray(Geom type) {
-    if (_markItem()) {
-      _buffer.write(',');
-    }
-    if (_notAtRoot) {
-      _buffer.write('(');
-    }
-    _startArray();
-  }
-
-  @override
-  void geometryArrayEnd() {
-    _endArray();
-    if (_notAtRoot) {
-      _buffer.write(')');
-    }
-  }
-
   @override
   void geometry(Geom type) {
     // nop
@@ -310,47 +291,46 @@ class _WktTextWriter extends _BaseTextWriter {
     // nop
   }
 
-
   @override
-  void pointArrayArray({int? expectedCount}) {
+  void boundedArray({int? expectedCount}) {
     if (_markItem()) {
       _buffer.write(',');
     }
     if (_notAtRoot) {
       _buffer.write('(');
     }
-    _startArray();
+    _startBoundedArray();
   }
 
   @override
-  void pointArrayArrayEnd() {
-    _endArray();
+  void boundedArrayEnd() {
+    _endBoundedArray();
     if (_notAtRoot) {
       _buffer.write(')');
     }
   }
 
   @override
-  void pointArray({int? expectedCount}) {
+  void coordArray({int? expectedCount}) {
     if (_markItem()) {
       _buffer.write(',');
     }
     if (_notAtRoot) {
       _buffer.write('(');
     }
-    _startArray();
+    _startCoordArray();
   }
 
   @override
-  void pointArrayEnd() {
-    _endArray();
+  void coordArrayEnd() {
+    _endCoordArray();
     if (_notAtRoot) {
       _buffer.write(')');
     }
   }
 
   @override
-  void bounds({
+  void coordBounds({
     required num minX,
     required num minY,
     num? minZ,
@@ -363,24 +343,20 @@ class _WktTextWriter extends _BaseTextWriter {
     if (_markItem()) {
       _buffer.write(',');
     }
-    /*
     final notAtRoot = _notAtRoot;
     if (notAtRoot) {
       _buffer.write('(');
     }
-    */
     _printPoint(x: minX, y: minY, z: minZ, m: minM);
     _buffer.write(',');
     _printPoint(x: maxX, y: maxY, z: maxZ, m: maxM);
-    /*
     if (notAtRoot) {
       _buffer.write(')');
     }
-    */
   }
 
   @override
-  void point({
+  void coordPoint({
     required num x,
     required num y,
     num? z,
@@ -389,18 +365,14 @@ class _WktTextWriter extends _BaseTextWriter {
     if (_markItem()) {
       _buffer.write(',');
     }
-    /*
-    final notAtRoot = _notAtRoot;
-    if (notAtRoot) {
+    final notAtRootOrAtCoordArray = !_atRootOrAtCoordArray;
+    if (notAtRootOrAtCoordArray) {
       _buffer.write('(');
     }
-    */
     _printPoint(x: x, y: y, z: z, m: m);
-    /*
-    if (notAtRoot) {
+    if (notAtRootOrAtCoordArray) {
       _buffer.write(')');
     }
-    */
   }
 
   void _printPoint({

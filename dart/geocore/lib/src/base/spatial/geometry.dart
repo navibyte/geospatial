@@ -63,7 +63,7 @@ abstract class Geometry extends Bounded {
 /// The implementation may change in future.
 @immutable
 class _EmptyGeometry extends Geometry
-    with CoordinateFormattableMixin, EquatableMixin {
+    with EquatableMixin, CoordinateWritableMixin {
   const _EmptyGeometry();
 
   @override
@@ -79,12 +79,8 @@ class _EmptyGeometry extends Geometry
   Bounds get bounds => Bounds.empty();
 
   @override
-  void writeString(
-    StringSink buffer, {
-    CoordinateFormat format = defaultFormat,
-    int? decimals,
-  }) {
-    // empty geometry
+  void writeTo(CoordinateWriter writer) {
+    // TODO(x): write empty geometry
   }
 
   @override

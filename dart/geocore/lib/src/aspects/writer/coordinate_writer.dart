@@ -9,32 +9,40 @@ import '/src/aspects/schema.dart';
 /// An interface to write objects with coordinate data into some content format.
 abstract class CoordinateWriter {
 
-  /// Starts a section for a geometry array of [type] (like "multi point").
-  void geometryArray(Geom type);
-
-  /// Ends a section for a geometry array.
-  void geometryArrayEnd();
-
   /// Starts a section for a geometry of [type].
   void geometry(Geom type);
 
   /// Ends a section for a geometry.
   void geometryEnd();
 
-  /// Starts a section for an array of an array for point coordinates.
-  void pointArrayArray({int? expectedCount});
+  /// Starts a section for an array of bounded objects.
+  void boundedArray({int? expectedCount});
 
-  /// Ends a section for an array of an array for point coordinates.
-  void pointArrayArrayEnd();
+  /// Ends a section for an array of bounded objects.
+  void boundedArrayEnd();
 
-  /// Starts a section for an array for point coordinates.
-  void pointArray({int? expectedCount});
+  /// Starts a section for an array of point coordinates.
+  /// 
+  /// Coordinate arrays can be multi-dimensional, for example:
+  /// ```dart
+  ///   writer..coordArray()
+  ///         ..coordArray()
+  ///         ..coordPoint(x: 1, y: 1)
+  ///         ..coordPoint(x: 2, y: 2)
+  ///         ..coordArrayEnd()
+  ///         ..coordArray()
+  ///         ..coordPoint(x: 11, y: 11)
+  ///         ..coordPoint(x: 12, y: 12)
+  ///         ..coordArrayEnd()
+  ///         ..coordArrayEnd()
+  /// ```
+  void coordArray({int? expectedCount});
 
-  /// Ends a section for an array for point coordinates.
-  void pointArrayEnd();
+  /// Ends a section for an array of point coordinates.
+  void coordArrayEnd();
   
   /// Writes given point coordinates.
-  void point({
+  void coordPoint({
     required num x,
     required num y,
     num? z,
@@ -42,7 +50,7 @@ abstract class CoordinateWriter {
   });
 
   /// Writes given bounds coordinates.
-  void bounds({
+  void coordBounds({
     required num minX,
     required num minY,
     num? minZ,

@@ -9,7 +9,8 @@ import 'dart:math' as math;
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-import '/src/base/format.dart';
+import '/src/aspects/schema.dart';
+import '/src/aspects/writer.dart';
 import '/src/base/spatial.dart';
 import '/src/utils/wkt_data.dart';
 
@@ -19,7 +20,7 @@ import 'polygon.dart';
 /// A geometry collection.
 @immutable
 class GeometryCollection<E extends Geometry> extends Geometry
-    with EquatableMixin, CoordinateFormattableMixin {
+    with EquatableMixin, CoordinateWritableMixin {
   // note : mixins must be on that order (need toString from the latter)
 
   /// Creates [GeometryCollection] from [geometries].
@@ -67,12 +68,11 @@ class GeometryCollection<E extends Geometry> extends Geometry
   List<Object?> get props => [geometries];
 
   @override
-  void writeString(
-    StringSink buffer, {
-    CoordinateFormat format = defaultFormat,
-    int? decimals,
-  }) =>
-      geometries.writeString(buffer, format: format, decimals: decimals);
+  void writeTo(CoordinateWriter writer) {
+    writer.geometry(Geom.geometryCollection);
+    geometries.writeTo(writer);
+    writer.geometryEnd();
+  }
 
   @override
   GeometryCollection<E> transform(TransformPoint transform) =>
@@ -97,7 +97,7 @@ class GeometryCollection<E extends Geometry> extends Geometry
 /// A multi point geometry.
 @immutable
 class MultiPoint<E extends Point> extends Geometry
-    with EquatableMixin, CoordinateFormattableMixin {
+    with EquatableMixin, CoordinateWritableMixin {
   // note : mixins must be on that order (need toString from the latter)
 
   /// Create [MultiPoint] from [points].
@@ -145,12 +145,11 @@ class MultiPoint<E extends Point> extends Geometry
   List<Object?> get props => [points];
 
   @override
-  void writeString(
-    StringSink buffer, {
-    CoordinateFormat format = defaultFormat,
-    int? decimals,
-  }) =>
-      points.writeString(buffer, format: format, decimals: decimals);
+  void writeTo(CoordinateWriter writer) {
+    writer.geometry(Geom.multiPoint);
+    points.writeTo(writer);
+    writer.geometryEnd();
+  }
 
   @override
   MultiPoint<E> transform(TransformPoint transform) =>
@@ -167,7 +166,7 @@ class MultiPoint<E extends Point> extends Geometry
 /// A multi line string geometry.
 @immutable
 class MultiLineString<T extends Point> extends Geometry
-    with EquatableMixin, CoordinateFormattableMixin {
+    with EquatableMixin, CoordinateWritableMixin {
   // note : mixins must be on that order (need toString from the latter)
 
   /// Create a multi line string from [lineStrings].
@@ -229,12 +228,17 @@ class MultiLineString<T extends Point> extends Geometry
   List<Object?> get props => [lineStrings];
 
   @override
-  void writeString(
-    StringSink buffer, {
-    CoordinateFormat format = defaultFormat,
-    int? decimals,
-  }) =>
-      lineStrings.writeString(buffer, format: format, decimals: decimals);
+  void writeTo(CoordinateWriter writer) {
+    writer
+      ..geometry(Geom.multiLineString)
+      ..coordArray(expectedCount: lineStrings.length);
+    for (final line in lineStrings) {
+      line.chain.writeTo(writer);
+    }
+    writer
+      ..coordArrayEnd()
+      ..geometryEnd();
+  }
 
   @override
   MultiLineString<T> transform(TransformPoint transform) =>
@@ -256,7 +260,7 @@ class MultiLineString<T extends Point> extends Geometry
 /// A multi polygon geometry.
 @immutable
 class MultiPolygon<T extends Point> extends Geometry
-    with EquatableMixin, CoordinateFormattableMixin {
+    with EquatableMixin, CoordinateWritableMixin {
   // note : mixins must be on that order (need toString from the latter)
 
   /// Create [MultiPolygon] from [polygons].
@@ -317,12 +321,21 @@ class MultiPolygon<T extends Point> extends Geometry
   List<Object?> get props => [polygons];
 
   @override
-  void writeString(
-    StringSink buffer, {
-    CoordinateFormat format = defaultFormat,
-    int? decimals,
-  }) =>
-      polygons.writeString(buffer, format: format, decimals: decimals);
+  void writeTo(CoordinateWriter writer) {
+    writer
+      ..geometry(Geom.multiPolygon)
+      ..coordArray(expectedCount: polygons.length);
+    for (final polygon in polygons) {
+      writer.coordArray(expectedCount: polygon.rings.length);
+      for (final ring in polygon.rings) {
+        ring.writeTo(writer);
+      }
+      writer.coordArrayEnd();
+    }
+    writer
+      ..coordArrayEnd()
+      ..geometryEnd();
+  }
 
   @override
   MultiPolygon<T> transform(TransformPoint transform) =>

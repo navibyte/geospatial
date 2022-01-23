@@ -14,6 +14,5 @@
 /// Usage: import `package:geocore/base.dart`
 library base;
 
-export 'src/base/format.dart';
 export 'src/base/spatial.dart';
 export 'src/base/temporal.dart';

@@ -139,15 +139,48 @@ abstract class Bounds<T extends Point> extends Geometry
   }
 
   @override
-  void writeString(
-    StringSink buffer, {
-    CoordinateFormat format = defaultFormat,
-    int? decimals,
-  }) {
-    final dec = decimals ?? format.decimals;
-    min.writeString(buffer, format: format, decimals: dec);
-    buffer.write(format.boundsPointDelimiter);
-    max.writeString(buffer, format: format, decimals: dec);
+  void writeTo(CoordinateWriter writer) {
+    if (is3D) {
+      if (hasM) {
+        writer.coordBounds(
+          minX: min.x,
+          minY: min.y,
+          minZ: min.z,
+          minM: min.m,
+          maxX: max.x,
+          maxY: max.y,
+          maxZ: max.z,
+          maxM: max.m,
+        );
+      } else {
+        writer.coordBounds(
+          minX: min.x,
+          minY: min.y,
+          minZ: min.z,
+          maxX: max.x,
+          maxY: max.y,
+          maxZ: max.z,
+        );
+      }
+    } else {
+      if (hasM) {
+        writer.coordBounds(
+          minX: min.x,
+          minY: min.y,
+          minM: min.m,
+          maxX: max.x,
+          maxY: max.y,
+          maxM: max.m,
+        );
+      } else {
+        writer.coordBounds(
+          minX: min.x,
+          minY: min.y,
+          maxX: max.x,
+          maxY: max.y,
+        );
+      }
+    }
   }
 
   /// Returns new bounds transformed from this bounds using [transform].
@@ -238,7 +271,7 @@ abstract class Bounds<T extends Point> extends Geometry
 /// An immutable bounds with min and max points for limits.
 @immutable
 class BoundsBase<T extends Point> extends Bounds<T>
-    with EquatableMixin, CoordinateFormattableMixin {
+    with EquatableMixin, CoordinateWritableMixin {
   /// Create bounds with required (and non-empty) [min] and [max] points.
   const BoundsBase({required T min, required T max})
       : _min = min,
@@ -292,7 +325,7 @@ class BoundsBase<T extends Point> extends Bounds<T>
 
 /// [Bounds] with values calculated when first needed if not initialized.
 class _LazyBounds<T extends Point> extends Bounds<T>
-    with CoordinateFormattableMixin {
+    with CoordinateWritableMixin {
   /// Bounds with nullable [bounds] and a mechanism to [calculate] as needed.
   ///
   /// You must provide either [bounds] or [calculate], both of them cannot be
@@ -362,8 +395,7 @@ class _LazyBounds<T extends Point> extends Bounds<T>
 const _emptyBounds = _EmptyBounds();
 
 @immutable
-class _EmptyBounds extends Bounds
-    with EquatableMixin, CoordinateFormattableMixin {
+class _EmptyBounds extends Bounds with EquatableMixin, CoordinateWritableMixin {
   const _EmptyBounds();
 
   @override

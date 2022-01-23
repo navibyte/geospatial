@@ -7,7 +7,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-import '/src/base/format.dart';
+import '/src/aspects/writer.dart';
 import '/src/base/spatial.dart';
 
 import 'feature.dart';
@@ -48,7 +48,7 @@ abstract class FeatureCollection<E extends Feature> extends Bounded {
 /// The implementation may change in future.
 @immutable
 class _FeatureCollectionBase<E extends Feature> extends FeatureCollection<E>
-    with EquatableMixin, CoordinateFormattableMixin {
+    with EquatableMixin, CoordinateWritableMixin {
   // note : mixins must be on that order (need toString from the latter)
 
   _FeatureCollectionBase({required Iterable<E> features, Bounds? bounds})
@@ -69,11 +69,7 @@ class _FeatureCollectionBase<E extends Feature> extends FeatureCollection<E>
   Bounds get bounds => _collectionBounds ?? features.bounds;
 
   @override
-  void writeString(
-    StringSink buffer, {
-    CoordinateFormat format = defaultFormat,
-    int? decimals,
-  }) {
+  void writeTo(CoordinateWriter writer) {
     // todo not yet implemented
   }
 

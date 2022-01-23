@@ -147,35 +147,12 @@ mixin PointSeriesMixin<E extends Point> implements PointSeries<E> {
       });
 
   @override
-  void writeString(
-    StringSink buffer, {
-    CoordinateFormat format = defaultFormat,
-    int? decimals,
-  }) {
-    final pointPrefix = format.pointPrefix;
-    final pointPostfix = format.pointPostfix;
-    final pointDelimiter = format.pointDelimiter;
-    final hasPointPrefix = pointPrefix.isNotEmpty;
-    final hasPointPostfix = pointPostfix.isNotEmpty;
-    var pointsWritten = false;
+  void writeTo(CoordinateWriter writer) {
+    writer.coordArray(expectedCount: length);
     for (final point in this) {
-      if (pointsWritten) {
-        buffer.write(pointDelimiter);
-      } else {
-        pointsWritten = true;
-      }
-      if (hasPointPrefix) {
-        buffer.write(pointPrefix);
-      }
-      point.writeString(
-        buffer,
-        format: format,
-        decimals: decimals,
-      );
-      if (hasPointPostfix) {
-        buffer.write(pointPostfix);
-      }
+      point.writeTo(writer, onlyCoordinates: true);
     }
+    writer.coordArrayEnd();
   }
 }
 
@@ -183,7 +160,7 @@ mixin PointSeriesMixin<E extends Point> implements PointSeries<E> {
 /// The implementation may change in future.
 class _PointSeriesView<E extends Point>
     extends _BatchedSeriesView<PointSeries<E>, E>
-    with PointSeriesMixin<E>, CoordinateFormattableMixin {
+    with PointSeriesMixin<E>, CoordinateWritableMixin {
   _PointSeriesView(Iterable<E> source, {Bounds? bounds})
       : super(
           source,
