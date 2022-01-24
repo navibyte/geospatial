@@ -43,4 +43,24 @@ extension GeomExtension on Geom {
       this == Geom.multiPoint ||
       this == Geom.multiLineString ||
       this == Geom.multiPolygon;
+
+  /// Returns the WKT name for an enum, ie. `POINT` for the point type.
+  String get nameWkt {
+    switch (this) {
+      case Geom.point:
+        return 'POINT';
+      case Geom.lineString:
+        return 'LINESTRING';
+      case Geom.polygon:
+        return 'POLYGON';
+      case Geom.geometryCollection:
+        return 'GEOMETRYCOLLECTION';
+      case Geom.multiPoint:
+        return 'MULTIPOINT';
+      case Geom.multiLineString:
+        return 'MULTILINESTRING';
+      case Geom.multiPolygon:
+        return 'MULTIPOLYGON';
+    }
+  }
 }

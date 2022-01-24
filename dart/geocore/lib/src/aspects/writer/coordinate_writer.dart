@@ -10,10 +10,15 @@ import '/src/aspects/schema.dart';
 abstract class CoordinateWriter {
 
   /// Starts a section for a geometry of [type].
-  void geometry(Geom type);
+  /// 
+  /// Optional metadata can be provided using [is3D] and [hasM].
+  void geometry(Geom type, {bool? is3D, bool? hasM});
 
   /// Ends a section for a geometry.
   void geometryEnd();
+
+  /// Writes an empty geometry of [type].
+  void emptyGeometry(Geom type);
 
   /// Starts a section for an array of bounded objects.
   void boundedArray({int? expectedCount});

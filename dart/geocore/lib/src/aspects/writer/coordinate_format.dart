@@ -68,8 +68,42 @@ const defaultFormat = _DefaultFormat();
 ///
 /// Note that WKT does not specify bounding box formatting. In some applications
 /// bounding boxes are formatted as polygons. An example presented above however
-/// format bounding box as a point series of two points (min, max).
-const wktLikeFormat = _WktFormat();
+/// format bounding box as a point series of two points (min, max). See also
+/// [wktFormat] that formats them as polygons.
+const wktLikeFormat = _WktLikeFormat();
+
+/// The WKT format for formatting objects with coordinate data.
+///
+/// Rules applied by the format conforms with WKT (Well-known text
+/// representation of geometry) formatting of coordinate lists and geometries.
+///
+/// Examples:
+/// * point (empty): `POINT EMPTY`
+/// * point (x, y): `POINT(10.1 20.2)`
+/// * point (x, y, z): `POINT Z(10.1 20.2 30.3)`
+/// * point (x, y, m): `POINT M(10.1 20.2 30.3)`
+/// * point (x, y, z, m): `POINT ZM(10.1 20.2 30.3 40.4)`
+/// * geopoint (lon, lat): `POINT(10.1 20.2)`
+/// * bounds (min-x, min-y, max-x, max-y) with values `10.1 10.1,20.2 20.2`:
+///   * `POLYGON((10.1 10.1,20.2 10.1,20.2 20.2,10.1 20.2,10.1 10.1))`
+/// * point series (with 2D points), not an independent WKT geometry:
+///   * `10.1 10.1,20.2 20.2,30.3 30.3`
+/// * multi point (with 2D points):
+///   * `MULTIPOINT(10.1 10.1,20.2 20.2,30.3 30.3)`
+/// * line string (with 2D points):
+///   * `LINESTRING(10.1 10.1,20.2 20.2,30.3 30.3)`
+/// * multi line string (with 2D points):
+///   * `MULTILINESTRING((35 10,45 45,15 40,10 20,35 10))`
+/// * polygon (with 2D points):
+///   * `POLYGON((35 10,45 45,15 40,10 20,35 10))`
+/// * multi polygon (with 2D points):
+///   * `MULTIPOLYGON(((35 10,45 45,15 40,10 20,35 10)))`
+/// * coordinates for other geometries with similar principles
+///
+/// Note that WKT does not specify bounding box formatting. Here bounding boxes
+/// are formatted as polygons. See also [wktLikeFormat] that formats them as a
+/// point series of two points (min, max).
+const wktFormat = _WktFormat();
 
 // -----------------------------------------------------------------------------
 // Private implementation code below.
@@ -81,6 +115,14 @@ class _DefaultFormat with CoordinateFormat {
   @override
   CoordinateWriter text({StringSink? buffer, int? decimals}) =>
       _DefaultTextWriter(buffer: buffer, decimals: decimals);
+}
+
+class _WktLikeFormat with CoordinateFormat {
+  const _WktLikeFormat();
+
+  @override
+  CoordinateWriter text({StringSink? buffer, int? decimals}) =>
+      _WktLikeTextWriter(buffer: buffer, decimals: decimals);
 }
 
 class _WktFormat with CoordinateFormat {
@@ -103,6 +145,16 @@ abstract class _BaseTextWriter implements CoordinateWriter {
 
   @override
   String toString() => _buffer.toString();
+
+  void _startGeometry() {
+    _hasItemsOnLevel.add(false);
+    _isCoordArrayOnLevel.add(false);
+  }
+
+  void _endGeometry() {
+    _hasItemsOnLevel.removeLast();
+    _isCoordArrayOnLevel.removeLast();
+  }
 
   void _startBoundedArray() {
     _hasItemsOnLevel.add(false);
@@ -138,17 +190,24 @@ abstract class _BaseTextWriter implements CoordinateWriter {
   }
 }
 
+// Implementation for the "default" format -------------------------------------
+
 class _DefaultTextWriter extends _BaseTextWriter {
   _DefaultTextWriter({StringSink? buffer, int? decimals})
       : super(buffer: buffer, decimals: decimals);
 
   @override
-  void geometry(Geom type) {
+  void geometry(Geom type, {bool? is3D, bool? hasM}) {
     // nop
   }
 
   @override
   void geometryEnd() {
+    // nop
+  }
+
+  @override
+  void emptyGeometry(Geom type) {
     // nop
   }
 
@@ -277,17 +336,24 @@ class _DefaultTextWriter extends _BaseTextWriter {
   }
 }
 
-class _WktTextWriter extends _BaseTextWriter {
-  _WktTextWriter({StringSink? buffer, int? decimals})
+// Implementation for the "wkt like" format ------------------------------------
+
+class _WktLikeTextWriter extends _BaseTextWriter {
+  _WktLikeTextWriter({StringSink? buffer, int? decimals})
       : super(buffer: buffer, decimals: decimals);
 
   @override
-  void geometry(Geom type) {
+  void geometry(Geom type, {bool? is3D, bool? hasM}) {
     // nop
   }
 
   @override
   void geometryEnd() {
+    // nop
+  }
+
+  @override
+  void emptyGeometry(Geom type) {
     // nop
   }
 
@@ -413,5 +479,77 @@ class _WktTextWriter extends _BaseTextWriter {
           ..write(m);
       }
     }
+  }
+}
+
+// Implementation for the "wkt" format -----------------------------------------
+
+class _WktTextWriter extends _WktLikeTextWriter {
+  _WktTextWriter({StringSink? buffer, int? decimals})
+      : super(buffer: buffer, decimals: decimals);
+
+  @override
+  void geometry(Geom type, {bool? is3D, bool? hasM}) {
+    if (_markItem()) {
+      _buffer.write(',');
+    }
+    _startGeometry();
+    _buffer.write(type.nameWkt);
+    if (is3D != null && is3D) {
+      if (hasM != null && hasM) {
+        _buffer.write(' ZM');
+      } else {
+        _buffer.write(' Z');
+      }
+    } else {
+      if (hasM != null && hasM) {
+        _buffer.write(' M');
+      }
+    }
+  }
+
+  @override
+  void geometryEnd() {
+    _endGeometry();
+  }
+
+  @override
+  void emptyGeometry(Geom type) {
+    if (_markItem()) {
+      _buffer.write(',');
+    }
+    _buffer
+      ..write(type.nameWkt)
+      ..write(' EMPTY');
+  }
+
+  @override
+  void coordBounds({
+    required num minX,
+    required num minY,
+    num? minZ,
+    num? minM,
+    required num maxX,
+    required num maxY,
+    num? maxZ,
+    num? maxM,
+  }) {
+    // WKT does not recognize bounding box, so convert to POLYGON
+    final is3D = minZ != null && maxZ != null;
+    final hasM = minM != null && maxM != null;
+    final midZ = is3D ? 0.5 * minZ! + 0.5 * maxZ! : null;
+    final midM = hasM ? 0.5 * minM! + 0.5 * maxM! : null;
+    this
+      ..geometry(Geom.polygon, is3D: is3D, hasM: hasM)
+      ..coordArray()
+      ..coordArray()
+      ..coordPoint(x: minX, y: minY, z: minZ, m: minM)
+      ..coordPoint(x: maxX, y: minY, z: midZ, m: midM)
+      ..coordPoint(x: maxX, y: maxY, z: maxZ, m: maxM)
+      ..coordPoint(x: minX, y: maxY, z: midZ, m: midM)
+      ..coordPoint(x: minX, y: minY, z: minZ, m: minM)
+      ..coordArrayEnd()
+      ..coordArrayEnd()
+      ..geometryEnd();
   }
 }

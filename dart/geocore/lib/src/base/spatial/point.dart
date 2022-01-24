@@ -216,7 +216,7 @@ abstract class Point<C extends num> extends Geometry
       );
     } else {
       writer
-        ..geometry(Geom.point)
+        ..geometry(Geom.point, is3D: is3D, hasM: hasM)
         ..coordPoint(
           x: x,
           y: y,

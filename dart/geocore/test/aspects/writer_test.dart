@@ -15,14 +15,17 @@ void main() {
         (writer) => writer.coordPoint(x: 10.123, y: 20.25),
         def: '10.123,20.25',
         wktLike: '10.123 20.25',
+        wkt: '10.123 20.25',
       );
       _testAllWriters(
         (writer) =>
             writer.coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
         def: '10.1,20.3,-30.9,-2.0',
         wktLike: '10.123 20.250 -30.950 -1.999',
+        wkt: '10.12 20.25 -30.95 -2.00',
         defDecimals: 1,
         wktLikeDecimals: 3,
+        wktDecimals: 2,
       );
     });
     test('Bounds coordinates', () {
@@ -35,6 +38,9 @@ void main() {
         ),
         def: '10.123,20.25,12.485,25.195',
         wktLike: '10.123 20.25,12.485 25.195',
+        wkt: 'POLYGON((10.123 20.25,12.485 20.25,12.485 25.195,10.123 '
+            '25.195,10.123 20.25))',
+        //wkt: '10.123 20.25,12.485 25.195',
       );
       _testAllWriters(
         (writer) => writer.coordBounds(
@@ -47,8 +53,11 @@ void main() {
         ),
         def: '10.12,20.25,-15.09,12.48,25.20,-14.95',
         wktLike: '10 20 -15,12 25 -15',
+        wkt: 'POLYGON Z((10.1 20.3 -15.1,12.5 20.3 -15.0,12.5 25.2 -14.9,10.1 '
+            '25.2 -15.0,10.1 20.3 -15.1))',
         defDecimals: 2,
         wktLikeDecimals: 0,
+        wktDecimals: 1,
       );
     });
     test('PointSeries coordinates', () {
@@ -61,6 +70,7 @@ void main() {
           ..coordArrayEnd(),
         def: '[10.123,20.25],[10.123,20.25,-30.95],[10.123,20.25,-1.999]',
         wktLike: '10.123 20.25,10.123 20.25 -30.95,10.123 20.25 -1.999',
+        wkt: '10.123 20.25,10.123 20.25 -30.95,10.123 20.25 -1.999',
       );
     });
     test('Point geometry', () {
@@ -71,6 +81,22 @@ void main() {
           ..geometryEnd(),
         def: '10.123,20.25',
         wktLike: '10.123 20.25',
+        wkt: 'POINT(10.123 20.25)',
+      );
+      _testAllWriters(
+        (writer) => writer
+          ..geometry(Geom.point, is3D: true)
+          ..coordPoint(x: 10.123, y: 20.25, z: -30.95)
+          ..geometryEnd(),
+        def: '10.123,20.25,-30.95',
+        wktLike: '10.123 20.25 -30.95',
+        wkt: 'POINT Z(10.123 20.25 -30.95)',
+      );
+      _testAllWriters(
+        (writer) => writer.emptyGeometry(Geom.point),
+        def: '',
+        wktLike: '',
+        wkt: 'POINT EMPTY',
       );
     });
     test('MultiPoint geometry', () {
@@ -84,6 +110,7 @@ void main() {
           ..geometryEnd(),
         def: '[10.123,20.25],[5.98,-3.47]',
         wktLike: '10.123 20.25,5.98 -3.47',
+        wkt: 'MULTIPOINT(10.123 20.25,5.98 -3.47)',
       );
     });
     test('LineString geometry', () {
@@ -98,6 +125,7 @@ void main() {
           ..geometryEnd(),
         def: '[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]',
         wktLike: '-1.1 -1.1,2.1 -2.5,3.5 -3.49',
+        wkt: 'LINESTRING(-1.1 -1.1,2.1 -2.5,3.5 -3.49)',
       );
     });
     test('MultiLineString geometry', () {
@@ -117,6 +145,7 @@ void main() {
           ..geometryEnd(),
         def: '[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]],[[38.19,57.4]]',
         wktLike: '(-1.1 -1.1,2.1 -2.5,3.5 -3.49),(38.19 57.4)',
+        wkt: 'MULTILINESTRING((-1.1 -1.1,2.1 -2.5,3.5 -3.49),(38.19 57.4))',
       );
     });
     test('Polygon geometry', () {
@@ -134,6 +163,7 @@ void main() {
           ..geometryEnd(),
         def: '[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]',
         wktLike: '(10.1 10.1,5 9,12 4,10.1 10.1)',
+        wkt: 'POLYGON((10.1 10.1,5 9,12 4,10.1 10.1))',
       );
     });
     test('MultiPolygon geometry', () {
@@ -153,6 +183,7 @@ void main() {
           ..geometryEnd(),
         def: '[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]',
         wktLike: '((10.1 10.1,5 9,12 4,10.1 10.1))',
+        wkt: 'MULTIPOLYGON(((10.1 10.1,5 9,12 4,10.1 10.1)))',
       );
     });
     test('GeometryCollection geometry', () {
@@ -160,11 +191,11 @@ void main() {
         (writer) => writer
           ..geometry(Geom.geometryCollection)
           ..boundedArray()
-          ..geometry(Geom.point)
-          ..coordPoint(x: 10.123, y: 20.25)
+          ..geometry(Geom.point, is3D: true)
+          ..coordPoint(x: 10.123, y: 20.25, z: -30.95)
           ..geometryEnd()
           ..geometry(Geom.polygon)
-          ..coordArray() 
+          ..coordArray()
           ..coordArray()
           ..coordPoint(x: 10.1, y: 10.1)
           ..coordPoint(x: 5, y: 9)
@@ -175,12 +206,10 @@ void main() {
           ..geometryEnd()
           ..boundedArrayEnd()
           ..geometryEnd(),
-        def: '[10.123,20.25],[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]',
-        wktLike: '(10.123 20.25),((10.1 10.1,5 9,12 4,10.1 10.1))',
-//        def: '[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]',
-//        wktLike: '((10.1 10.1,5 9,12 4,10.1 10.1))',
- //       def: '[10.123,20.25],[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]',
- //       wktLike: '(10.123 20.25),((10.1 10.1,5 9,12 4,10.1 10.1))',
+        def: '[10.123,20.25,-30.95],[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]',
+        wktLike: '(10.123 20.25 -30.95),((10.1 10.1,5 9,12 4,10.1 10.1))',
+        wkt: 'GEOMETRYCOLLECTION(POINT Z(10.123 20.25 -30.95),POLYGON((10.1 '
+            '10.1,5 9,12 4,10.1 10.1)))',
       );
     });
   });
@@ -190,8 +219,10 @@ void _testAllWriters(
   void Function(CoordinateWriter writer) content, {
   required String def,
   required String wktLike,
+  required String wkt,
   int? defDecimals,
   int? wktLikeDecimals,
+  int? wktDecimals,
 }) {
   _testWriter(defaultFormat, content, expected: def, decimals: defDecimals);
   _testWriter(
@@ -200,6 +231,7 @@ void _testAllWriters(
     expected: wktLike,
     decimals: wktLikeDecimals,
   );
+  _testWriter(wktFormat, content, expected: wkt, decimals: wktDecimals);
 }
 
 void _testWriter(
