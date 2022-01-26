@@ -41,6 +41,13 @@ abstract class Geometry extends Bounded {
   /// True if this geometry is NOT considered empty without data or coordinates.
   bool get isNotEmpty => !isEmpty;
 
+  /// Returns one of points contained by this geometry if it's not empty. 
+  /// 
+  /// An immutable instance of the geometry class should always return the same
+  /// point instance. For example a line string could return the first point of
+  /// a chain.
+  Point? get onePoint;
+
   /// Returns a new geometry with all points transformed using [transform].
   ///
   /// The transformed geometry object must be of the same geometry type with
@@ -77,6 +84,9 @@ class _EmptyGeometry extends Geometry
 
   @override
   Bounds get bounds => Bounds.empty();
+
+  @override
+  Point? get onePoint => null;
 
   @override
   void writeTo(CoordinateWriter writer) {

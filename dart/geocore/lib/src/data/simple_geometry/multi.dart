@@ -65,10 +65,16 @@ class GeometryCollection<E extends Geometry> extends Geometry
   Bounds get bounds => geometries.bounds;
 
   @override
+  Point? get onePoint =>
+      geometries.isNotEmpty ? geometries.first.onePoint : null;
+
+  @override
   List<Object?> get props => [geometries];
 
   @override
   void writeTo(CoordinateWriter writer) {
+    // note: no need to inform is3D/hasM of the first point, as sub items on
+    // a collection are geometries, and each of them should inform those
     writer.geometry(Geom.geometryCollection);
     geometries.writeTo(writer);
     writer.geometryEnd();
@@ -142,11 +148,15 @@ class MultiPoint<E extends Point> extends Geometry
   Bounds get bounds => points.bounds;
 
   @override
+  Point? get onePoint => points.isNotEmpty ? points.first : null;
+
+  @override
   List<Object?> get props => [points];
 
   @override
   void writeTo(CoordinateWriter writer) {
-    writer.geometry(Geom.multiPoint);
+    final point = onePoint;
+    writer.geometry(Geom.multiPoint, is3D: point?.is3D, hasM: point?.hasM);
     points.writeTo(writer);
     writer.geometryEnd();
   }
@@ -225,12 +235,17 @@ class MultiLineString<T extends Point> extends Geometry
   Bounds get bounds => lineStrings.bounds;
 
   @override
+  Point? get onePoint =>
+      lineStrings.isNotEmpty ? lineStrings.first.onePoint : null;
+
+  @override
   List<Object?> get props => [lineStrings];
 
   @override
   void writeTo(CoordinateWriter writer) {
+    final point = onePoint;
     writer
-      ..geometry(Geom.multiLineString)
+      ..geometry(Geom.multiLineString, is3D: point?.is3D, hasM: point?.hasM)
       ..coordArray(expectedCount: lineStrings.length);
     for (final line in lineStrings) {
       line.chain.writeTo(writer);
@@ -318,12 +333,16 @@ class MultiPolygon<T extends Point> extends Geometry
   Bounds get bounds => polygons.bounds;
 
   @override
+  Point? get onePoint => polygons.isNotEmpty ? polygons.first.onePoint : null;
+
+  @override
   List<Object?> get props => [polygons];
 
   @override
   void writeTo(CoordinateWriter writer) {
+    final point = onePoint;
     writer
-      ..geometry(Geom.multiPolygon)
+      ..geometry(Geom.multiPolygon, is3D: point?.is3D, hasM: point?.hasM)
       ..coordArray(expectedCount: polygons.length);
     for (final polygon in polygons) {
       writer.coordArray(expectedCount: polygon.rings.length);

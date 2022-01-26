@@ -68,9 +68,43 @@ void main() {
           ..coordPoint(x: 10.123, y: 20.25, z: -30.95)
           ..coordPoint(x: 10.123, y: 20.25, m: -1.999)
           ..coordArrayEnd(),
-        def: '[10.123,20.25],[10.123,20.25,-30.95],[10.123,20.25,-1.999]',
-        wktLike: '10.123 20.25,10.123 20.25 -30.95,10.123 20.25 -1.999',
-        wkt: '10.123 20.25,10.123 20.25 -30.95,10.123 20.25 -1.999',
+        def: '[10.123,20.25],[10.123,20.25,-30.95],[10.123,20.25,0.0,-1.999]',
+        wktLike: '10.123 20.25,10.123 20.25 -30.95,10.123 20.25 0.0 -1.999',
+        wkt: '10.123 20.25,10.123 20.25 -30.95,10.123 20.25 0.0 -1.999',
+      );
+      _testAllWriters(
+        (writer) => writer
+          ..coordArray()
+          ..coordPoint(x: 10.123, y: 20.25)
+          ..coordPoint(x: 10.123, y: 20.25, m: -1.999)
+          ..coordPoint(x: 10.123, y: 20.25, z: -30.95)
+          ..coordArrayEnd(),
+        def: '[10.123,20.25],[10.123,20.25,-1.999],[10.123,20.25]',
+        wktLike: '10.123 20.25,10.123 20.25 -1.999,10.123 20.25',
+        wkt: '10.123 20.25,10.123 20.25 -1.999,10.123 20.25',
+      );
+      _testAllWriters(
+        (writer) => writer
+          ..coordArray()
+          ..coordPoint(x: 10.123, y: 20.25)
+          ..coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999)
+          ..coordPoint(x: 10.123, y: 20.25)
+          ..coordArrayEnd(),
+        def: '[10.123,20.25],[10.123,20.25,-30.95,-1.999],[10.123,20.25]',
+        wktLike: '10.123 20.25,10.123 20.25 -30.95 -1.999,10.123 20.25',
+        wkt: '10.123 20.25,10.123 20.25 -30.95 -1.999,10.123 20.25',
+      );
+      _testAllWriters(
+        (writer) => writer
+          ..coordArray()
+          ..coordPoint(x: 10, y: 20)
+          ..coordPoint(x: 11, y: 21, z: -30.95, m: -1.1)
+          ..coordPoint(x: 12, y: 22, m: 2.2)
+          ..coordPoint(x: 13, y: 23, z: 49.1)
+          ..coordArrayEnd(),
+        def: '[10,20],[11,21,-30.95,-1.1],[12,22,0.0,2.2],[13,23,49.1]',
+        wktLike: '10 20,11 21 -30.95 -1.1,12 22 0.0 2.2,13 23 49.1',
+        wkt: '10 20,11 21 -30.95 -1.1,12 22 0.0 2.2,13 23 49.1',
       );
     });
     test('Point geometry', () {
@@ -85,12 +119,75 @@ void main() {
       );
       _testAllWriters(
         (writer) => writer
+          ..geometry(Geom.point)
+          ..coordPoint(x: 10.123, y: 20.25, z: -30.95)
+          ..geometryEnd(),
+        def: '10.123,20.25,-30.95',
+        wktLike: '10.123 20.25 -30.95',
+        wkt: 'POINT(10.123 20.25 -30.95)',
+      );
+      _testAllWriters(
+        (writer) => writer
+          ..geometry(Geom.point)
+          ..coordPoint(x: 10.123, y: 20.25, m: -1.999)
+          ..geometryEnd(),
+        def: '10.123,20.25,-1.999',
+        wktLike: '10.123 20.25 -1.999',
+        wkt: 'POINT(10.123 20.25 -1.999)',
+      );
+      _testAllWriters(
+        (writer) => writer
+          ..geometry(Geom.point)
+          ..coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999)
+          ..geometryEnd(),
+        def: '10.123,20.25,-30.95,-1.999',
+        wktLike: '10.123 20.25 -30.95 -1.999',
+        wkt: 'POINT(10.123 20.25 -30.95 -1.999)',
+      );
+      _testAllWriters(
+        (writer) => writer
           ..geometry(Geom.point, is3D: true)
           ..coordPoint(x: 10.123, y: 20.25, z: -30.95)
           ..geometryEnd(),
         def: '10.123,20.25,-30.95',
         wktLike: '10.123 20.25 -30.95',
         wkt: 'POINT Z(10.123 20.25 -30.95)',
+      );
+      _testAllWriters(
+        (writer) => writer
+          ..geometry(Geom.point, is3D: false)
+          ..coordPoint(x: 10.123, y: 20.25, z: -30.95)
+          ..geometryEnd(),
+        def: '10.123,20.25',
+        wktLike: '10.123 20.25',
+        wkt: 'POINT(10.123 20.25)',
+      );
+      _testAllWriters(
+        (writer) => writer
+          ..geometry(Geom.point, is3D: true)
+          ..coordPoint(x: 10.123, y: 20.25)
+          ..geometryEnd(),
+        def: '10.123,20.25,0.0',
+        wktLike: '10.123 20.25 0.0',
+        wkt: 'POINT Z(10.123 20.25 0.0)',
+      );
+      _testAllWriters(
+        (writer) => writer
+          ..geometry(Geom.point, is3D: false, hasM: true)
+          ..coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999)
+          ..geometryEnd(),
+        def: '10.123,20.25,-1.999',
+        wktLike: '10.123 20.25 -1.999',
+        wkt: 'POINT M(10.123 20.25 -1.999)',
+      );
+      _testAllWriters(
+        (writer) => writer
+          ..geometry(Geom.point, is3D: true, hasM: true)
+          ..coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999)
+          ..geometryEnd(),
+        def: '10.123,20.25,-30.95,-1.999',
+        wktLike: '10.123 20.25 -30.95 -1.999',
+        wkt: 'POINT ZM(10.123 20.25 -30.95 -1.999)',
       );
       _testAllWriters(
         (writer) => writer.emptyGeometry(Geom.point),
@@ -126,6 +223,19 @@ void main() {
         def: '[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]',
         wktLike: '-1.1 -1.1,2.1 -2.5,3.5 -3.49',
         wkt: 'LINESTRING(-1.1 -1.1,2.1 -2.5,3.5 -3.49)',
+      );
+      _testAllWriters(
+        (writer) => writer
+          ..geometry(Geom.lineString, hasM: true)
+          ..coordArray()
+          ..coordPoint(x: -1.1, y: -1.1)
+          ..coordPoint(x: 2.1, y: -2.5, m: 4.99)
+          ..coordPoint(x: 3.5, y: -3.49, z: -0.1)
+          ..coordArrayEnd()
+          ..geometryEnd(),
+        def: '[-1.1,-1.1,0.0],[2.1,-2.5,4.99],[3.5,-3.49,0.0]',
+        wktLike: '-1.1 -1.1 0.0,2.1 -2.5 4.99,3.5 -3.49 0.0',
+        wkt: 'LINESTRING M(-1.1 -1.1 0.0,2.1 -2.5 4.99,3.5 -3.49 0.0)',
       );
     });
     test('MultiLineString geometry', () {

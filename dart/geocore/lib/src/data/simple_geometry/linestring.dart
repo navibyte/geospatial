@@ -111,8 +111,12 @@ class LineString<T extends Point> extends Geometry
   Bounds get bounds => chain.bounds;
 
   @override
+  Point? get onePoint => chain.isNotEmpty ? chain.first : null;
+
+  @override
   void writeTo(CoordinateWriter writer) {
-    writer.geometry(Geom.lineString);
+    final point = onePoint;
+    writer.geometry(Geom.lineString, is3D: point?.is3D, hasM: point?.hasM);
     chain.writeTo(writer);
     writer.geometryEnd();
   }

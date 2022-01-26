@@ -42,6 +42,9 @@ abstract class Point<C extends num> extends Geometry
   @override
   Bounds get bounds => Bounds.of(min: this, max: this);
 
+  @override
+  Point? get onePoint => this;
+
   /// A coordinate value by the index [i].
   ///
   /// The coordinate ordering is: (x, y), (x, y, m), (x, y, z) or (x, y, z, m).

@@ -143,17 +143,37 @@ abstract class _BaseTextWriter implements CoordinateWriter {
   final List<bool> _hasItemsOnLevel = List.of([false]);
   final List<bool> _isCoordArrayOnLevel = List.of([false]);
 
+  // no need for stack for these, as applicable only on leaf geometry elements
+  bool? _askToPrintZ;
+  bool? _askToPrintM;
+  bool? _allowToPrintZ;
+  bool? _allowToPrintM;
+
   @override
   String toString() => _buffer.toString();
 
-  void _startGeometry() {
-    _hasItemsOnLevel.add(false);
-    _isCoordArrayOnLevel.add(false);
+  void _startGeometry({
+    required bool isOutputLevelled,
+    bool? is3D,
+    bool? hasM,
+  }) {
+    if (isOutputLevelled) {
+      _hasItemsOnLevel.add(false);
+      _isCoordArrayOnLevel.add(false);
+    }
+    _askToPrintZ = is3D;
+    _askToPrintM = hasM;
   }
 
-  void _endGeometry() {
-    _hasItemsOnLevel.removeLast();
-    _isCoordArrayOnLevel.removeLast();
+  void _endGeometry({required bool isOutputLevelled}) {
+    _askToPrintZ = null;
+    _askToPrintM = null;
+    _allowToPrintZ = null;
+    _allowToPrintM = null;
+    if (isOutputLevelled) {
+      _hasItemsOnLevel.removeLast();
+      _isCoordArrayOnLevel.removeLast();
+    }
   }
 
   void _startBoundedArray() {
@@ -188,6 +208,73 @@ abstract class _BaseTextWriter implements CoordinateWriter {
     }
     return result;
   }
+
+  void _printPoint(
+    String delimiter,
+    num x,
+    num y,
+    num? z,
+    num? m,
+  ) {
+    final hasZ = _askToPrintZ ?? z != null;
+    final hasM = _askToPrintM ?? m != null;
+    if (_allowToPrintZ == null && hasZ) {
+      _allowToPrintZ = hasZ;
+    }
+    if (_allowToPrintM == null && hasM) {
+      _allowToPrintZ ??= false;
+      _allowToPrintM = hasM;
+    }
+    final printM = (_allowToPrintM ?? false) && hasM;
+    final printZ = (_allowToPrintZ ?? false) && (hasZ || hasM);
+    final dec = decimals;
+    if (dec != null) {
+      _buffer
+        ..write(toStringAsFixedWhenDecimals(x, dec))
+        ..write(delimiter)
+        ..write(toStringAsFixedWhenDecimals(y, dec));
+      if (printZ) {
+        _buffer
+          ..write(delimiter)
+          ..write(toStringAsFixedWhenDecimals(z ?? 0.0, dec));
+      }
+      if (printM) {
+        _buffer
+          ..write(delimiter)
+          ..write(toStringAsFixedWhenDecimals(m ?? 0.0, dec));
+      }
+    } else {
+      _buffer
+        ..write(x)
+        ..write(delimiter)
+        ..write(y);
+      if (printZ) {
+        _buffer
+          ..write(delimiter)
+          ..write(z ?? 0.0);
+      }
+      if (printM) {
+        _buffer
+          ..write(delimiter)
+          ..write(m ?? 0.0);
+      }
+    }
+  }
+
+  @override
+  void geometry(Geom type, {bool? is3D, bool? hasM}) {
+    _startGeometry(isOutputLevelled: false, is3D: is3D, hasM: hasM);
+  }
+
+  @override
+  void geometryEnd() {
+    _endGeometry(isOutputLevelled: false);
+  }
+
+  @override
+  void emptyGeometry(Geom type) {
+    // nop
+  }
 }
 
 // Implementation for the "default" format -------------------------------------
@@ -195,21 +282,6 @@ abstract class _BaseTextWriter implements CoordinateWriter {
 class _DefaultTextWriter extends _BaseTextWriter {
   _DefaultTextWriter({StringSink? buffer, int? decimals})
       : super(buffer: buffer, decimals: decimals);
-
-  @override
-  void geometry(Geom type, {bool? is3D, bool? hasM}) {
-    // nop
-  }
-
-  @override
-  void geometryEnd() {
-    // nop
-  }
-
-  @override
-  void emptyGeometry(Geom type) {
-    // nop
-  }
 
   @override
   void boundedArray({int? expectedCount}) {
@@ -267,9 +339,9 @@ class _DefaultTextWriter extends _BaseTextWriter {
     if (notAtRoot) {
       _buffer.write('[');
     }
-    _printPoint(x: minX, y: minY, z: minZ, m: minM);
+    _printPoint(',', minX, minY, minZ, minM);
     _buffer.write(',');
-    _printPoint(x: maxX, y: maxY, z: maxZ, m: maxM);
+    _printPoint(',', maxX, maxY, maxZ, maxM);
     if (notAtRoot) {
       _buffer.write(']');
     }
@@ -289,49 +361,9 @@ class _DefaultTextWriter extends _BaseTextWriter {
     if (notAtRoot) {
       _buffer.write('[');
     }
-    _printPoint(x: x, y: y, z: z, m: m);
+    _printPoint(',', x, y, z, m);
     if (notAtRoot) {
       _buffer.write(']');
-    }
-  }
-
-  void _printPoint({
-    required num x,
-    required num y,
-    num? z,
-    num? m,
-  }) {
-    final dec = decimals;
-    if (dec != null) {
-      _buffer
-        ..write(toStringAsFixedWhenDecimals(x, dec))
-        ..write(',')
-        ..write(toStringAsFixedWhenDecimals(y, dec));
-      if (z != null) {
-        _buffer
-          ..write(',')
-          ..write(toStringAsFixedWhenDecimals(z, dec));
-      }
-      if (m != null) {
-        _buffer
-          ..write(',')
-          ..write(toStringAsFixedWhenDecimals(m, dec));
-      }
-    } else {
-      _buffer
-        ..write(x)
-        ..write(',')
-        ..write(y);
-      if (z != null) {
-        _buffer
-          ..write(',')
-          ..write(z);
-      }
-      if (m != null) {
-        _buffer
-          ..write(',')
-          ..write(m);
-      }
     }
   }
 }
@@ -341,21 +373,6 @@ class _DefaultTextWriter extends _BaseTextWriter {
 class _WktLikeTextWriter extends _BaseTextWriter {
   _WktLikeTextWriter({StringSink? buffer, int? decimals})
       : super(buffer: buffer, decimals: decimals);
-
-  @override
-  void geometry(Geom type, {bool? is3D, bool? hasM}) {
-    // nop
-  }
-
-  @override
-  void geometryEnd() {
-    // nop
-  }
-
-  @override
-  void emptyGeometry(Geom type) {
-    // nop
-  }
 
   @override
   void boundedArray({int? expectedCount}) {
@@ -413,9 +430,9 @@ class _WktLikeTextWriter extends _BaseTextWriter {
     if (notAtRoot) {
       _buffer.write('(');
     }
-    _printPoint(x: minX, y: minY, z: minZ, m: minM);
+    _printPoint(' ', minX, minY, minZ, minM);
     _buffer.write(',');
-    _printPoint(x: maxX, y: maxY, z: maxZ, m: maxM);
+    _printPoint(' ', maxX, maxY, maxZ, maxM);
     if (notAtRoot) {
       _buffer.write(')');
     }
@@ -435,49 +452,9 @@ class _WktLikeTextWriter extends _BaseTextWriter {
     if (notAtRootOrAtCoordArray) {
       _buffer.write('(');
     }
-    _printPoint(x: x, y: y, z: z, m: m);
+    _printPoint(' ', x, y, z, m);
     if (notAtRootOrAtCoordArray) {
       _buffer.write(')');
-    }
-  }
-
-  void _printPoint({
-    required num x,
-    required num y,
-    num? z,
-    num? m,
-  }) {
-    final dec = decimals;
-    if (dec != null) {
-      _buffer
-        ..write(toStringAsFixedWhenDecimals(x, dec))
-        ..write(' ')
-        ..write(toStringAsFixedWhenDecimals(y, dec));
-      if (z != null) {
-        _buffer
-          ..write(' ')
-          ..write(toStringAsFixedWhenDecimals(z, dec));
-      }
-      if (m != null) {
-        _buffer
-          ..write(' ')
-          ..write(toStringAsFixedWhenDecimals(m, dec));
-      }
-    } else {
-      _buffer
-        ..write(x)
-        ..write(' ')
-        ..write(y);
-      if (z != null) {
-        _buffer
-          ..write(' ')
-          ..write(z);
-      }
-      if (m != null) {
-        _buffer
-          ..write(' ')
-          ..write(m);
-      }
     }
   }
 }
@@ -493,7 +470,7 @@ class _WktTextWriter extends _WktLikeTextWriter {
     if (_markItem()) {
       _buffer.write(',');
     }
-    _startGeometry();
+    _startGeometry(isOutputLevelled: true, is3D: is3D, hasM: hasM);
     _buffer.write(type.nameWkt);
     if (is3D != null && is3D) {
       if (hasM != null && hasM) {
@@ -510,7 +487,7 @@ class _WktTextWriter extends _WktLikeTextWriter {
 
   @override
   void geometryEnd() {
-    _endGeometry();
+    _endGeometry(isOutputLevelled: true);
   }
 
   @override

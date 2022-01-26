@@ -115,6 +115,12 @@ class Polygon<T extends Point> extends Geometry
   @override
   Bounds get bounds => exterior.bounds;
 
+  @override
+  Point? get onePoint {
+    final chain = exterior.chain;
+    return chain.isNotEmpty ? chain.first : null;
+  }
+
   /// A linear ring forming an [exterior] boundary for this polygon.
   LineString<T> get exterior => rings.first;
 
@@ -124,8 +130,9 @@ class Polygon<T extends Point> extends Geometry
 
   @override
   void writeTo(CoordinateWriter writer) {
+    final point = onePoint;
     writer
-      ..geometry(Geom.polygon)
+      ..geometry(Geom.polygon, is3D: point?.is3D, hasM: point?.hasM)
       ..coordArray(expectedCount: rings.length);
     for (final ring in rings) {
       ring.writeTo(writer);

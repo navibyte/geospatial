@@ -84,6 +84,9 @@ abstract class Bounds<T extends Point> extends Geometry
   Bounds<T> get bounds => this;
 
   @override
+  Point? get onePoint => min;
+
+  @override
   int get dimension => 1;
 
   @override
