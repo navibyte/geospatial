@@ -132,7 +132,7 @@ class Polygon<T extends Point> extends Geometry
   void writeTo(CoordinateWriter writer) {
     final point = onePoint;
     writer
-      ..geometry(Geom.polygon, is3D: point?.is3D, hasM: point?.hasM)
+      ..geometry(Geom.polygon, expectedType: point?.type)
       ..coordArray(expectedCount: rings.length);
     for (final ring in rings) {
       ring.writeTo(writer);

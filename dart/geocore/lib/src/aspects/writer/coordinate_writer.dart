@@ -8,11 +8,10 @@ import '/src/aspects/schema.dart';
 
 /// An interface to write objects with coordinate data into some content format.
 abstract class CoordinateWriter {
-
   /// Starts a section for a geometry of [type].
-  /// 
-  /// Optional metadata can be provided using [is3D] and [hasM].
-  void geometry(Geom type, {bool? is3D, bool? hasM});
+  ///
+  /// Use [expectedType] to define the type of coordinates.
+  void geometry(Geom type, {Coords? expectedType});
 
   /// Ends a section for a geometry.
   void geometryEnd();
@@ -27,7 +26,7 @@ abstract class CoordinateWriter {
   void boundedArrayEnd();
 
   /// Starts a section for an array of point coordinates.
-  /// 
+  ///
   /// Coordinate arrays can be multi-dimensional, for example:
   /// ```dart
   ///   writer..coordArray()
@@ -45,7 +44,7 @@ abstract class CoordinateWriter {
 
   /// Ends a section for an array of point coordinates.
   void coordArrayEnd();
-  
+
   /// Writes given point coordinates.
   void coordPoint({
     required num x,
@@ -67,8 +66,8 @@ abstract class CoordinateWriter {
   });
 
   /// A string representation of content already written to this (text) writer.
-  /// 
-  /// Must return a valid string representation when this writer is writing to 
+  ///
+  /// Must return a valid string representation when this writer is writing to
   /// a text output. If an output does not support a string representation then
   /// returned representation is undefined.
   @override

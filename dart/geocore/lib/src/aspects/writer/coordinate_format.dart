@@ -221,25 +221,18 @@ abstract class _BaseTextWriter implements CoordinateWriter {
   final List<bool> _isCoordArrayOnLevel = List.of([false]);
 
   // no need for stack for these, as applicable only on leaf geometry elements
-  bool? _askToPrintZ;
-  bool? _askToPrintM;
+  Coords? _expectedType;
 
-  void _startGeometry({
-    required bool isOutputLevelled,
-    bool? is3D,
-    bool? hasM,
-  }) {
+  void _startGeometry({required bool isOutputLevelled, Coords? expectedType}) {
     if (isOutputLevelled) {
       _hasItemsOnLevel.add(false);
       _isCoordArrayOnLevel.add(false);
     }
-    _askToPrintZ = is3D;
-    _askToPrintM = hasM;
+    _expectedType = expectedType;
   }
 
   void _endGeometry({required bool isOutputLevelled}) {
-    _askToPrintZ = null;
-    _askToPrintM = null;
+    _expectedType = null;
     if (isOutputLevelled) {
       _hasItemsOnLevel.removeLast();
       _isCoordArrayOnLevel.removeLast();
@@ -280,8 +273,8 @@ abstract class _BaseTextWriter implements CoordinateWriter {
   }
 
   @override
-  void geometry(Geom type, {bool? is3D, bool? hasM}) {
-    _startGeometry(isOutputLevelled: false, is3D: is3D, hasM: hasM);
+  void geometry(Geom type, {Coords? expectedType}) {
+    _startGeometry(isOutputLevelled: false, expectedType: expectedType);
   }
 
   @override
@@ -399,13 +392,13 @@ class _DefaultTextWriter extends _BaseTextWriter {
     // print M only in non-strict mode when
     // - explicitely asked or
     // - M exists and not explicitely denied
-    final printM = !strict && (_askToPrintM ?? m != null);
+    final printM = !strict && (_expectedType?.hasM ?? m != null);
     // print Z when
     // - if M is printed too (M should be 4th element, so need Z as 3rd element)
     // - explicitely asked
     // - Z exists and not explicitely denied
-    final printZ = printM || (_askToPrintZ ?? z != null);
-    final zValue = _askToPrintZ ?? true ? z ?? 0 : 0;
+    final printZ = printM || (_expectedType?.hasZ ?? z != null);
+    final zValue = _expectedType?.hasZ ?? true ? z ?? 0 : 0;
     final dec = decimals;
     if (dec != null) {
       _buffer
@@ -450,15 +443,11 @@ class _GeoJsonTextWriter extends _DefaultTextWriter {
   //final List<Geom> _geomTypes = [];
 
   @override
-  void geometry(Geom type, {bool? is3D, bool? hasM}) {
+  void geometry(Geom type, {Coords? expectedType}) {
     if (_markItem()) {
       _buffer.write(',');
     }
-    _startGeometry(
-      isOutputLevelled: true,
-      is3D: is3D,
-      hasM: hasM,
-    );
+    _startGeometry(isOutputLevelled: true, expectedType: expectedType);
     //_geomTypes.add(type);
     _buffer
       ..write('{"type":"')
@@ -600,8 +589,8 @@ class _WktLikeTextWriter extends _BaseTextWriter {
     num? m,
   ) {
     // check whether explicitely asked printing or value exists
-    final hasZ = _askToPrintZ ?? z != null;
-    final hasM = _askToPrintM ?? m != null;
+    final hasZ = _expectedType?.hasZ ?? z != null;
+    final hasM = _expectedType?.hasM ?? m != null;
     // "allow" variable are analyzed only once for point coords of a geometry
     if (_allowToPrintZ == null && hasZ) {
       _allowToPrintZ = hasZ;
@@ -656,22 +645,16 @@ class _WktTextWriter extends _WktLikeTextWriter {
       : super(buffer: buffer, decimals: decimals);
 
   @override
-  void geometry(Geom type, {bool? is3D, bool? hasM}) {
+  void geometry(Geom type, {Coords? expectedType}) {
     if (_markItem()) {
       _buffer.write(',');
     }
-    _startGeometry(isOutputLevelled: true, is3D: is3D, hasM: hasM);
+    _startGeometry(isOutputLevelled: true, expectedType: expectedType);
     _buffer.write(type.nameWkt);
-    if (is3D != null && is3D) {
-      if (hasM != null && hasM) {
-        _buffer.write(' ZM');
-      } else {
-        _buffer.write(' Z');
-      }
-    } else {
-      if (hasM != null && hasM) {
-        _buffer.write(' M');
-      }
+    if (expectedType != null && expectedType != Coords.is2D) {
+      _buffer
+        ..write(' ')
+        ..write(expectedType.specifierWkt);
     }
   }
 
@@ -702,12 +685,16 @@ class _WktTextWriter extends _WktLikeTextWriter {
     num? maxM,
   }) {
     // WKT does not recognize bounding box, so convert to POLYGON
-    final is3D = minZ != null && maxZ != null;
+    final hasZ = minZ != null && maxZ != null;
     final hasM = minM != null && maxM != null;
-    final midZ = is3D ? 0.5 * minZ! + 0.5 * maxZ! : null;
+    final midZ = hasZ ? 0.5 * minZ! + 0.5 * maxZ! : null;
     final midM = hasM ? 0.5 * minM! + 0.5 * maxM! : null;
     this
-      ..geometry(Geom.polygon, is3D: is3D, hasM: hasM)
+      ..geometry(
+        Geom.polygon,
+        expectedType:
+            _expectedType ?? CoordsExtension.select(hasZ: hasZ, hasM: hasM),
+      )
       ..coordArray()
       ..coordArray()
       ..coordPoint(x: minX, y: minY, z: minZ, m: minM)

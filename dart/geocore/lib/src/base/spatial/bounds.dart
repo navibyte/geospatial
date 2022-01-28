@@ -98,10 +98,13 @@ abstract class Bounds<T extends Point> extends Geometry
       math.min(min.spatialDimension, max.spatialDimension);
 
   @override
-  bool get is3D => min.is3D && max.is3D;
+  bool get is3D => min.is3D;
 
   @override
-  bool get hasM => min.hasM && max.hasM;
+  bool get hasM => min.hasM;
+
+  @override
+  Coords get type => min.type;
 
   /// Writes coordinate values to [buffer] separated by [delimiter].
   ///

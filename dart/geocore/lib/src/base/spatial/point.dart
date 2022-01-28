@@ -34,7 +34,7 @@ abstract class Point<C extends num> extends Geometry
   const Point();
 
   /// Create an empty point.
-  factory Point.empty({bool is3D, bool hasM}) = _PointEmpty<C>;
+  factory Point.empty({Coords type}) = _PointEmpty<C>;
 
   @override
   int get dimension => 0;
@@ -219,7 +219,7 @@ abstract class Point<C extends num> extends Geometry
       );
     } else {
       writer
-        ..geometry(Geom.point, is3D: is3D, hasM: hasM)
+        ..geometry(Geom.point, expectedType: type)
         ..coordPoint(
           x: x,
           y: y,
@@ -260,13 +260,16 @@ abstract class Point<C extends num> extends Geometry
 /// The implementation may change in future.
 @immutable
 class _PointEmpty<C extends num> extends Point<C> with EquatableMixin {
-  const _PointEmpty({this.is3D = false, this.hasM = false});
+  const _PointEmpty({this.type = Coords.is2D});
 
   @override
-  final bool is3D;
+  bool get is3D => type.hasZ;
 
   @override
-  final bool hasM;
+  bool get hasM => type.hasM;
+
+  @override
+  final Coords type;
 
   @override
   Bounds get bounds => Bounds.empty();

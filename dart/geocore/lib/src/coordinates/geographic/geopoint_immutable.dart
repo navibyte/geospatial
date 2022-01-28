@@ -7,6 +7,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
+import '/src/aspects/schema.dart';
 import '/src/base/spatial.dart';
 import '/src/utils/geography.dart';
 import '/src/utils/num.dart';
@@ -109,6 +110,9 @@ class GeoPoint2 extends GeoPoint with EquatableMixin {
 
   @override
   bool get hasM => false;
+
+  @override
+  Coords get type => Coords.is2D;
 
   @override
   double operator [](int i) {
@@ -253,6 +257,9 @@ class GeoPoint2m extends GeoPoint2 {
   bool get hasM => true;
 
   @override
+  Coords get type => Coords.is2DAndMeasured;
+
+  @override
   double operator [](int i) {
     switch (i) {
       case 0:
@@ -383,6 +390,9 @@ class GeoPoint3 extends GeoPoint2 {
 
   @override
   bool get is3D => true;
+
+  @override
+  Coords get type => Coords.is3D;
 
   @override
   double operator [](int i) {
@@ -524,6 +534,9 @@ class GeoPoint3m extends GeoPoint3 {
 
   @override
   bool get hasM => true;
+
+  @override
+  Coords get type => Coords.is3DAndMeasured;
 
   @override
   double operator [](int i) {

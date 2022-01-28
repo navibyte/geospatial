@@ -15,6 +15,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
+import '/src/aspects/schema.dart';
 import '/src/base/spatial.dart';
 
 import '/src/utils/num.dart';
@@ -108,6 +109,9 @@ class Point2 extends CartesianPoint<num> with EquatableMixin {
 
   @override
   bool get hasM => false;
+
+  @override
+  Coords get type => Coords.is2D;
 
   @override
   num operator [](int i) {
@@ -229,6 +233,9 @@ class Point2m extends Point2 {
 
   @override
   bool get hasM => true;
+
+  @override
+  Coords get type => Coords.is2DAndMeasured;
 
   @override
   num operator [](int i) {
@@ -355,6 +362,9 @@ class Point3 extends Point2 {
   bool get is3D => true;
 
   @override
+  Coords get type => Coords.is3D;
+
+  @override
   num operator [](int i) {
     switch (i) {
       case 0:
@@ -475,6 +485,9 @@ class Point3m extends Point3 {
 
   @override
   bool get hasM => true;
+
+  @override
+  Coords get type => Coords.is3DAndMeasured;
 
   @override
   num operator [](int i) {
@@ -607,6 +620,9 @@ class Point2i extends CartesianPoint<int> with EquatableMixin {
   bool get hasM => false;
 
   @override
+  Coords get type => Coords.is2D;
+
+  @override
   int operator [](int i) {
     switch (i) {
       case 0:
@@ -735,6 +751,9 @@ class Point3i extends Point2i {
 
   @override
   bool get is3D => true;
+
+  @override
+  Coords get type => Coords.is3D;
 
   @override
   int operator [](int i) {

@@ -41,6 +41,9 @@ class PointWrapper<T extends Point<C>, C extends num> extends Point<C>
   bool get hasM => point.hasM;
 
   @override
+  Coords get type => point.type;
+
+  @override
   C operator [](int i) => point[i];
 
   @override

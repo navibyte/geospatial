@@ -189,7 +189,7 @@ void main() {
       );
       _testAllWriters(
         (writer) => writer
-          ..geometry(Geom.point, is3D: true)
+          ..geometry(Geom.point, expectedType: Coords.is3D)
           ..coordPoint(x: 10.123, y: 20.25, z: -30.95)
           ..geometryEnd(),
         def: '10.123,20.25,-30.95',
@@ -200,18 +200,18 @@ void main() {
       );
       _testAllWriters(
         (writer) => writer
-          ..geometry(Geom.point, is3D: true)
+          ..geometry(Geom.point, expectedType: Coords.is3D)
           ..coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999)
           ..geometryEnd(),
-        def: '10.123,20.25,-30.95,-1.999',
-        geoJson: '{"type":"Point",coordinates:[10.123,20.25,-30.95,-1.999]}',
+        def: '10.123,20.25,-30.95',
+        geoJson: '{"type":"Point",coordinates:[10.123,20.25,-30.95]}',
         geoJsonStrict: '{"type":"Point",coordinates:[10.123,20.25,-30.95]}',
-        wktLike: '10.123 20.25 -30.95 -1.999',
-        wkt: 'POINT Z(10.123 20.25 -30.95 -1.999)',
+        wktLike: '10.123 20.25 -30.95',
+        wkt: 'POINT Z(10.123 20.25 -30.95)',
       );
       _testAllWriters(
         (writer) => writer
-          ..geometry(Geom.point, is3D: false)
+          ..geometry(Geom.point, expectedType: Coords.is2D)
           ..coordPoint(x: 10.123, y: 20.25, z: -30.95)
           ..geometryEnd(),
         def: '10.123,20.25',
@@ -222,7 +222,7 @@ void main() {
       );
       _testAllWriters(
         (writer) => writer
-          ..geometry(Geom.point, is3D: true)
+          ..geometry(Geom.point, expectedType: Coords.is3D)
           ..coordPoint(x: 10.123, y: 20.25)
           ..geometryEnd(),
         def: '10.123,20.25,0',
@@ -233,7 +233,7 @@ void main() {
       );
       _testAllWriters(
         (writer) => writer
-          ..geometry(Geom.point, is3D: false, hasM: true)
+          ..geometry(Geom.point, expectedType: Coords.is2DAndMeasured)
           ..coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999)
           ..geometryEnd(),
         def: '10.123,20.25,0,-1.999',
@@ -244,7 +244,7 @@ void main() {
       );
       _testAllWriters(
         (writer) => writer
-          ..geometry(Geom.point, is3D: true, hasM: true)
+          ..geometry(Geom.point, expectedType: Coords.is3DAndMeasured)
           ..coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999)
           ..geometryEnd(),
         def: '10.123,20.25,-30.95,-1.999',
@@ -300,7 +300,24 @@ void main() {
       );
       _testAllWriters(
         (writer) => writer
-          ..geometry(Geom.lineString, hasM: true)
+          ..geometry(Geom.lineString, expectedType: Coords.is2DAndMeasured)
+          ..coordArray()
+          ..coordPoint(x: -1.1, y: -1.1)
+          ..coordPoint(x: 2.1, y: -2.5, m: 4.99)
+          ..coordPoint(x: 3.5, y: -3.49, z: -0.5)
+          ..coordArrayEnd()
+          ..geometryEnd(),
+        def: '[-1.1,-1.1,0,0],[2.1,-2.5,0,4.99],[3.5,-3.49,0,0]',
+        geoJson: '{"type":"LineString",coordinates:[[-1.1,-1.1,0,0],'
+            '[2.1,-2.5,0,4.99],[3.5,-3.49,0,0]]}',
+        geoJsonStrict: '{"type":"LineString",coordinates:[[-1.1,-1.1],'
+            '[2.1,-2.5],[3.5,-3.49]]}',
+        wktLike: '-1.1 -1.1 0,2.1 -2.5 4.99,3.5 -3.49 0',
+        wkt: 'LINESTRING M(-1.1 -1.1 0,2.1 -2.5 4.99,3.5 -3.49 0)',
+      );
+      _testAllWriters(
+        (writer) => writer
+          ..geometry(Geom.lineString, expectedType: Coords.is3DAndMeasured)
           ..coordArray()
           ..coordPoint(x: -1.1, y: -1.1)
           ..coordPoint(x: 2.1, y: -2.5, m: 4.99)
@@ -310,10 +327,10 @@ void main() {
         def: '[-1.1,-1.1,0,0],[2.1,-2.5,0,4.99],[3.5,-3.49,-0.5,0]',
         geoJson: '{"type":"LineString",coordinates:[[-1.1,-1.1,0,0],'
             '[2.1,-2.5,0,4.99],[3.5,-3.49,-0.5,0]]}',
-        geoJsonStrict: '{"type":"LineString",coordinates:[[-1.1,-1.1],'
-            '[2.1,-2.5],[3.5,-3.49,-0.5]]}',
-        wktLike: '-1.1 -1.1 0,2.1 -2.5 4.99,3.5 -3.49 0',
-        wkt: 'LINESTRING M(-1.1 -1.1 0,2.1 -2.5 4.99,3.5 -3.49 0)',
+        geoJsonStrict: '{"type":"LineString",coordinates:[[-1.1,-1.1,0],'
+            '[2.1,-2.5,0],[3.5,-3.49,-0.5]]}',
+        wktLike: '-1.1 -1.1 0 0,2.1 -2.5 0 4.99,3.5 -3.49 -0.5 0',
+        wkt: 'LINESTRING ZM(-1.1 -1.1 0 0,2.1 -2.5 0 4.99,3.5 -3.49 -0.5 0)',
       );
     });
     test('MultiLineString geometry', () {
@@ -391,7 +408,7 @@ void main() {
         (writer) => writer
           ..geometry(Geom.geometryCollection)
           ..boundedArray()
-          ..geometry(Geom.point, is3D: true)
+          ..geometry(Geom.point, expectedType: Coords.is3D)
           ..coordPoint(x: 10.123, y: 20.25, z: -30.95)
           ..geometryEnd()
           ..geometry(Geom.polygon)

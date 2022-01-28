@@ -156,7 +156,7 @@ class MultiPoint<E extends Point> extends Geometry
   @override
   void writeTo(CoordinateWriter writer) {
     final point = onePoint;
-    writer.geometry(Geom.multiPoint, is3D: point?.is3D, hasM: point?.hasM);
+    writer.geometry(Geom.multiPoint, expectedType: point?.type);
     points.writeTo(writer);
     writer.geometryEnd();
   }
@@ -245,7 +245,7 @@ class MultiLineString<T extends Point> extends Geometry
   void writeTo(CoordinateWriter writer) {
     final point = onePoint;
     writer
-      ..geometry(Geom.multiLineString, is3D: point?.is3D, hasM: point?.hasM)
+      ..geometry(Geom.multiLineString, expectedType: point?.type)
       ..coordArray(expectedCount: lineStrings.length);
     for (final line in lineStrings) {
       line.chain.writeTo(writer);
@@ -342,7 +342,7 @@ class MultiPolygon<T extends Point> extends Geometry
   void writeTo(CoordinateWriter writer) {
     final point = onePoint;
     writer
-      ..geometry(Geom.multiPolygon, is3D: point?.is3D, hasM: point?.hasM)
+      ..geometry(Geom.multiPolygon, expectedType: point?.type)
       ..coordArray(expectedCount: polygons.length);
     for (final polygon in polygons) {
       writer.coordArray(expectedCount: polygon.rings.length);

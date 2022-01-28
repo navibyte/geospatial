@@ -116,7 +116,7 @@ class LineString<T extends Point> extends Geometry
   @override
   void writeTo(CoordinateWriter writer) {
     final point = onePoint;
-    writer.geometry(Geom.lineString, is3D: point?.is3D, hasM: point?.hasM);
+    writer.geometry(Geom.lineString, expectedType: point?.type);
     chain.writeTo(writer);
     writer.geometryEnd();
   }

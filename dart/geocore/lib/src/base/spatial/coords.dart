@@ -82,6 +82,9 @@ abstract class _Coordinates extends _Measured {
   /// True for 3D points (that is having Z coordinate).
   bool get is3D;
 
+  /// Returns the type for coordinates.
+  Coords get type;
+
   /// Writes coordinate values to [buffer] separated by [delimiter].
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
