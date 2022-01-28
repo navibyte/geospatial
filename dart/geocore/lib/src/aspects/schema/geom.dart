@@ -63,4 +63,24 @@ extension GeomExtension on Geom {
         return 'MULTIPOLYGON';
     }
   }
+
+  /// Returns the GeoJSON type for an enum, ie. `Point` for the point type.
+  String get nameGeoJson {
+    switch (this) {
+      case Geom.point:
+        return 'Point';
+      case Geom.lineString:
+        return 'LineString';
+      case Geom.polygon:
+        return 'Polygon';
+      case Geom.geometryCollection:
+        return 'GeometryCollection';
+      case Geom.multiPoint:
+        return 'MultiPoint';
+      case Geom.multiLineString:
+        return 'MultiLineString';
+      case Geom.multiPolygon:
+        return 'MultiPolygon';
+    }
+  }
 }

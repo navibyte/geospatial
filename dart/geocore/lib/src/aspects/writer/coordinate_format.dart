@@ -30,7 +30,8 @@ mixin CoordinateFormat {
 ///
 /// Examples:
 /// * point (x, y): `10.1,20.2`
-/// * point (x, y, m) or (x, y, z): `10.1,20.2,30.3`
+/// * point (x, y, z): `10.1,20.2,30.3`
+/// * point (x, y, m) with z formatted as 0: `10.1,20.2,0,40.4`
 /// * point (x, y, z, m): `10.1,20.2,30.3,40.4`
 /// * geopoint (lon, lat): `10.1,20.2`
 /// * bounds (min-x, min-y, max-x, max-y): `10.1,10.1,20.2,20.2`
@@ -44,6 +45,72 @@ mixin CoordinateFormat {
 ///   * `[[[35,10],[45,45],[15,40],[10,20],[35,10]]]`
 /// * coordinates for other geometries with similar principles
 const defaultFormat = _DefaultFormat();
+
+/// Returns a format for formatting objects with coordinate data to GeoJSON.
+///
+/// Rules applied by the format conforms with the GeoJSON formatting of
+/// coordinate lists and geometries.
+///
+/// Examples:
+/// * point (x, y):
+///   * `{"type":"Point","coordinates":[10.1,20.2]}`
+/// * point (x, y, z):
+///   * `{"type":"Point","coordinates":[10.1,20.2,30.3]}`
+/// * geopoint (lon, lat):
+///   * `{"type":"Point","coordinates":[10.1,20.2]}`
+/// * bounds (min-x, min-y, max-x, max-y):
+///   * `[10.1,10.1,20.2,20.2]`
+/// * bounds (min-x, min-y, min-z, max-x, max-y, maz-z):
+///   * `[100.1,10.1,10.1,20.2,20.2,20.2]`
+/// * point series (with 2D points), not an independent GeoJSON geometry:
+///   * `[[10.1,10.1],[20.2,20.2],[30.3,30.3]]`
+///
+/// Multi point (with 2D points):
+/// `{"type":"MultiPoint","coordinates":[[10.1,10.1],[20.2,20.2],[30.3,30.3]]}`
+///
+/// Line string (with 2D points):
+/// `{"type":"LineString","coordinates":[[10.1,10.1],[20.2,20.2],[30.3,30.3]]}`
+///
+/// Multi line string (with 2D points):
+/// ```
+///   {"type":"MultiLineString",
+///    "coordinates":[[[10.1,10.1],[20.2,20.2],[30.3,30.3]]]}`
+/// ```
+///
+/// Polygon (with 2D points):
+/// ```
+///   {"type":"Polygon",
+///    "coordinates":[[[35,10],[45,45],[15,40],[10,20],[35,10]]]}`
+/// ```
+///
+/// MultiPolygon (with 2D points):
+/// ```
+///   {"type":"Polygon",
+///    "coordinates":[[[[35,10],[45,45],[15,40],[10,20],[35,10]]]]}`
+/// ```
+///
+/// The GeoJSON specification about M coordinates:
+///    "Implementations SHOULD NOT extend positions beyond three elements
+///    because the semantics of extra elements are unspecified and
+///    ambiguous.  Historically, some implementations have used a fourth
+///    element to carry a linear referencing measure (sometimes denoted as
+///    "M") or a numerical timestamp, but in most situations a parser will
+///    not be able to properly interpret these values.  The interpretation
+///    and meaning of additional elements is beyond the scope of this
+///    specification, and additional elements MAY be ignored by parsers."
+///
+/// This implementation allows printing M coordinates, when available on source
+/// data. Such M coordinate values are always formatted as "fourth element.".
+/// However, it's possible that other implementations cannot read them:
+/// * point (x, y, m), with z missing but formatted as 0, and m = 40.4:
+///   * `{"type":"Point","coordinates":[10.1,20.2,0,40.4]}`
+/// * point (x, y, z, m), with z = 30.3 and m = 40.4:
+///   * `{"type":"Point","coordinates":[10.1,20.2,30.3,40.4]}`
+///
+/// However when [strict] is set to true, then M coordinates are ignored from
+/// formatting.
+CoordinateFormat geoJsonFormat({bool strict = false}) =>
+    _GeoJsonFormat(strict: strict);
 
 /// The WKT (like) format for formatting objects with coordinate data.
 ///
@@ -117,6 +184,16 @@ class _DefaultFormat with CoordinateFormat {
       _DefaultTextWriter(buffer: buffer, decimals: decimals);
 }
 
+class _GeoJsonFormat with CoordinateFormat {
+  const _GeoJsonFormat({this.strict = false});
+
+  final bool strict;
+
+  @override
+  CoordinateWriter text({StringSink? buffer, int? decimals}) =>
+      _GeoJsonTextWriter(buffer: buffer, decimals: decimals, strict: strict);
+}
+
 class _WktLikeFormat with CoordinateFormat {
   const _WktLikeFormat();
 
@@ -146,11 +223,6 @@ abstract class _BaseTextWriter implements CoordinateWriter {
   // no need for stack for these, as applicable only on leaf geometry elements
   bool? _askToPrintZ;
   bool? _askToPrintM;
-  bool? _allowToPrintZ;
-  bool? _allowToPrintM;
-
-  @override
-  String toString() => _buffer.toString();
 
   void _startGeometry({
     required bool isOutputLevelled,
@@ -168,8 +240,6 @@ abstract class _BaseTextWriter implements CoordinateWriter {
   void _endGeometry({required bool isOutputLevelled}) {
     _askToPrintZ = null;
     _askToPrintM = null;
-    _allowToPrintZ = null;
-    _allowToPrintM = null;
     if (isOutputLevelled) {
       _hasItemsOnLevel.removeLast();
       _isCoordArrayOnLevel.removeLast();
@@ -209,58 +279,6 @@ abstract class _BaseTextWriter implements CoordinateWriter {
     return result;
   }
 
-  void _printPoint(
-    String delimiter,
-    num x,
-    num y,
-    num? z,
-    num? m,
-  ) {
-    final hasZ = _askToPrintZ ?? z != null;
-    final hasM = _askToPrintM ?? m != null;
-    if (_allowToPrintZ == null && hasZ) {
-      _allowToPrintZ = hasZ;
-    }
-    if (_allowToPrintM == null && hasM) {
-      _allowToPrintZ ??= false;
-      _allowToPrintM = hasM;
-    }
-    final printM = (_allowToPrintM ?? false) && hasM;
-    final printZ = (_allowToPrintZ ?? false) && (hasZ || hasM);
-    final dec = decimals;
-    if (dec != null) {
-      _buffer
-        ..write(toStringAsFixedWhenDecimals(x, dec))
-        ..write(delimiter)
-        ..write(toStringAsFixedWhenDecimals(y, dec));
-      if (printZ) {
-        _buffer
-          ..write(delimiter)
-          ..write(toStringAsFixedWhenDecimals(z ?? 0.0, dec));
-      }
-      if (printM) {
-        _buffer
-          ..write(delimiter)
-          ..write(toStringAsFixedWhenDecimals(m ?? 0.0, dec));
-      }
-    } else {
-      _buffer
-        ..write(x)
-        ..write(delimiter)
-        ..write(y);
-      if (printZ) {
-        _buffer
-          ..write(delimiter)
-          ..write(z ?? 0.0);
-      }
-      if (printM) {
-        _buffer
-          ..write(delimiter)
-          ..write(m ?? 0.0);
-      }
-    }
-  }
-
   @override
   void geometry(Geom type, {bool? is3D, bool? hasM}) {
     _startGeometry(isOutputLevelled: false, is3D: is3D, hasM: hasM);
@@ -275,13 +293,18 @@ abstract class _BaseTextWriter implements CoordinateWriter {
   void emptyGeometry(Geom type) {
     // nop
   }
+
+  @override
+  String toString() => _buffer.toString();
 }
 
 // Implementation for the "default" format -------------------------------------
 
 class _DefaultTextWriter extends _BaseTextWriter {
-  _DefaultTextWriter({StringSink? buffer, int? decimals})
+  _DefaultTextWriter({StringSink? buffer, int? decimals, this.strict = false})
       : super(buffer: buffer, decimals: decimals);
+
+  final bool strict;
 
   @override
   void boundedArray({int? expectedCount}) {
@@ -339,9 +362,9 @@ class _DefaultTextWriter extends _BaseTextWriter {
     if (notAtRoot) {
       _buffer.write('[');
     }
-    _printPoint(',', minX, minY, minZ, minM);
+    _printPoint(minX, minY, minZ, minM);
     _buffer.write(',');
-    _printPoint(',', maxX, maxY, maxZ, maxM);
+    _printPoint(maxX, maxY, maxZ, maxM);
     if (notAtRoot) {
       _buffer.write(']');
     }
@@ -361,10 +384,111 @@ class _DefaultTextWriter extends _BaseTextWriter {
     if (notAtRoot) {
       _buffer.write('[');
     }
-    _printPoint(',', x, y, z, m);
+    _printPoint(x, y, z, m);
     if (notAtRoot) {
       _buffer.write(']');
     }
+  }
+
+  void _printPoint(
+    num x,
+    num y,
+    num? z,
+    num? m,
+  ) {
+    // print M only in non-strict mode when
+    // - explicitely asked or
+    // - M exists and not explicitely denied
+    final printM = !strict && (_askToPrintM ?? m != null);
+    // print Z when
+    // - if M is printed too (M should be 4th element, so need Z as 3rd element)
+    // - explicitely asked
+    // - Z exists and not explicitely denied
+    final printZ = printM || (_askToPrintZ ?? z != null);
+    final zValue = _askToPrintZ ?? true ? z ?? 0 : 0;
+    final dec = decimals;
+    if (dec != null) {
+      _buffer
+        ..write(toStringAsFixedWhenDecimals(x, dec))
+        ..write(',')
+        ..write(toStringAsFixedWhenDecimals(y, dec));
+      if (printZ) {
+        _buffer
+          ..write(',')
+          ..write(toStringAsFixedWhenDecimals(zValue, dec));
+      }
+      if (printM) {
+        _buffer
+          ..write(',')
+          ..write(toStringAsFixedWhenDecimals(m ?? 0, dec));
+      }
+    } else {
+      _buffer
+        ..write(x)
+        ..write(',')
+        ..write(y);
+      if (printZ) {
+        _buffer
+          ..write(',')
+          ..write(zValue);
+      }
+      if (printM) {
+        _buffer
+          ..write(',')
+          ..write(m ?? 0);
+      }
+    }
+  }
+}
+
+// Implementation for the "GeoJSON" format -------------------------------------
+
+class _GeoJsonTextWriter extends _DefaultTextWriter {
+  _GeoJsonTextWriter({StringSink? buffer, int? decimals, bool strict = false})
+      : super(buffer: buffer, decimals: decimals, strict: strict);
+
+  //final List<Geom> _geomTypes = [];
+
+  @override
+  void geometry(Geom type, {bool? is3D, bool? hasM}) {
+    if (_markItem()) {
+      _buffer.write(',');
+    }
+    _startGeometry(
+      isOutputLevelled: true,
+      is3D: is3D,
+      hasM: hasM,
+    );
+    //_geomTypes.add(type);
+    _buffer
+      ..write('{"type":"')
+      ..write(type.nameGeoJson)
+      ..write(
+        type == Geom.geometryCollection ? '",geometries:' : '",coordinates:',
+      );
+  }
+
+  @override
+  void geometryEnd() {
+    //final type = _geomTypes.removeLast();
+    _buffer.write('}');
+    _endGeometry(isOutputLevelled: true);
+  }
+
+  @override
+  void emptyGeometry(Geom type) {
+    if (_markItem()) {
+      _buffer.write(',');
+    }
+    _buffer
+      ..write('{"type":"')
+      ..write(type.nameGeoJson)
+      ..write(
+        type == Geom.geometryCollection
+            ? '",geometries:[]}'
+            // TODO(x): check how empty geometries should be written?
+            : '",coordinates:[]}',
+      );
   }
 }
 
@@ -373,6 +497,10 @@ class _DefaultTextWriter extends _BaseTextWriter {
 class _WktLikeTextWriter extends _BaseTextWriter {
   _WktLikeTextWriter({StringSink? buffer, int? decimals})
       : super(buffer: buffer, decimals: decimals);
+
+  // no need for stack for these, as applicable only on leaf geometry elements
+  bool? _allowToPrintZ;
+  bool? _allowToPrintM;
 
   @override
   void boundedArray({int? expectedCount}) {
@@ -430,9 +558,9 @@ class _WktLikeTextWriter extends _BaseTextWriter {
     if (notAtRoot) {
       _buffer.write('(');
     }
-    _printPoint(' ', minX, minY, minZ, minM);
+    _printPoint(minX, minY, minZ, minM);
     _buffer.write(',');
-    _printPoint(' ', maxX, maxY, maxZ, maxM);
+    _printPoint(maxX, maxY, maxZ, maxM);
     if (notAtRoot) {
       _buffer.write(')');
     }
@@ -452,9 +580,71 @@ class _WktLikeTextWriter extends _BaseTextWriter {
     if (notAtRootOrAtCoordArray) {
       _buffer.write('(');
     }
-    _printPoint(' ', x, y, z, m);
+    _printPoint(x, y, z, m);
     if (notAtRootOrAtCoordArray) {
       _buffer.write(')');
+    }
+  }
+
+  @override
+  void _endGeometry({required bool isOutputLevelled}) {
+    _allowToPrintZ = null;
+    _allowToPrintM = null;
+    super._endGeometry(isOutputLevelled: isOutputLevelled);
+  }
+
+  void _printPoint(
+    num x,
+    num y,
+    num? z,
+    num? m,
+  ) {
+    // check whether explicitely asked printing or value exists
+    final hasZ = _askToPrintZ ?? z != null;
+    final hasM = _askToPrintM ?? m != null;
+    // "allow" variable are analyzed only once for point coords of a geometry
+    if (_allowToPrintZ == null && hasZ) {
+      _allowToPrintZ = hasZ;
+    }
+    if (_allowToPrintM == null && hasM) {
+      _allowToPrintZ ??= false;
+      _allowToPrintM = hasM;
+    }
+    // print M if it's allowed for this geometry and there is M or it's asked
+    final printM = (_allowToPrintM ?? false) && hasM;
+    // print Z if it's allowed for this geometry and there is Z or M
+    final printZ = (_allowToPrintZ ?? false) && (hasZ || hasM);
+    final dec = decimals;
+    if (dec != null) {
+      _buffer
+        ..write(toStringAsFixedWhenDecimals(x, dec))
+        ..write(' ')
+        ..write(toStringAsFixedWhenDecimals(y, dec));
+      if (printZ) {
+        _buffer
+          ..write(' ')
+          ..write(toStringAsFixedWhenDecimals(z ?? 0, dec));
+      }
+      if (printM) {
+        _buffer
+          ..write(' ')
+          ..write(toStringAsFixedWhenDecimals(m ?? 0, dec));
+      }
+    } else {
+      _buffer
+        ..write(x)
+        ..write(' ')
+        ..write(y);
+      if (printZ) {
+        _buffer
+          ..write(' ')
+          ..write(z ?? 0);
+      }
+      if (printM) {
+        _buffer
+          ..write(' ')
+          ..write(m ?? 0);
+      }
     }
   }
 }
