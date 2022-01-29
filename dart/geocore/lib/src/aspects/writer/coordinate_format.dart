@@ -7,6 +7,7 @@
 import '/src/aspects/schema.dart';
 import '/src/utils/num.dart';
 
+import 'bounds_writer.dart';
 import 'coordinate_writer.dart';
 
 /// A mixin specifying methods to format objects with coordinate data.
@@ -273,7 +274,7 @@ abstract class _BaseTextWriter implements CoordinateWriter {
   }
 
   @override
-  void geometry(Geom type, {Coords? expectedType}) {
+  void geometry(Geom type, {Coords? expectedType, WriteBounds? bounds}) {
     _startGeometry(isOutputLevelled: false, expectedType: expectedType);
   }
 
@@ -440,26 +441,31 @@ class _GeoJsonTextWriter extends _DefaultTextWriter {
   _GeoJsonTextWriter({StringSink? buffer, int? decimals, bool strict = false})
       : super(buffer: buffer, decimals: decimals, strict: strict);
 
-  //final List<Geom> _geomTypes = [];
+  _GeoJsonTextWriter _subWriter() =>
+      _GeoJsonTextWriter(buffer: _buffer, decimals: decimals, strict: strict);
 
   @override
-  void geometry(Geom type, {Coords? expectedType}) {
+  void geometry(Geom type, {Coords? expectedType, WriteBounds? bounds}) {
     if (_markItem()) {
       _buffer.write(',');
     }
     _startGeometry(isOutputLevelled: true, expectedType: expectedType);
-    //_geomTypes.add(type);
     _buffer
       ..write('{"type":"')
       ..write(type.nameGeoJson)
-      ..write(
-        type == Geom.geometryCollection ? '",geometries:' : '",coordinates:',
-      );
+      ..write('"');
+    if (bounds != null) {
+      _buffer.write(',"bbox"=[');
+      bounds.call(_subWriter());
+      _buffer.write(']');
+    }
+    _buffer.write(
+      type == Geom.geometryCollection ? ',"geometries":' : ',"coordinates":',
+    );
   }
 
   @override
   void geometryEnd() {
-    //final type = _geomTypes.removeLast();
     _buffer.write('}');
     _endGeometry(isOutputLevelled: true);
   }
@@ -474,9 +480,9 @@ class _GeoJsonTextWriter extends _DefaultTextWriter {
       ..write(type.nameGeoJson)
       ..write(
         type == Geom.geometryCollection
-            ? '",geometries:[]}'
+            ? '","geometries":[]}'
             // TODO(x): check how empty geometries should be written?
-            : '",coordinates:[]}',
+            : '","coordinates":[]}',
       );
   }
 }
@@ -645,7 +651,7 @@ class _WktTextWriter extends _WktLikeTextWriter {
       : super(buffer: buffer, decimals: decimals);
 
   @override
-  void geometry(Geom type, {Coords? expectedType}) {
+  void geometry(Geom type, {Coords? expectedType, WriteBounds? bounds}) {
     if (_markItem()) {
       _buffer.write(',');
     }

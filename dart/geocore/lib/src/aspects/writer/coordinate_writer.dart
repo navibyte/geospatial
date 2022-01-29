@@ -6,12 +6,17 @@
 
 import '/src/aspects/schema.dart';
 
+import 'bounds_writer.dart';
+
 /// An interface to write objects with coordinate data into some content format.
-abstract class CoordinateWriter {
+abstract class CoordinateWriter extends BoundsWriter {
   /// Starts a section for a geometry of [type].
   ///
   /// Use [expectedType] to define the type of coordinates.
-  void geometry(Geom type, {Coords? expectedType});
+  ///
+  /// An optional [bounds] function can be used to write geometry bounds. A
+  /// writer implementation may use it or ignore it.
+  void geometry(Geom type, {Coords? expectedType, WriteBounds? bounds});
 
   /// Ends a section for a geometry.
   void geometryEnd();
@@ -51,18 +56,6 @@ abstract class CoordinateWriter {
     required num y,
     num? z,
     num? m,
-  });
-
-  /// Writes given bounds coordinates.
-  void coordBounds({
-    required num minX,
-    required num minY,
-    num? minZ,
-    num? minM,
-    required num maxX,
-    required num maxY,
-    num? maxZ,
-    num? maxM,
   });
 
   /// A string representation of content already written to this (text) writer.

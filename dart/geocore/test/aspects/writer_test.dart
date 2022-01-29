@@ -149,8 +149,8 @@ void main() {
           ..coordPoint(x: 10.123, y: 20.25)
           ..geometryEnd(),
         def: '10.123,20.25',
-        geoJson: '{"type":"Point",coordinates:[10.123,20.25]}',
-        geoJsonStrict: '{"type":"Point",coordinates:[10.123,20.25]}',
+        geoJson: '{"type":"Point","coordinates":[10.123,20.25]}',
+        geoJsonStrict: '{"type":"Point","coordinates":[10.123,20.25]}',
         wktLike: '10.123 20.25',
         wkt: 'POINT(10.123 20.25)',
       );
@@ -160,8 +160,8 @@ void main() {
           ..coordPoint(x: 10.123, y: 20.25, z: -30.95)
           ..geometryEnd(),
         def: '10.123,20.25,-30.95',
-        geoJson: '{"type":"Point",coordinates:[10.123,20.25,-30.95]}',
-        geoJsonStrict: '{"type":"Point",coordinates:[10.123,20.25,-30.95]}',
+        geoJson: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
+        geoJsonStrict: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
         wktLike: '10.123 20.25 -30.95',
         wkt: 'POINT(10.123 20.25 -30.95)',
       );
@@ -171,8 +171,8 @@ void main() {
           ..coordPoint(x: 10.123, y: 20.25, m: -1.999)
           ..geometryEnd(),
         def: '10.123,20.25,0,-1.999',
-        geoJson: '{"type":"Point",coordinates:[10.123,20.25,0,-1.999]}',
-        geoJsonStrict: '{"type":"Point",coordinates:[10.123,20.25]}',
+        geoJson: '{"type":"Point","coordinates":[10.123,20.25,0,-1.999]}',
+        geoJsonStrict: '{"type":"Point","coordinates":[10.123,20.25]}',
         wktLike: '10.123 20.25 -1.999',
         wkt: 'POINT(10.123 20.25 -1.999)',
       );
@@ -182,8 +182,8 @@ void main() {
           ..coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999)
           ..geometryEnd(),
         def: '10.123,20.25,-30.95,-1.999',
-        geoJson: '{"type":"Point",coordinates:[10.123,20.25,-30.95,-1.999]}',
-        geoJsonStrict: '{"type":"Point",coordinates:[10.123,20.25,-30.95]}',
+        geoJson: '{"type":"Point","coordinates":[10.123,20.25,-30.95,-1.999]}',
+        geoJsonStrict: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
         wktLike: '10.123 20.25 -30.95 -1.999',
         wkt: 'POINT(10.123 20.25 -30.95 -1.999)',
       );
@@ -193,8 +193,8 @@ void main() {
           ..coordPoint(x: 10.123, y: 20.25, z: -30.95)
           ..geometryEnd(),
         def: '10.123,20.25,-30.95',
-        geoJson: '{"type":"Point",coordinates:[10.123,20.25,-30.95]}',
-        geoJsonStrict: '{"type":"Point",coordinates:[10.123,20.25,-30.95]}',
+        geoJson: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
+        geoJsonStrict: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
         wktLike: '10.123 20.25 -30.95',
         wkt: 'POINT Z(10.123 20.25 -30.95)',
       );
@@ -204,8 +204,8 @@ void main() {
           ..coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999)
           ..geometryEnd(),
         def: '10.123,20.25,-30.95',
-        geoJson: '{"type":"Point",coordinates:[10.123,20.25,-30.95]}',
-        geoJsonStrict: '{"type":"Point",coordinates:[10.123,20.25,-30.95]}',
+        geoJson: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
+        geoJsonStrict: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
         wktLike: '10.123 20.25 -30.95',
         wkt: 'POINT Z(10.123 20.25 -30.95)',
       );
@@ -215,8 +215,8 @@ void main() {
           ..coordPoint(x: 10.123, y: 20.25, z: -30.95)
           ..geometryEnd(),
         def: '10.123,20.25',
-        geoJson: '{"type":"Point",coordinates:[10.123,20.25]}',
-        geoJsonStrict: '{"type":"Point",coordinates:[10.123,20.25]}',
+        geoJson: '{"type":"Point","coordinates":[10.123,20.25]}',
+        geoJsonStrict: '{"type":"Point","coordinates":[10.123,20.25]}',
         wktLike: '10.123 20.25',
         wkt: 'POINT(10.123 20.25)',
       );
@@ -226,8 +226,8 @@ void main() {
           ..coordPoint(x: 10.123, y: 20.25)
           ..geometryEnd(),
         def: '10.123,20.25,0',
-        geoJson: '{"type":"Point",coordinates:[10.123,20.25,0]}',
-        geoJsonStrict: '{"type":"Point",coordinates:[10.123,20.25,0]}',
+        geoJson: '{"type":"Point","coordinates":[10.123,20.25,0]}',
+        geoJsonStrict: '{"type":"Point","coordinates":[10.123,20.25,0]}',
         wktLike: '10.123 20.25 0',
         wkt: 'POINT Z(10.123 20.25 0)',
       );
@@ -237,8 +237,8 @@ void main() {
           ..coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999)
           ..geometryEnd(),
         def: '10.123,20.25,0,-1.999',
-        geoJson: '{"type":"Point",coordinates:[10.123,20.25,0,-1.999]}',
-        geoJsonStrict: '{"type":"Point",coordinates:[10.123,20.25]}',
+        geoJson: '{"type":"Point","coordinates":[10.123,20.25,0,-1.999]}',
+        geoJsonStrict: '{"type":"Point","coordinates":[10.123,20.25]}',
         wktLike: '10.123 20.25 -1.999',
         wkt: 'POINT M(10.123 20.25 -1.999)',
       );
@@ -248,16 +248,16 @@ void main() {
           ..coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999)
           ..geometryEnd(),
         def: '10.123,20.25,-30.95,-1.999',
-        geoJson: '{"type":"Point",coordinates:[10.123,20.25,-30.95,-1.999]}',
-        geoJsonStrict: '{"type":"Point",coordinates:[10.123,20.25,-30.95]}',
+        geoJson: '{"type":"Point","coordinates":[10.123,20.25,-30.95,-1.999]}',
+        geoJsonStrict: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
         wktLike: '10.123 20.25 -30.95 -1.999',
         wkt: 'POINT ZM(10.123 20.25 -30.95 -1.999)',
       );
       _testAllWriters(
         (writer) => writer.emptyGeometry(Geom.point),
         def: '',
-        geoJson: '{"type":"Point",coordinates:[]}',
-        geoJsonStrict: '{"type":"Point",coordinates:[]}',
+        geoJson: '{"type":"Point","coordinates":[]}',
+        geoJsonStrict: '{"type":"Point","coordinates":[]}',
         wktLike: '',
         wkt: 'POINT EMPTY',
       );
@@ -273,9 +273,9 @@ void main() {
           ..geometryEnd(),
         def: '[10.123,20.25],[5.98,-3.47]',
         geoJson:
-            '{"type":"MultiPoint",coordinates:[[10.123,20.25],[5.98,-3.47]]}',
+            '{"type":"MultiPoint","coordinates":[[10.123,20.25],[5.98,-3.47]]}',
         geoJsonStrict:
-            '{"type":"MultiPoint",coordinates:[[10.123,20.25],[5.98,-3.47]]}',
+            '{"type":"MultiPoint","coordinates":[[10.123,20.25],[5.98,-3.47]]}',
         wktLike: '10.123 20.25,5.98 -3.47',
         wkt: 'MULTIPOINT(10.123 20.25,5.98 -3.47)',
       );
@@ -283,7 +283,11 @@ void main() {
     test('LineString geometry', () {
       _testAllWriters(
         (writer) => writer
-          ..geometry(Geom.lineString)
+          ..geometry(
+            Geom.lineString,
+            bounds: (bw) =>
+                bw.coordBounds(minX: -1.1, minY: -3.49, maxX: 3.5, maxY: -1.1),
+          )
           ..coordArray()
           ..coordPoint(x: -1.1, y: -1.1)
           ..coordPoint(x: 2.1, y: -2.5)
@@ -292,15 +296,28 @@ void main() {
           ..geometryEnd(),
         def: '[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]',
         geoJson: '{"type":"LineString",'
-            'coordinates:[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]}',
+            '"bbox"=[-1.1,-3.49,3.5,-1.1],'
+            '"coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]}',
         geoJsonStrict: '{"type":"LineString",'
-            'coordinates:[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]}',
+            '"bbox"=[-1.1,-3.49,3.5,-1.1],'
+            '"coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]}',
         wktLike: '-1.1 -1.1,2.1 -2.5,3.5 -3.49',
         wkt: 'LINESTRING(-1.1 -1.1,2.1 -2.5,3.5 -3.49)',
       );
       _testAllWriters(
         (writer) => writer
-          ..geometry(Geom.lineString, expectedType: Coords.is2DAndMeasured)
+          ..geometry(
+            Geom.lineString,
+            expectedType: Coords.is2DAndMeasured,
+            bounds: (bw) => bw.coordBounds(
+              minX: -1.1,
+              minY: -3.49,
+              minM: 0,
+              maxX: 3.5,
+              maxY: -1.1,
+              maxM: 4.99,
+            ),
+          )
           ..coordArray()
           ..coordPoint(x: -1.1, y: -1.1)
           ..coordPoint(x: 2.1, y: -2.5, m: 4.99)
@@ -308,16 +325,33 @@ void main() {
           ..coordArrayEnd()
           ..geometryEnd(),
         def: '[-1.1,-1.1,0,0],[2.1,-2.5,0,4.99],[3.5,-3.49,0,0]',
-        geoJson: '{"type":"LineString",coordinates:[[-1.1,-1.1,0,0],'
+        geoJson: '{"type":"LineString",'
+            '"bbox"=[-1.1,-3.49,0,0,3.5,-1.1,0,4.99],'
+            '"coordinates":[[-1.1,-1.1,0,0],'
             '[2.1,-2.5,0,4.99],[3.5,-3.49,0,0]]}',
-        geoJsonStrict: '{"type":"LineString",coordinates:[[-1.1,-1.1],'
+        geoJsonStrict: '{"type":"LineString",'
+            '"bbox"=[-1.1,-3.49,3.5,-1.1],'
+            '"coordinates":[[-1.1,-1.1],'
             '[2.1,-2.5],[3.5,-3.49]]}',
         wktLike: '-1.1 -1.1 0,2.1 -2.5 4.99,3.5 -3.49 0',
         wkt: 'LINESTRING M(-1.1 -1.1 0,2.1 -2.5 4.99,3.5 -3.49 0)',
       );
       _testAllWriters(
         (writer) => writer
-          ..geometry(Geom.lineString, expectedType: Coords.is3DAndMeasured)
+          ..geometry(
+            Geom.lineString,
+            expectedType: Coords.is3DAndMeasured,
+            bounds: (bw) => bw.coordBounds(
+              minX: -1.1,
+              minY: -3.49,
+              minZ: -0.5,
+              minM: 0,
+              maxX: 3.5,
+              maxY: -1.1,
+              maxZ: 0,
+              maxM: 4.99,
+            ),
+          )
           ..coordArray()
           ..coordPoint(x: -1.1, y: -1.1)
           ..coordPoint(x: 2.1, y: -2.5, m: 4.99)
@@ -325,9 +359,13 @@ void main() {
           ..coordArrayEnd()
           ..geometryEnd(),
         def: '[-1.1,-1.1,0,0],[2.1,-2.5,0,4.99],[3.5,-3.49,-0.5,0]',
-        geoJson: '{"type":"LineString",coordinates:[[-1.1,-1.1,0,0],'
+        geoJson: '{"type":"LineString",'
+            '"bbox"=[-1.1,-3.49,-0.5,0,3.5,-1.1,0,4.99],'
+            '"coordinates":[[-1.1,-1.1,0,0],'
             '[2.1,-2.5,0,4.99],[3.5,-3.49,-0.5,0]]}',
-        geoJsonStrict: '{"type":"LineString",coordinates:[[-1.1,-1.1,0],'
+        geoJsonStrict: '{"type":"LineString",'
+            '"bbox"=[-1.1,-3.49,-0.5,3.5,-1.1,0],'
+            '"coordinates":[[-1.1,-1.1,0],'
             '[2.1,-2.5,0],[3.5,-3.49,-0.5]]}',
         wktLike: '-1.1 -1.1 0 0,2.1 -2.5 0 4.99,3.5 -3.49 -0.5 0',
         wkt: 'LINESTRING ZM(-1.1 -1.1 0 0,2.1 -2.5 0 4.99,3.5 -3.49 -0.5 0)',
@@ -349,9 +387,9 @@ void main() {
           ..coordArrayEnd()
           ..geometryEnd(),
         def: '[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]],[[38.19,57.4]]',
-        geoJson: '{"type":"MultiLineString",coordinates:[[[-1.1,-1.1],'
+        geoJson: '{"type":"MultiLineString","coordinates":[[[-1.1,-1.1],'
             '[2.1,-2.5],[3.5,-3.49]],[[38.19,57.4]]]}',
-        geoJsonStrict: '{"type":"MultiLineString",coordinates:[[[-1.1,-1.1],'
+        geoJsonStrict: '{"type":"MultiLineString","coordinates":[[[-1.1,-1.1],'
             '[2.1,-2.5],[3.5,-3.49]],[[38.19,57.4]]]}',
         wktLike: '(-1.1 -1.1,2.1 -2.5,3.5 -3.49),(38.19 57.4)',
         wkt: 'MULTILINESTRING((-1.1 -1.1,2.1 -2.5,3.5 -3.49),(38.19 57.4))',
@@ -372,9 +410,9 @@ void main() {
           ..geometryEnd(),
         def: '[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]',
         geoJson: '{"type":"Polygon",'
-            'coordinates:[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]}',
+            '"coordinates":[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]}',
         geoJsonStrict: '{"type":"Polygon",'
-            'coordinates:[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]}',
+            '"coordinates":[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]}',
         wktLike: '(10.1 10.1,5 9,12 4,10.1 10.1)',
         wkt: 'POLYGON((10.1 10.1,5 9,12 4,10.1 10.1))',
       );
@@ -396,9 +434,9 @@ void main() {
           ..geometryEnd(),
         def: '[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]',
         geoJson: '{"type":"MultiPolygon",'
-            'coordinates:[[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]]}',
+            '"coordinates":[[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]]}',
         geoJsonStrict: '{"type":"MultiPolygon",'
-            'coordinates:[[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]]}',
+            '"coordinates":[[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]]}',
         wktLike: '((10.1 10.1,5 9,12 4,10.1 10.1))',
         wkt: 'MULTIPOLYGON(((10.1 10.1,5 9,12 4,10.1 10.1)))',
       );
@@ -424,13 +462,13 @@ void main() {
           ..boundedArrayEnd()
           ..geometryEnd(),
         def: '[10.123,20.25,-30.95],[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]',
-        geoJson: '{"type":"GeometryCollection",geometries:[{"type":"Point",'
-            'coordinates:[10.123,20.25,-30.95]},{"type":"Polygon",'
-            'coordinates:[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]}]}',
+        geoJson: '{"type":"GeometryCollection","geometries":[{"type":"Point",'
+            '"coordinates":[10.123,20.25,-30.95]},{"type":"Polygon",'
+            '"coordinates":[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]}]}',
         geoJsonStrict:
-            '{"type":"GeometryCollection",geometries:[{"type":"Point",'
-            'coordinates:[10.123,20.25,-30.95]},{"type":"Polygon",'
-            'coordinates:[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]}]}',
+            '{"type":"GeometryCollection","geometries":[{"type":"Point",'
+            '"coordinates":[10.123,20.25,-30.95]},{"type":"Polygon",'
+            '"coordinates":[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]}]}',
         wktLike: '(10.123 20.25 -30.95),((10.1 10.1,5 9,12 4,10.1 10.1))',
         wkt: 'GEOMETRYCOLLECTION(POINT Z(10.123 20.25 -30.95),POLYGON((10.1 '
             '10.1,5 9,12 4,10.1 10.1)))',
