@@ -8,7 +8,7 @@ part of 'spatial.dart';
 
 /// A base interface for a series (list) of bounded items of type [E].
 abstract class BoundedSeries<E extends Bounded>
-    extends _BatchedSeries<BoundedSeries<E>, E> implements CoordinateWritable {
+    extends _BatchedSeries<BoundedSeries<E>, E> {
   /// Default `const` constructor to allow extending this abstract class.
   const BoundedSeries();
 
@@ -58,22 +58,12 @@ mixin BoundedSeriesMixin<E extends Bounded> implements BoundedSeries<E> {
         }
         return builder.bounds;
       });
-
-  @override
-  void writeTo(CoordinateWriter writer) {
-    writer.boundedArray(expectedCount: length);
-    for (final item in this) {
-      item.writeTo(writer);
-    }
-    writer.boundedArrayEnd();
-  }
 }
 
 /// Private implementation of [BoundedSeries].
 /// The implementation may change in future.
 class _BoundedSeriesView<E extends Bounded>
-    extends _BatchedSeriesView<BoundedSeries<E>, E>
-    with BoundedSeriesMixin<E>, CoordinateWritableMixin {
+    extends _BatchedSeriesView<BoundedSeries<E>, E> with BoundedSeriesMixin<E> {
   _BoundedSeriesView(Iterable<E> source, {Bounds? bounds})
       : super(
           source,

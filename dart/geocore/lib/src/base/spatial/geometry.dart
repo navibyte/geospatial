@@ -7,7 +7,7 @@
 part of 'spatial.dart';
 
 /// A base interface for geometry classes.
-abstract class Geometry extends Bounded {
+abstract class Geometry extends Bounded implements CoordinateWritable {
   /// Default `const` constructor to allow extending this abstract class.
   const Geometry();
 

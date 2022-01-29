@@ -75,9 +75,15 @@ class GeometryCollection<E extends Geometry> extends Geometry
   void writeTo(CoordinateWriter writer) {
     // note: no need to inform is3D/hasM of the first point, as sub items on
     // a collection are geometries, and each of them should inform those
-    writer.geometry(Geom.geometryCollection);
-    geometries.writeTo(writer);
-    writer.geometryEnd();
+    writer
+      ..geometry(Geom.geometryCollection)
+      ..boundedArray(expectedCount: geometries.length);
+    for (final item in geometries) {
+      item.writeTo(writer);
+    }
+    writer
+      ..boundedArrayEnd()
+      ..geometryEnd();
   }
 
   @override
