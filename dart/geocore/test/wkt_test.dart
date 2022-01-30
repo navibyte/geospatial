@@ -161,7 +161,8 @@ void main() {
 
       // MULTIPOLYGON EMPTY
       // (todo: implement geometry specific empty instances?)
-      expect(wktGeographic.parse('MULTIPOLYGON EMPTY'), Geometry.empty());
+      expect(wktGeographic.parse('MULTIPOLYGON EMPTY'),
+          Geometry.empty(Geom.multiPolygon));
 
       // LINESTRING (30 10, 10 30, 40 40)
       // LineString contains Point abstract types and Point2 are concrete types.
@@ -495,7 +496,7 @@ void main() {
         Point3m.from([1.0, 1.0, 5.0, 60.0]),
         Point.empty(),
         Point2m.from([1.0, 1.0, 80.0]),
-        Geometry.empty() // todo : "multipolygon empty" more specific
+        Geometry.empty(Geom.multiPolygon)
       ]);
 
       // Other geometry collection sample from wikipedia.

@@ -71,7 +71,7 @@ class BoundsBuilder {
   }
 
   /// The bounds for the current set of added points and bounds.
-  Bounds get bounds {
+  Bounds? get bounds {
     final p = _firstOfType;
     if (p != null) {
       if (_spatialDims == 2) {
@@ -97,6 +97,6 @@ class BoundsBuilder {
       }
     }
     // couldn't calculate
-    throw const FormatException('Could not calculate bounds.');
+    return null;
   }
 }

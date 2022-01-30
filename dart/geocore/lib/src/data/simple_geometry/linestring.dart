@@ -109,7 +109,10 @@ class LineString<T extends Point> extends Geometry
   bool get isEmpty => chain.isEmpty;
 
   @override
-  Bounds get bounds => chain.bounds;
+  Bounds? get bounds => chain.bounds;
+
+  @override
+  Bounds? get boundsExplicit => chain.boundsExplicit;
 
   @override
   Point? get onePoint => chain.isNotEmpty ? chain.first : null;
@@ -121,6 +124,7 @@ class LineString<T extends Point> extends Geometry
       type: Geom.lineString,
       coordinates: chain.writeCoordinates,
       coordType: point?.type,
+      bounds: boundsExplicit?.writeBounds,
     );
   }
 

@@ -67,7 +67,10 @@ class _FeatureCollectionBase<E extends Feature> extends FeatureCollection<E>
   List<Object?> get props => [features];
 
   @override
-  Bounds get bounds => _collectionBounds ?? features.bounds;
+  Bounds? get bounds => _collectionBounds ?? features.bounds;
+
+  @override
+  Bounds? get boundsExplicit => _collectionBounds ?? features.boundsExplicit;
 
   @override
   void writeGeometry(GeometryWriter writer) {

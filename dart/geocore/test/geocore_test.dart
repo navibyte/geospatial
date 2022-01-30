@@ -52,14 +52,14 @@ void main() {
       final intersect1 = fc.features
           .intersectByBounds(GeoBounds.bboxLonLat(101.05, 0.4, 102.05, 0.5));
       expect(intersect1.length, 2);
-      expect(intersect1.bounds.min, GeoPoint2.lonLat(102.0, 0.0));
-      expect(intersect1.bounds.max, GeoPoint2.lonLat(105.0, 1.0));
+      expect(intersect1.bounds!.min, GeoPoint2.lonLat(102.0, 0.0));
+      expect(intersect1.bounds!.max, GeoPoint2.lonLat(105.0, 1.0));
 
       final intersect2 = fc.features
           .intersectByBounds(GeoBounds.bboxLonLat(100.0, 0.4, 100.0, 0.5));
       expect(intersect2.length, 1);
-      expect(intersect2.bounds.min, GeoPoint2.lonLat(100.0, 0.0));
-      expect(intersect2.bounds.max, GeoPoint2.lonLat(101.0, 1.0));
+      expect(intersect2.bounds!.min, GeoPoint2.lonLat(100.0, 0.0));
+      expect(intersect2.bounds!.max, GeoPoint2.lonLat(101.0, 1.0));
 
       final intersect3 = fc.features
           .intersectByBounds(GeoBounds.bboxLonLat(100.0, 1.1, 105.0, 1.2));

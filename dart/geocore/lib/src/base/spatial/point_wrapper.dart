@@ -26,7 +26,10 @@ class PointWrapper<T extends Point<C>, C extends num> extends Point<C>
   bool get isEmpty => point.isEmpty;
 
   @override
-  Bounds get bounds => point.bounds;
+  Bounds? get bounds => point.bounds;
+
+  @override
+  Bounds? get boundsExplicit => point.boundsExplicit;
 
   @override
   int get coordinateDimension => point.coordinateDimension;

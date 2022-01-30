@@ -34,45 +34,45 @@ abstract class BoundedSeries<E extends Bounded>
   });
 }
 
-/// A partial implementation of [BoundedSeries] as a mixin.
-mixin BoundedSeriesMixin<E extends Bounded> implements BoundedSeries<E> {
-  /// Initializes a [Bounds] object for [source] of bounded objects.
-  ///
-  /// If [bounds] is non-null, then it's returned as is.
-  ///
-  /// In other cases the current implementation returns a [_LazyBounds]
-  /// instance with bounds lazy calculated when first needed. However this
-  /// implementation can internally be optimized in future (ie. bounds for
-  /// small series of bounded objects is initialized right a way, and for large
-  /// series with lazy calculations).
-  @protected
-  static Bounds initBounds<E extends Bounded>(
-    Iterable<E> source, {
-    Bounds? bounds,
-  }) =>
-      bounds ??
-      _LazyBounds.calculate(() {
-        final builder = BoundsBuilder();
-        for (final element in source) {
-          builder.addBounds(element.bounds);
-        }
-        return builder.bounds;
-      });
-}
-
 /// Private implementation of [BoundedSeries].
 /// The implementation may change in future.
 class _BoundedSeriesView<E extends Bounded>
-    extends _BatchedSeriesView<BoundedSeries<E>, E> with BoundedSeriesMixin<E> {
+    extends _BatchedSeriesView<BoundedSeries<E>, E>
+    implements BoundedSeries<E> {
   _BoundedSeriesView(Iterable<E> source, {Bounds? bounds})
-      : super(
-          source,
-          bounds: BoundedSeriesMixin.initBounds(source, bounds: bounds),
-        );
+      : super(source, boundsExplicit: bounds);
+
+  @override
+  Bounds? _calculateBounds() {
+    final builder = BoundsBuilder();
+    for (final element in this) {
+      final b = element.bounds;
+      if (b != null) {
+        builder.addBounds(b);
+      }
+    }
+    return builder.bounds;
+  }
 
   @override
   BoundedSeries<E> intersectByBounds(Bounds bounds, {bool lazy = false}) {
-    final intersected = where((element) => bounds.intersects(element.bounds));
+    // first check if current bounds (without triggering calculation) do
+    // not intersect at all => in such case, return empty series
+    final currBounds = _boundsCurrent;
+    if (currBounds != null && !bounds.intersects(currBounds)) {
+      return _BoundedSeriesView([]);
+    }
+    // do actual intersection
+    final intersected = where((element) {
+      final b = element.bounds;
+      if (b != null) {
+        //print('${bounds.intersects(b)} - $bounds / $b');
+        return bounds.intersects(b);
+      } else {
+        //print('no bounds for $element');
+        return false;
+      }
+    });
     return _BoundedSeriesView(
       lazy ? intersected : intersected.toList(growable: false),
     );
@@ -80,7 +80,21 @@ class _BoundedSeriesView<E extends Bounded>
 
   @override
   BoundedSeries<E> intersectByBounds2D(Bounds bounds, {bool lazy = false}) {
-    final intersected = where((element) => bounds.intersects2D(element.bounds));
+    // first check if current bounds (without triggering calculation) do
+    // not intersect at all => in such case, return empty series
+    final currBounds = _boundsCurrent;
+    if (currBounds != null && !bounds.intersects2D(currBounds)) {
+      return _BoundedSeriesView([]);
+    }
+    // do actual intersection
+    final intersected = where((element) {
+      final b = element.bounds;
+      if (b != null) {
+        return bounds.intersects2D(b);
+      } else {
+        return false;
+      }
+    });
     return _BoundedSeriesView(
       lazy ? intersected : intersected.toList(growable: false),
     );

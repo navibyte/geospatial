@@ -114,7 +114,10 @@ class Polygon<T extends Point> extends Geometry
   bool get isEmpty => exterior.isEmpty;
 
   @override
-  Bounds get bounds => exterior.bounds;
+  Bounds? get bounds => exterior.bounds;
+
+  @override
+  Bounds? get boundsExplicit => exterior.boundsExplicit;
 
   @override
   Point? get onePoint {
@@ -142,6 +145,7 @@ class Polygon<T extends Point> extends Geometry
         cw.coordArrayEnd();
       },
       coordType: point?.type,
+      bounds: boundsExplicit?.writeBounds,
     );
   }
 

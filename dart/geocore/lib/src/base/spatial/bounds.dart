@@ -6,9 +6,6 @@
 
 part of 'spatial.dart';
 
-/// A function to calculate bounds for some object like a geometry.
-typedef CalculateBounds<T extends Point> = Bounds<T> Function();
-
 /// A base interface for bounds (aka a bounding box in 2D).
 abstract class Bounds<T extends Point> extends Bounded
     implements _Coordinates, CoordinateFactory<Bounds<T>>, BoundsWritable {
@@ -78,15 +75,10 @@ abstract class Bounds<T extends Point> extends Bounded
   T get max;
 
   @override
-  Bounds<T> get bounds => this;
+  int get coordinateDimension => min.coordinateDimension;
 
   @override
-  int get coordinateDimension =>
-      math.min(min.coordinateDimension, max.coordinateDimension);
-
-  @override
-  int get spatialDimension =>
-      math.min(min.spatialDimension, max.spatialDimension);
+  int get spatialDimension => min.spatialDimension;
 
   @override
   bool get is3D => min.is3D;
@@ -281,6 +273,12 @@ class BoundsBase<T extends Point> extends Bounds<T> with EquatableMixin {
   T get max => _max;
 
   @override
+  Bounds<T> get bounds => this;
+
+  @override
+  Bounds<T>? get boundsExplicit => this;
+
+  @override
   Bounds<T> newFrom(Iterable<num> coords, {int? offset, int? length}) {
     CoordinateFactory.checkCoords(4, coords, offset: offset, length: length);
     final start = offset ?? 0;
@@ -307,71 +305,6 @@ class BoundsBase<T extends Point> extends Bounds<T> with EquatableMixin {
         min: min.project(projection, to: to),
         max: max.project(projection, to: to),
       );
-
-  @override
-  String toString() => valuesAsString();
-}
-
-/// [Bounds] with values calculated when first needed if not initialized.
-class _LazyBounds<T extends Point> extends Bounds<T> {
-  /// Bounds with nullable [bounds] and a mechanism to [calculate] as needed.
-  ///
-  /// You must provide either [bounds] or [calculate], both of them cannot be
-  /// null.
-  _LazyBounds(Bounds<T>? bounds, CalculateBounds<T>? calculate)
-      : _bounds = _validate<T>(bounds, calculate),
-        _calculate = calculate;
-
-  /// Initially unset bounds, but with a mechanism to [calculate] it as needed.
-  factory _LazyBounds.calculate(CalculateBounds<T> calculate) =>
-      _LazyBounds(null, calculate);
-
-  static Bounds<T>? _validate<T extends Point>(
-    Bounds<T>? bounds,
-    final CalculateBounds<T>? calculate,
-  ) {
-    if (bounds == null && calculate == null) {
-      throw ArgumentError('You must provide either bounds or calculate!');
-    }
-    return bounds;
-  }
-
-  Bounds<T>? _bounds;
-
-  final CalculateBounds<T>? _calculate;
-
-  Bounds<T> _ensureBounds() => _bounds ??= _calculate!.call();
-
-  @override
-  T get min => _ensureBounds().min;
-
-  @override
-  T get max => _ensureBounds().max;
-
-  @override
-  Bounds<T> newFrom(Iterable<num> coords, {int? offset, int? length}) =>
-      _ensureBounds().newFrom(coords, offset: offset, length: length);
-
-  @override
-  Bounds<T> transform(TransformPoint transform) =>
-      _ensureBounds().transform(transform);
-
-  @override
-  Bounds<R> project<R extends Point>(
-    Projection<R> projection, {
-    PointFactory<R>? to,
-  }) =>
-      _ensureBounds().project(projection, to: to);
-
-/*
-  // See lint => avoid_equals_and_hash_code_on_mutable_classes
-
-  @override
-  bool operator ==(Object other) => _ensureBounds() == other;
-
-  @override
-  int get hashCode => _ensureBounds().hashCode;
-*/
 
   @override
   String toString() => valuesAsString();

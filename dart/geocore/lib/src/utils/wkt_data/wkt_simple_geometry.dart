@@ -222,9 +222,19 @@ Geometry parseWktGeometry<T extends Point>(
                   return Point.empty(
                     type: CoordsExtension.select(hasZ: expectZ, hasM: expectM),
                   );
-                default:
-                  // todo : more specific empty geometries?
-                  return Geometry.empty();
+                // TODO(x): consider how to return empty geometries
+                case 1: // LINESTRING
+                  return Geometry.empty(Geom.lineString);
+                case 2: // POLYGON
+                  return Geometry.empty(Geom.polygon);
+                case 3: // MULTIPOINT
+                  return Geometry.empty(Geom.multiPoint);
+                case 4: // MULTILINESTRING
+                  return Geometry.empty(Geom.multiLineString);
+                case 5: // MULTIPOLYGON
+                  return Geometry.empty(Geom.multiPolygon);
+                default: // case 6: // GEOMETRYCOLLECTION
+                  return Geometry.empty(Geom.geometryCollection);
               }
             } else {
               throw _invalidWkt(text);

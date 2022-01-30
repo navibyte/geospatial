@@ -63,7 +63,10 @@ class GeometryCollection<E extends Geometry> extends Geometry
   bool get isEmpty => geometries.isEmpty;
 
   @override
-  Bounds get bounds => geometries.bounds;
+  Bounds? get bounds => geometries.bounds;
+
+  @override
+  Bounds? get boundsExplicit => geometries.boundsExplicit;
 
   @override
   Point? get onePoint =>
@@ -80,11 +83,7 @@ class GeometryCollection<E extends Geometry> extends Geometry
       geometries
           .map((item) => (GeometryWriter writer) => item.writeGeometry(writer)),
       expectedCount: geometries.length,
-      /* TODO(x): bounds
-      bounds: geometries.explicitBounds ? 
-        geometries.bounds.writeBounds
-       : null,
-       */
+      bounds: boundsExplicit?.writeBounds,
     );
   }
 
@@ -153,7 +152,10 @@ class MultiPoint<E extends Point> extends Geometry
   bool get isEmpty => points.isEmpty;
 
   @override
-  Bounds get bounds => points.bounds;
+  Bounds? get bounds => points.bounds;
+
+  @override
+  Bounds? get boundsExplicit => points.boundsExplicit;
 
   @override
   Point? get onePoint => points.isNotEmpty ? points.first : null;
@@ -168,6 +170,7 @@ class MultiPoint<E extends Point> extends Geometry
       type: Geom.multiPoint,
       coordinates: points.writeCoordinates,
       coordType: point?.type,
+      bounds: boundsExplicit?.writeBounds,
     );
   }
 
@@ -242,7 +245,10 @@ class MultiLineString<T extends Point> extends Geometry
   bool get isEmpty => lineStrings.isEmpty;
 
   @override
-  Bounds get bounds => lineStrings.bounds;
+  Bounds? get bounds => lineStrings.bounds;
+
+  @override
+  Bounds? get boundsExplicit => lineStrings.boundsExplicit;
 
   @override
   Point? get onePoint =>
@@ -264,6 +270,7 @@ class MultiLineString<T extends Point> extends Geometry
         cw.coordArrayEnd();
       },
       coordType: point?.type,
+      bounds: boundsExplicit?.writeBounds,
     );
   }
 
@@ -342,7 +349,10 @@ class MultiPolygon<T extends Point> extends Geometry
   bool get isEmpty => polygons.isEmpty;
 
   @override
-  Bounds get bounds => polygons.bounds;
+  Bounds? get bounds => polygons.bounds;
+
+  @override
+  Bounds? get boundsExplicit => polygons.boundsExplicit;
 
   @override
   Point? get onePoint => polygons.isNotEmpty ? polygons.first.onePoint : null;
@@ -367,6 +377,7 @@ class MultiPolygon<T extends Point> extends Geometry
         cw.coordArrayEnd();
       },
       coordType: point?.type,
+      bounds: boundsExplicit?.writeBounds,
     );
   }
 

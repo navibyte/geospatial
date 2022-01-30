@@ -126,27 +126,6 @@ mixin PointSeriesMixin<E extends Point> implements PointSeries<E> {
   @override
   num m(int index) => this[index].m;
 
-  /// Initializes a [Bounds] object for [source] points.
-  ///
-  /// If [bounds] is non-null, then it's returned as is.
-  ///
-  /// In other cases the current implementation returns a [_LazyBounds]
-  /// instance with bounds lazy calculated when first needed. However this
-  /// implementation can internally be optimized in future (ie. bounds for
-  /// small series of points is initialized right a way, and for large
-  /// series with lazy calculations).
-  @protected
-  static Bounds initBounds<T extends Point>(
-    Iterable<T> source, {
-    Bounds? bounds,
-  }) =>
-      bounds ??
-      _LazyBounds.calculate(() {
-        final builder = BoundsBuilder();
-        source.forEach(builder.addPoint);
-        return builder.bounds;
-      });
-
   @override
   void writeCoordinates(CoordinateWriter writer) {
     writer.coordArray(expectedCount: length);
@@ -169,16 +148,26 @@ mixin PointSeriesMixin<E extends Point> implements PointSeries<E> {
 class _PointSeriesView<E extends Point>
     extends _BatchedSeriesView<PointSeries<E>, E> with PointSeriesMixin<E> {
   _PointSeriesView(Iterable<E> source, {Bounds? bounds})
-      : super(
-          source,
-          bounds: PointSeriesMixin.initBounds<E>(
-            source,
-            bounds: bounds,
-          ),
-        );
+      : super(source, boundsExplicit: bounds);
+
+  @override
+  Bounds? _calculateBounds() {
+    final builder = BoundsBuilder();
+    for (final point in this) {
+      builder.addPoint(point);
+    }
+    return builder.bounds;
+  }
 
   @override
   PointSeries<E> intersectByBounds(Bounds bounds, {bool lazy = false}) {
+    // first check if current bounds (without triggering calculation) do
+    // not intersect at all => in such case, return empty series
+    final currBounds = _boundsCurrent;
+    if (currBounds != null && !bounds.intersects(currBounds)) {
+      return _PointSeriesView([]);
+    }
+    // do actual intersection
     final intersected = where((point) => bounds.intersectsPoint(point));
     return _PointSeriesView(
       lazy ? intersected : intersected.toList(growable: false),
@@ -187,6 +176,13 @@ class _PointSeriesView<E extends Point>
 
   @override
   PointSeries<E> intersectByBounds2D(Bounds bounds, {bool lazy = false}) {
+    // first check if current bounds (without triggering calculation) do
+    // not intersect at all => in such case, return empty series
+    final currBounds = _boundsCurrent;
+    if (currBounds != null && !bounds.intersects2D(currBounds)) {
+      return _PointSeriesView([]);
+    }
+    // do actual intersection
     final intersected = where((point) => bounds.intersectsPoint2D(point));
     return _PointSeriesView(
       lazy ? intersected : intersected.toList(growable: false),

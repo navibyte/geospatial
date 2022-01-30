@@ -40,7 +40,10 @@ abstract class Point<C extends num> extends Geometry
   int get dimension => 0;
 
   @override
-  Bounds get bounds => Bounds.of(min: this, max: this);
+  Bounds? get bounds => Bounds.of(min: this, max: this);
+
+  @override
+  Bounds? get boundsExplicit => Bounds.of(min: this, max: this);
 
   @override
   Point? get onePoint => this;
@@ -265,7 +268,10 @@ class _PointEmpty<C extends num> extends Point<C> with EquatableMixin {
   final Coords type;
 
   @override
-  Bounds get bounds => Bounds.of(min: this, max: this);
+  Bounds? get bounds => null;
+
+  @override
+  Bounds? get boundsExplicit => null;
 
   @override
   bool get isEmpty => true;

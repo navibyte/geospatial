@@ -13,11 +13,20 @@ abstract class _BoundedBase {
   /// Default `const` constructor to allow extending this abstract class.
   const _BoundedBase();
 
-  /// The [bounds] geometry for this object.
+  /// The [bounds] for this object (could be calculated if not explicitely set).
   ///
   /// Please note that in some cases bounds could be pre-calculated but it's
   /// possible that accessing this property may cause extensive calculations.
-  Bounds get bounds;
+  /// 
+  /// For some bounded objects (like an empty collections) bounds cannot be 
+  /// resolved at all. In such case, the null value is returned.
+  Bounds? get bounds;
+
+  /// The explicit [bounds] for this object when available.
+  ///
+  /// Accessing this should never trigger extensive calculations. That is, if
+  /// bounds is not known, then returns the null value.
+  Bounds? get boundsExplicit;
 }
 
 /// A base interface for classes that know their [bounds].
