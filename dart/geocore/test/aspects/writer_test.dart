@@ -478,7 +478,7 @@ void main() {
 }
 
 void _testAllWriters(
-  void Function(CoordinateWriter writer) content, {
+  void Function(GeometryWriter writer) content, {
   required String def,
   required String geoJson,
   required String geoJsonStrict,
@@ -523,12 +523,12 @@ void _testAllWriters(
 }
 
 void _testWriter(
-  CoordinateFormat format,
-  void Function(CoordinateWriter writer) content, {
+  FeaturesFormat format,
+  void Function(GeometryWriter writer) content, {
   required String expected,
   int? decimals,
 }) {
-  final writer = format.text(decimals: decimals);
+  final writer = format.geometryToText(decimals: decimals);
   content(writer);
   expect(writer.toString(), expected);
 }

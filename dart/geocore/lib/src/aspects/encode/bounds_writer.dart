@@ -8,7 +8,6 @@
 typedef WriteBounds = void Function(BoundsWriter writer);
 
 /// An interface to write bounds objects into some content format.
-// ignore: one_member_abstracts
 abstract class BoundsWriter {
   /// Writes given bounds coordinates.
   void coordBounds({
@@ -21,4 +20,12 @@ abstract class BoundsWriter {
     num? maxZ,
     num? maxM,
   });
+
+  /// A string representation of content already written to this (text) writer.
+  ///
+  /// Must return a valid string representation when this writer is writing to
+  /// a text output. If an output does not support a string representation then
+  /// returned representation is undefined.
+  @override
+  String toString();
 }

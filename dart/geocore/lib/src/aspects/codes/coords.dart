@@ -4,18 +4,26 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// An enum for `coordinate` types.
+/// An enum for coordinate types.
 enum Coords {
   /// Coordinates are `2D`, with points missing Z and M coordinates.
+  /// 
+  /// That is points are expected to be (x, y) or (lon, lat).
   is2D,
 
   /// Coordinates are `3D`, with points containing Z (or elev) coordinate.
+  /// 
+  /// That is points are expected to be (x, y, z) or (lon, lat, elev).
   is3D,
 
   /// Coordinates are both `2D` and `measured`, with points containing M.
+  /// 
+  /// That is points are expected to be (x, y, m) or (lon, lat, m).
   is2DAndMeasured,
 
   /// Coordinates are both `3D` and `measured`, with points containing Z and M.
+  /// 
+  /// That is points are expected to be (x, y, z, m) or (lon, lat, elev, m).
   is3DAndMeasured,
 }
 

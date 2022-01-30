@@ -9,8 +9,9 @@ import 'dart:math' as math;
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-import '/src/aspects/schema.dart';
-import '/src/aspects/writer.dart';
+import '/src/aspects/codes.dart';
+import '/src/aspects/encode.dart';
+import '/src/aspects/format.dart';
 import '/src/base/spatial.dart';
 import '/src/utils/wkt_data.dart';
 
@@ -20,7 +21,7 @@ import 'polygon.dart';
 /// A geometry collection.
 @immutable
 class GeometryCollection<E extends Geometry> extends Geometry
-    with EquatableMixin, CoordinateWritableMixin {
+    with EquatableMixin, GeometryWritableMixin {
   // note : mixins must be on that order (need toString from the latter)
 
   /// Creates [GeometryCollection] from [geometries].
@@ -72,7 +73,7 @@ class GeometryCollection<E extends Geometry> extends Geometry
   List<Object?> get props => [geometries];
 
   @override
-  void writeTo(CoordinateWriter writer) {
+  void writeTo(GeometryWriter writer) {
     // note: no need to inform is3D/hasM of the first point, as sub items on
     // a collection are geometries, and each of them should inform those
     writer
@@ -109,7 +110,7 @@ class GeometryCollection<E extends Geometry> extends Geometry
 /// A multi point geometry.
 @immutable
 class MultiPoint<E extends Point> extends Geometry
-    with EquatableMixin, CoordinateWritableMixin {
+    with EquatableMixin, GeometryWritableMixin {
   // note : mixins must be on that order (need toString from the latter)
 
   /// Create [MultiPoint] from [points].
@@ -160,7 +161,7 @@ class MultiPoint<E extends Point> extends Geometry
   List<Object?> get props => [points];
 
   @override
-  void writeTo(CoordinateWriter writer) {
+  void writeTo(GeometryWriter writer) {
     final point = onePoint;
     writer.geometry(Geom.multiPoint, expectedType: point?.type);
     points.writeTo(writer);
@@ -182,7 +183,7 @@ class MultiPoint<E extends Point> extends Geometry
 /// A multi line string geometry.
 @immutable
 class MultiLineString<T extends Point> extends Geometry
-    with EquatableMixin, CoordinateWritableMixin {
+    with EquatableMixin, GeometryWritableMixin {
   // note : mixins must be on that order (need toString from the latter)
 
   /// Create a multi line string from [lineStrings].
@@ -248,7 +249,7 @@ class MultiLineString<T extends Point> extends Geometry
   List<Object?> get props => [lineStrings];
 
   @override
-  void writeTo(CoordinateWriter writer) {
+  void writeTo(GeometryWriter writer) {
     final point = onePoint;
     writer
       ..geometry(Geom.multiLineString, expectedType: point?.type)
@@ -281,7 +282,7 @@ class MultiLineString<T extends Point> extends Geometry
 /// A multi polygon geometry.
 @immutable
 class MultiPolygon<T extends Point> extends Geometry
-    with EquatableMixin, CoordinateWritableMixin {
+    with EquatableMixin, GeometryWritableMixin {
   // note : mixins must be on that order (need toString from the latter)
 
   /// Create [MultiPolygon] from [polygons].
@@ -345,7 +346,7 @@ class MultiPolygon<T extends Point> extends Geometry
   List<Object?> get props => [polygons];
 
   @override
-  void writeTo(CoordinateWriter writer) {
+  void writeTo(GeometryWriter writer) {
     final point = onePoint;
     writer
       ..geometry(Geom.multiPolygon, expectedType: point?.type)

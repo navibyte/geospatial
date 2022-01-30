@@ -4,18 +4,20 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'coordinate_format.dart';
-import 'coordinate_writer.dart';
+import '/src/aspects/encode.dart';
+
+import 'features_format.dart';
+import 'geometry_format.dart';
 
 /// An interface defining the capability to write objects with coordinate data.
-abstract class CoordinateWritable {
+abstract class GeometryWritable {
   /// Writes this object to [writer].
-  void writeTo(CoordinateWriter writer);
+  void writeTo(GeometryWriter writer);
 
   /// A string representation of this object, with [format] applied.
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
-  String toStringAs({CoordinateFormat format = defaultFormat, int? decimals});
+  String toStringAs({GeometryFormat format = defaultFormat, int? decimals});
 
   /// A string representation of this object, with the [defaultFormat] applied.
   @override
@@ -23,17 +25,17 @@ abstract class CoordinateWritable {
 }
 
 /// A mixin with the base capability to write objects with coordinate data.
-mixin CoordinateWritableMixin implements CoordinateWritable {
+mixin GeometryWritableMixin implements GeometryWritable {
   @override
-  String toStringAs({CoordinateFormat format = defaultFormat, int? decimals}) {
-    final writer = format.text(decimals: decimals);
+  String toStringAs({GeometryFormat format = defaultFormat, int? decimals}) {
+    final writer = format.geometryToText(decimals: decimals);
     writeTo(writer);
     return writer.toString();
   }
 
   @override
   String toString() {
-    final writer = defaultFormat.text();
+    final writer = defaultFormat.geometryToText();
     writeTo(writer);
     return writer.toString();
   }

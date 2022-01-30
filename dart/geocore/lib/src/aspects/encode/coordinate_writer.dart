@@ -4,32 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/aspects/schema.dart';
-
-import 'bounds_writer.dart';
-
 /// An interface to write objects with coordinate data into some content format.
-abstract class CoordinateWriter extends BoundsWriter {
-  /// Starts a section for a geometry of [type].
-  ///
-  /// Use [expectedType] to define the type of coordinates.
-  ///
-  /// An optional [bounds] function can be used to write geometry bounds. A
-  /// writer implementation may use it or ignore it.
-  void geometry(Geom type, {Coords? expectedType, WriteBounds? bounds});
-
-  /// Ends a section for a geometry.
-  void geometryEnd();
-
-  /// Writes an empty geometry of [type].
-  void emptyGeometry(Geom type);
-
-  /// Starts a section for an array of bounded objects.
-  void boundedArray({int? expectedCount});
-
-  /// Ends a section for an array of bounded objects.
-  void boundedArrayEnd();
-
+abstract class CoordinateWriter {
   /// Starts a section for an array of point coordinates.
   ///
   /// Coordinate arrays can be multi-dimensional, for example:

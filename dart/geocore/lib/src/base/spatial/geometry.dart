@@ -7,7 +7,7 @@
 part of 'spatial.dart';
 
 /// A base interface for geometry classes.
-abstract class Geometry extends Bounded implements CoordinateWritable {
+abstract class Geometry extends Bounded implements GeometryWritable {
   /// Default `const` constructor to allow extending this abstract class.
   const Geometry();
 
@@ -70,7 +70,7 @@ abstract class Geometry extends Bounded implements CoordinateWritable {
 /// The implementation may change in future.
 @immutable
 class _EmptyGeometry extends Geometry
-    with EquatableMixin, CoordinateWritableMixin {
+    with EquatableMixin, GeometryWritableMixin {
   const _EmptyGeometry();
 
   @override
@@ -89,7 +89,7 @@ class _EmptyGeometry extends Geometry
   Point? get onePoint => null;
 
   @override
-  void writeTo(CoordinateWriter writer) {
+  void writeTo(GeometryWriter writer) {
     // TODO(x): write empty geometry
   }
 

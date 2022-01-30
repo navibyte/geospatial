@@ -4,28 +4,16 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/aspects/schema.dart';
+import '/src/aspects/codes.dart';
+import '/src/aspects/encode.dart';
 import '/src/utils/num.dart';
 
-import 'bounds_writer.dart';
-import 'coordinate_writer.dart';
+import 'geometry_format.dart';
 
-/// A mixin specifying methods to format objects with coordinate data.
-mixin CoordinateFormat {
-  /// Returns a writer formatting string representations of coordinate data.
-  ///
-  /// When an optional [buffer] is given, then representations are written into
-  /// it (without clearing any content it might already contain).
-  ///
-  /// Use [decimals] to set a number of decimals (not applied if no decimals).
-  ///
-  /// After writing some objects with coordinate data into a writer, the string
-  /// representation can be accessed using `toString()` of it (or via [buffer]
-  /// when such is given).
-  CoordinateWriter text({StringSink? buffer, int? decimals});
-}
+/// A mixin for geospatial features (with geometries and coordinates) format.
+mixin FeaturesFormat implements GeometryFormat {}
 
-/// The default format for formatting objects with coordinate data.
+/// The default format for geospatial features.
 ///
 /// Rules applied by the format are aligned with GeoJSON.
 ///
@@ -47,7 +35,7 @@ mixin CoordinateFormat {
 /// * coordinates for other geometries with similar principles
 const defaultFormat = _DefaultFormat();
 
-/// Returns a format for formatting objects with coordinate data to GeoJSON.
+/// Returns a format for formatting geospatial features to GeoJSON.
 ///
 /// Rules applied by the format conforms with the GeoJSON formatting of
 /// coordinate lists and geometries.
@@ -110,10 +98,10 @@ const defaultFormat = _DefaultFormat();
 ///
 /// However when [strict] is set to true, then M coordinates are ignored from
 /// formatting.
-CoordinateFormat geoJsonFormat({bool strict = false}) =>
+FeaturesFormat geoJsonFormat({bool strict = false}) =>
     _GeoJsonFormat(strict: strict);
 
-/// The WKT (like) format for formatting objects with coordinate data.
+/// The WKT (like) format for geospatial features.
 ///
 /// Rules applied by the format are aligned with WKT (Well-known text
 /// representation of geometry) formatting of coordinate lists.
@@ -140,7 +128,7 @@ CoordinateFormat geoJsonFormat({bool strict = false}) =>
 /// [wktFormat] that formats them as polygons.
 const wktLikeFormat = _WktLikeFormat();
 
-/// The WKT format for formatting objects with coordinate data.
+/// The WKT format for geospatial features.
 ///
 /// Rules applied by the format conforms with WKT (Well-known text
 /// representation of geometry) formatting of coordinate lists and geometries.
@@ -177,41 +165,41 @@ const wktFormat = _WktFormat();
 // Private implementation code below.
 // The implementation may change in future.
 
-class _DefaultFormat with CoordinateFormat {
+class _DefaultFormat with FeaturesFormat {
   const _DefaultFormat();
 
   @override
-  CoordinateWriter text({StringSink? buffer, int? decimals}) =>
+  GeometryWriter geometryToText({StringSink? buffer, int? decimals}) =>
       _DefaultTextWriter(buffer: buffer, decimals: decimals);
 }
 
-class _GeoJsonFormat with CoordinateFormat {
+class _GeoJsonFormat with FeaturesFormat {
   const _GeoJsonFormat({this.strict = false});
 
   final bool strict;
 
   @override
-  CoordinateWriter text({StringSink? buffer, int? decimals}) =>
+  GeometryWriter geometryToText({StringSink? buffer, int? decimals}) =>
       _GeoJsonTextWriter(buffer: buffer, decimals: decimals, strict: strict);
 }
 
-class _WktLikeFormat with CoordinateFormat {
+class _WktLikeFormat with FeaturesFormat {
   const _WktLikeFormat();
 
   @override
-  CoordinateWriter text({StringSink? buffer, int? decimals}) =>
+  GeometryWriter geometryToText({StringSink? buffer, int? decimals}) =>
       _WktLikeTextWriter(buffer: buffer, decimals: decimals);
 }
 
-class _WktFormat with CoordinateFormat {
+class _WktFormat with FeaturesFormat {
   const _WktFormat();
 
   @override
-  CoordinateWriter text({StringSink? buffer, int? decimals}) =>
+  GeometryWriter geometryToText({StringSink? buffer, int? decimals}) =>
       _WktTextWriter(buffer: buffer, decimals: decimals);
 }
 
-abstract class _BaseTextWriter implements CoordinateWriter {
+abstract class _BaseTextWriter implements GeometryWriter {
   _BaseTextWriter({StringSink? buffer, this.decimals})
       : _buffer = buffer ?? StringBuffer();
 

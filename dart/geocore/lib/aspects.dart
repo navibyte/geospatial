@@ -7,11 +7,13 @@
 /// Geospatial *aspects* for `geocore` that can be used independently too.
 ///
 /// Contains following aspects or features:
-/// * *schema*: an enum for `geometry` types
-/// * *writer*: write objects with coordinate data to (text) formats
+/// * *codes*: enums for coordinate and geometry types
+/// * *encode*: write objects with coordinate data to (text) formats
+/// * *format*: some base formats including support for GeoJSON and WKT
 ///
 /// Usage: import `package:geocore/aspects.dart`
 library aspects;
 
-export 'src/aspects/schema.dart';
-export 'src/aspects/writer.dart';
+export 'src/aspects/codes.dart';
+export 'src/aspects/encode.dart';
+export 'src/aspects/format.dart';

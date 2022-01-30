@@ -7,8 +7,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-import '/src/aspects/schema.dart';
-import '/src/aspects/writer.dart';
+import '/src/aspects/codes.dart';
+import '/src/aspects/encode.dart';
+import '/src/aspects/format.dart';
 import '/src/base/spatial.dart';
 import '/src/utils/wkt_data.dart';
 
@@ -17,7 +18,7 @@ import 'linestring.dart';
 /// A polygon with an exterior and optional interior boundaries.
 @immutable
 class Polygon<T extends Point> extends Geometry
-    with EquatableMixin, CoordinateWritableMixin {
+    with EquatableMixin, GeometryWritableMixin {
   // note : mixins must be on that order (need toString from the latter)
 
   /// Create [Polygon] from [rings] with at least exterior boundary at index 0.
@@ -129,7 +130,7 @@ class Polygon<T extends Point> extends Geometry
       BoundedSeries<LineString<T>>.view(rings.skip(1));
 
   @override
-  void writeTo(CoordinateWriter writer) {
+  void writeTo(GeometryWriter writer) {
     final point = onePoint;
     writer
       ..geometry(Geom.polygon, expectedType: point?.type)

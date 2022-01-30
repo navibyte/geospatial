@@ -7,7 +7,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-import '/src/aspects/schema.dart';
+import '/src/aspects/codes.dart';
 import '/src/base/spatial.dart';
 import '/src/utils/geography.dart';
 import '/src/utils/num.dart';

@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// An enum for `geometry` types.
+/// An enum for geometry types.
 ///
 /// Geometry types introduced above are based on the
 /// [Simple Feature Access - Part 1: Common Architecture](https://www.ogc.org/standards/sfa)

@@ -145,7 +145,7 @@ abstract class Bounds<T extends Point> extends Geometry
   }
 
   @override
-  void writeTo(CoordinateWriter writer) {
+  void writeTo(GeometryWriter writer) {
     if (is3D) {
       if (hasM) {
         writer.coordBounds(
@@ -277,7 +277,7 @@ abstract class Bounds<T extends Point> extends Geometry
 /// An immutable bounds with min and max points for limits.
 @immutable
 class BoundsBase<T extends Point> extends Bounds<T>
-    with EquatableMixin, CoordinateWritableMixin {
+    with EquatableMixin, GeometryWritableMixin {
   /// Create bounds with required (and non-empty) [min] and [max] points.
   const BoundsBase({required T min, required T max})
       : _min = min,
@@ -331,7 +331,7 @@ class BoundsBase<T extends Point> extends Bounds<T>
 
 /// [Bounds] with values calculated when first needed if not initialized.
 class _LazyBounds<T extends Point> extends Bounds<T>
-    with CoordinateWritableMixin {
+    with GeometryWritableMixin {
   /// Bounds with nullable [bounds] and a mechanism to [calculate] as needed.
   ///
   /// You must provide either [bounds] or [calculate], both of them cannot be
@@ -401,7 +401,7 @@ class _LazyBounds<T extends Point> extends Bounds<T>
 const _emptyBounds = _EmptyBounds();
 
 @immutable
-class _EmptyBounds extends Bounds with EquatableMixin, CoordinateWritableMixin {
+class _EmptyBounds extends Bounds with EquatableMixin, GeometryWritableMixin {
   const _EmptyBounds();
 
   @override
