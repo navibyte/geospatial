@@ -155,9 +155,8 @@ void main() {
       // POINT EMPTY
       expect(wktGeographic.parse('POINT EMPTY'), Point.empty());
       expect(wktCartesian.parse('POINT M EMPTY'),
-          Point.empty(type: Coords.is2DAndMeasured));
-      expect(
-          wktGeographic.parse('POINT Z EMPTY'), Point.empty(type: Coords.is3D));
+          Point.empty(Coords.is2DAndMeasured));
+      expect(wktGeographic.parse('POINT Z EMPTY'), Point.empty(Coords.is3D));
 
       // MULTIPOLYGON EMPTY
       // (todo: implement geometry specific empty instances?)

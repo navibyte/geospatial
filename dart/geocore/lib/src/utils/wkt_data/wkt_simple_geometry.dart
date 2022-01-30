@@ -220,7 +220,7 @@ Geometry parseWktGeometry<T extends Point>(
               switch (type) {
                 case 0: // POINT
                   return Point.empty(
-                    type: CoordsExtension.select(hasZ: expectZ, hasM: expectM),
+                    CoordsExtension.select(hasZ: expectZ, hasM: expectM),
                   );
                 // TODO(x): consider how to return empty geometries
                 case 1: // LINESTRING

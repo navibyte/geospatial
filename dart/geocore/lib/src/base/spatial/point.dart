@@ -34,7 +34,10 @@ abstract class Point<C extends num> extends Geometry
   const Point();
 
   /// Create an empty point.
-  factory Point.empty({Coords type}) = _PointEmpty<C>;
+  factory Point.empty([Coords typeCoords]) = _PointEmpty<C>;
+
+  @override
+  Geom get typeGeom => Geom.point;
 
   @override
   int get dimension => 0;
@@ -215,7 +218,7 @@ abstract class Point<C extends num> extends Geometry
   void writeGeometry(GeometryWriter writer) => writer.geometry(
         type: Geom.point,
         coordinates: writeCoordinates,
-        coordType: type,
+        coordType: typeCoords,
       );
 
   @override
@@ -256,16 +259,16 @@ abstract class Point<C extends num> extends Geometry
 /// The implementation may change in future.
 @immutable
 class _PointEmpty<C extends num> extends Point<C> with EquatableMixin {
-  const _PointEmpty({this.type = Coords.is2D});
+  const _PointEmpty([this.typeCoords = Coords.is2D]);
 
   @override
-  bool get is3D => type.hasZ;
+  bool get is3D => typeCoords.hasZ;
 
   @override
-  bool get hasM => type.hasM;
+  bool get hasM => typeCoords.hasM;
 
   @override
-  final Coords type;
+  final Coords typeCoords;
 
   @override
   Bounds? get bounds => null;

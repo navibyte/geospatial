@@ -87,7 +87,7 @@ abstract class Bounds<T extends Point> extends Bounded
   bool get hasM => min.hasM;
 
   @override
-  Coords get type => min.type;
+  Coords get typeCoords => min.typeCoords;
 
   /// Writes coordinate values to [buffer] separated by [delimiter].
   ///

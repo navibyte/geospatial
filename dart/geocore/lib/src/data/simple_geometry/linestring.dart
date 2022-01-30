@@ -103,6 +103,9 @@ class LineString<T extends Point> extends Geometry
   final PointSeries<T> chain;
 
   @override
+  Geom get typeGeom => Geom.lineString;
+
+  @override
   int get dimension => type == LineStringType.ring ? 2 : 1;
 
   @override
@@ -123,7 +126,7 @@ class LineString<T extends Point> extends Geometry
     writer.geometry(
       type: Geom.lineString,
       coordinates: chain.writeCoordinates,
-      coordType: point?.type,
+      coordType: point?.typeCoords,
       bounds: boundsExplicit?.writeBounds,
     );
   }

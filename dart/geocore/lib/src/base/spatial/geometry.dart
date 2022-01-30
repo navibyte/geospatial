@@ -14,6 +14,9 @@ abstract class Geometry extends Bounded implements GeometryWritable {
   /// Creates an empty (non-existent) geometry.
   factory Geometry.empty(Geom type) = _EmptyGeometry;
 
+  /// The type of this geometry.
+  Geom get typeGeom;
+
   /// The topological dimension of this geometry.
   ///
   /// For example returns 0 for point geometries, 1 for linear geometries (like
@@ -71,9 +74,10 @@ abstract class Geometry extends Bounded implements GeometryWritable {
 @immutable
 class _EmptyGeometry extends Geometry
     with EquatableMixin, GeometryWritableMixin {
-  const _EmptyGeometry(this.type);
+  const _EmptyGeometry(this.typeGeom);
 
-  final Geom type;
+  @override
+  final Geom typeGeom;
 
   @override
   int get dimension => 0;
@@ -94,7 +98,7 @@ class _EmptyGeometry extends Geometry
   Point? get onePoint => null;
 
   @override
-  void writeGeometry(GeometryWriter writer) => writer.emptyGeometry(type);
+  void writeGeometry(GeometryWriter writer) => writer.emptyGeometry(typeGeom);
 
   @override
   Geometry transform(TransformPoint transform) => this;

@@ -83,7 +83,7 @@ abstract class _Coordinates extends _Measured {
   bool get is3D;
 
   /// Returns the type for coordinates.
-  Coords get type;
+  Coords get typeCoords;
 
   /// Writes coordinate values to [buffer] separated by [delimiter].
   ///

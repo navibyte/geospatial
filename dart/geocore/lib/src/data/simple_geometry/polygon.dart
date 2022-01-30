@@ -108,6 +108,9 @@ class Polygon<T extends Point> extends Geometry
   List<Object?> get props => [rings];
 
   @override
+  Geom get typeGeom => Geom.polygon;
+
+  @override
   int get dimension => 2;
 
   @override
@@ -144,7 +147,7 @@ class Polygon<T extends Point> extends Geometry
         }
         cw.coordArrayEnd();
       },
-      coordType: point?.type,
+      coordType: point?.typeCoords,
       bounds: boundsExplicit?.writeBounds,
     );
   }

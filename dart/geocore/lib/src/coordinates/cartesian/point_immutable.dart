@@ -111,7 +111,7 @@ class Point2 extends CartesianPoint<num> with EquatableMixin {
   bool get hasM => false;
 
   @override
-  Coords get type => Coords.is2D;
+  Coords get typeCoords => Coords.is2D;
 
   @override
   num operator [](int i) {
@@ -235,7 +235,7 @@ class Point2m extends Point2 {
   bool get hasM => true;
 
   @override
-  Coords get type => Coords.is2DAndMeasured;
+  Coords get typeCoords => Coords.is2DAndMeasured;
 
   @override
   num operator [](int i) {
@@ -362,7 +362,7 @@ class Point3 extends Point2 {
   bool get is3D => true;
 
   @override
-  Coords get type => Coords.is3D;
+  Coords get typeCoords => Coords.is3D;
 
   @override
   num operator [](int i) {
@@ -487,7 +487,7 @@ class Point3m extends Point3 {
   bool get hasM => true;
 
   @override
-  Coords get type => Coords.is3DAndMeasured;
+  Coords get typeCoords => Coords.is3DAndMeasured;
 
   @override
   num operator [](int i) {
@@ -620,7 +620,7 @@ class Point2i extends CartesianPoint<int> with EquatableMixin {
   bool get hasM => false;
 
   @override
-  Coords get type => Coords.is2D;
+  Coords get typeCoords => Coords.is2D;
 
   @override
   int operator [](int i) {
@@ -753,7 +753,7 @@ class Point3i extends Point2i {
   bool get is3D => true;
 
   @override
-  Coords get type => Coords.is3D;
+  Coords get typeCoords => Coords.is3D;
 
   @override
   int operator [](int i) {

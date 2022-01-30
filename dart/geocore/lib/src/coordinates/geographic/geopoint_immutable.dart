@@ -112,7 +112,7 @@ class GeoPoint2 extends GeoPoint with EquatableMixin {
   bool get hasM => false;
 
   @override
-  Coords get type => Coords.is2D;
+  Coords get typeCoords => Coords.is2D;
 
   @override
   double operator [](int i) {
@@ -257,7 +257,7 @@ class GeoPoint2m extends GeoPoint2 {
   bool get hasM => true;
 
   @override
-  Coords get type => Coords.is2DAndMeasured;
+  Coords get typeCoords => Coords.is2DAndMeasured;
 
   @override
   double operator [](int i) {
@@ -392,7 +392,7 @@ class GeoPoint3 extends GeoPoint2 {
   bool get is3D => true;
 
   @override
-  Coords get type => Coords.is3D;
+  Coords get typeCoords => Coords.is3D;
 
   @override
   double operator [](int i) {
@@ -536,7 +536,7 @@ class GeoPoint3m extends GeoPoint3 {
   bool get hasM => true;
 
   @override
-  Coords get type => Coords.is3DAndMeasured;
+  Coords get typeCoords => Coords.is3DAndMeasured;
 
   @override
   double operator [](int i) {

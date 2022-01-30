@@ -48,6 +48,9 @@ class GeometryCollection<E extends Geometry> extends Geometry
   final BoundedSeries<E> geometries;
 
   @override
+  Geom get typeGeom => Geom.geometryCollection;
+
+  @override
   int get dimension {
     // A base implementation for calculating a maximum dimension for a series by
     // looping through all items. Should be overridden to provide more efficient
@@ -146,6 +149,9 @@ class MultiPoint<E extends Point> extends Geometry
   final PointSeries<E> points;
 
   @override
+  Geom get typeGeom => Geom.multiPoint;
+
+  @override
   int get dimension => 0;
 
   @override
@@ -169,7 +175,7 @@ class MultiPoint<E extends Point> extends Geometry
     writer.geometry(
       type: Geom.multiPoint,
       coordinates: points.writeCoordinates,
-      coordType: point?.type,
+      coordType: point?.typeCoords,
       bounds: boundsExplicit?.writeBounds,
     );
   }
@@ -239,6 +245,9 @@ class MultiLineString<T extends Point> extends Geometry
   final BoundedSeries<LineString<T>> lineStrings;
 
   @override
+  Geom get typeGeom => Geom.multiLineString;
+
+  @override
   int get dimension => 1;
 
   @override
@@ -269,7 +278,7 @@ class MultiLineString<T extends Point> extends Geometry
         }
         cw.coordArrayEnd();
       },
-      coordType: point?.type,
+      coordType: point?.typeCoords,
       bounds: boundsExplicit?.writeBounds,
     );
   }
@@ -343,6 +352,9 @@ class MultiPolygon<T extends Point> extends Geometry
   final BoundedSeries<Polygon<T>> polygons;
 
   @override
+  Geom get typeGeom => Geom.multiPolygon;
+
+  @override
   int get dimension => 2;
 
   @override
@@ -376,7 +388,7 @@ class MultiPolygon<T extends Point> extends Geometry
         }
         cw.coordArrayEnd();
       },
-      coordType: point?.type,
+      coordType: point?.typeCoords,
       bounds: boundsExplicit?.writeBounds,
     );
   }
