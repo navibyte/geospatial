@@ -565,10 +565,6 @@ class _WktLikeTextWriter extends _BaseTextWriter {
   _WktLikeTextWriter({StringSink? buffer, int? decimals})
       : super(buffer: buffer, decimals: decimals);
 
-  // no need for stack for these, as applicable only on leaf geometry elements
-  bool? _allowToPrintZ;
-  bool? _allowToPrintM;
-
   @override
   void _startBoundedArray({int? expectedCount}) {
     if (_markItem()) {
@@ -653,13 +649,6 @@ class _WktLikeTextWriter extends _BaseTextWriter {
     }
   }
 
-  @override
-  void _endGeometry({required bool isOutputLevelled}) {
-    _allowToPrintZ = null;
-    _allowToPrintM = null;
-    super._endGeometry(isOutputLevelled: isOutputLevelled);
-  }
-
   void _printPoint(
     num x,
     num y,
@@ -668,21 +657,31 @@ class _WktLikeTextWriter extends _BaseTextWriter {
   ) {
     // check optional expected coordinate type
     final coordType = _coordTypes.isNotEmpty ? _coordTypes.last : null;
-    // check whether explicitely asked printing or value exists
-    final hasZ = coordType?.hasZ ?? z != null;
-    final hasM = coordType?.hasM ?? m != null;
-    // "allow" variable are analyzed only once for point coords of a geometry
-    if (_allowToPrintZ == null && hasZ) {
-      _allowToPrintZ = hasZ;
+    final bool printM;
+    final bool printZ;
+    final num zValue;
+    if (coordType != null) {
+      // coordinate type specified (in wkt specifiers Z, M or ZM)
+      //
+      // check whether explicitely asked printing
+      printZ = coordType.hasZ;
+      printM = coordType.hasM;
+      zValue = z ?? 0;
+    } else {
+      // coordinate type unspecified (z is 3rd if exists, m is 4th if exists)
+      // (this is similar rule to GeoJSON format)
+      //
+      // print M when
+      // - explicitely asked or
+      // - M exists and not explicitely denied
+      printM = coordType?.hasM ?? m != null;
+      // print Z when
+      // - if M is printed too (M should be 4th element, so need Z as 3rd)
+      // - explicitely asked
+      // - Z exists and not explicitely denied
+      printZ = printM || (coordType?.hasZ ?? z != null);
+      zValue = coordType?.hasZ ?? true ? z ?? 0 : 0;
     }
-    if (_allowToPrintM == null && hasM) {
-      _allowToPrintZ ??= false;
-      _allowToPrintM = hasM;
-    }
-    // print M if it's allowed for this geometry and there is M or it's asked
-    final printM = (_allowToPrintM ?? false) && hasM;
-    // print Z if it's allowed for this geometry and there is Z or M
-    final printZ = (_allowToPrintZ ?? false) && (hasZ || hasM);
     final dec = decimals;
     if (dec != null) {
       _buffer
@@ -692,7 +691,7 @@ class _WktLikeTextWriter extends _BaseTextWriter {
       if (printZ) {
         _buffer
           ..write(' ')
-          ..write(toStringAsFixedWhenDecimals(z ?? 0, dec));
+          ..write(toStringAsFixedWhenDecimals(zValue, dec));
       }
       if (printM) {
         _buffer
@@ -707,7 +706,7 @@ class _WktLikeTextWriter extends _BaseTextWriter {
       if (printZ) {
         _buffer
           ..write(' ')
-          ..write(z ?? 0);
+          ..write(zValue);
       }
       if (printM) {
         _buffer
