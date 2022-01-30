@@ -103,8 +103,8 @@ abstract class _Coordinates extends _Measured {
   });
 }
 
-/// An interface to create [Geometry] instances of the type [T].
-abstract class CoordinateFactory<T extends Geometry> implements _Measured {
+/// An interface to create [Bounded] instances of the type [T].
+abstract class CoordinateFactory<T extends Bounded> implements _Measured {
   /// Creates a new [Geometry] instance of a type compatible with this object.
   ///
   /// Values for a new geometry are given by [coords] containing `num` values

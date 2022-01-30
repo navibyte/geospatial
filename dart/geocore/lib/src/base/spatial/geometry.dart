@@ -41,8 +41,8 @@ abstract class Geometry extends Bounded implements GeometryWritable {
   /// True if this geometry is NOT considered empty without data or coordinates.
   bool get isNotEmpty => !isEmpty;
 
-  /// Returns one of points contained by this geometry if it's not empty. 
-  /// 
+  /// Returns one of points contained by this geometry if it's not empty.
+  ///
   /// An immutable instance of the geometry class should always return the same
   /// point instance. For example a line string could return the first point of
   /// a chain.
@@ -83,13 +83,13 @@ class _EmptyGeometry extends Geometry
   bool get isNotEmpty => false;
 
   @override
-  Bounds get bounds => Bounds.empty();
-
+  Bounds get bounds => Bounds.of(min: Point.empty(), max: Point.empty());
+  
   @override
   Point? get onePoint => null;
 
   @override
-  void writeTo(GeometryWriter writer) {
+  void writeGeometry(GeometryWriter writer) {
     // TODO(x): write empty geometry
   }
 

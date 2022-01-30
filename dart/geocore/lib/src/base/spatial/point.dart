@@ -29,7 +29,7 @@ part of 'spatial.dart';
 /// (x, y, z, m).
 abstract class Point<C extends num> extends Geometry
     with GeometryWritableMixin
-    implements _Coordinates, PointFactory {
+    implements _Coordinates, PointFactory, CoordinateWritable {
   /// Default `const` constructor to allow extending this abstract class.
   const Point();
 
@@ -198,7 +198,7 @@ abstract class Point<C extends num> extends Geometry
   /// example "10.1 20.2" is returned for a point with x=10.1 and y=20.2.
   ///
   /// Use [fractionDigits] to set a number of decimals to nums with decimals.
-  @Deprecated('Use toStringAs() or toStringWkt() instead')
+  @Deprecated('Use toStringAs() instead')
   String toText({
     String delimiter = ' ',
     int? fractionDigits,
@@ -209,26 +209,19 @@ abstract class Point<C extends num> extends Geometry
   }
 
   @override
-  void writeTo(GeometryWriter writer, {bool onlyCoordinates = false}) {
-    if (onlyCoordinates) {
-      writer.coordPoint(
+  void writeGeometry(GeometryWriter writer) => writer.geometry(
+        type: Geom.point,
+        coordinates: writeCoordinates,
+        coordType: type,
+      );
+
+  @override
+  void writeCoordinates(CoordinateWriter writer) => writer.coordPoint(
         x: x,
         y: y,
         z: is3D ? z : null,
         m: hasM ? m : null,
       );
-    } else {
-      writer
-        ..geometry(Geom.point, expectedType: type)
-        ..coordPoint(
-          x: x,
-          y: y,
-          z: is3D ? z : null,
-          m: hasM ? m : null,
-        )
-        ..geometryEnd();
-    }
-  }
 
   /// Copies this point with the compatible type and sets given coordinates.
   ///
@@ -272,7 +265,7 @@ class _PointEmpty<C extends num> extends Point<C> with EquatableMixin {
   final Coords type;
 
   @override
-  Bounds get bounds => Bounds.empty();
+  Bounds get bounds => Bounds.of(min: this, max: this);
 
   @override
   bool get isEmpty => true;

@@ -6,36 +6,40 @@
 
 import '/src/aspects/codes.dart';
 
+import 'base_writer.dart';
 import 'bounds_writer.dart';
 import 'coordinate_writer.dart';
 
+/// A function that is capable of writing a geometry to [writer].
+typedef WriteGeometry = void Function(GeometryWriter writer);
+
 /// An interface to write geometry objects into some content format.
-abstract class GeometryWriter implements CoordinateWriter, BoundsWriter {
-  /// Starts a section for a geometry of [type].
+abstract class GeometryWriter extends BaseWriter { 
+  /// Writes a geometry of [type] with [coordinates].
   ///
-  /// Use [expectedType] to define the type of coordinates.
+  /// Use [coordType] to define the type of coordinates.
   ///
   /// An optional [bounds] function can be used to write geometry bounds. A
   /// writer implementation may use it or ignore it.
-  void geometry(Geom type, {Coords? expectedType, WriteBounds? bounds});
+  void geometry({
+    required Geom type,
+    required WriteCoordinates coordinates,
+    Coords? coordType,
+    WriteBounds? bounds,
+  });
 
-  /// Ends a section for a geometry.
-  void geometryEnd();
+  /// Writes a geometry collection of [geometries].
+  ///
+  /// An optional [expectedCount], when given, hints the count of geometries.
+  ///
+  /// An optional [bounds] function can be used to write geometry collection
+  /// bounds. A writer implementation may use it or ignore it.
+  void geometryCollection(
+    Iterable<WriteGeometry> geometries, {
+    int? expectedCount,
+    WriteBounds? bounds,
+  });
 
   /// Writes an empty geometry of [type].
   void emptyGeometry(Geom type);
-
-  /// Starts a section for an array of bounded objects.
-  void boundedArray({int? expectedCount});
-
-  /// Ends a section for an array of bounded objects.
-  void boundedArrayEnd();
-
-  /// A string representation of content already written to this (text) writer.
-  ///
-  /// Must return a valid string representation when this writer is writing to
-  /// a text output. If an output does not support a string representation then
-  /// returned representation is undefined.
-  @override
-  String toString();
 }

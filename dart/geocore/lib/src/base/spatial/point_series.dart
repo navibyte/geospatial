@@ -13,7 +13,7 @@ part of 'spatial.dart';
 /// any other collection for points.
 abstract class PointSeries<E extends Point>
     extends _BatchedSeries<PointSeries<E>, E>
-    implements Bounded, GeometryWritable {
+    implements Bounded, CoordinateWritable {
   /// Default `const` constructor to allow extending this abstract class.
   const PointSeries();
 
@@ -148,20 +148,26 @@ mixin PointSeriesMixin<E extends Point> implements PointSeries<E> {
       });
 
   @override
-  void writeTo(GeometryWriter writer) {
+  void writeCoordinates(CoordinateWriter writer) {
     writer.coordArray(expectedCount: length);
     for (final point in this) {
-      point.writeTo(writer, onlyCoordinates: true);
+      point.writeCoordinates(writer);
     }
     writer.coordArrayEnd();
+  }
+
+  @override
+  String toString() {
+    final writer = defaultFormat.coordinatesToText();
+    writeCoordinates(writer);
+    return writer.toString();
   }
 }
 
 /// Private implementation of [PointSeries].
 /// The implementation may change in future.
 class _PointSeriesView<E extends Point>
-    extends _BatchedSeriesView<PointSeries<E>, E>
-    with PointSeriesMixin<E>, GeometryWritableMixin {
+    extends _BatchedSeriesView<PointSeries<E>, E> with PointSeriesMixin<E> {
   _PointSeriesView(Iterable<E> source, {Bounds? bounds})
       : super(
           source,

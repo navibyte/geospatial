@@ -159,7 +159,7 @@ const wktLikeFormat = _WktLikeFormat();
 /// Note that WKT does not specify bounding box formatting. Here bounding boxes
 /// are formatted as polygons. See also [wktLikeFormat] that formats them as a
 /// point series of two points (min, max).
-const wktFormat = _WktFormat();
+FeaturesFormat wktFormat() => const _WktFormat();
 
 // -----------------------------------------------------------------------------
 // Private implementation code below.
@@ -167,6 +167,14 @@ const wktFormat = _WktFormat();
 
 class _DefaultFormat with FeaturesFormat {
   const _DefaultFormat();
+
+  @override
+  BoundsWriter boundsToText({StringSink? buffer, int? decimals}) =>
+      _DefaultTextWriter(buffer: buffer, decimals: decimals);
+
+  @override
+  CoordinateWriter coordinatesToText({StringSink? buffer, int? decimals}) =>
+      _DefaultTextWriter(buffer: buffer, decimals: decimals);
 
   @override
   GeometryWriter geometryToText({StringSink? buffer, int? decimals}) =>
@@ -179,12 +187,28 @@ class _GeoJsonFormat with FeaturesFormat {
   final bool strict;
 
   @override
+  BoundsWriter boundsToText({StringSink? buffer, int? decimals}) =>
+      _GeoJsonTextWriter(buffer: buffer, decimals: decimals, strict: strict);
+
+  @override
+  CoordinateWriter coordinatesToText({StringSink? buffer, int? decimals}) =>
+      _GeoJsonTextWriter(buffer: buffer, decimals: decimals, strict: strict);
+
+  @override
   GeometryWriter geometryToText({StringSink? buffer, int? decimals}) =>
       _GeoJsonTextWriter(buffer: buffer, decimals: decimals, strict: strict);
 }
 
 class _WktLikeFormat with FeaturesFormat {
   const _WktLikeFormat();
+
+  @override
+  BoundsWriter boundsToText({StringSink? buffer, int? decimals}) =>
+      _WktLikeTextWriter(buffer: buffer, decimals: decimals);
+
+  @override
+  CoordinateWriter coordinatesToText({StringSink? buffer, int? decimals}) =>
+      _WktLikeTextWriter(buffer: buffer, decimals: decimals);
 
   @override
   GeometryWriter geometryToText({StringSink? buffer, int? decimals}) =>
@@ -195,11 +219,20 @@ class _WktFormat with FeaturesFormat {
   const _WktFormat();
 
   @override
+  BoundsWriter boundsToText({StringSink? buffer, int? decimals}) =>
+      _WktTextWriter(buffer: buffer, decimals: decimals);
+
+  @override
+  CoordinateWriter coordinatesToText({StringSink? buffer, int? decimals}) =>
+      _WktTextWriter(buffer: buffer, decimals: decimals);
+
+  @override
   GeometryWriter geometryToText({StringSink? buffer, int? decimals}) =>
       _WktTextWriter(buffer: buffer, decimals: decimals);
 }
 
-abstract class _BaseTextWriter implements GeometryWriter {
+abstract class _BaseTextWriter
+    implements GeometryWriter, CoordinateWriter, BoundsWriter {
   _BaseTextWriter({StringSink? buffer, this.decimals})
       : _buffer = buffer ?? StringBuffer();
 
@@ -209,26 +242,25 @@ abstract class _BaseTextWriter implements GeometryWriter {
   final List<bool> _hasItemsOnLevel = List.of([false]);
   final List<bool> _isCoordArrayOnLevel = List.of([false]);
 
-  // no need for stack for these, as applicable only on leaf geometry elements
-  Coords? _expectedType;
+  final List<Coords?> _coordTypes = [];
 
-  void _startGeometry({required bool isOutputLevelled, Coords? expectedType}) {
+  void _startGeometry({required bool isOutputLevelled, Coords? coordType}) {
     if (isOutputLevelled) {
       _hasItemsOnLevel.add(false);
       _isCoordArrayOnLevel.add(false);
     }
-    _expectedType = expectedType;
+    _coordTypes.add(coordType);
   }
 
   void _endGeometry({required bool isOutputLevelled}) {
-    _expectedType = null;
+    _coordTypes.removeLast();
     if (isOutputLevelled) {
       _hasItemsOnLevel.removeLast();
       _isCoordArrayOnLevel.removeLast();
     }
   }
 
-  void _startBoundedArray() {
+  void _startBoundedArray({int? expectedCount}) {
     _hasItemsOnLevel.add(false);
     _isCoordArrayOnLevel.add(false);
   }
@@ -262,12 +294,33 @@ abstract class _BaseTextWriter implements GeometryWriter {
   }
 
   @override
-  void geometry(Geom type, {Coords? expectedType, WriteBounds? bounds}) {
-    _startGeometry(isOutputLevelled: false, expectedType: expectedType);
+  void geometry({
+    required Geom type,
+    required WriteCoordinates coordinates,
+    Coords? coordType,
+    WriteBounds? bounds,
+  }) {
+    if (type.isCollection) {
+      geometryCollection([], bounds: bounds);
+    } else {
+      _startGeometry(isOutputLevelled: false, coordType: coordType);
+      coordinates.call(this);
+      _endGeometry(isOutputLevelled: false);
+    }
   }
 
   @override
-  void geometryEnd() {
+  void geometryCollection(
+    Iterable<WriteGeometry> geometries, {
+    int? expectedCount,
+    WriteBounds? bounds,
+  }) {
+    _startGeometry(isOutputLevelled: false);
+    _startBoundedArray(expectedCount: expectedCount);
+    for (final item in geometries) {
+      item.call(this);
+    }
+    _endBoundedArray();
     _endGeometry(isOutputLevelled: false);
   }
 
@@ -289,19 +342,19 @@ class _DefaultTextWriter extends _BaseTextWriter {
   final bool strict;
 
   @override
-  void boundedArray({int? expectedCount}) {
+  void _startBoundedArray({int? expectedCount}) {
     if (_markItem()) {
       _buffer.write(',');
     }
     if (_notAtRoot) {
       _buffer.write('[');
     }
-    _startBoundedArray();
+    super._startBoundedArray(expectedCount: expectedCount);
   }
 
   @override
-  void boundedArrayEnd() {
-    _endBoundedArray();
+  void _endBoundedArray() {
+    super._endBoundedArray();
     if (_notAtRoot) {
       _buffer.write(']');
     }
@@ -378,16 +431,18 @@ class _DefaultTextWriter extends _BaseTextWriter {
     num? z,
     num? m,
   ) {
+    // check optional expected coordinate type
+    final coordType = _coordTypes.isNotEmpty ? _coordTypes.last : null;
     // print M only in non-strict mode when
     // - explicitely asked or
     // - M exists and not explicitely denied
-    final printM = !strict && (_expectedType?.hasM ?? m != null);
+    final printM = !strict && (coordType?.hasM ?? m != null);
     // print Z when
     // - if M is printed too (M should be 4th element, so need Z as 3rd element)
     // - explicitely asked
     // - Z exists and not explicitely denied
-    final printZ = printM || (_expectedType?.hasZ ?? z != null);
-    final zValue = _expectedType?.hasZ ?? true ? z ?? 0 : 0;
+    final printZ = printM || (coordType?.hasZ ?? z != null);
+    final zValue = coordType?.hasZ ?? true ? z ?? 0 : 0;
     final dec = decimals;
     if (dec != null) {
       _buffer
@@ -433,27 +488,57 @@ class _GeoJsonTextWriter extends _DefaultTextWriter {
       _GeoJsonTextWriter(buffer: _buffer, decimals: decimals, strict: strict);
 
   @override
-  void geometry(Geom type, {Coords? expectedType, WriteBounds? bounds}) {
+  void geometry({
+    required Geom type,
+    required WriteCoordinates coordinates,
+    Coords? coordType,
+    WriteBounds? bounds,
+  }) {
+    if (type.isCollection) {
+      geometryCollection([], bounds: bounds);
+    } else {
+      if (_markItem()) {
+        _buffer.write(',');
+      }
+      _startGeometry(isOutputLevelled: true, coordType: coordType);
+      _buffer
+        ..write('{"type":"')
+        ..write(type.nameGeoJson)
+        ..write('"');
+      if (bounds != null) {
+        _buffer.write(',"bbox"=[');
+        bounds.call(_subWriter());
+        _buffer.write(']');
+      }
+      _buffer.write(',"coordinates":');
+      coordinates.call(this);
+      _buffer.write('}');
+      _endGeometry(isOutputLevelled: true);
+    }
+  }
+
+  @override
+  void geometryCollection(
+    Iterable<WriteGeometry> geometries, {
+    int? expectedCount,
+    WriteBounds? bounds,
+  }) {
     if (_markItem()) {
       _buffer.write(',');
     }
-    _startGeometry(isOutputLevelled: true, expectedType: expectedType);
-    _buffer
-      ..write('{"type":"')
-      ..write(type.nameGeoJson)
-      ..write('"');
+    _startGeometry(isOutputLevelled: true);
+    _buffer.write('{"type":"GeometryCollection"');
     if (bounds != null) {
       _buffer.write(',"bbox"=[');
       bounds.call(_subWriter());
       _buffer.write(']');
     }
-    _buffer.write(
-      type == Geom.geometryCollection ? ',"geometries":' : ',"coordinates":',
-    );
-  }
-
-  @override
-  void geometryEnd() {
+    _buffer.write(',"geometries":');
+    _startBoundedArray(expectedCount: expectedCount);
+    for (final item in geometries) {
+      item.call(this);
+    }
+    _endBoundedArray();
     _buffer.write('}');
     _endGeometry(isOutputLevelled: true);
   }
@@ -469,7 +554,6 @@ class _GeoJsonTextWriter extends _DefaultTextWriter {
       ..write(
         type == Geom.geometryCollection
             ? '","geometries":[]}'
-            // TODO(x): check how empty geometries should be written?
             : '","coordinates":[]}',
       );
   }
@@ -486,19 +570,19 @@ class _WktLikeTextWriter extends _BaseTextWriter {
   bool? _allowToPrintM;
 
   @override
-  void boundedArray({int? expectedCount}) {
+  void _startBoundedArray({int? expectedCount}) {
     if (_markItem()) {
       _buffer.write(',');
     }
     if (_notAtRoot) {
       _buffer.write('(');
     }
-    _startBoundedArray();
+    super._startBoundedArray();
   }
 
   @override
-  void boundedArrayEnd() {
-    _endBoundedArray();
+  void _endBoundedArray() {
+    super._endBoundedArray();
     if (_notAtRoot) {
       _buffer.write(')');
     }
@@ -582,9 +666,11 @@ class _WktLikeTextWriter extends _BaseTextWriter {
     num? z,
     num? m,
   ) {
+    // check optional expected coordinate type
+    final coordType = _coordTypes.isNotEmpty ? _coordTypes.last : null;
     // check whether explicitely asked printing or value exists
-    final hasZ = _expectedType?.hasZ ?? z != null;
-    final hasM = _expectedType?.hasM ?? m != null;
+    final hasZ = coordType?.hasZ ?? z != null;
+    final hasM = coordType?.hasM ?? m != null;
     // "allow" variable are analyzed only once for point coords of a geometry
     if (_allowToPrintZ == null && hasZ) {
       _allowToPrintZ = hasZ;
@@ -639,21 +725,46 @@ class _WktTextWriter extends _WktLikeTextWriter {
       : super(buffer: buffer, decimals: decimals);
 
   @override
-  void geometry(Geom type, {Coords? expectedType, WriteBounds? bounds}) {
-    if (_markItem()) {
-      _buffer.write(',');
-    }
-    _startGeometry(isOutputLevelled: true, expectedType: expectedType);
-    _buffer.write(type.nameWkt);
-    if (expectedType != null && expectedType != Coords.is2D) {
-      _buffer
-        ..write(' ')
-        ..write(expectedType.specifierWkt);
+  void geometry({
+    required Geom type,
+    required WriteCoordinates coordinates,
+    Coords? coordType,
+    WriteBounds? bounds,
+  }) {
+    if (type.isCollection) {
+      geometryCollection([], bounds: bounds);
+    } else {
+      if (_markItem()) {
+        _buffer.write(',');
+      }
+      _startGeometry(isOutputLevelled: true, coordType: coordType);
+      _buffer.write(type.nameWkt);
+      if (coordType != null && coordType != Coords.is2D) {
+        _buffer
+          ..write(' ')
+          ..write(coordType.specifierWkt);
+      }
+      coordinates.call(this);
+      _endGeometry(isOutputLevelled: true);
     }
   }
 
   @override
-  void geometryEnd() {
+  void geometryCollection(
+    Iterable<WriteGeometry> geometries, {
+    int? expectedCount,
+    WriteBounds? bounds,
+  }) {
+    if (_markItem()) {
+      _buffer.write(',');
+    }
+    _startGeometry(isOutputLevelled: true);
+    _buffer.write('GEOMETRYCOLLECTION');
+    _startBoundedArray(expectedCount: expectedCount);
+    for (final item in geometries) {
+      item.call(this);
+    }
+    _endBoundedArray();
     _endGeometry(isOutputLevelled: true);
   }
 
@@ -678,26 +789,26 @@ class _WktTextWriter extends _WktLikeTextWriter {
     num? maxZ,
     num? maxM,
   }) {
+    // check optional expected coordinate type
+    final coordType = _coordTypes.isNotEmpty ? _coordTypes.last : null;
     // WKT does not recognize bounding box, so convert to POLYGON
     final hasZ = minZ != null && maxZ != null;
     final hasM = minM != null && maxM != null;
     final midZ = hasZ ? 0.5 * minZ! + 0.5 * maxZ! : null;
     final midM = hasM ? 0.5 * minM! + 0.5 * maxM! : null;
-    this
-      ..geometry(
-        Geom.polygon,
-        expectedType:
-            _expectedType ?? CoordsExtension.select(hasZ: hasZ, hasM: hasM),
-      )
-      ..coordArray()
-      ..coordArray()
-      ..coordPoint(x: minX, y: minY, z: minZ, m: minM)
-      ..coordPoint(x: maxX, y: minY, z: midZ, m: midM)
-      ..coordPoint(x: maxX, y: maxY, z: maxZ, m: maxM)
-      ..coordPoint(x: minX, y: maxY, z: midZ, m: midM)
-      ..coordPoint(x: minX, y: minY, z: minZ, m: minM)
-      ..coordArrayEnd()
-      ..coordArrayEnd()
-      ..geometryEnd();
+    geometry(
+      type: Geom.polygon,
+      coordType: coordType ?? CoordsExtension.select(hasZ: hasZ, hasM: hasM),
+      coordinates: (cw) => cw
+        ..coordArray()
+        ..coordArray()
+        ..coordPoint(x: minX, y: minY, z: minZ, m: minM)
+        ..coordPoint(x: maxX, y: minY, z: midZ, m: midM)
+        ..coordPoint(x: maxX, y: maxY, z: maxZ, m: maxM)
+        ..coordPoint(x: minX, y: maxY, z: midZ, m: midM)
+        ..coordPoint(x: minX, y: minY, z: minZ, m: minM)
+        ..coordArrayEnd()
+        ..coordArrayEnd(),
+    );
   }
 }

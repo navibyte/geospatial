@@ -73,18 +73,19 @@ class GeometryCollection<E extends Geometry> extends Geometry
   List<Object?> get props => [geometries];
 
   @override
-  void writeTo(GeometryWriter writer) {
+  void writeGeometry(GeometryWriter writer) {
     // note: no need to inform is3D/hasM of the first point, as sub items on
     // a collection are geometries, and each of them should inform those
-    writer
-      ..geometry(Geom.geometryCollection)
-      ..boundedArray(expectedCount: geometries.length);
-    for (final item in geometries) {
-      item.writeTo(writer);
-    }
-    writer
-      ..boundedArrayEnd()
-      ..geometryEnd();
+    writer.geometryCollection(
+      geometries
+          .map((item) => (GeometryWriter writer) => item.writeGeometry(writer)),
+      expectedCount: geometries.length,
+      /* TODO(x): bounds
+      bounds: geometries.explicitBounds ? 
+        geometries.bounds.writeBounds
+       : null,
+       */
+    );
   }
 
   @override
@@ -161,11 +162,13 @@ class MultiPoint<E extends Point> extends Geometry
   List<Object?> get props => [points];
 
   @override
-  void writeTo(GeometryWriter writer) {
+  void writeGeometry(GeometryWriter writer) {
     final point = onePoint;
-    writer.geometry(Geom.multiPoint, expectedType: point?.type);
-    points.writeTo(writer);
-    writer.geometryEnd();
+    writer.geometry(
+      type: Geom.multiPoint,
+      coordinates: points.writeCoordinates,
+      coordType: point?.type,
+    );
   }
 
   @override
@@ -249,17 +252,19 @@ class MultiLineString<T extends Point> extends Geometry
   List<Object?> get props => [lineStrings];
 
   @override
-  void writeTo(GeometryWriter writer) {
+  void writeGeometry(GeometryWriter writer) {
     final point = onePoint;
-    writer
-      ..geometry(Geom.multiLineString, expectedType: point?.type)
-      ..coordArray(expectedCount: lineStrings.length);
-    for (final line in lineStrings) {
-      line.chain.writeTo(writer);
-    }
-    writer
-      ..coordArrayEnd()
-      ..geometryEnd();
+    writer.geometry(
+      type: Geom.multiLineString,
+      coordinates: (CoordinateWriter cw) {
+        cw.coordArray(expectedCount: lineStrings.length);
+        for (final line in lineStrings) {
+          line.chain.writeCoordinates(cw);
+        }
+        cw.coordArrayEnd();
+      },
+      coordType: point?.type,
+    );
   }
 
   @override
@@ -346,21 +351,23 @@ class MultiPolygon<T extends Point> extends Geometry
   List<Object?> get props => [polygons];
 
   @override
-  void writeTo(GeometryWriter writer) {
+  void writeGeometry(GeometryWriter writer) {
     final point = onePoint;
-    writer
-      ..geometry(Geom.multiPolygon, expectedType: point?.type)
-      ..coordArray(expectedCount: polygons.length);
-    for (final polygon in polygons) {
-      writer.coordArray(expectedCount: polygon.rings.length);
-      for (final ring in polygon.rings) {
-        ring.writeTo(writer);
-      }
-      writer.coordArrayEnd();
-    }
-    writer
-      ..coordArrayEnd()
-      ..geometryEnd();
+    writer.geometry(
+      type: Geom.multiPolygon,
+      coordinates: (CoordinateWriter cw) {
+        cw.coordArray(expectedCount: polygons.length);
+        for (final polygon in polygons) {
+          cw.coordArray(expectedCount: polygon.rings.length);
+          for (final ring in polygon.rings) {
+            ring.chain.writeCoordinates(cw);
+          }
+          cw.coordArrayEnd();
+        }
+        cw.coordArrayEnd();
+      },
+      coordType: point?.type,
+    );
   }
 
   @override

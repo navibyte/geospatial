@@ -70,7 +70,7 @@ class _FeatureCollectionBase<E extends Feature> extends FeatureCollection<E>
   Bounds get bounds => _collectionBounds ?? features.bounds;
 
   @override
-  void writeTo(GeometryWriter writer) {
+  void writeGeometry(GeometryWriter writer) {
     // todo not yet implemented
   }
 

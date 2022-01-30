@@ -4,11 +4,13 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// A function that is capable of writing bounds to [writer] for some object.
+import 'base_writer.dart';
+
+/// A function that is capable of writing bounds to [writer].
 typedef WriteBounds = void Function(BoundsWriter writer);
 
 /// An interface to write bounds objects into some content format.
-abstract class BoundsWriter {
+abstract class BoundsWriter extends BaseWriter {
   /// Writes given bounds coordinates.
   void coordBounds({
     required num minX,
@@ -20,12 +22,4 @@ abstract class BoundsWriter {
     num? maxZ,
     num? maxM,
   });
-
-  /// A string representation of content already written to this (text) writer.
-  ///
-  /// Must return a valid string representation when this writer is writing to
-  /// a text output. If an output does not support a string representation then
-  /// returned representation is undefined.
-  @override
-  String toString();
 }

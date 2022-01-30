@@ -10,8 +10,8 @@ part of 'spatial.dart';
 typedef CalculateBounds<T extends Point> = Bounds<T> Function();
 
 /// A base interface for bounds (aka a bounding box in 2D).
-abstract class Bounds<T extends Point> extends Geometry
-    implements _Coordinates, CoordinateFactory<Bounds<T>> {
+abstract class Bounds<T extends Point> extends Bounded
+    implements _Coordinates, CoordinateFactory<Bounds<T>>, BoundsWritable {
   /// Default `const` constructor to allow extending this abstract class.
   const Bounds();
 
@@ -46,9 +46,6 @@ abstract class Bounds<T extends Point> extends Geometry
     }
   }
 
-  /// Return an [empty] bounds that does not intersect with any other bounds.
-  static Bounds empty() => _emptyBounds;
-
   /// Creates [Bounds] from [coords] using [pointFactory].
   static Bounds<T> fromCoords<T extends Point>(
     Iterable<num> coords, {
@@ -82,12 +79,6 @@ abstract class Bounds<T extends Point> extends Geometry
 
   @override
   Bounds<T> get bounds => this;
-
-  @override
-  Point? get onePoint => min;
-
-  @override
-  int get dimension => 1;
 
   @override
   int get coordinateDimension =>
@@ -145,7 +136,7 @@ abstract class Bounds<T extends Point> extends Geometry
   }
 
   @override
-  void writeTo(GeometryWriter writer) {
+  void writeBounds(BoundsWriter writer) {
     if (is3D) {
       if (hasM) {
         writer.coordBounds(
@@ -205,7 +196,6 @@ abstract class Bounds<T extends Point> extends Geometry
   ///
   /// If this bounds or [other] bounds is empty, then always return false.
   bool intersects2D(Bounds other) {
-    if (isEmpty || other.isEmpty) return false;
     return !(min.x > other.max.x ||
         max.x < other.min.x ||
         min.y > other.max.y ||
@@ -220,7 +210,6 @@ abstract class Bounds<T extends Point> extends Geometry
   ///
   /// If this bounds or [other] bounds is empty, then always return false.
   bool intersects(Bounds other) {
-    if (isEmpty || other.isEmpty) return false;
     if (min.x > other.max.x ||
         max.x < other.min.x ||
         min.y > other.max.y ||
@@ -242,7 +231,6 @@ abstract class Bounds<T extends Point> extends Geometry
   ///
   /// If this bounds or [point] is empty, then always return false.
   bool intersectsPoint2D(Point point) {
-    if (isEmpty || point.isEmpty) return false;
     return !(min.x > point.x ||
         max.x < point.x ||
         min.y > point.y ||
@@ -257,7 +245,6 @@ abstract class Bounds<T extends Point> extends Geometry
   ///
   /// If this bounds or [point] is empty, then always return false.
   bool intersectsPoint(Point point) {
-    if (isEmpty || point.isEmpty) return false;
     if (min.x > point.x ||
         max.x < point.x ||
         min.y > point.y ||
@@ -276,8 +263,7 @@ abstract class Bounds<T extends Point> extends Geometry
 
 /// An immutable bounds with min and max points for limits.
 @immutable
-class BoundsBase<T extends Point> extends Bounds<T>
-    with EquatableMixin, GeometryWritableMixin {
+class BoundsBase<T extends Point> extends Bounds<T> with EquatableMixin {
   /// Create bounds with required (and non-empty) [min] and [max] points.
   const BoundsBase({required T min, required T max})
       : _min = min,
@@ -287,9 +273,6 @@ class BoundsBase<T extends Point> extends Bounds<T>
 
   @override
   List<Object?> get props => [_min, _max];
-
-  @override
-  bool get isEmpty => false;
 
   @override
   T get min => _min;
@@ -330,8 +313,7 @@ class BoundsBase<T extends Point> extends Bounds<T>
 }
 
 /// [Bounds] with values calculated when first needed if not initialized.
-class _LazyBounds<T extends Point> extends Bounds<T>
-    with GeometryWritableMixin {
+class _LazyBounds<T extends Point> extends Bounds<T> {
   /// Bounds with nullable [bounds] and a mechanism to [calculate] as needed.
   ///
   /// You must provide either [bounds] or [calculate], both of them cannot be
@@ -359,9 +341,6 @@ class _LazyBounds<T extends Point> extends Bounds<T>
   final CalculateBounds<T>? _calculate;
 
   Bounds<T> _ensureBounds() => _bounds ??= _calculate!.call();
-
-  @override
-  bool get isEmpty => false;
 
   @override
   T get min => _ensureBounds().min;
@@ -396,42 +375,4 @@ class _LazyBounds<T extends Point> extends Bounds<T>
 
   @override
   String toString() => valuesAsString();
-}
-
-const _emptyBounds = _EmptyBounds();
-
-@immutable
-class _EmptyBounds extends Bounds with EquatableMixin, GeometryWritableMixin {
-  const _EmptyBounds();
-
-  @override
-  bool get isEmpty => true;
-
-  @override
-  bool get isNotEmpty => false;
-
-  @override
-  Point get min => Point.empty();
-
-  @override
-  Point get max => Point.empty();
-
-  @override
-  Bounds newFrom(Iterable<num> coords, {int? offset, int? length}) => this;
-
-  @override
-  Bounds transform(TransformPoint transform) => this;
-
-  @override
-  Bounds<R> project<R extends Point>(
-    Projection<R> projection, {
-    PointFactory<R>? to,
-  }) =>
-      throw const FormatException('Cannot project empty bounds.');
-
-  @override
-  String toString() => valuesAsString();
-
-  @override
-  List<Object?> get props => [];
 }

@@ -170,13 +170,17 @@ void main() {
       final b5 = GeoBounds.bboxLonLat(1.1, 2.1, 1.5, 2.5);
       final b6 = GeoBounds.bboxLonLatElev(1.1, 2.1, 3.1, 1.5, 2.5, 3.5);
       expect(b1.toString(), '1.1,2.1,1.5,2.5');
+      /*
       expect(b1.toStringAs(), '1.1,2.1,1.5,2.5');
       expect(b1.toStringAs(format: wktLikeFormat), '1.1 2.1,1.5 2.5');
       expect(b1.toStringAs(format: wktLikeFormat, decimals: 0), '1 2,2 3');
       expect(b1.toStringAs(format: wktLikeFormat, decimals: 2),
           '1.10 2.10,1.50 2.50');
+      */
       expect(b2.toString(), '1.1,2.1,3.1,1.5,2.5,3.5');
+      /*
       expect(b2.toStringAs(format: wktLikeFormat), '1.1 2.1 3.1,1.5 2.5 3.5');
+      */
       expect(b3.toString(), '1.1,2.1,3.1,1.5,2.5,3.5');
       expect(b4.toString(), '1,2,3,2,3,4');
       expect(b5.toString(), '1.1,2.1,1.5,2.5');
@@ -232,12 +236,14 @@ void main() {
 
     test('PointSeries', () {
       expect(points1.toString(), '[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]');
+      /*
       expect(points1.toStringAs(), '[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]');
       expect(points1.toStringAs(decimals: 0), '[-1,-1],[2,-3],[4,-3]');
       expect(points1.toStringAs(format: wktLikeFormat),
           '-1.1 -1.1,2.1 -2.5,3.5 -3.49');
       expect(points1.toStringAs(format: wktLikeFormat, decimals: 2),
           '-1.10 -1.10,2.10 -2.50,3.50 -3.49');
+      */
     });
 
     final multiPoint1 = MultiPoint(points1);

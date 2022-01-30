@@ -96,7 +96,7 @@ class BoundsBuilder {
               );
       }
     }
-    // couldn't calculate, return empty bounds
-    return Bounds.empty();
+    // couldn't calculate
+    throw const FormatException('Could not calculate bounds.');
   }
 }

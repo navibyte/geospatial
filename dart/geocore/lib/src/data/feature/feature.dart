@@ -120,10 +120,13 @@ class _FeatureBase<T extends Geometry>
   List<Object?> get props => [id, properties, geometry, _featureBounds];
 
   @override
-  Bounds get bounds => _featureBounds ?? geometry?.bounds ?? Bounds.empty();
+  Bounds get bounds =>
+      _featureBounds ??
+      geometry?.bounds ??
+      Bounds.of(min: Point.empty(), max: Point.empty());
 
   @override
-  void writeTo(GeometryWriter writer) {
+  void writeGeometry(GeometryWriter writer) {
     // todo not yet implemented
   }
 

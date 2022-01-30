@@ -17,9 +17,6 @@ abstract class _BoundedBase {
   ///
   /// Please note that in some cases bounds could be pre-calculated but it's
   /// possible that accessing this property may cause extensive calculations.
-  ///
-  /// Bounds returned can be "empty" if this object is considered "empty". Such
-  /// bounds does not intersect with any other bounds.
   Bounds get bounds;
 }
 

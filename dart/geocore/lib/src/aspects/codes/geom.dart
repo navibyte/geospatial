@@ -37,9 +37,11 @@ enum Geom {
 
 /// An extension for the [Geom] enum.
 extension GeomExtension on Geom {
-  /// Returns true is this geometry type is a collection type (or "multi").
-  bool get isCollection =>
-      this == Geom.geometryCollection ||
+  /// True for the collection of other geometries (geometryCollection).
+  bool get isCollection => this == Geom.geometryCollection;
+
+  /// True for multi geometries (multiPoint, multiLineString, multiPolygon).
+  bool get isMulti =>
       this == Geom.multiPoint ||
       this == Geom.multiLineString ||
       this == Geom.multiPolygon;
