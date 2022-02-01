@@ -6,13 +6,13 @@
 
 import '/src/aspects/encode.dart';
 
-import 'features_format.dart';
+import 'feature_format.dart';
 import 'geometry_format.dart';
 
 /// An interface defining the capability to write geometry objects.
 abstract class GeometryWritable {
   /// Writes this object to [writer].
-  void writeGeometry(GeometryWriter writer);
+  void writeGeometries(GeometryWriter writer);
 
   /// A string representation of this object, with [format] applied.
   ///
@@ -28,15 +28,15 @@ abstract class GeometryWritable {
 mixin GeometryWritableMixin implements GeometryWritable {
   @override
   String toStringAs({GeometryFormat format = defaultFormat, int? decimals}) {
-    final writer = format.geometryToText(decimals: decimals);
-    writeGeometry(writer);
+    final writer = format.geometriesToText(decimals: decimals);
+    writeGeometries(writer);
     return writer.toString();
   }
 
   @override
   String toString() {
-    final writer = defaultFormat.geometryToText();
-    writeGeometry(writer);
+    final writer = defaultFormat.geometriesToText();
+    writeGeometries(writer);
     return writer.toString();
   }
 

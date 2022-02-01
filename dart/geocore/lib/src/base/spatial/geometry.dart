@@ -98,7 +98,7 @@ class _EmptyGeometry extends Geometry
   Point? get onePoint => null;
 
   @override
-  void writeGeometry(GeometryWriter writer) => writer.emptyGeometry(typeGeom);
+  void writeGeometries(GeometryWriter writer) => writer.emptyGeometry(typeGeom);
 
   @override
   Geometry transform(TransformPoint transform) => this;

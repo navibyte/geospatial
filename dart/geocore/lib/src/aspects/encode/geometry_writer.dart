@@ -11,11 +11,13 @@ import 'bounds_writer.dart';
 import 'coordinate_writer.dart';
 
 /// A function that is capable of writing a geometry to [writer].
-typedef WriteGeometry = void Function(GeometryWriter writer);
+typedef WriteGeometries = void Function(GeometryWriter writer);
 
 /// An interface to write geometry objects into some content format.
-abstract class GeometryWriter extends BaseWriter { 
+abstract class GeometryWriter extends BaseWriter {
   /// Writes a geometry of [type] with [coordinates].
+  ///
+  /// Use [name] to specify a name for a geometry (when applicable).
   ///
   /// Use [coordType] to define the type of coordinates.
   ///
@@ -24,22 +26,28 @@ abstract class GeometryWriter extends BaseWriter {
   void geometry({
     required Geom type,
     required WriteCoordinates coordinates,
+    String? name,
     Coords? coordType,
     WriteBounds? bounds,
   });
 
   /// Writes a geometry collection of [geometries].
   ///
-  /// An optional [expectedCount], when given, hints the count of geometries.
+  /// An optional expected [count], when given, hints the count of geometries.
+  ///
+  /// Use [name] to specify a name for a geometry (when applicable).
   ///
   /// An optional [bounds] function can be used to write geometry collection
   /// bounds. A writer implementation may use it or ignore it.
-  void geometryCollection(
-    Iterable<WriteGeometry> geometries, {
-    int? expectedCount,
+  void geometryCollection({
+    required WriteGeometries geometries,
+    int? count,
+    String? name,
     WriteBounds? bounds,
   });
 
   /// Writes an empty geometry of [type].
-  void emptyGeometry(Geom type);
+  ///
+  /// Use [name] to specify a name for a geometry (when applicable).
+  void emptyGeometry(Geom type, {String? name});
 }

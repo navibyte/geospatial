@@ -128,7 +128,7 @@ mixin PointSeriesMixin<E extends Point> implements PointSeries<E> {
 
   @override
   void writeCoordinates(CoordinateWriter writer) {
-    writer.coordArray(expectedCount: length);
+    writer.coordArray(count: length);
     for (final point in this) {
       point.writeCoordinates(writer);
     }

@@ -4,12 +4,14 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+// ignore_for_file: lines_longer_than_80_chars
+
 import 'package:geocore/aspects.dart';
 
 import 'package:test/test.dart';
 
 void main() {
-  group('Test aspects/writer', () {
+  group('Test geometry, coordinate and bounds writers', () {
     test('Point coordinates', () {
       _testAllWriters<CoordinateWriter>(
         (writer) => writer.coordPoint(x: 10.123, y: 20.25),
@@ -144,11 +146,10 @@ void main() {
     });
     test('Point geometry', () {
       _testAllWriters<GeometryWriter>(
-        (writer) => writer
-          ..geometry(
-            type: Geom.point,
-            coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25),
-          ),
+        (writer) => writer.geometry(
+          type: Geom.point,
+          coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25),
+        ),
         def: '10.123,20.25',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25]}',
         geoJsonStrict: '{"type":"Point","coordinates":[10.123,20.25]}',
@@ -156,11 +157,10 @@ void main() {
         wkt: 'POINT(10.123 20.25)',
       );
       _testAllWriters<GeometryWriter>(
-        (writer) => writer
-          ..geometry(
-            type: Geom.point,
-            coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25, z: -30.95),
-          ),
+        (writer) => writer.geometry(
+          type: Geom.point,
+          coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25, z: -30.95),
+        ),
         def: '10.123,20.25,-30.95',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
         geoJsonStrict: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
@@ -168,11 +168,10 @@ void main() {
         wkt: 'POINT(10.123 20.25 -30.95)',
       );
       _testAllWriters<GeometryWriter>(
-        (writer) => writer
-          ..geometry(
-            type: Geom.point,
-            coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25, m: -1.999),
-          ),
+        (writer) => writer.geometry(
+          type: Geom.point,
+          coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25, m: -1.999),
+        ),
         def: '10.123,20.25,0,-1.999',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,0,-1.999]}',
         geoJsonStrict: '{"type":"Point","coordinates":[10.123,20.25]}',
@@ -180,12 +179,11 @@ void main() {
         wkt: 'POINT(10.123 20.25 0 -1.999)',
       );
       _testAllWriters<GeometryWriter>(
-        (writer) => writer
-          ..geometry(
-            type: Geom.point,
-            coordinates: (cw) =>
-                cw.coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
-          ),
+        (writer) => writer.geometry(
+          type: Geom.point,
+          coordinates: (cw) =>
+              cw.coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
+        ),
         def: '10.123,20.25,-30.95,-1.999',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,-30.95,-1.999]}',
         geoJsonStrict: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
@@ -193,12 +191,11 @@ void main() {
         wkt: 'POINT(10.123 20.25 -30.95 -1.999)',
       );
       _testAllWriters<GeometryWriter>(
-        (writer) => writer
-          ..geometry(
-            type: Geom.point,
-            coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25, z: -30.95),
-            coordType: Coords.is3D,
-          ),
+        (writer) => writer.geometry(
+          type: Geom.point,
+          coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25, z: -30.95),
+          coordType: Coords.is3D,
+        ),
         def: '10.123,20.25,-30.95',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
         geoJsonStrict: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
@@ -206,13 +203,12 @@ void main() {
         wkt: 'POINT Z(10.123 20.25 -30.95)',
       );
       _testAllWriters<GeometryWriter>(
-        (writer) => writer
-          ..geometry(
-            type: Geom.point,
-            coordinates: (cw) =>
-                cw.coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
-            coordType: Coords.is3D,
-          ),
+        (writer) => writer.geometry(
+          type: Geom.point,
+          coordinates: (cw) =>
+              cw.coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
+          coordType: Coords.is3D,
+        ),
         def: '10.123,20.25,-30.95',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
         geoJsonStrict: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
@@ -220,12 +216,11 @@ void main() {
         wkt: 'POINT Z(10.123 20.25 -30.95)',
       );
       _testAllWriters<GeometryWriter>(
-        (writer) => writer
-          ..geometry(
-            type: Geom.point,
-            coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25, z: -30.95),
-            coordType: Coords.is2D,
-          ),
+        (writer) => writer.geometry(
+          type: Geom.point,
+          coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25, z: -30.95),
+          coordType: Coords.is2D,
+        ),
         def: '10.123,20.25',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25]}',
         geoJsonStrict: '{"type":"Point","coordinates":[10.123,20.25]}',
@@ -233,12 +228,11 @@ void main() {
         wkt: 'POINT(10.123 20.25)',
       );
       _testAllWriters<GeometryWriter>(
-        (writer) => writer
-          ..geometry(
-            type: Geom.point,
-            coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25),
-            coordType: Coords.is3D,
-          ),
+        (writer) => writer.geometry(
+          type: Geom.point,
+          coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25),
+          coordType: Coords.is3D,
+        ),
         def: '10.123,20.25,0',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,0]}',
         geoJsonStrict: '{"type":"Point","coordinates":[10.123,20.25,0]}',
@@ -246,13 +240,12 @@ void main() {
         wkt: 'POINT Z(10.123 20.25 0)',
       );
       _testAllWriters<GeometryWriter>(
-        (writer) => writer
-          ..geometry(
-            type: Geom.point,
-            coordinates: (cw) =>
-                cw.coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
-            coordType: Coords.is2DAndMeasured,
-          ),
+        (writer) => writer.geometry(
+          type: Geom.point,
+          coordinates: (cw) =>
+              cw.coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
+          coordType: Coords.is2DAndMeasured,
+        ),
         def: '10.123,20.25,0,-1.999',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,0,-1.999]}',
         geoJsonStrict: '{"type":"Point","coordinates":[10.123,20.25]}',
@@ -260,13 +253,12 @@ void main() {
         wkt: 'POINT M(10.123 20.25 -1.999)',
       );
       _testAllWriters<GeometryWriter>(
-        (writer) => writer
-          ..geometry(
-            type: Geom.point,
-            coordinates: (cw) =>
-                cw.coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
-            coordType: Coords.is3DAndMeasured,
-          ),
+        (writer) => writer.geometry(
+          type: Geom.point,
+          coordinates: (cw) =>
+              cw.coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
+          coordType: Coords.is3DAndMeasured,
+        ),
         def: '10.123,20.25,-30.95,-1.999',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,-30.95,-1.999]}',
         geoJsonStrict: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
@@ -284,15 +276,14 @@ void main() {
     });
     test('MultiPoint geometry', () {
       _testAllWriters<GeometryWriter>(
-        (writer) => writer
-          ..geometry(
-            type: Geom.multiPoint,
-            coordinates: (cw) => cw
-              ..coordArray()
-              ..coordPoint(x: 10.123, y: 20.25)
-              ..coordPoint(x: 5.98, y: -3.47)
-              ..coordArrayEnd(),
-          ),
+        (writer) => writer.geometry(
+          type: Geom.multiPoint,
+          coordinates: (cw) => cw
+            ..coordArray()
+            ..coordPoint(x: 10.123, y: 20.25)
+            ..coordPoint(x: 5.98, y: -3.47)
+            ..coordArrayEnd(),
+        ),
         def: '[10.123,20.25],[5.98,-3.47]',
         geoJson:
             '{"type":"MultiPoint","coordinates":[[10.123,20.25],[5.98,-3.47]]}',
@@ -304,89 +295,86 @@ void main() {
     });
     test('LineString geometry', () {
       _testAllWriters<GeometryWriter>(
-        (writer) => writer
-          ..geometry(
-            type: Geom.lineString,
-            bounds: (bw) =>
-                bw.coordBounds(minX: -1.1, minY: -3.49, maxX: 3.5, maxY: -1.1),
-            coordinates: (cw) => cw
-              ..coordArray()
-              ..coordPoint(x: -1.1, y: -1.1)
-              ..coordPoint(x: 2.1, y: -2.5)
-              ..coordPoint(x: 3.5, y: -3.49)
-              ..coordArrayEnd(),
-          ),
+        (writer) => writer.geometry(
+          type: Geom.lineString,
+          bounds: (bw) =>
+              bw.coordBounds(minX: -1.1, minY: -3.49, maxX: 3.5, maxY: -1.1),
+          coordinates: (cw) => cw
+            ..coordArray()
+            ..coordPoint(x: -1.1, y: -1.1)
+            ..coordPoint(x: 2.1, y: -2.5)
+            ..coordPoint(x: 3.5, y: -3.49)
+            ..coordArrayEnd(),
+        ),
         def: '[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]',
         geoJson: '{"type":"LineString",'
-            '"bbox"=[-1.1,-3.49,3.5,-1.1],'
+            '"bbox":[-1.1,-3.49,3.5,-1.1],'
             '"coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]}',
         geoJsonStrict: '{"type":"LineString",'
-            '"bbox"=[-1.1,-3.49,3.5,-1.1],'
+            '"bbox":[-1.1,-3.49,3.5,-1.1],'
             '"coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]}',
         wktLike: '-1.1 -1.1,2.1 -2.5,3.5 -3.49',
         wkt: 'LINESTRING(-1.1 -1.1,2.1 -2.5,3.5 -3.49)',
       );
       _testAllWriters<GeometryWriter>(
-        (writer) => writer
-          ..geometry(
-            type: Geom.lineString,
-            coordType: Coords.is2DAndMeasured,
-            bounds: (bw) => bw.coordBounds(
-              minX: -1.1,
-              minY: -3.49,
-              minM: 0,
-              maxX: 3.5,
-              maxY: -1.1,
-              maxM: 4.99,
-            ),
-            coordinates: (cw) => cw
-              ..coordArray()
-              ..coordPoint(x: -1.1, y: -1.1)
-              ..coordPoint(x: 2.1, y: -2.5, m: 4.99)
-              ..coordPoint(x: 3.5, y: -3.49, z: -0.5)
-              ..coordArrayEnd(),
+        (writer) => writer.geometry(
+          type: Geom.lineString,
+          coordType: Coords.is2DAndMeasured,
+          bounds: (bw) => bw.coordBounds(
+            minX: -1.1,
+            minY: -3.49,
+            minM: 0,
+            maxX: 3.5,
+            maxY: -1.1,
+            maxM: 4.99,
           ),
+          coordinates: (cw) => cw
+            ..coordArray()
+            ..coordPoint(x: -1.1, y: -1.1)
+            ..coordPoint(x: 2.1, y: -2.5, m: 4.99)
+            ..coordPoint(x: 3.5, y: -3.49, z: -0.5)
+            ..coordArrayEnd(),
+        ),
         def: '[-1.1,-1.1,0,0],[2.1,-2.5,0,4.99],[3.5,-3.49,0,0]',
         geoJson: '{"type":"LineString",'
-            '"bbox"=[-1.1,-3.49,0,0,3.5,-1.1,0,4.99],'
+            '"bbox":[-1.1,-3.49,0,0,3.5,-1.1,0,4.99],'
             '"coordinates":[[-1.1,-1.1,0,0],'
             '[2.1,-2.5,0,4.99],[3.5,-3.49,0,0]]}',
         geoJsonStrict: '{"type":"LineString",'
-            '"bbox"=[-1.1,-3.49,3.5,-1.1],'
+            '"bbox":[-1.1,-3.49,3.5,-1.1],'
             '"coordinates":[[-1.1,-1.1],'
             '[2.1,-2.5],[3.5,-3.49]]}',
         wktLike: '-1.1 -1.1 0,2.1 -2.5 4.99,3.5 -3.49 0',
         wkt: 'LINESTRING M(-1.1 -1.1 0,2.1 -2.5 4.99,3.5 -3.49 0)',
       );
       _testAllWriters<GeometryWriter>(
-        (writer) => writer
-          ..geometry(
-            type: Geom.lineString,
-            coordType: Coords.is3DAndMeasured,
-            bounds: (bw) => bw.coordBounds(
-              minX: -1.1,
-              minY: -3.49,
-              minZ: -0.5,
-              minM: 0,
-              maxX: 3.5,
-              maxY: -1.1,
-              maxZ: 0,
-              maxM: 4.99,
-            ),
-            coordinates: (cw) => cw
-              ..coordArray()
-              ..coordPoint(x: -1.1, y: -1.1)
-              ..coordPoint(x: 2.1, y: -2.5, m: 4.99)
-              ..coordPoint(x: 3.5, y: -3.49, z: -0.5)
-              ..coordArrayEnd(),
+        (writer) => writer.geometry(
+          type: Geom.lineString,
+          coordType: Coords.is3DAndMeasured,
+          bounds: (bw) => bw.coordBounds(
+            minX: -1.1,
+            minY: -3.49,
+            minZ: -0.5,
+            minM: 0,
+            maxX: 3.5,
+            maxY: -1.1,
+            maxZ: 0,
+            maxM: 4.99,
           ),
+          coordinates: (cw) => cw
+            ..coordArray()
+            ..coordPoint(x: -1.1, y: -1.1)
+            ..coordPoint(x: 2.1, y: -2.5, m: 4.99)
+            ..coordPoint(x: 3.5, y: -3.49, z: -0.5)
+            ..coordArrayEnd(),
+        ),
         def: '[-1.1,-1.1,0,0],[2.1,-2.5,0,4.99],[3.5,-3.49,-0.5,0]',
         geoJson: '{"type":"LineString",'
-            '"bbox"=[-1.1,-3.49,-0.5,0,3.5,-1.1,0,4.99],'
+            '"bbox":[-1.1,-3.49,-0.5,0,3.5,-1.1,0,4.99],'
             '"coordinates":[[-1.1,-1.1,0,0],'
             '[2.1,-2.5,0,4.99],[3.5,-3.49,-0.5,0]]}',
         geoJsonStrict: '{"type":"LineString",'
-            '"bbox"=[-1.1,-3.49,-0.5,3.5,-1.1,0],'
+            '"bbox":[-1.1,-3.49,-0.5,3.5,-1.1,0],'
             '"coordinates":[[-1.1,-1.1,0],'
             '[2.1,-2.5,0],[3.5,-3.49,-0.5]]}',
         wktLike: '-1.1 -1.1 0 0,2.1 -2.5 0 4.99,3.5 -3.49 -0.5 0',
@@ -395,21 +383,20 @@ void main() {
     });
     test('MultiLineString geometry', () {
       _testAllWriters<GeometryWriter>(
-        (writer) => writer
-          ..geometry(
-            type: Geom.multiLineString,
-            coordinates: (cw) => cw
-              ..coordArray()
-              ..coordArray()
-              ..coordPoint(x: -1.1, y: -1.1)
-              ..coordPoint(x: 2.1, y: -2.5)
-              ..coordPoint(x: 3.5, y: -3.49)
-              ..coordArrayEnd()
-              ..coordArray()
-              ..coordPoint(x: 38.19, y: 57.4)
-              ..coordArrayEnd()
-              ..coordArrayEnd(),
-          ),
+        (writer) => writer.geometry(
+          type: Geom.multiLineString,
+          coordinates: (cw) => cw
+            ..coordArray()
+            ..coordArray()
+            ..coordPoint(x: -1.1, y: -1.1)
+            ..coordPoint(x: 2.1, y: -2.5)
+            ..coordPoint(x: 3.5, y: -3.49)
+            ..coordArrayEnd()
+            ..coordArray()
+            ..coordPoint(x: 38.19, y: 57.4)
+            ..coordArrayEnd()
+            ..coordArrayEnd(),
+        ),
         def: '[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]],[[38.19,57.4]]',
         geoJson: '{"type":"MultiLineString","coordinates":[[[-1.1,-1.1],'
             '[2.1,-2.5],[3.5,-3.49]],[[38.19,57.4]]]}',
@@ -421,19 +408,18 @@ void main() {
     });
     test('Polygon geometry', () {
       _testAllWriters<GeometryWriter>(
-        (writer) => writer
-          ..geometry(
-            type: Geom.polygon,
-            coordinates: (cw) => cw
-              ..coordArray()
-              ..coordArray()
-              ..coordPoint(x: 10.1, y: 10.1)
-              ..coordPoint(x: 5, y: 9)
-              ..coordPoint(x: 12, y: 4)
-              ..coordPoint(x: 10.1, y: 10.1)
-              ..coordArrayEnd()
-              ..coordArrayEnd(),
-          ),
+        (writer) => writer.geometry(
+          type: Geom.polygon,
+          coordinates: (cw) => cw
+            ..coordArray()
+            ..coordArray()
+            ..coordPoint(x: 10.1, y: 10.1)
+            ..coordPoint(x: 5, y: 9)
+            ..coordPoint(x: 12, y: 4)
+            ..coordPoint(x: 10.1, y: 10.1)
+            ..coordArrayEnd()
+            ..coordArrayEnd(),
+        ),
         def: '[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]',
         geoJson: '{"type":"Polygon",'
             '"coordinates":[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]}',
@@ -445,21 +431,20 @@ void main() {
     });
     test('MultiPolygon geometry', () {
       _testAllWriters<GeometryWriter>(
-        (writer) => writer
-          ..geometry(
-            type: Geom.multiPolygon,
-            coordinates: (cw) => cw
-              ..coordArray()
-              ..coordArray()
-              ..coordArray()
-              ..coordPoint(x: 10.1, y: 10.1)
-              ..coordPoint(x: 5, y: 9)
-              ..coordPoint(x: 12, y: 4)
-              ..coordPoint(x: 10.1, y: 10.1)
-              ..coordArrayEnd()
-              ..coordArrayEnd()
-              ..coordArrayEnd(),
-          ),
+        (writer) => writer.geometry(
+          type: Geom.multiPolygon,
+          coordinates: (cw) => cw
+            ..coordArray()
+            ..coordArray()
+            ..coordArray()
+            ..coordPoint(x: 10.1, y: 10.1)
+            ..coordPoint(x: 5, y: 9)
+            ..coordPoint(x: 12, y: 4)
+            ..coordPoint(x: 10.1, y: 10.1)
+            ..coordArrayEnd()
+            ..coordArrayEnd()
+            ..coordArrayEnd(),
+        ),
         def: '[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]',
         geoJson: '{"type":"MultiPolygon",'
             '"coordinates":[[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]]}',
@@ -471,26 +456,27 @@ void main() {
     });
     test('GeometryCollection geometry', () {
       _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometryCollection([
-          (gw) => gw.geometry(
-                type: Geom.point,
-                coordinates: (cw) =>
-                    cw.coordPoint(x: 10.123, y: 20.25, z: -30.95),
-                coordType: Coords.is3D,
-              ),
-          (gw) => gw.geometry(
-                type: Geom.polygon,
-                coordinates: (cw) => cw
-                  ..coordArray()
-                  ..coordArray()
-                  ..coordPoint(x: 10.1, y: 10.1)
-                  ..coordPoint(x: 5, y: 9)
-                  ..coordPoint(x: 12, y: 4)
-                  ..coordPoint(x: 10.1, y: 10.1)
-                  ..coordArrayEnd()
-                  ..coordArrayEnd(),
-              ),
-        ]),
+        (writer) => writer.geometryCollection(
+          geometries: (gw) => gw
+            ..geometry(
+              type: Geom.point,
+              coordinates: (cw) =>
+                  cw.coordPoint(x: 10.123, y: 20.25, z: -30.95),
+              coordType: Coords.is3D,
+            )
+            ..geometry(
+              type: Geom.polygon,
+              coordinates: (cw) => cw
+                ..coordArray()
+                ..coordArray()
+                ..coordPoint(x: 10.1, y: 10.1)
+                ..coordPoint(x: 5, y: 9)
+                ..coordPoint(x: 12, y: 4)
+                ..coordPoint(x: 10.1, y: 10.1)
+                ..coordArrayEnd()
+                ..coordArrayEnd(),
+            ),
+        ),
         def: '[10.123,20.25,-30.95],[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]',
         geoJson: '{"type":"GeometryCollection","geometries":[{"type":"Point",'
             '"coordinates":[10.123,20.25,-30.95]},{"type":"Polygon",'
@@ -502,6 +488,150 @@ void main() {
         wktLike: '(10.123 20.25 -30.95),((10.1 10.1,5 9,12 4,10.1 10.1))',
         wkt: 'GEOMETRYCOLLECTION(POINT Z(10.123 20.25 -30.95),POLYGON((10.1 '
             '10.1,5 9,12 4,10.1 10.1)))',
+      );
+    });
+  });
+
+  group('Test feature writers', () {
+    test('Feature', () {
+      _testGeoJsonWriters<FeatureWriter>(
+        (writer) => writer.feature(
+          id: 'fid-1',
+          bounds: (bw) => bw.coordBounds(
+            minX: -1.1,
+            minY: -3.49,
+            minZ: -0.5,
+            minM: 0,
+            maxX: 3.5,
+            maxY: -1.1,
+            maxZ: 0,
+            maxM: 4.99,
+          ),
+          geometries: (gw) => gw.geometry(
+            type: Geom.lineString,
+            coordType: Coords.is3DAndMeasured,
+            coordinates: (cw) => cw
+              ..coordArray()
+              ..coordPoint(x: -1.1, y: -1.1)
+              ..coordPoint(x: 2.1, y: -2.5, m: 4.99)
+              ..coordPoint(x: 3.5, y: -3.49, z: -0.5)
+              ..coordArrayEnd(),
+          ),
+          properties: {
+            'prop': 1,
+          },
+        ),
+        geoJson:
+            '{"type":"Feature","id":"fid-1","bbox":[-1.1,-3.49,-0.5,0,3.5,-1.1,0,4.99],"geometry":{"type":"LineString","coordinates":[[-1.1,-1.1,0,0],[2.1,-2.5,0,4.99],[3.5,-3.49,-0.5,0]]},"properties":{"prop":1}}',
+        geoJsonStrict:
+            '{"type":"Feature","id":"fid-1","bbox":[-1.1,-3.49,-0.5,3.5,-1.1,0],"geometry":{"type":"LineString","coordinates":[[-1.1,-1.1,0],[2.1,-2.5,0],[3.5,-3.49,-0.5]]},"properties":{"prop":1}}',
+      );
+      _testGeoJsonWriters<FeatureWriter>(
+        (writer) => writer.feature(
+          id: 'fid-1',
+          geometries: (gw) => gw.geometry(
+            type: Geom.point,
+            coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25),
+          ),
+          properties: {
+            'foo': 100,
+            'bar': 'this is property value',
+            'baz': true,
+          },
+        ),
+        geoJson: '{"type":"Feature","id":"fid-1","geometry":{"type":"Point",'
+            '"coordinates":[10.123,20.25]},"properties":{"foo":100,"bar":'
+            '"this is property value","baz":true}}',
+      );
+      _testGeoJsonWriters<FeatureWriter>(
+        (writer) => writer.feature(
+          geometries: (gw) => gw.geometry(
+            type: Geom.point,
+            coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25),
+          ),
+          properties: {
+            'foo': {
+              'bar': 'this is property value',
+              'baz': [true, false],
+            },
+          },
+        ),
+        geoJson: '{"type":"Feature","geometry":{"type":"Point",'
+            '"coordinates":[10.123,20.25]},"properties":{"foo":{'
+            '"bar":"this is property value","baz":[true,false]}}}',
+      );
+      _testGeoJsonWriters<FeatureWriter>(
+        (writer) => writer.feature(
+          geometries: (gw) {
+            gw
+              ..geometry(
+                type: Geom.point,
+                coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25),
+              )
+              ..geometry(
+                name: 'geom1',
+                type: Geom.point,
+                coordinates: (cw) => cw.coordPoint(x: 1, y: 2, z: 3, m: 4),
+              );
+          },
+          extra: (pw) => pw.properties('extra', {
+            'foo': {
+              'bar': 'this is property value',
+              'baz': [true, false],
+            },
+          }),
+        ),
+        geoJson: '{"type":"Feature",'
+            '"geometry":{"type":"Point","coordinates":[10.123,20.25]},'
+            '"geom1":{"type":"Point","coordinates":[1,2,3,4]},'
+            '"properties":null,"extra":{"foo":{'
+            '"bar":"this is property value","baz":[true,false]}}}',
+        geoJsonStrict: '{"type":"Feature",'
+            '"geometry":{"type":"Point","coordinates":[10.123,20.25]},'
+            '"properties":null}',
+      );
+    });
+    test('FeatureCollection', () {
+      _testGeoJsonWriters<FeatureWriter>(
+        (writer) => writer.featureCollection(
+          bounds: (bw) => bw.coordBounds(
+            minX: -1.1,
+            minY: -3.49,
+            maxX: 10.123,
+            maxY: 20.25,
+          ),
+          features: (fw) => fw
+            ..feature(
+              id: 'fid-1',
+              geometries: (gw) => gw.geometry(
+                type: Geom.point,
+                coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25),
+              ),
+              properties: {
+                'foo': 100,
+                'bar': 'this is property value',
+              },
+            )
+            ..feature(
+              geometries: (gw) => gw.geometry(
+                type: Geom.lineString,
+                bounds: (bw) => bw.coordBounds(
+                  minX: -1.1,
+                  minY: -3.49,
+                  maxX: 3.5,
+                  maxY: -1.1,
+                ),
+                coordinates: (cw) => cw
+                  ..coordArray()
+                  ..coordPoint(x: -1.1, y: -1.1)
+                  ..coordPoint(x: 2.1, y: -2.5)
+                  ..coordPoint(x: 3.5, y: -3.49)
+                  ..coordArrayEnd(),
+              ),
+            ),
+        ),
+        geoJson:
+            '{"type":"FeatureCollection","bbox":[-1.1,-3.49,10.123,20.25],"features":[{"type":"Feature","id":"fid-1","geometry":{"type":"Point","coordinates":[10.123,20.25]},"properties":{"foo":100,"bar":"this is property value"}},{"type":"Feature","geometry":{"type":"LineString","bbox":[-1.1,-3.49,3.5,-1.1],"coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]},"properties":null}]}',
       );
     });
   });
@@ -520,31 +650,31 @@ void _testAllWriters<T extends BaseWriter>(
   int? wktLikeDecimals,
   int? wktDecimals,
 }) {
-  _testWriter<T>(
+  _testWriterOfGeometryFormat<T>(
     defaultFormat,
     content,
     expected: def,
     decimals: defDecimals,
   );
-  _testWriter<T>(
+  _testWriterOfGeometryFormat<T>(
     geoJsonFormat(),
     content,
     expected: geoJson,
     decimals: geoJsonDecimals,
   );
-  _testWriter<T>(
-    geoJsonFormat(strict: true),
+  _testWriterOfGeometryFormat<T>(
+    geoJsonFormat(ignoreMeasured: true, ignoreForeignMembers: true),
     content,
     expected: geoJsonStrict,
     decimals: geoJsonStrictDecimals,
   );
-  _testWriter<T>(
+  _testWriterOfGeometryFormat<T>(
     wktLikeFormat,
     content,
     expected: wktLike,
     decimals: wktLikeDecimals,
   );
-  _testWriter<T>(
+  _testWriterOfGeometryFormat<T>(
     wktFormat(),
     content,
     expected: wkt,
@@ -552,8 +682,28 @@ void _testAllWriters<T extends BaseWriter>(
   );
 }
 
-void _testWriter<T extends BaseWriter>(
-  FeaturesFormat format,
+void _testGeoJsonWriters<T extends BaseWriter>(
+  void Function(T writer) content, {
+  required String geoJson,
+  String? geoJsonStrict,
+  int? decimals,
+}) {
+  _testWriterOfFeatureFormat<T>(
+    geoJsonFormat(),
+    content,
+    expected: geoJson,
+    decimals: decimals,
+  );
+  _testWriterOfFeatureFormat<T>(
+    geoJsonFormat(ignoreMeasured: true, ignoreForeignMembers: true),
+    content,
+    expected: geoJsonStrict ?? geoJson,
+    decimals: decimals,
+  );
+}
+
+void _testWriterOfGeometryFormat<T extends BaseWriter>(
+  GeometryFormat format,
   void Function(T writer) content, {
   required String expected,
   int? decimals,
@@ -565,8 +715,28 @@ void _testWriter<T extends BaseWriter>(
     writer = format.coordinatesToText(decimals: decimals) as T;
   } else {
     assert(T == GeometryWriter, 'expecting geometry writer');
-    writer = format.geometryToText(decimals: decimals) as T;
+    writer = format.geometriesToText(decimals: decimals) as T;
   }
   content(writer);
   expect(writer.toString(), expected);
+}
+
+void _testWriterOfFeatureFormat<T extends BaseWriter>(
+  FeatureFormat format,
+  void Function(T writer) content, {
+  required String expected,
+  int? decimals,
+}) {
+  if (T == FeatureWriter) {
+    final writer = format.featuresToText(decimals: decimals) as T;
+    content(writer);
+    expect(writer.toString(), expected);
+  } else {
+    _testWriterOfGeometryFormat(
+      format,
+      content,
+      expected: expected,
+      decimals: decimals,
+    );
+  }
 }

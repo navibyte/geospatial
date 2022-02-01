@@ -79,13 +79,16 @@ class GeometryCollection<E extends Geometry> extends Geometry
   List<Object?> get props => [geometries];
 
   @override
-  void writeGeometry(GeometryWriter writer) {
+  void writeGeometries(GeometryWriter writer) {
     // note: no need to inform is3D/hasM of the first point, as sub items on
     // a collection are geometries, and each of them should inform those
     writer.geometryCollection(
-      geometries
-          .map((item) => (GeometryWriter writer) => item.writeGeometry(writer)),
-      expectedCount: geometries.length,
+      geometries: (gw) {
+        for (final item in geometries) {
+          item.writeGeometries(gw);
+        }
+      },
+      count: geometries.length,
       bounds: boundsExplicit?.writeBounds,
     );
   }
@@ -170,7 +173,7 @@ class MultiPoint<E extends Point> extends Geometry
   List<Object?> get props => [points];
 
   @override
-  void writeGeometry(GeometryWriter writer) {
+  void writeGeometries(GeometryWriter writer) {
     final point = onePoint;
     writer.geometry(
       type: Geom.multiPoint,
@@ -267,12 +270,12 @@ class MultiLineString<T extends Point> extends Geometry
   List<Object?> get props => [lineStrings];
 
   @override
-  void writeGeometry(GeometryWriter writer) {
+  void writeGeometries(GeometryWriter writer) {
     final point = onePoint;
     writer.geometry(
       type: Geom.multiLineString,
       coordinates: (CoordinateWriter cw) {
-        cw.coordArray(expectedCount: lineStrings.length);
+        cw.coordArray(count: lineStrings.length);
         for (final line in lineStrings) {
           line.chain.writeCoordinates(cw);
         }
@@ -373,14 +376,14 @@ class MultiPolygon<T extends Point> extends Geometry
   List<Object?> get props => [polygons];
 
   @override
-  void writeGeometry(GeometryWriter writer) {
+  void writeGeometries(GeometryWriter writer) {
     final point = onePoint;
     writer.geometry(
       type: Geom.multiPolygon,
       coordinates: (CoordinateWriter cw) {
-        cw.coordArray(expectedCount: polygons.length);
+        cw.coordArray(count: polygons.length);
         for (final polygon in polygons) {
-          cw.coordArray(expectedCount: polygon.rings.length);
+          cw.coordArray(count: polygon.rings.length);
           for (final ring in polygon.rings) {
             ring.chain.writeCoordinates(cw);
           }

@@ -136,12 +136,12 @@ class Polygon<T extends Point> extends Geometry
       BoundedSeries<LineString<T>>.view(rings.skip(1));
 
   @override
-  void writeGeometry(GeometryWriter writer) {
+  void writeGeometries(GeometryWriter writer) {
     final point = onePoint;
     writer.geometry(
       type: Geom.polygon,
       coordinates: (CoordinateWriter cw) {
-        cw.coordArray(expectedCount: rings.length);
+        cw.coordArray(count: rings.length);
         for (final ring in rings) {
           ring.chain.writeCoordinates(cw);
         }

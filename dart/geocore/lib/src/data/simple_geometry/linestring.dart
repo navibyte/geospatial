@@ -121,7 +121,7 @@ class LineString<T extends Point> extends Geometry
   Point? get onePoint => chain.isNotEmpty ? chain.first : null;
 
   @override
-  void writeGeometry(GeometryWriter writer) {
+  void writeGeometries(GeometryWriter writer) {
     final point = onePoint;
     writer.geometry(
       type: Geom.lineString,

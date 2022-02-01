@@ -14,7 +14,8 @@ import '/src/base/spatial.dart';
 import 'feature.dart';
 
 /// A feature collection with a series of features.
-abstract class FeatureCollection<E extends Feature> extends Bounded {
+abstract class FeatureCollection<E extends Feature>
+    implements Bounded, FeatureWritable {
   /// Default `const` constructor to allow extending this abstract class.
   const FeatureCollection();
 
@@ -49,7 +50,7 @@ abstract class FeatureCollection<E extends Feature> extends Bounded {
 /// The implementation may change in future.
 @immutable
 class _FeatureCollectionBase<E extends Feature> extends FeatureCollection<E>
-    with EquatableMixin, GeometryWritableMixin {
+    with EquatableMixin, FeatureWritableMixin {
   // note : mixins must be on that order (need toString from the latter)
 
   _FeatureCollectionBase({required Iterable<E> features, Bounds? bounds})
@@ -73,8 +74,16 @@ class _FeatureCollectionBase<E extends Feature> extends FeatureCollection<E>
   Bounds? get boundsExplicit => _collectionBounds ?? features.boundsExplicit;
 
   @override
-  void writeGeometry(GeometryWriter writer) {
-    // todo not yet implemented
+  void writeFeatures(FeatureWriter writer) {
+    writer.featureCollection(
+      features: (fw) {
+        for (final item in features) {
+          item.writeFeatures(writer);
+        }
+      },
+      count: features.length,
+      bounds: boundsExplicit?.writeBounds,
+    );
   }
 
   @override

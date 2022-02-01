@@ -13,11 +13,11 @@ typedef WriteCoordinates = void Function(CoordinateWriter writer);
 abstract class CoordinateWriter extends BaseWriter {
   /// Starts a section for an array of point coordinates.
   /// 
-  /// An optional [expectedCount], when given, hints the count of items.
+  /// An optional expected [count], when given, hints the count of items.
   ///
    /// An example of one dimensional coordinate array:
   /// ```dart
-  ///   writer..coordArray()
+  ///   writer..coordArray(count: 2)
   ///         ..coordPoint(x: 1, y: 1)
   ///         ..coordPoint(x: 2, y: 2)
   ///         ..coordArrayEnd();
@@ -25,8 +25,8 @@ abstract class CoordinateWriter extends BaseWriter {
   /// 
   /// Coordinate arrays can be also multi-dimensional, for example:
   /// ```dart
-  ///   writer..coordArray()
-  ///         ..coordArray()
+  ///   writer..coordArray(count: 2)
+  ///         ..coordArray(count: 2)
   ///         ..coordPoint(x: 1, y: 1)
   ///         ..coordPoint(x: 2, y: 2)
   ///         ..coordArrayEnd()
@@ -36,7 +36,7 @@ abstract class CoordinateWriter extends BaseWriter {
   ///         ..coordArrayEnd()
   ///         ..coordArrayEnd();
   /// ```
-  void coordArray({int? expectedCount});
+  void coordArray({int? count});
 
   /// Ends a section for an array of point coordinates.
   void coordArrayEnd();

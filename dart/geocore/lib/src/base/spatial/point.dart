@@ -215,7 +215,7 @@ abstract class Point<C extends num> extends Geometry
   }
 
   @override
-  void writeGeometry(GeometryWriter writer) => writer.geometry(
+  void writeGeometries(GeometryWriter writer) => writer.geometry(
         type: Geom.point,
         coordinates: writeCoordinates,
         coordType: typeCoords,

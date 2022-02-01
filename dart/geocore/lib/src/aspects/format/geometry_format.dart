@@ -42,5 +42,5 @@ abstract class GeometryFormat {
   /// After writing some objects with coordinate data into a writer, the string
   /// representation can be accessed using `toString()` of it (or via [buffer]
   /// when such is given).
-  GeometryWriter geometryToText({StringSink? buffer, int? decimals});
+  GeometryWriter geometriesToText({StringSink? buffer, int? decimals});
 }

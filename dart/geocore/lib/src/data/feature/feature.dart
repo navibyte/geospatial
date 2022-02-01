@@ -14,7 +14,7 @@ import '/src/base/spatial.dart';
 /// A feature is a geospatial entity with [id], [properties] and [geometry].
 ///
 /// Supports representing data from GeoJSON (https://geojson.org/) features.
-abstract class Feature<T extends Geometry> implements Bounded {
+abstract class Feature<T extends Geometry> implements Bounded, FeatureWritable {
   /// Default `const` constructor to allow extending this abstract class.
   const Feature();
 
@@ -94,7 +94,7 @@ abstract class Feature<T extends Geometry> implements Bounded {
 /// The implementation may change in future.
 @immutable
 class _FeatureBase<T extends Geometry>
-    with EquatableMixin, GeometryWritableMixin
+    with EquatableMixin, FeatureWritableMixin
     implements Feature<T> {
   // note : mixins must be on that order (need toString from the latter)
 
@@ -126,8 +126,14 @@ class _FeatureBase<T extends Geometry>
   Bounds? get boundsExplicit => _featureBounds ?? geometry?.boundsExplicit;
 
   @override
-  void writeGeometry(GeometryWriter writer) {
-    // todo not yet implemented
+  void writeFeatures(FeatureWriter writer) {
+    final geom = geometry;
+    writer.feature(
+      id: id,
+      geometries: geom?.writeGeometries,
+      properties: properties,
+      bounds: boundsExplicit?.writeBounds,
+    );
   }
 
   @override
