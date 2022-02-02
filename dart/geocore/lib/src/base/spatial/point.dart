@@ -6,30 +6,29 @@
 
 part of 'spatial.dart';
 
-/// A read-only point with [x], [y], [z] and [m] coordinate values.
+/// `Point` is a read-only position with [x], [y], [z] and [m] coordinates.
 ///
 /// The type [C] of coordinate values is either `num` (allowing `double` or
 /// `int`), `double` or `int`.
 ///
-/// This class defines abstract coordinate value getters for [x], [y], [z] and
-/// [m] coordinates. All concrete point implementations must contain [x] and [y]
-/// coordinate values, but [z] and [m] coordinates are optional (with fixed `0`
+/// All concrete implementations must contain at least [x] and [y] coordinate 
+/// values, but [z] and [m] coordinates are optional (getters should return `0`
 /// value when such a coordinate axis is not available).
 ///
-/// When a point contains geographic coordinates, then by default [x] represents
-/// *longitude*, [y] represents *latitude*, and [z] represents *elevation*
-/// (or *height*).
+/// When a position contains geographic coordinates, then by default [x]
+/// represents *longitude*, [y] represents *latitude*, and [z] represents
+/// *elevation* (or *height* or *altitude*).
 ///
-/// A projected map point might be defined as *easting* (E) and *northing*
+/// A projected map position might be defined as *easting* (E) and *northing*
 /// (N) coordinates. It's suggested that then E == [x] and N == [y], but a
 /// coordinate reference system might specify something else too.
 ///
 /// [m] represents a measurement or a value on a linear referencing system (like
-/// time). It could be associated with a 2D point (x, y, m) or a 3D point
+/// time). It could be associated with a 2D position (x, y, m) or a 3D position
 /// (x, y, z, m).
 abstract class Point<C extends num> extends Geometry
     with GeometryWritableMixin
-    implements _Coordinates, PointFactory, CoordinateWritable {
+    implements Position, _Coordinates, PointFactory, CoordinateWritable {
   /// Default `const` constructor to allow extending this abstract class.
   const Point();
 
@@ -77,26 +76,16 @@ abstract class Point<C extends num> extends Geometry
       // create fixed length list and set coordinate values on it
       List<C>.generate(coordinateDimension, (i) => this[i], growable: false);
 
-  /// The x coordinate.
-  ///
-  /// For geographic coordinates x represents *longitude*.
+  @override
   C get x;
 
-  /// The y coordinate.
-  ///
-  /// For geographic coordinates y represents *latitude*.
+  @override
   C get y;
 
-  /// The z coordinate. Returns zero (`0`) if not available.
-  ///
-  /// For geographic coordinates z represents *elevation*.
+  @override
   C get z => _zero();
 
-  /// The M ("measure") coordinate. Returns zero (`0`)  if not available.
-  ///
-  /// [m] represents a measurement or a value on a linear referencing system
-  /// (like time). It could be associated with a 2D point (x, y, m) or a 3D
-  /// point (x, y, z, m).
+  @override
   C get m => _zero();
 
   /// True if this point equals with [other] point in 2D by testing x and y.
@@ -226,7 +215,7 @@ abstract class Point<C extends num> extends Geometry
         x: x,
         y: y,
         z: is3D ? z : null,
-        m: hasM ? m : null,
+        m: isMeasured ? m : null,
       );
 
   /// Copies this point with the compatible type and sets given coordinates.
@@ -259,13 +248,13 @@ abstract class Point<C extends num> extends Geometry
 /// The implementation may change in future.
 @immutable
 class _PointEmpty<C extends num> extends Point<C> with EquatableMixin {
-  const _PointEmpty([this.typeCoords = Coords.is2D]);
+  const _PointEmpty([this.typeCoords = Coords.xy]);
 
   @override
-  bool get is3D => typeCoords.hasZ;
+  bool get is3D => typeCoords.is3D;
 
   @override
-  bool get hasM => typeCoords.hasM;
+  bool get isMeasured => typeCoords.isMeasured;
 
   @override
   final Coords typeCoords;
@@ -283,7 +272,7 @@ class _PointEmpty<C extends num> extends Point<C> with EquatableMixin {
   bool get isNotEmpty => false;
 
   @override
-  int get coordinateDimension => spatialDimension + (hasM ? 1 : 0);
+  int get coordinateDimension => spatialDimension + (isMeasured ? 1 : 0);
 
   @override
   int get spatialDimension => is3D ? 3 : 2;
@@ -320,5 +309,5 @@ class _PointEmpty<C extends num> extends Point<C> with EquatableMixin {
   String toString() => valuesAsString();
 
   @override
-  List<Object?> get props => [is3D, hasM];
+  List<Object?> get props => [is3D, isMeasured];
 }

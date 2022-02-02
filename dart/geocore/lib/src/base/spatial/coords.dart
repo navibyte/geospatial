@@ -47,43 +47,11 @@ typedef ParseCoordsListList = Iterable<Iterable<Iterable<num>>> Function(
 typedef ParseCoordsListListList = Iterable<Iterable<Iterable<Iterable<num>>>>
     Function(String text);
 
-/// An private interface with members telling whethen an object is measureable.
-///
-/// Known (public) sub classes: [Point], [PointFactory], [Bounds],
-/// `BoundsFactory`.
-abstract class _Measured {
-  const _Measured();
-
-  /// True for points containing (or expecting) M coordinate.
-  bool get hasM;
-}
-
 /// An private interface with methods prodiving information about coordinates.
 ///
 /// Known sub classes: [Point], [Bounds].
-abstract class _Coordinates extends _Measured {
+abstract class _Coordinates extends Positionable {
   const _Coordinates();
-
-  /// The number of coordinate values (2, 3 or 4).
-  ///
-  /// If value is 2, points have 2D coordinates without m coordinate.
-  ///
-  /// If value is 3, points have 2D coordinates with m coordinate or
-  /// 3D coordinates without m coordinate.
-  ///
-  /// If value is 4, points have 3D coordinates with m coordinate.
-  ///
-  /// Must be >= [spatialDimension].
-  int get coordinateDimension;
-
-  /// The number of spatial coordinate values (2 for 2D or 3 for 3D).
-  int get spatialDimension;
-
-  /// True for 3D points (that is having Z coordinate).
-  bool get is3D;
-
-  /// Returns the type for coordinates.
-  Coords get typeCoords;
 
   /// Writes coordinate values to [buffer] separated by [delimiter].
   ///
@@ -104,7 +72,7 @@ abstract class _Coordinates extends _Measured {
 }
 
 /// An interface to create [Bounded] instances of the type [T].
-abstract class CoordinateFactory<T extends Bounded> implements _Measured {
+abstract class CoordinateFactory<T extends Bounded> implements Measurable {
   /// Creates a new [Geometry] instance of a type compatible with this object.
   ///
   /// Values for a new geometry are given by [coords] containing `num` values
@@ -176,7 +144,7 @@ class CastingPointFactory<T extends Point> implements PointFactory<T> {
   final PointFactory _wrapped;
 
   @override
-  bool get hasM => _wrapped.hasM;
+  bool get isMeasured => _wrapped.isMeasured;
 
   @override
   T newFrom(Iterable<num> coords, {int? offset, int? length}) =>

@@ -63,7 +63,7 @@ class _CreateGeoPoint implements PointFactory<GeoPoint> {
   const _CreateGeoPoint();
 
   @override
-  bool get hasM => false;
+  bool get isMeasured => false;
 
   @override
   GeoPoint newFrom(Iterable<num> coords, {int? offset, int? length}) {
@@ -84,14 +84,15 @@ class _CreateGeoPoint implements PointFactory<GeoPoint> {
 }
 
 class _CreateGeoPointAllowingM extends _CreateGeoPoint {
-  const _CreateGeoPointAllowingM({required bool expectM}) : hasM = expectM;
+  const _CreateGeoPointAllowingM({required bool expectM})
+      : isMeasured = expectM;
 
   @override
-  final bool hasM;
+  final bool isMeasured;
 
   @override
   GeoPoint newFrom(Iterable<num> coords, {int? offset, int? length}) {
-    if (!hasM) {
+    if (!isMeasured) {
       return super.newFrom(coords, offset: offset, length: length);
     } else {
       CoordinateFactory.checkCoords(3, coords, offset: offset, length: length);
@@ -107,7 +108,7 @@ class _CreateGeoPointAllowingM extends _CreateGeoPoint {
 
   @override
   GeoPoint newWith({num x = 0.0, num y = 0.0, num? z, num? m}) {
-    if (!hasM) {
+    if (!isMeasured) {
       return super.newWith(x: x, y: y, z: z, m: m);
     } else {
       return z != null
@@ -130,7 +131,7 @@ class _CreateCartesianPoint implements PointFactory<CartesianPoint> {
   const _CreateCartesianPoint();
 
   @override
-  bool get hasM => false;
+  bool get isMeasured => false;
 
   @override
   CartesianPoint newFrom(Iterable<num> coords, {int? offset, int? length}) {
@@ -153,14 +154,14 @@ class _CreateCartesianPoint implements PointFactory<CartesianPoint> {
 
 class _CreateCartesianPointAllowingM extends _CreateCartesianPoint {
   const _CreateCartesianPointAllowingM({required bool expectM})
-      : hasM = expectM;
+      : isMeasured = expectM;
 
   @override
-  final bool hasM;
+  final bool isMeasured;
 
   @override
   CartesianPoint newFrom(Iterable<num> coords, {int? offset, int? length}) {
-    if (!hasM) {
+    if (!isMeasured) {
       return super.newFrom(coords, offset: offset, length: length);
     } else {
       CoordinateFactory.checkCoords(3, coords, offset: offset, length: length);
@@ -176,7 +177,7 @@ class _CreateCartesianPointAllowingM extends _CreateCartesianPoint {
 
   @override
   CartesianPoint newWith({num x = 0.0, num y = 0.0, num? z, num? m}) {
-    if (!hasM) {
+    if (!isMeasured) {
       return super.newWith(x: x, y: y, z: z, m: m);
     } else {
       return z != null
@@ -199,7 +200,7 @@ class _CreateAnyPoint implements PointFactory {
   final bool expectGeographic;
 
   @override
-  bool get hasM => false;
+  bool get isMeasured => false;
 
   @override
   Point newFrom(Iterable<num> coords, {int? offset, int? length}) {
@@ -226,20 +227,20 @@ class _CreateAnyPointAllowingM implements PointFactory {
   const _CreateAnyPointAllowingM({
     this.expectGeographic = true,
     required bool expectM,
-  }) : hasM = expectM;
+  }) : isMeasured = expectM;
 
   final bool expectGeographic;
 
   @override
-  final bool hasM;
+  final bool isMeasured;
 
   @override
   Point newFrom(Iterable<num> coords, {int? offset, int? length}) {
     if (expectGeographic) {
-      return _CreateGeoPointAllowingM(expectM: hasM)
+      return _CreateGeoPointAllowingM(expectM: isMeasured)
           .newFrom(coords, offset: offset, length: length);
     } else {
-      return _CreateCartesianPointAllowingM(expectM: hasM)
+      return _CreateCartesianPointAllowingM(expectM: isMeasured)
           .newFrom(coords, offset: offset, length: length);
     }
   }
@@ -247,10 +248,10 @@ class _CreateAnyPointAllowingM implements PointFactory {
   @override
   Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) {
     if (expectGeographic) {
-      return _CreateGeoPointAllowingM(expectM: hasM)
+      return _CreateGeoPointAllowingM(expectM: isMeasured)
           .newWith(x: x, y: y, z: z, m: m);
     } else {
-      return _CreateCartesianPointAllowingM(expectM: hasM)
+      return _CreateCartesianPointAllowingM(expectM: isMeasured)
           .newWith(x: x, y: y, z: z, m: m);
     }
   }

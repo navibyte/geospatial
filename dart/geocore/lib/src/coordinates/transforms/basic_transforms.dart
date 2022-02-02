@@ -41,7 +41,7 @@ TransformPoint translatePoint<C extends num>({
           x: dx != null ? source.x + dx : null,
           y: dy != null ? source.y + dy : null,
           z: dz != null && source.is3D ? source.z + dz : null,
-          m: dm != null && source.hasM ? source.m + dm : null,
+          m: dm != null && source.isMeasured ? source.m + dm : null,
         ) as T;
       }
     };
@@ -73,7 +73,7 @@ TransformPoint scalePoint<C extends num>({
           x: sx != null ? sx * source.x : null,
           y: sy != null ? sy * source.y : null,
           z: sz != null && source.is3D ? sz * source.z : null,
-          m: sm != null && source.hasM ? sm * source.m : null,
+          m: sm != null && source.isMeasured ? sm * source.m : null,
         ) as T;
       }
     };
@@ -94,7 +94,7 @@ TransformPoint scalePointBy<C extends num>(C scale) =>
           x: scale * source.x,
           y: scale * source.y,
           z: source.is3D ? scale * source.z : null,
-          m: source.hasM ? scale * source.m : null,
+          m: source.isMeasured ? scale * source.m : null,
         ) as T;
       }
     };

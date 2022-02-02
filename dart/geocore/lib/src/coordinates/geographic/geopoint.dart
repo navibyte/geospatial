@@ -4,6 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import '/src/aspects/data.dart';
 import '/src/base/spatial.dart';
 
 /// A geographic position with longitude, latitude and optional elevation.
@@ -15,19 +16,11 @@ import '/src/base/spatial.dart';
 ///
 /// Extends [Point] class. Properties have equality (in context of this
 /// library): [lon] == [x], [lat] == [y], [elev] == [z]
-abstract class GeoPoint extends Point<double> {
+abstract class GeoPoint extends Point<double> implements GeoPosition {
   /// Default `const` constructor to allow extending this abstract class.
   const GeoPoint();
 
-  /// The longitude coordinate. Equals to [x].
-  double get lon;
-
-  /// The latitude coordinate. Equals to [y].
-  double get lat;
-
-  /// The elevation (or height or altitude) coordinate in meters. Equals to [z].
-  ///
-  /// Returns 0.0 if not available.
+  @override
   double get elev => 0.0;
 
   /// Distance (in meters) to another geographic point.

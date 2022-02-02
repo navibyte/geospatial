@@ -522,13 +522,13 @@ class _DefaultTextWriter extends _BaseTextWriter {
     // print M only in non-strict mode when
     // - explicitely asked or
     // - M exists and not explicitely denied
-    final printM = !ignoreMeasured && (coordType?.hasM ?? m != null);
+    final printM = !ignoreMeasured && (coordType?.isMeasured ?? m != null);
     // print Z when
     // - if M is printed too (M should be 4th element, so need Z as 3rd element)
     // - explicitely asked
     // - Z exists and not explicitely denied
-    final printZ = printM || (coordType?.hasZ ?? z != null);
-    final zValue = coordType?.hasZ ?? true ? z ?? 0 : 0;
+    final printZ = printM || (coordType?.is3D ?? z != null);
+    final zValue = coordType?.is3D ?? true ? z ?? 0 : 0;
     final dec = decimals;
     if (dec != null) {
       _buffer
@@ -946,8 +946,8 @@ class _WktLikeTextWriter extends _BaseTextWriter {
       // coordinate type specified (in wkt specifiers Z, M or ZM)
       //
       // check whether explicitely asked printing
-      printZ = coordType.hasZ;
-      printM = coordType.hasM;
+      printZ = coordType.is3D;
+      printM = coordType.isMeasured;
       zValue = z ?? 0;
     } else {
       // coordinate type unspecified (z is 3rd if exists, m is 4th if exists)
@@ -956,13 +956,13 @@ class _WktLikeTextWriter extends _BaseTextWriter {
       // print M when
       // - explicitely asked or
       // - M exists and not explicitely denied
-      printM = coordType?.hasM ?? m != null;
+      printM = coordType?.isMeasured ?? m != null;
       // print Z when
       // - if M is printed too (M should be 4th element, so need Z as 3rd)
       // - explicitely asked
       // - Z exists and not explicitely denied
-      printZ = printM || (coordType?.hasZ ?? z != null);
-      zValue = coordType?.hasZ ?? true ? z ?? 0 : 0;
+      printZ = printM || (coordType?.is3D ?? z != null);
+      zValue = coordType?.is3D ?? true ? z ?? 0 : 0;
     }
     final dec = decimals;
     if (dec != null) {
@@ -1022,7 +1022,7 @@ class _WktTextWriter extends _WktLikeTextWriter {
       _startContainer(_Container.geometry);
       _startCoordType(coordType);
       _buffer.write(type.nameWkt);
-      if (coordType != null && coordType != Coords.is2D) {
+      if (coordType != null && coordType != Coords.xy) {
         _buffer
           ..write(' ')
           ..write(coordType.specifierWkt);

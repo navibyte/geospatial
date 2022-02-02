@@ -36,8 +36,9 @@ class BoundsBuilder {
       // latest point has more spatial dims than previous ones, so update
       sdims = _spatialDims = point.spatialDimension;
       _firstOfType = point;
-      _hasM = point.hasM;
-    } else if (point.spatialDimension == sdims && (!_hasM && point.hasM)) {
+      _hasM = point.isMeasured;
+    } else if (point.spatialDimension == sdims &&
+        (!_hasM && point.isMeasured)) {
       // or it has same amount of spatial dims but has also M coordinate
       _hasM = true;
       _firstOfType = point;

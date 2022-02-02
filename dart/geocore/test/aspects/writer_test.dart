@@ -186,7 +186,7 @@ void main() {
         (writer) => writer.geometry(
           type: Geom.point,
           coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25, z: -30.95),
-          coordType: Coords.is3D,
+          coordType: Coords.xyz,
         ),
         def: '10.123,20.25,-30.95',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
@@ -198,7 +198,7 @@ void main() {
           type: Geom.point,
           coordinates: (cw) =>
               cw.coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
-          coordType: Coords.is3D,
+          coordType: Coords.xyz,
         ),
         def: '10.123,20.25,-30.95',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
@@ -209,7 +209,7 @@ void main() {
         (writer) => writer.geometry(
           type: Geom.point,
           coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25, z: -30.95),
-          coordType: Coords.is2D,
+          coordType: Coords.xy,
         ),
         def: '10.123,20.25',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25]}',
@@ -220,7 +220,7 @@ void main() {
         (writer) => writer.geometry(
           type: Geom.point,
           coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25),
-          coordType: Coords.is3D,
+          coordType: Coords.xyz,
         ),
         def: '10.123,20.25,0',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,0]}',
@@ -232,7 +232,7 @@ void main() {
           type: Geom.point,
           coordinates: (cw) =>
               cw.coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
-          coordType: Coords.is2DAndMeasured,
+          coordType: Coords.xym,
         ),
         def: '10.123,20.25,0,-1.999',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,0,-1.999]}',
@@ -245,7 +245,7 @@ void main() {
           type: Geom.point,
           coordinates: (cw) =>
               cw.coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
-          coordType: Coords.is3DAndMeasured,
+          coordType: Coords.xyzm,
         ),
         def: '10.123,20.25,-30.95,-1.999',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,-30.95,-1.999]}',
@@ -301,7 +301,7 @@ void main() {
       _testAllWriters<GeometryWriter>(
         (writer) => writer.geometry(
           type: Geom.lineString,
-          coordType: Coords.is2DAndMeasured,
+          coordType: Coords.xym,
           bounds: (bw) => bw.coordBounds(
             minX: -1.1,
             minY: -3.49,
@@ -332,7 +332,7 @@ void main() {
       _testAllWriters<GeometryWriter>(
         (writer) => writer.geometry(
           type: Geom.lineString,
-          coordType: Coords.is3DAndMeasured,
+          coordType: Coords.xyzm,
           bounds: (bw) => bw.coordBounds(
             minX: -1.1,
             minY: -3.49,
@@ -438,7 +438,7 @@ void main() {
               type: Geom.point,
               coordinates: (cw) =>
                   cw.coordPoint(x: 10.123, y: 20.25, z: -30.95),
-              coordType: Coords.is3D,
+              coordType: Coords.xyz,
             )
             ..geometry(
               type: Geom.polygon,
@@ -481,7 +481,7 @@ void main() {
           ),
           geometries: (gw) => gw.geometry(
             type: Geom.lineString,
-            coordType: Coords.is3DAndMeasured,
+            coordType: Coords.xyzm,
             coordinates: (cw) => cw
               ..coordArray()
               ..coordPoint(x: -1.1, y: -1.1)

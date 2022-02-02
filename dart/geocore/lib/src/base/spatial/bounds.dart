@@ -84,7 +84,7 @@ abstract class Bounds<T extends Point> extends Bounded
   bool get is3D => min.is3D;
 
   @override
-  bool get hasM => min.hasM;
+  bool get isMeasured => min.isMeasured;
 
   @override
   Coords get typeCoords => min.typeCoords;
@@ -130,7 +130,7 @@ abstract class Bounds<T extends Point> extends Bounded
   @override
   void writeBounds(BoundsWriter writer) {
     if (is3D) {
-      if (hasM) {
+      if (isMeasured) {
         writer.coordBounds(
           minX: min.x,
           minY: min.y,
@@ -152,7 +152,7 @@ abstract class Bounds<T extends Point> extends Bounded
         );
       }
     } else {
-      if (hasM) {
+      if (isMeasured) {
         writer.coordBounds(
           minX: min.x,
           minY: min.y,
@@ -211,7 +211,8 @@ abstract class Bounds<T extends Point> extends Bounded
     if (is3D && other.is3D && min.z > other.max.z || max.z < other.min.z) {
       return false;
     }
-    if (hasM && other.hasM && min.m > other.max.m || max.m < other.min.m) {
+    if (isMeasured && other.isMeasured && min.m > other.max.m ||
+        max.m < other.min.m) {
       return false;
     }
     return true;
@@ -246,7 +247,7 @@ abstract class Bounds<T extends Point> extends Bounded
     if (is3D && point.is3D && min.z > point.z || max.z < point.z) {
       return false;
     }
-    if (hasM && point.hasM && min.m > point.m || max.m < point.m) {
+    if (isMeasured && point.isMeasured && min.m > point.m || max.m < point.m) {
       return false;
     }
     return true;

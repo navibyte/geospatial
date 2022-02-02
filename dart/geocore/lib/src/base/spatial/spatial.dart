@@ -10,6 +10,7 @@ import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 import '/src/aspects/codes.dart';
+import '/src/aspects/data.dart';
 import '/src/aspects/encode.dart';
 import '/src/aspects/format.dart';
 import '/src/utils/bounds.dart';

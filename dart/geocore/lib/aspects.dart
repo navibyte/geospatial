@@ -8,6 +8,7 @@
 ///
 /// Contains following aspects or features:
 /// * *codes*: enums for coordinate and geometry types
+/// * *data*: basic interfaces for (geospatial) positions and coordinates
 /// * *encode*: write objects with coordinate data to (text) formats
 /// * *format*: some base formats including support for GeoJSON and WKT
 ///
@@ -15,5 +16,6 @@
 library aspects;
 
 export 'src/aspects/codes.dart';
+export 'src/aspects/data.dart';
 export 'src/aspects/encode.dart';
 export 'src/aspects/format.dart';

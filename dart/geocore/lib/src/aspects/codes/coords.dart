@@ -6,25 +6,25 @@
 
 /// An enum for coordinate types.
 enum Coords {
-  /// Coordinates are `2D`, with points missing Z and M coordinates.
+  /// Coordinates are `2D`, with points missing z and m coordinates.
   /// 
   /// That is points are expected to be (x, y) or (lon, lat).
-  is2D,
+  xy,
 
-  /// Coordinates are `3D`, with points containing Z (or elev) coordinate.
+  /// Coordinates are `3D`, with points containing z (or elevation) coordinate.
   /// 
   /// That is points are expected to be (x, y, z) or (lon, lat, elev).
-  is3D,
+  xyz,
 
-  /// Coordinates are both `2D` and `measured`, with points containing M.
+  /// Coordinates are both `2D` and `measured`, with points containing m.
   /// 
   /// That is points are expected to be (x, y, m) or (lon, lat, m).
-  is2DAndMeasured,
+  xym,
 
-  /// Coordinates are both `3D` and `measured`, with points containing Z and M.
+  /// Coordinates are both `3D` and `measured`, with points containing z and m.
   /// 
   /// That is points are expected to be (x, y, z, m) or (lon, lat, elev, m).
-  is3DAndMeasured,
+  xyzm,
 }
 
 /// An extension for the [Coords] enum.
@@ -32,29 +32,29 @@ extension CoordsExtension on Coords {
   /// Selects an enum value of [Coords] based on [hasZ] and [hasM].
   static Coords select({required bool hasZ, required bool hasM}) {
     if (hasZ) {
-      return hasM ? Coords.is3DAndMeasured : Coords.is3D;
+      return hasM ? Coords.xyzm : Coords.xyz;
     } else {
-      return hasM ? Coords.is2DAndMeasured : Coords.is2D;
+      return hasM ? Coords.xym : Coords.xy;
     }
   }
 
-  /// Returns true if coordinates has Z.
-  bool get hasZ => this == Coords.is3D || this == Coords.is3DAndMeasured;
+  /// Returns true if coordinates has z coordinate.
+  bool get is3D => this == Coords.xyz || this == Coords.xyzm;
 
-  /// Returns true if coordinates has M.
-  bool get hasM =>
-      this == Coords.is2DAndMeasured || this == Coords.is3DAndMeasured;
+  /// Returns true if coordinates has m coordinate.
+  bool get isMeasured =>
+      this == Coords.xym || this == Coords.xyzm;
 
   /// Returns the WKT specifier for coordinates, ie. `Z`, `M` or `ZM`.
   String get specifierWkt {
     switch (this) {
-      case Coords.is2D:
+      case Coords.xy:
         return '';
-      case Coords.is3D:
+      case Coords.xyz:
         return 'Z';
-      case Coords.is2DAndMeasured:
+      case Coords.xym:
         return 'M';
-      case Coords.is3DAndMeasured:
+      case Coords.xyzm:
         return 'ZM';
     }
   }

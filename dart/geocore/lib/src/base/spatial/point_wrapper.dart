@@ -41,7 +41,7 @@ class PointWrapper<T extends Point<C>, C extends num> extends Point<C>
   bool get is3D => point.is3D;
 
   @override
-  bool get hasM => point.hasM;
+  bool get isMeasured => point.isMeasured;
 
   @override
   Coords get typeCoords => point.typeCoords;

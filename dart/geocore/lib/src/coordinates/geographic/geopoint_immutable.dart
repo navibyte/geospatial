@@ -109,10 +109,10 @@ class GeoPoint2 extends GeoPoint with EquatableMixin {
   bool get is3D => false;
 
   @override
-  bool get hasM => false;
+  bool get isMeasured => false;
 
   @override
-  Coords get typeCoords => Coords.is2D;
+  Coords get typeCoords => Coords.xy;
 
   @override
   double operator [](int i) {
@@ -254,10 +254,10 @@ class GeoPoint2m extends GeoPoint2 {
   int get coordinateDimension => 3;
 
   @override
-  bool get hasM => true;
+  bool get isMeasured => true;
 
   @override
-  Coords get typeCoords => Coords.is2DAndMeasured;
+  Coords get typeCoords => Coords.xym;
 
   @override
   double operator [](int i) {
@@ -392,7 +392,7 @@ class GeoPoint3 extends GeoPoint2 {
   bool get is3D => true;
 
   @override
-  Coords get typeCoords => Coords.is3D;
+  Coords get typeCoords => Coords.xyz;
 
   @override
   double operator [](int i) {
@@ -533,10 +533,10 @@ class GeoPoint3m extends GeoPoint3 {
   int get coordinateDimension => 4;
 
   @override
-  bool get hasM => true;
+  bool get isMeasured => true;
 
   @override
-  Coords get typeCoords => Coords.is3DAndMeasured;
+  Coords get typeCoords => Coords.xyzm;
 
   @override
   double operator [](int i) {
