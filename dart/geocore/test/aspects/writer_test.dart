@@ -17,7 +17,6 @@ void main() {
         (writer) => writer.coordPoint(x: 10.123, y: 20.25),
         def: '10.123,20.25',
         geoJson: '10.123,20.25',
-        geoJsonStrict: '10.123,20.25',
         wktLike: '10.123 20.25',
         wkt: '10.123 20.25',
       );
@@ -25,7 +24,6 @@ void main() {
         (writer) => writer.coordPoint(x: 10.123, y: 20.25, z: -30.95),
         def: '10.123,20.25,-30.95',
         geoJson: '10.123,20.25,-30.95',
-        geoJsonStrict: '10.123,20.25,-30.95',
         wktLike: '10.123 20.25 -30.95',
         wkt: '10.123 20.25 -30.95',
       );
@@ -47,7 +45,6 @@ void main() {
         wkt: '10.12 20.25 -30.95 -2.00',
         defDecimals: 1,
         geoJsonDecimals: 1,
-        geoJsonStrictDecimals: 1,
         wktLikeDecimals: 3,
         wktDecimals: 2,
       );
@@ -62,7 +59,6 @@ void main() {
         ),
         def: '10.123,20.25,12.485,25.195',
         geoJson: '10.123,20.25,12.485,25.195',
-        geoJsonStrict: '10.123,20.25,12.485,25.195',
         wktLike: '10.123 20.25,12.485 25.195',
         wkt: 'POLYGON((10.123 20.25,12.485 20.25,12.485 25.195,10.123 '
             '25.195,10.123 20.25))',
@@ -78,13 +74,11 @@ void main() {
         ),
         def: '10.12,20.25,-15.09,12.48,25.20,-14.95',
         geoJson: '10.12,20.25,-15.09,12.48,25.20,-14.95',
-        geoJsonStrict: '10.12,20.25,-15.09,12.48,25.20,-14.95',
         wktLike: '10 20 -15,12 25 -15',
         wkt: 'POLYGON Z((10.1 20.3 -15.1,12.5 20.3 -15.0,12.5 25.2 -14.9,10.1 '
             '25.2 -15.0,10.1 20.3 -15.1))',
         defDecimals: 2,
         geoJsonDecimals: 2,
-        geoJsonStrictDecimals: 2,
         wktLikeDecimals: 0,
         wktDecimals: 1,
       );
@@ -152,7 +146,6 @@ void main() {
         ),
         def: '10.123,20.25',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25]}',
-        geoJsonStrict: '{"type":"Point","coordinates":[10.123,20.25]}',
         wktLike: '10.123 20.25',
         wkt: 'POINT(10.123 20.25)',
       );
@@ -163,7 +156,6 @@ void main() {
         ),
         def: '10.123,20.25,-30.95',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
-        geoJsonStrict: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
         wktLike: '10.123 20.25 -30.95',
         wkt: 'POINT(10.123 20.25 -30.95)',
       );
@@ -198,7 +190,6 @@ void main() {
         ),
         def: '10.123,20.25,-30.95',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
-        geoJsonStrict: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
         wktLike: '10.123 20.25 -30.95',
         wkt: 'POINT Z(10.123 20.25 -30.95)',
       );
@@ -211,7 +202,6 @@ void main() {
         ),
         def: '10.123,20.25,-30.95',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
-        geoJsonStrict: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
         wktLike: '10.123 20.25 -30.95',
         wkt: 'POINT Z(10.123 20.25 -30.95)',
       );
@@ -223,7 +213,6 @@ void main() {
         ),
         def: '10.123,20.25',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25]}',
-        geoJsonStrict: '{"type":"Point","coordinates":[10.123,20.25]}',
         wktLike: '10.123 20.25',
         wkt: 'POINT(10.123 20.25)',
       );
@@ -235,7 +224,6 @@ void main() {
         ),
         def: '10.123,20.25,0',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,0]}',
-        geoJsonStrict: '{"type":"Point","coordinates":[10.123,20.25,0]}',
         wktLike: '10.123 20.25 0',
         wkt: 'POINT Z(10.123 20.25 0)',
       );
@@ -269,7 +257,6 @@ void main() {
         (writer) => writer.emptyGeometry(Geom.point),
         def: '',
         geoJson: '{"type":"Point","coordinates":[]}',
-        geoJsonStrict: '{"type":"Point","coordinates":[]}',
         wktLike: '',
         wkt: 'POINT EMPTY',
       );
@@ -286,8 +273,6 @@ void main() {
         ),
         def: '[10.123,20.25],[5.98,-3.47]',
         geoJson:
-            '{"type":"MultiPoint","coordinates":[[10.123,20.25],[5.98,-3.47]]}',
-        geoJsonStrict:
             '{"type":"MultiPoint","coordinates":[[10.123,20.25],[5.98,-3.47]]}',
         wktLike: '10.123 20.25,5.98 -3.47',
         wkt: 'MULTIPOINT(10.123 20.25,5.98 -3.47)',
@@ -308,9 +293,6 @@ void main() {
         ),
         def: '[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]',
         geoJson: '{"type":"LineString",'
-            '"bbox":[-1.1,-3.49,3.5,-1.1],'
-            '"coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]}',
-        geoJsonStrict: '{"type":"LineString",'
             '"bbox":[-1.1,-3.49,3.5,-1.1],'
             '"coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]}',
         wktLike: '-1.1 -1.1,2.1 -2.5,3.5 -3.49',
@@ -400,8 +382,6 @@ void main() {
         def: '[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]],[[38.19,57.4]]',
         geoJson: '{"type":"MultiLineString","coordinates":[[[-1.1,-1.1],'
             '[2.1,-2.5],[3.5,-3.49]],[[38.19,57.4]]]}',
-        geoJsonStrict: '{"type":"MultiLineString","coordinates":[[[-1.1,-1.1],'
-            '[2.1,-2.5],[3.5,-3.49]],[[38.19,57.4]]]}',
         wktLike: '(-1.1 -1.1,2.1 -2.5,3.5 -3.49),(38.19 57.4)',
         wkt: 'MULTILINESTRING((-1.1 -1.1,2.1 -2.5,3.5 -3.49),(38.19 57.4))',
       );
@@ -422,8 +402,6 @@ void main() {
         ),
         def: '[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]',
         geoJson: '{"type":"Polygon",'
-            '"coordinates":[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]}',
-        geoJsonStrict: '{"type":"Polygon",'
             '"coordinates":[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]}',
         wktLike: '(10.1 10.1,5 9,12 4,10.1 10.1)',
         wkt: 'POLYGON((10.1 10.1,5 9,12 4,10.1 10.1))',
@@ -447,8 +425,6 @@ void main() {
         ),
         def: '[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]',
         geoJson: '{"type":"MultiPolygon",'
-            '"coordinates":[[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]]}',
-        geoJsonStrict: '{"type":"MultiPolygon",'
             '"coordinates":[[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]]}',
         wktLike: '((10.1 10.1,5 9,12 4,10.1 10.1))',
         wkt: 'MULTIPOLYGON(((10.1 10.1,5 9,12 4,10.1 10.1)))',
@@ -479,10 +455,6 @@ void main() {
         ),
         def: '[10.123,20.25,-30.95],[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]',
         geoJson: '{"type":"GeometryCollection","geometries":[{"type":"Point",'
-            '"coordinates":[10.123,20.25,-30.95]},{"type":"Polygon",'
-            '"coordinates":[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]}]}',
-        geoJsonStrict:
-            '{"type":"GeometryCollection","geometries":[{"type":"Point",'
             '"coordinates":[10.123,20.25,-30.95]},{"type":"Polygon",'
             '"coordinates":[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]}]}',
         wktLike: '(10.123 20.25 -30.95),((10.1 10.1,5 9,12 4,10.1 10.1))',
@@ -633,6 +605,109 @@ void main() {
         geoJson:
             '{"type":"FeatureCollection","bbox":[-1.1,-3.49,10.123,20.25],"features":[{"type":"Feature","id":"fid-1","geometry":{"type":"Point","coordinates":[10.123,20.25]},"properties":{"foo":100,"bar":"this is property value"}},{"type":"Feature","geometry":{"type":"LineString","bbox":[-1.1,-3.49,3.5,-1.1],"coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]},"properties":null}]}',
       );
+      _testGeoJsonWriters<FeatureWriter>(
+        (writer) => writer.featureCollection(features: (fw) {}),
+        geoJson: '{"type":"FeatureCollection","features":[]}',
+      );
+      _testGeoJsonWriters<FeatureWriter>(
+        (writer) => writer.featureCollection(
+          features: (fw) {},
+          extra: (pw) => pw.property('prop1', 'value1'),
+        ),
+        geoJson: '{"type":"FeatureCollection","features":[],"prop1":"value1"}',
+        geoJsonStrict: '{"type":"FeatureCollection","features":[]}',
+      );
+      _testGeoJsonWriters<FeatureWriter>(
+        (writer) => writer.featureCollection(
+          features: (fw) {},
+          extra: (pw) => pw.properties('map1', {'prop1': 'value1'}),
+        ),
+        geoJson: '{"type":"FeatureCollection",'
+            '"features":[],"map1":{"prop1":"value1"}}',
+        geoJsonStrict: '{"type":"FeatureCollection","features":[]}',
+      );
+      _testGeoJsonWriters<FeatureWriter>(
+        (writer) => writer.featureCollection(
+          features: (fw) => fw.featureCollection(features: (fw) {}),
+        ),
+        geoJson: '{"type":"FeatureCollection","features":[]}',
+      );
+      _testGeoJsonWriters<FeatureWriter>(
+        (writer) => writer.featureCollection(
+          features: (fw) => fw.feature(),
+        ),
+        geoJson: '{"type":"FeatureCollection","features":'
+            '[{"type":"Feature","properties":null}]}',
+      );
+      _testGeoJsonWriters<FeatureWriter>(
+        (writer) => writer.featureCollection(
+          features: (fw) => fw
+            ..feature()
+            ..feature(),
+        ),
+        geoJson: '{"type":"FeatureCollection","features":'
+            '[{"type":"Feature","properties":null},'
+            '{"type":"Feature","properties":null}]}',
+      );
+      _testGeoJsonWriters<FeatureWriter>(
+        (writer) => writer.featureCollection(
+          features: (fw) => fw
+            ..feature(extra: (pw) => pw.property('prop1', 'value1'))
+            ..feature(
+              extra: (pw) => pw.properties('map1', {'prop1': 'value1'}),
+            ),
+        ),
+        geoJson: '{"type":"FeatureCollection","features":'
+            '[{"type":"Feature","properties":null,"prop1":"value1"},'
+            '{"type":"Feature","properties":null,"map1":{"prop1":"value1"}}]}',
+        geoJsonStrict: '{"type":"FeatureCollection","features":'
+            '[{"type":"Feature","properties":null},'
+            '{"type":"Feature","properties":null}]}',
+      );
+      _testGeoJsonWriters<FeatureWriter>(
+        (writer) => writer.featureCollection(
+          count: 2,
+          features: (fw) => fw
+            ..feature(
+              id: 1,
+              properties: {'test1': 3},
+              extra: (pw) => pw.property('p1', BigInt.one),
+            )
+            ..feature(
+              id: '2',
+              properties: {},
+              extra: (pw) => pw.properties('map1', {'p2': 2}),
+            ),
+        ),
+        geoJson: '{"type":"FeatureCollection","features":'
+            '[{"type":"Feature","id":1,"properties":{"test1":3},"p1":1},'
+            '{"type":"Feature","id":"2","properties":{},"map1":{"p2":2}}]}',
+        geoJsonStrict: '{"type":"FeatureCollection","features":'
+            '[{"type":"Feature","id":1,"properties":{"test1":3}},'
+            '{"type":"Feature","id":"2","properties":{}}]}',
+      );
+      _testGeoJsonWriters<FeatureWriter>(
+        (writer) => writer.featureCollection(
+          count: 2,
+          features: (fw) => fw
+            ..feature(
+              geometries: (gw) => gw.geometry(
+                type: Geom.point,
+                coordinates: (cw) => cw.coordPoint(x: 1, y: 2),
+              ),
+              properties: {'test1': null},
+            )
+            ..feature(
+              id: '2',
+              geometries: (gw) => gw.emptyGeometry(Geom.point),
+              properties: {},
+            ),
+        ),
+        geoJson: '{"type":"FeatureCollection","features":'
+            '[{"type":"Feature","geometry":{"type":"Point",'
+            '"coordinates":[1,2]},"properties":{"test1":null}},'
+            '{"type":"Feature","id":"2","geometry":null,"properties":{}}]}',
+      );
     });
   });
 }
@@ -641,12 +716,11 @@ void _testAllWriters<T extends BaseWriter>(
   void Function(T writer) content, {
   required String def,
   required String geoJson,
-  required String geoJsonStrict,
+  String? geoJsonStrict,
   required String wktLike,
   required String wkt,
   int? defDecimals,
   int? geoJsonDecimals,
-  int? geoJsonStrictDecimals,
   int? wktLikeDecimals,
   int? wktDecimals,
 }) {
@@ -665,8 +739,8 @@ void _testAllWriters<T extends BaseWriter>(
   _testWriterOfGeometryFormat<T>(
     geoJsonFormat(ignoreMeasured: true, ignoreForeignMembers: true),
     content,
-    expected: geoJsonStrict,
-    decimals: geoJsonStrictDecimals,
+    expected: geoJsonStrict ?? geoJson,
+    decimals: geoJsonDecimals,
   );
   _testWriterOfGeometryFormat<T>(
     wktLikeFormat,
