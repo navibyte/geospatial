@@ -32,14 +32,19 @@ abstract class Point<C extends num> extends Geometry
   /// Default `const` constructor to allow extending this abstract class.
   const Point();
 
-  /// Create an empty point.
-  factory Point.empty([Coords typeCoords]) = _PointEmpty<C>;
-
   @override
   Geom get typeGeom => Geom.point;
 
   @override
   int get dimension => 0;
+
+  @override
+  @nonVirtual
+  bool get isEmpty => false;
+
+  @override
+  @nonVirtual
+  bool get isNotEmpty => true;
 
   @override
   Bounds? get bounds => Bounds.of(min: this, max: this);
@@ -100,9 +105,6 @@ abstract class Point<C extends num> extends Geometry
       toleranceHoriz == null || toleranceHoriz >= 0.0,
       'Tolerance must be null or positive (>= 0)',
     );
-    if (isEmpty || other.isEmpty) {
-      return false;
-    }
     return toleranceHoriz != null
         ? (x - other.x).abs() <= toleranceHoriz &&
             (y - other.y).abs() <= toleranceHoriz
@@ -242,72 +244,4 @@ abstract class Point<C extends num> extends Geometry
     PointFactory<R>? to,
   }) =>
       projection.projectPoint(this, to: to);
-}
-
-/// A private implementation for an empty point with coordinate zero values.
-/// The implementation may change in future.
-@immutable
-class _PointEmpty<C extends num> extends Point<C> with EquatableMixin {
-  const _PointEmpty([this.typeCoords = Coords.xy]);
-
-  @override
-  bool get is3D => typeCoords.is3D;
-
-  @override
-  bool get isMeasured => typeCoords.isMeasured;
-
-  @override
-  final Coords typeCoords;
-
-  @override
-  Bounds? get bounds => null;
-
-  @override
-  Bounds? get boundsExplicit => null;
-
-  @override
-  bool get isEmpty => true;
-
-  @override
-  bool get isNotEmpty => false;
-
-  @override
-  int get coordinateDimension => spatialDimension + (isMeasured ? 1 : 0);
-
-  @override
-  int get spatialDimension => is3D ? 3 : 2;
-
-  @override
-  C operator [](int i) => _zero();
-
-  @override
-  C get x => _zero();
-
-  @override
-  C get y => _zero();
-
-  @override
-  Point newWith({num x = 0.0, num y = 0.0, num? z, num? m}) => this;
-
-  @override
-  Point newFrom(Iterable<num> coords, {int? offset, int? length}) => this;
-
-  @override
-  Point copyWith({num? x, num? y, num? z, num? m}) => this;
-
-  @override
-  Point transform(TransformPoint transform) => this;
-
-  @override
-  R project<R extends Point>(
-    Projection<R> projection, {
-    PointFactory<R>? to,
-  }) =>
-      throw const FormatException('Cannot project empty point.');
-
-  @override
-  String toString() => valuesAsString();
-
-  @override
-  List<Object?> get props => [is3D, isMeasured];
 }

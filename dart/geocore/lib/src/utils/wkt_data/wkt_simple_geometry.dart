@@ -205,7 +205,7 @@ Geometry parseWktGeometry<T extends Point>(
     if (text.startsWith(_types[type])) {
       var i = _types[type].length;
       var expectM = false;
-      var expectZ = false;
+      //var expectZ = false;
       while (i < text.length) {
         final c = text[i];
         switch (c) {
@@ -213,16 +213,13 @@ Geometry parseWktGeometry<T extends Point>(
             expectM = true;
             break;
           case 'Z':
-            expectZ = true;
+            //expectZ = true;
             break;
           case 'E':
             if (text.startsWith('EMPTY', i)) {
               switch (type) {
                 case 0: // POINT
-                  return Point.empty(
-                    CoordsExtension.select(hasZ: expectZ, hasM: expectM),
-                  );
-                // TODO(x): consider how to return empty geometries
+                  return Geometry.empty(Geom.point);
                 case 1: // LINESTRING
                   return Geometry.empty(Geom.lineString);
                 case 2: // POLYGON

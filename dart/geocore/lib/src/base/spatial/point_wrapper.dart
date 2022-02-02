@@ -23,9 +23,6 @@ class PointWrapper<T extends Point<C>, C extends num> extends Point<C>
   List<Object?> get props => [point];
 
   @override
-  bool get isEmpty => point.isEmpty;
-
-  @override
   Bounds? get bounds => point.bounds;
 
   @override

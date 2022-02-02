@@ -23,7 +23,7 @@ void main() {
     });
 
     test('WKT empty geoms', () {
-      expect(wktGeographic.parse('POINT EMPTY'), Point.empty());
+      expect(wktGeographic.parse('POINT EMPTY'), Geometry.empty(Geom.point));
     });
 
     test('WKT points using GeoPoint', () {
@@ -153,10 +153,9 @@ void main() {
       expect(GeoPoint2m.parse('1 1 80'), point3);
 
       // POINT EMPTY
-      expect(wktGeographic.parse('POINT EMPTY'), Point.empty());
-      expect(wktCartesian.parse('POINT M EMPTY'),
-          Point.empty(Coords.xym));
-      expect(wktGeographic.parse('POINT Z EMPTY'), Point.empty(Coords.xyz));
+      expect(wktGeographic.parse('POINT EMPTY'), Geometry.empty(Geom.point));
+      expect(wktCartesian.parse('POINT M EMPTY'), Geometry.empty(Geom.point));
+      expect(wktGeographic.parse('POINT Z EMPTY'), Geometry.empty(Geom.point));
 
       // MULTIPOLYGON EMPTY
       // (todo: implement geometry specific empty instances?)
@@ -493,7 +492,7 @@ void main() {
       MULTIPOLYGON EMPTY
       '''), <Geometry>[
         Point3m.from([1.0, 1.0, 5.0, 60.0]),
-        Point.empty(),
+        Geometry.empty(Geom.point),
         Point2m.from([1.0, 1.0, 80.0]),
         Geometry.empty(Geom.multiPolygon)
       ]);

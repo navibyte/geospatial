@@ -96,9 +96,6 @@ class Point2 extends CartesianPoint<num> with EquatableMixin {
   List<Object?> get props => [x, y];
 
   @override
-  bool get isEmpty => false;
-
-  @override
   int get coordinateDimension => 2;
 
   @override
@@ -603,9 +600,6 @@ class Point2i extends CartesianPoint<int> with EquatableMixin {
 
   @override
   List<Object?> get props => [x, y];
-
-  @override
-  bool get isEmpty => false;
 
   @override
   int get coordinateDimension => 2;
