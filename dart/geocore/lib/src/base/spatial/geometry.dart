@@ -7,7 +7,7 @@
 part of 'spatial.dart';
 
 /// A base interface for geometry classes.
-abstract class Geometry extends Bounded implements GeometryWritable {
+abstract class Geometry extends Bounded {
   /// Default `const` constructor to allow extending this abstract class.
   const Geometry();
 
@@ -67,13 +67,24 @@ abstract class Geometry extends Bounded implements GeometryWritable {
     Projection<R> projection, {
     PointFactory<R>? to,
   });
+
+  /// Writes this geometry object to [writer].
+  void writeTo(GeometryWriter writer);
+
+  /// A string representation of this geometry, with [format] applied.
+  ///
+  /// Use [decimals] to set a number of decimals (not applied if no decimals).
+  String toStringAs({GeometryFormat format = defaultFormat, int? decimals}) {
+    final writer = format.geometriesToText(decimals: decimals);
+    writeTo(writer);
+    return writer.toString();
+  }
 }
 
 /// An empty (non-existent) geometry as an private implementation.
 /// The implementation may change in future.
 @immutable
-class _EmptyGeometry extends Geometry
-    with EquatableMixin, GeometryWritableMixin {
+class _EmptyGeometry extends Geometry with EquatableMixin {
   const _EmptyGeometry(this.typeGeom);
 
   @override
@@ -98,7 +109,7 @@ class _EmptyGeometry extends Geometry
   Point? get onePoint => null;
 
   @override
-  void writeGeometries(GeometryWriter writer) => writer.emptyGeometry(typeGeom);
+  void writeTo(GeometryWriter writer) => writer.emptyGeometry(typeGeom);
 
   @override
   Geometry transform(TransformPoint transform) => this;
@@ -112,4 +123,7 @@ class _EmptyGeometry extends Geometry
 
   @override
   List<Object?> get props => [];
+
+  @override
+  String toString() => toStringAs();
 }

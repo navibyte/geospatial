@@ -8,13 +8,15 @@ import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 import '/src/aspects/encode.dart';
-import '/src/aspects/format.dart';
 import '/src/base/spatial.dart';
+
+import 'feature_writable.dart';
 
 /// A feature is a geospatial entity with [id], [properties] and [geometry].
 ///
 /// Supports representing data from GeoJSON (https://geojson.org/) features.
-abstract class Feature<T extends Geometry> implements Bounded, FeatureWritable {
+abstract class Feature<T extends Geometry> extends FeatureWritable
+    implements Bounded {
   /// Default `const` constructor to allow extending this abstract class.
   const Feature();
 
@@ -93,11 +95,7 @@ abstract class Feature<T extends Geometry> implements Bounded, FeatureWritable {
 /// Private implementation of [Feature].
 /// The implementation may change in future.
 @immutable
-class _FeatureBase<T extends Geometry>
-    with EquatableMixin, FeatureWritableMixin
-    implements Feature<T> {
-  // note : mixins must be on that order (need toString from the latter)
-
+class _FeatureBase<T extends Geometry> extends Feature<T> with EquatableMixin {
   const _FeatureBase({
     this.id,
     required this.properties,
@@ -126,13 +124,13 @@ class _FeatureBase<T extends Geometry>
   Bounds? get boundsExplicit => _featureBounds ?? geometry?.boundsExplicit;
 
   @override
-  void writeFeatures(FeatureWriter writer) {
+  void writeTo(FeatureWriter writer) {
     final geom = geometry;
     writer.feature(
       id: id,
-      geometries: geom?.writeGeometries,
+      geometries: geom?.writeTo,
       properties: properties,
-      bounds: boundsExplicit?.writeBounds,
+      bounds: boundsExplicit?.writeTo,
     );
   }
 
@@ -153,4 +151,7 @@ class _FeatureBase<T extends Geometry>
         properties: properties,
         geometry: geometry?.project<R>(projection, to: to),
       );
+
+  @override
+  String toString() => toStringAs();
 }

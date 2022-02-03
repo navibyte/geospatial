@@ -12,8 +12,7 @@ part of 'spatial.dart';
 /// an outer or inner linear ring of a polygon, a multi point, a vertex array or
 /// any other collection for points.
 abstract class PointSeries<E extends Point>
-    extends _BatchedSeries<PointSeries<E>, E>
-    implements Bounded {
+    extends _BatchedSeries<PointSeries<E>, E> implements Bounded {
   /// Default `const` constructor to allow extending this abstract class.
   const PointSeries();
 
@@ -103,6 +102,9 @@ abstract class PointSeries<E extends Point>
     bool lazy = false,
     PointFactory<R>? to,
   });
+
+  /// Writes this point series object to [writer].
+  void writeTo(CoordinateWriter writer);
 }
 
 /// A partial implementation of [PointSeries] as a mixin.
@@ -125,6 +127,9 @@ mixin PointSeriesMixin<E extends Point> implements PointSeries<E> {
 
   @override
   num m(int index) => this[index].m;
+
+  @override
+  void writeTo(CoordinateWriter writer) => writer.positions1D(this);
 
   @override
   String toString() {

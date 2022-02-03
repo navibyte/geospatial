@@ -8,14 +8,14 @@ import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 import '/src/aspects/encode.dart';
-import '/src/aspects/format.dart';
 import '/src/base/spatial.dart';
 
 import 'feature.dart';
+import 'feature_writable.dart';
 
 /// A feature collection with a series of features.
-abstract class FeatureCollection<E extends Feature>
-    implements Bounded, FeatureWritable {
+abstract class FeatureCollection<E extends Feature> extends FeatureWritable
+    implements Bounded {
   /// Default `const` constructor to allow extending this abstract class.
   const FeatureCollection();
 
@@ -50,9 +50,7 @@ abstract class FeatureCollection<E extends Feature>
 /// The implementation may change in future.
 @immutable
 class _FeatureCollectionBase<E extends Feature> extends FeatureCollection<E>
-    with EquatableMixin, FeatureWritableMixin {
-  // note : mixins must be on that order (need toString from the latter)
-
+    with EquatableMixin {
   _FeatureCollectionBase({required Iterable<E> features, Bounds? bounds})
       : features = features is BoundedSeries<E>
             ? features
@@ -74,15 +72,15 @@ class _FeatureCollectionBase<E extends Feature> extends FeatureCollection<E>
   Bounds? get boundsExplicit => _collectionBounds ?? features.boundsExplicit;
 
   @override
-  void writeFeatures(FeatureWriter writer) {
+  void writeTo(FeatureWriter writer) {
     writer.featureCollection(
       features: (fw) {
         for (final item in features) {
-          item.writeFeatures(writer);
+          item.writeTo(writer);
         }
       },
       count: features.length,
-      bounds: boundsExplicit?.writeBounds,
+      bounds: boundsExplicit?.writeTo,
     );
   }
 
@@ -108,4 +106,7 @@ class _FeatureCollectionBase<E extends Feature> extends FeatureCollection<E>
           lazy: false,
         ),
       );
+
+  @override
+  String toString() => toStringAs();
 }

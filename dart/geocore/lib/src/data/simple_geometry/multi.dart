@@ -12,7 +12,6 @@ import 'package:meta/meta.dart';
 import '/src/aspects/codes.dart';
 import '/src/aspects/data.dart';
 import '/src/aspects/encode.dart';
-import '/src/aspects/format.dart';
 import '/src/base/spatial.dart';
 import '/src/utils/wkt_data.dart';
 
@@ -22,9 +21,7 @@ import 'polygon.dart';
 /// A geometry collection.
 @immutable
 class GeometryCollection<E extends Geometry> extends Geometry
-    with EquatableMixin, GeometryWritableMixin {
-  // note : mixins must be on that order (need toString from the latter)
-
+    with EquatableMixin {
   /// Creates [GeometryCollection] from [geometries].
   GeometryCollection(Iterable<E> geometries)
       : geometries = geometries is BoundedSeries<E>
@@ -80,17 +77,17 @@ class GeometryCollection<E extends Geometry> extends Geometry
   List<Object?> get props => [geometries];
 
   @override
-  void writeGeometries(GeometryWriter writer) {
+  void writeTo(GeometryWriter writer) {
     // note: no need to inform is3D/hasM of the first point, as sub items on
     // a collection are geometries, and each of them should inform those
     writer.geometryCollection(
       geometries: (gw) {
         for (final item in geometries) {
-          item.writeGeometries(gw);
+          item.writeTo(gw);
         }
       },
       count: geometries.length,
-      bounds: boundsExplicit?.writeBounds,
+      bounds: boundsExplicit?.writeTo,
     );
   }
 
@@ -112,14 +109,14 @@ class GeometryCollection<E extends Geometry> extends Geometry
           lazy: false,
         ),
       );
+
+  @override
+  String toString() => toStringAs();
 }
 
 /// A multi point geometry.
 @immutable
-class MultiPoint<E extends Point> extends Geometry
-    with EquatableMixin, GeometryWritableMixin {
-  // note : mixins must be on that order (need toString from the latter)
-
+class MultiPoint<E extends Point> extends Geometry with EquatableMixin {
   /// Create [MultiPoint] from [points].
   MultiPoint(Iterable<E> points)
       : points = points is PointSeries<E> ? points : PointSeries.view(points);
@@ -177,13 +174,13 @@ class MultiPoint<E extends Point> extends Geometry
   Iterable<Position> get coordinates => points;
 
   @override
-  void writeGeometries(GeometryWriter writer) {
+  void writeTo(GeometryWriter writer) {
     final point = onePoint;
     writer.geometryWithPositions1D(
       type: Geom.multiPoint,
       coordinates: coordinates,
       coordType: point?.typeCoords,
-      bounds: boundsExplicit?.writeBounds,
+      bounds: boundsExplicit?.writeTo,
     );
   }
 
@@ -197,14 +194,14 @@ class MultiPoint<E extends Point> extends Geometry
     PointFactory<R>? to,
   }) =>
       MultiPoint(points.project(projection, lazy: false, to: to));
+
+  @override
+  String toString() => toStringAs();
 }
 
 /// A multi line string geometry.
 @immutable
-class MultiLineString<T extends Point> extends Geometry
-    with EquatableMixin, GeometryWritableMixin {
-  // note : mixins must be on that order (need toString from the latter)
-
+class MultiLineString<T extends Point> extends Geometry with EquatableMixin {
   /// Create a multi line string from [lineStrings].
   MultiLineString(Iterable<LineString<T>> lineStrings)
       : lineStrings = lineStrings is BoundedSeries<LineString<T>>
@@ -278,13 +275,13 @@ class MultiLineString<T extends Point> extends Geometry
       lineStrings.map<Iterable<Position>>((e) => e.chain);
 
   @override
-  void writeGeometries(GeometryWriter writer) {
+  void writeTo(GeometryWriter writer) {
     final point = onePoint;
     writer.geometryWithPositions2D(
       type: Geom.multiLineString,
       coordinates: coordinates,
       coordType: point?.typeCoords,
-      bounds: boundsExplicit?.writeBounds,
+      bounds: boundsExplicit?.writeTo,
     );
   }
 
@@ -303,14 +300,14 @@ class MultiLineString<T extends Point> extends Geometry
               .map((lineString) => lineString.project(projection, to: to)),
         ),
       );
+
+  @override
+  String toString() => toStringAs();
 }
 
 /// A multi polygon geometry.
 @immutable
-class MultiPolygon<T extends Point> extends Geometry
-    with EquatableMixin, GeometryWritableMixin {
-  // note : mixins must be on that order (need toString from the latter)
-
+class MultiPolygon<T extends Point> extends Geometry with EquatableMixin {
   /// Create [MultiPolygon] from [polygons].
   MultiPolygon(Iterable<Polygon<T>> polygons)
       : polygons = polygons is BoundedSeries<Polygon<T>>
@@ -384,13 +381,13 @@ class MultiPolygon<T extends Point> extends Geometry
       );
 
   @override
-  void writeGeometries(GeometryWriter writer) {
+  void writeTo(GeometryWriter writer) {
     final point = onePoint;
     writer.geometryWithPositions3D(
       type: Geom.multiPolygon,
       coordinates: coordinates,
       coordType: point?.typeCoords,
-      bounds: boundsExplicit?.writeBounds,
+      bounds: boundsExplicit?.writeTo,
     );
   }
 
@@ -408,4 +405,7 @@ class MultiPolygon<T extends Point> extends Geometry
           polygons.map((polygon) => polygon.project(projection, to: to)),
         ),
       );
+
+  @override
+  String toString() => toStringAs();
 }

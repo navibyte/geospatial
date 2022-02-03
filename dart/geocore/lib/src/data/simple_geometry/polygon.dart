@@ -10,7 +10,6 @@ import 'package:meta/meta.dart';
 import '/src/aspects/codes.dart';
 import '/src/aspects/data.dart';
 import '/src/aspects/encode.dart';
-import '/src/aspects/format.dart';
 import '/src/base/spatial.dart';
 import '/src/utils/wkt_data.dart';
 
@@ -18,10 +17,7 @@ import 'linestring.dart';
 
 /// A polygon with an exterior and optional interior boundaries.
 @immutable
-class Polygon<T extends Point> extends Geometry
-    with EquatableMixin, GeometryWritableMixin {
-  // note : mixins must be on that order (need toString from the latter)
-
+class Polygon<T extends Point> extends Geometry with EquatableMixin {
   /// Create [Polygon] from [rings] with at least exterior boundary at index 0.
   ///
   /// Contains also interior boundaries if length is >= 2.
@@ -141,13 +137,13 @@ class Polygon<T extends Point> extends Geometry
       rings.map<Iterable<Position>>((e) => e.chain);
 
   @override
-  void writeGeometries(GeometryWriter writer) {
+  void writeTo(GeometryWriter writer) {
     final point = onePoint;
     writer.geometryWithPositions2D(
       type: Geom.polygon,
       coordinates: coordinates,
       coordType: point?.typeCoords,
-      bounds: boundsExplicit?.writeBounds,
+      bounds: boundsExplicit?.writeTo,
     );
   }
 
@@ -163,4 +159,7 @@ class Polygon<T extends Point> extends Geometry
       Polygon<R>(
         rings.convert((ring) => ring.project(projection, to: to)),
       );
+
+  @override
+  String toString() => toStringAs();
 }

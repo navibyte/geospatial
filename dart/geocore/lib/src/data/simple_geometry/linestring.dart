@@ -10,7 +10,6 @@ import 'package:meta/meta.dart';
 import '/src/aspects/codes.dart';
 import '/src/aspects/data.dart';
 import '/src/aspects/encode.dart';
-import '/src/aspects/format.dart';
 import '/src/base/spatial.dart';
 import '/src/utils/wkt_data.dart';
 
@@ -25,10 +24,7 @@ enum LineStringType {
 
 /// A line string containing a chain of points.
 @immutable
-class LineString<T extends Point> extends Geometry
-    with EquatableMixin, GeometryWritableMixin {
-  // note : mixins must be on that order (need toString from the latter)
-
+class LineString<T extends Point> extends Geometry with EquatableMixin {
   /// Create [LineString] from [chain] of points conforming by [type].
   LineString(Iterable<T> chain, {this.type = LineStringType.any})
       : chain = chain is PointSeries<T> ? chain : PointSeries.view(chain) {
@@ -125,13 +121,13 @@ class LineString<T extends Point> extends Geometry
   Iterable<Position> get coordinates => chain;
 
   @override
-  void writeGeometries(GeometryWriter writer) {
+  void writeTo(GeometryWriter writer) {
     final point = onePoint;
     writer.geometryWithPositions1D(
       type: Geom.lineString,
       coordinates: coordinates,
       coordType: point?.typeCoords,
-      bounds: boundsExplicit?.writeBounds,
+      bounds: boundsExplicit?.writeTo,
     );
   }
 
@@ -148,4 +144,7 @@ class LineString<T extends Point> extends Geometry
 
   @override
   List<Object?> get props => [type, chain];
+
+  @override
+  String toString() => toStringAs();
 }

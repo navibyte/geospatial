@@ -27,7 +27,6 @@ part of 'spatial.dart';
 /// time). It could be associated with a 2D position (x, y, m) or a 3D position
 /// (x, y, z, m).
 abstract class Point<C extends num> extends Geometry
-    with GeometryWritableMixin
     implements Position, _Coordinates, PointFactory {
   /// Default `const` constructor to allow extending this abstract class.
   const Point();
@@ -212,7 +211,7 @@ abstract class Point<C extends num> extends Geometry
   }
 
   @override
-  void writeGeometries(GeometryWriter writer) => writer.geometryWithPosition(
+  void writeTo(GeometryWriter writer) => writer.geometryWithPosition(
         type: Geom.point,
         coordinates: this,
         coordType: typeCoords,

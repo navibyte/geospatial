@@ -8,7 +8,7 @@ part of 'spatial.dart';
 
 /// A base interface for bounds (aka a bounding box in 2D).
 abstract class Bounds<T extends Point> extends Bounded
-    implements _Coordinates, CoordinateFactory<Bounds<T>>, BoundsWritable {
+    implements _Coordinates, CoordinateFactory<Bounds<T>> {
   /// Default `const` constructor to allow extending this abstract class.
   const Bounds();
 
@@ -127,8 +127,8 @@ abstract class Bounds<T extends Point> extends Bounded
     return buf.toString();
   }
 
-  @override
-  void writeBounds(BoundsWriter writer) {
+  /// Writes this bounds object to [writer].
+  void writeTo(BoundsWriter writer) {
     if (is3D) {
       if (isMeasured) {
         writer.coordBounds(
