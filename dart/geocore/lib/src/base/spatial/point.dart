@@ -11,7 +11,7 @@ part of 'spatial.dart';
 /// The type [C] of coordinate values is either `num` (allowing `double` or
 /// `int`), `double` or `int`.
 ///
-/// All concrete implementations must contain at least [x] and [y] coordinate 
+/// All concrete implementations must contain at least [x] and [y] coordinate
 /// values, but [z] and [m] coordinates are optional (getters should return `0`
 /// value when such a coordinate axis is not available).
 ///
@@ -28,7 +28,7 @@ part of 'spatial.dart';
 /// (x, y, z, m).
 abstract class Point<C extends num> extends Geometry
     with GeometryWritableMixin
-    implements Position, _Coordinates, PointFactory, CoordinateWritable {
+    implements Position, _Coordinates, PointFactory {
   /// Default `const` constructor to allow extending this abstract class.
   const Point();
 
@@ -92,6 +92,12 @@ abstract class Point<C extends num> extends Geometry
 
   @override
   C get m => _zero();
+
+  @override
+  C? get optZ => null;
+
+  @override
+  C? get optM => null;
 
   /// True if this point equals with [other] point in 2D by testing x and y.
   ///
@@ -206,18 +212,10 @@ abstract class Point<C extends num> extends Geometry
   }
 
   @override
-  void writeGeometries(GeometryWriter writer) => writer.geometry(
+  void writeGeometries(GeometryWriter writer) => writer.geometryWithPosition(
         type: Geom.point,
-        coordinates: writeCoordinates,
+        coordinates: this,
         coordType: typeCoords,
-      );
-
-  @override
-  void writeCoordinates(CoordinateWriter writer) => writer.coordPoint(
-        x: x,
-        y: y,
-        z: is3D ? z : null,
-        m: isMeasured ? m : null,
       );
 
   /// Copies this point with the compatible type and sets given coordinates.

@@ -4,48 +4,27 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'base_writer.dart';
+import '/src/aspects/data.dart';
 
-/// A function that is capable of writing coordinates to [writer].
-typedef WriteCoordinates = void Function(CoordinateWriter writer);
+import 'base_writer.dart';
 
 /// An interface to write objects with coordinate data into some content format.
 abstract class CoordinateWriter extends BaseWriter {
-  /// Starts a section for an array of point coordinates.
-  /// 
-  /// An optional expected [count], when given, hints the count of items.
+  /// Writes a position from [coordinates].
+  void position(Position coordinates);
+
+  /// Writes a position array from [coordinates].
   ///
-   /// An example of one dimensional coordinate array:
-  /// ```dart
-  ///   writer..coordArray(count: 2)
-  ///         ..coordPoint(x: 1, y: 1)
-  ///         ..coordPoint(x: 2, y: 2)
-  ///         ..coordArrayEnd();
-  /// ```
-  /// 
-  /// Coordinate arrays can be also multi-dimensional, for example:
-  /// ```dart
-  ///   writer..coordArray(count: 2)
-  ///         ..coordArray(count: 2)
-  ///         ..coordPoint(x: 1, y: 1)
-  ///         ..coordPoint(x: 2, y: 2)
-  ///         ..coordArrayEnd()
-  ///         ..coordArray()
-  ///         ..coordPoint(x: 11, y: 11)
-  ///         ..coordPoint(x: 12, y: 12)
-  ///         ..coordArrayEnd()
-  ///         ..coordArrayEnd();
-  /// ```
-  void coordArray({int? count});
+  /// The [coordinates] array is a 1-dimensional iterable.
+  void positions1D(Iterable<Position> coordinates);
 
-  /// Ends a section for an array of point coordinates.
-  void coordArrayEnd();
+  /// Writes a position array from [coordinates].
+  ///
+  /// The [coordinates] array is a 2-dimensional iterable.
+  void positions2D(Iterable<Iterable<Position>> coordinates);
 
-  /// Writes given point coordinates.
-  void coordPoint({
-    required num x,
-    required num y,
-    num? z,
-    num? m,
-  });
+  /// Writes a position array from [coordinates].
+  ///
+  /// The [coordinates] array is a 3-dimensional iterable.
+  void positions3D(Iterable<Iterable<Iterable<Position>>> coordinates);
 }

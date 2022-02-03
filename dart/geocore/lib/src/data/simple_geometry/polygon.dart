@@ -8,6 +8,7 @@ import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 import '/src/aspects/codes.dart';
+import '/src/aspects/data.dart';
 import '/src/aspects/encode.dart';
 import '/src/aspects/format.dart';
 import '/src/base/spatial.dart';
@@ -135,18 +136,16 @@ class Polygon<T extends Point> extends Geometry
   BoundedSeries<LineString<T>> get interior =>
       BoundedSeries<LineString<T>>.view(rings.skip(1));
 
+  /// Coordinates of all rings as 2-dimensional array of Position objects.
+  Iterable<Iterable<Position>> get coordinates =>
+      rings.map<Iterable<Position>>((e) => e.chain);
+
   @override
   void writeGeometries(GeometryWriter writer) {
     final point = onePoint;
-    writer.geometry(
+    writer.geometryWithPositions2D(
       type: Geom.polygon,
-      coordinates: (CoordinateWriter cw) {
-        cw.coordArray(count: rings.length);
-        for (final ring in rings) {
-          ring.chain.writeCoordinates(cw);
-        }
-        cw.coordArrayEnd();
-      },
+      coordinates: coordinates,
       coordType: point?.typeCoords,
       bounds: boundsExplicit?.writeBounds,
     );

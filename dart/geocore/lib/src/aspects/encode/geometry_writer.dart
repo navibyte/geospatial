@@ -5,17 +5,17 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import '/src/aspects/codes.dart';
+import '/src/aspects/data.dart';
 
 import 'base_writer.dart';
 import 'bounds_writer.dart';
-import 'coordinate_writer.dart';
 
 /// A function that is capable of writing a geometry to [writer].
 typedef WriteGeometries = void Function(GeometryWriter writer);
 
 /// An interface to write geometry objects into some content format.
-abstract class GeometryWriter extends BaseWriter {
-  /// Writes a geometry of [type] with [coordinates].
+mixin GeometryWriter implements BaseWriter {
+  /// Writes a geometry of [type] with a position from [coordinates].
   ///
   /// Use [name] to specify a name for a geometry (when applicable).
   ///
@@ -23,9 +23,63 @@ abstract class GeometryWriter extends BaseWriter {
   ///
   /// An optional [bounds] function can be used to write geometry bounds. A
   /// writer implementation may use it or ignore it.
-  void geometry({
+  void geometryWithPosition({
     required Geom type,
-    required WriteCoordinates coordinates,
+    required Position coordinates,
+    String? name,
+    Coords? coordType,
+    WriteBounds? bounds,
+  });
+
+  /// Writes a geometry of [type] with a position array from [coordinates].
+  ///
+  /// The [coordinates] array is a 1-dimensional iterable.
+  ///
+  /// Use [name] to specify a name for a geometry (when applicable).
+  ///
+  /// Use [coordType] to define the type of coordinates.
+  ///
+  /// An optional [bounds] function can be used to write geometry bounds. A
+  /// writer implementation may use it or ignore it.
+  void geometryWithPositions1D({
+    required Geom type,
+    required Iterable<Position> coordinates,
+    String? name,
+    Coords? coordType,
+    WriteBounds? bounds,
+  });
+
+  /// Writes a geometry of [type] with a position array from [coordinates].
+  ///
+  /// The [coordinates] array is a 2-dimensional iterable.
+  ///
+  /// Use [name] to specify a name for a geometry (when applicable).
+  ///
+  /// Use [coordType] to define the type of coordinates.
+  ///
+  /// An optional [bounds] function can be used to write geometry bounds. A
+  /// writer implementation may use it or ignore it.
+  void geometryWithPositions2D({
+    required Geom type,
+    required Iterable<Iterable<Position>> coordinates,
+    String? name,
+    Coords? coordType,
+    WriteBounds? bounds,
+  });
+
+  /// Writes a geometry of [type] with a position array from [coordinates].
+  ///
+  /// The [coordinates] array is a 3-dimensional iterable.
+  ///
+  /// Use [name] to specify a name for a geometry (when applicable).
+  ///
+  /// Use [coordType] to define the type of coordinates.
+  ///
+  /// An optional [bounds] function can be used to write geometry bounds. A
+  /// writer implementation may use it or ignore it.
+  void geometryWithPositions3D({
+    required Geom type,
+    required Iterable<Iterable<Iterable<Position>>> coordinates,
     String? name,
     Coords? coordType,
     WriteBounds? bounds,

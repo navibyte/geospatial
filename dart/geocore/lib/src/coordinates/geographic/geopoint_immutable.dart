@@ -274,6 +274,9 @@ class GeoPoint2m extends GeoPoint2 {
   final double m;
 
   @override
+  double? get optM => m;
+
+  @override
   GeoPoint2m copyWith({num? x, num? y, num? z, num? m}) => GeoPoint2m(
         lon: (x ?? lon).toDouble(),
         lat: (y ?? lat).toDouble(),
@@ -409,7 +412,13 @@ class GeoPoint3 extends GeoPoint2 {
   double get z => elev;
 
   @override
+  double? get optZ => elev;
+
+  @override
   final double elev;
+
+  @override
+  double? get optElev => elev;
 
   @override
   GeoPoint3 copyWith({num? x, num? y, num? z, num? m}) => GeoPoint3(
@@ -553,6 +562,9 @@ class GeoPoint3m extends GeoPoint3 {
 
   @override
   final double m;
+
+  @override
+  double? get optM => m;
 
   @override
   GeoPoint3m copyWith({num? x, num? y, num? z, num? m}) => GeoPoint3m(

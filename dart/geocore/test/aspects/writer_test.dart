@@ -14,21 +14,23 @@ void main() {
   group('Test geometry, coordinate and bounds writers', () {
     test('Point coordinates', () {
       _testAllWriters<CoordinateWriter>(
-        (writer) => writer.coordPoint(x: 10.123, y: 20.25),
+        (writer) => writer.position(const Position(x: 10.123, y: 20.25)),
         def: '10.123,20.25',
         geoJson: '10.123,20.25',
         wktLike: '10.123 20.25',
         wkt: '10.123 20.25',
       );
       _testAllWriters<CoordinateWriter>(
-        (writer) => writer.coordPoint(x: 10.123, y: 20.25, z: -30.95),
+        (writer) =>
+            writer.position(const Position(x: 10.123, y: 20.25, z: -30.95)),
         def: '10.123,20.25,-30.95',
         geoJson: '10.123,20.25,-30.95',
         wktLike: '10.123 20.25 -30.95',
         wkt: '10.123 20.25 -30.95',
       );
       _testAllWriters<CoordinateWriter>(
-        (writer) => writer.coordPoint(x: 10.123, y: 20.25, m: -1.999),
+        (writer) =>
+            writer.position(const Position(x: 10.123, y: 20.25, m: -1.999)),
         def: '10.123,20.25,0,-1.999',
         geoJson: '10.123,20.25,0,-1.999',
         geoJsonStrict: '10.123,20.25',
@@ -36,8 +38,9 @@ void main() {
         wkt: '10.123 20.25 0 -1.999',
       );
       _testAllWriters<CoordinateWriter>(
-        (writer) =>
-            writer.coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
+        (writer) => writer.position(
+          const Position(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
+        ),
         def: '10.1,20.3,-30.9,-2.0',
         geoJson: '10.1,20.3,-30.9,-2.0',
         geoJsonStrict: '10.1,20.3,-30.9',
@@ -85,12 +88,11 @@ void main() {
     });
     test('PointSeries coordinates', () {
       _testAllWriters<CoordinateWriter>(
-        (writer) => writer
-          ..coordArray()
-          ..coordPoint(x: 10.123, y: 20.25)
-          ..coordPoint(x: 10.123, y: 20.25, z: -30.95)
-          ..coordPoint(x: 10.123, y: 20.25, m: -1.999)
-          ..coordArrayEnd(),
+        (writer) => writer.positions1D([
+          const Position(x: 10.123, y: 20.25),
+          const Position(x: 10.123, y: 20.25, z: -30.95),
+          const Position(x: 10.123, y: 20.25, m: -1.999),
+        ]),
         def: '[10.123,20.25],[10.123,20.25,-30.95],[10.123,20.25,0,-1.999]',
         geoJson: '[10.123,20.25],[10.123,20.25,-30.95],[10.123,20.25,0,-1.999]',
         geoJsonStrict: '[10.123,20.25],[10.123,20.25,-30.95],[10.123,20.25]',
@@ -98,12 +100,11 @@ void main() {
         wkt: '10.123 20.25,10.123 20.25 -30.95,10.123 20.25 0 -1.999',
       );
       _testAllWriters<CoordinateWriter>(
-        (writer) => writer
-          ..coordArray()
-          ..coordPoint(x: 10.123, y: 20.25)
-          ..coordPoint(x: 10.123, y: 20.25, m: -1.999)
-          ..coordPoint(x: 10.123, y: 20.25, z: -30.95)
-          ..coordArrayEnd(),
+        (writer) => writer.positions1D([
+          const Position(x: 10.123, y: 20.25),
+          const Position(x: 10.123, y: 20.25, m: -1.999),
+          const Position(x: 10.123, y: 20.25, z: -30.95),
+        ]),
         def: '[10.123,20.25],[10.123,20.25,0,-1.999],[10.123,20.25,-30.95]',
         geoJson: '[10.123,20.25],[10.123,20.25,0,-1.999],[10.123,20.25,-30.95]',
         geoJsonStrict: '[10.123,20.25],[10.123,20.25],[10.123,20.25,-30.95]',
@@ -111,12 +112,11 @@ void main() {
         wkt: '10.123 20.25,10.123 20.25 0 -1.999,10.123 20.25 -30.95',
       );
       _testAllWriters<CoordinateWriter>(
-        (writer) => writer
-          ..coordArray()
-          ..coordPoint(x: 10.123, y: 20.25)
-          ..coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999)
-          ..coordPoint(x: 10.123, y: 20.25)
-          ..coordArrayEnd(),
+        (writer) => writer.positions1D([
+          const Position(x: 10.123, y: 20.25),
+          const Position(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
+          const Position(x: 10.123, y: 20.25),
+        ]),
         def: '[10.123,20.25],[10.123,20.25,-30.95,-1.999],[10.123,20.25]',
         geoJson: '[10.123,20.25],[10.123,20.25,-30.95,-1.999],[10.123,20.25]',
         geoJsonStrict: '[10.123,20.25],[10.123,20.25,-30.95],[10.123,20.25]',
@@ -124,13 +124,12 @@ void main() {
         wkt: '10.123 20.25,10.123 20.25 -30.95 -1.999,10.123 20.25',
       );
       _testAllWriters<CoordinateWriter>(
-        (writer) => writer
-          ..coordArray()
-          ..coordPoint(x: 10, y: 20)
-          ..coordPoint(x: 11, y: 21, z: -30.95, m: -1.1)
-          ..coordPoint(x: 12, y: 22, m: 2.2)
-          ..coordPoint(x: 13, y: 23, z: 49.1)
-          ..coordArrayEnd(),
+        (writer) => writer.positions1D([
+          const Position(x: 10, y: 20),
+          const Position(x: 11, y: 21, z: -30.95, m: -1.1),
+          const Position(x: 12, y: 22, m: 2.2),
+          const Position(x: 13, y: 23, z: 49.1),
+        ]),
         def: '[10,20],[11,21,-30.95,-1.1],[12,22,0,2.2],[13,23,49.1]',
         geoJson: '[10,20],[11,21,-30.95,-1.1],[12,22,0,2.2],[13,23,49.1]',
         geoJsonStrict: '[10,20],[11,21,-30.95],[12,22],[13,23,49.1]',
@@ -140,9 +139,9 @@ void main() {
     });
     test('Point geometry', () {
       _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometry(
+        (writer) => writer.geometryWithPosition(
           type: Geom.point,
-          coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25),
+          coordinates: const Position(x: 10.123, y: 20.25),
         ),
         def: '10.123,20.25',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25]}',
@@ -150,9 +149,9 @@ void main() {
         wkt: 'POINT(10.123 20.25)',
       );
       _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometry(
+        (writer) => writer.geometryWithPosition(
           type: Geom.point,
-          coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25, z: -30.95),
+          coordinates: const Position(x: 10.123, y: 20.25, z: -30.95),
         ),
         def: '10.123,20.25,-30.95',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
@@ -160,9 +159,9 @@ void main() {
         wkt: 'POINT(10.123 20.25 -30.95)',
       );
       _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometry(
+        (writer) => writer.geometryWithPosition(
           type: Geom.point,
-          coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25, m: -1.999),
+          coordinates: const Position(x: 10.123, y: 20.25, m: -1.999),
         ),
         def: '10.123,20.25,0,-1.999',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,0,-1.999]}',
@@ -171,10 +170,10 @@ void main() {
         wkt: 'POINT(10.123 20.25 0 -1.999)',
       );
       _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometry(
+        (writer) => writer.geometryWithPosition(
           type: Geom.point,
-          coordinates: (cw) =>
-              cw.coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
+          coordinates:
+              const Position(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
         ),
         def: '10.123,20.25,-30.95,-1.999',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,-30.95,-1.999]}',
@@ -183,9 +182,9 @@ void main() {
         wkt: 'POINT(10.123 20.25 -30.95 -1.999)',
       );
       _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometry(
+        (writer) => writer.geometryWithPosition(
           type: Geom.point,
-          coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25, z: -30.95),
+          coordinates: const Position(x: 10.123, y: 20.25, z: -30.95),
           coordType: Coords.xyz,
         ),
         def: '10.123,20.25,-30.95',
@@ -194,10 +193,10 @@ void main() {
         wkt: 'POINT Z(10.123 20.25 -30.95)',
       );
       _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometry(
+        (writer) => writer.geometryWithPosition(
           type: Geom.point,
-          coordinates: (cw) =>
-              cw.coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
+          coordinates:
+              const Position(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
           coordType: Coords.xyz,
         ),
         def: '10.123,20.25,-30.95',
@@ -206,9 +205,9 @@ void main() {
         wkt: 'POINT Z(10.123 20.25 -30.95)',
       );
       _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometry(
+        (writer) => writer.geometryWithPosition(
           type: Geom.point,
-          coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25, z: -30.95),
+          coordinates: const Position(x: 10.123, y: 20.25, z: -30.95),
           coordType: Coords.xy,
         ),
         def: '10.123,20.25',
@@ -217,9 +216,9 @@ void main() {
         wkt: 'POINT(10.123 20.25)',
       );
       _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometry(
+        (writer) => writer.geometryWithPosition(
           type: Geom.point,
-          coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25),
+          coordinates: const Position(x: 10.123, y: 20.25),
           coordType: Coords.xyz,
         ),
         def: '10.123,20.25,0',
@@ -228,10 +227,10 @@ void main() {
         wkt: 'POINT Z(10.123 20.25 0)',
       );
       _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometry(
+        (writer) => writer.geometryWithPosition(
           type: Geom.point,
-          coordinates: (cw) =>
-              cw.coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
+          coordinates:
+              const Position(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
           coordType: Coords.xym,
         ),
         def: '10.123,20.25,0,-1.999',
@@ -241,10 +240,10 @@ void main() {
         wkt: 'POINT M(10.123 20.25 -1.999)',
       );
       _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometry(
+        (writer) => writer.geometryWithPosition(
           type: Geom.point,
-          coordinates: (cw) =>
-              cw.coordPoint(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
+          coordinates:
+              const Position(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
           coordType: Coords.xyzm,
         ),
         def: '10.123,20.25,-30.95,-1.999',
@@ -263,13 +262,12 @@ void main() {
     });
     test('MultiPoint geometry', () {
       _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometry(
+        (writer) => writer.geometryWithPositions1D(
           type: Geom.multiPoint,
-          coordinates: (cw) => cw
-            ..coordArray()
-            ..coordPoint(x: 10.123, y: 20.25)
-            ..coordPoint(x: 5.98, y: -3.47)
-            ..coordArrayEnd(),
+          coordinates: [
+            const Position(x: 10.123, y: 20.25),
+            const Position(x: 5.98, y: -3.47),
+          ],
         ),
         def: '[10.123,20.25],[5.98,-3.47]',
         geoJson:
@@ -280,16 +278,15 @@ void main() {
     });
     test('LineString geometry', () {
       _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometry(
+        (writer) => writer.geometryWithPositions1D(
           type: Geom.lineString,
           bounds: (bw) =>
               bw.coordBounds(minX: -1.1, minY: -3.49, maxX: 3.5, maxY: -1.1),
-          coordinates: (cw) => cw
-            ..coordArray()
-            ..coordPoint(x: -1.1, y: -1.1)
-            ..coordPoint(x: 2.1, y: -2.5)
-            ..coordPoint(x: 3.5, y: -3.49)
-            ..coordArrayEnd(),
+          coordinates: [
+            const Position(x: -1.1, y: -1.1),
+            const Position(x: 2.1, y: -2.5),
+            const Position(x: 3.5, y: -3.49),
+          ],
         ),
         def: '[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]',
         geoJson: '{"type":"LineString",'
@@ -299,7 +296,7 @@ void main() {
         wkt: 'LINESTRING(-1.1 -1.1,2.1 -2.5,3.5 -3.49)',
       );
       _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometry(
+        (writer) => writer.geometryWithPositions1D(
           type: Geom.lineString,
           coordType: Coords.xym,
           bounds: (bw) => bw.coordBounds(
@@ -310,12 +307,11 @@ void main() {
             maxY: -1.1,
             maxM: 4.99,
           ),
-          coordinates: (cw) => cw
-            ..coordArray()
-            ..coordPoint(x: -1.1, y: -1.1)
-            ..coordPoint(x: 2.1, y: -2.5, m: 4.99)
-            ..coordPoint(x: 3.5, y: -3.49, z: -0.5)
-            ..coordArrayEnd(),
+          coordinates: [
+            const Position(x: -1.1, y: -1.1),
+            const Position(x: 2.1, y: -2.5, m: 4.99),
+            const Position(x: 3.5, y: -3.49, z: -0.5),
+          ],
         ),
         def: '[-1.1,-1.1,0,0],[2.1,-2.5,0,4.99],[3.5,-3.49,0,0]',
         geoJson: '{"type":"LineString",'
@@ -330,7 +326,7 @@ void main() {
         wkt: 'LINESTRING M(-1.1 -1.1 0,2.1 -2.5 4.99,3.5 -3.49 0)',
       );
       _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometry(
+        (writer) => writer.geometryWithPositions1D(
           type: Geom.lineString,
           coordType: Coords.xyzm,
           bounds: (bw) => bw.coordBounds(
@@ -343,12 +339,11 @@ void main() {
             maxZ: 0,
             maxM: 4.99,
           ),
-          coordinates: (cw) => cw
-            ..coordArray()
-            ..coordPoint(x: -1.1, y: -1.1)
-            ..coordPoint(x: 2.1, y: -2.5, m: 4.99)
-            ..coordPoint(x: 3.5, y: -3.49, z: -0.5)
-            ..coordArrayEnd(),
+          coordinates: [
+            const Position(x: -1.1, y: -1.1),
+            const Position(x: 2.1, y: -2.5, m: 4.99),
+            const Position(x: 3.5, y: -3.49, z: -0.5),
+          ],
         ),
         def: '[-1.1,-1.1,0,0],[2.1,-2.5,0,4.99],[3.5,-3.49,-0.5,0]',
         geoJson: '{"type":"LineString",'
@@ -365,40 +360,40 @@ void main() {
     });
     test('MultiLineString geometry', () {
       _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometry(
+        (writer) => writer.geometryWithPositions2D(
           type: Geom.multiLineString,
-          coordinates: (cw) => cw
-            ..coordArray()
-            ..coordArray()
-            ..coordPoint(x: -1.1, y: -1.1)
-            ..coordPoint(x: 2.1, y: -2.5)
-            ..coordPoint(x: 3.5, y: -3.49)
-            ..coordArrayEnd()
-            ..coordArray()
-            ..coordPoint(x: 38.19, y: 57.4)
-            ..coordArrayEnd()
-            ..coordArrayEnd(),
+          coordinates: [
+            [
+              const Position(x: -1.1, y: -1.1),
+              const Position(x: 2.1, y: -2.5),
+              const Position(x: 3.5, y: -3.49),
+            ],
+            [
+              const Position(x: 38.19, y: 57.4),
+              const Position(x: 43.9, y: 84.1),
+            ],
+          ],
         ),
-        def: '[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]],[[38.19,57.4]]',
+        def: '[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]],[[38.19,57.4],[43.9,84.1]]',
         geoJson: '{"type":"MultiLineString","coordinates":[[[-1.1,-1.1],'
-            '[2.1,-2.5],[3.5,-3.49]],[[38.19,57.4]]]}',
-        wktLike: '(-1.1 -1.1,2.1 -2.5,3.5 -3.49),(38.19 57.4)',
-        wkt: 'MULTILINESTRING((-1.1 -1.1,2.1 -2.5,3.5 -3.49),(38.19 57.4))',
+            '[2.1,-2.5],[3.5,-3.49]],[[38.19,57.4],[43.9,84.1]]]}',
+        wktLike: '(-1.1 -1.1,2.1 -2.5,3.5 -3.49),(38.19 57.4,43.9 84.1)',
+        wkt: 'MULTILINESTRING((-1.1 -1.1,2.1 -2.5,3.5 -3.49),(38.19 '
+            '57.4,43.9 84.1))',
       );
     });
     test('Polygon geometry', () {
       _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometry(
+        (writer) => writer.geometryWithPositions2D(
           type: Geom.polygon,
-          coordinates: (cw) => cw
-            ..coordArray()
-            ..coordArray()
-            ..coordPoint(x: 10.1, y: 10.1)
-            ..coordPoint(x: 5, y: 9)
-            ..coordPoint(x: 12, y: 4)
-            ..coordPoint(x: 10.1, y: 10.1)
-            ..coordArrayEnd()
-            ..coordArrayEnd(),
+          coordinates: [
+            [
+              const Position(x: 10.1, y: 10.1),
+              const Position(x: 5, y: 9),
+              const Position(x: 12, y: 4),
+              const Position(x: 10.1, y: 10.1)
+            ],
+          ],
         ),
         def: '[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]',
         geoJson: '{"type":"Polygon",'
@@ -409,19 +404,18 @@ void main() {
     });
     test('MultiPolygon geometry', () {
       _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometry(
+        (writer) => writer.geometryWithPositions3D(
           type: Geom.multiPolygon,
-          coordinates: (cw) => cw
-            ..coordArray()
-            ..coordArray()
-            ..coordArray()
-            ..coordPoint(x: 10.1, y: 10.1)
-            ..coordPoint(x: 5, y: 9)
-            ..coordPoint(x: 12, y: 4)
-            ..coordPoint(x: 10.1, y: 10.1)
-            ..coordArrayEnd()
-            ..coordArrayEnd()
-            ..coordArrayEnd(),
+          coordinates: [
+            [
+              [
+                const Position(x: 10.1, y: 10.1),
+                const Position(x: 5, y: 9),
+                const Position(x: 12, y: 4),
+                const Position(x: 10.1, y: 10.1)
+              ],
+            ],
+          ],
         ),
         def: '[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]',
         geoJson: '{"type":"MultiPolygon",'
@@ -434,23 +428,21 @@ void main() {
       _testAllWriters<GeometryWriter>(
         (writer) => writer.geometryCollection(
           geometries: (gw) => gw
-            ..geometry(
+            ..geometryWithPosition(
               type: Geom.point,
-              coordinates: (cw) =>
-                  cw.coordPoint(x: 10.123, y: 20.25, z: -30.95),
+              coordinates: const Position(x: 10.123, y: 20.25, z: -30.95),
               coordType: Coords.xyz,
             )
-            ..geometry(
+            ..geometryWithPositions2D(
               type: Geom.polygon,
-              coordinates: (cw) => cw
-                ..coordArray()
-                ..coordArray()
-                ..coordPoint(x: 10.1, y: 10.1)
-                ..coordPoint(x: 5, y: 9)
-                ..coordPoint(x: 12, y: 4)
-                ..coordPoint(x: 10.1, y: 10.1)
-                ..coordArrayEnd()
-                ..coordArrayEnd(),
+              coordinates: [
+                [
+                  const Position(x: 10.1, y: 10.1),
+                  const Position(x: 5, y: 9),
+                  const Position(x: 12, y: 4),
+                  const Position(x: 10.1, y: 10.1)
+                ],
+              ],
             ),
         ),
         def: '[10.123,20.25,-30.95],[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]',
@@ -479,15 +471,14 @@ void main() {
             maxZ: 0,
             maxM: 4.99,
           ),
-          geometries: (gw) => gw.geometry(
+          geometries: (gw) => gw.geometryWithPositions1D(
             type: Geom.lineString,
             coordType: Coords.xyzm,
-            coordinates: (cw) => cw
-              ..coordArray()
-              ..coordPoint(x: -1.1, y: -1.1)
-              ..coordPoint(x: 2.1, y: -2.5, m: 4.99)
-              ..coordPoint(x: 3.5, y: -3.49, z: -0.5)
-              ..coordArrayEnd(),
+            coordinates: [
+              const Position(x: -1.1, y: -1.1),
+              const Position(x: 2.1, y: -2.5, m: 4.99),
+              const Position(x: 3.5, y: -3.49, z: -0.5),
+            ],
           ),
           properties: {
             'prop': 1,
@@ -501,9 +492,9 @@ void main() {
       _testGeoJsonWriters<FeatureWriter>(
         (writer) => writer.feature(
           id: 'fid-1',
-          geometries: (gw) => gw.geometry(
+          geometries: (gw) => gw.geometryWithPosition(
             type: Geom.point,
-            coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25),
+            coordinates: const Position(x: 10.123, y: 20.25),
           ),
           properties: {
             'foo': 100,
@@ -517,9 +508,9 @@ void main() {
       );
       _testGeoJsonWriters<FeatureWriter>(
         (writer) => writer.feature(
-          geometries: (gw) => gw.geometry(
+          geometries: (gw) => gw.geometryWithPosition(
             type: Geom.point,
-            coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25),
+            coordinates: const Position(x: 10.123, y: 20.25),
           ),
           properties: {
             'foo': {
@@ -536,14 +527,14 @@ void main() {
         (writer) => writer.feature(
           geometries: (gw) {
             gw
-              ..geometry(
+              ..geometryWithPosition(
                 type: Geom.point,
-                coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25),
+                coordinates: const Position(x: 10.123, y: 20.25),
               )
-              ..geometry(
+              ..geometryWithPosition(
                 name: 'geom1',
                 type: Geom.point,
-                coordinates: (cw) => cw.coordPoint(x: 1, y: 2, z: 3, m: 4),
+                coordinates: const Position(x: 1, y: 2, z: 3, m: 4),
               );
           },
           extra: (pw) => pw.properties('extra', {
@@ -575,9 +566,9 @@ void main() {
           features: (fw) => fw
             ..feature(
               id: 'fid-1',
-              geometries: (gw) => gw.geometry(
+              geometries: (gw) => gw.geometryWithPosition(
                 type: Geom.point,
-                coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25),
+                coordinates: const Position(x: 10.123, y: 20.25),
               ),
               properties: {
                 'foo': 100,
@@ -585,7 +576,7 @@ void main() {
               },
             )
             ..feature(
-              geometries: (gw) => gw.geometry(
+              geometries: (gw) => gw.geometryWithPositions1D(
                 type: Geom.lineString,
                 bounds: (bw) => bw.coordBounds(
                   minX: -1.1,
@@ -593,12 +584,11 @@ void main() {
                   maxX: 3.5,
                   maxY: -1.1,
                 ),
-                coordinates: (cw) => cw
-                  ..coordArray()
-                  ..coordPoint(x: -1.1, y: -1.1)
-                  ..coordPoint(x: 2.1, y: -2.5)
-                  ..coordPoint(x: 3.5, y: -3.49)
-                  ..coordArrayEnd(),
+                coordinates: [
+                  const Position(x: -1.1, y: -1.1),
+                  const Position(x: 2.1, y: -2.5),
+                  const Position(x: 3.5, y: -3.49),
+                ],
               ),
             ),
         ),
@@ -691,9 +681,9 @@ void main() {
           count: 2,
           features: (fw) => fw
             ..feature(
-              geometries: (gw) => gw.geometry(
+              geometries: (gw) => gw.geometryWithPosition(
                 type: Geom.point,
-                coordinates: (cw) => cw.coordPoint(x: 1, y: 2),
+                coordinates: const Position(x: 1, y: 2),
               ),
               properties: {'test1': null},
             )

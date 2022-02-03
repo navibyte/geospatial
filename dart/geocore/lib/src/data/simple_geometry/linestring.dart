@@ -8,6 +8,7 @@ import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 import '/src/aspects/codes.dart';
+import '/src/aspects/data.dart';
 import '/src/aspects/encode.dart';
 import '/src/aspects/format.dart';
 import '/src/base/spatial.dart';
@@ -120,12 +121,15 @@ class LineString<T extends Point> extends Geometry
   @override
   Point? get onePoint => chain.isNotEmpty ? chain.first : null;
 
+  /// Coordinates of [chain] as 1-dimensional array of Position objects.
+  Iterable<Position> get coordinates => chain;
+
   @override
   void writeGeometries(GeometryWriter writer) {
     final point = onePoint;
-    writer.geometry(
+    writer.geometryWithPositions1D(
       type: Geom.lineString,
-      coordinates: chain.writeCoordinates,
+      coordinates: coordinates,
       coordType: point?.typeCoords,
       bounds: boundsExplicit?.writeBounds,
     );

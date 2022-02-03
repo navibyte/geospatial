@@ -10,6 +10,7 @@ import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 import '/src/aspects/codes.dart';
+import '/src/aspects/data.dart';
 import '/src/aspects/encode.dart';
 import '/src/aspects/format.dart';
 import '/src/base/spatial.dart';
@@ -172,12 +173,15 @@ class MultiPoint<E extends Point> extends Geometry
   @override
   List<Object?> get props => [points];
 
+  /// Coordinates of [points] as 1-dimensional array of Position objects.
+  Iterable<Position> get coordinates => points;
+
   @override
   void writeGeometries(GeometryWriter writer) {
     final point = onePoint;
-    writer.geometry(
+    writer.geometryWithPositions1D(
       type: Geom.multiPoint,
-      coordinates: points.writeCoordinates,
+      coordinates: coordinates,
       coordType: point?.typeCoords,
       bounds: boundsExplicit?.writeBounds,
     );
@@ -269,18 +273,16 @@ class MultiLineString<T extends Point> extends Geometry
   @override
   List<Object?> get props => [lineStrings];
 
+  /// Coordinates of all linestrings as 2-dimensional array of Position objects.
+  Iterable<Iterable<Position>> get coordinates =>
+      lineStrings.map<Iterable<Position>>((e) => e.chain);
+
   @override
   void writeGeometries(GeometryWriter writer) {
     final point = onePoint;
-    writer.geometry(
+    writer.geometryWithPositions2D(
       type: Geom.multiLineString,
-      coordinates: (CoordinateWriter cw) {
-        cw.coordArray(count: lineStrings.length);
-        for (final line in lineStrings) {
-          line.chain.writeCoordinates(cw);
-        }
-        cw.coordArrayEnd();
-      },
+      coordinates: coordinates,
       coordType: point?.typeCoords,
       bounds: boundsExplicit?.writeBounds,
     );
@@ -375,22 +377,18 @@ class MultiPolygon<T extends Point> extends Geometry
   @override
   List<Object?> get props => [polygons];
 
+  /// Coordinates of rings of all polygons as 3-dim array of Position objects.
+  Iterable<Iterable<Iterable<Position>>> get coordinates =>
+      polygons.map<Iterable<Iterable<Position>>>(
+        (e) => e.rings.map<Iterable<Position>>((e) => e.chain),
+      );
+
   @override
   void writeGeometries(GeometryWriter writer) {
     final point = onePoint;
-    writer.geometry(
+    writer.geometryWithPositions3D(
       type: Geom.multiPolygon,
-      coordinates: (CoordinateWriter cw) {
-        cw.coordArray(count: polygons.length);
-        for (final polygon in polygons) {
-          cw.coordArray(count: polygon.rings.length);
-          for (final ring in polygon.rings) {
-            ring.chain.writeCoordinates(cw);
-          }
-          cw.coordArrayEnd();
-        }
-        cw.coordArrayEnd();
-      },
+      coordinates: coordinates,
       coordType: point?.typeCoords,
       bounds: boundsExplicit?.writeBounds,
     );

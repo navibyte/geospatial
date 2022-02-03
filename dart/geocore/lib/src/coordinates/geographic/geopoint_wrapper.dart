@@ -28,6 +28,9 @@ class GeoPointWrapper<T extends GeoPoint> extends PointWrapper<T, double>
   double get elev => point.elev;
 
   @override
+  double? get optElev => point.optElev;
+
+  @override
   double distanceTo(GeoPoint other) =>
       distanceHaversine(lon, lat, other.lon, other.lat);
 }

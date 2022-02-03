@@ -5,6 +5,7 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import '/src/aspects/codes.dart';
+import '/src/aspects/data.dart';
 import '/src/aspects/encode.dart';
 import '/src/utils/num.dart';
 
@@ -374,21 +375,110 @@ abstract class _BaseTextWriter
     _endContainer();
   }
 
-  @override
-  void geometry({
+  bool _geometryBeforeCoordinates({
     required Geom type,
-    required WriteCoordinates coordinates,
     String? name,
     Coords? coordType,
     WriteBounds? bounds,
   }) {
-    if (type.isCollection) {
-      geometryCollection(geometries: (gw) {}, count: 0, bounds: bounds);
-    } else {
-      // note: keep flat, so not calling "_startContainer(_Container.geometry)"
-      _startCoordType(coordType);
-      coordinates.call(this);
-      _endCoordType();
+    _startCoordType(coordType);
+    return true;
+  }
+
+  void _geometryAfterCoordinates() {
+    _endCoordType();
+  }
+
+  @override
+  void geometryWithPosition({
+    required Geom type,
+    required Position coordinates,
+    String? name,
+    Coords? coordType,
+    WriteBounds? bounds,
+  }) {
+    if (_geometryBeforeCoordinates(
+      type: type,
+      name: name,
+      coordType: coordType,
+      bounds: bounds,
+    )) {
+      _coordPoint(
+        x: coordinates.x,
+        y: coordinates.y,
+        z: coordinates.optZ,
+        m: coordinates.optM,
+      );
+      _geometryAfterCoordinates();
+    }
+  }
+
+  @override
+  void geometryWithPositions1D({
+    required Geom type,
+    required Iterable<Position> coordinates,
+    String? name,
+    Coords? coordType,
+    WriteBounds? bounds,
+  }) {
+    if (_geometryBeforeCoordinates(
+      type: type,
+      name: name,
+      coordType: coordType,
+      bounds: bounds,
+    )) {
+      _coordArray(count: coordinates.length);
+      for (final pos in coordinates) {
+        position(pos);
+      }
+      _coordArrayEnd();
+      _geometryAfterCoordinates();
+    }
+  }
+
+  @override
+  void geometryWithPositions2D({
+    required Geom type,
+    required Iterable<Iterable<Position>> coordinates,
+    String? name,
+    Coords? coordType,
+    WriteBounds? bounds,
+  }) {
+    if (_geometryBeforeCoordinates(
+      type: type,
+      name: name,
+      coordType: coordType,
+      bounds: bounds,
+    )) {
+      _coordArray(count: coordinates.length);
+      for (final item in coordinates) {
+        positions1D(item);
+      }
+      _coordArrayEnd();
+      _geometryAfterCoordinates();
+    }
+  }
+
+  @override
+  void geometryWithPositions3D({
+    required Geom type,
+    required Iterable<Iterable<Iterable<Position>>> coordinates,
+    String? name,
+    Coords? coordType,
+    WriteBounds? bounds,
+  }) {
+    if (_geometryBeforeCoordinates(
+      type: type,
+      name: name,
+      coordType: coordType,
+      bounds: bounds,
+    )) {
+      _coordArray(count: coordinates.length);
+      for (final item in coordinates) {
+        positions2D(item);
+      }
+      _coordArrayEnd();
+      _geometryAfterCoordinates();
     }
   }
 
@@ -410,6 +500,56 @@ abstract class _BaseTextWriter
   @override
   void emptyGeometry(Geom type, {String? name}) {
     // nop
+  }
+
+  void _coordArray({int? count});
+
+  void _coordArrayEnd();
+
+  void _coordPoint({
+    required num x,
+    required num y,
+    num? z,
+    num? m,
+  });
+
+  @override
+  void position(Position coordinates) {
+    _coordPoint(
+      x: coordinates.x,
+      y: coordinates.y,
+      z: coordinates.optZ,
+      m: coordinates.optM,
+    );
+  }
+
+  @override
+  void positions1D(Iterable<Position> coordinates) {
+    _coordArray(count: coordinates.length);
+    for (final pos in coordinates) {
+      position(pos);
+    }
+    _coordArrayEnd();
+  }
+
+  @override
+  void positions2D(Iterable<Iterable<Position>> coordinates) {
+    _coordArray(count: coordinates.length);
+    for (final item in coordinates) {
+      positions1D(item);
+    }
+    _coordArrayEnd();
+  }
+
+  @override
+  void positions3D(
+    Iterable<Iterable<Iterable<Position>>> coordinates,
+  ) {
+    _coordArray(count: coordinates.length);
+    for (final item in coordinates) {
+      positions2D(item);
+    }
+    _coordArrayEnd();
   }
 
   @override
@@ -447,7 +587,7 @@ class _DefaultTextWriter extends _BaseTextWriter {
   }
 
   @override
-  void coordArray({int? count}) {
+  void _coordArray({int? count}) {
     if (_markItem()) {
       _buffer.write(',');
     }
@@ -458,7 +598,7 @@ class _DefaultTextWriter extends _BaseTextWriter {
   }
 
   @override
-  void coordArrayEnd() {
+  void _coordArrayEnd() {
     _endContainer();
     if (_notAtRoot) {
       _buffer.write(']');
@@ -492,7 +632,7 @@ class _DefaultTextWriter extends _BaseTextWriter {
   }
 
   @override
-  void coordPoint({
+  void _coordPoint({
     required num x,
     required num y,
     num? z,
@@ -588,44 +728,43 @@ class _GeoJsonTextWriter extends _DefaultTextWriter
       );
 
   @override
-  void geometry({
+  bool _geometryBeforeCoordinates({
     required Geom type,
-    required WriteCoordinates coordinates,
     String? name,
     Coords? coordType,
     WriteBounds? bounds,
   }) {
-    if (type.isCollection) {
-      geometryCollection(geometries: (gw) {}, count: 0, bounds: bounds);
-    } else {
-      if (ignoreForeignMembers &&
-          _atFeature &&
-          (name ?? 'geometry') != 'geometry') {
-        return;
-      }
-      if (_markItem()) {
-        _buffer.write(',');
-      }
-      if (_atFeature) {
-        _buffer.write(name == null ? '"geometry":' : '"$name":');
-      }
-      _startContainer(_Container.geometry);
-      _startCoordType(coordType);
-      _buffer
-        ..write('{"type":"')
-        ..write(type.nameGeoJson)
-        ..write('"');
-      if (bounds != null) {
-        _buffer.write(',"bbox":[');
-        bounds.call(_subWriter());
-        _buffer.write(']');
-      }
-      _buffer.write(',"coordinates":');
-      coordinates.call(this);
-      _buffer.write('}');
-      _endCoordType();
-      _endContainer();
+    if (ignoreForeignMembers &&
+        _atFeature &&
+        (name ?? 'geometry') != 'geometry') {
+      return false;
     }
+    if (_markItem()) {
+      _buffer.write(',');
+    }
+    if (_atFeature) {
+      _buffer.write(name == null ? '"geometry":' : '"$name":');
+    }
+    _startContainer(_Container.geometry);
+    _startCoordType(coordType);
+    _buffer
+      ..write('{"type":"')
+      ..write(type.nameGeoJson)
+      ..write('"');
+    if (bounds != null) {
+      _buffer.write(',"bbox":[');
+      bounds.call(_subWriter());
+      _buffer.write(']');
+    }
+    _buffer.write(',"coordinates":');
+    return true;
+  }
+
+  @override
+  void _geometryAfterCoordinates() {
+    _buffer.write('}');
+    _endCoordType();
+    _endContainer();
   }
 
   @override
@@ -867,7 +1006,7 @@ class _WktLikeTextWriter extends _BaseTextWriter {
   }
 
   @override
-  void coordArray({int? count}) {
+  void _coordArray({int? count}) {
     if (_markItem()) {
       _buffer.write(',');
     }
@@ -878,7 +1017,7 @@ class _WktLikeTextWriter extends _BaseTextWriter {
   }
 
   @override
-  void coordArrayEnd() {
+  void _coordArrayEnd() {
     _endContainer();
     if (_notAtRoot) {
       _buffer.write(')');
@@ -912,7 +1051,7 @@ class _WktLikeTextWriter extends _BaseTextWriter {
   }
 
   @override
-  void coordPoint({
+  void _coordPoint({
     required num x,
     required num y,
     num? z,
@@ -1006,31 +1145,30 @@ class _WktTextWriter extends _WktLikeTextWriter {
       : super(buffer: buffer, decimals: decimals);
 
   @override
-  void geometry({
+  bool _geometryBeforeCoordinates({
     required Geom type,
-    required WriteCoordinates coordinates,
     String? name,
     Coords? coordType,
     WriteBounds? bounds,
   }) {
-    if (type.isCollection) {
-      geometryCollection(geometries: (gw) {}, count: 0, bounds: bounds);
-    } else {
-      if (_markItem()) {
-        _buffer.write(',');
-      }
-      _startContainer(_Container.geometry);
-      _startCoordType(coordType);
-      _buffer.write(type.nameWkt);
-      if (coordType != null && coordType != Coords.xy) {
-        _buffer
-          ..write(' ')
-          ..write(coordType.specifierWkt);
-      }
-      coordinates.call(this);
-      _endCoordType();
-      _endContainer();
+    if (_markItem()) {
+      _buffer.write(',');
     }
+    _startContainer(_Container.geometry);
+    _startCoordType(coordType);
+    _buffer.write(type.nameWkt);
+    if (coordType != null && coordType != Coords.xy) {
+      _buffer
+        ..write(' ')
+        ..write(coordType.specifierWkt);
+    }
+    return true;
+  }
+
+  @override
+  void _geometryAfterCoordinates() {
+    _endCoordType();
+    _endContainer();
   }
 
   @override
@@ -1074,26 +1212,37 @@ class _WktTextWriter extends _WktLikeTextWriter {
     num? maxZ,
     num? maxM,
   }) {
-    // check optional expected coordinate type
-    final coordType = _coordTypes.isNotEmpty ? _coordTypes.last : null;
     // WKT does not recognize bounding box, so convert to POLYGON
     final hasZ = minZ != null && maxZ != null;
     final hasM = minM != null && maxM != null;
     final midZ = hasZ ? 0.5 * minZ! + 0.5 * maxZ! : null;
     final midM = hasM ? 0.5 * minM! + 0.5 * maxM! : null;
-    geometry(
-      type: Geom.polygon,
-      coordType: coordType ?? CoordsExtension.select(hasZ: hasZ, hasM: hasM),
-      coordinates: (cw) => cw
-        ..coordArray()
-        ..coordArray()
-        ..coordPoint(x: minX, y: minY, z: minZ, m: minM)
-        ..coordPoint(x: maxX, y: minY, z: midZ, m: midM)
-        ..coordPoint(x: maxX, y: maxY, z: maxZ, m: maxM)
-        ..coordPoint(x: minX, y: maxY, z: midZ, m: midM)
-        ..coordPoint(x: minX, y: minY, z: minZ, m: minM)
-        ..coordArrayEnd()
-        ..coordArrayEnd(),
-    );
+    // check optional expected coordinate type
+    final coordType = _coordTypes.isNotEmpty
+        ? _coordTypes.last
+        : CoordsExtension.select(is3D: hasZ, isMeasured: hasM);
+    // print polygon geometry
+    if (_markItem()) {
+      _buffer.write(',');
+    }
+    _startContainer(_Container.geometry);
+    _startCoordType(coordType);
+    _buffer.write(Geom.polygon.nameWkt);
+    if (coordType != null && coordType != Coords.xy) {
+      _buffer
+        ..write(' ')
+        ..write(coordType.specifierWkt);
+    }
+    _coordArray();
+    _coordArray();
+    _coordPoint(x: minX, y: minY, z: minZ, m: minM);
+    _coordPoint(x: maxX, y: minY, z: midZ, m: midM);
+    _coordPoint(x: maxX, y: maxY, z: maxZ, m: maxM);
+    _coordPoint(x: minX, y: maxY, z: midZ, m: midM);
+    _coordPoint(x: minX, y: minY, z: minZ, m: minM);
+    _coordArrayEnd();
+    _coordArrayEnd();
+    _endCoordType();
+    _endContainer();
   }
 }

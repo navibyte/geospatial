@@ -252,6 +252,9 @@ class Point2m extends Point2 {
   final num m;
 
   @override
+  num? get optM => m;
+
+  @override
   Point2m copyWith({num? x, num? y, num? z, num? m}) => Point2m(
         x: x ?? this.x,
         y: y ?? this.y,
@@ -379,6 +382,9 @@ class Point3 extends Point2 {
   final num z;
 
   @override
+  num? get optZ => z;
+
+  @override
   Point3 copyWith({num? x, num? y, num? z, num? m}) => Point3(
         x: x ?? this.x,
         y: y ?? this.y,
@@ -504,6 +510,9 @@ class Point3m extends Point3 {
 
   @override
   final num m;
+
+  @override
+  num? get optM => m;
 
   @override
   Point3m copyWith({num? x, num? y, num? z, num? m}) => Point3m(
@@ -641,6 +650,12 @@ class Point2i extends CartesianPoint<int> with EquatableMixin {
   int get m => 0;
 
   @override
+  int? get optZ => null;
+
+  @override
+  int? get optM => null;
+
+  @override
   Point2i copyWith({num? x, num? y, num? z, num? m}) => Point2i(
         x: x?.round() ?? this.x,
         y: y?.round() ?? this.y,
@@ -765,6 +780,9 @@ class Point3i extends Point2i {
 
   @override
   final int z;
+
+  @override
+  int? get optZ => z;
 
   @override
   Point3i copyWith({num? x, num? y, num? z, num? m}) => Point3i(

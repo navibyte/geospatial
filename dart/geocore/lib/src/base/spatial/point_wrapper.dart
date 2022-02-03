@@ -59,6 +59,12 @@ class PointWrapper<T extends Point<C>, C extends num> extends Point<C>
   C get m => point.m;
 
   @override
+  C? get optZ => point.optZ;
+
+  @override
+  C? get optM => point.optM;
+
+  @override
   T copyWith({num? x, num? y, num? z, num? m}) =>
       point.copyWith(x: x, y: y, z: z, m: m) as T;
 

@@ -23,6 +23,9 @@ abstract class GeoPoint extends Point<double> implements GeoPosition {
   @override
   double get elev => 0.0;
 
+  @override
+  double? get optElev => null;
+
   /// Distance (in meters) to another geographic point.
   double distanceTo(GeoPoint other);
 

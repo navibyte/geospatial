@@ -282,9 +282,13 @@ void main() {
       expect(polygon1.toStringAs(format: wktLikeFormat),
           '(10.1 10.1,5 9,12 4,10.1 10.1)');
     });
+
+    final multiPolygon1 = MultiPolygon([
+      polygon1,
+    ]);
     test('MultiPolygon', () {
-      expect(polygon1.toStringAs(decimals: 2),
-          '[[10.10,10.10],[5,9],[12,4],[10.10,10.10]]');
+      expect(multiPolygon1.toStringAs(decimals: 2),
+          '[[[10.10,10.10],[5,9],[12,4],[10.10,10.10]]]');
     });
   });
 
