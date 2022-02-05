@@ -127,7 +127,7 @@ class LineString<T extends Point> extends Geometry with EquatableMixin {
       type: Geom.lineString,
       coordinates: coordinates,
       coordType: point?.typeCoords,
-      bounds: boundsExplicit?.writeTo,
+      bbox: boundsExplicit,
     );
   }
 

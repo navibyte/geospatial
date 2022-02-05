@@ -8,7 +8,7 @@ part of 'spatial.dart';
 
 /// A base interface for bounds (aka a bounding box in 2D).
 abstract class Bounds<T extends Point> extends Bounded
-    implements _Coordinates, CoordinateFactory<Bounds<T>> {
+    implements _Coordinates, CoordinateFactory<Bounds<T>>, Box {
   /// Default `const` constructor to allow extending this abstract class.
   const Bounds();
 
@@ -68,11 +68,38 @@ abstract class Bounds<T extends Point> extends Bounded
     );
   }
 
-  /// Minimum point of bounds.
+  @override
   T get min;
 
-  /// Maximum point of bounds.
+  @override
   T get max;
+
+  @override
+  num get minX => min.x;
+
+  @override
+  num get minY => min.y;
+
+  @override
+  num? get minZ => min.optZ;
+
+  @override
+  num? get minM => min.optM;
+
+  @override
+  num get maxX => max.x;
+
+  @override
+  num get maxY => max.y;
+
+  @override
+  num? get maxZ => max.optZ;
+
+  @override
+  num? get maxM => max.optM;
+
+  @override
+  Box get asBox => this;
 
   @override
   int get coordinateDimension => min.coordinateDimension;
@@ -128,49 +155,7 @@ abstract class Bounds<T extends Point> extends Bounded
   }
 
   /// Writes this bounds object to [writer].
-  void writeTo(BoundsWriter writer) {
-    if (is3D) {
-      if (isMeasured) {
-        writer.coordBounds(
-          minX: min.x,
-          minY: min.y,
-          minZ: min.z,
-          minM: min.m,
-          maxX: max.x,
-          maxY: max.y,
-          maxZ: max.z,
-          maxM: max.m,
-        );
-      } else {
-        writer.coordBounds(
-          minX: min.x,
-          minY: min.y,
-          minZ: min.z,
-          maxX: max.x,
-          maxY: max.y,
-          maxZ: max.z,
-        );
-      }
-    } else {
-      if (isMeasured) {
-        writer.coordBounds(
-          minX: min.x,
-          minY: min.y,
-          minM: min.m,
-          maxX: max.x,
-          maxY: max.y,
-          maxM: max.m,
-        );
-      } else {
-        writer.coordBounds(
-          minX: min.x,
-          minY: min.y,
-          maxX: max.x,
-          maxY: max.y,
-        );
-      }
-    }
-  }
+  void writeTo(CoordinateWriter writer) => writer.box(this);
 
   /// Returns new bounds transformed from this bounds using [transform].
   @override

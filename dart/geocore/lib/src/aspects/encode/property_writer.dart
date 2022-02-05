@@ -10,7 +10,7 @@ import 'base_writer.dart';
 typedef WriteProperties = void Function(PropertyWriter writer);
 
 /// An interface to write properties into some content format.
-abstract class PropertyWriter extends BaseWriter {
+mixin PropertyWriter implements BaseWriter {
   /// Writes a property map named by [name] and with contents in [map].
   /// 
   /// An example:

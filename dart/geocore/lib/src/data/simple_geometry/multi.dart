@@ -87,7 +87,7 @@ class GeometryCollection<E extends Geometry> extends Geometry
         }
       },
       count: geometries.length,
-      bounds: boundsExplicit?.writeTo,
+      bbox: boundsExplicit,
     );
   }
 
@@ -180,7 +180,7 @@ class MultiPoint<E extends Point> extends Geometry with EquatableMixin {
       type: Geom.multiPoint,
       coordinates: coordinates,
       coordType: point?.typeCoords,
-      bounds: boundsExplicit?.writeTo,
+      bbox: boundsExplicit,
     );
   }
 
@@ -281,7 +281,7 @@ class MultiLineString<T extends Point> extends Geometry with EquatableMixin {
       type: Geom.multiLineString,
       coordinates: coordinates,
       coordType: point?.typeCoords,
-      bounds: boundsExplicit?.writeTo,
+      bbox: boundsExplicit,
     );
   }
 
@@ -387,7 +387,7 @@ class MultiPolygon<T extends Point> extends Geometry with EquatableMixin {
       type: Geom.multiPolygon,
       coordinates: coordinates,
       coordType: point?.typeCoords,
-      bounds: boundsExplicit?.writeTo,
+      bbox: boundsExplicit,
     );
   }
 

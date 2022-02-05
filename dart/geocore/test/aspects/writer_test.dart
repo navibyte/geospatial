@@ -53,12 +53,14 @@ void main() {
       );
     });
     test('Bounds coordinates', () {
-      _testAllWriters<BoundsWriter>(
-        (writer) => writer.coordBounds(
-          minX: 10.123,
-          minY: 20.25,
-          maxX: 12.485,
-          maxY: 25.195,
+      _testAllWriters<CoordinateWriter>(
+        (writer) => writer.box(
+          const Box(
+            minX: 10.123,
+            minY: 20.25,
+            maxX: 12.485,
+            maxY: 25.195,
+          ),
         ),
         def: '10.123,20.25,12.485,25.195',
         geoJson: '10.123,20.25,12.485,25.195',
@@ -66,14 +68,16 @@ void main() {
         wkt: 'POLYGON((10.123 20.25,12.485 20.25,12.485 25.195,10.123 '
             '25.195,10.123 20.25))',
       );
-      _testAllWriters<BoundsWriter>(
-        (writer) => writer.coordBounds(
-          minX: 10.123,
-          minY: 20.25,
-          minZ: -15.09,
-          maxX: 12.485,
-          maxY: 25.195,
-          maxZ: -14.949,
+      _testAllWriters<CoordinateWriter>(
+        (writer) => writer.box(
+          const Box(
+            minX: 10.123,
+            minY: 20.25,
+            minZ: -15.09,
+            maxX: 12.485,
+            maxY: 25.195,
+            maxZ: -14.949,
+          ),
         ),
         def: '10.12,20.25,-15.09,12.48,25.20,-14.95',
         geoJson: '10.12,20.25,-15.09,12.48,25.20,-14.95',
@@ -280,8 +284,7 @@ void main() {
       _testAllWriters<GeometryWriter>(
         (writer) => writer.geometryWithPositions1D(
           type: Geom.lineString,
-          bounds: (bw) =>
-              bw.coordBounds(minX: -1.1, minY: -3.49, maxX: 3.5, maxY: -1.1),
+          bbox: const Box(minX: -1.1, minY: -3.49, maxX: 3.5, maxY: -1.1),
           coordinates: [
             const Position(x: -1.1, y: -1.1),
             const Position(x: 2.1, y: -2.5),
@@ -299,7 +302,7 @@ void main() {
         (writer) => writer.geometryWithPositions1D(
           type: Geom.lineString,
           coordType: Coords.xym,
-          bounds: (bw) => bw.coordBounds(
+          bbox: const Box(
             minX: -1.1,
             minY: -3.49,
             minM: 0,
@@ -329,7 +332,7 @@ void main() {
         (writer) => writer.geometryWithPositions1D(
           type: Geom.lineString,
           coordType: Coords.xyzm,
-          bounds: (bw) => bw.coordBounds(
+          bbox: const Box(
             minX: -1.1,
             minY: -3.49,
             minZ: -0.5,
@@ -461,7 +464,7 @@ void main() {
       _testGeoJsonWriters<FeatureWriter>(
         (writer) => writer.feature(
           id: 'fid-1',
-          bounds: (bw) => bw.coordBounds(
+          bbox: const Box(
             minX: -1.1,
             minY: -3.49,
             minZ: -0.5,
@@ -557,7 +560,7 @@ void main() {
     test('FeatureCollection', () {
       _testGeoJsonWriters<FeatureWriter>(
         (writer) => writer.featureCollection(
-          bounds: (bw) => bw.coordBounds(
+          bbox: const Box(
             minX: -1.1,
             minY: -3.49,
             maxX: 10.123,
@@ -578,7 +581,7 @@ void main() {
             ..feature(
               geometries: (gw) => gw.geometryWithPositions1D(
                 type: Geom.lineString,
-                bounds: (bw) => bw.coordBounds(
+                bbox: const Box(
                   minX: -1.1,
                   minY: -3.49,
                   maxX: 3.5,
@@ -773,9 +776,7 @@ void _testWriterOfGeometryFormat<T extends BaseWriter>(
   int? decimals,
 }) {
   final T writer;
-  if (T == BoundsWriter) {
-    writer = format.boundsToText(decimals: decimals) as T;
-  } else if (T == CoordinateWriter) {
+  if (T == CoordinateWriter) {
     writer = format.coordinatesToText(decimals: decimals) as T;
   } else {
     assert(T == GeometryWriter, 'expecting geometry writer');

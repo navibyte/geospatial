@@ -6,6 +6,7 @@
 
 import '/src/aspects/codes.dart';
 
+import 'base_position.dart';
 import 'position.dart';
 
 /// A geographic position with longitude, latitude and optional elevation and m.
@@ -15,12 +16,43 @@ import 'position.dart';
 ///
 /// Longitude (range `[-180.0, 180.0[`) and latitude (range `[-90.0, 90.0]`) are
 /// represented as deegrees. The unit for [elev] is meters.
-///
-/// Extends the [Position] interface. Properties have equality (in the context
-/// of this library): [lon] == [x], [lat] == [y], [elev] == [z]
-class GeoPosition implements Position {
-  /// A geographical position with [lon], [lat], and optional [elev] and [m].
-  const GeoPosition({
+abstract class GeoPosition extends BasePosition {
+  /// A geographical position with [lon] and [lat], and optional [elev] and [m].
+  factory GeoPosition({
+    required double lon,
+    required double lat,
+    double? elev,
+    double? m,
+  }) = _GeoPosition;
+
+  /// The longitude coordinate.
+  double get lon;
+
+  /// The latitude coordinate.
+  double get lat;
+
+  /// The elevation (or altitude) coordinate in meters.
+  ///
+  /// Returns zero if not available.
+  ///
+  /// You can also use [is3D] to check whether elev coordinate is available, or
+  /// [optElev] returns elev coordinate as nullable value.
+  double get elev;
+
+  /// The elevation (or altitude) coordinate optionally in meters.
+  ///
+  /// Returns null if not available.
+  ///
+  /// You can also use [is3D] to check whether elev coordinate is available.
+  double? get optElev;
+}
+
+// -----------------------------------------------------------------------------
+// Private implementation code below.
+// The implementation may change in future.
+
+class _GeoPosition implements GeoPosition, Position {
+  const _GeoPosition({
     required double lon,
     required double lat,
     double? elev,
@@ -35,24 +67,16 @@ class GeoPosition implements Position {
   final double? _elev;
   final double? _m;
 
-  /// The longitude coordinate. Equals to [x].
+  @override
   double get lon => _lon;
 
-  /// The latitude coordinate. Equals to [y].
+  @override
   double get lat => _lat;
 
-  /// The elevation (or height or altitude) coordinate in meters. Equals to [z].
-  ///
-  /// Returns zero if not available.
-  ///
-  /// Use [is3D] to check whether elev coordinate is available.
+  @override
   double get elev => _elev ?? 0.0;
 
-  /// The elevation (or height or altitude) coordinate in meters.
-  ///
-  /// Equals to [optZ]. Returns null if not available.
-  ///
-  /// Use [is3D] to check whether elev coordinate is available.
+  @override
   double? get optElev => _elev;
 
   @override
@@ -74,16 +98,19 @@ class GeoPosition implements Position {
   double? get optM => _m;
 
   @override
+  Position get asPosition => this;
+
+  @override
   int get spatialDimension => typeCoords.spatialDimension;
 
   @override
   int get coordinateDimension => typeCoords.coordinateDimension;
 
   @override
-  bool get is3D => optZ != null;
+  bool get is3D => _elev != null;
 
   @override
-  bool get isMeasured => optM != null;
+  bool get isMeasured => _m != null;
 
   @override
   Coords get typeCoords =>
@@ -93,13 +120,13 @@ class GeoPosition implements Position {
   String toString() {
     switch (typeCoords) {
       case Coords.xy:
-        return '$x,$y';
+        return '$_lon,$_lat';
       case Coords.xyz:
-        return '$x,$y,$z';
+        return '$_lon,$_lat,$_elev';
       case Coords.xym:
-        return '$x,$y,$m';
+        return '$_lon,$_lat,$_m';
       case Coords.xyzm:
-        return '$x,$y,$z,$m';
+        return '$_lon,$_lat,$_elev,$_m';
     }
   }
 }

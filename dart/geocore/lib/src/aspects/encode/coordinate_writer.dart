@@ -9,7 +9,10 @@ import '/src/aspects/data.dart';
 import 'base_writer.dart';
 
 /// An interface to write objects with coordinate data into some content format.
-abstract class CoordinateWriter extends BaseWriter {
+mixin CoordinateWriter implements BaseWriter {
+  /// Writes a bounding box from [bbox].
+  void box(Box bbox);
+
   /// Writes a position from [coordinates].
   void position(Position coordinates);
 

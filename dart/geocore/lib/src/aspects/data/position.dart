@@ -6,7 +6,7 @@
 
 import '/src/aspects/codes.dart';
 
-import 'positionable.dart';
+import 'base_position.dart';
 
 /// A position with [x], [y], and optional [z] and [m] coordinate values.
 ///
@@ -25,7 +25,7 @@ import 'positionable.dart';
 /// [m] represents a measurement or a value on a linear referencing system (like
 /// time). It could be associated with a 2D position (x, y, m) or a 3D position
 /// (x, y, z, m).
-class Position extends Positionable {
+class Position extends BasePosition {
   /// A position with [x], [y], and optional [z] and [m] coordinates.
   const Position({required num x, required num y, num? z, num? m})
       : _x = x,
@@ -50,35 +50,27 @@ class Position extends Positionable {
 
   /// The z coordinate value. Returns zero if not available.
   ///
-  /// Use [is3D] to check whether z coordinate is available.
+  /// You can also use [is3D] to check whether z coordinate is available, or
+  /// [optZ] returns z coordinate as nullable value.
   ///
   /// For geographic coordinates z represents *elevation* or *altitude*.
   num get z => _z ?? 0;
 
   /// The z coordinate value optionally. Returns null if not available.
   ///
-  /// Use [is3D] to check whether z coordinate is available.
+  /// You can also use [is3D] to check whether z coordinate is available.
   ///
   /// For geographic coordinates z represents *elevation* or *altitude*.
   num? get optZ => _z;
 
-  /// The m ("measure") coordinate value. Returns zero if not available.
-  ///
-  /// Use [isMeasured] to check whether m coordinate is available.
-  ///
-  /// [m] represents a measurement or a value on a linear referencing system
-  /// (like time). It could be associated with a 2D position (x, y, m) or a 3D
-  /// position (x, y, z, m).
+  @override
   num get m => _m ?? 0;
 
-  /// The m ("measure") coordinate optionally. Returns null if not available.
-  ///
-  /// Use [isMeasured] to check whether m coordinate is available.
-  ///
-  /// [m] represents a measurement or a value on a linear referencing system
-  /// (like time). It could be associated with a 2D position (x, y, m) or a 3D
-  /// position (x, y, z, m).
+  @override
   num? get optM => _m;
+
+  @override
+  Position get asPosition => this;
 
   @override
   int get spatialDimension => typeCoords.spatialDimension;
@@ -87,10 +79,10 @@ class Position extends Positionable {
   int get coordinateDimension => typeCoords.coordinateDimension;
 
   @override
-  bool get is3D => optZ != null;
+  bool get is3D => _z != null;
 
   @override
-  bool get isMeasured => optM != null;
+  bool get isMeasured => _m != null;
 
   @override
   Coords get typeCoords =>
@@ -100,13 +92,13 @@ class Position extends Positionable {
   String toString() {
     switch (typeCoords) {
       case Coords.xy:
-        return '$x,$y';
+        return '$_x,$_y';
       case Coords.xyz:
-        return '$x,$y,$z';
+        return '$_x,$_y,$_z';
       case Coords.xym:
-        return '$x,$y,$m';
+        return '$_x,$_y,$_m';
       case Coords.xyzm:
-        return '$x,$y,$z,$m';
+        return '$_x,$_y,$_z,$_m';
     }
   }
 }

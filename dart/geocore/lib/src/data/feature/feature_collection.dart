@@ -80,7 +80,7 @@ class _FeatureCollectionBase<E extends Feature> extends FeatureCollection<E>
         }
       },
       count: features.length,
-      bounds: boundsExplicit?.writeTo,
+      bbox: boundsExplicit,
     );
   }
 

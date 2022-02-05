@@ -130,7 +130,7 @@ class _FeatureBase<T extends Geometry> extends Feature<T> with EquatableMixin {
       id: id,
       geometries: geom?.writeTo,
       properties: properties,
-      bounds: boundsExplicit?.writeTo,
+      bbox: boundsExplicit,
     );
   }
 

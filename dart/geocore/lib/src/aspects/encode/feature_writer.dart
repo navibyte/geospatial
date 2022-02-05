@@ -4,8 +4,9 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import '/src/aspects/data.dart';
+
 import 'base_writer.dart';
-import 'bounds_writer.dart';
 import 'geometry_writer.dart';
 import 'property_writer.dart';
 
@@ -13,13 +14,13 @@ import 'property_writer.dart';
 typedef WriteFeatures = void Function(FeatureWriter writer);
 
 /// An interface to write features into some content format.
-abstract class FeatureWriter extends BaseWriter {
+mixin FeatureWriter implements BaseWriter {
   /// Writes a feature collection with [features].
   ///
   /// An optional expected [count], when given, hints the count of features.
   ///
-  /// An optional [bounds] function can be used to write feature collection
-  /// bounds. A writer implementation may use it or ignore it.
+  /// An optional [bbox] can used set a minimum bounding box for a feature
+  /// collection written. A writer implementation may use it or ignore it.
   ///
   /// Use [extra] to write any extra or "foreign member" properties.
   ///
@@ -32,7 +33,7 @@ abstract class FeatureWriter extends BaseWriter {
   ///               id: '1',
   ///               geometry: (gw) => gw.geometry(
   ///                  type: Geom.point,
-  ///                  coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25),
+  ///                  coordinates: const Position(x: 10.123, y: 20.25),
   ///               ),
   ///               properties: {
   ///                  'foo': 100,
@@ -49,7 +50,7 @@ abstract class FeatureWriter extends BaseWriter {
   void featureCollection({
     required WriteFeatures features,
     int? count,
-    WriteBounds? bounds,
+    Box? bbox,
     WriteProperties? extra,
   });
 
@@ -61,8 +62,8 @@ abstract class FeatureWriter extends BaseWriter {
   /// defined by [GeometryWriter]. When there are more than one geometry, it's
   /// recommended to use the `name` argument when writing those.
   ///
-  /// An optional [bounds] function can be used to write feature
-  /// bounds. A writer implementation may use it or ignore it.
+  /// An optional [bbox] can used set a minimum bounding box for a feature
+  /// written. A writer implementation may use it or ignore it.
   ///
   /// Use [extra] to write any extra or "foreign member" properties along with
   /// those set by [properties].
@@ -73,7 +74,7 @@ abstract class FeatureWriter extends BaseWriter {
   ///       id: '1',
   ///       geometries: (gw) => gw.geometry(
   ///          type: Geom.point,
-  ///          coordinates: (cw) => cw.coordPoint(x: 10.123, y: 20.25),
+  ///          coordinates: const Position(x: 10.123, y: 20.25),
   ///       ),
   ///       properties: {
   ///          'foo': 100,
@@ -86,7 +87,7 @@ abstract class FeatureWriter extends BaseWriter {
     Object? id,
     WriteGeometries? geometries,
     Map<String, Object?>? properties,
-    WriteBounds? bounds,
+    Box? bbox,
     WriteProperties? extra,
   });
 }

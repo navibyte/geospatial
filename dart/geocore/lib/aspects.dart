@@ -8,8 +8,8 @@
 ///
 /// Contains following aspects or features:
 /// * *codes*: enums for coordinate and geometry types
-/// * *data*: basic interfaces for (geospatial) positions and coordinates
-/// * *encode*: write objects with coordinate data to (text) formats
+/// * *data*: basic interfaces for coordinates, positions and bounding boxes
+/// * *encode*: write feature, geometry, coordinate, property objects to text
 /// * *format*: some base formats including support for GeoJSON and WKT
 ///
 /// Usage: import `package:geocore/aspects.dart`

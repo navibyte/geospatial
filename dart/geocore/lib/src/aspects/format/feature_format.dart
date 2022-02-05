@@ -35,11 +35,10 @@ mixin FeatureFormat implements GeometryFormat {
 /// * point (x, y, z): `10.1,20.2,30.3`
 /// * point (x, y, m) with z formatted as 0: `10.1,20.2,0,40.4`
 /// * point (x, y, z, m): `10.1,20.2,30.3,40.4`
-/// * geopoint (lon, lat): `10.1,20.2`
-/// * bounds (min-x, min-y, max-x, max-y): `10.1,10.1,20.2,20.2`
-/// * bounds (min-x, min-y, min-z, max-x, max-y, maz-z):
+/// * box (min-x, min-y, max-x, max-y): `10.1,10.1,20.2,20.2`
+/// * box (min-x, min-y, min-z, max-x, max-y, maz-z):
 ///   * `10.1,10.1,10.1,20.2,20.2,20.2`
-/// * point series, line string, multi point (with 2D points):
+/// * line string, multi point (with 2D points):
 ///   * `[10.1,10.1],[20.2,20.2],[30.3,30.3]`
 /// * polygon, multi line string (with 2D points):
 ///   * `[[35,10],[45,45],[15,40],[10,20],[35,10]]`
@@ -60,14 +59,10 @@ const defaultFormat = _DefaultFormat();
 ///   * `{"type":"Point","coordinates":[10.1,20.2]}`
 /// * point (x, y, z):
 ///   * `{"type":"Point","coordinates":[10.1,20.2,30.3]}`
-/// * geopoint (lon, lat):
-///   * `{"type":"Point","coordinates":[10.1,20.2]}`
-/// * bounds (min-x, min-y, max-x, max-y):
-///   * `[10.1,10.1,20.2,20.2]`
-/// * bounds (min-x, min-y, min-z, max-x, max-y, maz-z):
-///   * `[100.1,10.1,10.1,20.2,20.2,20.2]`
-/// * point series (with 2D points), not an independent GeoJSON geometry:
-///   * `[[10.1,10.1],[20.2,20.2],[30.3,30.3]]`
+/// * box (min-x, min-y, max-x, max-y), as a property inside other object:
+///   * `"bbox": [10.1,10.1,20.2,20.2]`
+/// * box (min-x, min-y, min-z, max-x, max-y, maz-z), as a property:
+///   * `"bbox": [10.1,10.1,10.1,20.2,20.2,20.2]`
 ///
 /// Multi point (with 2D points):
 /// `{"type":"MultiPoint","coordinates":[[10.1,10.1],[20.2,20.2],[30.3,30.3]]}`
@@ -78,19 +73,19 @@ const defaultFormat = _DefaultFormat();
 /// Multi line string (with 2D points):
 /// ```
 ///   {"type":"MultiLineString",
-///    "coordinates":[[[10.1,10.1],[20.2,20.2],[30.3,30.3]]]}`
+///    "coordinates":[[[10.1,10.1],[20.2,20.2],[30.3,30.3]]]}
 /// ```
 ///
 /// Polygon (with 2D points):
 /// ```
 ///   {"type":"Polygon",
-///    "coordinates":[[[35,10],[45,45],[15,40],[10,20],[35,10]]]}`
+///    "coordinates":[[[35,10],[45,45],[15,40],[10,20],[35,10]]]}
 /// ```
 ///
 /// MultiPolygon (with 2D points):
 /// ```
 ///   {"type":"Polygon",
-///    "coordinates":[[[[35,10],[45,45],[15,40],[10,20],[35,10]]]]}`
+///    "coordinates":[[[[35,10],[45,45],[15,40],[10,20],[35,10]]]]}
 /// ```
 ///
 /// Feature:
@@ -141,13 +136,12 @@ FeatureFormat geoJsonFormat({
 ///
 /// Examples:
 /// * point (x, y): `10.1 20.2`
-/// * point (x, y, m) or (x, y, z): `10.1 20.2 30.3`
+/// * point (x, y, z): `10.1 20.2 30.3`
 /// * point (x, y, z, m): `10.1 20.2 30.3 40.4`
-/// * geopoint (lon, lat): `10.1 20.2`
-/// * bounds (min-x, min-y, max-x, max-y): `10.1 10.1,20.2 20.2`
-/// * bounds (min-x, min-y, min-z, max-x, max-y, maz-z):
+/// * box (min-x, min-y, max-x, max-y): `10.1 10.1,20.2 20.2`
+/// * box (min-x, min-y, min-z, max-x, max-y, maz-z):
 ///   * `10.1 10.1 10.1,20.2 20.2 20.2`
-/// * point series, line string, multi point (with 2D points):
+/// * line string, multi point (with 2D points):
 ///   * `10.1 10.1,20.2 20.2,30.3 30.3`
 /// * polygon, multi line string (with 2D points):
 ///   * `(35 10,45 45,15 40,10 20,35 10)`
@@ -173,10 +167,8 @@ const wktLikeFormat = _WktLikeFormat();
 /// * point (x, y, m): `POINT M(10.1 20.2 30.3)`
 /// * point (x, y, z, m): `POINT ZM(10.1 20.2 30.3 40.4)`
 /// * geopoint (lon, lat): `POINT(10.1 20.2)`
-/// * bounds (min-x, min-y, max-x, max-y) with values `10.1 10.1,20.2 20.2`:
+/// * box (min-x, min-y, max-x, max-y) with values `10.1 10.1,20.2 20.2`:
 ///   * `POLYGON((10.1 10.1,20.2 10.1,20.2 20.2,10.1 20.2,10.1 10.1))`
-/// * point series (with 2D points), not an independent WKT geometry:
-///   * `10.1 10.1,20.2 20.2,30.3 30.3`
 /// * multi point (with 2D points):
 ///   * `MULTIPOINT(10.1 10.1,20.2 20.2,30.3 30.3)`
 /// * line string (with 2D points):
@@ -202,10 +194,6 @@ class _DefaultFormat implements GeometryFormat {
   const _DefaultFormat();
 
   @override
-  BoundsWriter boundsToText({StringSink? buffer, int? decimals}) =>
-      _DefaultTextWriter(buffer: buffer, decimals: decimals);
-
-  @override
   CoordinateWriter coordinatesToText({StringSink? buffer, int? decimals}) =>
       _DefaultTextWriter(buffer: buffer, decimals: decimals);
 
@@ -222,15 +210,6 @@ class _GeoJsonFormat with FeatureFormat {
 
   final bool ignoreMeasured;
   final bool ignoreForeignMembers;
-
-  @override
-  BoundsWriter boundsToText({StringSink? buffer, int? decimals}) =>
-      _GeoJsonTextWriter(
-        buffer: buffer,
-        decimals: decimals,
-        ignoreMeasured: ignoreMeasured,
-        ignoreForeignMembers: ignoreForeignMembers,
-      );
 
   @override
   CoordinateWriter coordinatesToText({StringSink? buffer, int? decimals}) =>
@@ -264,10 +243,6 @@ class _WktLikeFormat implements GeometryFormat {
   const _WktLikeFormat();
 
   @override
-  BoundsWriter boundsToText({StringSink? buffer, int? decimals}) =>
-      _WktLikeTextWriter(buffer: buffer, decimals: decimals);
-
-  @override
   CoordinateWriter coordinatesToText({StringSink? buffer, int? decimals}) =>
       _WktLikeTextWriter(buffer: buffer, decimals: decimals);
 
@@ -278,10 +253,6 @@ class _WktLikeFormat implements GeometryFormat {
 
 class _WktFormat implements GeometryFormat {
   const _WktFormat();
-
-  @override
-  BoundsWriter boundsToText({StringSink? buffer, int? decimals}) =>
-      _WktTextWriter(buffer: buffer, decimals: decimals);
 
   @override
   CoordinateWriter coordinatesToText({StringSink? buffer, int? decimals}) =>
@@ -305,8 +276,7 @@ enum _Container {
   propertyArray,
 }
 
-abstract class _BaseTextWriter
-    implements GeometryWriter, CoordinateWriter, BoundsWriter {
+abstract class _BaseTextWriter with GeometryWriter, CoordinateWriter {
   _BaseTextWriter({StringSink? buffer, this.decimals})
       : _buffer = buffer ?? StringBuffer();
 
@@ -379,7 +349,7 @@ abstract class _BaseTextWriter
     required Geom type,
     String? name,
     Coords? coordType,
-    WriteBounds? bounds,
+    Box? bbox,
   }) {
     _startCoordType(coordType);
     return true;
@@ -395,13 +365,13 @@ abstract class _BaseTextWriter
     required Position coordinates,
     String? name,
     Coords? coordType,
-    WriteBounds? bounds,
+    Box? bbox,
   }) {
     if (_geometryBeforeCoordinates(
       type: type,
       name: name,
       coordType: coordType,
-      bounds: bounds,
+      bbox: bbox,
     )) {
       _coordPoint(
         x: coordinates.x,
@@ -419,13 +389,13 @@ abstract class _BaseTextWriter
     required Iterable<Position> coordinates,
     String? name,
     Coords? coordType,
-    WriteBounds? bounds,
+    Box? bbox,
   }) {
     if (_geometryBeforeCoordinates(
       type: type,
       name: name,
       coordType: coordType,
-      bounds: bounds,
+      bbox: bbox,
     )) {
       _coordArray(count: coordinates.length);
       for (final pos in coordinates) {
@@ -442,13 +412,13 @@ abstract class _BaseTextWriter
     required Iterable<Iterable<Position>> coordinates,
     String? name,
     Coords? coordType,
-    WriteBounds? bounds,
+    Box? bbox,
   }) {
     if (_geometryBeforeCoordinates(
       type: type,
       name: name,
       coordType: coordType,
-      bounds: bounds,
+      bbox: bbox,
     )) {
       _coordArray(count: coordinates.length);
       for (final item in coordinates) {
@@ -465,13 +435,13 @@ abstract class _BaseTextWriter
     required Iterable<Iterable<Iterable<Position>>> coordinates,
     String? name,
     Coords? coordType,
-    WriteBounds? bounds,
+    Box? bbox,
   }) {
     if (_geometryBeforeCoordinates(
       type: type,
       name: name,
       coordType: coordType,
-      bounds: bounds,
+      bbox: bbox,
     )) {
       _coordArray(count: coordinates.length);
       for (final item in coordinates) {
@@ -487,9 +457,8 @@ abstract class _BaseTextWriter
     required WriteGeometries geometries,
     int? count,
     String? name,
-    WriteBounds? bounds,
+    Box? bbox,
   }) {
-    // note: keep flat, so not calling "_startContainer(_Container.geometry)"
     _startCoordType(null);
     _startObjectArray(count: count);
     geometries.call(this);
@@ -606,16 +575,7 @@ class _DefaultTextWriter extends _BaseTextWriter {
   }
 
   @override
-  void coordBounds({
-    required num minX,
-    required num minY,
-    num? minZ,
-    num? minM,
-    required num maxX,
-    required num maxY,
-    num? maxZ,
-    num? maxM,
-  }) {
+  void box(Box box) {
     if (_markItem()) {
       _buffer.write(',');
     }
@@ -623,9 +583,9 @@ class _DefaultTextWriter extends _BaseTextWriter {
     if (notAtRoot) {
       _buffer.write('[');
     }
-    _printPoint(minX, minY, minZ, minM);
+    _printPoint(box.minX, box.minY, box.minZ, box.minM);
     _buffer.write(',');
-    _printPoint(maxX, maxY, maxZ, maxM);
+    _printPoint(box.maxX, box.maxY, box.maxZ, box.maxM);
     if (notAtRoot) {
       _buffer.write(']');
     }
@@ -707,7 +667,7 @@ class _DefaultTextWriter extends _BaseTextWriter {
 // Writer  for the "GeoJSON" format --------------------------------------------
 
 class _GeoJsonTextWriter extends _DefaultTextWriter
-    implements FeatureWriter, PropertyWriter {
+    with FeatureWriter, PropertyWriter {
   _GeoJsonTextWriter({
     StringSink? buffer,
     int? decimals,
@@ -732,7 +692,7 @@ class _GeoJsonTextWriter extends _DefaultTextWriter
     required Geom type,
     String? name,
     Coords? coordType,
-    WriteBounds? bounds,
+    Box? bbox,
   }) {
     if (ignoreForeignMembers &&
         _atFeature &&
@@ -751,9 +711,9 @@ class _GeoJsonTextWriter extends _DefaultTextWriter
       ..write('{"type":"')
       ..write(type.nameGeoJson)
       ..write('"');
-    if (bounds != null) {
+    if (bbox != null) {
       _buffer.write(',"bbox":[');
-      bounds.call(_subWriter());
+      _subWriter().box(bbox);
       _buffer.write(']');
     }
     _buffer.write(',"coordinates":');
@@ -772,7 +732,7 @@ class _GeoJsonTextWriter extends _DefaultTextWriter
     required WriteGeometries geometries,
     int? count,
     String? name,
-    WriteBounds? bounds,
+    Box? bbox,
   }) {
     if (ignoreForeignMembers &&
         _atFeature &&
@@ -788,9 +748,9 @@ class _GeoJsonTextWriter extends _DefaultTextWriter
     _startContainer(_Container.geometry);
     _startCoordType(null);
     _buffer.write('{"type":"GeometryCollection"');
-    if (bounds != null) {
+    if (bbox != null) {
       _buffer.write(',"bbox":[');
-      bounds.call(_subWriter());
+      _subWriter().box(bbox);
       _buffer.write(']');
     }
     _buffer.write(',"geometries":');
@@ -832,7 +792,7 @@ class _GeoJsonTextWriter extends _DefaultTextWriter
   void featureCollection({
     required WriteFeatures features,
     int? count,
-    WriteBounds? bounds,
+    Box? bbox,
     WriteProperties? extra,
   }) {
     if (_atFeatureCollection) {
@@ -843,9 +803,9 @@ class _GeoJsonTextWriter extends _DefaultTextWriter
     }
     _startContainer(_Container.featureCollection);
     _buffer.write('{"type":"FeatureCollection"');
-    if (bounds != null) {
+    if (bbox != null) {
       _buffer.write(',"bbox":[');
-      bounds.call(_subWriter());
+      _subWriter().box(bbox);
       _buffer.write(']');
     }
     _buffer.write(',"features":');
@@ -865,7 +825,7 @@ class _GeoJsonTextWriter extends _DefaultTextWriter
     Object? id,
     WriteGeometries? geometries,
     Map<String, Object?>? properties,
-    WriteBounds? bounds,
+    Box? bbox,
     WriteProperties? extra,
   }) {
     if (_markItem()) {
@@ -886,9 +846,9 @@ class _GeoJsonTextWriter extends _DefaultTextWriter
       }
     }
     _markItem();
-    if (bounds != null) {
+    if (bbox != null) {
       _buffer.write(',"bbox":[');
-      bounds.call(_subWriter());
+      _subWriter().box(bbox);
       _buffer.write(']');
     }
     if (geometries != null) {
@@ -1025,16 +985,7 @@ class _WktLikeTextWriter extends _BaseTextWriter {
   }
 
   @override
-  void coordBounds({
-    required num minX,
-    required num minY,
-    num? minZ,
-    num? minM,
-    required num maxX,
-    required num maxY,
-    num? maxZ,
-    num? maxM,
-  }) {
+  void box(Box box) {
     if (_markItem()) {
       _buffer.write(',');
     }
@@ -1042,9 +993,9 @@ class _WktLikeTextWriter extends _BaseTextWriter {
     if (notAtRoot) {
       _buffer.write('(');
     }
-    _printPoint(minX, minY, minZ, minM);
+    _printPoint(box.minX, box.minY, box.minZ, box.minM);
     _buffer.write(',');
-    _printPoint(maxX, maxY, maxZ, maxM);
+    _printPoint(box.maxX, box.maxY, box.maxZ, box.maxM);
     if (notAtRoot) {
       _buffer.write(')');
     }
@@ -1149,7 +1100,7 @@ class _WktTextWriter extends _WktLikeTextWriter {
     required Geom type,
     String? name,
     Coords? coordType,
-    WriteBounds? bounds,
+    Box? bbox,
   }) {
     if (_markItem()) {
       _buffer.write(',');
@@ -1176,7 +1127,7 @@ class _WktTextWriter extends _WktLikeTextWriter {
     required WriteGeometries geometries,
     int? count,
     String? name,
-    WriteBounds? bounds,
+    Box? bbox,
   }) {
     if (_markItem()) {
       _buffer.write(',');
@@ -1202,21 +1153,12 @@ class _WktTextWriter extends _WktLikeTextWriter {
   }
 
   @override
-  void coordBounds({
-    required num minX,
-    required num minY,
-    num? minZ,
-    num? minM,
-    required num maxX,
-    required num maxY,
-    num? maxZ,
-    num? maxM,
-  }) {
+  void box(Box box) {
     // WKT does not recognize bounding box, so convert to POLYGON
-    final hasZ = minZ != null && maxZ != null;
-    final hasM = minM != null && maxM != null;
-    final midZ = hasZ ? 0.5 * minZ! + 0.5 * maxZ! : null;
-    final midM = hasM ? 0.5 * minM! + 0.5 * maxM! : null;
+    final hasZ = box.minZ != null && box.maxZ != null;
+    final hasM = box.minM != null && box.maxM != null;
+    final midZ = hasZ ? 0.5 * box.minZ! + 0.5 * box.maxZ! : null;
+    final midM = hasM ? 0.5 * box.minM! + 0.5 * box.maxM! : null;
     // check optional expected coordinate type
     final coordType = _coordTypes.isNotEmpty
         ? _coordTypes.last
@@ -1235,11 +1177,11 @@ class _WktTextWriter extends _WktLikeTextWriter {
     }
     _coordArray();
     _coordArray();
-    _coordPoint(x: minX, y: minY, z: minZ, m: minM);
-    _coordPoint(x: maxX, y: minY, z: midZ, m: midM);
-    _coordPoint(x: maxX, y: maxY, z: maxZ, m: maxM);
-    _coordPoint(x: minX, y: maxY, z: midZ, m: midM);
-    _coordPoint(x: minX, y: minY, z: minZ, m: minM);
+    _coordPoint(x: box.minX, y: box.minY, z: box.minZ, m: box.minM);
+    _coordPoint(x: box.maxX, y: box.minY, z: midZ, m: midM);
+    _coordPoint(x: box.maxX, y: box.maxY, z: box.maxZ, m: box.maxM);
+    _coordPoint(x: box.minX, y: box.maxY, z: midZ, m: midM);
+    _coordPoint(x: box.minX, y: box.minY, z: box.minZ, m: box.minM);
     _coordArrayEnd();
     _coordArrayEnd();
     _endCoordType();

@@ -8,18 +8,6 @@ import '/src/aspects/encode.dart';
 
 /// An interface specifying methods to format geometry objects.
 abstract class GeometryFormat {
-  /// Returns a writer formatting string representations of bounds.
-  ///
-  /// When an optional [buffer] is given, then representations are written into
-  /// it (without clearing any content it might already contain).
-  ///
-  /// Use [decimals] to set a number of decimals (not applied if no decimals).
-  ///
-  /// After writing some objects with coordinate data into a writer, the string
-  /// representation can be accessed using `toString()` of it (or via [buffer]
-  /// when such is given).
-  BoundsWriter boundsToText({StringSink? buffer, int? decimals});
-
   /// Returns a writer formatting string representations of coordinate data.
   ///
   /// When an optional [buffer] is given, then representations are written into
