@@ -766,7 +766,7 @@ class _GeoJsonTextWriter extends _DefaultTextWriter
   void emptyGeometry(Geom type, {String? name}) {
     if (ignoreForeignMembers &&
         _atFeature &&
-        (name ?? 'properties') != 'properties') {
+        (name ?? 'geometry') != 'geometry') {
       return;
     }
     if (_markItem()) {
@@ -854,7 +854,10 @@ class _GeoJsonTextWriter extends _DefaultTextWriter
     if (geometries != null) {
       geometries.call(this);
     }
-    _printMapEntryRecursive('properties', properties);
+    _printMapEntryRecursive(
+      'properties',
+      properties ?? const <String, Object?>{},
+    );
     if (!ignoreForeignMembers && extra != null) {
       extra.call(this);
     }

@@ -550,11 +550,11 @@ void main() {
         geoJson: '{"type":"Feature",'
             '"geometry":{"type":"Point","coordinates":[10.123,20.25]},'
             '"geom1":{"type":"Point","coordinates":[1,2,3,4]},'
-            '"properties":null,"extra":{"foo":{'
+            '"properties":{},"extra":{"foo":{'
             '"bar":"this is property value","baz":[true,false]}}}',
         geoJsonStrict: '{"type":"Feature",'
             '"geometry":{"type":"Point","coordinates":[10.123,20.25]},'
-            '"properties":null}',
+            '"properties":{}}',
       );
     });
     test('FeatureCollection', () {
@@ -596,7 +596,7 @@ void main() {
             ),
         ),
         geoJson:
-            '{"type":"FeatureCollection","bbox":[-1.1,-3.49,10.123,20.25],"features":[{"type":"Feature","id":"fid-1","geometry":{"type":"Point","coordinates":[10.123,20.25]},"properties":{"foo":100,"bar":"this is property value"}},{"type":"Feature","geometry":{"type":"LineString","bbox":[-1.1,-3.49,3.5,-1.1],"coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]},"properties":null}]}',
+            '{"type":"FeatureCollection","bbox":[-1.1,-3.49,10.123,20.25],"features":[{"type":"Feature","id":"fid-1","geometry":{"type":"Point","coordinates":[10.123,20.25]},"properties":{"foo":100,"bar":"this is property value"}},{"type":"Feature","geometry":{"type":"LineString","bbox":[-1.1,-3.49,3.5,-1.1],"coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]},"properties":{}}]}',
       );
       _testGeoJsonWriters<FeatureWriter>(
         (writer) => writer.featureCollection(features: (fw) {}),
@@ -630,7 +630,7 @@ void main() {
           features: (fw) => fw.feature(),
         ),
         geoJson: '{"type":"FeatureCollection","features":'
-            '[{"type":"Feature","properties":null}]}',
+            '[{"type":"Feature","properties":{}}]}',
       );
       _testGeoJsonWriters<FeatureWriter>(
         (writer) => writer.featureCollection(
@@ -639,8 +639,8 @@ void main() {
             ..feature(),
         ),
         geoJson: '{"type":"FeatureCollection","features":'
-            '[{"type":"Feature","properties":null},'
-            '{"type":"Feature","properties":null}]}',
+            '[{"type":"Feature","properties":{}},'
+            '{"type":"Feature","properties":{}}]}',
       );
       _testGeoJsonWriters<FeatureWriter>(
         (writer) => writer.featureCollection(
@@ -651,11 +651,11 @@ void main() {
             ),
         ),
         geoJson: '{"type":"FeatureCollection","features":'
-            '[{"type":"Feature","properties":null,"prop1":"value1"},'
-            '{"type":"Feature","properties":null,"map1":{"prop1":"value1"}}]}',
+            '[{"type":"Feature","properties":{},"prop1":"value1"},'
+            '{"type":"Feature","properties":{},"map1":{"prop1":"value1"}}]}',
         geoJsonStrict: '{"type":"FeatureCollection","features":'
-            '[{"type":"Feature","properties":null},'
-            '{"type":"Feature","properties":null}]}',
+            '[{"type":"Feature","properties":{}},'
+            '{"type":"Feature","properties":{}}]}',
       );
       _testGeoJsonWriters<FeatureWriter>(
         (writer) => writer.featureCollection(
