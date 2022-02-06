@@ -9,7 +9,32 @@
 
 [![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev/) [![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)](https://flutter.dev/)
 
-Key features of the [geocore](https://pub.dev/packages/geocore) library package, based on Dart code hosted by this repository:
+## :package: Packages
+
+[Dart](https://dart.dev/) code packages published at 
+[pub.dev](https://pub.dev/publishers/navibyte.com/packages):
+
+Code           | Package | Description 
+-------------- | --------| -----------
+:compass: [geobase](dart/geobase) | [![pub package](https://img.shields.io/pub/v/geobase.svg)](https://pub.dev/packages/geobase) | Geospatial data writers for ([GeoJSON](https://geojson.org/) and [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)).
+:globe_with_meridians: [geocore](dart/geocore) | [![pub package](https://img.shields.io/pub/v/geocore.svg)](https://pub.dev/packages/geocore) | Geospatial data (points, geometry, features, meta), projections and parsers ([GeoJSON](https://geojson.org/) and partial support for [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)).
+:earth_americas: [geodata](dart/geodata) | [![pub package](https://img.shields.io/pub/v/geodata.svg)](https://pub.dev/packages/geodata) | A geospatial API client to read [GeoJSON](https://geojson.org/) and other geospatial data sources. 
+
+**Code packages are at BETA stage, interfaces not fully final yet.** 
+
+## Features
+
+Key features of the [geobase](https://pub.dev/packages/geobase) package:
+
+* 🔢 enums for geospatial coordinate and geometry types
+* 🌐 *geographic* positions and bounding boxes (longitude-latitude-elevation)
+* 🗺️ *projected* positions and bounding boxes (cartesian XYZ)
+* 📃 geospatial data writers for features, geometries, coordinates, properties:
+  * 🌎 supported formats: [GeoJSON](https://geojson.org/) 
+* 📃 geospatial data writers for geometries and coordinates:
+  * 🪧 supported formats: [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)
+
+Key features of the [geocore](https://pub.dev/packages/geocore) package:
 
 * 🚀 geospatial data structures (geometry, features and metadata)
 * 📅 temporal data structures (instant, interval)
@@ -22,20 +47,6 @@ Key features of the [geocore](https://pub.dev/packages/geocore) library package,
 * 🪧 [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) 
 (Well-known text representation of geometry) data parser 
 * 🏗️ coordinate transformations and projections (initial support)
-
-See [geocore](dart/geocore) code and docs for more information.
-
-## :package: Packages
-
-[Dart](https://dart.dev/) code packages published at 
-[pub.dev](https://pub.dev/publishers/navibyte.com/packages):
-
-Code           | Package | Description 
--------------- | --------| -----------
-:globe_with_meridians: [geocore](dart/geocore) | [![pub package](https://img.shields.io/pub/v/geocore.svg)](https://pub.dev/packages/geocore) | Geospatial data (points, geometry, features, meta), projections and parsers ([GeoJSON](https://geojson.org/) and partial support for [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)).
-:earth_americas: [geodata](dart/geodata) | [![pub package](https://img.shields.io/pub/v/geodata.svg)](https://pub.dev/packages/geodata) | A geospatial API client to read [GeoJSON](https://geojson.org/) and other geospatial data sources. 
-
-**Code packages are at BETA stage, interfaces not fully final yet.** 
 
 ## Sample
 

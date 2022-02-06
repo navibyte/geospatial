@@ -120,7 +120,12 @@ A sample to write a `Feature` geometry to GeoJSON:
 
 ## Package
 
-TODO: description
+This is a [Dart](https://dart.dev/) package named `geobase` under the 
+[geospatial](https://github.com/navibyte/geospatial) code repository. 
+
+See also the [geocore](https://pub.dev/packages/geocore) package for geometry
+and feature data structures, data parsers, coordinate transformations and other
+utitilies.  
 
 ## Authors
 

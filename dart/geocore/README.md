@@ -213,7 +213,7 @@ For example `Point3` can be created in many ways:
   Point3.tryParse('nop') ?? Point3.parse('708221.0 5707225.0 45.0');
 
   // The same point parsed using the WKT parser for projected geometries.
-  // Here `wktProjected` is a global constant for a WKT factory implementation.
+  // Here `wktCartesian` is a global constant for a WKT factory implementation.
   wktCartesian.parse('POINT Z (708221.0 5707225.0 45.0)');
 ```
 
@@ -233,7 +233,7 @@ methods that help to create another instance of the same type.
   // Returns a point of the same type, but no previous values are preserved
   // (result here is Point3m.xyzm(1.0, 2.0, 3.0, 0.0)) with default 0.0 for m).
   source.newWith(x: 1.0, y: 2.0, z: 3.0);
- 
+
   // This returns also Point3m.xyzm(1.0, 2.0, 3.0, 0.0)).
   source.newFrom([1.0, 2.0, 3.0, 0.0]);
 ```
@@ -549,24 +549,29 @@ like [The EPSG dataset](https://epsg.org/).
 See the [introduction](#introduction) for samples projecting geographic points
 to projected points, and vice versa.
 
-A forward or inverse projection is implemented by a function defined as:
+A forward or inverse projection is implemented by an interface defined as:
 
 ```dart
-/// A function to project the [source] point to a point of [R].
+/// A mixin defining an interface for (geospatial) projections.
 ///
-/// When [to] is provided, then target points of [R] are created using that
-/// as a point factory. Otherwise a projection function uses it's own factory.
-///
-/// Note that a function could implement for example a map projection from
-/// geographical points to projected cartesian points, or an inverse
+/// A class that implements this mixin may provide for example a map projection
+/// from geographical points to projected cartesian points, or an inverse
 /// projection (or an "unprojection") from projected cartesian points to
-/// geographical points. Both are called here "project point" functions.
+/// geographical points. Both are called simply "projections" here.
 ///
-/// Throws FormatException if cannot project.
-typedef ProjectPoint<R extends Point> = R Function(
-  Point source, {
-  PointFactory<R>? to,
-});
+/// The mixin specifies only `projectPoint` function, but it can be extended in
+/// future to project using other data structures than points also (like
+/// `projectPointSeries` etc.). If extended, then the mixin provides a default
+/// implementation for any new methods.
+mixin Projection<R extends Point> {
+  /// Projects the [source] point to a point of [R].
+  ///
+  /// When [to] is provided, then target points of [R] are created using that
+  /// as a point factory. Otherwise a projection uses it's own factory.
+  ///
+  /// Throws FormatException if cannot project.
+  R projectPoint(Point source, {PointFactory<R>? to});
+}
 ```
 
 Projection adapters bundle forward and inverse projections, and are used to 
@@ -626,7 +631,11 @@ represent objects mentioned above contain `transform(TransformPoint transform)`
 method returning a transformed object. The transform function is defined as:
 
 ```dart
-/// A function to transform the [source] point to a transformed point.
+/// A function to transform the [source] point of [T] to a point of [T].
+///
+/// Target points of [T] are created using [source] itself as a point factory.
+///
+/// Throws FormatException if cannot transform.
 typedef TransformPoint = T Function<T extends Point>(T source);
 ```
 
@@ -659,7 +668,7 @@ Now this function can be used to transform points and other geometries:
 
 ```dart
   // Create a point and transform it with a custom translation that returns
-  // `Point3m.xyzm(110.0, 220.0, 50.0, 1.25)` after applying the transform.
+  // `Point3m.xyzm(110.0, 220.0, 50.0, 1.25)` after projection.
   Point3m.xyzm(100.0, 200.0, 50.0, 1.25).transform(_sampleFixedTranslate);
 
   // The same transform function can be used to transform also geometry objects.
