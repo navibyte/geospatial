@@ -43,7 +43,80 @@ Import it:
 import `package:geobase/geobase.dart`
 ```
 
-TODO: more examples
+A sample to write a `Point` geometry to WKT (with z and m coordinates too):
+
+```dart
+  // geometry writer for WKT
+  final writer = wktFormat().geometriesToText();
+
+  // prints:
+  //    POINT ZM(10.123 20.25 -30.95 -1.999)
+  print(
+    writer
+      ..geometryWithPosition(
+        type: Geom.point,
+        coordType: Coords.xyzm,
+        coordinates: const Position(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
+      )
+      ..toString(),
+  );
+```
+
+A sample to write a `LineString` geometry to GeoJSON:
+
+```dart
+  // geometry writer for GeoJSON
+  final writer = geoJsonFormat().geometriesToText();
+
+  // prints (however without line breaks):
+  //    {"type":"LineString",
+  //     "bbox":[-1.1,-3.49,3.5,-1.1],
+  //     "coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]}
+  print(
+    writer
+      ..geometryWithPositions1D(
+        type: Geom.lineString,
+        bbox: const GeoBox(west: -1.1, south: -3.49, east: 3.5, north: -1.1),
+        coordinates: [
+          const GeoPosition(lon: -1.1, lat: -1.1),
+          const GeoPosition(lon: 2.1, lat: -2.5),
+          const GeoPosition(lon: 3.5, lat: -3.49),
+        ],
+      )
+      ..toString(),
+  );
+```
+
+A sample to write a `Feature` geometry to GeoJSON:
+
+```dart
+  // feature writer for GeoJSON
+  final writer = geoJsonFormat().featuresToText();
+
+  // prints (however without line breaks):
+  //    {"type":"Feature",
+  //     "id":"fid-1",
+  //     "geometry":
+  //        {"type":"Point","coordinates":[10.123,20.25]},
+  //     "properties":
+  //        {"foo":100,"bar":"this is property value","baz":true}}
+  print(
+    writer
+      ..feature(
+        id: 'fid-1',
+        geometries: (gw) => gw.geometryWithPosition(
+          type: Geom.point,
+          coordinates: const GeoPosition(lon: 10.123, lat: 20.25),
+        ),
+        properties: {
+          'foo': 100,
+          'bar': 'this is property value',
+          'baz': true,
+        },
+      )
+      ..toString(),
+  );
+```
 
 ## Package
 
