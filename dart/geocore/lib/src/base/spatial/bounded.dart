@@ -17,8 +17,8 @@ abstract class _BoundedBase {
   ///
   /// Please note that in some cases bounds could be pre-calculated but it's
   /// possible that accessing this property may cause extensive calculations.
-  /// 
-  /// For some bounded objects (like an empty collections) bounds cannot be 
+  ///
+  /// For some bounded objects (like an empty collections) bounds cannot be
   /// resolved at all. In such case, the null value is returned.
   Bounds? get bounds;
 

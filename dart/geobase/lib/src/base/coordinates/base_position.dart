@@ -10,7 +10,7 @@ import 'positionable.dart';
 /// A base interface for geospatial positions.
 //
 /// This interface defines coordinate value only for the m axis. Sub classes
-/// define coordinate values for other axes (x, y and z for projected or 
+/// define coordinate values for other axes (x, y and z for projected or
 /// cartesian positions, and longitude, latitude and elevation for geographic
 /// positions).
 ///
@@ -26,7 +26,7 @@ abstract class BasePosition extends Positionable {
   /// [optM] returns m coordinate as nullable value.
   ///
   /// [m] represents a measurement or a value on a linear referencing system
-  /// (like time). 
+  /// (like time).
   num get m;
 
   /// The m ("measure") coordinate optionally. Returns null if not available.
@@ -38,7 +38,7 @@ abstract class BasePosition extends Positionable {
   num? get optM;
 
   /// Returns this position as [Position] (with x, y, z and m coordinates).
-  /// 
+  ///
   /// When returning `GeoPosition` as [Position] then coordinates are copied as:
   /// `lon` => `x`, `lat` => `y`, `elev` => `z`, `m` => `m`
   Position get asPosition;

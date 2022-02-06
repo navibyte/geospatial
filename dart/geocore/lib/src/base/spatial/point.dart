@@ -53,7 +53,7 @@ abstract class Point<C extends num> extends Geometry
 
   @override
   Position get asPosition => this;
-  
+
   @override
   Point? get onePoint => this;
 

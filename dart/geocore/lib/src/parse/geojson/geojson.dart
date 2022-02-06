@@ -20,7 +20,7 @@ import '/src/parse/factory.dart';
 /// or cartesian coordinates.
 ///
 /// Use [bounds] to specify a factory for `Bounds` objects.
-/// 
+///
 /// Use [feature] to define a factory for `Feature` objects.
 GeoJsonFactory<T> geoJson<T extends Point>(
   PointFactory<T> point, {
@@ -39,7 +39,7 @@ GeoJsonFactory<T> geoJson<T extends Point>(
 /// or cartesian coordinates, or [geoJson] if points can be anything.
 ///
 /// Use [bounds] to specify a factory for `Bounds` objects.
-/// 
+///
 /// Use [feature] to define a factory for `Feature` objects.
 GeoJsonFactory<T> geoJsonGeographic<T extends GeoPoint>(
   PointFactory<T> point, {
@@ -58,7 +58,7 @@ GeoJsonFactory<T> geoJsonGeographic<T extends GeoPoint>(
 /// geographic coordinates, or [geoJson] if points can be anything.
 ///
 /// Use [bounds] to specify a factory for `Bounds` objects.
-/// 
+///
 /// Use [feature] to define a factory for `Feature` objects.
 GeoJsonFactory<T> geoJsonCartesian<T extends CartesianPoint>(
   PointFactory<T> point, {

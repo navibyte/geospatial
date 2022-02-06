@@ -29,7 +29,7 @@ typedef ProjectPoint<R extends Point> = R Function(
 /// from geographical points to projected cartesian points, or an inverse
 /// projection (or an "unprojection") from projected cartesian points to
 /// geographical points. Both are called simply "projections" here.
-/// 
+///
 /// The mixin specifies only `projectPoint` function, but it can be extended in
 /// future to project using other data structures than points also (like
 /// `projectPointSeries` etc.). If extended, then the mixin provides a default

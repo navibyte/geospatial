@@ -53,7 +53,7 @@ mixin FeatureWriter implements BaseWriter {
   });
 
   /// Writes a feature with [id], [geometries] and [properties].
-  /// 
+  ///
   /// The [id], when non-null, should be either a string or an integer number.
   ///
   /// At least one geometry using [geometries] should be written using methods

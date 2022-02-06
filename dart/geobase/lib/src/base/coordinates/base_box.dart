@@ -9,14 +9,14 @@ import 'box.dart';
 import 'positionable.dart';
 
 /// A base interface for axis-aligned bounding boxes with min and max positions.
-/// 
+///
 /// This interface defines min and max coordinate values only for the m axis.
 /// Sub classes define min and max coordinate values for other axes (x, y and z
 /// in projected coordinate systems, and longitude, latitude and elevation in
 /// geographic coordinate systems).
-/// 
-/// The known sub classes are `Box` (with minX, minY, minZ, minM, maxX, maxY, 
-/// maxZ and maxM coordinates) and `GeoBox` (with west, south, minElev, minM, 
+///
+/// The known sub classes are `Box` (with minX, minY, minZ, minM, maxX, maxY,
+/// maxZ and maxM coordinates) and `GeoBox` (with west, south, minElev, minM,
 /// east, north, maxElev and maxM coordinates)
 abstract class BaseBox extends Positionable {
   /// Default `const` constructor to allow extending this abstract class.
@@ -39,7 +39,7 @@ abstract class BaseBox extends Positionable {
   BasePosition get max;
 
   /// Returns this axis-aligned box as [Box] (with x, y, z and m axis).
-  /// 
+  ///
   /// When returning `GeoBox` as [Box] then coordinates are copied as:
   /// `west` => `minX`, `south` => `minY`, `minElev` => `minZ`, `minM` => `minM`
   /// `east` => `maxX`, `north` => `maxY`, `maxElev` => `maxZ`, `maxM` => `maxM`

@@ -21,7 +21,7 @@ class BoundedItemsQuery extends ItemsQuery {
   }) : super(crs: crs, limit: limit, extra: extra);
 
   /// A new query with query parameters copied from an optional [query].
-  /// 
+  ///
   /// Supports reading [query] parameters from [ItemsQuery] and
   /// [BoundedItemsQuery].
   ///
