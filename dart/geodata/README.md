@@ -24,7 +24,7 @@ To use, add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geodata: ^0.8.0-a.8
+  geodata: ^0.8.0-a.9
 ```
 
 The package contains also following mini-libraries, that can be used to import
@@ -37,12 +37,13 @@ Library            | Exports also | Description
 **geojson_client** | common, core | A client-side data source to read GeoJSON data from web and file resources.
 **ogcapi_features_client** |  common, core | A client-side data source to read features from OGC API Features services.
 
-All the mini-libraries have dependencies to 
-[equatable](https://pub.dev/packages/equatable) and 
-[geocore](https://pub.dev/packages/geocore) packages. The **geojson_client**
-and **ogcapi_features_client** libraries depends also on the
-[http](https://pub.dev/packages/http) package. The **geojson_client** package
-uses `dart:io` functions for file access too.
+All the mini-libraries have dependencies to the
+[equatable](https://pub.dev/packages/equatable), 
+[geobase](https://pub.dev/packages/geobase) and
+[geocore](https://pub.dev/packages/geocore) packages. 
+
+The **geojson_client** and **ogcapi_features_client** libraries depends also on
+the [http](https://pub.dev/packages/http) package.
 
 ## Usage
 
@@ -82,7 +83,7 @@ Future<void> _readFeatures(BasicFeatureSource source) async {
         print('    $key: ${f.properties[key]}');
       }
     }
-  } on FeatureException catch (e) {
+  } on ServiceException<FeatureFailure> catch (e) {
     print('Reading GeoJSON resource failed: ${e.failure.name}');
     if (e.cause != null) {
       print('Cause: ${e.cause}');
