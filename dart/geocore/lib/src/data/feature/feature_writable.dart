@@ -4,8 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/aspects/encode.dart';
-import '/src/aspects/format.dart';
+import 'package:geobase/geobase.dart';
 
 /// An interface defining the capability to write feature objects.
 abstract class FeatureWritable {

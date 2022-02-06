@@ -4,11 +4,9 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/aspects/data.dart';
-
-import 'base_writer.dart';
-import 'geometry_writer.dart';
-import 'property_writer.dart';
+import '/src/base/coordinates.dart';
+import '/src/encode/base.dart';
+import '/src/encode/geometry.dart';
 
 /// A function that is capable of writing features to [writer].
 typedef WriteFeatures = void Function(FeatureWriter writer);
@@ -31,7 +29,7 @@ mixin FeatureWriter implements BaseWriter {
   ///       features: (fw) => fw
   ///           ..feature(
   ///               id: '1',
-  ///               geometry: (gw) => gw.geometry(
+  ///               geometries: (gw) => gw.geometry(
   ///                  type: Geom.point,
   ///                  coordinates: const Position(x: 10.123, y: 20.25),
   ///               ),

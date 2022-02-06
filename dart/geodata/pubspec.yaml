@@ -15,6 +15,10 @@ dependencies:
   
   #synchronized: ^3.0.0
 
+  #geobase: ^0.1.0-a.0
+  geobase: 
+    path: ../geobase
+
   #geocore: ^0.8.0-a.7
   geocore: 
     path: ../geocore

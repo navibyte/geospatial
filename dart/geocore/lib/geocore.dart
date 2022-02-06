@@ -10,7 +10,6 @@
 library geocore;
 
 // Export mini-libraries forming the whole "geocore" library.
-export 'aspects.dart';
 export 'base.dart';
 export 'coordinates.dart';
 export 'data.dart';

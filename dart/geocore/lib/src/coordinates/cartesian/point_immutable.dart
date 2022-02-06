@@ -13,9 +13,9 @@
 // * Point3i with x, y and z as int values
 
 import 'package:equatable/equatable.dart';
+import 'package:geobase/geobase.dart';
 import 'package:meta/meta.dart';
 
-import '/src/aspects/codes.dart';
 import '/src/base/spatial.dart';
 
 import '/src/utils/num.dart';

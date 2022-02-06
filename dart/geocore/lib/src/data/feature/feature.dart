@@ -5,9 +5,9 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import 'package:equatable/equatable.dart';
+import 'package:geobase/geobase.dart';
 import 'package:meta/meta.dart';
 
-import '/src/aspects/encode.dart';
 import '/src/base/spatial.dart';
 
 import 'feature_writable.dart';

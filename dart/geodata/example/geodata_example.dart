@@ -17,7 +17,7 @@ To test run this from command line:
 
 GeoJSON (web / http) resource as a data source:
 dart example/geodata_example.dart geojson https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/ 2.5_day.geojson,significant_week.geojson 3 items
-dart example/geodata_example.dart geojson https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/ significant_week.geojson 3 items id us7000gaqu
+dart example/geodata_example.dart geojson https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/ significant_month.geojson 3 items id ok2022cedc
 
 OGC API Features data sources:
 dart example/geodata_example.dart ogcfeat https://demo.pygeoapi.io/master/ lakes 2 items

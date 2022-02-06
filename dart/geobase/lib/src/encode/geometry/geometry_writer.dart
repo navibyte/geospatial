@@ -4,10 +4,9 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/aspects/codes.dart';
-import '/src/aspects/data.dart';
-
-import 'base_writer.dart';
+import '/src/base/codes.dart';
+import '/src/base/coordinates.dart';
+import '/src/encode/base.dart';
 
 /// A function that is capable of writing a geometry to [writer].
 typedef WriteGeometries = void Function(GeometryWriter writer);

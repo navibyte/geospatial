@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/aspects/codes.dart';
+import '/src/base/codes.dart';
 
 import 'base_box.dart';
 import 'box.dart';

@@ -6,7 +6,7 @@
 
 // ignore_for_file: lines_longer_than_80_chars
 
-import 'package:geocore/aspects.dart';
+import 'package:geobase/geobase.dart';
 
 import 'package:test/test.dart';
 
