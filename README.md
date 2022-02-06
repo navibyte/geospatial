@@ -16,13 +16,13 @@
 
 Code           | Package | Description 
 -------------- | --------| -----------
-:compass: [geobase](dart/geobase) | [![pub package](https://img.shields.io/pub/v/geobase.svg)](https://pub.dev/packages/geobase) | Geospatial data writers for ([GeoJSON](https://geojson.org/) and [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)).
+:triangular_ruler: [geobase](dart/geobase) | [![pub package](https://img.shields.io/pub/v/geobase.svg)](https://pub.dev/packages/geobase) | Geospatial data writers for ([GeoJSON](https://geojson.org/) and [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)).
 :globe_with_meridians: [geocore](dart/geocore) | [![pub package](https://img.shields.io/pub/v/geocore.svg)](https://pub.dev/packages/geocore) | Geospatial data (points, geometry, features, meta), projections and parsers ([GeoJSON](https://geojson.org/) and partial support for [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)).
 :earth_americas: [geodata](dart/geodata) | [![pub package](https://img.shields.io/pub/v/geodata.svg)](https://pub.dev/packages/geodata) | A geospatial API client to read [GeoJSON](https://geojson.org/) and other geospatial data sources. 
 
 **Code packages are at BETA stage, interfaces not fully final yet.** 
 
-## Features
+## :sparkles: Features
 
 Key features of the [geobase](https://pub.dev/packages/geobase) package:
 
@@ -48,7 +48,7 @@ Key features of the [geocore](https://pub.dev/packages/geocore) package:
 (Well-known text representation of geometry) data parser 
 * 🏗️ coordinate transformations and projections (initial support)
 
-## Sample
+## :magic_wand: Samples
 
 Some samples from the [geocore](https://pub.dev/packages/geocore) package, 
 please see the package itself for more documentation:
@@ -68,6 +68,15 @@ other geospatial data sources (like partial and initial support for
 [OGC API Features](https://ogcapi.ogc.org/features/)) from web and file sources.
 
 ## :newspaper_roll: News
+
+2022-02-06
+* A new package `geobase` with code originating and generalized from `geocore`:
+   * The pre-release version `0.1.0-a.0` of the upcoming BETA-release 0.1.0
+   * [geobase](https://pub.dev/packages/geobase/versions/0.1.0-a.0), see [changelog](dart/geobase/CHANGELOG.md#010) for details
+* Also the pre-release version `0.8.0-a.9` of the upcoming BETA-release 0.8.0 for:
+   * [geocore](https://pub.dev/packages/geocore/versions/0.8.0-a.9), see [changelog](dart/geocore/CHANGELOG.md#080) for details
+   * [geodata](https://pub.dev/packages/geodata/versions/0.8.0-a.9), see [changelog](dart/geodata/CHANGELOG.md#080) for details
+
 
 2022-01-09
 * The pre-release version `0.8.0-a.7` of the upcoming BETA-release 0.8.0
