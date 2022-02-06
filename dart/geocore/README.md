@@ -27,7 +27,7 @@ To use, add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geocore: ^0.8.0-a.7
+  geocore: ^0.8.0-a.9
 ```
 
 The package contains also following mini-libraries, that can be used to import
@@ -41,8 +41,9 @@ Library         | Exports also | Description
 **parse**       | base, coordinates, data | GeoJSON and WKT (Well-known text representation of geometry) data parsers.
 **proj4d**      | base | Projections provided by the external [proj4dart](https://pub.dev/packages/proj4dart) package.
 
-All the mini-libraries have a dependency to the 
-[equatable](https://pub.dev/packages/equatable) package. The **proj4d** library 
+All the mini-libraries have dependencies to the 
+[equatable](https://pub.dev/packages/equatable) and
+[geobase](https://pub.dev/packages/geobase) packages. The **proj4d** library 
 depends also on the [proj4dart](https://pub.dev/packages/proj4dart) package.
 
 ## Introduction

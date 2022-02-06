@@ -1,6 +1,6 @@
 ## 0.8.0
 
-(beta-release 0.8.0 currently under development at version 0.8.0-a.7)
+(beta-release 0.8.0 currently under development at version 0.8.0-a.9)
 
 ⚠️ Breaking changes:
 - [Refactor Feature class inheritance and types of id and properties members #39](https://github.com/navibyte/geospatial/issues/39)
@@ -19,11 +19,14 @@
 - [Add simpler constructors on geometry classes expecting bounded or point series #59](https://github.com/navibyte/geospatial/issues/59)
 - [Add projection support provided by the proj4dart package #60](https://github.com/navibyte/geospatial/issues/60)
 - [Common base class or interface for temporal Instant and Interval classes #70](https://github.com/navibyte/geospatial/issues/70)
+- [Add support for empty geometries other than Point and abstract Geometry #35](https://github.com/navibyte/geospatial/issues/35)
 
 🛠 Refactoring:
 - [Refactor coordinate value members of immutable Point classes #44](https://github.com/navibyte/geospatial/issues/44)
 - [Elev and m coordinate values as default in some GeoPoint classes #45](https://github.com/navibyte/geospatial/issues/45)
 - [Rename point factories of Point classes #49](https://github.com/navibyte/geospatial/issues/49)
+- [Separate some common features of geocore to separate common package #86](https://github.com/navibyte/geospatial/issues/86)
+- [Remove "empty point" concept #85](https://github.com/navibyte/geospatial/issues/85)
 
 📚 Documentation:
 - [Readme documentation updates for 0.8.0 release #63](https://github.com/navibyte/geospatial/issues/63)
