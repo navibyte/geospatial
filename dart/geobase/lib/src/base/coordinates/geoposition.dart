@@ -16,49 +16,20 @@ import 'position.dart';
 ///
 /// Longitude (range `[-180.0, 180.0[`) and latitude (range `[-90.0, 90.0]`) are
 /// represented as deegrees. The unit for [elev] is meters.
-abstract class GeoPosition extends BasePosition {
+class GeoPosition extends BasePosition implements Position {
   /// A geographical position with [lon] and [lat], and optional [elev] and [m].
-  factory GeoPosition({
+  ///
+  /// Longitude is normalized to the range `[-180.0, 180.0[` using the formula
+  /// `(lon + 180.0) % 360.0 - 180.0` (if outside the range) and latitude is
+  /// clamped to the range `[-90.0, 90.0]`.
+  const GeoPosition({
     required double lon,
     required double lat,
     double? elev,
     double? m,
-  }) = _GeoPosition;
-
-  /// The longitude coordinate.
-  double get lon;
-
-  /// The latitude coordinate.
-  double get lat;
-
-  /// The elevation (or altitude) coordinate in meters.
-  ///
-  /// Returns zero if not available.
-  ///
-  /// You can also use [is3D] to check whether elev coordinate is available, or
-  /// [optElev] returns elev coordinate as nullable value.
-  double get elev;
-
-  /// The elevation (or altitude) coordinate optionally in meters.
-  ///
-  /// Returns null if not available.
-  ///
-  /// You can also use [is3D] to check whether elev coordinate is available.
-  double? get optElev;
-}
-
-// -----------------------------------------------------------------------------
-// Private implementation code below.
-// The implementation may change in future.
-
-class _GeoPosition implements GeoPosition, Position {
-  const _GeoPosition({
-    required double lon,
-    required double lat,
-    double? elev,
-    double? m,
-  })  : _lon = lon,
-        _lat = lat,
+  })  : _lon =
+            lon >= -180.0 && lon < 180.0 ? lon : (lon + 180.0) % 360.0 - 180.0,
+        _lat = lat < -90.0 ? -90.0 : (lat > 90.0 ? 90.0 : lat),
         _elev = elev,
         _m = m;
 
@@ -67,16 +38,25 @@ class _GeoPosition implements GeoPosition, Position {
   final double? _elev;
   final double? _m;
 
-  @override
+  /// The longitude coordinate.
   double get lon => _lon;
 
-  @override
+  /// The latitude coordinate.
   double get lat => _lat;
 
-  @override
+  /// The elevation (or altitude) coordinate in meters.
+  ///
+  /// Returns zero if not available.
+  ///
+  /// You can also use [is3D] to check whether elev coordinate is available, or
+  /// [optElev] returns elev coordinate as nullable value.
   double get elev => _elev ?? 0.0;
 
-  @override
+  /// The elevation (or altitude) coordinate optionally in meters.
+  ///
+  /// Returns null if not available.
+  ///
+  /// You can also use [is3D] to check whether elev coordinate is available.
   double? get optElev => _elev;
 
   @override

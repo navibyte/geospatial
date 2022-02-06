@@ -55,7 +55,7 @@ void main() {
     test('GeoPosition coordinates', () {
       _testAllWriters<CoordinateWriter>(
         (writer) => writer.position(
-          GeoPosition(lon: 10.123, lat: 20.25, elev: -30.95, m: -1.999),
+          const GeoPosition(lon: 10.123, lat: 20.25, elev: -30.95, m: -1.999),
         ),
         def: '10.1,20.3,-30.9,-2.0',
         geoJson: '10.1,20.3,-30.9,-2.0',
