@@ -48,7 +48,7 @@ mixin FeatureWriter implements BaseWriter {
   void featureCollection({
     required WriteFeatures features,
     int? count,
-    Box? bbox,
+    BaseBox? bbox,
     WriteProperties? extra,
   });
 
@@ -85,7 +85,7 @@ mixin FeatureWriter implements BaseWriter {
     Object? id,
     WriteGeometries? geometries,
     Map<String, Object?>? properties,
-    Box? bbox,
+    BaseBox? bbox,
     WriteProperties? extra,
   });
 }

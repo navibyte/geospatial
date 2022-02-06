@@ -12,7 +12,7 @@ import 'package:test/test.dart';
 
 void main() {
   group('Test geometry, coordinate and bounds writers', () {
-    test('Point coordinates', () {
+    test('Position coordinates', () {
       _testAllWriters<CoordinateWriter>(
         (writer) => writer.position(const Position(x: 10.123, y: 20.25)),
         def: '10.123,20.25',
@@ -52,7 +52,23 @@ void main() {
         wktDecimals: 2,
       );
     });
-    test('Bounds coordinates', () {
+    test('GeoPosition coordinates', () {
+      _testAllWriters<CoordinateWriter>(
+        (writer) => writer.position(
+          GeoPosition(lon: 10.123, lat: 20.25, elev: -30.95, m: -1.999),
+        ),
+        def: '10.1,20.3,-30.9,-2.0',
+        geoJson: '10.1,20.3,-30.9,-2.0',
+        geoJsonStrict: '10.1,20.3,-30.9',
+        wktLike: '10.123 20.250 -30.950 -1.999',
+        wkt: '10.12 20.25 -30.95 -2.00',
+        defDecimals: 1,
+        geoJsonDecimals: 1,
+        wktLikeDecimals: 3,
+        wktDecimals: 2,
+      );
+    });
+    test('Box coordinates', () {
       _testAllWriters<CoordinateWriter>(
         (writer) => writer.box(
           const Box(
@@ -77,6 +93,29 @@ void main() {
             maxX: 12.485,
             maxY: 25.195,
             maxZ: -14.949,
+          ),
+        ),
+        def: '10.12,20.25,-15.09,12.48,25.20,-14.95',
+        geoJson: '10.12,20.25,-15.09,12.48,25.20,-14.95',
+        wktLike: '10 20 -15,12 25 -15',
+        wkt: 'POLYGON Z((10.1 20.3 -15.1,12.5 20.3 -15.0,12.5 25.2 -14.9,10.1 '
+            '25.2 -15.0,10.1 20.3 -15.1))',
+        defDecimals: 2,
+        geoJsonDecimals: 2,
+        wktLikeDecimals: 0,
+        wktDecimals: 1,
+      );
+    });
+    test('GeoBox coordinates', () {
+      _testAllWriters<CoordinateWriter>(
+        (writer) => writer.box(
+          const GeoBox(
+            west: 10.123,
+            south: 20.25,
+            minElev: -15.09,
+            east: 12.485,
+            north: 25.195,
+            maxElev: -14.949,
           ),
         ),
         def: '10.12,20.25,-15.09,12.48,25.20,-14.95',

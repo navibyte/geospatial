@@ -26,7 +26,7 @@ mixin GeometryWriter implements BaseWriter {
     required Position coordinates,
     String? name,
     Coords? coordType,
-    Box? bbox,
+    BaseBox? bbox,
   });
 
   /// Writes a geometry of [type] with a position array from [coordinates].
@@ -44,7 +44,7 @@ mixin GeometryWriter implements BaseWriter {
     required Iterable<Position> coordinates,
     String? name,
     Coords? coordType,
-    Box? bbox,
+    BaseBox? bbox,
   });
 
   /// Writes a geometry of [type] with a position array from [coordinates].
@@ -62,7 +62,7 @@ mixin GeometryWriter implements BaseWriter {
     required Iterable<Iterable<Position>> coordinates,
     String? name,
     Coords? coordType,
-    Box? bbox,
+    BaseBox? bbox,
   });
 
   /// Writes a geometry of [type] with a position array from [coordinates].
@@ -80,7 +80,7 @@ mixin GeometryWriter implements BaseWriter {
     required Iterable<Iterable<Iterable<Position>>> coordinates,
     String? name,
     Coords? coordType,
-    Box? bbox,
+    BaseBox? bbox,
   });
 
   /// Writes a geometry collection of [geometries].
@@ -95,7 +95,7 @@ mixin GeometryWriter implements BaseWriter {
     required WriteGeometries geometries,
     int? count,
     String? name,
-    Box? bbox,
+    BaseBox? bbox,
   });
 
   /// Writes an empty geometry of [type].
