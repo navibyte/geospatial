@@ -1,6 +1,6 @@
 ## 0.1.0
 
-(beta-release 0.1.0 currently under development at version 0.1.0-a.0)
+(beta-release 0.1.0 currently under development at version 0.1.0-a.1)
 
 🧩 Features:
 - Initial version with code originating from `geocore` package.
