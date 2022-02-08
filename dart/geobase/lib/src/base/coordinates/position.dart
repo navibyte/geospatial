@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'package:meta/meta.dart';
+
 import '/src/base/codes.dart';
 
 import 'base_position.dart';
@@ -25,6 +27,7 @@ import 'base_position.dart';
 /// [m] represents a measurement or a value on a linear referencing system (like
 /// time). It could be associated with a 2D position (x, y, m) or a 3D position
 /// (x, y, z, m).
+@immutable
 class Position extends BasePosition {
   /// A position with [x], [y], and optional [z] and [m] coordinates.
   const Position({required num x, required num y, num? z, num? m})
@@ -112,4 +115,15 @@ class Position extends BasePosition {
         return '<not geographic>';
     }
   }
+
+  @override
+  bool operator ==(Object other) =>
+      other is Position &&
+      x == other.x &&
+      y == other.y &&
+      z == other.z &&
+      m == other.m;
+
+  @override
+  int get hashCode => Object.hash(x, y, z, m);
 }

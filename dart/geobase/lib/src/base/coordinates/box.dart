@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'package:meta/meta.dart';
+
 import '/src/base/codes.dart';
 
 import 'base_box.dart';
@@ -13,6 +15,7 @@ import 'position.dart';
 ///
 /// Optional [minZ] and [maxZ] for 3D boxes, and [minM] and [maxM] for
 /// measured boxes can be provided too.
+@immutable
 class Box extends BaseBox {
   /// A bounding box with [minX], [minY], [maxX] and [maxY] coordinates.
   ///
@@ -136,8 +139,24 @@ class Box extends BaseBox {
       case Coords.lonLat:
       case Coords.lonLatElev:
       case Coords.lonLatM:
-      case Coords.lonLatElevM:     
+      case Coords.lonLatElevM:
         return '<not geographic>';
     }
   }
+
+  @override
+  bool operator ==(Object other) =>
+      other is Box &&
+      minX == other.minX &&
+      minY == other.minY &&
+      minZ == other.minZ &&
+      minM == other.minM &&
+      maxX == other.maxX &&
+      maxY == other.maxY &&
+      maxZ == other.maxZ &&
+      maxM == other.maxM;
+
+  @override
+  int get hashCode =>
+      Object.hash(minX, minY, minZ, minM, maxX, maxY, maxZ, maxM);
 }

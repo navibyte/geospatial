@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'package:meta/meta.dart';
+
 import '/src/base/codes.dart';
 
 import 'base_box.dart';
@@ -25,6 +27,7 @@ import 'geoposition.dart';
 ///
 /// Optional [minElev] and [maxElev] for 3D boxes, and [minM] and [maxM] for
 /// measured boxes can be provided too.
+@immutable
 class GeoBox extends BaseBox {
   /// A geographic bounding box with [west], [south], [east] and [north] values.
   ///
@@ -182,4 +185,20 @@ class GeoBox extends BaseBox {
         return '<not projected>';
     }
   }
+
+  @override
+  bool operator ==(Object other) =>
+      other is GeoBox &&
+      west == other.west &&
+      south == other.south &&
+      minElev == other.minElev &&
+      minM == other.minM &&
+      east == other.east &&
+      north == other.north &&
+      maxElev == other.maxElev &&
+      maxM == other.maxM;
+
+  @override
+  int get hashCode =>
+      Object.hash(west, south, minElev, minM, east, north, maxElev, maxM);
 }

@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'package:meta/meta.dart';
+
 import '/src/base/codes.dart';
 
 import 'base_position.dart';
@@ -16,6 +18,7 @@ import 'position.dart';
 ///
 /// Longitude (range `[-180.0, 180.0[`) and latitude (range `[-90.0, 90.0]`) are
 /// represented as deegrees. The unit for [elev] is meters.
+@immutable
 class GeoPosition extends BasePosition implements Position {
   /// A geographical position with [lon] and [lat], and optional [elev] and [m].
   ///
@@ -120,4 +123,15 @@ class GeoPosition extends BasePosition implements Position {
         return '<not projected>';
     }
   }
+
+  @override
+  bool operator ==(Object other) =>
+      other is GeoPosition &&
+      lon == other.lon &&
+      lat == other.lat &&
+      elev == other.elev &&
+      m == other.m;
+
+  @override
+  int get hashCode => Object.hash(lon, lat, elev, m);
 }
