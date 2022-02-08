@@ -87,26 +87,37 @@ class GeoPosition extends BasePosition implements Position {
   int get coordinateDimension => typeCoords.coordinateDimension;
 
   @override
+  bool get isGeographic => true;
+
+  @override
   bool get is3D => _elev != null;
 
   @override
   bool get isMeasured => _m != null;
 
   @override
-  Coords get typeCoords =>
-      CoordsExtension.select(is3D: is3D, isMeasured: isMeasured);
+  Coords get typeCoords => CoordsExtension.select(
+        isGeographic: isGeographic,
+        is3D: is3D,
+        isMeasured: isMeasured,
+      );
 
   @override
   String toString() {
     switch (typeCoords) {
-      case Coords.xy:
+      case Coords.lonLat:
         return '$_lon,$_lat';
-      case Coords.xyz:
+      case Coords.lonLatElev:
         return '$_lon,$_lat,$_elev';
-      case Coords.xym:
+      case Coords.lonLatM:
         return '$_lon,$_lat,$_m';
-      case Coords.xyzm:
+      case Coords.lonLatElevM:
         return '$_lon,$_lat,$_elev,$_m';
+      case Coords.xy:
+      case Coords.xyz:
+      case Coords.xym:
+      case Coords.xyzm:
+        return '<not projected>';
     }
   }
 }

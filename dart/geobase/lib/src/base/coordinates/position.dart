@@ -79,14 +79,20 @@ class Position extends BasePosition {
   int get coordinateDimension => typeCoords.coordinateDimension;
 
   @override
+  bool get isGeographic => false;
+
+  @override
   bool get is3D => _z != null;
 
   @override
   bool get isMeasured => _m != null;
 
   @override
-  Coords get typeCoords =>
-      CoordsExtension.select(is3D: is3D, isMeasured: isMeasured);
+  Coords get typeCoords => CoordsExtension.select(
+        isGeographic: isGeographic,
+        is3D: is3D,
+        isMeasured: isMeasured,
+      );
 
   @override
   String toString() {
@@ -99,6 +105,11 @@ class Position extends BasePosition {
         return '$_x,$_y,$_m';
       case Coords.xyzm:
         return '$_x,$_y,$_z,$_m';
+      case Coords.lonLat:
+      case Coords.lonLatElev:
+      case Coords.lonLatM:
+      case Coords.lonLatElevM:
+        return '<not geographic>';
     }
   }
 }

@@ -107,14 +107,20 @@ class Box extends BaseBox {
   int get coordinateDimension => typeCoords.coordinateDimension;
 
   @override
+  bool get isGeographic => false;
+
+  @override
   bool get is3D => _minZ != null;
 
   @override
   bool get isMeasured => _minM != null;
 
   @override
-  Coords get typeCoords =>
-      CoordsExtension.select(is3D: is3D, isMeasured: isMeasured);
+  Coords get typeCoords => CoordsExtension.select(
+        isGeographic: isGeographic,
+        is3D: is3D,
+        isMeasured: isMeasured,
+      );
 
   @override
   String toString() {
@@ -127,6 +133,11 @@ class Box extends BaseBox {
         return '$_minX,$_minY,$_minM,$_maxX,$_maxY,$_maxM';
       case Coords.xyzm:
         return '$_minX,$_minY,$_minZ,$_minM,$_maxX,$_maxY,$_maxZ,$_maxM';
+      case Coords.lonLat:
+      case Coords.lonLatElev:
+      case Coords.lonLatM:
+      case Coords.lonLatElevM:     
+        return '<not geographic>';
     }
   }
 }

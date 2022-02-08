@@ -210,7 +210,7 @@ abstract class _BaseTextWriter with GeometryWriter, CoordinateWriter {
   @override
   void geometryWithPosition({
     required Geom type,
-    required Position coordinates,
+    required BasePosition coordinates,
     String? name,
     Coords? coordType,
     BaseBox? bbox,
@@ -221,11 +221,12 @@ abstract class _BaseTextWriter with GeometryWriter, CoordinateWriter {
       coordType: coordType,
       bbox: bbox,
     )) {
+      final pos = coordinates.asPosition;
       _coordPoint(
-        x: coordinates.x,
-        y: coordinates.y,
-        z: coordinates.optZ,
-        m: coordinates.optM,
+        x: pos.x,
+        y: pos.y,
+        z: pos.optZ,
+        m: pos.optM,
       );
       _geometryAfterCoordinates();
     }
@@ -234,7 +235,7 @@ abstract class _BaseTextWriter with GeometryWriter, CoordinateWriter {
   @override
   void geometryWithPositions1D({
     required Geom type,
-    required Iterable<Position> coordinates,
+    required Iterable<BasePosition> coordinates,
     String? name,
     Coords? coordType,
     BaseBox? bbox,
@@ -257,7 +258,7 @@ abstract class _BaseTextWriter with GeometryWriter, CoordinateWriter {
   @override
   void geometryWithPositions2D({
     required Geom type,
-    required Iterable<Iterable<Position>> coordinates,
+    required Iterable<Iterable<BasePosition>> coordinates,
     String? name,
     Coords? coordType,
     BaseBox? bbox,
@@ -280,7 +281,7 @@ abstract class _BaseTextWriter with GeometryWriter, CoordinateWriter {
   @override
   void geometryWithPositions3D({
     required Geom type,
-    required Iterable<Iterable<Iterable<Position>>> coordinates,
+    required Iterable<Iterable<Iterable<BasePosition>>> coordinates,
     String? name,
     Coords? coordType,
     BaseBox? bbox,
@@ -962,10 +963,11 @@ class _WktTextWriter extends _WktLikeTextWriter {
     _startContainer(_Container.geometry);
     _startCoordType(coordType);
     _buffer.write(type.nameWkt);
-    if (coordType != null && coordType != Coords.xy) {
+    final specifier = coordType?.specifierWkt;
+    if (specifier != null) {
       _buffer
         ..write(' ')
-        ..write(coordType.specifierWkt);
+        ..write(specifier);
     }
     return true;
   }
@@ -1017,7 +1019,11 @@ class _WktTextWriter extends _WktLikeTextWriter {
     // check optional expected coordinate type
     final coordType = _coordTypes.isNotEmpty
         ? _coordTypes.last
-        : CoordsExtension.select(is3D: hasZ, isMeasured: hasM);
+        : CoordsExtension.select(
+            isGeographic: bbox.isGeographic,
+            is3D: hasZ,
+            isMeasured: hasM,
+          );
     // print polygon geometry
     if (_markItem()) {
       _buffer.write(',');
@@ -1025,10 +1031,11 @@ class _WktTextWriter extends _WktLikeTextWriter {
     _startContainer(_Container.geometry);
     _startCoordType(coordType);
     _buffer.write(Geom.polygon.nameWkt);
-    if (coordType != null && coordType != Coords.xy) {
+    final specifier = coordType?.specifierWkt;
+    if (specifier != null) {
       _buffer
         ..write(' ')
-        ..write(coordType.specifierWkt);
+        ..write(specifier);
     }
     _coordArray();
     _coordArray();

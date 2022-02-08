@@ -148,27 +148,38 @@ class GeoBox extends BaseBox {
   int get coordinateDimension => typeCoords.coordinateDimension;
 
   @override
+  bool get isGeographic => true;
+
+  @override
   bool get is3D => _minElev != null;
 
   @override
   bool get isMeasured => _minM != null;
 
   @override
-  Coords get typeCoords =>
-      CoordsExtension.select(is3D: is3D, isMeasured: isMeasured);
+  Coords get typeCoords => CoordsExtension.select(
+        isGeographic: isGeographic,
+        is3D: is3D,
+        isMeasured: isMeasured,
+      );
 
   @override
   String toString() {
     switch (typeCoords) {
-      case Coords.xy:
+      case Coords.lonLat:
         return '$_west,$_south,$_east,$_north';
-      case Coords.xyz:
+      case Coords.lonLatElev:
         return '$_west,$_south,$_minElev,$_east,$_north,$_maxElev';
-      case Coords.xym:
+      case Coords.lonLatM:
         return '$_west,$_south,$_minM,$_east,$_east,$_maxM';
-      case Coords.xyzm:
+      case Coords.lonLatElevM:
         return '$_west,$_south,$_minElev,$_minM,'
             '$_east,$_north,$_maxElev,$_maxM';
+      case Coords.xy:
+      case Coords.xyz:
+      case Coords.xym:
+      case Coords.xyzm:
+        return '<not projected>';
     }
   }
 }

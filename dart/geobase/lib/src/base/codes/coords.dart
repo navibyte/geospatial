@@ -6,35 +6,67 @@
 
 /// An enum for coordinate types.
 enum Coords {
-  /// Coordinates are `2D`, with points missing z and m coordinates.
+  /// Projected or cartesian coordinates (x, y).
   ///
-  /// That is points are expected to be (x, y) or (lon, lat).
+  /// Coordinates are 2D and not measured.
   xy,
 
-  /// Coordinates are `3D`, with points containing z (or elevation) coordinate.
+  /// Projected or cartesian coordinates (x, y, z).
   ///
-  /// That is points are expected to be (x, y, z) or (lon, lat, elev).
+  /// Coordinates are 3D and not measured.
   xyz,
 
-  /// Coordinates are both `2D` and `measured`, with points containing m.
+  /// Projected or cartesian coordinates (x, y, m).
   ///
-  /// That is points are expected to be (x, y, m) or (lon, lat, m).
+  /// Coordinates are 2D and measured.
   xym,
 
-  /// Coordinates are both `3D` and `measured`, with points containing z and m.
+  /// Projected or cartesian coordinates (x, y, z, m).
   ///
-  /// That is points are expected to be (x, y, z, m) or (lon, lat, elev, m).
+  /// Coordinates are 3D and measured.
   xyzm,
+
+  /// Geographic coordinates (longitude, latitude).
+  ///
+  /// Coordinates are 2D and not measured.
+  lonLat,
+
+  /// Geographic coordinates (longitude, latitude, elevation).
+  ///
+  /// Coordinates are 3D and not measured.
+  lonLatElev,
+
+  /// Geographic coordinates (longitude, latitude, m).
+  ///
+  /// Coordinates are 2D and measured.
+  lonLatM,
+
+  /// Geographic coordinates (longitude, latitude, elevation, m).
+  ///
+  /// Coordinates are 3D and measured.
+  lonLatElevM,
 }
 
 /// An extension for the [Coords] enum.
 extension CoordsExtension on Coords {
-  /// Selects an enum value of [Coords] based on [is3D] and [isMeasured].
-  static Coords select({required bool is3D, required bool isMeasured}) {
-    if (is3D) {
-      return isMeasured ? Coords.xyzm : Coords.xyz;
+  /// Selects a [Coords] enum based on [isGeographic], [is3D] and [isMeasured].
+  static Coords select({
+    required bool isGeographic,
+    required bool is3D,
+    required bool isMeasured,
+  }) {
+    if (isGeographic) {
+      if (is3D) {
+        return isMeasured ? Coords.lonLatElevM : Coords.lonLatElev;
+      } else {
+        return isMeasured ? Coords.lonLatM : Coords.lonLat;
+      }
     } else {
-      return isMeasured ? Coords.xym : Coords.xy;
+      if (is3D) {
+        return isMeasured ? Coords.xyzm : Coords.xyz;
+      } else {
+        return isMeasured ? Coords.xym : Coords.xy;
+      }
     }
   }
 
@@ -42,12 +74,16 @@ extension CoordsExtension on Coords {
   int get coordinateDimension {
     switch (this) {
       case Coords.xy:
+      case Coords.lonLat:
         return 2;
       case Coords.xyz:
+      case Coords.lonLatElev:
         return 3;
       case Coords.xym:
+      case Coords.lonLatM:
         return 3;
       case Coords.xyzm:
+      case Coords.lonLatElevM:
         return 4;
     }
   }
@@ -56,32 +92,58 @@ extension CoordsExtension on Coords {
   int get spatialDimension {
     switch (this) {
       case Coords.xy:
+      case Coords.lonLat:
         return 2;
       case Coords.xyz:
+      case Coords.lonLatElev:
         return 3;
       case Coords.xym:
+      case Coords.lonLatM:
         return 2;
       case Coords.xyzm:
+      case Coords.lonLatElevM:
         return 3;
     }
   }
 
-  /// Returns true if coordinates has z coordinate.
-  bool get is3D => this == Coords.xyz || this == Coords.xyzm;
+  /// True if coordinates represents a 3D position (with z or elev coordinate).
+  bool get is3D =>
+      this == Coords.xyz ||
+      this == Coords.xyzm ||
+      this == Coords.lonLatElev ||
+      this == Coords.lonLatElevM;
 
-  /// Returns true if coordinates has m coordinate.
-  bool get isMeasured => this == Coords.xym || this == Coords.xyzm;
+  /// True if coordinates represents a measured position with m coordinate.
+  bool get isMeasured =>
+      this == Coords.xym ||
+      this == Coords.xyzm ||
+      this == Coords.lonLatM ||
+      this == Coords.lonLatElevM;
 
-  /// Returns the WKT specifier for coordinates, ie. `Z`, `M` or `ZM`.
-  String get specifierWkt {
+  /// True for geographic coordinates (with longitude and latitude).
+  ///
+  /// If false is returned, then coordinates are projected or cartesian (with
+  /// x and y coordinates).
+  bool get isGeographic =>
+      this == Coords.lonLat ||
+      this == Coords.lonLatElev ||
+      this == Coords.lonLatM ||
+      this == Coords.lonLatElevM;
+
+  /// Returns an optional WKT specifier for coordinates, ie. `Z`, `M` or `ZM`.
+  String? get specifierWkt {
     switch (this) {
       case Coords.xy:
-        return '';
+      case Coords.lonLat:
+        return null;
       case Coords.xyz:
+      case Coords.lonLatElev:
         return 'Z';
       case Coords.xym:
+      case Coords.lonLatM:
         return 'M';
       case Coords.xyzm:
+      case Coords.lonLatElevM:
         return 'ZM';
     }
   }

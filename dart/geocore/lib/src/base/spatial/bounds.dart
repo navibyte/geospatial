@@ -108,6 +108,9 @@ abstract class Bounds<T extends Point> extends Bounded
   int get spatialDimension => min.spatialDimension;
 
   @override
+  bool get isGeographic => min.isGeographic;
+
+  @override
   bool get is3D => min.is3D;
 
   @override

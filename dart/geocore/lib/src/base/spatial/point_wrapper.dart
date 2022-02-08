@@ -35,6 +35,9 @@ class PointWrapper<T extends Point<C>, C extends num> extends Point<C>
   int get spatialDimension => point.spatialDimension;
 
   @override
+  bool get isGeographic => point.isGeographic;
+
+  @override
   bool get is3D => point.is3D;
 
   @override

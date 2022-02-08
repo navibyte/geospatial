@@ -28,8 +28,14 @@ abstract class Positionable extends Measurable {
   /// The number of spatial coordinate values (2 for 2D or 3 for 3D).
   int get spatialDimension;
 
-  /// True for 3D positions (that is having z or elevation coordinate).
+  /// True for 3D positions (with z or elevation coordinate).
   bool get is3D;
+
+  /// True for geographic positions (with longitude and latitude coordinates).
+  /// 
+  /// If false is returned, then coordinates are projected or cartesian (with
+  /// x and coordinates).
+  bool get isGeographic;
 
   /// Returns the type for coordinates of this position.
   Coords get typeCoords;

@@ -25,4 +25,7 @@ abstract class CartesianPoint<C extends num> extends Point<C> {
 
   @override
   CartesianPoint transform(TransformPoint transform);
+
+  @override
+  bool get isGeographic => false;
 }

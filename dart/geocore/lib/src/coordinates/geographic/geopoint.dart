@@ -49,4 +49,7 @@ abstract class GeoPoint extends Point<double> implements GeoPosition {
 
   @override
   GeoPoint transform(TransformPoint transform);
+
+  @override
+  bool get isGeographic => true;
 }

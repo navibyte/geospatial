@@ -194,4 +194,7 @@ class GeoBounds<T extends GeoPoint> extends BoundsBase<T> {
         min: min.transform(transform) as T,
         max: max.transform(transform) as T,
       );
+
+  @override
+  bool get isGeographic => true;
 }
