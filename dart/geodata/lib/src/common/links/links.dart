@@ -34,7 +34,7 @@ class Links with EquatableMixin {
   ///
   /// Throws `FormatException` if cannot parse data.
   factory Links.fromData(Iterable<Object?> data) => Links(
-        data.map((e) => Link.fromData(e)).toList(growable: false),
+        data.map(Link.fromData).toList(growable: false),
       );
 
   @override

@@ -353,16 +353,12 @@ CollectionMeta _collectionFromData(Map<String, Object?> data) {
 Extent _extentFromData(Map<String, Object?> data) {
   final spatial = data['spatial'];
   final spatialIsMap = spatial is Map<String, Object?>;
-  final crs = (spatialIsMap
-          ? (spatial! as Map<String, Object?>)['crs'] as String?
-          : null) ??
+  final crs = (spatialIsMap ? spatial['crs'] as String? : null) ??
       'http://www.opengis.net/def/crs/OGC/1.3/CRS84';
 
   // try to parse bboxes
   Iterable<GeoBounds> allBounds;
-  final bbox = spatialIsMap
-      ? (spatial! as Map<String, Object?>)['bbox'] as Iterable<Object?>?
-      : null;
+  final bbox = spatialIsMap ? spatial['bbox'] as Iterable<Object?>? : null;
   if (bbox != null) {
     // by standard: "bbox" is a list of bboxes
     allBounds = bbox.map(
