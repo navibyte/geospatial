@@ -12,6 +12,7 @@ import 'package:meta/meta.dart';
 import 'package:test/test.dart';
 
 void main() {
+
   group('Position class', () {
     test('Equals and hashCode', () {
       // test Position itself

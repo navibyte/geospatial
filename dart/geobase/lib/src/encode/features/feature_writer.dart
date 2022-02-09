@@ -22,6 +22,9 @@ mixin FeatureWriter implements BaseWriter {
   ///
   /// Use [extra] to write any extra or "foreign member" properties.
   ///
+  /// Known [BaseBox] sub classes are [Box] (projected or cartesian coordinates)
+  /// and [GeoBox] (geographic coordinates).
+  ///
   /// An example:
   /// ```dart
   ///   writer.featureCollection(
@@ -65,6 +68,9 @@ mixin FeatureWriter implements BaseWriter {
   ///
   /// Use [extra] to write any extra or "foreign member" properties along with
   /// those set by [properties].
+  ///
+ /// Known [BaseBox] sub classes are [Box] (projected or cartesian coordinates)
+  /// and [GeoBox] (geographic coordinates).
   ///
   /// An example:
   /// ```dart

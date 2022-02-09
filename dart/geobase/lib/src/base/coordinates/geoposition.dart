@@ -19,7 +19,7 @@ import 'position.dart';
 /// Longitude (range `[-180.0, 180.0[`) and latitude (range `[-90.0, 90.0]`) are
 /// represented as deegrees. The unit for [elev] is meters.
 @immutable
-class GeoPosition extends BasePosition implements Position {
+class GeoPosition extends BasePosition {
   /// A geographical position with [lon] and [lat], and optional [elev] and [m].
   ///
   /// Longitude is normalized to the range `[-180.0, 180.0[` using the formula
@@ -63,25 +63,13 @@ class GeoPosition extends BasePosition implements Position {
   double? get optElev => _elev;
 
   @override
-  double get x => _lon;
-
-  @override
-  double get y => _lat;
-
-  @override
-  double get z => _elev ?? 0.0;
-
-  @override
-  double? get optZ => _elev;
-
-  @override
   double get m => _m ?? 0.0;
 
   @override
   double? get optM => _m;
 
   @override
-  Position get asPosition => this;
+  Position get asPosition => Position(x: _lon, y: _lat, z: _elev, m: _m);
 
   @override
   int get spatialDimension => typeCoords.spatialDimension;
