@@ -6,6 +6,9 @@
 
 /// A base class for *temporal* events like *instants* and *intervals*.
 abstract class Temporal {
+  /// Default `const` constructor to allow extending this abstract class.
+  const Temporal();
+
   /// True if this *temporal* object is set to UTC time.
   bool get isUtc;
 
@@ -26,15 +29,15 @@ abstract class Temporal {
   @override
   String toString();
 
-  /// Returns true if this *temporal* event occurs fully after [instant].
+  /// Returns true if this *temporal* event occurs fully after [time].
   ///
   /// See `DateTime.isAfter` for reference.
-  bool isAfterTime(DateTime instant);
+  bool isAfterTime(DateTime time);
 
-  /// Returns true if this occurs fully before [instant].
+  /// Returns true if this occurs fully before [time].
   ///
   /// See `DateTime.isAfter` for reference.
-  bool isBeforeTime(DateTime instant);
+  bool isBeforeTime(DateTime time);
 
   /*
   todo:

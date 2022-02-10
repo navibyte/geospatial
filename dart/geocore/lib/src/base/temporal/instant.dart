@@ -4,15 +4,17 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 import 'temporal.dart';
 
 /// An instant with a timestamp.
-abstract class Instant extends Temporal {
+@immutable
+class Instant extends Temporal {
+  final DateTime _time;
+
   /// Creates an instant with a [time] stamp.
-  factory Instant(DateTime time) = _InstantDateTime;
+  const Instant(DateTime time) : _time = time;
 
   /// Creates an instant from a string.
   ///
@@ -20,55 +22,38 @@ abstract class Instant extends Temporal {
   /// `DateTime.parse` for reference of valid inputs.
   ///
   /// Throws FormatException if an instant cannot be parsed.
-  factory Instant.parse(String text) = _InstantDateTime.parse;
+  factory Instant.parse(String text) => Instant(DateTime.parse(text));
 
   /// Creates an instant from a string or returns null if cannot parse.
   ///
   /// The input [text] must be formatted according to RFC 3339. See
   /// `DateTime.parse` for reference of valid inputs.
-  static Instant? tryParse(String text) => _InstantDateTime.tryParse(text);
-
-  /// The time stamp of this instant.
-  DateTime get time;
-
-  @override
-  Instant toUtc();
-}
-
-// -----------------------------------------------------------------------------
-// Private implementation code below.
-// The implementation may change in future.
-
-@immutable
-class _InstantDateTime with EquatableMixin implements Instant {
-  const _InstantDateTime(this.time);
-
-  factory _InstantDateTime.parse(String text) =>
-      _InstantDateTime(DateTime.parse(text));
-
   static Instant? tryParse(String text) {
     final t = DateTime.tryParse(text);
-    return t != null ? _InstantDateTime(t) : null;
+    return t != null ? Instant(t) : null;
   }
 
-  @override
-  final DateTime time;
-
-  @override
-  List<Object?> get props => [time];
+  /// The time stamp of this instant.
+  DateTime get time => _time;
 
   @override
   bool get isUtc => time.isUtc;
 
   @override
-  Instant toUtc() => isUtc ? this : _InstantDateTime(time.toUtc());
+  Instant toUtc() => isUtc ? this : Instant(time.toUtc());
+
+  @override
+  bool isAfterTime(DateTime time) => this.time.isAfter(time);
+
+  @override
+  bool isBeforeTime(DateTime time) => this.time.isBefore(time);
 
   @override
   String toString() => time.toIso8601String();
 
   @override
-  bool isAfterTime(DateTime timestamp) => time.isAfter(timestamp);
+  bool operator ==(Object other) => other is Instant && time == other.time;
 
   @override
-  bool isBeforeTime(DateTime timestamp) => time.isBefore(timestamp);
+  int get hashCode => time.hashCode;
 }
