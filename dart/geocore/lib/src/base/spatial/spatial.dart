@@ -6,7 +6,6 @@
 
 import 'dart:collection';
 
-import 'package:equatable/equatable.dart';
 import 'package:geobase/geobase.dart';
 import 'package:meta/meta.dart';
 

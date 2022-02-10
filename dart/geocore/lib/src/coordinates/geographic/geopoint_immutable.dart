@@ -4,7 +4,6 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:equatable/equatable.dart';
 import 'package:geobase/geobase.dart';
 import 'package:meta/meta.dart';
 
@@ -17,7 +16,7 @@ import 'geopoint.dart';
 
 /// An immutable geographic position with longitude and latitude.
 @immutable
-class GeoPoint2 extends GeoPoint with EquatableMixin {
+class GeoPoint2 extends GeoPoint {
   /// A geographic point from [lon] and [lat].
   ///
   /// Longitude is normalized to the range `[-180.0, 180.0[` using the formula
@@ -92,9 +91,6 @@ class GeoPoint2 extends GeoPoint with EquatableMixin {
   /// A [PointFactory] creating [GeoPoint2] instances.
   @Deprecated('Use coordinates instead')
   static const PointFactory<GeoPoint2> geometry = coordinates;
-
-  @override
-  List<Object?> get props => [lon, lat];
 
   @override
   int get coordinateDimension => 2;
@@ -245,9 +241,6 @@ class GeoPoint2m extends GeoPoint2 {
   static const PointFactory<GeoPoint2m> geometry = coordinates;
 
   @override
-  List<Object?> get props => [lon, lat, m];
-
-  @override
   int get coordinateDimension => 3;
 
   @override
@@ -378,9 +371,6 @@ class GeoPoint3 extends GeoPoint2 {
   /// A [PointFactory] creating [GeoPoint3] instances.
   @Deprecated('Use coordinates instead')
   static const PointFactory<GeoPoint3> geometry = coordinates;
-
-  @override
-  List<Object?> get props => [lon, lat, elev];
 
   @override
   int get coordinateDimension => 3;
@@ -531,9 +521,6 @@ class GeoPoint3m extends GeoPoint3 {
   /// A [PointFactory] creating [GeoPoint3m] instances.
   @Deprecated('Use coordinates instead')
   static const PointFactory<GeoPoint3m> geometry = coordinates;
-
-  @override
-  List<Object?> get props => [lon, lat, elev, m];
 
   @override
   int get coordinateDimension => 4;

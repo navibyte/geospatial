@@ -12,7 +12,6 @@
 // * Point2i with x and y as int values
 // * Point3i with x, y and z as int values
 
-import 'package:equatable/equatable.dart';
 import 'package:geobase/geobase.dart';
 import 'package:meta/meta.dart';
 
@@ -25,7 +24,7 @@ import 'cartesian_point.dart';
 
 /// An immutable point with X and Y as num values.
 @immutable
-class Point2 extends CartesianPoint<num> with EquatableMixin {
+class Point2 extends CartesianPoint<num> {
   /// A point at given [x] and [y].
   const Point2({required this.x, required this.y});
 
@@ -91,9 +90,6 @@ class Point2 extends CartesianPoint<num> with EquatableMixin {
   ///
   @Deprecated('Use coordinates instead')
   static const PointFactory<Point2> geometry = coordinates;
-
-  @override
-  List<Object?> get props => [x, y];
 
   @override
   int get coordinateDimension => 2;
@@ -223,9 +219,6 @@ class Point2m extends Point2 {
   static const PointFactory<Point2m> geometry = coordinates;
 
   @override
-  List<Object?> get props => [x, y, m];
-
-  @override
   int get coordinateDimension => 3;
 
   @override
@@ -348,9 +341,6 @@ class Point3 extends Point2 {
   /// A [PointFactory] creating [Point3] instances.
   @Deprecated('Use coordinates instead')
   static const PointFactory<Point3> geometry = coordinates;
-
-  @override
-  List<Object?> get props => [x, y, z];
 
   @override
   int get coordinateDimension => 3;
@@ -481,9 +471,6 @@ class Point3m extends Point3 {
   static const PointFactory<Point3m> geometry = coordinates;
 
   @override
-  List<Object?> get props => [x, y, z, m];
-
-  @override
   int get coordinateDimension => 4;
 
   @override
@@ -541,7 +528,7 @@ class Point3m extends Point3 {
 
 /// An immutable point with X and Y as integer values.
 @immutable
-class Point2i extends CartesianPoint<int> with EquatableMixin {
+class Point2i extends CartesianPoint<int> {
   /// A point at given [x] and [y].
   const Point2i({required this.x, required this.y});
 
@@ -606,9 +593,6 @@ class Point2i extends CartesianPoint<int> with EquatableMixin {
   /// A [PointFactory] creating [Point2i] instances.
   @Deprecated('Use coordinates instead')
   static const PointFactory<Point2i> geometry = coordinates;
-
-  @override
-  List<Object?> get props => [x, y];
 
   @override
   int get coordinateDimension => 2;
@@ -748,9 +732,6 @@ class Point3i extends Point2i {
   /// A [PointFactory] creating [Point3i] instances.
   @Deprecated('Use coordinates instead')
   static const PointFactory<Point3i> geometry = coordinates;
-
-  @override
-  List<Object?> get props => [x, y, z];
 
   @override
   int get coordinateDimension => 3;

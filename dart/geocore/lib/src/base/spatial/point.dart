@@ -142,6 +142,18 @@ abstract class Point<C extends num> extends Geometry
         : z == other.z;
   }
 
+  @override
+  bool operator ==(Object other) =>
+      other is Point &&
+      isGeographic == other.isGeographic &&
+      x == other.x &&
+      y == other.y &&
+      optZ == other.optZ &&
+      optM == other.optM;
+
+  @override
+  int get hashCode => Object.hash(x, y, optZ, optM);
+
   /// Returns zero value of the type [C] that can be `num`, `double` or `int`.
   C _zero() {
     if (C == int) {

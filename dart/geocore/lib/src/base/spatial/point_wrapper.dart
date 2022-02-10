@@ -11,16 +11,12 @@ part of 'spatial.dart';
 /// This class is surely immutable, but the aggregated [point] object may
 /// or may not to be immutable.
 @immutable
-class PointWrapper<T extends Point<C>, C extends num> extends Point<C>
-    with EquatableMixin {
+class PointWrapper<T extends Point<C>, C extends num> extends Point<C> {
   /// Create a point wrapping another [point].
   const PointWrapper(this.point);
 
   /// The wrapped [point].
   final T point;
-
-  @override
-  List<Object?> get props => [point];
 
   @override
   Bounds? get bounds => point.bounds;
@@ -88,6 +84,7 @@ class PointWrapper<T extends Point<C>, C extends num> extends Point<C>
     PointFactory<R>? to,
   }) =>
       point.project(projection, to: to);
+
 
   @override
   String toString() => point.toString();

@@ -117,9 +117,9 @@ class GeoPosition extends BasePosition {
       other is GeoPosition &&
       lon == other.lon &&
       lat == other.lat &&
-      elev == other.elev &&
-      m == other.m;
+      optElev == other.optElev &&
+      optM == other.optM;
 
   @override
-  int get hashCode => Object.hash(lon, lat, elev, m);
+  int get hashCode => Object.hash(lon, lat, optElev, optM);
 }

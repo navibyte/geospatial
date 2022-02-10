@@ -121,9 +121,9 @@ class Position extends BasePosition {
       other is Position &&
       x == other.x &&
       y == other.y &&
-      z == other.z &&
-      m == other.m;
+      optZ == other.optZ &&
+      optM == other.optM;
 
   @override
-  int get hashCode => Object.hash(x, y, z, m);
+  int get hashCode => Object.hash(x, y, optZ, optM);
 }

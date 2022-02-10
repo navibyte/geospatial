@@ -244,16 +244,13 @@ abstract class Bounds<T extends Point> extends Bounded
 
 /// An immutable bounds with min and max points for limits.
 @immutable
-class BoundsBase<T extends Point> extends Bounds<T> with EquatableMixin {
+class BoundsBase<T extends Point> extends Bounds<T> {
   /// Create bounds with required (and non-empty) [min] and [max] points.
   const BoundsBase({required T min, required T max})
       : _min = min,
         _max = max;
 
   final T _min, _max;
-
-  @override
-  List<Object?> get props => [_min, _max];
 
   @override
   T get min => _min;
@@ -297,4 +294,13 @@ class BoundsBase<T extends Point> extends Bounds<T> with EquatableMixin {
 
   @override
   String toString() => valuesAsString();
+
+  @override
+  bool operator ==(Object other) =>
+      other is Bounds &&
+      min == other.min &&
+      max == other.max;
+
+  @override
+  int get hashCode => Object.hash(min, max);
 }

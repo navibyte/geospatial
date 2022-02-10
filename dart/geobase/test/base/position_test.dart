@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-// ignore_for_file: lines_longer_than_80_chars, prefer_const_declarations
+// ignore_for_file: prefer_const_declarations
 
 import 'package:geobase/geobase.dart';
 import 'package:meta/meta.dart';
@@ -12,7 +12,6 @@ import 'package:meta/meta.dart';
 import 'package:test/test.dart';
 
 void main() {
-
   group('Position class', () {
     test('Equals and hashCode', () {
       // test Position itself
@@ -42,6 +41,16 @@ void main() {
       expect(t1, isNot(p3));
       expect(p1.hashCode, t2.hashCode);
       expect(p1.hashCode, isNot(t3.hashCode));
+
+      // with some coordinates missing or other type
+      final p5 = const Position(x: 1.0, y: 2.0, z: 3.0);
+      final p6 = const GeoPosition(lon: 1.0, lat: 2.0, elev: 3.0);
+      final p7 = const GeoPosition(lon: 1.0, lat: 2.0, elev: 3.0, m: 4.0);
+      expect(p1, isNot(p5));
+      expect(p1, isNot(p6));
+      expect(p1, isNot(p7));
+      expect(p5, isNot(p6));
+      expect(p6, isNot(p7));
     });
   });
 

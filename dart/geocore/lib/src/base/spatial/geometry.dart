@@ -84,7 +84,7 @@ abstract class Geometry extends Bounded {
 /// An empty (non-existent) geometry as an private implementation.
 /// The implementation may change in future.
 @immutable
-class _EmptyGeometry extends Geometry with EquatableMixin {
+class _EmptyGeometry extends Geometry {
   const _EmptyGeometry(this.typeGeom);
 
   @override
@@ -122,7 +122,11 @@ class _EmptyGeometry extends Geometry with EquatableMixin {
       throw const FormatException('Cannot project empty geometry.');
 
   @override
-  List<Object?> get props => [];
+  bool operator ==(Object other) =>
+      other is _EmptyGeometry && typeGeom == other.typeGeom;
+
+  @override
+  int get hashCode => typeGeom.hashCode;
 
   @override
   String toString() => toStringAs();
