@@ -93,7 +93,7 @@ Spatial bounds, temporal instants and intervals, and extents:
 A feature (a geospatial entity) contains an id, a geometry and properties:
 
 ```dart
-  Feature.view(
+  Feature(
     id: 'ROG',
     geometry: GeoPoint3(lon: -0.0014, lat: 51.4778, elev: 45.0),
     properties: {
@@ -697,7 +697,7 @@ The `Feature` class of this package has geospatial `geometry` and `bounds` as fi
 
 ```dart
   // Geospatial feature with an identification, a point geometry and properties.
-  Feature.view(
+  Feature(
     id: 'ROG',
     geometry: GeoPoint3(lon: -0.0014, lat: 51.4778, elev: 45.0),
     properties: {

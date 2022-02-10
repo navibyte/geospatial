@@ -99,7 +99,7 @@ void _readmeIntro() {
 
   // A feature (a geospatial entity) contains an id, a geometry and properties:
 
-  Feature.view(
+  Feature(
     id: 'ROG',
     geometry: GeoPoint3(lon: -0.0014, lat: 51.4778, elev: 45.0),
     properties: {
@@ -429,7 +429,7 @@ void _readmeIntro() {
   // -----------
 
   // Geospatial feature with an identification, a point geometry and properties.
-  Feature.view(
+  Feature(
     id: 'ROG',
     geometry: GeoPoint3(lon: -0.0014, lat: 51.4778, elev: 45.0),
     properties: {

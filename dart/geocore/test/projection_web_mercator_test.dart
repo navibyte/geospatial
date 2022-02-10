@@ -139,9 +139,9 @@ void _testToWgs84WithPoints<R extends GeoPoint>(
   expect(collectionProjected.geometries.first, polygonProjected);
 
   // feature
-  final feature = Feature.of(
+  final feature = Feature(
     id: '1',
-    properties: {'prop1': 'a', 'prop2': 100},
+    properties: const {'prop1': 'a', 'prop2': 100},
     geometry: line,
   );
   final featureProjected = feature.project(toWgs84);
@@ -150,7 +150,7 @@ void _testToWgs84WithPoints<R extends GeoPoint>(
   expect(featureProjected.properties, {'prop1': 'a', 'prop2': 100});
 
   // feature collection
-  final fc = FeatureCollection.of(features: [feature]);
+  final fc = FeatureCollection(features: [feature]);
   final fcProjected = fc.project(toWgs84);
   final fcProjectedFirst = fcProjected.features.first;
   expect(fcProjectedFirst.geometry, lineProjected);
@@ -230,9 +230,9 @@ void _testToWebMercatorWithPoints<R extends CartesianPoint>(
   expect(collectionProjected.geometries.first, polygonProjected);
 
   // feature
-  final feature = Feature.of(
+  final feature = Feature(
     id: '1',
-    properties: {'prop1': 'a', 'prop2': 100},
+    properties: const {'prop1': 'a', 'prop2': 100},
     geometry: line,
   );
   final featureProjected = feature.project(toWebMercator);
@@ -241,7 +241,7 @@ void _testToWebMercatorWithPoints<R extends CartesianPoint>(
   expect(featureProjected.properties, {'prop1': 'a', 'prop2': 100});
 
   // feature collection
-  final fc = FeatureCollection.of(features: [feature]);
+  final fc = FeatureCollection(features: [feature]);
   final fcProjected = fc.project(toWebMercator);
   final fcProjectedFirst = fcProjected.features.first;
   expect(fcProjectedFirst.geometry, lineProjected);

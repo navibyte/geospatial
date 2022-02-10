@@ -4,7 +4,6 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:equatable/equatable.dart';
 import 'package:geobase/geobase.dart';
 import 'package:meta/meta.dart';
 
@@ -14,69 +13,96 @@ import 'feature_writable.dart';
 
 /// A feature is a geospatial entity with [id], [properties] and [geometry].
 ///
+/// Implements also [Bounded].
+///
 /// Supports representing data from GeoJSON (https://geojson.org/) features.
-abstract class Feature<T extends Geometry> extends FeatureWritable
-    implements Bounded {
-  /// Default `const` constructor to allow extending this abstract class.
-  const Feature();
+@immutable
+class Feature<T extends Geometry> extends FeatureWritable implements Bounded {
+  final Object? _id;
+  final Map<String, Object?>? _properties;
+  final Geometry? _geometry;
+  final Bounds? _featureBounds;
 
   /// A new feature of optional [id], [properties], [geometry] and [bounds].
   ///
-  /// The [properties] is copied as `Map.of(properties)` to a feature.
+  /// The [id] should be null, int, BigInt or String. Other types not allowed.
+  ///
+  /// The [properties] is used as a reference. Any changes on source reflect
+  /// also on feature properties.
   ///
   /// If an optional [bounds] for a new feature is not provided then [geometry]
   /// bounds is used also as feature bounds when accessed.
-  factory Feature.of({
-    String? id,
-    required Map<String, Object?> properties,
+  const Feature({
+    Object? id,
+    Map<String, Object?>? properties,
     T? geometry,
     Bounds? bounds,
-  }) =>
-      _FeatureBase<T>(
-        id: id,
-        geometry: geometry,
-        properties: Map.of(properties),
-        bounds: bounds,
-      );
+  })  : assert(
+          id == null || id is String || id is int || id is BigInt,
+          'Id should be null, int, BigInt or String',
+        ),
+        _id = id,
+        _properties = properties,
+        _geometry = geometry,
+        _featureBounds = bounds;
 
-  /// A new feature of optional [id], and [properties], [geometry] and [bounds].
+  /// A new feature of optional [id], [properties], [geometry] and [bounds].
   ///
   /// The [properties] is used as a reference by a feature. Any changes on
   /// source reflect also on feature properties.
   ///
   /// If an optional [bounds] for a new feature is not provided then [geometry]
   /// bounds is used also as feature bounds when accessed.
-  factory Feature.view({
+  @Deprecated('Use Feature() instead')
+  const Feature.view({
+    String? id,
+    required Map<String, Object?> properties,
+    T? geometry,
+    Bounds? bounds,
+  })  : _id = id,
+        _properties = properties,
+        _geometry = geometry,
+        _featureBounds = bounds;
+
+  /// A new feature of optional [id], [properties], [geometry] and [bounds].
+  ///
+  /// The [properties] (when given) is copied as `Map.of(properties)`.
+  ///
+  /// If an optional [bounds] for a new feature is not provided then [geometry]
+  /// bounds is used also as feature bounds when accessed.
+  @Deprecated('Use Feature() instead')
+  factory Feature.of({
     String? id,
     required Map<String, Object?> properties,
     T? geometry,
     Bounds? bounds,
   }) =>
-      _FeatureBase<T>(
+      Feature<T>(
         id: id,
-        properties: properties,
         geometry: geometry,
+        properties: Map.of(properties),
         bounds: bounds,
       );
 
-  /// An optional identifier for this feature.
-  ///
-  /// Note that an identifier could be textual or a number but reprensented here
-  /// as a nullable String object.
-  String? get id;
+  /// An optional identifier (null, int, BigInt or String) for this feature.
+  Object? get id => _id;
 
-  /// Required properties for this feature allowed to be empty.
-  Map<String, Object?> get properties;
+  /// Required properties for this feature (allowed to be empty).
+  Map<String, Object?> get properties => _properties ?? const {};
 
   /// An optional geometry for this feature.
-  Geometry? get geometry;
+  Geometry? get geometry => _geometry;
 
   /// Returns a new feature with geometry transformed using [transform].
   ///
   /// Transforms only [geometry] of this feature. Other members, [id] and
   /// [properties], are set without modifications to a new feature object.
   @override
-  Feature<T> transform(TransformPoint transform);
+  Feature<T> transform(TransformPoint transform) => Feature(
+        id: _id,
+        properties: _properties,
+        geometry: _geometry?.transform(transform) as T?,
+      );
 
   /// Returns a new feature with geometry projected using [projection].
   ///
@@ -89,69 +115,41 @@ abstract class Feature<T extends Geometry> extends FeatureWritable
   Feature project<R extends Point>(
     Projection<R> projection, {
     PointFactory<R>? to,
-  });
-}
-
-/// Private implementation of [Feature].
-/// The implementation may change in future.
-@immutable
-class _FeatureBase<T extends Geometry> extends Feature<T> with EquatableMixin {
-  const _FeatureBase({
-    this.id,
-    required this.properties,
-    required this.geometry,
-    Bounds? bounds,
-  }) : _featureBounds = bounds;
-
-  final Bounds? _featureBounds;
+  }) =>
+      Feature(
+        id: _id,
+        properties: _properties,
+        geometry: _geometry?.project<R>(projection, to: to),
+      );
 
   @override
-  final String? id;
+  Bounds? get bounds => _featureBounds ?? _geometry?.bounds;
 
   @override
-  final Map<String, Object?> properties;
-
-  @override
-  final T? geometry;
-
-  @override
-  List<Object?> get props => [id, properties, geometry, _featureBounds];
-
-  @override
-  Bounds? get bounds => _featureBounds ?? geometry?.bounds;
-
-  @override
-  Bounds? get boundsExplicit => _featureBounds ?? geometry?.boundsExplicit;
+  Bounds? get boundsExplicit => _featureBounds ?? _geometry?.boundsExplicit;
 
   @override
   void writeTo(FeatureWriter writer) {
-    final geom = geometry;
+    final geom = _geometry;
     writer.feature(
-      id: id,
+      id: _id,
       geometries: geom?.writeTo,
-      properties: properties,
+      properties: _properties,
       bbox: boundsExplicit,
     );
   }
 
   @override
-  Feature<T> transform(TransformPoint transform) => _FeatureBase(
-        id: id,
-        properties: properties,
-        geometry: geometry?.transform(transform) as T?,
-      );
-
-  @override
-  Feature project<R extends Point>(
-    Projection<R> projection, {
-    PointFactory<R>? to,
-  }) =>
-      _FeatureBase(
-        id: id,
-        properties: properties,
-        geometry: geometry?.project<R>(projection, to: to),
-      );
-
-  @override
   String toString() => toStringAs();
+
+  @override
+  bool operator ==(Object other) =>
+      other is Feature &&
+      id == other.id &&
+      properties == other.properties &&
+      boundsExplicit == other.boundsExplicit &&
+      geometry == other.geometry;
+
+  @override
+  int get hashCode => Object.hash(id, properties, boundsExplicit, geometry);
 }

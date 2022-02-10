@@ -93,13 +93,13 @@ const geoJSONProjected = GeoJsonFactory<Point>(
 ///
 /// This factory omits [jsonObject] parameter.
 Feature<T> _defaultFeatureFactory<T extends Geometry>({
-  String? id,
-  required Map<String, Object?> properties,
+  Object? id,
+  Map<String, Object?>? properties,
   T? geometry,
   Bounds? bounds,
   Map<String, Object?>? jsonObject,
 }) =>
-    Feature<T>.view(
+    Feature<T>(
       id: id,
       properties: properties,
       geometry: geometry,
@@ -252,7 +252,10 @@ class GeoJsonFactory<PointType extends Point>
     // parse id as String?
     // (GeoJSON allows num and String types for ids - both represented here
     // as String)
-    final id = json['id']?.toString();
+    final dynamic id = json['id'];
+    if (!(id == null || id is String || id is int || id is BigInt)) {
+      throw const FormatException('Id should be null, int, BigInt or String');
+    }
 
     // parse optional geometry for this feature
     final dynamic geomJson = json['geometry'];
