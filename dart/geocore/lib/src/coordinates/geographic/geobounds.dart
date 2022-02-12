@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'package:geobase/geobase.dart';
+
 import '/src/base/spatial.dart';
 import '/src/utils/wkt.dart';
 
@@ -14,7 +16,7 @@ import 'geopoint_immutable.dart';
 ///
 /// Geographic bounds can be represented as Bounds<GeoPoint> or as GeoBounds.
 /// This is a convenience class with helper factory constructors.
-class GeoBounds<T extends GeoPoint> extends BoundsBase<T> {
+class GeoBounds<T extends GeoPoint> extends BoundsBase<T> implements GeoBox {
   /// Create geographic bounds by copying `min` and `max` points from [source].
   GeoBounds(Bounds<T> source) : super(min: source.min, max: source.max);
 
@@ -197,4 +199,72 @@ class GeoBounds<T extends GeoPoint> extends BoundsBase<T> {
 
   @override
   bool get isGeographic => true;
+
+  @override
+  double get minX => min.x;
+
+  @override
+  double get minY => min.y;
+
+  @override
+  double? get minZ => min.optZ;
+
+  @override
+  double? get minM => min.optM;
+
+  @override
+  double get maxX => max.x;
+
+  @override
+  double get maxY => max.y;
+
+  @override
+  double? get maxZ => max.optZ;
+
+  @override
+  double? get maxM => max.optM;
+
+  @override
+  double get west => min.lon;
+
+  @override
+  double get south => min.lat;
+
+  @override
+  double? get minElev => min.optElev;
+
+  @override
+  double get east => max.lon;
+
+  @override
+  double get north => max.lat;
+
+  @override
+  double? get maxElev => max.optElev;
+
+  @override
+  bool operator ==(Object other) =>
+      other is GeoBounds && GeoBox.testEquals(this, other);
+
+  @override
+  int get hashCode => Box.hash(this);
+
+  @override
+  bool equals2D(BaseBox other, {num? toleranceHoriz}) =>
+      other is GeoBox &&
+      GeoBox.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
+
+  @override
+  bool equals3D(
+    BaseBox other, {
+    num? toleranceHoriz,
+    num? toleranceVert,
+  }) =>
+      other is GeoBox &&
+      GeoBox.testEquals3D(
+        this,
+        other,
+        toleranceHoriz: toleranceHoriz,
+        toleranceVert: toleranceVert,
+      );
 }

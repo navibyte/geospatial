@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'package:geobase/geobase.dart';
+
 import '/src/base/spatial.dart';
 
 /// A read-only cartesian (or projected) point with [x], [y], [z] and [m].
@@ -28,4 +30,32 @@ abstract class CartesianPoint<C extends num> extends Point<C> {
 
   @override
   bool get isGeographic => false;
+
+  @override
+  bool operator ==(Object other) =>
+      other is Point &&
+      isGeographic == other.isGeographic &&
+      Position.testEquals(this, other);
+
+  @override
+  int get hashCode => Position.hash(this);
+
+  @override
+  bool equals2D(BasePosition other, {num? toleranceHoriz}) =>
+      other is Position &&
+      Position.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
+
+  @override
+  bool equals3D(
+    BasePosition other, {
+    num? toleranceHoriz,
+    num? toleranceVert,
+  }) =>
+      other is Position &&
+      Position.testEquals3D(
+        this,
+        other,
+        toleranceHoriz: toleranceHoriz,
+        toleranceVert: toleranceVert,
+      );
 }

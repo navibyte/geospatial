@@ -42,4 +42,31 @@ abstract class BasePosition extends Positionable {
   /// When returning `GeoPosition` as [Position] then coordinates are copied as:
   /// `lon` => `x`, `lat` => `y`, `elev` => `z`, `m` => `m`
   Position get asPosition;
+
+  /// True if this position equals with [other] by testing 2D coordinates only.
+  ///
+  /// If [toleranceHoriz] is given, then differences on 2D coordinate values
+  /// (ie. x and y, or lon and lat) between this and [other] must be within
+  /// tolerance. Otherwise value must be exactly same.
+  ///
+  /// Tolerance values must be null or positive (>= 0).
+  bool equals2D(BasePosition other, {num? toleranceHoriz});
+
+  /// True if this position equals with [other] by testing 3D coordinates only.
+  ///
+  /// Returns false if this or [other] is not a 3D position.
+  ///
+  /// If [toleranceHoriz] is given, then differences on 2D coordinate values
+  /// (ie. x and y, or lon and lat) between this and [other] must be within
+  /// tolerance. Otherwise value must be exactly same.
+  ///
+  /// The tolerance for vertical coordinate values (ie. z or elev) is given by
+  /// an optional [toleranceVert] value.
+  ///
+  /// Tolerance values must be null or positive (>= 0).
+  bool equals3D(
+    BasePosition other, {
+    num? toleranceHoriz,
+    num? toleranceVert,
+  });
 }

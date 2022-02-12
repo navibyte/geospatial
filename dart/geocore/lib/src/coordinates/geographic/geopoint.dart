@@ -52,4 +52,31 @@ abstract class GeoPoint extends Point<double> implements GeoPosition {
 
   @override
   bool get isGeographic => true;
+
+  @override
+  bool operator ==(Object other) =>
+      other is GeoPoint &&
+      GeoPosition.testEquals(this, other);
+
+  @override
+  int get hashCode => GeoPosition.hash(this);
+
+  @override
+  bool equals2D(BasePosition other, {num? toleranceHoriz}) =>
+      other is GeoPosition &&
+      GeoPosition.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
+
+  @override
+  bool equals3D(
+    BasePosition other, {
+    num? toleranceHoriz,
+    num? toleranceVert,
+  }) =>
+      other is GeoPosition &&
+      GeoPosition.testEquals3D(
+        this,
+        other,
+        toleranceHoriz: toleranceHoriz,
+        toleranceVert: toleranceVert,
+      );
 }

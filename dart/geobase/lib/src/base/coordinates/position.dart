@@ -7,6 +7,7 @@
 import 'package:meta/meta.dart';
 
 import '/src/base/codes.dart';
+import '/src/utils/tolerance.dart';
 
 import 'base_position.dart';
 
@@ -118,12 +119,63 @@ class Position extends BasePosition {
 
   @override
   bool operator ==(Object other) =>
-      other is Position &&
-      x == other.x &&
-      y == other.y &&
-      optZ == other.optZ &&
-      optM == other.optM;
+      other is Position && Position.testEquals(this, other);
 
   @override
-  int get hashCode => Object.hash(x, y, optZ, optM);
+  int get hashCode => Position.hash(this);
+
+  @override
+  bool equals2D(BasePosition other, {num? toleranceHoriz}) =>
+      other is Position &&
+      Position.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
+
+  @override
+  bool equals3D(
+    BasePosition other, {
+    num? toleranceHoriz,
+    num? toleranceVert,
+  }) =>
+      other is Position &&
+      Position.testEquals3D(
+        this,
+        other,
+        toleranceHoriz: toleranceHoriz,
+        toleranceVert: toleranceVert,
+      );
+
+  /// True if positions [p1] and [p2] equals by testing all coordinate values.
+  static bool testEquals(Position p1, Position p2) =>
+      p1.x == p2.x && p1.y == p2.y && p1.optZ == p2.optZ && p1.optM == p2.optM;
+
+  /// The hash code for [position].
+  static int hash(Position position) =>
+      Object.hash(position.x, position.y, position.optZ, position.optM);
+
+  /// True if positions [p1] and [p2] equals by testing 2D coordinates only.
+  static bool testEquals2D(Position p1, Position p2, {num? toleranceHoriz}) {
+    assertTolerance(toleranceHoriz);
+    return toleranceHoriz != null
+        ? (p1.x - p2.x).abs() <= toleranceHoriz &&
+            (p1.y - p2.y).abs() <= toleranceHoriz
+        : p1.x == p2.x && p1.y == p2.y;
+  }
+
+  /// True if positions [p1] and [p2] equals by testing 3D coordinates only.
+  static bool testEquals3D(
+    Position p1,
+    Position p2, {
+    num? toleranceHoriz,
+    num? toleranceVert,
+  }) {
+    assertTolerance(toleranceVert);
+    if (!Position.testEquals2D(p1, p2, toleranceHoriz: toleranceHoriz)) {
+      return false;
+    }
+    if (!p1.is3D || !p1.is3D) {
+      return false;
+    }
+    return toleranceVert != null
+        ? (p1.z - p2.z).abs() <= toleranceVert
+        : p1.z == p2.z;
+  }
 }

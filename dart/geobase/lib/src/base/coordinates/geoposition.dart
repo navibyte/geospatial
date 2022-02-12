@@ -7,6 +7,7 @@
 import 'package:meta/meta.dart';
 
 import '/src/base/codes.dart';
+import '/src/utils/tolerance.dart';
 
 import 'base_position.dart';
 import 'position.dart';
@@ -114,12 +115,70 @@ class GeoPosition extends BasePosition {
 
   @override
   bool operator ==(Object other) =>
-      other is GeoPosition &&
-      lon == other.lon &&
-      lat == other.lat &&
-      optElev == other.optElev &&
-      optM == other.optM;
+      other is GeoPosition && testEquals(this, other);
 
   @override
-  int get hashCode => Object.hash(lon, lat, optElev, optM);
+  int get hashCode => GeoPosition.hash(this);
+
+  /// True if positions [p1] and [p2] equals by testing all coordinate values.
+  static bool testEquals(GeoPosition p1, GeoPosition p2) =>
+      p1.lon == p2.lon &&
+      p1.lat == p2.lat &&
+      p1.optElev == p2.optElev &&
+      p1.optM == p2.optM;
+
+  @override
+  bool equals2D(BasePosition other, {num? toleranceHoriz}) =>
+      other is GeoPosition &&
+      GeoPosition.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
+
+  @override
+  bool equals3D(
+    BasePosition other, {
+    num? toleranceHoriz,
+    num? toleranceVert,
+  }) =>
+      other is GeoPosition &&
+      GeoPosition.testEquals3D(
+        this,
+        other,
+        toleranceHoriz: toleranceHoriz,
+        toleranceVert: toleranceVert,
+      );
+
+  /// The hash code for [position].
+  static int hash(GeoPosition position) =>
+      Object.hash(position.lon, position.lat, position.optElev, position.optM);
+
+  /// True if geo positions [p1] and [p2] equals by testing 2D coordinates only.
+  static bool testEquals2D(
+    GeoPosition p1,
+    GeoPosition p2, {
+    num? toleranceHoriz,
+  }) {
+    assertTolerance(toleranceHoriz);
+    return toleranceHoriz != null
+        ? (p1.lon - p2.lon).abs() <= toleranceHoriz &&
+            (p1.lat - p2.lat).abs() <= toleranceHoriz
+        : p1.lon == p2.lon && p1.lat == p2.lat;
+  }
+
+  /// True if geo positions [p1] and [p2] equals by testing 3D coordinates only.
+  static bool testEquals3D(
+    GeoPosition p1,
+    GeoPosition p2, {
+    num? toleranceHoriz,
+    num? toleranceVert,
+  }) {
+    assertTolerance(toleranceVert);
+    if (!GeoPosition.testEquals2D(p1, p2, toleranceHoriz: toleranceHoriz)) {
+      return false;
+    }
+    if (!p1.is3D || !p1.is3D) {
+      return false;
+    }
+    return toleranceVert != null
+        ? (p1.elev - p2.elev).abs() <= toleranceVert
+        : p1.elev == p2.elev;
+  }
 }

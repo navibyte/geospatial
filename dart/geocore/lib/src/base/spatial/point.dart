@@ -101,59 +101,6 @@ abstract class Point<C extends num> extends Geometry
   @override
   C? get optM => null;
 
-  /// True if this point equals with [other] point in 2D by testing x and y.
-  ///
-  /// If [toleranceHoriz] is given, then differences on x and y coordinate
-  /// values between this and [other] must be <= tolerance. Otherwise value
-  /// must be exactly same.
-  ///
-  /// Tolerance values must be null or positive (>= 0).
-  bool equals2D(Point other, {num? toleranceHoriz}) {
-    assert(
-      toleranceHoriz == null || toleranceHoriz >= 0.0,
-      'Tolerance must be null or positive (>= 0)',
-    );
-    return toleranceHoriz != null
-        ? (x - other.x).abs() <= toleranceHoriz &&
-            (y - other.y).abs() <= toleranceHoriz
-        : x == other.x && y == other.y;
-  }
-
-  /// True if this point equals with [other] point in 3D by testing x, y and z.
-  ///
-  /// If [toleranceHoriz] is given, then differences on x and y coordinate
-  /// values between this and [other] must be <= tolerance. Otherwise value
-  /// must be exactly same.
-  ///
-  /// The tolerance for z coordinate values is given by an optional
-  /// [toleranceVert] value.
-  ///
-  /// Tolerance values must be null or positive (>= 0).
-  bool equals3D(Point other, {num? toleranceHoriz, num? toleranceVert}) {
-    assert(
-      toleranceVert == null || toleranceVert >= 0.0,
-      'Tolerance must be null or positive (>= 0)',
-    );
-    if (!equals2D(other, toleranceHoriz: toleranceHoriz)) {
-      return false;
-    }
-    return toleranceVert != null
-        ? (z - other.z).abs() <= toleranceVert
-        : z == other.z;
-  }
-
-  @override
-  bool operator ==(Object other) =>
-      other is Point &&
-      isGeographic == other.isGeographic &&
-      x == other.x &&
-      y == other.y &&
-      optZ == other.optZ &&
-      optM == other.optM;
-
-  @override
-  int get hashCode => Object.hash(x, y, optZ, optM);
-
   /// Returns zero value of the type [C] that can be `num`, `double` or `int`.
   C _zero() {
     if (C == int) {

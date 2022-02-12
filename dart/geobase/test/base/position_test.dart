@@ -24,6 +24,10 @@ void main() {
       expect(p1, isNot(p3));
       expect(p1.hashCode, p2.hashCode);
       expect(p1.hashCode, isNot(p3.hashCode));
+      expect(p1.equals2D(p2), true);
+      expect(p1.equals2D(p3), false);
+      expect(p1.equals3D(p2), true);
+      expect(p1.equals3D(p3), false);
 
       // test private class that implements Position interface
       const t1 = _TestXYZM(x: 1.0, y: 2.0, z: 3.0, m: 4.0);
@@ -43,14 +47,37 @@ void main() {
       expect(p1.hashCode, isNot(t3.hashCode));
 
       // with some coordinates missing or other type
-      final p5 = const Position(x: 1.0, y: 2.0, z: 3.0);
-      final p6 = const GeoPosition(lon: 1.0, lat: 2.0, elev: 3.0);
-      final p7 = const GeoPosition(lon: 1.0, lat: 2.0, elev: 3.0, m: 4.0);
+      const p5 = Position(x: 1.0, y: 2.0, z: 3.0);
+      const p6 = GeoPosition(lon: 1.0, lat: 2.0, elev: 3.0);
+      const p7 = GeoPosition(lon: 1.0, lat: 2.0, elev: 3.0, m: 4.0);
       expect(p1, isNot(p5));
       expect(p1, isNot(p6));
       expect(p1, isNot(p7));
       expect(p5, isNot(p6));
       expect(p6, isNot(p7));
+
+      final p8 = const Position(x: 1.0, y: 2.0);
+      expect(p1.equals2D(p8), true);
+      expect(p1.equals3D(p8), false);
+    });
+
+    test('Equals with tolerance', () {
+      const p1 = Position(x: 1.0002, y: 2.0002, z: 3.002, m: 4.0);
+      const p2 = Position(x: 1.0003, y: 2.0003, z: 3.003, m: 4.0);
+      expect(p1.equals2D(p2), false);
+      expect(p1.equals3D(p2), false);
+      expect(p1.equals2D(p2, toleranceHoriz: 0.00011), true);
+      expect(p1.equals3D(p2, toleranceHoriz: 0.00011), false);
+      expect(p1.equals2D(p2, toleranceHoriz: 0.00011), true);
+      expect(
+        p1.equals3D(p2, toleranceHoriz: 0.00011, toleranceVert: 0.0011),
+        true,
+      );
+      expect(p1.equals2D(p2, toleranceHoriz: 0.00009), false);
+      expect(
+        p1.equals3D(p2, toleranceHoriz: 0.00011, toleranceVert: 0.0009),
+        false,
+      );
     });
   });
 
@@ -65,6 +92,29 @@ void main() {
       expect(p1, isNot(p3));
       expect(p1.hashCode, p2.hashCode);
       expect(p1.hashCode, isNot(p3.hashCode));
+      expect(p1.equals2D(p2), true);
+      expect(p1.equals2D(p3), false);
+      expect(p1.equals3D(p2), true);
+      expect(p1.equals3D(p3), false);
+    });
+
+    test('Equals with tolerance', () {
+      const p1 = GeoPosition(lon: 1.0002, lat: 2.0002, elev: 3.002, m: 4.0);
+      const p2 = GeoPosition(lon: 1.0003, lat: 2.0003, elev: 3.003, m: 4.0);
+      expect(p1.equals2D(p2), false);
+      expect(p1.equals3D(p2), false);
+      expect(p1.equals2D(p2, toleranceHoriz: 0.00011), true);
+      expect(p1.equals3D(p2, toleranceHoriz: 0.00011), false);
+      expect(p1.equals2D(p2, toleranceHoriz: 0.00011), true);
+      expect(
+        p1.equals3D(p2, toleranceHoriz: 0.00011, toleranceVert: 0.0011),
+        true,
+      );
+      expect(p1.equals2D(p2, toleranceHoriz: 0.00009), false);
+      expect(
+        p1.equals3D(p2, toleranceHoriz: 0.00011, toleranceVert: 0.0009),
+        false,
+      );
     });
 
     test('Clamping longitude and latitude in constructor', () {
@@ -138,13 +188,28 @@ class _TestXYZM implements Position {
   String toString() => '$x,$y,$z,$m';
 
   @override
-  bool operator ==(Object other) =>
+  bool equals2D(BasePosition other, {num? toleranceHoriz}) =>
       other is Position &&
-      x == other.x &&
-      y == other.y &&
-      z == other.z &&
-      m == other.m;
+      Position.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
 
   @override
-  int get hashCode => Object.hash(x, y, z, m);
+  bool equals3D(
+    BasePosition other, {
+    num? toleranceHoriz,
+    num? toleranceVert,
+  }) =>
+      other is Position &&
+      Position.testEquals3D(
+        this,
+        other,
+        toleranceHoriz: toleranceHoriz,
+        toleranceVert: toleranceVert,
+      );
+
+  @override
+  bool operator ==(Object other) =>
+      other is Position && Position.testEquals(this, other);
+
+  @override
+  int get hashCode => Position.hash(this);
 }

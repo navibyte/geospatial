@@ -7,6 +7,7 @@
 import 'package:meta/meta.dart';
 
 import '/src/base/codes.dart';
+import '/src/utils/tolerance.dart';
 
 import 'base_box.dart';
 import 'position.dart';
@@ -145,18 +146,98 @@ class Box extends BaseBox {
   }
 
   @override
-  bool operator ==(Object other) =>
-      other is Box &&
-      minX == other.minX &&
-      minY == other.minY &&
-      minZ == other.minZ &&
-      minM == other.minM &&
-      maxX == other.maxX &&
-      maxY == other.maxY &&
-      maxZ == other.maxZ &&
-      maxM == other.maxM;
+  bool operator ==(Object other) => other is Box && Box.testEquals(this, other);
 
   @override
-  int get hashCode =>
-      Object.hash(minX, minY, minZ, minM, maxX, maxY, maxZ, maxM);
+  int get hashCode => Box.hash(this);
+
+  @override
+  bool equals2D(BaseBox other, {num? toleranceHoriz}) =>
+      other is Box &&
+      Box.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
+
+  @override
+  bool equals3D(
+    BaseBox other, {
+    num? toleranceHoriz,
+    num? toleranceVert,
+  }) =>
+      other is Box &&
+      Box.testEquals3D(
+        this,
+        other,
+        toleranceHoriz: toleranceHoriz,
+        toleranceVert: toleranceVert,
+      );
+
+  /// True if [box1] and [box2] equals by testing all coordinate values.
+  static bool testEquals(Box box1, Box box2) =>
+      box1.minX == box2.minX &&
+      box1.minY == box2.minY &&
+      box1.minZ == box2.minZ &&
+      box1.minM == box2.minM &&
+      box1.maxX == box2.maxX &&
+      box1.maxY == box2.maxY &&
+      box1.maxZ == box2.maxZ &&
+      box1.maxM == box2.maxM;
+
+  /// The hash code for [box].
+  static int hash(Box box) => Object.hash(
+        box.minX,
+        box.minY,
+        box.minZ,
+        box.minM,
+        box.maxX,
+        box.maxY,
+        box.maxZ,
+        box.maxM,
+      );
+
+  /// True if positions [box1] and [box2] equals by testing 2D coordinates only.
+  static bool testEquals2D(
+    Box box1,
+    Box box2, {
+    num? toleranceHoriz,
+  }) {
+    assertTolerance(toleranceHoriz);
+    return toleranceHoriz != null
+        ? (box1.minX - box2.minX).abs() <= toleranceHoriz &&
+            (box1.minY - box2.minY).abs() <= toleranceHoriz &&
+            (box1.maxX - box2.maxX).abs() <= toleranceHoriz &&
+            (box1.maxY - box2.maxY).abs() <= toleranceHoriz
+        : box1.minX == box2.minX &&
+            box1.minY == box2.minY &&
+            box1.maxX == box2.maxX &&
+            box1.maxY == box2.maxY;
+  }
+
+  /// True if positions [box1] and [box2] equals by testing 3D coordinates only.
+  static bool testEquals3D(
+    Box box1,
+    Box box2, {
+    num? toleranceHoriz,
+    num? toleranceVert,
+  }) {
+    assertTolerance(toleranceVert);
+    if (!Box.testEquals2D(box1, box2, toleranceHoriz: toleranceHoriz)) {
+      return false;
+    }
+    if (!box1.is3D || !box1.is3D) {
+      return false;
+    }
+    if (toleranceVert != null) {
+      final minZ1 = box1.minZ;
+      final maxZ1 = box1.maxZ;
+      final minZ2 = box2.minZ;
+      final maxZ2 = box2.maxZ;
+      return minZ1 != null &&
+          maxZ1 != null &&
+          minZ2 != null &&
+          maxZ2 != null &&
+          (minZ1 - minZ2).abs() <= toleranceVert &&
+          (maxZ1 - maxZ2).abs() <= toleranceVert;
+    } else {
+      return box1.minZ == box2.minZ && box1.maxZ == box2.maxZ;
+    }
+  }
 }

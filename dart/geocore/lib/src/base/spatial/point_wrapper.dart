@@ -85,7 +85,28 @@ class PointWrapper<T extends Point<C>, C extends num> extends Point<C> {
   }) =>
       point.project(projection, to: to);
 
-
   @override
   String toString() => point.toString();
+
+  @override
+  bool operator ==(Object other) => point == other;
+
+  @override
+  int get hashCode => point.hashCode;
+
+  @override
+  bool equals2D(BasePosition other, {num? toleranceHoriz}) =>
+      point.equals2D(other, toleranceHoriz: toleranceHoriz);
+
+  @override
+  bool equals3D(
+    BasePosition other, {
+    num? toleranceHoriz,
+    num? toleranceVert,
+  }) =>
+      point.equals3D(
+        other,
+        toleranceHoriz: toleranceHoriz,
+        toleranceVert: toleranceVert,
+      );
 }

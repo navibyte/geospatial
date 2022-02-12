@@ -297,10 +297,27 @@ class BoundsBase<T extends Point> extends Bounds<T> {
 
   @override
   bool operator ==(Object other) =>
-      other is Bounds &&
-      min == other.min &&
-      max == other.max;
+      other is Bounds && Box.testEquals(this, other);
 
   @override
-  int get hashCode => Object.hash(min, max);
+  int get hashCode => Box.hash(this);
+
+  @override
+  bool equals2D(BaseBox other, {num? toleranceHoriz}) =>
+      other is Box &&
+      Box.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
+
+  @override
+  bool equals3D(
+    BaseBox other, {
+    num? toleranceHoriz,
+    num? toleranceVert,
+  }) =>
+      other is Box &&
+      Box.testEquals3D(
+        this,
+        other,
+        toleranceHoriz: toleranceHoriz,
+        toleranceVert: toleranceVert,
+      );
 }

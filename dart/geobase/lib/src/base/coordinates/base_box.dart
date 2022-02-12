@@ -44,4 +44,31 @@ abstract class BaseBox extends Positionable {
   /// `west` => `minX`, `south` => `minY`, `minElev` => `minZ`, `minM` => `minM`
   /// `east` => `maxX`, `north` => `maxY`, `maxElev` => `maxZ`, `maxM` => `maxM`
   Box get asBox;
+
+  /// True if this box equals with [other] by testing 2D coordinates only.
+  ///
+  /// If [toleranceHoriz] is given, then differences on 2D coordinate values
+  /// (ie. x and y, or lon and lat) between this and [other] must be within
+  /// tolerance. Otherwise value must be exactly same.
+  ///
+  /// Tolerance values must be null or positive (>= 0).
+  bool equals2D(BaseBox other, {num? toleranceHoriz});
+
+  /// True if this box equals with [other] by testing 3D coordinates only.
+  ///
+  /// Returns false if this or [other] is not a 3D box.
+  ///
+  /// If [toleranceHoriz] is given, then differences on 2D coordinate values
+  /// (ie. x and y, or lon and lat) between this and [other] must be within
+  /// tolerance. Otherwise value must be exactly same.
+  ///
+  /// The tolerance for vertical coordinate values (ie. z or elev) is given by
+  /// an optional [toleranceVert] value.
+  ///
+  /// Tolerance values must be null or positive (>= 0).
+  bool equals3D(
+    BaseBox other, {
+    num? toleranceHoriz,
+    num? toleranceVert,
+  });
 }
