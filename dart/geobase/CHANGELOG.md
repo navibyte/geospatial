@@ -8,3 +8,9 @@
 - [Base interface for bounding boxes compatible with RFC7946 #87](https://github.com/navibyte/geospatial/issues/87)
 - [Separate basic point properties as position interface #84](https://github.com/navibyte/geospatial/issues/84)
 - [Formatting to text on Point (and other geometries) more flexible #81](https://github.com/navibyte/geospatial/issues/81)
+- [Coordinate types enhanced #92](https://github.com/navibyte/geospatial/issues/92)
+- [Coordinate value accessors on position classes #94](https://github.com/navibyte/geospatial/issues/94)
+- [Equality and hashcode for (Geo)Position and (Geo)Box classes #89](https://github.com/navibyte/geospatial/issues/89)
+
+🛠 Maintenance:
+- [Upgrade to Dart 2.15 #90](https://github.com/navibyte/geospatial/issues/90)

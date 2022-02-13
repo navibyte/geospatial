@@ -3,7 +3,6 @@ description: Geospatial data (features, geometries, coordinates) writers (GeoJSO
 version: 0.1.0-a.1
 repository: https://github.com/navibyte/geospatial
 homepage: https://github.com/navibyte/geospatial/tree/main/dart/geobase
-publish_to: none
 
 environment:
   sdk: '>=2.15.0 <3.0.0'
