@@ -170,6 +170,9 @@ class Box extends BaseBox {
         toleranceVert: toleranceVert,
       );
 
+  // ---------------------------------------------------------------------------
+  // Static methods with default logic, used by Box itself too.
+
   /// True if [box1] and [box2] equals by testing all coordinate values.
   static bool testEquals(Box box1, Box box2) =>
       box1.minX == box2.minX &&

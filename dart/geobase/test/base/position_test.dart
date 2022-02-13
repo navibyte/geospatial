@@ -13,6 +13,25 @@ import 'package:test/test.dart';
 
 void main() {
   group('Position class', () {
+    test('Coordinate access', () {
+      const p1 = Position(x: 1.0, y: 2.0);
+      const p2 = Position(x: 1.0, y: 2.0, z: 3.0);
+      const p3 = Position(x: 1.0, y: 2.0, m: 4.0);
+      const p4 = Position(x: 1.0, y: 2.0, z: 3.0, m: 4.0);
+      expect([p1.x, p1.y], p1.values);
+      expect([p2.x, p2.y, p2.z], p2.values);
+      expect([p3.x, p3.y, p3.m], p3.values);
+      expect([p4.x, p4.y, p4.z, p4.m], p4.values);
+      expect([p1.x, p1.y, 0, 0], [p1[0], p1[1], p1[2], p1[3]]);
+      expect([p2.x, p2.y, p2.z, 0], [p2[0], p2[1], p2[2], p2[3]]);
+      expect([p3.x, p3.y, p3.m, 0], [p3[0], p3[1], p3[2], p3[3]]);
+      expect([p4.x, p4.y, p4.z, p4.m], [p4[0], p4[1], p4[2], p4[3]]);
+      expect(
+        [p1.optZ, p1.optM, p2.optM, p3.optZ],
+        [null, null, null, null],
+      );
+    });
+
     test('Equals and hashCode', () {
       // test Position itself
       final one = 1.0;
@@ -82,6 +101,25 @@ void main() {
   });
 
   group('GeoPosition class', () {
+    test('Coordinate access', () {
+      const p1 = GeoPosition(lon: 1.0, lat: 2.0);
+      const p2 = GeoPosition(lon: 1.0, lat: 2.0, elev: 3.0);
+      const p3 = GeoPosition(lon: 1.0, lat: 2.0, m: 4.0);
+      const p4 = GeoPosition(lon: 1.0, lat: 2.0, elev: 3.0, m: 4.0);
+      expect([p1.lon, p1.lat], p1.values);
+      expect([p2.lon, p2.lat, p2.elev], p2.values);
+      expect([p3.lon, p3.lat, p3.m], p3.values);
+      expect([p4.lon, p4.lat, p4.elev, p4.m], p4.values);
+      expect([p1.lon, p1.lat, 0, 0], [p1[0], p1[1], p1[2], p1[3]]);
+      expect([p2.lon, p2.lat, p2.elev, 0], [p2[0], p2[1], p2[2], p2[3]]);
+      expect([p3.lon, p3.lat, p3.m, 0], [p3[0], p3[1], p3[2], p3[3]]);
+      expect([p4.lon, p4.lat, p4.elev, p4.m], [p4[0], p4[1], p4[2], p4[3]]);
+      expect(
+        [p1.optElev, p1.optM, p2.optM, p3.optElev],
+        [null, null, null, null],
+      );
+    });
+
     test('Equals and hashCode', () {
       final one = 1.0;
       final two = 2.0;
@@ -143,6 +181,12 @@ class _TestXYZM implements Position {
     required this.z,
     required this.m,
   });
+
+  @override
+  num operator [](int i) => Position.getValue(this, i);
+
+  @override
+  Iterable<num> get values => Position.getValues(this);
 
   @override
   final num x;

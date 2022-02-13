@@ -55,8 +55,7 @@ abstract class GeoPoint extends Point<double> implements GeoPosition {
 
   @override
   bool operator ==(Object other) =>
-      other is GeoPoint &&
-      GeoPosition.testEquals(this, other);
+      other is GeoPoint && GeoPosition.testEquals(this, other);
 
   @override
   int get hashCode => GeoPosition.hash(this);
@@ -64,7 +63,11 @@ abstract class GeoPoint extends Point<double> implements GeoPosition {
   @override
   bool equals2D(BasePosition other, {num? toleranceHoriz}) =>
       other is GeoPosition &&
-      GeoPosition.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
+      GeoPosition.testEquals2D(
+        this,
+        other,
+        toleranceHoriz: toleranceHoriz?.toDouble(),
+      );
 
   @override
   bool equals3D(
@@ -76,7 +79,7 @@ abstract class GeoPoint extends Point<double> implements GeoPosition {
       GeoPosition.testEquals3D(
         this,
         other,
-        toleranceHoriz: toleranceHoriz,
-        toleranceVert: toleranceVert,
+        toleranceHoriz: toleranceHoriz?.toDouble(),
+        toleranceVert: toleranceVert?.toDouble(),
       );
 }

@@ -69,6 +69,22 @@ class GeoPosition extends BasePosition {
   @override
   double? get optM => _m;
 
+  /// A coordinate value by the coordinate axis index [i].
+  ///
+  /// Returns zero when a coordinate axis is not available.
+  ///
+  /// For geographic coordinates, the coordinate ordering is:
+  /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
+  @override
+  double operator [](int i) => GeoPosition.getValue(this, i);
+
+  /// Coordinate values of this position as an iterable of 2, 3 or 4 items.
+  ///
+  /// For geographic coordinates, the coordinate ordering is:
+  /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
+  @override
+  Iterable<double> get values => GeoPosition.getValues(this);
+
   @override
   Position get asPosition => Position(x: _lon, y: _lat, z: _elev, m: _m);
 
@@ -115,22 +131,19 @@ class GeoPosition extends BasePosition {
 
   @override
   bool operator ==(Object other) =>
-      other is GeoPosition && testEquals(this, other);
+      other is GeoPosition && GeoPosition.testEquals(this, other);
 
   @override
   int get hashCode => GeoPosition.hash(this);
 
-  /// True if positions [p1] and [p2] equals by testing all coordinate values.
-  static bool testEquals(GeoPosition p1, GeoPosition p2) =>
-      p1.lon == p2.lon &&
-      p1.lat == p2.lat &&
-      p1.optElev == p2.optElev &&
-      p1.optM == p2.optM;
-
   @override
   bool equals2D(BasePosition other, {num? toleranceHoriz}) =>
       other is GeoPosition &&
-      GeoPosition.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
+      GeoPosition.testEquals2D(
+        this,
+        other,
+        toleranceHoriz: toleranceHoriz?.toDouble(),
+      );
 
   @override
   bool equals3D(
@@ -142,9 +155,68 @@ class GeoPosition extends BasePosition {
       GeoPosition.testEquals3D(
         this,
         other,
-        toleranceHoriz: toleranceHoriz,
-        toleranceVert: toleranceVert,
+        toleranceHoriz: toleranceHoriz?.toDouble(),
+        toleranceVert: toleranceVert?.toDouble(),
       );
+
+  // ---------------------------------------------------------------------------
+  // Static methods with default logic, used by GeoPosition itself too.
+
+  /// A coordinate value of [position] by the coordinate axis index [i].
+  ///
+  /// Returns zero when a coordinate axis is not available.
+  ///
+  /// For geographic coordinates, the coordinate ordering is:
+  /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
+  static double getValue(GeoPosition position, int i) {
+    if (position.is3D) {
+      switch (i) {
+        case 0:
+          return position.lon;
+        case 1:
+          return position.lat;
+        case 2:
+          return position.elev;
+        case 3:
+          return position.m; // returns m or 0
+        default:
+          return 0.0;
+      }
+    } else {
+      switch (i) {
+        case 0:
+          return position.lon;
+        case 1:
+          return position.lat;
+        case 2:
+          return position.m; // returns m or 0
+        default:
+          return 0.0;
+      }
+    }
+  }
+
+  /// Coordinate values of [position] as an iterable of 2, 3 or 4 items.
+  ///
+  /// For geographic coordinates, the coordinate ordering is:
+  /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
+  static Iterable<double> getValues(GeoPosition position) sync* {
+    yield position.lon;
+    yield position.lat;
+    if (position.is3D) {
+      yield position.elev;
+    }
+    if (position.isMeasured) {
+      yield position.m;
+    }
+  }
+
+  /// True if positions [p1] and [p2] equals by testing all coordinate values.
+  static bool testEquals(GeoPosition p1, GeoPosition p2) =>
+      p1.lon == p2.lon &&
+      p1.lat == p2.lat &&
+      p1.optElev == p2.optElev &&
+      p1.optM == p2.optM;
 
   /// The hash code for [position].
   static int hash(GeoPosition position) =>
@@ -154,7 +226,7 @@ class GeoPosition extends BasePosition {
   static bool testEquals2D(
     GeoPosition p1,
     GeoPosition p2, {
-    num? toleranceHoriz,
+    double? toleranceHoriz,
   }) {
     assertTolerance(toleranceHoriz);
     return toleranceHoriz != null
@@ -167,8 +239,8 @@ class GeoPosition extends BasePosition {
   static bool testEquals3D(
     GeoPosition p1,
     GeoPosition p2, {
-    num? toleranceHoriz,
-    num? toleranceVert,
+    double? toleranceHoriz,
+    double? toleranceVert,
   }) {
     assertTolerance(toleranceVert);
     if (!GeoPosition.testEquals2D(p1, p2, toleranceHoriz: toleranceHoriz)) {

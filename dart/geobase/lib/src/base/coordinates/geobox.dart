@@ -213,6 +213,9 @@ class GeoBox extends BaseBox {
         toleranceVert: toleranceVert,
       );
 
+  // ---------------------------------------------------------------------------
+  // Static methods with default logic, used by GeoBox itself too.
+
   /// True if [box1] and [box2] equals by testing all coordinate values.
   static bool testEquals(GeoBox box1, GeoBox box2) =>
       box1.west == box2.west &&

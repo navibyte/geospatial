@@ -57,16 +57,16 @@ abstract class Point<C extends num> extends Geometry
   @override
   Point? get onePoint => this;
 
-  /// A coordinate value by the index [i].
+  /// A coordinate value by the coordinate axis index [i].
   ///
-  /// The coordinate ordering is: (x, y), (x, y, m), (x, y, z) or (x, y, z, m).
+  /// Returns zero when a coordinate axis is not available.
   ///
-  /// If a point represents geographic coordinates, then the ordering is:
+  /// For projected or cartesian coordinates, the coordinate ordering is:
+  /// (x, y), (x, y, m), (x, y, z) or (x, y, z, m).
+  ///
+  /// For geographic coordinates, the coordinate ordering is:
   /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
-  ///
-  /// For easting (E) and northing (N) projected coordinates the ordering is
-  /// (unless otherwise specified by a coordinate reference system):
-  /// (E, N), (E, N, m), (E, N, z) or (E, N, z, m).
+  @override
   C operator [](int i);
 
   /// Returns coordinate values of this point as a fixed length list.
@@ -79,6 +79,13 @@ abstract class Point<C extends num> extends Geometry
   /// Sub classes may override the default implementation to provide more
   /// efficient approach. It's also allowed to return internal data storage
   /// for coordinate values.
+  ///
+  /// For projected or cartesian coordinates, the coordinate ordering is:
+  /// (x, y), (x, y, m), (x, y, z) or (x, y, z, m).
+  ///
+  /// For geographic coordinates, the coordinate ordering is:
+  /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
+  @override
   List<C> get values =>
       // create fixed length list and set coordinate values on it
       List<C>.generate(coordinateDimension, (i) => this[i], growable: false);

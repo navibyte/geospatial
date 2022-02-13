@@ -73,6 +73,22 @@ class Position extends BasePosition {
   @override
   num? get optM => _m;
 
+  /// A coordinate value by the coordinate axis index [i].
+  ///
+  /// Returns zero when a coordinate axis is not available.
+  ///
+  /// For projected or cartesian coordinates, the coordinate ordering is:
+  /// (x, y), (x, y, m), (x, y, z) or (x, y, z, m).
+  @override
+  num operator [](int i) => Position.getValue(this, i);
+
+  /// Coordinate values of this position as an iterable of 2, 3 or 4 items.
+  ///
+  /// For projected or cartesian coordinates, the coordinate ordering is:
+  /// (x, y), (x, y, m), (x, y, z) or (x, y, z, m).
+  @override
+  Iterable<num> get values => Position.getValues(this);
+
   @override
   Position get asPosition => this;
 
@@ -142,6 +158,58 @@ class Position extends BasePosition {
         toleranceHoriz: toleranceHoriz,
         toleranceVert: toleranceVert,
       );
+
+  // ---------------------------------------------------------------------------
+  // Static methods with default logic, used by Position itself too.
+
+  /// A coordinate value of [position] by the coordinate axis index [i].
+  ///
+  /// Returns zero when a coordinate axis is not available.
+  ///
+  /// For projected or cartesian coordinates, the coordinate ordering is:
+  /// (x, y), (x, y, m), (x, y, z) or (x, y, z, m).
+  static num getValue(Position position, int i) {
+    if (position.is3D) {
+      switch (i) {
+        case 0:
+          return position.x;
+        case 1:
+          return position.y;
+        case 2:
+          return position.z;
+        case 3:
+          return position.m; // returns m or 0
+        default:
+          return 0;
+      }
+    } else {
+      switch (i) {
+        case 0:
+          return position.x;
+        case 1:
+          return position.y;
+        case 2:
+          return position.m; // returns m or 0
+        default:
+          return 0;
+      }
+    }
+  }
+
+  /// Coordinate values of [position] as an iterable of 2, 3 or 4 items.
+  ///
+  /// For projected or cartesian coordinates, the coordinate ordering is:
+  /// (x, y), (x, y, m), (x, y, z) or (x, y, z, m).
+  static Iterable<num> getValues(Position position) sync* {
+    yield position.x;
+    yield position.y;
+    if (position.is3D) {
+      yield position.z;
+    }
+    if (position.isMeasured) {
+      yield position.m;
+    }
+  }
 
   /// True if positions [p1] and [p2] equals by testing all coordinate values.
   static bool testEquals(Position p1, Position p2) =>

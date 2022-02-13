@@ -37,6 +37,26 @@ abstract class BasePosition extends Positionable {
   /// (like time).
   num? get optM;
 
+  /// A coordinate value by the coordinate axis index [i].
+  /// 
+  /// Returns zero when a coordinate axis is not available.
+  /// 
+  /// For projected or cartesian coordinates, the coordinate ordering is: 
+  /// (x, y), (x, y, m), (x, y, z) or (x, y, z, m).
+  ///
+  /// For geographic coordinates, the coordinate ordering is: 
+  /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
+  num operator [](int i);
+
+  /// Coordinate values of this position as an iterable of 2, 3 or 4 items.
+  /// 
+  /// For projected or cartesian coordinates, the coordinate ordering is: 
+  /// (x, y), (x, y, m), (x, y, z) or (x, y, z, m).
+  ///
+  /// For geographic coordinates, the coordinate ordering is: 
+  /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
+  Iterable<num> get values;
+
   /// Returns this position as [Position] (with x, y, z and m coordinates).
   ///
   /// When returning `GeoPosition` as [Position] then coordinates are copied as:
