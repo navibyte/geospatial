@@ -6,23 +6,6 @@
 
 part of 'spatial.dart';
 
-/// A function to project the [source] point to a point of [R].
-///
-/// When [to] is provided, then target points of [R] are created using that
-/// as a point factory. Otherwise a projection function uses it's own factory.
-///
-/// Note that a function could implement for example a map projection from
-/// geographical points to projected cartesian points, or an inverse
-/// projection (or an "unprojection") from projected cartesian points to
-/// geographical points. Both are called here "project point" functions.
-///
-/// Throws FormatException if cannot project.
-@Deprecated('Use Projection mixin instead')
-typedef ProjectPoint<R extends Point> = R Function(
-  Point source, {
-  PointFactory<R>? to,
-});
-
 /// A mixin defining an interface for (geospatial) projections.
 ///
 /// A class that implements this mixin may provide for example a map projection
