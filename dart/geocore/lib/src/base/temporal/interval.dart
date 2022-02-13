@@ -42,8 +42,8 @@ class Interval extends Temporal {
   ///
   /// Start and end instants must be formatted according to RFC 3339. See
   /// `DateTime.parse` for reference of valid inputs for start and end parts.
-  /// 
-  /// Either start or end is considered open, if an item is null, an empty 
+  ///
+  /// Either start or end is considered open, if an item is null, an empty
   /// string, or a string with the value "..".
   ///
   /// Throws FormatException if an interval cannot be parsed.

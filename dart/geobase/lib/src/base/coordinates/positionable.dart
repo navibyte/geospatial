@@ -32,7 +32,7 @@ abstract class Positionable extends Measurable {
   bool get is3D;
 
   /// True for geographic positions (with longitude and latitude coordinates).
-  /// 
+  ///
   /// If false is returned, then coordinates are projected or cartesian (with
   /// x and coordinates).
   bool get isGeographic;
