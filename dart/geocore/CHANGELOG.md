@@ -27,6 +27,12 @@
 - [Rename point factories of Point classes #49](https://github.com/navibyte/geospatial/issues/49)
 - [Separate some common features of geocore to separate common package #86](https://github.com/navibyte/geospatial/issues/86)
 - [Remove "empty point" concept #85](https://github.com/navibyte/geospatial/issues/85)
+- [Simplify Feature and FeatureCollection classes #88](https://github.com/navibyte/geospatial/issues/88)
+- [Simplify temporal classes (Instant, Interval) and add equality and hashCode impls #93](https://github.com/navibyte/geospatial/issues/93)
+- [Equality and hashcodes on Point and other Geometry classes #12](https://github.com/navibyte/geospatial/issues/12)
+
+🛠 Maintenance:
+- [Upgrade to Dart 2.15 #90](https://github.com/navibyte/geospatial/issues/90)
 
 📚 Documentation:
 - [Readme documentation updates for 0.8.0 release #63](https://github.com/navibyte/geospatial/issues/63)
