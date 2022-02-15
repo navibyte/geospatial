@@ -26,7 +26,7 @@ abstract class CartesianPoint<C extends num> extends Point<C> {
   CartesianPoint newFrom(Iterable<num> coords, {int? offset, int? length});
 
   @override
-  CartesianPoint transform(TransformPoint transform);
+  CartesianPoint transform(TransformPosition transform);
 
   @override
   bool get isGeographic => false;

@@ -101,7 +101,7 @@ class _BoundedSeriesView<E extends Bounded>
   }
 
   @override
-  BoundedSeries<E> transform(TransformPoint transform, {bool lazy = false}) {
+  BoundedSeries<E> transform(TransformPosition transform, {bool lazy = false}) {
     final transformed = map<E>((bounded) => bounded.transform(transform) as E);
     return _BoundedSeriesView(
       lazy ? transformed : transformed.toList(growable: false),

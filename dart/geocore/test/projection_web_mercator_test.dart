@@ -7,9 +7,8 @@
 // ignore_for_file: prefer_const_constructors, avoid_print
 
 import 'package:equatable/equatable.dart';
-
+import 'package:geobase/geobase.dart';
 import 'package:geocore/geocore.dart';
-
 import 'package:test/test.dart';
 
 import 'projection_sample.dart';
@@ -20,7 +19,7 @@ void main() {
 
   group('Test projections between WGS84 and Web Mercator', () {
     test('webMercatorToWgs84(CartesianPoint to GeoPoint2)', () {
-      final toWgs84 = wgs84ToWebMercator.inverse(GeoPoint2.coordinates);
+      final toWgs84 = wgs84ToWebMercator.inverse(GeoPoint2.create);
       for (final coords in wgs84ToWebMercatorData) {
         final point2 = Point2(x: coords[2], y: coords[3]);
         final pointWrapper = PointWrapper(point2);
@@ -37,14 +36,14 @@ void main() {
         );
         expectProjected(
           Point3(x: coords[2], y: coords[3], z: 30.0)
-              .project(toWgs84, to: GeoPoint3.coordinates),
+              .project(toWgs84, to: GeoPoint3.create),
           GeoPoint3(lon: coords[0], lat: coords[1], elev: 30.0),
         );
       }
     });
 
     test('wgs84ToWebMercator(GeoPoint to Point3)', () {
-      final toWebMercator = wgs84ToWebMercator.forward(Point3.coordinates);
+      final toWebMercator = wgs84ToWebMercator.forward(Point3.create);
       for (final coords in wgs84ToWebMercatorData) {
         final geoPoint3 = GeoPoint3(lon: coords[0], lat: coords[1]);
         final geoPointWrapper = GeoPointWrapper(geoPoint3);
@@ -55,25 +54,25 @@ void main() {
     });
 
     test('wgs84ToWebMercator(GeoPoint to PointXX) in different geometries', () {
-      _testToWebMercatorWithPoints(Point2.coordinates);
-      _testToWebMercatorWithPoints(Point2m.coordinates);
-      _testToWebMercatorWithPoints(Point3.coordinates);
-      _testToWebMercatorWithPoints(Point3m.coordinates);
+      _testToWebMercatorWithPoints(Point2.create);
+      _testToWebMercatorWithPoints(Point2m.create);
+      _testToWebMercatorWithPoints(Point3.create);
+      _testToWebMercatorWithPoints(Point3m.create);
     });
 
     test(
         'webMercatorToWgs84(CartesianPoint to GeoPointXX)'
         ' in different geometries', () {
-      _testToWgs84WithPoints(GeoPoint2.coordinates);
-      _testToWgs84WithPoints(GeoPoint2m.coordinates);
-      _testToWgs84WithPoints(GeoPoint3.coordinates);
-      _testToWgs84WithPoints(GeoPoint3m.coordinates);
+      _testToWgs84WithPoints(GeoPoint2.create);
+      _testToWgs84WithPoints(GeoPoint2m.create);
+      _testToWgs84WithPoints(GeoPoint3.create);
+      _testToWgs84WithPoints(GeoPoint3m.create);
     });
   });
 }
 
 void _testToWgs84WithPoints<R extends GeoPoint>(
-  PointFactory<R> factory,
+  CreatePosition<R> factory,
 ) {
   final toWgs84 = wgs84ToWebMercator.inverse(factory);
 
@@ -159,7 +158,7 @@ void _testToWgs84WithPoints<R extends GeoPoint>(
 }
 
 void _testToWebMercatorWithPoints<R extends CartesianPoint>(
-  PointFactory<R> factory,
+  CreatePosition<R> factory,
 ) {
   final toWebMercator = wgs84ToWebMercator.forward(factory);
 

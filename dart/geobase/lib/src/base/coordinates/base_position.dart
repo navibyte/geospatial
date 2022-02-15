@@ -7,6 +7,27 @@
 import 'position.dart';
 import 'positionable.dart';
 
+/// Creates a new position of [T] from [x] and [y], and optional [z] and [m].
+///
+/// For projected or cartesian positions (`Position`), coordinates axis are
+/// applied as is.
+///
+/// For geographic positions (`GeoPosition`), coordinates are applied as:
+/// `x` => `lon`, `y` => `lat`, `z` => `elev`, `m` => `m`
+typedef CreatePosition<T extends BasePosition> = T Function({
+  required num x,
+  required num y,
+  num? z,
+  num? m,
+});
+
+/// A function to transform the [source] position of [T] to a position of [T].
+///
+/// Target positions of [T] are created using [source] itself as a factory.
+///
+/// Throws FormatException if cannot transform.
+typedef TransformPosition = T Function<T extends BasePosition>(T source);
+
 /// A base interface for geospatial positions.
 //
 /// This interface defines coordinate value only for the m axis. Sub classes
@@ -62,6 +83,15 @@ abstract class BasePosition extends Positionable {
   /// When returning `GeoPosition` as [Position] then coordinates are copied as:
   /// `lon` => `x`, `lat` => `y`, `elev` => `z`, `m` => `m`
   Position get asPosition;
+
+  /// Copies the position with optional [x], [y], [z] and [m] overriding values.
+  ///
+  /// When copying `GeoPosition` then coordinates has correspondence:
+  /// `x` => `lon`, `y` => `lat`, `z` => `elev`, `m` => `m`
+  BasePosition copyWith({num? x, num? y, num? z, num? m});
+
+  /// Returns a position with all points transformed using [transform].
+  BasePosition transform(TransformPosition transform);
 
   /// True if this position equals with [other] by testing 2D coordinates only.
   ///

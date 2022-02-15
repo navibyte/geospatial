@@ -78,7 +78,8 @@ class FeatureCollection<E extends Feature> extends FeatureWritable
 
   /// Returns a new collection with features transformed using [transform].
   @override
-  FeatureCollection<E> transform(TransformPoint transform) => FeatureCollection(
+  FeatureCollection<E> transform(TransformPosition transform) =>
+      FeatureCollection(
         features: features.transform(
           transform,
           lazy: false,
@@ -92,7 +93,7 @@ class FeatureCollection<E extends Feature> extends FeatureWritable
   @override
   FeatureCollection project<R extends Point>(
     Projection<R> projection, {
-    PointFactory<R>? to,
+    CreatePosition<R>? to,
   }) =>
       // Note: returns FeatureCollection, not FeatureCollection<E> as projected
       // feature elements could be other than E as a result of some projections.

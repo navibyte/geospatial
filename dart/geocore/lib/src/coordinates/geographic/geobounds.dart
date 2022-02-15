@@ -192,7 +192,7 @@ class GeoBounds<T extends GeoPoint> extends BoundsBase<T> implements GeoBox {
   }
 
   @override
-  GeoBounds<T> transform(TransformPoint transform) => GeoBounds.of(
+  GeoBounds<T> transform(TransformPosition transform) => GeoBounds.of(
         min: min.transform(transform) as T,
         max: max.transform(transform) as T,
       );

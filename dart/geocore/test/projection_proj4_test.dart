@@ -6,6 +6,7 @@
 
 import 'package:equatable/equatable.dart';
 
+import 'package:geobase/geobase.dart';
 import 'package:geocore/geocore.dart';
 
 import 'package:test/test.dart';
@@ -32,10 +33,10 @@ void main() {
     });
 
     test('wgs84ToWebMercator.forward', () {
-      final toWebMercatorProj4a = adapterWgs84ToWM.forward(Point3m.coordinates);
-      final toWebMercatorProj4b = adapterWMToWgs84.inverse(Point3m.coordinates);
+      final toWebMercatorProj4a = adapterWgs84ToWM.forward(Point3m.create);
+      final toWebMercatorProj4b = adapterWMToWgs84.inverse(Point3m.create);
       final toWebMercatorGeocore =
-          wgs84ToWebMercator.forward(Point3m.coordinates);
+          wgs84ToWebMercator.forward(Point3m.create);
       for (final coords in wgs84ToWebMercatorData) {
         final geoPoint3 =
             GeoPoint3m(lon: coords[0], lat: coords[1], elev: 5.1, m: 6.2);
@@ -51,9 +52,9 @@ void main() {
     });
 
     test('wgs84ToWebMercator.inverse', () {
-      final toWgs84Proj4a = adapterWgs84ToWM.inverse(GeoPoint3m.coordinates);
-      final toWgs84Proj4b = adapterWMToWgs84.forward(GeoPoint3m.coordinates);
-      final toWgs84Geocore = wgs84ToWebMercator.inverse(GeoPoint3m.coordinates);
+      final toWgs84Proj4a = adapterWgs84ToWM.inverse(GeoPoint3m.create);
+      final toWgs84Proj4b = adapterWMToWgs84.forward(GeoPoint3m.create);
+      final toWgs84Geocore = wgs84ToWebMercator.inverse(GeoPoint3m.create);
       for (final coords in wgs84ToWebMercatorData) {
         final geoPoint3 =
             GeoPoint3m(lon: coords[0], lat: coords[1], elev: 5.1, m: 6.2);
@@ -121,12 +122,12 @@ void main() {
           const geo =
               GeoPoint2(lon: 17.888058560281515, lat: 46.89226406700879);
           expectProjected(
-            geo.project(adapter.forward(Point2.coordinates)),
+            geo.project(adapter.forward(Point2.create)),
             p,
             defsAccuracyProj[i],
           );
           expectProjected(
-            p.project(adapter.inverse(GeoPoint2.coordinates)),
+            p.project(adapter.inverse(GeoPoint2.create)),
             geo,
             defsAccuracyWgs84[i],
           );
@@ -156,13 +157,13 @@ void main() {
         elev: 140.0,
       );
       expectProjected(
-        geodetic.project(adapter.forward(Point3.coordinates)),
+        geodetic.project(adapter.forward(Point3.create)),
         geocentric,
         0.0000001,
         0.0000001,
       );
       expectProjected(
-        geocentric.project(adapter.inverse(GeoPoint3.coordinates)),
+        geocentric.project(adapter.inverse(GeoPoint3.create)),
         geodetic,
         0.0000001,
         0.0000001,

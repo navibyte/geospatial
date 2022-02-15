@@ -100,7 +100,7 @@ abstract class PointSeries<E extends Point>
   PointSeries<R> project<R extends Point>(
     Projection<R> projection, {
     bool lazy = false,
-    PointFactory<R>? to,
+    CreatePosition<R>? to,
   });
 
   /// Writes this point series object to [writer].
@@ -187,7 +187,7 @@ class _PointSeriesView<E extends Point>
   }
 
   @override
-  PointSeries<E> transform(TransformPoint transform, {bool lazy = false}) {
+  PointSeries<E> transform(TransformPosition transform, {bool lazy = false}) {
     final transformed = map((point) => point.transform(transform) as E);
     return _PointSeriesView(
       lazy ? transformed : transformed.toList(growable: false),
@@ -198,9 +198,9 @@ class _PointSeriesView<E extends Point>
   PointSeries<R> project<R extends Point>(
     Projection<R> projection, {
     bool lazy = false,
-    PointFactory<R>? to,
+    CreatePosition<R>? to,
   }) {
-    final projected = map((point) => projection.projectPoint(point, to: to));
+    final projected = map((point) => projection.project(point, to: to));
     return _PointSeriesView(
       lazy ? projected : projected.toList(growable: false),
     );

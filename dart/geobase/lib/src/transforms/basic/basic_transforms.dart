@@ -6,109 +6,110 @@
 
 import 'dart:math' as math;
 
-import '/src/base/spatial.dart';
+import 'package:geobase/geobase.dart';
 
 // Some basic transformation functions (like translate, scale, rotate).
 // Not meant to be complete set of transformation.
-//
-// Geospatial projections between coordinate reference systems on other
-// packages.
 
-/// Returns a function to translate points by delta values of each axis.
+/// Returns a function to translate positions by delta values of each axis.
 ///
 /// Set optional [dx], [dy], [dz] and [dm] values for translating on a
 /// corresponding axis.
 ///
 /// If a point to be translated do not have an axis even if a translation delta
 /// for that axis is given, then such delta is ignored.
-TransformPoint translatePoint<C extends num>({
+TransformPosition translatePoint<C extends num>({
   C? dx,
   C? dy,
   C? dz,
   C? dm,
 }) =>
-    <T extends Point>(T source) {
-      final dim = source.coordinateDimension;
+    <T extends BasePosition>(T source) {
+      final pos = source.asPosition;
+      final dim = pos.coordinateDimension;
       if (dim == 2) {
         // point is (X, Y)
         return source.copyWith(
-          x: dx != null ? source.x + dx : null,
-          y: dy != null ? source.y + dy : null,
+          x: dx != null ? pos.x + dx : null,
+          y: dy != null ? pos.y + dy : null,
         ) as T;
       } else {
         // point could be (X, Y, Z), (X, Y, M) or (X, Y, Z, M)
         return source.copyWith(
-          x: dx != null ? source.x + dx : null,
-          y: dy != null ? source.y + dy : null,
-          z: dz != null && source.is3D ? source.z + dz : null,
-          m: dm != null && source.isMeasured ? source.m + dm : null,
+          x: dx != null ? pos.x + dx : null,
+          y: dy != null ? pos.y + dy : null,
+          z: dz != null && pos.is3D ? pos.z + dz : null,
+          m: dm != null && pos.isMeasured ? pos.m + dm : null,
         ) as T;
       }
     };
 
-/// Returns a function to scale points by scale factors for each axis.
+/// Returns a function to scale positions by scale factors for each axis.
 ///
 /// Set optional [sx], [sy], [sz] and [sm] scale factors for scaling on a
 /// corresponding axis.
 ///
 /// If a point to be scaled do not have an axis even if a scale factor
 /// for that axis is given, then such factor is ignored.
-TransformPoint scalePoint<C extends num>({
+TransformPosition scalePoint<C extends num>({
   C? sx,
   C? sy,
   C? sz,
   C? sm,
 }) =>
-    <T extends Point>(T source) {
-      final dim = source.coordinateDimension;
+    <T extends BasePosition>(T source) {
+      final pos = source.asPosition;
+      final dim = pos.coordinateDimension;
       if (dim == 2) {
         // point is (X, Y)
         return source.copyWith(
-          x: sx != null ? sx * source.x : null,
-          y: sy != null ? sy * source.y : null,
+          x: sx != null ? sx * pos.x : null,
+          y: sy != null ? sy * pos.y : null,
         ) as T;
       } else {
         // point could be (X, Y, Z), (X, Y, M) or (X, Y, Z, M)
         return source.copyWith(
-          x: sx != null ? sx * source.x : null,
-          y: sy != null ? sy * source.y : null,
-          z: sz != null && source.is3D ? sz * source.z : null,
-          m: sm != null && source.isMeasured ? sm * source.m : null,
+          x: sx != null ? sx * pos.x : null,
+          y: sy != null ? sy * pos.y : null,
+          z: sz != null && pos.is3D ? sz * pos.z : null,
+          m: sm != null && pos.isMeasured ? sm * pos.m : null,
         ) as T;
       }
     };
 
-/// Returns a function to scale points by the [scale] factor.
-TransformPoint scalePointBy<C extends num>(C scale) =>
-    <T extends Point>(T source) {
-      final dim = source.coordinateDimension;
+/// Returns a function to scale positions by the [scale] factor.
+TransformPosition scalePointBy<C extends num>(C scale) =>
+    <T extends BasePosition>(T source) {
+      final pos = source.asPosition;
+      final dim = pos.coordinateDimension;
       if (dim == 2) {
         // point is (X, Y)
         return source.copyWith(
-          x: scale * source.x,
-          y: scale * source.y,
+          x: scale * pos.x,
+          y: scale * pos.y,
         ) as T;
       } else {
         // point could be (X, Y, Z), (X, Y, M) or (X, Y, Z, M)
         return source.copyWith(
-          x: scale * source.x,
-          y: scale * source.y,
-          z: source.is3D ? scale * source.z : null,
-          m: source.isMeasured ? scale * source.m : null,
+          x: scale * pos.x,
+          y: scale * pos.y,
+          z: pos.is3D ? scale * pos.z : null,
+          m: pos.isMeasured ? scale * pos.m : null,
         ) as T;
       }
     };
 
-/// Returns a function to rotate points by the [radians] around the origin.
+/// Returns a function to rotate positions by the [radians] around the origin.
 ///
 /// If both [cx] and [cy] are given then rotate points around this pivot point.
-TransformPoint rotatePoint2D(num radians, {num? cx, num? cy}) =>
-    <T extends Point>(T source) {
+TransformPosition rotatePoint2D(num radians, {num? cx, num? cy}) =>
+    <T extends BasePosition>(T source) {
       final s = math.sin(radians);
       final c = math.cos(radians);
 
-      var x = source.x;
-      var y = source.y;
+      final pos = source.asPosition;
+      var x = pos.x;
+      var y = pos.y;
 
       // if has pivot point, then move origin
       if (cx != null && cy != null) {

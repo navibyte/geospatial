@@ -29,6 +29,12 @@ void main() {
   _geoJsonGeometryCollection();
   _geoJsonFeature();
   _geoJsonFeatureCollection();
+
+  // projection samples
+  _projections();
+
+  // transform samples
+  _basicTransfroms();
 }
 
 void _wktPointGeometry() {
@@ -295,4 +301,37 @@ void _geoJsonFeatureCollection() {
       )
       ..toString(),
   );
+}
+
+void _projections() {
+  // Built-in coordinate projections (currently only between WGS84 and
+  // Web Mercator)
+
+  // From GeoPoint2 (WGS 84 longitude-latitude) to Point2 (Web Mercator metric)
+  final forward = wgs84ToWebMercator.forward(Position.create);
+  final projected =
+      forward.project(const GeoPosition(lon: -0.0014, lat: 51.4778));
+
+  // From Point2 (Web Mercator metric) to GeoPoint2 (WGS 84 longitude-latitude)
+  final inverse = wgs84ToWebMercator.inverse(GeoPosition.create);
+  final unprojected = inverse.project(projected);
+
+  print('$unprojected <=> $projected');
+}
+
+void _basicTransfroms() {
+  // -----------
+
+  // Create a point and transform it with a custom translation that returns
+  // `Position(x: 110.0, y: 220.0, z: 50.0, m: 1.25)` after projection.
+  print(
+    const Position(x: 100.0, y: 200.0, z: 50.0, m: 1.25)
+        .transform(_sampleFixedTranslate),
+  );
+}
+
+/// Translates X by 10.0 and Y by 20.0, other coordinates (Z and M) not changed.
+T _sampleFixedTranslate<T extends BasePosition>(T source) {
+  final pos = source.asPosition;
+  return source.copyWith(x: pos.x + 10.0, y: pos.y + 20.0) as T;
 }

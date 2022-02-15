@@ -162,12 +162,12 @@ abstract class Bounds<T extends Point> extends Bounded
 
   /// Returns new bounds transformed from this bounds using [transform].
   @override
-  Bounds<T> transform(TransformPoint transform);
+  Bounds<T> transform(TransformPosition transform);
 
   @override
   Bounds<R> project<R extends Point>(
     Projection<R> projection, {
-    PointFactory<R>? to,
+    CreatePosition<R>? to,
   });
 
   /// Returns true if this bounds intesects with [other] bounds in 2D.
@@ -277,7 +277,7 @@ class BoundsBase<T extends Point> extends Bounds<T> {
   }
 
   @override
-  Bounds<T> transform(TransformPoint transform) => BoundsBase(
+  Bounds<T> transform(TransformPosition transform) => BoundsBase(
         min: min.transform(transform) as T,
         max: max.transform(transform) as T,
       );
@@ -285,7 +285,7 @@ class BoundsBase<T extends Point> extends Bounds<T> {
   @override
   Bounds<R> project<R extends Point>(
     Projection<R> projection, {
-    PointFactory<R>? to,
+    CreatePosition<R>? to,
   }) =>
       BoundsBase(
         min: min.project(projection, to: to),

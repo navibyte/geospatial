@@ -22,5 +22,3 @@ part 'geometry.dart';
 part 'point_series.dart';
 part 'point_wrapper.dart';
 part 'point.dart';
-part 'project.dart';
-part 'transform.dart';

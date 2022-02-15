@@ -146,13 +146,13 @@ class Polygon<T extends Point> extends Geometry with EquatableMixin {
   }
 
   @override
-  Polygon<T> transform(TransformPoint transform) =>
+  Polygon<T> transform(TransformPosition transform) =>
       Polygon(rings.transform(transform, lazy: false));
 
   @override
   Polygon<R> project<R extends Point>(
     Projection<R> projection, {
-    PointFactory<R>? to,
+    CreatePosition<R>? to,
   }) =>
       Polygon<R>(
         rings.convert((ring) => ring.project(projection, to: to)),

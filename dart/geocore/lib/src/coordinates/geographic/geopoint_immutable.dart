@@ -38,6 +38,11 @@ class GeoPoint2 extends GeoPoint {
       : lon = 0.0,
         lat = 0.0;
 
+  /// A point from parameters compatible with [CreatePosition] function type.
+  // ignore: avoid_unused_constructor_parameters
+  GeoPoint2.create({required num x, required num y, num? z, num? m})
+      : this(lon: x.toDouble(), lat: y.toDouble());
+
   /// A geographic position from [coords] given in order: lon, lat.
   factory GeoPoint2.from(Iterable<num> coords, {int? offset}) {
     final start = offset ?? 0;
@@ -154,7 +159,7 @@ class GeoPoint2 extends GeoPoint {
   }
 
   @override
-  GeoPoint2 transform(TransformPoint transform) => transform(this);
+  GeoPoint2 transform(TransformPosition transform) => transform(this);
 
   @override
   String toString() => '$lon,$lat';
@@ -182,6 +187,11 @@ class GeoPoint2m extends GeoPoint2 {
   const GeoPoint2m.origin()
       : m = 0.0,
         super.origin();
+
+  /// A point from parameters compatible with [CreatePosition] function type.
+  // ignore: avoid_unused_constructor_parameters
+  GeoPoint2m.create({required num x, required num y, num? z, num? m})
+      : this(lon: x.toDouble(), lat: y.toDouble(), m: m?.toDouble() ?? 0.0);
 
   /// A geographic position from [coords] given in order: lon, lat, m.
   factory GeoPoint2m.from(Iterable<num> coords, {int? offset}) {
@@ -290,7 +300,7 @@ class GeoPoint2m extends GeoPoint2 {
   }
 
   @override
-  GeoPoint2m transform(TransformPoint transform) => transform(this);
+  GeoPoint2m transform(TransformPosition transform) => transform(this);
 
   @override
   String toString() => '$lon,$lat,$m';
@@ -314,6 +324,11 @@ class GeoPoint3 extends GeoPoint2 {
   const GeoPoint3.origin()
       : elev = 0.0,
         super.origin();
+
+  /// A point from parameters compatible with [CreatePosition] function type.
+  // ignore: avoid_unused_constructor_parameters
+  GeoPoint3.create({required num x, required num y, num? z, num? m})
+      : this(lon: x.toDouble(), lat: y.toDouble(), elev: z?.toDouble() ?? 0.0);
 
   /// A geographic position from [coords], given in order: lon, lat, elev.
   factory GeoPoint3.from(Iterable<num> coords, {int? offset}) {
@@ -431,7 +446,7 @@ class GeoPoint3 extends GeoPoint2 {
   }
 
   @override
-  GeoPoint3 transform(TransformPoint transform) => transform(this);
+  GeoPoint3 transform(TransformPosition transform) => transform(this);
 
   @override
   String toString() => '$lon,$lat,$elev';
@@ -463,6 +478,15 @@ class GeoPoint3m extends GeoPoint3 {
   const GeoPoint3m.origin()
       : m = 0.0,
         super.origin();
+
+  /// A point from parameters compatible with [CreatePosition] function type.
+  GeoPoint3m.create({required num x, required num y, num? z, num? m})
+      : this(
+          lon: x.toDouble(),
+          lat: y.toDouble(),
+          elev: z?.toDouble() ?? 0.0,
+          m: m?.toDouble() ?? 0.0,
+        );
 
   /// A geographic position from [coords], given in order: lon, lat, elev, m.
   factory GeoPoint3m.from(Iterable<num> coords, {int? offset}) {
@@ -576,7 +600,7 @@ class GeoPoint3m extends GeoPoint3 {
   }
 
   @override
-  GeoPoint3m transform(TransformPoint transform) => transform(this);
+  GeoPoint3m transform(TransformPosition transform) => transform(this);
 
   @override
   String toString() => '$lon,$lat,$elev,$m';

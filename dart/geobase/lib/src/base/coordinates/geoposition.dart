@@ -37,6 +37,18 @@ class GeoPosition extends BasePosition {
         _elev = elev,
         _m = m;
 
+  /// A position from parameters compatible with `CreatePosition` function type.
+  ///
+  /// Coordinate values from parameters are copied as geographic coordinates:
+  /// `x` => `lon`, `y` => `lat`, `z` => `elev`, `m` => `m`
+  GeoPosition.create({required num x, required num y, num? z, num? m})
+      : this(
+          lon: x.toDouble(),
+          lat: y.toDouble(),
+          elev: z?.toDouble(),
+          m: m?.toDouble(),
+        );
+
   final double _lon;
   final double _lat;
   final double? _elev;
@@ -87,6 +99,21 @@ class GeoPosition extends BasePosition {
 
   @override
   Position get asPosition => Position(x: _lon, y: _lat, z: _elev, m: _m);
+
+  /// Copies the position with optional [x], [y], [z] and [m] overriding values.
+  ///
+  /// Coordinate values from parameters are copied as:
+  /// `x` => `lon`, `y` => `lat`, `z` => `elev`, `m` => `m
+  @override
+  GeoPosition copyWith({num? x, num? y, num? z, num? m}) => GeoPosition.create(
+        x: x ?? _lon,
+        y: y ?? _lat,
+        z: z ?? _elev,
+        m: m ?? _m,
+      );
+
+  @override
+  GeoPosition transform(TransformPosition transform) => transform(this);
 
   @override
   int get spatialDimension => typeCoords.spatialDimension;

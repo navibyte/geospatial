@@ -56,7 +56,7 @@ abstract class Geometry extends Bounded {
   /// The transformed geometry object must be of the same geometry type with
   /// this object.
   @override
-  Geometry transform(TransformPoint transform);
+  Geometry transform(TransformPosition transform);
 
   /// Returns a new geometry with all points projected using [projection].
   ///
@@ -65,7 +65,7 @@ abstract class Geometry extends Bounded {
   @override
   Geometry project<R extends Point>(
     Projection<R> projection, {
-    PointFactory<R>? to,
+    CreatePosition<R>? to,
   });
 
   /// Writes this geometry object to [writer].
@@ -112,12 +112,12 @@ class _EmptyGeometry extends Geometry {
   void writeTo(GeometryWriter writer) => writer.emptyGeometry(typeGeom);
 
   @override
-  Geometry transform(TransformPoint transform) => this;
+  Geometry transform(TransformPosition transform) => this;
 
   @override
   Geometry project<R extends Point>(
     Projection<R> projection, {
-    PointFactory<R>? to,
+    CreatePosition<R>? to,
   }) =>
       throw const FormatException('Cannot project empty geometry.');
 

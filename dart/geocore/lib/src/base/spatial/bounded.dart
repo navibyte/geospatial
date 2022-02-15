@@ -37,7 +37,7 @@ abstract class Bounded extends _BoundedBase {
   /// Returns a new object with all points transformed using [transform].
   ///
   /// The transformed bounded object must be of the same type with this object.
-  Bounded transform(TransformPoint transform);
+  Bounded transform(TransformPosition transform);
 
   /// Returns a new object with all points projected using [projection].
   ///
@@ -45,6 +45,6 @@ abstract class Bounded extends _BoundedBase {
   /// that as a point factory. Otherwise [projection] uses it's own factory.
   Bounded project<R extends Point>(
     Projection<R> projection, {
-    PointFactory<R>? to,
+    CreatePosition<R>? to,
   });
 }

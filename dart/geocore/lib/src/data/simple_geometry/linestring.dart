@@ -130,13 +130,13 @@ class LineString<T extends Point> extends Geometry with EquatableMixin {
   }
 
   @override
-  LineString<T> transform(TransformPoint transform) =>
+  LineString<T> transform(TransformPosition transform) =>
       LineString(chain.transform(transform, lazy: false), type: type);
 
   @override
   LineString<R> project<R extends Point>(
     Projection<R> projection, {
-    PointFactory<R>? to,
+    CreatePosition<R>? to,
   }) =>
       LineString(chain.project(projection, lazy: false, to: to), type: type);
 

@@ -37,6 +37,13 @@ class Position extends BasePosition {
         _z = z,
         _m = m;
 
+  /// A position from parameters compatible with `CreatePosition` function type.
+  const Position.create({required num x, required num y, num? z, num? m})
+      : _x = x,
+        _y = y,
+        _z = z,
+        _m = m;
+
   final num _x;
   final num _y;
   final num? _z;
@@ -91,6 +98,22 @@ class Position extends BasePosition {
 
   @override
   Position get asPosition => this;
+
+  /// Copies the position with optional [x], [y], [z] and [m] overriding values.
+  ///
+  /// For example:
+  /// `Position(x: 1, y: 1).copyWith(y: 2) == Position(x: 1, y: 2)`
+  /// `Position(x: 1, y: 1).copyWith(z: 2) == Position(x: 1, y: 1, z: 2)`
+  @override
+  Position copyWith({num? x, num? y, num? z, num? m}) => Position(
+        x: x ?? _x,
+        y: y ?? _y,
+        z: z ?? _z,
+        m: m ?? _m,
+      );
+
+  @override
+  Position transform(TransformPosition transform) => transform(this);
 
   @override
   int get spatialDimension => typeCoords.spatialDimension;

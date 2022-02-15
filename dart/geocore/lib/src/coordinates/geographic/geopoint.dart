@@ -47,8 +47,12 @@ abstract class GeoPoint extends Point<double> implements GeoPosition {
   @override
   GeoPoint newFrom(Iterable<num> coords, {int? offset, int? length});
 
+  /// Returns a new point transformed from this point using [transform].
+  ///
+  /// The transformed point object must be of the type with same coordinate
+  /// value members as this object has.
   @override
-  GeoPoint transform(TransformPoint transform);
+  GeoPoint transform(TransformPosition transform);
 
   @override
   bool get isGeographic => true;

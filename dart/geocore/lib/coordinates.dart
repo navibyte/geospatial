@@ -16,5 +16,3 @@ export 'base.dart';
 export 'src/coordinates/cartesian.dart';
 export 'src/coordinates/crs.dart';
 export 'src/coordinates/geographic.dart';
-export 'src/coordinates/projections.dart';
-export 'src/coordinates/transforms.dart';

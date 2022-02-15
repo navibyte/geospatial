@@ -36,6 +36,11 @@ class Point2 extends CartesianPoint<num> {
       : x = 0.0,
         y = 0.0;
 
+  /// A point from parameters compatible with [CreatePosition] function type.
+  // ignore: avoid_unused_constructor_parameters
+  const Point2.create({required num x, required num y, num? z, num? m})
+      : this(x: x, y: y);
+
   /// A point from [coords] given in order: x, y.
   factory Point2.from(Iterable<num> coords, {int? offset}) {
     final start = offset ?? 0;
@@ -141,7 +146,7 @@ class Point2 extends CartesianPoint<num> {
       );
 
   @override
-  Point2 transform(TransformPoint transform) => transform(this);
+  Point2 transform(TransformPosition transform) => transform(this);
 
   @override
   String toString() => '$x,$y';
@@ -160,6 +165,11 @@ class Point2m extends Point2 {
   const Point2m.origin()
       : m = 0.0,
         super.origin();
+
+  /// A point from parameters compatible with [CreatePosition] function type.
+  // ignore: avoid_unused_constructor_parameters
+  const Point2m.create({required num x, required num y, num? z, num? m})
+      : this(x: x, y: y, m: m ?? 0.0);
 
   /// A point from [coords] given in order: x, y, m.
   factory Point2m.from(Iterable<num> coords, {int? offset}) {
@@ -265,7 +275,7 @@ class Point2m extends Point2 {
   }
 
   @override
-  Point2m transform(TransformPoint transform) => transform(this);
+  Point2m transform(TransformPosition transform) => transform(this);
 
   @override
   String toString() => '$x,$y,$m';
@@ -284,6 +294,11 @@ class Point3 extends Point2 {
   const Point3.origin()
       : z = 0.0,
         super.origin();
+
+  /// A point from parameters compatible with [CreatePosition] function type.
+  // ignore: avoid_unused_constructor_parameters
+  const Point3.create({required num x, required num y, num? z, num? m})
+      : this(x: x, y: y, z: z ?? 0.0);
 
   /// A point from [coords] given in order: x, y, m.
   factory Point3.from(Iterable<num> coords, {int? offset}) {
@@ -392,7 +407,7 @@ class Point3 extends Point2 {
   }
 
   @override
-  Point3 transform(TransformPoint transform) => transform(this);
+  Point3 transform(TransformPosition transform) => transform(this);
 
   @override
   String toString() => '$x,$y,$z';
@@ -411,6 +426,10 @@ class Point3m extends Point3 {
   const Point3m.origin()
       : m = 0.0,
         super.origin();
+
+  /// A point from parameters compatible with [CreatePosition] function type.
+  const Point3m.create({required num x, required num y, num? z, num? m})
+      : this(x: x, y: y, z: z ?? 0.0, m: m ?? 0.0);
 
   /// A point from [coords] given in order: x, y, z, m.
   factory Point3m.from(Iterable<num> coords, {int? offset}) {
@@ -520,7 +539,7 @@ class Point3m extends Point3 {
   }
 
   @override
-  Point3m transform(TransformPoint transform) => transform(this);
+  Point3m transform(TransformPosition transform) => transform(this);
 
   @override
   String toString() => '$x,$y,$z,$m';
@@ -539,6 +558,11 @@ class Point2i extends CartesianPoint<int> {
   const Point2i.origin()
       : x = 0,
         y = 0;
+
+  /// A point from parameters compatible with [CreatePosition] function type.
+  // ignore: avoid_unused_constructor_parameters
+  Point2i.create({required num x, required num y, num? z, num? m})
+      : this(x: x.round(), y: y.round());
 
   /// A point from [coords] given in order: x, y.
   factory Point2i.from(Iterable<num> coords, {int? offset}) {
@@ -656,7 +680,7 @@ class Point2i extends CartesianPoint<int> {
   }
 
   @override
-  Point2i transform(TransformPoint transform) => transform(this);
+  Point2i transform(TransformPosition transform) => transform(this);
 
   @override
   String toString() => '$x,$y';
@@ -675,6 +699,11 @@ class Point3i extends Point2i {
   const Point3i.origin()
       : z = 0,
         super.origin();
+
+  /// A point from parameters compatible with [CreatePosition] function type.
+  // ignore: avoid_unused_constructor_parameters
+  Point3i.create({required num x, required num y, num? z, num? m})
+      : this(x: x.round(), y: y.round(), z: z?.round() ?? 0);
 
   /// A point from [coords] given in order [x], [y], [z].
   factory Point3i.from(Iterable<num> coords, {int? offset}) {
@@ -783,7 +812,7 @@ class Point3i extends Point2i {
   }
 
   @override
-  Point3i transform(TransformPoint transform) => transform(this);
+  Point3i transform(TransformPosition transform) => transform(this);
 
   @override
   String toString() => '$x,$y,$z';

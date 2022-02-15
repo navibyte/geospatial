@@ -90,13 +90,13 @@ class GeometryCollection<E extends Geometry> extends Geometry
   }
 
   @override
-  GeometryCollection<E> transform(TransformPoint transform) =>
+  GeometryCollection<E> transform(TransformPosition transform) =>
       GeometryCollection(geometries.transform(transform, lazy: false));
 
   @override
   GeometryCollection project<R extends Point>(
     Projection<R> projection, {
-    PointFactory<R>? to,
+    CreatePosition<R>? to,
   }) =>
       // Note: returns GeometryCollection, not GeometryCollection<E> as
       // projected geometries could be other than E as a result of some
@@ -183,13 +183,13 @@ class MultiPoint<E extends Point> extends Geometry with EquatableMixin {
   }
 
   @override
-  MultiPoint<E> transform(TransformPoint transform) =>
+  MultiPoint<E> transform(TransformPosition transform) =>
       MultiPoint(points.transform(transform, lazy: false));
 
   @override
   MultiPoint<R> project<R extends Point>(
     Projection<R> projection, {
-    PointFactory<R>? to,
+    CreatePosition<R>? to,
   }) =>
       MultiPoint(points.project(projection, lazy: false, to: to));
 
@@ -284,13 +284,13 @@ class MultiLineString<T extends Point> extends Geometry with EquatableMixin {
   }
 
   @override
-  MultiLineString<T> transform(TransformPoint transform) =>
+  MultiLineString<T> transform(TransformPosition transform) =>
       MultiLineString(lineStrings.transform(transform, lazy: false));
 
   @override
   MultiLineString<R> project<R extends Point>(
     Projection<R> projection, {
-    PointFactory<R>? to,
+    CreatePosition<R>? to,
   }) =>
       MultiLineString<R>(
         BoundedSeries.from(
@@ -390,13 +390,13 @@ class MultiPolygon<T extends Point> extends Geometry with EquatableMixin {
   }
 
   @override
-  MultiPolygon<T> transform(TransformPoint transform) =>
+  MultiPolygon<T> transform(TransformPosition transform) =>
       MultiPolygon(polygons.transform(transform, lazy: false));
 
   @override
   MultiPolygon<R> project<R extends Point>(
     Projection<R> projection, {
-    PointFactory<R>? to,
+    CreatePosition<R>? to,
   }) =>
       MultiPolygon<R>(
         BoundedSeries.from(

@@ -98,6 +98,21 @@ void main() {
         false,
       );
     });
+
+    test('Copy with', () {
+      expect(
+        const Position(x: 1, y: 1).copyWith(),
+        const Position(x: 1, y: 1),
+      );
+      expect(
+        const Position(x: 1, y: 1).copyWith(y: 2),
+        const Position(x: 1, y: 2),
+      );
+      expect(
+        const Position(x: 1, y: 1).copyWith(z: 2),
+        const Position(x: 1, y: 1, z: 2),
+      );
+    });
   });
 
   group('GeoPosition class', () {
@@ -170,6 +185,21 @@ void main() {
       expect(const GeoPosition(lon: 34.2, lat: 90.0).lat, 90.0);
       expect(const GeoPosition(lon: 34.2, lat: 91.0).lat, 90.0);
     });
+
+    test('Copy with', () {
+      expect(
+        const GeoPosition(lon: 1.0, lat: 1.0).copyWith(),
+        const GeoPosition(lon: 1.0, lat: 1.0),
+      );
+      expect(
+        const GeoPosition(lon: 1.0, lat: 1.0).copyWith(y: 2.0),
+        const GeoPosition(lon: 1.0, lat: 2.0),
+      );
+      expect(
+        const GeoPosition(lon: 1.0, lat: 1.0).copyWith(z: 2.0),
+        const GeoPosition(lon: 1.0, lat: 1.0, elev: 2.0),
+      );
+    });
   });
 }
 
@@ -181,6 +211,17 @@ class _TestXYZM implements Position {
     required this.z,
     required this.m,
   });
+
+  @override
+  Position copyWith({num? x, num? y, num? z, num? m}) => Position(
+        x: x ?? this.x,
+        y: y ?? this.y,
+        z: z ?? this.z,
+        m: m ?? this.m,
+      );
+
+  @override
+  Position transform(TransformPosition transform) => transform(this);
 
   @override
   num operator [](int i) => Position.getValue(this, i);

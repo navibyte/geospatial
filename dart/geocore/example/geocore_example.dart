@@ -108,17 +108,6 @@ void _readmeIntro() {
     },
   );
 
-  // Built-in coordinate projections (currently only between WGS84 and
-  // Web Mercator)
-
-  // From GeoPoint2 (WGS 84 longitude-latitude) to Point2 (Web Mercator metric)
-  final forward = wgs84ToWebMercator.forward(Point2.coordinates);
-  final projected = GeoPoint2(lon: -0.0014, lat: 51.4778).project(forward);
-
-  // From Point2 (Web Mercator metric) to GeoPoint2 (WGS 84 longitude-latitude)
-  final inverse = wgs84ToWebMercator.inverse(GeoPoint2.coordinates);
-  final unprojected = projected.project(inverse);
-
   // Coordinate projections based on the external proj4dart package.
 
   // A projection adapter from WGS84 (EPSG:4326) to EPSG:23700 (with definition)
@@ -132,8 +121,7 @@ void _readmeIntro() {
   );
 
   // Apply a forward projection to EPSG:23700 with points represented as Point2.
-  GeoPoint2(lon: 17.8880, lat: 46.8922)
-      .project(adapter.forward(Point2.coordinates));
+  GeoPoint2(lon: 17.8880, lat: 46.8922).project(adapter.forward(Point2.create));
 
   // Parsing GeoJSON data.
 
@@ -461,21 +449,4 @@ void _readmeIntro() {
     'POLYGON ((40 15, 50 50, 15 45, 10 15, 40 15),'
     ' (25 25, 25 40, 35 30, 25 25))',
   );
-
-  // -----------
-
-  // Create a point and transform it with a custom translation that returns
-  // `Point3m.xyzm(110.0, 220.0, 50.0, 1.25)` after projection.
-  Point3m.xyzm(100.0, 200.0, 50.0, 1.25).transform(_sampleFixedTranslate);
-
-  // The same transform function can be used to transform also geometry objects.
-  LineString.parse('100.0 200.0, 400.0 500.0', Point2.coordinates)
-      .transform(_sampleFixedTranslate);
-
-  // This returns a line string that has same coordinate values as:
-  // LineString.parse('110.0 220.0, 410.0 520.0', Point2.geometry)
 }
-
-/// Translates X by 10.0 and Y by 20.0, other coordinates (Z and M) not changed.
-T _sampleFixedTranslate<T extends Point>(T source) =>
-    source.copyWith(x: source.x + 10.0, y: source.y + 20.0) as T;

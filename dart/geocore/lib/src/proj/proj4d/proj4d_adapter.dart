@@ -4,9 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'package:geobase/geobase.dart';
 import 'package:proj4dart/proj4dart.dart' as p4d;
-
-import '/src/base/spatial.dart';
 
 /// Resolves a projection adapter between [fromCrs] and [toCrs].
 ///
@@ -28,7 +27,7 @@ Proj4Adapter proj4dart(
     Proj4Adapter.resolve(fromCrs, toCrs, fromDef: fromDef, toDef: toDef);
 
 /// A projection adapter based on the Proj4dart package.
-class Proj4Adapter with ProjectionAdapter<Point, Point> {
+class Proj4Adapter with ProjectionAdapter {
   /// Create an adapter with a projection [tuple] of the Proj4dart package.
   const Proj4Adapter(this.fromCrs, this.toCrs, this.tuple);
 
@@ -97,40 +96,56 @@ class Proj4Adapter with ProjectionAdapter<Point, Point> {
   final String toCrs;
 
   @override
-  Projection<R> forward<R extends Point>(PointFactory<R> factory) =>
+  Projection<R> forward<R extends BasePosition>(CreatePosition<R> factory) =>
       _ProjectionProxy(factory: factory, tuple: tuple, inverse: false);
 
   @override
-  Projection<R> inverse<R extends Point>(PointFactory<R> factory) =>
+  Projection<R> inverse<R extends BasePosition>(CreatePosition<R> factory) =>
       _ProjectionProxy(factory: factory, tuple: tuple, inverse: true);
 }
 
-class _ProjectionProxy<R extends Point> with Projection<R> {
+class _ProjectionProxy<R extends BasePosition> with Projection<R> {
   _ProjectionProxy({
     required this.factory,
     required this.tuple,
     required this.inverse,
   });
 
-  final PointFactory<R> factory;
+  final CreatePosition<R> factory;
   final p4d.ProjectionTuple tuple;
   final bool inverse;
 
   @override
-  R projectPoint(Point source, {PointFactory<R>? to}) {
+  R project(BasePosition source, {CreatePosition<R>? to}) {
     // source coordinates (as a Point instance of proj4dart)
     // (if geographical source coords: longitude is at x, latitude is at y)
     final hasZ = source.is3D;
-    final point = hasZ
-        ? p4d.Point.withZ(
-            x: source.x.toDouble(),
-            y: source.y.toDouble(),
-            z: source.z.toDouble(),
-          )
-        : p4d.Point(
-            x: source.x.toDouble(),
-            y: source.y.toDouble(),
-          );
+    final p4d.Point point;
+    if (source is Position) {
+      point = hasZ
+          ? p4d.Point.withZ(
+              x: source.x.toDouble(),
+              y: source.y.toDouble(),
+              z: source.z.toDouble(),
+            )
+          : p4d.Point(
+              x: source.x.toDouble(),
+              y: source.y.toDouble(),
+            );
+    } else if (source is GeoPosition) {
+      point = hasZ
+          ? p4d.Point.withZ(
+              x: source.lon,
+              y: source.lat,
+              z: source.elev,
+            )
+          : p4d.Point(
+              x: source.lon,
+              y: source.lat,
+            );
+    } else {
+      throw const FormatException('Unknow source position type');
+    }
 
     // project using forward or inverse projection of the tuple
     final p4d.Point projected;
@@ -144,7 +159,7 @@ class _ProjectionProxy<R extends Point> with Projection<R> {
     }
 
     // return a projected (or unprojected) point with m coordinate unchanged
-    return (to ?? factory).newWith(
+    return (to ?? factory).call(
       x: projected.x,
       y: projected.y,
       z: projected.z,

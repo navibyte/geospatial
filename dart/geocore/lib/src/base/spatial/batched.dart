@@ -44,7 +44,7 @@ abstract class _BatchedSeries<S extends _BatchedSeries<S, E>, E>
   ///
   /// The transformed series is populated by default. If [lazy] is set true then
   /// returns a new lazy series with points of the series transformed lazily.
-  S transform(TransformPoint transform, {bool lazy = false});
+  S transform(TransformPosition transform, {bool lazy = false});
 }
 
 /// Private implementation of [_BatchedSeries] based on UnmodifiableListView.

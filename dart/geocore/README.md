@@ -103,18 +103,6 @@ A feature (a geospatial entity) contains an id, a geometry and properties:
   );
 ```
 
-Built-in coordinate projections (currently only between WGS84 and Web Mercator):
-
-```dart
-  // From GeoPoint2 (WGS 84 longitude-latitude) to Point2 (Web Mercator metric)
-  final forward = wgs84ToWebMercator.forward(Point2.coordinates);
-  final projected = GeoPoint2(lon: -0.0014, lat: 51.4778).project(forward);
-
-  // From Point2 (Web Mercator metric) to GeoPoint2 (WGS 84 longitude-latitude)
-  final inverse = wgs84ToWebMercator.inverse(GeoPoint2.coordinates);
-  final unprojected = projected.project(inverse);
-```
-
 Coordinate projections based on the external [proj4dart](https://pub.dev/packages/proj4dart) package:
 
 ```dart
@@ -129,8 +117,7 @@ Coordinate projections based on the external [proj4dart](https://pub.dev/package
   );
 
   // Apply a forward projection to EPSG:23700 with points represented as Point2.
-  GeoPoint2(lon: 17.8880, lat: 46.8922)
-      .project(adapter.forward(Point2.coordinates));
+  GeoPoint2(lon: 17.8880, lat: 46.8922).project(adapter.forward(Point2.create));
 ```
 
 Parsing [GeoJSON](https://geojson.org/) data:
@@ -547,46 +534,7 @@ like [The EPSG dataset](https://epsg.org/).
 
 ### Projections between coordinate reference systems
 
-See the [introduction](#introduction) for samples projecting geographic points
-to projected points, and vice versa.
-
-A forward or inverse projection is implemented by an interface defined as:
-
-```dart
-/// A mixin defining an interface for (geospatial) projections.
-///
-/// A class that implements this mixin may provide for example a map projection
-/// from geographical points to projected cartesian points, or an inverse
-/// projection (or an "unprojection") from projected cartesian points to
-/// geographical points. Both are called simply "projections" here.
-///
-/// The mixin specifies only `projectPoint` function, but it can be extended in
-/// future to project using other data structures than points also (like
-/// `projectPointSeries` etc.). If extended, then the mixin provides a default
-/// implementation for any new methods.
-mixin Projection<R extends Point> {
-  /// Projects the [source] point to a point of [R].
-  ///
-  /// When [to] is provided, then target points of [R] are created using that
-  /// as a point factory. Otherwise a projection uses it's own factory.
-  ///
-  /// Throws FormatException if cannot project.
-  R projectPoint(Point source, {PointFactory<R>? to});
-}
-```
-
-Projection adapters bundle forward and inverse projections, and are used to 
-access "project point" functions.
-
-For example a built-in adapter `wgs84ToWebMercator` can be used to get a forward
-projection and then applied on a geographic point to project it:
-
-```dart
-  final forward = wgs84ToWebMercator.forward(Point2.coordinates);
-  final projected = GeoPoint2(lon: -0.0014, lat: 51.4778).project(forward);
-```
-
-The package has also an adapter to the external 
+The package a projection adapter to the external 
 [proj4dart](https://pub.dev/packages/proj4dart) package. Adapter instances can
 be accessed using a global function:
 
@@ -614,71 +562,13 @@ A sample to project from WGS84 to Web Mercator using `proj4dart`:
 
 ```dart
   final adapter = proj4dart('EPSG:4326', 'EPSG:3857');
-  final forward = adapter.forward(Point2.coordinates);
+  final forward = adapter.forward(Point2.create);
   final projected = GeoPoint2(lon: -0.0014, lat: 51.4778).project(forward);
 ```
 
 Please see the documentation of [proj4dart](https://pub.dev/packages/proj4dart)
 package about it's capabilities, and accuracy of forward and inverse 
 projections.
-
-### Coordinate transformations
-
-Geographical and cartesian points, geometry objects, features and feature
-collections can be transformed also using coordinate transformations.
-
-Currently this package provides a consistent abstraction. Classes used to 
-represent objects mentioned above contain `transform(TransformPoint transform)` 
-method returning a transformed object. The transform function is defined as:
-
-```dart
-/// A function to transform the [source] point of [T] to a point of [T].
-///
-/// Target points of [T] are created using [source] itself as a point factory.
-///
-/// Throws FormatException if cannot transform.
-typedef TransformPoint = T Function<T extends Point>(T source);
-```
-
-*Transforms* differ from *projections* in the context of this package so that
-`Point` class type on geometries does not change when transforming.  
-
-There are some basic (**initial support**) geometry transforms provided by the 
-package.
-
-For example to translate points you can use:
-
-```dart
-/// Returns a function to translate points by delta values of each axis.
-TransformPoint translatePoint<C extends num>({C? dx, C? dy, C? dz, C? dm});
-```
-
-Similarily `scalePoint`, `scalePointBy` and `rotatePoint2D` returns functions to
-transform points by scaling with axis-specific factors, scaling with a constant 
-factor, or rotating in 2D.
-
-It's quite simple to define a custom transform function too:
-
-```dart
-/// Translates X by 10.0 and Y by 20.0, other coordinates (Z and M) not changed.
-T _sampleFixedTranslate<T extends Point>(T source) =>
-    source.copyWith(x: source.x + 10.0, y: source.y + 20.0) as T;
-```
-
-Now this function can be used to transform points and other geometries:
-
-```dart
-  // Create a point and transform it with a custom translation that returns
-  // `Point3m.xyzm(110.0, 220.0, 50.0, 1.25)` after projection.
-  Point3m.xyzm(100.0, 200.0, 50.0, 1.25).transform(_sampleFixedTranslate);
-
-  // The same transform function can be used to transform also geometry objects.
-  LineString.parse('100.0 200.0, 400.0 500.0', Point2.coordinates)
-      .transform(_sampleFixedTranslate);
-
-  // This returns a line string that has same coordinate values as:
-  // LineString.parse('110.0 220.0, 410.0 520.0', Point2.geometry)
-```
 
 ### Geospatial features
 

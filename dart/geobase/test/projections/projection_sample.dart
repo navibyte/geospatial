@@ -6,34 +6,30 @@
 
 // ignore_for_file: avoid_print
 
-import 'package:geocore/geocore.dart';
+import 'package:geobase/geobase.dart';
 
 import 'package:test/test.dart';
 
-void expectProjected<T1 extends Point, T2 extends Point>(
+void expectProjected<T1 extends BasePosition, T2 extends BasePosition>(
   T1 actual,
   T2 expected, [
   num? tol,
   num? tolZ,
 ]) {
-  final equals2D = actual.equals2D(expected, toleranceHoriz: tol ?? 0.0000001);
-  if (!equals2D) {
+  final equals = !actual.is3D && !expected.is3D
+      ? actual.equals2D(
+          expected,
+          toleranceHoriz: tol ?? 0.0000001,
+        )
+      : actual.equals3D(
+          expected,
+          toleranceHoriz: tol ?? 0.0000001,
+          toleranceVert: tolZ,
+        );
+  if (!equals) {
     print('$actual $expected');
   }
-  expect(equals2D, isTrue);
-  if (tolZ != null) {
-    final equals3D = actual.equals3D(
-      expected,
-      toleranceHoriz: tol ?? 0.0000001,
-      toleranceVert: tolZ,
-    );
-    if (!equals3D) {
-      print('$actual $expected');
-    }
-    expect(equals3D, isTrue);
-  } else {
-    expect(actual.z, expected.z);
-  }
+  expect(equals, isTrue);
   expect(actual.m, expected.m);
 }
 
@@ -48,17 +44,13 @@ const wgs84ToWebMercatorData = [
   [180.0, 85.051129, -20037508.34, 20037508.63],
 ];
 
-PointSeries<GeoPoint2> testWgs84Points() => PointSeries.from(
-      wgs84ToWebMercatorData
-          .map((coords) => GeoPoint2(lon: coords[0], lat: coords[1]))
-          .toList(growable: false),
-    );
+Iterable<GeoPosition> testWgs84Points() => wgs84ToWebMercatorData
+    .map((coords) => GeoPosition(lon: coords[0], lat: coords[1]))
+    .toList(growable: false);
 
-PointSeries<Point2> testWebMercatorPoints() => PointSeries.from(
-      wgs84ToWebMercatorData
-          .map((coords) => Point2(x: coords[2], y: coords[3]))
-          .toList(growable: false),
-    );
+Iterable<Position> testWebMercatorPoints() => wgs84ToWebMercatorData
+    .map((coords) => Position(x: coords[2], y: coords[3]))
+    .toList(growable: false);
 
 const wgs84ToWebMercatorExterior = [
   [40.0, 15.0, 4452779.63, 1689200.14],
@@ -75,20 +67,20 @@ const wgs84ToWebMercatorInterior = [
   [25.0, 25.0, 2782987.27, 2875744.62],
 ];
 
-Iterable<Iterable<GeoPoint2>> testWgs84Rings() => [
+Iterable<Iterable<GeoPosition>> testWgs84Rings() => [
       wgs84ToWebMercatorExterior
-          .map((coords) => GeoPoint2(lon: coords[0], lat: coords[1]))
+          .map((coords) => GeoPosition(lon: coords[0], lat: coords[1]))
           .toList(growable: false),
       wgs84ToWebMercatorInterior
-          .map((coords) => GeoPoint2(lon: coords[0], lat: coords[1]))
+          .map((coords) => GeoPosition(lon: coords[0], lat: coords[1]))
           .toList(growable: false),
     ];
 
-Iterable<Iterable<Point2>> testWebMercatorRings() => [
+Iterable<Iterable<Position>> testWebMercatorRings() => [
       wgs84ToWebMercatorExterior
-          .map((coords) => Point2(x: coords[2], y: coords[3]))
+          .map((coords) => Position(x: coords[2], y: coords[3]))
           .toList(growable: false),
       wgs84ToWebMercatorInterior
-          .map((coords) => Point2(x: coords[2], y: coords[3]))
+          .map((coords) => Position(x: coords[2], y: coords[3]))
           .toList(growable: false),
     ];

@@ -98,7 +98,7 @@ class Feature<T extends Geometry> extends FeatureWritable implements Bounded {
   /// Transforms only [geometry] of this feature. Other members, [id] and
   /// [properties], are set without modifications to a new feature object.
   @override
-  Feature<T> transform(TransformPoint transform) => Feature(
+  Feature<T> transform(TransformPosition transform) => Feature(
         id: _id,
         properties: _properties,
         geometry: _geometry?.transform(transform) as T?,
@@ -114,7 +114,7 @@ class Feature<T extends Geometry> extends FeatureWritable implements Bounded {
   @override
   Feature project<R extends Point>(
     Projection<R> projection, {
-    PointFactory<R>? to,
+    CreatePosition<R>? to,
   }) =>
       Feature(
         id: _id,

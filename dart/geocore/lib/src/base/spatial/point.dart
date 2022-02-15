@@ -186,11 +186,14 @@ abstract class Point<C extends num> extends Geometry
         coordType: typeCoords,
       );
 
-  /// Copies this point with the compatible type and sets given coordinates.
+  /// Copies this point with optional [x], [y], [z] and [m] overriding values.
+  /// 
+  /// The copied point is compatible by coordinate type with this point.
   ///
   /// Optional [x], [y], [z] and [m] values, when given, override values of
   /// this point object. If the type of this point does not have a certain
   /// value, then it's ignored.
+  @override
   Point copyWith({num? x, num? y, num? z, num? m});
 
   /// Returns a new point transformed from this point using [transform].
@@ -198,7 +201,7 @@ abstract class Point<C extends num> extends Geometry
   /// The transformed point object must be of the type with same coordinate
   /// value members as this object has.
   @override
-  Point transform(TransformPoint transform);
+  Point transform(TransformPosition transform);
 
   /// Returns a new point projected from this point using [projection].
   ///
@@ -207,7 +210,7 @@ abstract class Point<C extends num> extends Geometry
   @override
   R project<R extends Point>(
     Projection<R> projection, {
-    PointFactory<R>? to,
+    CreatePosition<R>? to,
   }) =>
-      projection.projectPoint(this, to: to);
+      projection.project(this, to: to);
 }
