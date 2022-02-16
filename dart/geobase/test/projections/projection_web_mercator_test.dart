@@ -14,7 +14,7 @@ import 'projection_sample.dart';
 void main() {
   group('Test projections between WGS84 and Web Mercator', () {
     test('webMercatorToWgs84(Position to GeoPosition)', () {
-      final toWgs84 = wgs84ToWebMercator.inverse(GeoPosition.create);
+      final toWgs84 = wgs84ToWebMercator.inverse();
       for (final coords in wgs84ToWebMercatorData) {
         final point2 = Position(x: coords[2], y: coords[3]);
         final geoPoint2 = GeoPosition(lon: coords[0], lat: coords[1]);
@@ -38,7 +38,7 @@ void main() {
     });
 
     test('wgs84ToWebMercator(GeoPosition to Position)', () {
-      final toWebMercator = wgs84ToWebMercator.forward(Position.create);
+      final toWebMercator = wgs84ToWebMercator.forward();
       for (final coords in wgs84ToWebMercatorData) {
         final geoPoint3 = GeoPosition(lon: coords[0], lat: coords[1]);
         final point3 = Position(x: coords[2], y: coords[3]);

@@ -19,7 +19,7 @@ void main() {
 
   group('Test projections between WGS84 and Web Mercator', () {
     test('webMercatorToWgs84(CartesianPoint to GeoPoint2)', () {
-      final toWgs84 = wgs84ToWebMercator.inverse(GeoPoint2.create);
+      final toWgs84 = wgs84ToWebMercator.inverseTo(GeoPoint2.create);
       for (final coords in wgs84ToWebMercatorData) {
         final point2 = Point2(x: coords[2], y: coords[3]);
         final pointWrapper = PointWrapper(point2);
@@ -43,7 +43,7 @@ void main() {
     });
 
     test('wgs84ToWebMercator(GeoPoint to Point3)', () {
-      final toWebMercator = wgs84ToWebMercator.forward(Point3.create);
+      final toWebMercator = wgs84ToWebMercator.forwardTo(Point3.create);
       for (final coords in wgs84ToWebMercatorData) {
         final geoPoint3 = GeoPoint3(lon: coords[0], lat: coords[1]);
         final geoPointWrapper = GeoPointWrapper(geoPoint3);
@@ -74,7 +74,7 @@ void main() {
 void _testToWgs84WithPoints<R extends GeoPoint>(
   CreatePosition<R> factory,
 ) {
-  final toWgs84 = wgs84ToWebMercator.inverse(factory);
+  final toWgs84 = wgs84ToWebMercator.inverseTo(factory);
 
   // point series and multipoint
   final points = testWebMercatorPoints();
@@ -160,7 +160,7 @@ void _testToWgs84WithPoints<R extends GeoPoint>(
 void _testToWebMercatorWithPoints<R extends CartesianPoint>(
   CreatePosition<R> factory,
 ) {
-  final toWebMercator = wgs84ToWebMercator.forward(factory);
+  final toWebMercator = wgs84ToWebMercator.forwardTo(factory);
 
   // point series and multipoint
   final points = testWgs84Points();

@@ -96,16 +96,27 @@ class Proj4Adapter with ProjectionAdapter {
   final String toCrs;
 
   @override
-  Projection<R> forward<R extends BasePosition>(CreatePosition<R> factory) =>
+  Projection<Position> forward() =>
+      _ProjectionProxy(factory: Position.create, tuple: tuple, inverse: false);
+
+  @override
+  Projection<R> forwardTo<R extends BasePosition>(CreatePosition<R> factory) =>
       _ProjectionProxy(factory: factory, tuple: tuple, inverse: false);
 
   @override
-  Projection<R> inverse<R extends BasePosition>(CreatePosition<R> factory) =>
+  Projection<GeoPosition> inverse() => _ProjectionProxy(
+        factory: GeoPosition.create,
+        tuple: tuple,
+        inverse: true,
+      );
+
+  @override
+  Projection<R> inverseTo<R extends BasePosition>(CreatePosition<R> factory) =>
       _ProjectionProxy(factory: factory, tuple: tuple, inverse: true);
 }
 
 class _ProjectionProxy<R extends BasePosition> with Projection<R> {
-  _ProjectionProxy({
+  const _ProjectionProxy({
     required this.factory,
     required this.tuple,
     required this.inverse,
@@ -163,7 +174,7 @@ class _ProjectionProxy<R extends BasePosition> with Projection<R> {
       x: projected.x,
       y: projected.y,
       z: projected.z,
-      m: source.m,
+      m: source.optM,
     );
   }
 }

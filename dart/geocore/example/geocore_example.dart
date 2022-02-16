@@ -121,7 +121,8 @@ void _readmeIntro() {
   );
 
   // Apply a forward projection to EPSG:23700 with points represented as Point2.
-  GeoPoint2(lon: 17.8880, lat: 46.8922).project(adapter.forward(Point2.create));
+  GeoPoint2(lon: 17.8880, lat: 46.8922)
+      .project(adapter.forwardTo(Point2.create));
 
   // Parsing GeoJSON data.
 

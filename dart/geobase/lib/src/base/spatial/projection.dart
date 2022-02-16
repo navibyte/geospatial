@@ -13,15 +13,15 @@ import '/src/base/coordinates.dart';
 /// projection (or an "unprojection") from projected cartesian positions to
 /// geographical positions. Both are called simply "projections" here.
 ///
-/// The mixin specifies only `projectPosition` function, but it can be extended
-/// in future to project using other data structures than positions also. If
+/// The mixin specifies only `project` function, but it can be extended in
+/// future to project using other data structures than positions also. If
 /// extended, then the mixin provides a default implementation for any new
 /// methods.
 mixin Projection<R extends BasePosition> {
   /// Projects the [source] position to a position of [R].
   ///
   /// When [to] is provided, then target positions of [R] are created using that
-  /// as a factory function. Otherwise a projection uses it's own factory.
+  /// as a factory function. Otherwise the projection uses it's own factory.
   ///
   /// Throws FormatException if cannot project.
   R project(BasePosition source, {CreatePosition<R>? to});

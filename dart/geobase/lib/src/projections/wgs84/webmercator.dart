@@ -41,13 +41,21 @@ class _Wgs84ToWebMercatorAdapter with ProjectionAdapter {
   String get toCrs => 'EPSG:3857';
 
   @override
-  Projection<R> forward<R extends BasePosition>(
+  Projection<Position> forward() =>
+      const _Wgs84ToWebMercatorProjection(Position.create);
+
+  @override
+  Projection<R> forwardTo<R extends BasePosition>(
     CreatePosition<R> factory,
   ) =>
       _Wgs84ToWebMercatorProjection(factory);
 
   @override
-  Projection<R> inverse<R extends BasePosition>(
+  Projection<GeoPosition> inverse() =>
+      const _WebMercatorToWgs84Projection(GeoPosition.create);
+
+  @override
+  Projection<R> inverseTo<R extends BasePosition>(
     CreatePosition<R> factory,
   ) =>
       _WebMercatorToWgs84Projection(factory);

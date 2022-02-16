@@ -308,20 +308,18 @@ void _projections() {
   // Web Mercator)
 
   // From GeoPoint2 (WGS 84 longitude-latitude) to Point2 (Web Mercator metric)
-  final forward = wgs84ToWebMercator.forward(Position.create);
+  final forward = wgs84ToWebMercator.forward();
   final projected =
       forward.project(const GeoPosition(lon: -0.0014, lat: 51.4778));
 
   // From Point2 (Web Mercator metric) to GeoPoint2 (WGS 84 longitude-latitude)
-  final inverse = wgs84ToWebMercator.inverse(GeoPosition.create);
+  final inverse = wgs84ToWebMercator.inverse();
   final unprojected = inverse.project(projected);
 
   print('$unprojected <=> $projected');
 }
 
 void _basicTransfroms() {
-  // -----------
-
   // Create a point and transform it with a custom translation that returns
   // `Position(x: 110.0, y: 220.0, z: 50.0, m: 1.25)` after projection.
   print(
