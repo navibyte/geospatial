@@ -52,9 +52,6 @@ abstract class Point<C extends num> extends Geometry
   Bounds? get boundsExplicit => Bounds.of(min: this, max: this);
 
   @override
-  Projected get asPosition => this;
-
-  @override
   Point? get onePoint => this;
 
   /// A coordinate value by the coordinate axis index [i].

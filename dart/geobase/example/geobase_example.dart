@@ -329,7 +329,5 @@ void _basicTransfroms() {
 }
 
 /// Translates X by 10.0 and Y by 20.0, other coordinates (Z and M) not changed.
-T _sampleFixedTranslate<T extends Position>(T source) {
-  final pos = source.asPosition;
-  return source.copyWith(x: pos.x + 10.0, y: pos.y + 20.0) as T;
-}
+T _sampleFixedTranslate<T extends Position>(T source) =>
+    source.copyWith(x: source[0] + 10.0, y: source[1] + 20.0) as T;

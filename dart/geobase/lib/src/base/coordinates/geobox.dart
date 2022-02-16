@@ -11,7 +11,6 @@ import '/src/utils/tolerance.dart';
 
 import 'box.dart';
 import 'geographic.dart';
-import 'projbox.dart';
 
 /// A geographic bounding box with [west], [south], [east] and [north] values.
 ///
@@ -131,18 +130,6 @@ class GeoBox extends Box {
         lat: _north,
         elev: _maxElev,
         m: _maxM,
-      );
-
-  @override
-  ProjBox get asBox => ProjBox(
-        minX: _west,
-        minY: _south,
-        minZ: _minElev,
-        minM: _minM,
-        maxX: _east,
-        maxY: _north,
-        maxZ: _maxElev,
-        maxM: _maxM,
       );
 
   @override

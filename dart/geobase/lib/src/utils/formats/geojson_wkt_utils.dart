@@ -221,13 +221,7 @@ abstract class _BaseTextWriter with GeometryWriter, CoordinateWriter {
       coordType: coordType,
       bbox: bbox,
     )) {
-      final pos = coordinates.asPosition;
-      _coordPoint(
-        x: pos.x,
-        y: pos.y,
-        z: pos.optZ,
-        m: pos.optM,
-      );
+      _coordPosition(coordinates);
       _geometryAfterCoordinates();
     }
   }
@@ -248,7 +242,7 @@ abstract class _BaseTextWriter with GeometryWriter, CoordinateWriter {
     )) {
       _coordArray(count: coordinates.length);
       for (final pos in coordinates) {
-        position(pos);
+        _coordPosition(pos);
       }
       _coordArrayEnd();
       _geometryAfterCoordinates();
@@ -324,6 +318,24 @@ abstract class _BaseTextWriter with GeometryWriter, CoordinateWriter {
 
   void _coordArrayEnd();
 
+  void _coordPosition(Position coordinates) {
+    if (coordinates is Projected) {
+      _coordPoint(
+        x: coordinates.x,
+        y: coordinates.y,
+        z: coordinates.optZ,
+        m: coordinates.optM,
+      );
+    } else if (coordinates is Geographic) {
+      _coordPoint(
+        x: coordinates.lon,
+        y: coordinates.lat,
+        z: coordinates.optElev,
+        m: coordinates.optM,
+      );
+    }
+  }
+
   void _coordPoint({
     required num x,
     required num y,
@@ -332,15 +344,7 @@ abstract class _BaseTextWriter with GeometryWriter, CoordinateWriter {
   });
 
   @override
-  void position(Position coordinates) {
-    final pos = coordinates.asPosition;
-    _coordPoint(
-      x: pos.x,
-      y: pos.y,
-      z: pos.optZ,
-      m: pos.optM,
-    );
-  }
+  void position(Position coordinates) => _coordPosition(coordinates);
 
   @override
   void positions1D(Iterable<Position> coordinates) {
@@ -433,10 +437,9 @@ class _DefaultTextWriter extends _BaseTextWriter {
     if (notAtRoot) {
       _buffer.write('[');
     }
-    final b = bbox.asBox;
-    _printPoint(b.minX, b.minY, b.minZ, b.minM);
+    _printPosition(bbox.min);
     _buffer.write(',');
-    _printPoint(b.maxX, b.maxY, b.maxZ, b.maxM);
+    _printPosition(bbox.max);
     if (notAtRoot) {
       _buffer.write(']');
     }
@@ -459,6 +462,14 @@ class _DefaultTextWriter extends _BaseTextWriter {
     _printPoint(x, y, z, m);
     if (notAtRoot) {
       _buffer.write(']');
+    }
+  }
+
+  void _printPosition(Position position) {
+    if (position is Projected) {
+      _printPoint(position.x, position.y, position.optZ, position.optM);
+    } else if (position is Geographic) {
+      _printPoint(position.lon, position.lat, position.optElev, position.optM);
     }
   }
 
@@ -847,10 +858,9 @@ class _WktLikeTextWriter extends _BaseTextWriter {
     if (notAtRoot) {
       _buffer.write('(');
     }
-    final b = box.asBox;
-    _printPoint(b.minX, b.minY, b.minZ, b.minM);
+    _printPosition(box.min);
     _buffer.write(',');
-    _printPoint(b.maxX, b.maxY, b.maxZ, b.maxM);
+    _printPosition(box.max);
     if (notAtRoot) {
       _buffer.write(')');
     }
@@ -873,6 +883,14 @@ class _WktLikeTextWriter extends _BaseTextWriter {
     _printPoint(x, y, z, m);
     if (notAtRootOrAtCoordArray) {
       _buffer.write(')');
+    }
+  }
+
+  void _printPosition(Position position) {
+    if (position is Projected) {
+      _printPoint(position.x, position.y, position.optZ, position.optM);
+    } else if (position is Geographic) {
+      _printPoint(position.lon, position.lat, position.optElev, position.optM);
     }
   }
 
@@ -1011,11 +1029,18 @@ class _WktTextWriter extends _WktLikeTextWriter {
   @override
   void box(Box bbox) {
     // WKT does not recognize bounding box, so convert to POLYGON
-    final b = bbox.asBox;
-    final hasZ = b.minZ != null && b.maxZ != null;
-    final hasM = b.minM != null && b.maxM != null;
-    final midZ = hasZ ? 0.5 * b.minZ! + 0.5 * b.maxZ! : null;
-    final midM = hasM ? 0.5 * b.minM! + 0.5 * b.maxM! : null;
+    final hasZ = bbox.is3D;
+    num? midZ;
+    if (hasZ) {
+      if (bbox is ProjBox) {
+        midZ = 0.5 * bbox.minZ! + 0.5 * bbox.maxZ!;
+      } else if (bbox is GeoBox) {
+        midZ = 0.5 * bbox.minElev! + 0.5 * bbox.maxElev!;
+      }
+    }
+    final hasM = bbox.isMeasured;
+    final midM = hasM ? 0.5 * bbox.minM! + 0.5 * bbox.maxM! : null;
+
     // check optional expected coordinate type
     final coordType = _coordTypes.isNotEmpty
         ? _coordTypes.last
@@ -1039,11 +1064,19 @@ class _WktTextWriter extends _WktLikeTextWriter {
     }
     _coordArray();
     _coordArray();
-    _coordPoint(x: b.minX, y: b.minY, z: b.minZ, m: b.minM);
-    _coordPoint(x: b.maxX, y: b.minY, z: midZ, m: midM);
-    _coordPoint(x: b.maxX, y: b.maxY, z: b.maxZ, m: b.maxM);
-    _coordPoint(x: b.minX, y: b.maxY, z: midZ, m: midM);
-    _coordPoint(x: b.minX, y: b.minY, z: b.minZ, m: b.minM);
+    if (bbox is ProjBox) {
+      _coordPoint(x: bbox.minX, y: bbox.minY, z: bbox.minZ, m: bbox.minM);
+      _coordPoint(x: bbox.maxX, y: bbox.minY, z: midZ, m: midM);
+      _coordPoint(x: bbox.maxX, y: bbox.maxY, z: bbox.maxZ, m: bbox.maxM);
+      _coordPoint(x: bbox.minX, y: bbox.maxY, z: midZ, m: midM);
+      _coordPoint(x: bbox.minX, y: bbox.minY, z: bbox.minZ, m: bbox.minM);
+    } else if (bbox is GeoBox) {
+      _coordPoint(x: bbox.west, y: bbox.south, z: bbox.minElev, m: bbox.minM);
+      _coordPoint(x: bbox.east, y: bbox.south, z: midZ, m: midM);
+      _coordPoint(x: bbox.east, y: bbox.north, z: bbox.maxElev, m: bbox.maxM);
+      _coordPoint(x: bbox.west, y: bbox.north, z: midZ, m: midM);
+      _coordPoint(x: bbox.west, y: bbox.south, z: bbox.minElev, m: bbox.minM);
+    }
     _coordArrayEnd();
     _coordArrayEnd();
     _endCoordType();

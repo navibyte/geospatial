@@ -10,7 +10,6 @@ import '/src/base/codes.dart';
 import '/src/utils/tolerance.dart';
 
 import 'position.dart';
-import 'projected.dart';
 
 /// A geographic position with longitude, latitude and optional elevation and m.
 ///
@@ -96,9 +95,6 @@ class Geographic extends Position {
   /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
   @override
   Iterable<double> get values => Geographic.getValues(this);
-
-  @override
-  Projected get asPosition => Projected(x: _lon, y: _lat, z: _elev, m: _m);
 
   /// Copies the position with optional [x], [y], [z] and [m] overriding values.
   ///

@@ -5,7 +5,6 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import 'positionable.dart';
-import 'projected.dart';
 
 /// Creates a new position of [T] from [x] and [y], and optional [z] and [m].
 ///
@@ -77,12 +76,6 @@ abstract class Position extends Positionable {
   /// For geographic coordinates, the coordinate ordering is:
   /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
   Iterable<num> get values;
-
-  /// Returns this position as [Projected] (with x, y, z and m coordinates).
-  ///
-  /// When returning `Geographic` as [Projected] then coordinates are copied as:
-  /// `lon` => `x`, `lat` => `y`, `elev` => `z`, `m` => `m`
-  Projected get asPosition;
 
   /// Copies the position with optional [x], [y], [z] and [m] overriding values.
   ///

@@ -102,9 +102,6 @@ class ProjBox extends Box {
       );
 
   @override
-  ProjBox get asBox => this;
-
-  @override
   int get spatialDimension => typeCoords.spatialDimension;
 
   @override

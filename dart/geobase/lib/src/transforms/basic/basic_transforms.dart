@@ -25,21 +25,20 @@ TransformPosition translatePoint<C extends num>({
   C? dm,
 }) =>
     <T extends Position>(T source) {
-      final pos = source.asPosition;
-      final dim = pos.coordinateDimension;
+      final dim = source.coordinateDimension;
       if (dim == 2) {
         // point is (X, Y)
         return source.copyWith(
-          x: dx != null ? pos.x + dx : null,
-          y: dy != null ? pos.y + dy : null,
+          x: dx != null ? source[0] + dx : null,
+          y: dy != null ? source[1] + dy : null,
         ) as T;
       } else {
         // point could be (X, Y, Z), (X, Y, M) or (X, Y, Z, M)
         return source.copyWith(
-          x: dx != null ? pos.x + dx : null,
-          y: dy != null ? pos.y + dy : null,
-          z: dz != null && pos.is3D ? pos.z + dz : null,
-          m: dm != null && pos.isMeasured ? pos.m + dm : null,
+          x: dx != null ? source[0] + dx : null,
+          y: dy != null ? source[1] + dy : null,
+          z: dz != null && source.is3D ? source[2] + dz : null,
+          m: dm != null && source.isMeasured ? source.m + dm : null,
         ) as T;
       }
     };
@@ -58,21 +57,20 @@ TransformPosition scalePoint<C extends num>({
   C? sm,
 }) =>
     <T extends Position>(T source) {
-      final pos = source.asPosition;
-      final dim = pos.coordinateDimension;
+      final dim = source.coordinateDimension;
       if (dim == 2) {
         // point is (X, Y)
         return source.copyWith(
-          x: sx != null ? sx * pos.x : null,
-          y: sy != null ? sy * pos.y : null,
+          x: sx != null ? sx * source[0] : null,
+          y: sy != null ? sy * source[1] : null,
         ) as T;
       } else {
         // point could be (X, Y, Z), (X, Y, M) or (X, Y, Z, M)
         return source.copyWith(
-          x: sx != null ? sx * pos.x : null,
-          y: sy != null ? sy * pos.y : null,
-          z: sz != null && pos.is3D ? sz * pos.z : null,
-          m: sm != null && pos.isMeasured ? sm * pos.m : null,
+          x: sx != null ? sx * source[0] : null,
+          y: sy != null ? sy * source[1] : null,
+          z: sz != null && source.is3D ? sz * source[2] : null,
+          m: sm != null && source.isMeasured ? sm * source.m : null,
         ) as T;
       }
     };
@@ -80,21 +78,20 @@ TransformPosition scalePoint<C extends num>({
 /// Returns a function to scale positions by the [scale] factor.
 TransformPosition scalePointBy<C extends num>(C scale) =>
     <T extends Position>(T source) {
-      final pos = source.asPosition;
-      final dim = pos.coordinateDimension;
+      final dim = source.coordinateDimension;
       if (dim == 2) {
         // point is (X, Y)
         return source.copyWith(
-          x: scale * pos.x,
-          y: scale * pos.y,
+          x: scale * source[0],
+          y: scale * source[1],
         ) as T;
       } else {
         // point could be (X, Y, Z), (X, Y, M) or (X, Y, Z, M)
         return source.copyWith(
-          x: scale * pos.x,
-          y: scale * pos.y,
-          z: pos.is3D ? scale * pos.z : null,
-          m: pos.isMeasured ? scale * pos.m : null,
+          x: scale * source[0],
+          y: scale * source[1],
+          z: source.is3D ? scale * source[2] : null,
+          m: source.isMeasured ? scale * source.m : null,
         ) as T;
       }
     };
@@ -107,9 +104,8 @@ TransformPosition rotatePoint2D(num radians, {num? cx, num? cy}) =>
       final s = math.sin(radians);
       final c = math.cos(radians);
 
-      final pos = source.asPosition;
-      var x = pos.x;
-      var y = pos.y;
+      var x = source[0];
+      var y = source[1];
 
       // if has pivot point, then move origin
       if (cx != null && cy != null) {

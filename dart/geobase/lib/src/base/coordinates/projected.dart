@@ -96,9 +96,6 @@ class Projected extends Position {
   @override
   Iterable<num> get values => Projected.getValues(this);
 
-  @override
-  Projected get asPosition => this;
-
   /// Copies the position with optional [x], [y], [z] and [m] overriding values.
   ///
   /// For example:

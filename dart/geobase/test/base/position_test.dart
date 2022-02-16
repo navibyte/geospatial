@@ -245,9 +245,6 @@ class _TestXYZM implements Projected {
   num? get optM => m;
 
   @override
-  Projected get asPosition => this;
-
-  @override
   int get spatialDimension => typeCoords.spatialDimension;
 
   @override

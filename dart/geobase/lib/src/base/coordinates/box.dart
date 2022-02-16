@@ -6,7 +6,6 @@
 
 import 'position.dart';
 import 'positionable.dart';
-import 'projbox.dart';
 
 /// A base interface for axis-aligned bounding boxes with min & max coordinates.
 ///
@@ -37,13 +36,6 @@ abstract class Box extends Positionable {
 
   /// The maximum position (or east-north) of this bounding box.
   Position get max;
-
-  /// Returns this axis-aligned box as [ProjBox] (with x, y, z and m axis).
-  ///
-  /// When returning `GeoBox` as [ProjBox] then coordinates are copied as:
-  /// `west` => `minX`, `south` => `minY`, `minElev` => `minZ`, `minM` => `minM`
-  /// `east` => `maxX`, `north` => `maxY`, `maxElev` => `maxZ`, `maxM` => `maxM`
-  ProjBox get asBox;
 
   /// True if this box equals with [other] by testing 2D coordinates only.
   ///

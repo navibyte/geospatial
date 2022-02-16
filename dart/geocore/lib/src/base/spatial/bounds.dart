@@ -99,9 +99,6 @@ abstract class Bounds<T extends Point> extends Bounded
   num? get maxM => max.optM;
 
   @override
-  ProjBox get asBox => this;
-
-  @override
   int get coordinateDimension => min.coordinateDimension;
 
   @override
