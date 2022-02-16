@@ -7,7 +7,7 @@
 import 'dart:math' as math;
 
 import '/src/base/coordinates.dart';
-import '/src/base/spatial.dart';
+import '/src/base/project.dart';
 
 // More information about WGS 84 and Web Mercator
 // https://epsg.io/3857

@@ -6,10 +6,7 @@
 
 import '/src/base/codes.dart';
 import '/src/base/coordinates.dart';
-import '/src/encode/base.dart';
-import '/src/encode/coordinates.dart';
-import '/src/encode/features.dart';
-import '/src/encode/geometry.dart';
+import '/src/content/encode.dart';
 import '/src/utils/num.dart';
 
 /// The default format for geometries (implements [GeometryFormat]).

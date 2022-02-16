@@ -6,7 +6,7 @@
 
 import 'dart:math' as math;
 
-import 'package:geobase/geobase.dart';
+import '/src/base/coordinates.dart';
 
 // Some basic transformation functions (like translate, scale, rotate).
 // Not meant to be complete set of transformation.

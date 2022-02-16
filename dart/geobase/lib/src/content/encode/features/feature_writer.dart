@@ -5,8 +5,8 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import '/src/base/coordinates.dart';
-import '/src/encode/base.dart';
-import '/src/encode/geometry.dart';
+import '/src/content/encode/base.dart';
+import '/src/content/encode/geometry.dart';
 
 /// A function that is capable of writing features to [writer].
 typedef WriteFeatures = void Function(FeatureWriter writer);

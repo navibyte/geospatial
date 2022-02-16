@@ -6,7 +6,7 @@
 
 import '/src/base/codes.dart';
 import '/src/base/coordinates.dart';
-import '/src/encode/base.dart';
+import '/src/content/encode/base.dart';
 
 /// A function that is capable of writing a geometry to [writer].
 typedef WriteGeometries = void Function(GeometryWriter writer);

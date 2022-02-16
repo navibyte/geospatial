@@ -4,8 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/encode/coordinates.dart';
-import '/src/encode/geometry.dart';
+import '/src/content/encode/coordinates.dart';
+import '/src/content/encode/geometry.dart';
 
 /// An interface specifying methods to format geometry objects.
 abstract class GeometryFormat {

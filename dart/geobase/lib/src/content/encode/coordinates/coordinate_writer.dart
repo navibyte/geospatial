@@ -5,7 +5,7 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import '/src/base/coordinates.dart';
-import '/src/encode/base.dart';
+import '/src/content/encode/base.dart';
 
 /// An interface to write objects with coordinate data into some content format.
 mixin CoordinateWriter implements BaseWriter {

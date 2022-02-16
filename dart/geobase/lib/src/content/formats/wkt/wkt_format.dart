@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/encode/geometry.dart';
+import '/src/content/encode/geometry.dart';
 import '/src/utils/formats.dart';
 
 /// The WKT (like) format for geometries (implements [GeometryFormat]).

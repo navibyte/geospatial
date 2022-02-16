@@ -20,12 +20,8 @@ library geobase;
 
 export 'src/base/codes.dart';
 export 'src/base/coordinates.dart';
+export 'src/base/project.dart';
 export 'src/base/spatial.dart';
-export 'src/encode/base.dart';
-export 'src/encode/coordinates.dart';
-export 'src/encode/features.dart';
-export 'src/encode/geometry.dart';
-export 'src/formats/geojson.dart';
-export 'src/formats/wkt.dart';
-export 'src/projections/wgs84.dart';
-export 'src/transforms/basic.dart';
+export 'src/base/transforms.dart';
+export 'src/content/encode.dart';
+export 'src/content/formats.dart';
