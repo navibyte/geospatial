@@ -197,7 +197,7 @@ abstract class _BaseTextWriter with GeometryWriter, CoordinateWriter {
     required Geom type,
     String? name,
     Coords? coordType,
-    BaseBox? bbox,
+    Box? bbox,
   }) {
     _startCoordType(coordType);
     return true;
@@ -210,10 +210,10 @@ abstract class _BaseTextWriter with GeometryWriter, CoordinateWriter {
   @override
   void geometryWithPosition({
     required Geom type,
-    required BasePosition coordinates,
+    required Position coordinates,
     String? name,
     Coords? coordType,
-    BaseBox? bbox,
+    Box? bbox,
   }) {
     if (_geometryBeforeCoordinates(
       type: type,
@@ -235,10 +235,10 @@ abstract class _BaseTextWriter with GeometryWriter, CoordinateWriter {
   @override
   void geometryWithPositions1D({
     required Geom type,
-    required Iterable<BasePosition> coordinates,
+    required Iterable<Position> coordinates,
     String? name,
     Coords? coordType,
-    BaseBox? bbox,
+    Box? bbox,
   }) {
     if (_geometryBeforeCoordinates(
       type: type,
@@ -258,10 +258,10 @@ abstract class _BaseTextWriter with GeometryWriter, CoordinateWriter {
   @override
   void geometryWithPositions2D({
     required Geom type,
-    required Iterable<Iterable<BasePosition>> coordinates,
+    required Iterable<Iterable<Position>> coordinates,
     String? name,
     Coords? coordType,
-    BaseBox? bbox,
+    Box? bbox,
   }) {
     if (_geometryBeforeCoordinates(
       type: type,
@@ -281,10 +281,10 @@ abstract class _BaseTextWriter with GeometryWriter, CoordinateWriter {
   @override
   void geometryWithPositions3D({
     required Geom type,
-    required Iterable<Iterable<Iterable<BasePosition>>> coordinates,
+    required Iterable<Iterable<Iterable<Position>>> coordinates,
     String? name,
     Coords? coordType,
-    BaseBox? bbox,
+    Box? bbox,
   }) {
     if (_geometryBeforeCoordinates(
       type: type,
@@ -306,7 +306,7 @@ abstract class _BaseTextWriter with GeometryWriter, CoordinateWriter {
     required WriteGeometries geometries,
     int? count,
     String? name,
-    BaseBox? bbox,
+    Box? bbox,
   }) {
     _startCoordType(null);
     _startObjectArray(count: count);
@@ -332,7 +332,7 @@ abstract class _BaseTextWriter with GeometryWriter, CoordinateWriter {
   });
 
   @override
-  void position(BasePosition coordinates) {
+  void position(Position coordinates) {
     final pos = coordinates.asPosition;
     _coordPoint(
       x: pos.x,
@@ -343,7 +343,7 @@ abstract class _BaseTextWriter with GeometryWriter, CoordinateWriter {
   }
 
   @override
-  void positions1D(Iterable<BasePosition> coordinates) {
+  void positions1D(Iterable<Position> coordinates) {
     _coordArray(count: coordinates.length);
     for (final pos in coordinates) {
       position(pos);
@@ -352,7 +352,7 @@ abstract class _BaseTextWriter with GeometryWriter, CoordinateWriter {
   }
 
   @override
-  void positions2D(Iterable<Iterable<BasePosition>> coordinates) {
+  void positions2D(Iterable<Iterable<Position>> coordinates) {
     _coordArray(count: coordinates.length);
     for (final item in coordinates) {
       positions1D(item);
@@ -362,7 +362,7 @@ abstract class _BaseTextWriter with GeometryWriter, CoordinateWriter {
 
   @override
   void positions3D(
-    Iterable<Iterable<Iterable<BasePosition>>> coordinates,
+    Iterable<Iterable<Iterable<Position>>> coordinates,
   ) {
     _coordArray(count: coordinates.length);
     for (final item in coordinates) {
@@ -425,7 +425,7 @@ class _DefaultTextWriter extends _BaseTextWriter {
   }
 
   @override
-  void box(BaseBox bbox) {
+  void box(Box bbox) {
     if (_markItem()) {
       _buffer.write(',');
     }
@@ -543,7 +543,7 @@ class _GeoJsonTextWriter extends _DefaultTextWriter
     required Geom type,
     String? name,
     Coords? coordType,
-    BaseBox? bbox,
+    Box? bbox,
   }) {
     if (ignoreForeignMembers &&
         _atFeature &&
@@ -583,7 +583,7 @@ class _GeoJsonTextWriter extends _DefaultTextWriter
     required WriteGeometries geometries,
     int? count,
     String? name,
-    BaseBox? bbox,
+    Box? bbox,
   }) {
     if (ignoreForeignMembers &&
         _atFeature &&
@@ -643,7 +643,7 @@ class _GeoJsonTextWriter extends _DefaultTextWriter
   void featureCollection({
     required WriteFeatures features,
     int? count,
-    BaseBox? bbox,
+    Box? bbox,
     WriteProperties? extra,
   }) {
     if (_atFeatureCollection) {
@@ -676,7 +676,7 @@ class _GeoJsonTextWriter extends _DefaultTextWriter
     Object? id,
     WriteGeometries? geometries,
     Map<String, Object?>? properties,
-    BaseBox? bbox,
+    Box? bbox,
     WriteProperties? extra,
   }) {
     if (_markItem()) {
@@ -839,7 +839,7 @@ class _WktLikeTextWriter extends _BaseTextWriter {
   }
 
   @override
-  void box(BaseBox box) {
+  void box(Box box) {
     if (_markItem()) {
       _buffer.write(',');
     }
@@ -955,7 +955,7 @@ class _WktTextWriter extends _WktLikeTextWriter {
     required Geom type,
     String? name,
     Coords? coordType,
-    BaseBox? bbox,
+    Box? bbox,
   }) {
     if (_markItem()) {
       _buffer.write(',');
@@ -983,7 +983,7 @@ class _WktTextWriter extends _WktLikeTextWriter {
     required WriteGeometries geometries,
     int? count,
     String? name,
-    BaseBox? bbox,
+    Box? bbox,
   }) {
     if (_markItem()) {
       _buffer.write(',');
@@ -1009,7 +1009,7 @@ class _WktTextWriter extends _WktLikeTextWriter {
   }
 
   @override
-  void box(BaseBox bbox) {
+  void box(Box bbox) {
     // WKT does not recognize bounding box, so convert to POLYGON
     final b = bbox.asBox;
     final hasZ = b.minZ != null && b.maxZ != null;

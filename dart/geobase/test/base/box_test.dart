@@ -9,9 +9,9 @@ import 'package:geobase/geobase.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('Box class', () {
+  group('ProjBox class', () {
     test('Equals with tolerance', () {
-      const p1 = Box(
+      const p1 = ProjBox(
         minX: 1.0002,
         minY: 2.0002,
         minZ: 3.002,
@@ -19,7 +19,7 @@ void main() {
         maxY: 12.0002,
         maxZ: 13.002,
       );
-      const p2 = Box(
+      const p2 = ProjBox(
         minX: 1.0003,
         minY: 2.0003,
         minZ: 3.003,

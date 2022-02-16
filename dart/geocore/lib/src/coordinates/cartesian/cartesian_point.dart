@@ -35,24 +35,24 @@ abstract class CartesianPoint<C extends num> extends Point<C> {
   bool operator ==(Object other) =>
       other is Point &&
       isGeographic == other.isGeographic &&
-      Position.testEquals(this, other);
+      Projected.testEquals(this, other);
 
   @override
-  int get hashCode => Position.hash(this);
+  int get hashCode => Projected.hash(this);
 
   @override
-  bool equals2D(BasePosition other, {num? toleranceHoriz}) =>
-      other is Position &&
-      Position.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
+  bool equals2D(Position other, {num? toleranceHoriz}) =>
+      other is Projected &&
+      Projected.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
 
   @override
   bool equals3D(
-    BasePosition other, {
+    Position other, {
     num? toleranceHoriz,
     num? toleranceVert,
   }) =>
-      other is Position &&
-      Position.testEquals3D(
+      other is Projected &&
+      Projected.testEquals3D(
         this,
         other,
         toleranceHoriz: toleranceHoriz,

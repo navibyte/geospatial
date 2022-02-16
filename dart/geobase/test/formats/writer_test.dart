@@ -14,7 +14,7 @@ void main() {
   group('Test geometry, coordinate and bounds writers', () {
     test('Position coordinates', () {
       _testAllWriters<CoordinateWriter>(
-        (writer) => writer.position(const Position(x: 10.123, y: 20.25)),
+        (writer) => writer.position(const Projected(x: 10.123, y: 20.25)),
         def: '10.123,20.25',
         geoJson: '10.123,20.25',
         wktLike: '10.123 20.25',
@@ -22,7 +22,7 @@ void main() {
       );
       _testAllWriters<CoordinateWriter>(
         (writer) =>
-            writer.position(const Position(x: 10.123, y: 20.25, z: -30.95)),
+            writer.position(const Projected(x: 10.123, y: 20.25, z: -30.95)),
         def: '10.123,20.25,-30.95',
         geoJson: '10.123,20.25,-30.95',
         wktLike: '10.123 20.25 -30.95',
@@ -30,7 +30,7 @@ void main() {
       );
       _testAllWriters<CoordinateWriter>(
         (writer) =>
-            writer.position(const Position(x: 10.123, y: 20.25, m: -1.999)),
+            writer.position(const Projected(x: 10.123, y: 20.25, m: -1.999)),
         def: '10.123,20.25,0,-1.999',
         geoJson: '10.123,20.25,0,-1.999',
         geoJsonStrict: '10.123,20.25',
@@ -39,7 +39,7 @@ void main() {
       );
       _testAllWriters<CoordinateWriter>(
         (writer) => writer.position(
-          const Position(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
+          const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
         ),
         def: '10.1,20.3,-30.9,-2.0',
         geoJson: '10.1,20.3,-30.9,-2.0',
@@ -55,7 +55,7 @@ void main() {
     test('GeoPosition coordinates', () {
       _testAllWriters<CoordinateWriter>(
         (writer) => writer.position(
-          const GeoPosition(lon: 10.123, lat: 20.25, elev: -30.95, m: -1.999),
+          const Geographic(lon: 10.123, lat: 20.25, elev: -30.95, m: -1.999),
         ),
         def: '10.1,20.3,-30.9,-2.0',
         geoJson: '10.1,20.3,-30.9,-2.0',
@@ -71,7 +71,7 @@ void main() {
     test('Box coordinates', () {
       _testAllWriters<CoordinateWriter>(
         (writer) => writer.box(
-          const Box(
+          const ProjBox(
             minX: 10.123,
             minY: 20.25,
             maxX: 12.485,
@@ -86,7 +86,7 @@ void main() {
       );
       _testAllWriters<CoordinateWriter>(
         (writer) => writer.box(
-          const Box(
+          const ProjBox(
             minX: 10.123,
             minY: 20.25,
             minZ: -15.09,
@@ -132,9 +132,9 @@ void main() {
     test('PointSeries coordinates', () {
       _testAllWriters<CoordinateWriter>(
         (writer) => writer.positions1D([
-          const Position(x: 10.123, y: 20.25),
-          const Position(x: 10.123, y: 20.25, z: -30.95),
-          const Position(x: 10.123, y: 20.25, m: -1.999),
+          const Projected(x: 10.123, y: 20.25),
+          const Projected(x: 10.123, y: 20.25, z: -30.95),
+          const Projected(x: 10.123, y: 20.25, m: -1.999),
         ]),
         def: '[10.123,20.25],[10.123,20.25,-30.95],[10.123,20.25,0,-1.999]',
         geoJson: '[10.123,20.25],[10.123,20.25,-30.95],[10.123,20.25,0,-1.999]',
@@ -144,9 +144,9 @@ void main() {
       );
       _testAllWriters<CoordinateWriter>(
         (writer) => writer.positions1D([
-          const Position(x: 10.123, y: 20.25),
-          const Position(x: 10.123, y: 20.25, m: -1.999),
-          const Position(x: 10.123, y: 20.25, z: -30.95),
+          const Projected(x: 10.123, y: 20.25),
+          const Projected(x: 10.123, y: 20.25, m: -1.999),
+          const Projected(x: 10.123, y: 20.25, z: -30.95),
         ]),
         def: '[10.123,20.25],[10.123,20.25,0,-1.999],[10.123,20.25,-30.95]',
         geoJson: '[10.123,20.25],[10.123,20.25,0,-1.999],[10.123,20.25,-30.95]',
@@ -156,9 +156,9 @@ void main() {
       );
       _testAllWriters<CoordinateWriter>(
         (writer) => writer.positions1D([
-          const Position(x: 10.123, y: 20.25),
-          const Position(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
-          const Position(x: 10.123, y: 20.25),
+          const Projected(x: 10.123, y: 20.25),
+          const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
+          const Projected(x: 10.123, y: 20.25),
         ]),
         def: '[10.123,20.25],[10.123,20.25,-30.95,-1.999],[10.123,20.25]',
         geoJson: '[10.123,20.25],[10.123,20.25,-30.95,-1.999],[10.123,20.25]',
@@ -168,10 +168,10 @@ void main() {
       );
       _testAllWriters<CoordinateWriter>(
         (writer) => writer.positions1D([
-          const Position(x: 10, y: 20),
-          const Position(x: 11, y: 21, z: -30.95, m: -1.1),
-          const Position(x: 12, y: 22, m: 2.2),
-          const Position(x: 13, y: 23, z: 49.1),
+          const Projected(x: 10, y: 20),
+          const Projected(x: 11, y: 21, z: -30.95, m: -1.1),
+          const Projected(x: 12, y: 22, m: 2.2),
+          const Projected(x: 13, y: 23, z: 49.1),
         ]),
         def: '[10,20],[11,21,-30.95,-1.1],[12,22,0,2.2],[13,23,49.1]',
         geoJson: '[10,20],[11,21,-30.95,-1.1],[12,22,0,2.2],[13,23,49.1]',
@@ -184,7 +184,7 @@ void main() {
       _testAllWriters<GeometryWriter>(
         (writer) => writer.geometryWithPosition(
           type: Geom.point,
-          coordinates: const Position(x: 10.123, y: 20.25),
+          coordinates: const Projected(x: 10.123, y: 20.25),
         ),
         def: '10.123,20.25',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25]}',
@@ -194,7 +194,7 @@ void main() {
       _testAllWriters<GeometryWriter>(
         (writer) => writer.geometryWithPosition(
           type: Geom.point,
-          coordinates: const Position(x: 10.123, y: 20.25, z: -30.95),
+          coordinates: const Projected(x: 10.123, y: 20.25, z: -30.95),
         ),
         def: '10.123,20.25,-30.95',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
@@ -204,7 +204,7 @@ void main() {
       _testAllWriters<GeometryWriter>(
         (writer) => writer.geometryWithPosition(
           type: Geom.point,
-          coordinates: const Position(x: 10.123, y: 20.25, m: -1.999),
+          coordinates: const Projected(x: 10.123, y: 20.25, m: -1.999),
         ),
         def: '10.123,20.25,0,-1.999',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,0,-1.999]}',
@@ -216,7 +216,7 @@ void main() {
         (writer) => writer.geometryWithPosition(
           type: Geom.point,
           coordinates:
-              const Position(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
+              const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
         ),
         def: '10.123,20.25,-30.95,-1.999',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,-30.95,-1.999]}',
@@ -227,7 +227,7 @@ void main() {
       _testAllWriters<GeometryWriter>(
         (writer) => writer.geometryWithPosition(
           type: Geom.point,
-          coordinates: const Position(x: 10.123, y: 20.25, z: -30.95),
+          coordinates: const Projected(x: 10.123, y: 20.25, z: -30.95),
           coordType: Coords.xyz,
         ),
         def: '10.123,20.25,-30.95',
@@ -239,7 +239,7 @@ void main() {
         (writer) => writer.geometryWithPosition(
           type: Geom.point,
           coordinates:
-              const Position(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
+              const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
           coordType: Coords.xyz,
         ),
         def: '10.123,20.25,-30.95',
@@ -250,7 +250,7 @@ void main() {
       _testAllWriters<GeometryWriter>(
         (writer) => writer.geometryWithPosition(
           type: Geom.point,
-          coordinates: const Position(x: 10.123, y: 20.25, z: -30.95),
+          coordinates: const Projected(x: 10.123, y: 20.25, z: -30.95),
           coordType: Coords.xy,
         ),
         def: '10.123,20.25',
@@ -261,7 +261,7 @@ void main() {
       _testAllWriters<GeometryWriter>(
         (writer) => writer.geometryWithPosition(
           type: Geom.point,
-          coordinates: const Position(x: 10.123, y: 20.25),
+          coordinates: const Projected(x: 10.123, y: 20.25),
           coordType: Coords.xyz,
         ),
         def: '10.123,20.25,0',
@@ -273,7 +273,7 @@ void main() {
         (writer) => writer.geometryWithPosition(
           type: Geom.point,
           coordinates:
-              const Position(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
+              const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
           coordType: Coords.xym,
         ),
         def: '10.123,20.25,0,-1.999',
@@ -286,7 +286,7 @@ void main() {
         (writer) => writer.geometryWithPosition(
           type: Geom.point,
           coordinates:
-              const Position(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
+              const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
           coordType: Coords.xyzm,
         ),
         def: '10.123,20.25,-30.95,-1.999',
@@ -308,8 +308,8 @@ void main() {
         (writer) => writer.geometryWithPositions1D(
           type: Geom.multiPoint,
           coordinates: [
-            const Position(x: 10.123, y: 20.25),
-            const Position(x: 5.98, y: -3.47),
+            const Projected(x: 10.123, y: 20.25),
+            const Projected(x: 5.98, y: -3.47),
           ],
         ),
         def: '[10.123,20.25],[5.98,-3.47]',
@@ -323,11 +323,11 @@ void main() {
       _testAllWriters<GeometryWriter>(
         (writer) => writer.geometryWithPositions1D(
           type: Geom.lineString,
-          bbox: const Box(minX: -1.1, minY: -3.49, maxX: 3.5, maxY: -1.1),
+          bbox: const ProjBox(minX: -1.1, minY: -3.49, maxX: 3.5, maxY: -1.1),
           coordinates: [
-            const Position(x: -1.1, y: -1.1),
-            const Position(x: 2.1, y: -2.5),
-            const Position(x: 3.5, y: -3.49),
+            const Projected(x: -1.1, y: -1.1),
+            const Projected(x: 2.1, y: -2.5),
+            const Projected(x: 3.5, y: -3.49),
           ],
         ),
         def: '[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]',
@@ -341,7 +341,7 @@ void main() {
         (writer) => writer.geometryWithPositions1D(
           type: Geom.lineString,
           coordType: Coords.xym,
-          bbox: const Box(
+          bbox: const ProjBox(
             minX: -1.1,
             minY: -3.49,
             minM: 0,
@@ -350,9 +350,9 @@ void main() {
             maxM: 4.99,
           ),
           coordinates: [
-            const Position(x: -1.1, y: -1.1),
-            const Position(x: 2.1, y: -2.5, m: 4.99),
-            const Position(x: 3.5, y: -3.49, z: -0.5),
+            const Projected(x: -1.1, y: -1.1),
+            const Projected(x: 2.1, y: -2.5, m: 4.99),
+            const Projected(x: 3.5, y: -3.49, z: -0.5),
           ],
         ),
         def: '[-1.1,-1.1,0,0],[2.1,-2.5,0,4.99],[3.5,-3.49,0,0]',
@@ -371,7 +371,7 @@ void main() {
         (writer) => writer.geometryWithPositions1D(
           type: Geom.lineString,
           coordType: Coords.xyzm,
-          bbox: const Box(
+          bbox: const ProjBox(
             minX: -1.1,
             minY: -3.49,
             minZ: -0.5,
@@ -382,9 +382,9 @@ void main() {
             maxM: 4.99,
           ),
           coordinates: [
-            const Position(x: -1.1, y: -1.1),
-            const Position(x: 2.1, y: -2.5, m: 4.99),
-            const Position(x: 3.5, y: -3.49, z: -0.5),
+            const Projected(x: -1.1, y: -1.1),
+            const Projected(x: 2.1, y: -2.5, m: 4.99),
+            const Projected(x: 3.5, y: -3.49, z: -0.5),
           ],
         ),
         def: '[-1.1,-1.1,0,0],[2.1,-2.5,0,4.99],[3.5,-3.49,-0.5,0]',
@@ -406,13 +406,13 @@ void main() {
           type: Geom.multiLineString,
           coordinates: [
             [
-              const Position(x: -1.1, y: -1.1),
-              const Position(x: 2.1, y: -2.5),
-              const Position(x: 3.5, y: -3.49),
+              const Projected(x: -1.1, y: -1.1),
+              const Projected(x: 2.1, y: -2.5),
+              const Projected(x: 3.5, y: -3.49),
             ],
             [
-              const Position(x: 38.19, y: 57.4),
-              const Position(x: 43.9, y: 84.1),
+              const Projected(x: 38.19, y: 57.4),
+              const Projected(x: 43.9, y: 84.1),
             ],
           ],
         ),
@@ -430,10 +430,10 @@ void main() {
           type: Geom.polygon,
           coordinates: [
             [
-              const Position(x: 10.1, y: 10.1),
-              const Position(x: 5, y: 9),
-              const Position(x: 12, y: 4),
-              const Position(x: 10.1, y: 10.1)
+              const Projected(x: 10.1, y: 10.1),
+              const Projected(x: 5, y: 9),
+              const Projected(x: 12, y: 4),
+              const Projected(x: 10.1, y: 10.1)
             ],
           ],
         ),
@@ -451,10 +451,10 @@ void main() {
           coordinates: [
             [
               [
-                const Position(x: 10.1, y: 10.1),
-                const Position(x: 5, y: 9),
-                const Position(x: 12, y: 4),
-                const Position(x: 10.1, y: 10.1)
+                const Projected(x: 10.1, y: 10.1),
+                const Projected(x: 5, y: 9),
+                const Projected(x: 12, y: 4),
+                const Projected(x: 10.1, y: 10.1)
               ],
             ],
           ],
@@ -472,17 +472,17 @@ void main() {
           geometries: (gw) => gw
             ..geometryWithPosition(
               type: Geom.point,
-              coordinates: const Position(x: 10.123, y: 20.25, z: -30.95),
+              coordinates: const Projected(x: 10.123, y: 20.25, z: -30.95),
               coordType: Coords.xyz,
             )
             ..geometryWithPositions2D(
               type: Geom.polygon,
               coordinates: [
                 [
-                  const Position(x: 10.1, y: 10.1),
-                  const Position(x: 5, y: 9),
-                  const Position(x: 12, y: 4),
-                  const Position(x: 10.1, y: 10.1)
+                  const Projected(x: 10.1, y: 10.1),
+                  const Projected(x: 5, y: 9),
+                  const Projected(x: 12, y: 4),
+                  const Projected(x: 10.1, y: 10.1)
                 ],
               ],
             ),
@@ -503,7 +503,7 @@ void main() {
       _testGeoJsonWriters<FeatureWriter>(
         (writer) => writer.feature(
           id: 'fid-1',
-          bbox: const Box(
+          bbox: const ProjBox(
             minX: -1.1,
             minY: -3.49,
             minZ: -0.5,
@@ -517,9 +517,9 @@ void main() {
             type: Geom.lineString,
             coordType: Coords.xyzm,
             coordinates: [
-              const Position(x: -1.1, y: -1.1),
-              const Position(x: 2.1, y: -2.5, m: 4.99),
-              const Position(x: 3.5, y: -3.49, z: -0.5),
+              const Projected(x: -1.1, y: -1.1),
+              const Projected(x: 2.1, y: -2.5, m: 4.99),
+              const Projected(x: 3.5, y: -3.49, z: -0.5),
             ],
           ),
           properties: {
@@ -536,7 +536,7 @@ void main() {
           id: 'fid-1',
           geometries: (gw) => gw.geometryWithPosition(
             type: Geom.point,
-            coordinates: const Position(x: 10.123, y: 20.25),
+            coordinates: const Projected(x: 10.123, y: 20.25),
           ),
           properties: {
             'foo': 100,
@@ -552,7 +552,7 @@ void main() {
         (writer) => writer.feature(
           geometries: (gw) => gw.geometryWithPosition(
             type: Geom.point,
-            coordinates: const Position(x: 10.123, y: 20.25),
+            coordinates: const Projected(x: 10.123, y: 20.25),
           ),
           properties: {
             'foo': {
@@ -571,12 +571,12 @@ void main() {
             gw
               ..geometryWithPosition(
                 type: Geom.point,
-                coordinates: const Position(x: 10.123, y: 20.25),
+                coordinates: const Projected(x: 10.123, y: 20.25),
               )
               ..geometryWithPosition(
                 name: 'geom1',
                 type: Geom.point,
-                coordinates: const Position(x: 1, y: 2, z: 3, m: 4),
+                coordinates: const Projected(x: 1, y: 2, z: 3, m: 4),
               );
           },
           extra: (pw) => pw.properties('extra', {
@@ -599,7 +599,7 @@ void main() {
     test('FeatureCollection', () {
       _testGeoJsonWriters<FeatureWriter>(
         (writer) => writer.featureCollection(
-          bbox: const Box(
+          bbox: const ProjBox(
             minX: -1.1,
             minY: -3.49,
             maxX: 10.123,
@@ -610,7 +610,7 @@ void main() {
               id: 'fid-1',
               geometries: (gw) => gw.geometryWithPosition(
                 type: Geom.point,
-                coordinates: const Position(x: 10.123, y: 20.25),
+                coordinates: const Projected(x: 10.123, y: 20.25),
               ),
               properties: {
                 'foo': 100,
@@ -620,16 +620,16 @@ void main() {
             ..feature(
               geometries: (gw) => gw.geometryWithPositions1D(
                 type: Geom.lineString,
-                bbox: const Box(
+                bbox: const ProjBox(
                   minX: -1.1,
                   minY: -3.49,
                   maxX: 3.5,
                   maxY: -1.1,
                 ),
                 coordinates: [
-                  const Position(x: -1.1, y: -1.1),
-                  const Position(x: 2.1, y: -2.5),
-                  const Position(x: 3.5, y: -3.49),
+                  const Projected(x: -1.1, y: -1.1),
+                  const Projected(x: 2.1, y: -2.5),
+                  const Projected(x: 3.5, y: -3.49),
                 ],
               ),
             ),
@@ -725,7 +725,7 @@ void main() {
             ..feature(
               geometries: (gw) => gw.geometryWithPosition(
                 type: Geom.point,
-                coordinates: const Position(x: 1, y: 2),
+                coordinates: const Projected(x: 1, y: 2),
               ),
               properties: {'test1': null},
             )

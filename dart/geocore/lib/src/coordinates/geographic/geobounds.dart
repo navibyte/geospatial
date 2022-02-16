@@ -247,16 +247,16 @@ class GeoBounds<T extends GeoPoint> extends BoundsBase<T> implements GeoBox {
       other is GeoBounds && GeoBox.testEquals(this, other);
 
   @override
-  int get hashCode => Box.hash(this);
+  int get hashCode => GeoBox.hash(this);
 
   @override
-  bool equals2D(BaseBox other, {num? toleranceHoriz}) =>
+  bool equals2D(Box other, {num? toleranceHoriz}) =>
       other is GeoBox &&
       GeoBox.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
 
   @override
   bool equals3D(
-    BaseBox other, {
+    Box other, {
     num? toleranceHoriz,
     num? toleranceVert,
   }) =>

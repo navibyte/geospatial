@@ -18,30 +18,31 @@ mixin ProjectionAdapter {
 
   /// Returns a projection that projects from [fromCrs] to [toCrs].
   ///
-  /// By default, result positions are created using `Position.create`. This can
-  /// be overridden by giving another factory function when using a projection.
-  Projection<Position> forward();
+  /// By default, result positions are created using `Projected.create`. This
+  /// can be overridden by giving another factory function when using a
+  /// projection.
+  Projection<Projected> forward();
 
   /// Returns a projection that projects from [fromCrs] to [toCrs].
   ///
   /// By default, result positions of [R] are created using [factory]. This can
   /// be overridden by giving another factory function when using a projection.
-  Projection<R> forwardTo<R extends BasePosition>(
+  Projection<R> forwardTo<R extends Position>(
     CreatePosition<R> factory,
   );
 
   /// Returns a projection that projects from [toCrs] to [fromCrs].
   ///
-  /// By default, result positions are created using `GeoPosition.create`. This
+  /// By default, result positions are created using `Geographic.create`. This
   /// can be overridden by giving another factory function when using a
   /// projection.
-  Projection<GeoPosition> inverse();
+  Projection<Geographic> inverse();
 
   /// Returns a projection that unprojects from [toCrs] to [fromCrs].
   ///
   /// By default, result positions of [R] are created using [factory]. This can
   /// be overridden by giving another factory function when using a projection.
-  Projection<R> inverseTo<R extends BasePosition>(
+  Projection<R> inverseTo<R extends Position>(
     CreatePosition<R> factory,
   );
 }

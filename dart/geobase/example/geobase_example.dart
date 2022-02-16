@@ -31,7 +31,7 @@ void main() {
   _geoJsonFeatureCollection();
 
   // projection samples
-  _projections();
+  _wgs84Projections();
 
   // transform samples
   _basicTransfroms();
@@ -47,7 +47,7 @@ void _wktPointGeometry() {
     writer
       ..geometryWithPosition(
         type: Geom.point,
-        coordinates: const Position(x: 10.123, y: 20.25),
+        coordinates: const Projected(x: 10.123, y: 20.25),
       )
       ..toString(),
   );
@@ -64,7 +64,7 @@ void _wktPointGeometryWithZ() {
       ..geometryWithPosition(
         type: Geom.point,
         coordType: Coords.xyz,
-        coordinates: const Position(x: 10.123, y: 20.25, z: -30.95),
+        coordinates: const Projected(x: 10.123, y: 20.25, z: -30.95),
       )
       ..toString(),
   );
@@ -81,7 +81,7 @@ void _wktPointGeometryWithM() {
       ..geometryWithPosition(
         type: Geom.point,
         coordType: Coords.xym,
-        coordinates: const Position(x: 10.123, y: 20.25, m: -1.999),
+        coordinates: const Projected(x: 10.123, y: 20.25, m: -1.999),
       )
       ..toString(),
   );
@@ -99,7 +99,7 @@ void _wktPointGeometryWithZM() {
         type: Geom.point,
         coordType: Coords.xyzm,
         coordinates:
-            const GeoPosition(lon: 10.123, lat: 20.25, elev: -30.95, m: -1.999),
+            const Geographic(lon: 10.123, lat: 20.25, elev: -30.95, m: -1.999),
       )
       ..toString(),
   );
@@ -115,7 +115,7 @@ void _geoJsonPointGeometry() {
     writer
       ..geometryWithPosition(
         type: Geom.point,
-        coordinates: const GeoPosition(lon: 10.123, lat: 20.25),
+        coordinates: const Geographic(lon: 10.123, lat: 20.25),
       )
       ..toString(),
   );
@@ -131,7 +131,7 @@ void _geoJsonPointGeometryDecimals() {
     writer
       ..geometryWithPosition(
         type: Geom.point,
-        coordinates: const GeoPosition(lon: 10.123, lat: 20.25),
+        coordinates: const Geographic(lon: 10.123, lat: 20.25),
       )
       ..toString(),
   );
@@ -146,7 +146,7 @@ void _geoJsonPointGeometryCustomStringBuffer() {
   buf.write('{"geometry":');
   writer.geometryWithPosition(
     type: Geom.point,
-    coordinates: const GeoPosition(lon: 10.123, lat: 20.25),
+    coordinates: const Geographic(lon: 10.123, lat: 20.25),
   );
   buf.write('}');
 
@@ -169,9 +169,9 @@ void _geoJsonLineStringGeometryWithBbox() {
         type: Geom.lineString,
         bbox: const GeoBox(west: -1.1, south: -3.49, east: 3.5, north: -1.1),
         coordinates: [
-          const GeoPosition(lon: -1.1, lat: -1.1),
-          const GeoPosition(lon: 2.1, lat: -2.5),
-          const GeoPosition(lon: 3.5, lat: -3.49),
+          const Geographic(lon: -1.1, lat: -1.1),
+          const Geographic(lon: 2.1, lat: -2.5),
+          const Geographic(lon: 3.5, lat: -3.49),
         ],
       )
       ..toString(),
@@ -196,17 +196,17 @@ void _geoJsonGeometryCollection() {
           ..geometryWithPosition(
             type: Geom.point,
             coordinates:
-                const GeoPosition(lon: 10.123, lat: 20.25, elev: -30.95),
+                const Geographic(lon: 10.123, lat: 20.25, elev: -30.95),
             coordType: Coords.xyz,
           )
           ..geometryWithPositions2D(
             type: Geom.polygon,
             coordinates: [
               [
-                const GeoPosition(lon: 10.1, lat: 10.1),
-                const GeoPosition(lon: 5, lat: 9),
-                const GeoPosition(lon: 12, lat: 4),
-                const GeoPosition(lon: 10.1, lat: 10.1)
+                const Geographic(lon: 10.1, lat: 10.1),
+                const Geographic(lon: 5, lat: 9),
+                const Geographic(lon: 12, lat: 4),
+                const Geographic(lon: 10.1, lat: 10.1)
               ],
             ],
           ),
@@ -232,7 +232,7 @@ void _geoJsonFeature() {
         id: 'fid-1',
         geometries: (gw) => gw.geometryWithPosition(
           type: Geom.point,
-          coordinates: const GeoPosition(lon: 10.123, lat: 20.25),
+          coordinates: const Geographic(lon: 10.123, lat: 20.25),
         ),
         properties: {
           'foo': 100,
@@ -275,7 +275,7 @@ void _geoJsonFeatureCollection() {
             id: 'fid-1',
             geometries: (gw) => gw.geometryWithPosition(
               type: Geom.point,
-              coordinates: const GeoPosition(lon: 10.123, lat: 20.25),
+              coordinates: const Geographic(lon: 10.123, lat: 20.25),
             ),
             properties: {
               'foo': 100,
@@ -292,9 +292,9 @@ void _geoJsonFeatureCollection() {
                 north: -1.1,
               ),
               coordinates: [
-                const GeoPosition(lon: -1.1, lat: -1.1),
-                const GeoPosition(lon: 2.1, lat: -2.5),
-                const GeoPosition(lon: 3.5, lat: -3.49),
+                const Geographic(lon: -1.1, lat: -1.1),
+                const Geographic(lon: 2.1, lat: -2.5),
+                const Geographic(lon: 3.5, lat: -3.49),
               ],
             ),
           ),
@@ -303,14 +303,14 @@ void _geoJsonFeatureCollection() {
   );
 }
 
-void _projections() {
+void _wgs84Projections() {
   // Built-in coordinate projections (currently only between WGS84 and
   // Web Mercator)
 
   // From GeoPoint2 (WGS 84 longitude-latitude) to Point2 (Web Mercator metric)
   final forward = wgs84ToWebMercator.forward();
   final projected =
-      forward.project(const GeoPosition(lon: -0.0014, lat: 51.4778));
+      forward.project(const Geographic(lon: -0.0014, lat: 51.4778));
 
   // From Point2 (Web Mercator metric) to GeoPoint2 (WGS 84 longitude-latitude)
   final inverse = wgs84ToWebMercator.inverse();
@@ -323,13 +323,13 @@ void _basicTransfroms() {
   // Create a point and transform it with a custom translation that returns
   // `Position(x: 110.0, y: 220.0, z: 50.0, m: 1.25)` after projection.
   print(
-    const Position(x: 100.0, y: 200.0, z: 50.0, m: 1.25)
+    const Projected(x: 100.0, y: 200.0, z: 50.0, m: 1.25)
         .transform(_sampleFixedTranslate),
   );
 }
 
 /// Translates X by 10.0 and Y by 20.0, other coordinates (Z and M) not changed.
-T _sampleFixedTranslate<T extends BasePosition>(T source) {
+T _sampleFixedTranslate<T extends Position>(T source) {
   final pos = source.asPosition;
   return source.copyWith(x: pos.x + 10.0, y: pos.y + 20.0) as T;
 }

@@ -9,9 +9,9 @@ import 'package:meta/meta.dart';
 import '/src/base/codes.dart';
 import '/src/utils/tolerance.dart';
 
-import 'base_box.dart';
 import 'box.dart';
-import 'geoposition.dart';
+import 'geographic.dart';
+import 'projbox.dart';
 
 /// A geographic bounding box with [west], [south], [east] and [north] values.
 ///
@@ -29,7 +29,7 @@ import 'geoposition.dart';
 /// Optional [minElev] and [maxElev] for 3D boxes, and [minM] and [maxM] for
 /// measured boxes can be provided too.
 @immutable
-class GeoBox extends BaseBox {
+class GeoBox extends Box {
   /// A geographic bounding box with [west], [south], [east] and [north] values.
   ///
   /// West and east represents geographic longitude coordinates values. South
@@ -111,7 +111,7 @@ class GeoBox extends BaseBox {
   /// "min-longitude" (west) is larger than "max-longitude" (east) as a number.
   /// See also RFC 7946 chapter 5 about bounding boxes in GeoJSON for reference.
   @override
-  GeoPosition get min => GeoPosition(
+  Geographic get min => Geographic(
         lon: _west,
         lat: _south,
         elev: _minElev,
@@ -126,7 +126,7 @@ class GeoBox extends BaseBox {
   /// "min-longitude" (west) is larger than "max-longitude" (east) as a number.
   /// See also RFC 7946 chapter 5 about bounding boxes in GeoJSON for reference.
   @override
-  GeoPosition get max => GeoPosition(
+  Geographic get max => Geographic(
         lon: _east,
         lat: _north,
         elev: _maxElev,
@@ -134,7 +134,7 @@ class GeoBox extends BaseBox {
       );
 
   @override
-  Box get asBox => Box(
+  ProjBox get asBox => ProjBox(
         minX: _west,
         minY: _south,
         minZ: _minElev,
@@ -195,13 +195,13 @@ class GeoBox extends BaseBox {
   int get hashCode => GeoBox.hash(this);
 
   @override
-  bool equals2D(BaseBox other, {num? toleranceHoriz}) =>
+  bool equals2D(Box other, {num? toleranceHoriz}) =>
       other is GeoBox &&
       GeoBox.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
 
   @override
   bool equals3D(
-    BaseBox other, {
+    Box other, {
     num? toleranceHoriz,
     num? toleranceVert,
   }) =>

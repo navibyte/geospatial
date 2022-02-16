@@ -4,81 +4,59 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:meta/meta.dart';
+import 'positionable.dart';
+import 'projected.dart';
 
-import '/src/base/codes.dart';
-import '/src/utils/tolerance.dart';
-
-import 'base_position.dart';
-
-/// A position with [x], [y], and optional [z] and [m] coordinate values.
+/// Creates a new position of [T] from [x] and [y], and optional [z] and [m].
 ///
-/// All implementations must contain at least [x] and [y] coordinate values, but
-/// [z] and [m] coordinates are optional (getters should return zero value when
-/// such a coordinate axis is not available).
+/// For projected or cartesian positions (`Projected`), coordinates axis are
+/// applied as is.
 ///
-/// When a position contains geographic coordinates, then by default [x]
-/// represents *longitude*, [y] represents *latitude*, and [z] represents
-/// *elevation* (or *height* or *altitude*).
+/// For geographic positions (`Geographic`), coordinates are applied as:
+/// `x` => `lon`, `y` => `lat`, `z` => `elev`, `m` => `m`
+typedef CreatePosition<T extends Position> = T Function({
+  required num x,
+  required num y,
+  num? z,
+  num? m,
+});
+
+/// A function to transform the [source] position of [T] to a position of [T].
 ///
-/// A projected map position might be defined as *easting* (E) and *northing*
-/// (N) coordinates. It's suggested that then E == [x] and N == [y], but a
-/// coordinate reference system might specify something else too.
+/// Target positions of [T] are created using [source] itself as a factory.
 ///
-/// [m] represents a measurement or a value on a linear referencing system (like
-/// time). It could be associated with a 2D position (x, y, m) or a 3D position
-/// (x, y, z, m).
-@immutable
-class Position extends BasePosition {
-  /// A position with [x], [y], and optional [z] and [m] coordinates.
-  const Position({required num x, required num y, num? z, num? m})
-      : _x = x,
-        _y = y,
-        _z = z,
-        _m = m;
+/// Throws FormatException if cannot transform.
+typedef TransformPosition = T Function<T extends Position>(T source);
 
-  /// A position from parameters compatible with `CreatePosition` function type.
-  const Position.create({required num x, required num y, num? z, num? m})
-      : _x = x,
-        _y = y,
-        _z = z,
-        _m = m;
+/// A base interface for geospatial positions.
+//
+/// This interface defines coordinate value only for the m axis. Sub classes
+/// define coordinate values for other axes (x, y and z for projected or
+/// cartesian positions, and longitude, latitude and elevation for geographic
+/// positions).
+///
+/// The known sub classes are `Projected` (with x, y, z and m coordinates) and
+/// `Geographic` (with lon, lat, elev and m coordinates).
+abstract class Position extends Positionable {
+  /// Default `const` constructor to allow extending this abstract class.
+  const Position();
 
-  final num _x;
-  final num _y;
-  final num? _z;
-  final num? _m;
-
-  /// The x coordinate value.
+  /// The m ("measure") coordinate value. Returns zero if not available.
   ///
-  /// For geographic coordinates x represents *longitude*.
-  num get x => _x;
-
-  /// The y coordinate value.
+  /// You can also use [isMeasured] to check whether m coordinate is available,
+  /// [optM] returns m coordinate as nullable value.
   ///
-  /// For geographic coordinates y represents *latitude*.
-  num get y => _y;
+  /// [m] represents a measurement or a value on a linear referencing system
+  /// (like time).
+  num get m;
 
-  /// The z coordinate value. Returns zero if not available.
+  /// The m ("measure") coordinate optionally. Returns null if not available.
   ///
-  /// You can also use [is3D] to check whether z coordinate is available, or
-  /// [optZ] returns z coordinate as nullable value.
+  /// You can also use [isMeasured] to check whether m coordinate is available.
   ///
-  /// For geographic coordinates z represents *elevation* or *altitude*.
-  num get z => _z ?? 0;
-
-  /// The z coordinate value optionally. Returns null if not available.
-  ///
-  /// You can also use [is3D] to check whether z coordinate is available.
-  ///
-  /// For geographic coordinates z represents *elevation* or *altitude*.
-  num? get optZ => _z;
-
-  @override
-  num get m => _m ?? 0;
-
-  @override
-  num? get optM => _m;
+  /// [m] represents a measurement or a value on a linear referencing system
+  /// (like time).
+  num? get optM;
 
   /// A coordinate value by the coordinate axis index [i].
   ///
@@ -86,187 +64,59 @@ class Position extends BasePosition {
   ///
   /// For projected or cartesian coordinates, the coordinate ordering is:
   /// (x, y), (x, y, m), (x, y, z) or (x, y, z, m).
-  @override
-  num operator [](int i) => Position.getValue(this, i);
+  ///
+  /// For geographic coordinates, the coordinate ordering is:
+  /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
+  num operator [](int i);
 
   /// Coordinate values of this position as an iterable of 2, 3 or 4 items.
   ///
   /// For projected or cartesian coordinates, the coordinate ordering is:
   /// (x, y), (x, y, m), (x, y, z) or (x, y, z, m).
-  @override
-  Iterable<num> get values => Position.getValues(this);
+  ///
+  /// For geographic coordinates, the coordinate ordering is:
+  /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
+  Iterable<num> get values;
 
-  @override
-  Position get asPosition => this;
+  /// Returns this position as [Projected] (with x, y, z and m coordinates).
+  ///
+  /// When returning `Geographic` as [Projected] then coordinates are copied as:
+  /// `lon` => `x`, `lat` => `y`, `elev` => `z`, `m` => `m`
+  Projected get asPosition;
 
   /// Copies the position with optional [x], [y], [z] and [m] overriding values.
   ///
-  /// For example:
-  /// `Position(x: 1, y: 1).copyWith(y: 2) == Position(x: 1, y: 2)`
-  /// `Position(x: 1, y: 1).copyWith(z: 2) == Position(x: 1, y: 1, z: 2)`
-  @override
-  Position copyWith({num? x, num? y, num? z, num? m}) => Position(
-        x: x ?? _x,
-        y: y ?? _y,
-        z: z ?? _z,
-        m: m ?? _m,
-      );
+  /// When copying `Geographic` then coordinates has correspondence:
+  /// `x` => `lon`, `y` => `lat`, `z` => `elev`, `m` => `m`
+  Position copyWith({num? x, num? y, num? z, num? m});
 
-  @override
-  Position transform(TransformPosition transform) => transform(this);
+  /// Returns a position with all points transformed using [transform].
+  Position transform(TransformPosition transform);
 
-  @override
-  int get spatialDimension => typeCoords.spatialDimension;
+  /// True if this position equals with [other] by testing 2D coordinates only.
+  ///
+  /// If [toleranceHoriz] is given, then differences on 2D coordinate values
+  /// (ie. x and y, or lon and lat) between this and [other] must be within
+  /// tolerance. Otherwise value must be exactly same.
+  ///
+  /// Tolerance values must be null or positive (>= 0).
+  bool equals2D(Position other, {num? toleranceHoriz});
 
-  @override
-  int get coordinateDimension => typeCoords.coordinateDimension;
-
-  @override
-  bool get isGeographic => false;
-
-  @override
-  bool get is3D => _z != null;
-
-  @override
-  bool get isMeasured => _m != null;
-
-  @override
-  Coords get typeCoords => CoordsExtension.select(
-        isGeographic: isGeographic,
-        is3D: is3D,
-        isMeasured: isMeasured,
-      );
-
-  @override
-  String toString() {
-    switch (typeCoords) {
-      case Coords.xy:
-        return '$_x,$_y';
-      case Coords.xyz:
-        return '$_x,$_y,$_z';
-      case Coords.xym:
-        return '$_x,$_y,$_m';
-      case Coords.xyzm:
-        return '$_x,$_y,$_z,$_m';
-      case Coords.lonLat:
-      case Coords.lonLatElev:
-      case Coords.lonLatM:
-      case Coords.lonLatElevM:
-        return '<not geographic>';
-    }
-  }
-
-  @override
-  bool operator ==(Object other) =>
-      other is Position && Position.testEquals(this, other);
-
-  @override
-  int get hashCode => Position.hash(this);
-
-  @override
-  bool equals2D(BasePosition other, {num? toleranceHoriz}) =>
-      other is Position &&
-      Position.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
-
-  @override
+  /// True if this position equals with [other] by testing 3D coordinates only.
+  ///
+  /// Returns false if this or [other] is not a 3D position.
+  ///
+  /// If [toleranceHoriz] is given, then differences on 2D coordinate values
+  /// (ie. x and y, or lon and lat) between this and [other] must be within
+  /// tolerance. Otherwise value must be exactly same.
+  ///
+  /// The tolerance for vertical coordinate values (ie. z or elev) is given by
+  /// an optional [toleranceVert] value.
+  ///
+  /// Tolerance values must be null or positive (>= 0).
   bool equals3D(
-    BasePosition other, {
+    Position other, {
     num? toleranceHoriz,
     num? toleranceVert,
-  }) =>
-      other is Position &&
-      Position.testEquals3D(
-        this,
-        other,
-        toleranceHoriz: toleranceHoriz,
-        toleranceVert: toleranceVert,
-      );
-
-  // ---------------------------------------------------------------------------
-  // Static methods with default logic, used by Position itself too.
-
-  /// A coordinate value of [position] by the coordinate axis index [i].
-  ///
-  /// Returns zero when a coordinate axis is not available.
-  ///
-  /// For projected or cartesian coordinates, the coordinate ordering is:
-  /// (x, y), (x, y, m), (x, y, z) or (x, y, z, m).
-  static num getValue(Position position, int i) {
-    if (position.is3D) {
-      switch (i) {
-        case 0:
-          return position.x;
-        case 1:
-          return position.y;
-        case 2:
-          return position.z;
-        case 3:
-          return position.m; // returns m or 0
-        default:
-          return 0;
-      }
-    } else {
-      switch (i) {
-        case 0:
-          return position.x;
-        case 1:
-          return position.y;
-        case 2:
-          return position.m; // returns m or 0
-        default:
-          return 0;
-      }
-    }
-  }
-
-  /// Coordinate values of [position] as an iterable of 2, 3 or 4 items.
-  ///
-  /// For projected or cartesian coordinates, the coordinate ordering is:
-  /// (x, y), (x, y, m), (x, y, z) or (x, y, z, m).
-  static Iterable<num> getValues(Position position) sync* {
-    yield position.x;
-    yield position.y;
-    if (position.is3D) {
-      yield position.z;
-    }
-    if (position.isMeasured) {
-      yield position.m;
-    }
-  }
-
-  /// True if positions [p1] and [p2] equals by testing all coordinate values.
-  static bool testEquals(Position p1, Position p2) =>
-      p1.x == p2.x && p1.y == p2.y && p1.optZ == p2.optZ && p1.optM == p2.optM;
-
-  /// The hash code for [position].
-  static int hash(Position position) =>
-      Object.hash(position.x, position.y, position.optZ, position.optM);
-
-  /// True if positions [p1] and [p2] equals by testing 2D coordinates only.
-  static bool testEquals2D(Position p1, Position p2, {num? toleranceHoriz}) {
-    assertTolerance(toleranceHoriz);
-    return toleranceHoriz != null
-        ? (p1.x - p2.x).abs() <= toleranceHoriz &&
-            (p1.y - p2.y).abs() <= toleranceHoriz
-        : p1.x == p2.x && p1.y == p2.y;
-  }
-
-  /// True if positions [p1] and [p2] equals by testing 3D coordinates only.
-  static bool testEquals3D(
-    Position p1,
-    Position p2, {
-    num? toleranceHoriz,
-    num? toleranceVert,
-  }) {
-    assertTolerance(toleranceVert);
-    if (!Position.testEquals2D(p1, p2, toleranceHoriz: toleranceHoriz)) {
-      return false;
-    }
-    if (!p1.is3D || !p1.is3D) {
-      return false;
-    }
-    return toleranceVert != null
-        ? (p1.z - p2.z).abs() <= toleranceVert
-        : p1.z == p2.z;
-  }
+  });
 }

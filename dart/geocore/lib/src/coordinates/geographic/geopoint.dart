@@ -17,7 +17,7 @@ import '/src/base/spatial.dart';
 ///
 /// Extends [Point] class. Properties have equality (in context of this
 /// library): [lon] == [x], [lat] == [y], [elev] == [z]
-abstract class GeoPoint extends Point<double> implements GeoPosition {
+abstract class GeoPoint extends Point<double> implements Geographic {
   /// Default `const` constructor to allow extending this abstract class.
   const GeoPoint();
 
@@ -59,15 +59,15 @@ abstract class GeoPoint extends Point<double> implements GeoPosition {
 
   @override
   bool operator ==(Object other) =>
-      other is GeoPoint && GeoPosition.testEquals(this, other);
+      other is GeoPoint && Geographic.testEquals(this, other);
 
   @override
-  int get hashCode => GeoPosition.hash(this);
+  int get hashCode => Geographic.hash(this);
 
   @override
-  bool equals2D(BasePosition other, {num? toleranceHoriz}) =>
-      other is GeoPosition &&
-      GeoPosition.testEquals2D(
+  bool equals2D(Position other, {num? toleranceHoriz}) =>
+      other is Geographic &&
+      Geographic.testEquals2D(
         this,
         other,
         toleranceHoriz: toleranceHoriz?.toDouble(),
@@ -75,12 +75,12 @@ abstract class GeoPoint extends Point<double> implements GeoPosition {
 
   @override
   bool equals3D(
-    BasePosition other, {
+    Position other, {
     num? toleranceHoriz,
     num? toleranceVert,
   }) =>
-      other is GeoPosition &&
-      GeoPosition.testEquals3D(
+      other is Geographic &&
+      Geographic.testEquals3D(
         this,
         other,
         toleranceHoriz: toleranceHoriz?.toDouble(),

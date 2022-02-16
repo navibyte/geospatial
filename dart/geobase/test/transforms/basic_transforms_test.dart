@@ -11,23 +11,23 @@ import 'package:test/test.dart';
 void main() {
   group('Test transformations with simple translate', () {
     final translate1 = translatePoint(dx: 1.0, dy: 2.0, dz: 3.0, dm: 4.0);
-    test('Immutable point classes (cartesian points)', () {
+    test('Immutable point classes (projected points)', () {
       expect(
-        const Position(x: 10.0, y: 20.0).transform(translate1),
-        const Position(x: 11.0, y: 22.0),
+        const Projected(x: 10.0, y: 20.0).transform(translate1),
+        const Projected(x: 11.0, y: 22.0),
       );
       expect(
-        const Position(x: 10.0, y: 20.0, m: 40.0).transform(translate1),
-        const Position(x: 11.0, y: 22.0, m: 44.0),
+        const Projected(x: 10.0, y: 20.0, m: 40.0).transform(translate1),
+        const Projected(x: 11.0, y: 22.0, m: 44.0),
       );
       expect(
-        const Position(x: 10.0, y: 20.0, z: 30.0).transform(translate1),
-        const Position(x: 11.0, y: 22.0, z: 33.0),
+        const Projected(x: 10.0, y: 20.0, z: 30.0).transform(translate1),
+        const Projected(x: 11.0, y: 22.0, z: 33.0),
       );
       expect(
-        const Position(x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+        const Projected(x: 10.0, y: 20.0, z: 30.0, m: 40.0)
             .transform(translate1),
-        const Position(x: 11.0, y: 22.0, z: 33.0, m: 44.0),
+        const Projected(x: 11.0, y: 22.0, z: 33.0, m: 44.0),
       );
     });
   });

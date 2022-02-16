@@ -13,35 +13,35 @@ import 'projection_sample.dart';
 
 void main() {
   group('Test projections between WGS84 and Web Mercator', () {
-    test('webMercatorToWgs84(Position to GeoPosition)', () {
+    test('webMercatorToWgs84(Projected to Geographic)', () {
       final toWgs84 = wgs84ToWebMercator.inverse();
       for (final coords in wgs84ToWebMercatorData) {
-        final point2 = Position(x: coords[2], y: coords[3]);
-        final geoPoint2 = GeoPosition(lon: coords[0], lat: coords[1]);
+        final point2 = Projected(x: coords[2], y: coords[3]);
+        final geoPoint2 = Geographic(lon: coords[0], lat: coords[1]);
         expectProjected(toWgs84.project(point2), geoPoint2);
         expectProjected(
           toWgs84.project(point2),
-          GeoPosition(lon: coords[0], lat: coords[1]),
+          Geographic(lon: coords[0], lat: coords[1]),
         );
         expectProjected(
-          toWgs84.project(Position(x: coords[2], y: coords[3], z: 30.0)),
-          GeoPosition(lon: coords[0], lat: coords[1], elev: 30.0),
+          toWgs84.project(Projected(x: coords[2], y: coords[3], z: 30.0)),
+          Geographic(lon: coords[0], lat: coords[1], elev: 30.0),
         );
         expectProjected(
           toWgs84.project(
-            Position(x: coords[2], y: coords[3], z: 30.0),
-            to: GeoPosition.create,
+            Projected(x: coords[2], y: coords[3], z: 30.0),
+            to: Geographic.create,
           ),
-          GeoPosition(lon: coords[0], lat: coords[1], elev: 30.0),
+          Geographic(lon: coords[0], lat: coords[1], elev: 30.0),
         );
       }
     });
 
-    test('wgs84ToWebMercator(GeoPosition to Position)', () {
+    test('wgs84ToWebMercator(Geographic to Projected)', () {
       final toWebMercator = wgs84ToWebMercator.forward();
       for (final coords in wgs84ToWebMercatorData) {
-        final geoPoint3 = GeoPosition(lon: coords[0], lat: coords[1]);
-        final point3 = Position(x: coords[2], y: coords[3]);
+        final geoPoint3 = Geographic(lon: coords[0], lat: coords[1]);
+        final point3 = Projected(x: coords[2], y: coords[3]);
         expectProjected(toWebMercator.project(geoPoint3), point3, 0.01);
       }
     });

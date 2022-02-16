@@ -22,16 +22,16 @@ mixin GeometryWriter implements BaseWriter {
   /// An optional [bbox] can used set a minimum bounding box for a geometry
   /// written. A writer implementation may use it or ignore it.
   ///
-  /// Known [BasePosition] sub classes are [Position] (projected or cartesian
-  /// coordinates) and [GeoPosition] (geographic coordinates). Known [BaseBox]
-  /// sub classes are [Box] (projected or cartesian coordinates) and [GeoBox]
+  /// Known [Position] sub classes are [Projected] (projected or cartesian
+  /// coordinates) and [Geographic] (geographic coordinates). Known [Box] sub
+  /// classes are [ProjBox] (projected or cartesian coordinates) and [GeoBox]
   /// (geographic coordinates).
   void geometryWithPosition({
     required Geom type,
-    required BasePosition coordinates,
+    required Position coordinates,
     String? name,
     Coords? coordType,
-    BaseBox? bbox,
+    Box? bbox,
   });
 
   /// Writes a geometry of [type] with a position array from [coordinates].
@@ -45,16 +45,16 @@ mixin GeometryWriter implements BaseWriter {
   /// An optional [bbox] can used set a minimum bounding box for a geometry
   /// written. A writer implementation may use it or ignore it.
   ///
-  /// Known [BasePosition] sub classes are [Position] (projected or cartesian
-  /// coordinates) and [GeoPosition] (geographic coordinates). Known [BaseBox]
-  /// sub classes are [Box] (projected or cartesian coordinates) and [GeoBox]
+  /// Known [Position] sub classes are [Projected] (projected or cartesian
+  /// coordinates) and [Geographic] (geographic coordinates). Known [Box] sub
+  /// classes are [ProjBox] (projected or cartesian coordinates) and [GeoBox]
   /// (geographic coordinates).
   void geometryWithPositions1D({
     required Geom type,
-    required Iterable<BasePosition> coordinates,
+    required Iterable<Position> coordinates,
     String? name,
     Coords? coordType,
-    BaseBox? bbox,
+    Box? bbox,
   });
 
   /// Writes a geometry of [type] with a position array from [coordinates].
@@ -68,16 +68,16 @@ mixin GeometryWriter implements BaseWriter {
   /// An optional [bbox] can used set a minimum bounding box for a geometry
   /// written. A writer implementation may use it or ignore it.
   ///
-  /// Known [BasePosition] sub classes are [Position] (projected or cartesian
-  /// coordinates) and [GeoPosition] (geographic coordinates). Known [BaseBox]
-  /// sub classes are [Box] (projected or cartesian coordinates) and [GeoBox]
+  /// Known [Position] sub classes are [Projected] (projected or cartesian
+  /// coordinates) and [Geographic] (geographic coordinates). Known [Box] sub
+  /// classes are [ProjBox] (projected or cartesian coordinates) and [GeoBox]
   /// (geographic coordinates).
   void geometryWithPositions2D({
     required Geom type,
-    required Iterable<Iterable<BasePosition>> coordinates,
+    required Iterable<Iterable<Position>> coordinates,
     String? name,
     Coords? coordType,
-    BaseBox? bbox,
+    Box? bbox,
   });
 
   /// Writes a geometry of [type] with a position array from [coordinates].
@@ -91,16 +91,16 @@ mixin GeometryWriter implements BaseWriter {
   /// An optional [bbox] can used set a minimum bounding box for a geometry
   /// written. A writer implementation may use it or ignore it.
   ///
-  /// Known [BasePosition] sub classes are [Position] (projected or cartesian
-  /// coordinates) and [GeoPosition] (geographic coordinates). Known [BaseBox]
-  /// sub classes are [Box] (projected or cartesian coordinates) and [GeoBox]
+  /// Known [Position] sub classes are [Projected] (projected or cartesian
+  /// coordinates) and [Geographic] (geographic coordinates). Known [Box] sub
+  /// classes are [ProjBox] (projected or cartesian coordinates) and [GeoBox]
   /// (geographic coordinates).
   void geometryWithPositions3D({
     required Geom type,
-    required Iterable<Iterable<Iterable<BasePosition>>> coordinates,
+    required Iterable<Iterable<Iterable<Position>>> coordinates,
     String? name,
     Coords? coordType,
-    BaseBox? bbox,
+    Box? bbox,
   });
 
   /// Writes a geometry collection of [geometries].
@@ -112,13 +112,13 @@ mixin GeometryWriter implements BaseWriter {
   /// An optional [bbox] can used set a minimum bounding box for a geometry
   /// written. A writer implementation may use it or ignore it.
   ///
-  /// Known [BaseBox] sub classes are [Box] (projected or cartesian coordinates)
+  /// Known [Box] sub classes are [ProjBox] (projected or cartesian coordinates)
   /// and [GeoBox] (geographic coordinates).
   void geometryCollection({
     required WriteGeometries geometries,
     int? count,
     String? name,
-    BaseBox? bbox,
+    Box? bbox,
   });
 
   /// Writes an empty geometry of [type].

@@ -24,7 +24,7 @@ TransformPosition translatePoint<C extends num>({
   C? dz,
   C? dm,
 }) =>
-    <T extends BasePosition>(T source) {
+    <T extends Position>(T source) {
       final pos = source.asPosition;
       final dim = pos.coordinateDimension;
       if (dim == 2) {
@@ -57,7 +57,7 @@ TransformPosition scalePoint<C extends num>({
   C? sz,
   C? sm,
 }) =>
-    <T extends BasePosition>(T source) {
+    <T extends Position>(T source) {
       final pos = source.asPosition;
       final dim = pos.coordinateDimension;
       if (dim == 2) {
@@ -79,7 +79,7 @@ TransformPosition scalePoint<C extends num>({
 
 /// Returns a function to scale positions by the [scale] factor.
 TransformPosition scalePointBy<C extends num>(C scale) =>
-    <T extends BasePosition>(T source) {
+    <T extends Position>(T source) {
       final pos = source.asPosition;
       final dim = pos.coordinateDimension;
       if (dim == 2) {
@@ -103,7 +103,7 @@ TransformPosition scalePointBy<C extends num>(C scale) =>
 ///
 /// If both [cx] and [cy] are given then rotate points around this pivot point.
 TransformPosition rotatePoint2D(num radians, {num? cx, num? cy}) =>
-    <T extends BasePosition>(T source) {
+    <T extends Position>(T source) {
       final s = math.sin(radians);
       final c = math.cos(radians);
 

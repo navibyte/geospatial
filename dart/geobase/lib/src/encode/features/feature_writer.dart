@@ -22,7 +22,7 @@ mixin FeatureWriter implements BaseWriter {
   ///
   /// Use [extra] to write any extra or "foreign member" properties.
   ///
-  /// Known [BaseBox] sub classes are [Box] (projected or cartesian coordinates)
+  /// Known [Box] sub classes are [ProjBox] (projected or cartesian coordinates)
   /// and [GeoBox] (geographic coordinates).
   ///
   /// An example:
@@ -51,7 +51,7 @@ mixin FeatureWriter implements BaseWriter {
   void featureCollection({
     required WriteFeatures features,
     int? count,
-    BaseBox? bbox,
+    Box? bbox,
     WriteProperties? extra,
   });
 
@@ -69,7 +69,7 @@ mixin FeatureWriter implements BaseWriter {
   /// Use [extra] to write any extra or "foreign member" properties along with
   /// those set by [properties].
   ///
-  /// Known [BaseBox] sub classes are [Box] (projected or cartesian coordinates)
+  /// Known [Box] sub classes are [ProjBox] (projected or cartesian coordinates)
   /// and [GeoBox] (geographic coordinates).
   ///
   /// An example:
@@ -91,7 +91,7 @@ mixin FeatureWriter implements BaseWriter {
     Object? id,
     WriteGeometries? geometries,
     Map<String, Object?>? properties,
-    BaseBox? bbox,
+    Box? bbox,
     WriteProperties? extra,
   });
 }

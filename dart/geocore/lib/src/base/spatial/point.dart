@@ -27,7 +27,7 @@ part of 'spatial.dart';
 /// time). It could be associated with a 2D position (x, y, m) or a 3D position
 /// (x, y, z, m).
 abstract class Point<C extends num> extends Geometry
-    implements Position, _Coordinates, PointFactory {
+    implements Projected, _Coordinates, PointFactory {
   /// Default `const` constructor to allow extending this abstract class.
   const Point();
 
@@ -52,7 +52,7 @@ abstract class Point<C extends num> extends Geometry
   Bounds? get boundsExplicit => Bounds.of(min: this, max: this);
 
   @override
-  Position get asPosition => this;
+  Projected get asPosition => this;
 
   @override
   Point? get onePoint => this;

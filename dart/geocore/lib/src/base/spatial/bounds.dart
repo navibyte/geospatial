@@ -8,7 +8,7 @@ part of 'spatial.dart';
 
 /// A base interface for bounds (aka a bounding box in 2D).
 abstract class Bounds<T extends Point> extends Bounded
-    implements _Coordinates, CoordinateFactory<Bounds<T>>, Box {
+    implements _Coordinates, CoordinateFactory<Bounds<T>>, ProjBox {
   /// Default `const` constructor to allow extending this abstract class.
   const Bounds();
 
@@ -99,7 +99,7 @@ abstract class Bounds<T extends Point> extends Bounded
   num? get maxM => max.optM;
 
   @override
-  Box get asBox => this;
+  ProjBox get asBox => this;
 
   @override
   int get coordinateDimension => min.coordinateDimension;
@@ -297,24 +297,24 @@ class BoundsBase<T extends Point> extends Bounds<T> {
 
   @override
   bool operator ==(Object other) =>
-      other is Bounds && Box.testEquals(this, other);
+      other is Bounds && ProjBox.testEquals(this, other);
 
   @override
-  int get hashCode => Box.hash(this);
+  int get hashCode => ProjBox.hash(this);
 
   @override
-  bool equals2D(BaseBox other, {num? toleranceHoriz}) =>
-      other is Box &&
-      Box.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
+  bool equals2D(Box other, {num? toleranceHoriz}) =>
+      other is ProjBox &&
+      ProjBox.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
 
   @override
   bool equals3D(
-    BaseBox other, {
+    Box other, {
     num? toleranceHoriz,
     num? toleranceVert,
   }) =>
-      other is Box &&
-      Box.testEquals3D(
+      other is ProjBox &&
+      ProjBox.testEquals3D(
         this,
         other,
         toleranceHoriz: toleranceHoriz,

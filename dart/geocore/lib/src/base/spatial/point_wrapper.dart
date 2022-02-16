@@ -95,12 +95,12 @@ class PointWrapper<T extends Point<C>, C extends num> extends Point<C> {
   int get hashCode => point.hashCode;
 
   @override
-  bool equals2D(BasePosition other, {num? toleranceHoriz}) =>
+  bool equals2D(Position other, {num? toleranceHoriz}) =>
       point.equals2D(other, toleranceHoriz: toleranceHoriz);
 
   @override
   bool equals3D(
-    BasePosition other, {
+    Position other, {
     num? toleranceHoriz,
     num? toleranceVert,
   }) =>

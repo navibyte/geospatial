@@ -12,12 +12,12 @@ import 'package:meta/meta.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('Position class', () {
+  group('Projected class', () {
     test('Coordinate access', () {
-      const p1 = Position(x: 1.0, y: 2.0);
-      const p2 = Position(x: 1.0, y: 2.0, z: 3.0);
-      const p3 = Position(x: 1.0, y: 2.0, m: 4.0);
-      const p4 = Position(x: 1.0, y: 2.0, z: 3.0, m: 4.0);
+      const p1 = Projected(x: 1.0, y: 2.0);
+      const p2 = Projected(x: 1.0, y: 2.0, z: 3.0);
+      const p3 = Projected(x: 1.0, y: 2.0, m: 4.0);
+      const p4 = Projected(x: 1.0, y: 2.0, z: 3.0, m: 4.0);
       expect([p1.x, p1.y], p1.values);
       expect([p2.x, p2.y, p2.z], p2.values);
       expect([p3.x, p3.y, p3.m], p3.values);
@@ -36,9 +36,9 @@ void main() {
       // test Position itself
       final one = 1.0;
       final two = 2.0;
-      const p1 = Position(x: 1.0, y: 2.0, z: 3.0, m: 4.0);
-      final p2 = Position(x: one, y: 2.0, z: 3.0, m: 4.0);
-      final p3 = Position(x: two, y: 2.0, z: 3.0, m: 4.0);
+      const p1 = Projected(x: 1.0, y: 2.0, z: 3.0, m: 4.0);
+      final p2 = Projected(x: one, y: 2.0, z: 3.0, m: 4.0);
+      final p3 = Projected(x: two, y: 2.0, z: 3.0, m: 4.0);
       expect(p1, p2);
       expect(p1, isNot(p3));
       expect(p1.hashCode, p2.hashCode);
@@ -66,23 +66,23 @@ void main() {
       expect(p1.hashCode, isNot(t3.hashCode));
 
       // with some coordinates missing or other type
-      const p5 = Position(x: 1.0, y: 2.0, z: 3.0);
-      const p6 = GeoPosition(lon: 1.0, lat: 2.0, elev: 3.0);
-      const p7 = GeoPosition(lon: 1.0, lat: 2.0, elev: 3.0, m: 4.0);
+      const p5 = Projected(x: 1.0, y: 2.0, z: 3.0);
+      const p6 = Geographic(lon: 1.0, lat: 2.0, elev: 3.0);
+      const p7 = Geographic(lon: 1.0, lat: 2.0, elev: 3.0, m: 4.0);
       expect(p1, isNot(p5));
       expect(p1, isNot(p6));
       expect(p1, isNot(p7));
       expect(p5, isNot(p6));
       expect(p6, isNot(p7));
 
-      final p8 = const Position(x: 1.0, y: 2.0);
+      final p8 = const Projected(x: 1.0, y: 2.0);
       expect(p1.equals2D(p8), true);
       expect(p1.equals3D(p8), false);
     });
 
     test('Equals with tolerance', () {
-      const p1 = Position(x: 1.0002, y: 2.0002, z: 3.002, m: 4.0);
-      const p2 = Position(x: 1.0003, y: 2.0003, z: 3.003, m: 4.0);
+      const p1 = Projected(x: 1.0002, y: 2.0002, z: 3.002, m: 4.0);
+      const p2 = Projected(x: 1.0003, y: 2.0003, z: 3.003, m: 4.0);
       expect(p1.equals2D(p2), false);
       expect(p1.equals3D(p2), false);
       expect(p1.equals2D(p2, toleranceHoriz: 0.00011), true);
@@ -101,26 +101,26 @@ void main() {
 
     test('Copy with', () {
       expect(
-        const Position(x: 1, y: 1).copyWith(),
-        const Position(x: 1, y: 1),
+        const Projected(x: 1, y: 1).copyWith(),
+        const Projected(x: 1, y: 1),
       );
       expect(
-        const Position(x: 1, y: 1).copyWith(y: 2),
-        const Position(x: 1, y: 2),
+        const Projected(x: 1, y: 1).copyWith(y: 2),
+        const Projected(x: 1, y: 2),
       );
       expect(
-        const Position(x: 1, y: 1).copyWith(z: 2),
-        const Position(x: 1, y: 1, z: 2),
+        const Projected(x: 1, y: 1).copyWith(z: 2),
+        const Projected(x: 1, y: 1, z: 2),
       );
     });
   });
 
-  group('GeoPosition class', () {
+  group('Geographic class', () {
     test('Coordinate access', () {
-      const p1 = GeoPosition(lon: 1.0, lat: 2.0);
-      const p2 = GeoPosition(lon: 1.0, lat: 2.0, elev: 3.0);
-      const p3 = GeoPosition(lon: 1.0, lat: 2.0, m: 4.0);
-      const p4 = GeoPosition(lon: 1.0, lat: 2.0, elev: 3.0, m: 4.0);
+      const p1 = Geographic(lon: 1.0, lat: 2.0);
+      const p2 = Geographic(lon: 1.0, lat: 2.0, elev: 3.0);
+      const p3 = Geographic(lon: 1.0, lat: 2.0, m: 4.0);
+      const p4 = Geographic(lon: 1.0, lat: 2.0, elev: 3.0, m: 4.0);
       expect([p1.lon, p1.lat], p1.values);
       expect([p2.lon, p2.lat, p2.elev], p2.values);
       expect([p3.lon, p3.lat, p3.m], p3.values);
@@ -138,9 +138,9 @@ void main() {
     test('Equals and hashCode', () {
       final one = 1.0;
       final two = 2.0;
-      const p1 = GeoPosition(lon: 1.0, lat: 2.0, elev: 3.0, m: 4.0);
-      final p2 = GeoPosition(lon: one, lat: 2.0, elev: 3.0, m: 4.0);
-      final p3 = GeoPosition(lon: two, lat: 2.0, elev: 3.0, m: 4.0);
+      const p1 = Geographic(lon: 1.0, lat: 2.0, elev: 3.0, m: 4.0);
+      final p2 = Geographic(lon: one, lat: 2.0, elev: 3.0, m: 4.0);
+      final p3 = Geographic(lon: two, lat: 2.0, elev: 3.0, m: 4.0);
       expect(p1, p2);
       expect(p1, isNot(p3));
       expect(p1.hashCode, p2.hashCode);
@@ -152,8 +152,8 @@ void main() {
     });
 
     test('Equals with tolerance', () {
-      const p1 = GeoPosition(lon: 1.0002, lat: 2.0002, elev: 3.002, m: 4.0);
-      const p2 = GeoPosition(lon: 1.0003, lat: 2.0003, elev: 3.003, m: 4.0);
+      const p1 = Geographic(lon: 1.0002, lat: 2.0002, elev: 3.002, m: 4.0);
+      const p2 = Geographic(lon: 1.0003, lat: 2.0003, elev: 3.003, m: 4.0);
       expect(p1.equals2D(p2), false);
       expect(p1.equals3D(p2), false);
       expect(p1.equals2D(p2, toleranceHoriz: 0.00011), true);
@@ -171,40 +171,40 @@ void main() {
     });
 
     test('Clamping longitude and latitude in constructor', () {
-      expect(const GeoPosition(lon: 34.0, lat: 18.2).lon, 34.0);
-      expect(const GeoPosition(lon: -326.0, lat: 18.2).lon, 34.0);
-      expect(const GeoPosition(lon: 394.0, lat: 18.2).lon, 34.0);
-      expect(const GeoPosition(lon: -180.0, lat: 18.2).lon, -180.0);
-      expect(const GeoPosition(lon: -181.0, lat: 18.2).lon, 179.0);
-      expect(const GeoPosition(lon: -541.0, lat: 18.2).lon, 179.0);
-      expect(const GeoPosition(lon: 180.0, lat: 18.2).lon, -180.0);
-      expect(const GeoPosition(lon: 181.0, lat: 18.2).lon, -179.0);
-      expect(const GeoPosition(lon: 541.0, lat: 18.2).lon, -179.0);
-      expect(const GeoPosition(lon: 34.2, lat: -90.0).lat, -90.0);
-      expect(const GeoPosition(lon: 34.2, lat: -91.0).lat, -90.0);
-      expect(const GeoPosition(lon: 34.2, lat: 90.0).lat, 90.0);
-      expect(const GeoPosition(lon: 34.2, lat: 91.0).lat, 90.0);
+      expect(const Geographic(lon: 34.0, lat: 18.2).lon, 34.0);
+      expect(const Geographic(lon: -326.0, lat: 18.2).lon, 34.0);
+      expect(const Geographic(lon: 394.0, lat: 18.2).lon, 34.0);
+      expect(const Geographic(lon: -180.0, lat: 18.2).lon, -180.0);
+      expect(const Geographic(lon: -181.0, lat: 18.2).lon, 179.0);
+      expect(const Geographic(lon: -541.0, lat: 18.2).lon, 179.0);
+      expect(const Geographic(lon: 180.0, lat: 18.2).lon, -180.0);
+      expect(const Geographic(lon: 181.0, lat: 18.2).lon, -179.0);
+      expect(const Geographic(lon: 541.0, lat: 18.2).lon, -179.0);
+      expect(const Geographic(lon: 34.2, lat: -90.0).lat, -90.0);
+      expect(const Geographic(lon: 34.2, lat: -91.0).lat, -90.0);
+      expect(const Geographic(lon: 34.2, lat: 90.0).lat, 90.0);
+      expect(const Geographic(lon: 34.2, lat: 91.0).lat, 90.0);
     });
 
     test('Copy with', () {
       expect(
-        const GeoPosition(lon: 1.0, lat: 1.0).copyWith(),
-        const GeoPosition(lon: 1.0, lat: 1.0),
+        const Geographic(lon: 1.0, lat: 1.0).copyWith(),
+        const Geographic(lon: 1.0, lat: 1.0),
       );
       expect(
-        const GeoPosition(lon: 1.0, lat: 1.0).copyWith(y: 2.0),
-        const GeoPosition(lon: 1.0, lat: 2.0),
+        const Geographic(lon: 1.0, lat: 1.0).copyWith(y: 2.0),
+        const Geographic(lon: 1.0, lat: 2.0),
       );
       expect(
-        const GeoPosition(lon: 1.0, lat: 1.0).copyWith(z: 2.0),
-        const GeoPosition(lon: 1.0, lat: 1.0, elev: 2.0),
+        const Geographic(lon: 1.0, lat: 1.0).copyWith(z: 2.0),
+        const Geographic(lon: 1.0, lat: 1.0, elev: 2.0),
       );
     });
   });
 }
 
 @immutable
-class _TestXYZM implements Position {
+class _TestXYZM implements Projected {
   const _TestXYZM({
     required this.x,
     required this.y,
@@ -213,7 +213,7 @@ class _TestXYZM implements Position {
   });
 
   @override
-  Position copyWith({num? x, num? y, num? z, num? m}) => Position(
+  Projected copyWith({num? x, num? y, num? z, num? m}) => Projected(
         x: x ?? this.x,
         y: y ?? this.y,
         z: z ?? this.z,
@@ -221,13 +221,13 @@ class _TestXYZM implements Position {
       );
 
   @override
-  Position transform(TransformPosition transform) => transform(this);
+  Projected transform(TransformPosition transform) => transform(this);
 
   @override
-  num operator [](int i) => Position.getValue(this, i);
+  num operator [](int i) => Projected.getValue(this, i);
 
   @override
-  Iterable<num> get values => Position.getValues(this);
+  Iterable<num> get values => Projected.getValues(this);
 
   @override
   final num x;
@@ -245,7 +245,7 @@ class _TestXYZM implements Position {
   num? get optM => m;
 
   @override
-  Position get asPosition => this;
+  Projected get asPosition => this;
 
   @override
   int get spatialDimension => typeCoords.spatialDimension;
@@ -273,18 +273,18 @@ class _TestXYZM implements Position {
   String toString() => '$x,$y,$z,$m';
 
   @override
-  bool equals2D(BasePosition other, {num? toleranceHoriz}) =>
-      other is Position &&
-      Position.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
+  bool equals2D(Position other, {num? toleranceHoriz}) =>
+      other is Projected &&
+      Projected.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
 
   @override
   bool equals3D(
-    BasePosition other, {
+    Position other, {
     num? toleranceHoriz,
     num? toleranceVert,
   }) =>
-      other is Position &&
-      Position.testEquals3D(
+      other is Projected &&
+      Projected.testEquals3D(
         this,
         other,
         toleranceHoriz: toleranceHoriz,
@@ -293,8 +293,8 @@ class _TestXYZM implements Position {
 
   @override
   bool operator ==(Object other) =>
-      other is Position && Position.testEquals(this, other);
+      other is Projected && Projected.testEquals(this, other);
 
   @override
-  int get hashCode => Position.hash(this);
+  int get hashCode => Projected.hash(this);
 }

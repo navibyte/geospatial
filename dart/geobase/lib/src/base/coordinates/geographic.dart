@@ -9,8 +9,8 @@ import 'package:meta/meta.dart';
 import '/src/base/codes.dart';
 import '/src/utils/tolerance.dart';
 
-import 'base_position.dart';
 import 'position.dart';
+import 'projected.dart';
 
 /// A geographic position with longitude, latitude and optional elevation and m.
 ///
@@ -20,13 +20,13 @@ import 'position.dart';
 /// Longitude (range `[-180.0, 180.0[`) and latitude (range `[-90.0, 90.0]`) are
 /// represented as deegrees. The unit for [elev] is meters.
 @immutable
-class GeoPosition extends BasePosition {
-  /// A geographical position with [lon] and [lat], and optional [elev] and [m].
+class Geographic extends Position {
+  /// A geographic position with [lon] and [lat], and optional [elev] and [m].
   ///
   /// Longitude is normalized to the range `[-180.0, 180.0[` using the formula
   /// `(lon + 180.0) % 360.0 - 180.0` (if outside the range) and latitude is
   /// clamped to the range `[-90.0, 90.0]`.
-  const GeoPosition({
+  const Geographic({
     required double lon,
     required double lat,
     double? elev,
@@ -41,7 +41,7 @@ class GeoPosition extends BasePosition {
   ///
   /// Coordinate values from parameters are copied as geographic coordinates:
   /// `x` => `lon`, `y` => `lat`, `z` => `elev`, `m` => `m`
-  GeoPosition.create({required num x, required num y, num? z, num? m})
+  Geographic.create({required num x, required num y, num? z, num? m})
       : this(
           lon: x.toDouble(),
           lat: y.toDouble(),
@@ -88,24 +88,24 @@ class GeoPosition extends BasePosition {
   /// For geographic coordinates, the coordinate ordering is:
   /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
   @override
-  double operator [](int i) => GeoPosition.getValue(this, i);
+  double operator [](int i) => Geographic.getValue(this, i);
 
   /// Coordinate values of this position as an iterable of 2, 3 or 4 items.
   ///
   /// For geographic coordinates, the coordinate ordering is:
   /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
   @override
-  Iterable<double> get values => GeoPosition.getValues(this);
+  Iterable<double> get values => Geographic.getValues(this);
 
   @override
-  Position get asPosition => Position(x: _lon, y: _lat, z: _elev, m: _m);
+  Projected get asPosition => Projected(x: _lon, y: _lat, z: _elev, m: _m);
 
   /// Copies the position with optional [x], [y], [z] and [m] overriding values.
   ///
   /// Coordinate values from parameters are copied as:
   /// `x` => `lon`, `y` => `lat`, `z` => `elev`, `m` => `m
   @override
-  GeoPosition copyWith({num? x, num? y, num? z, num? m}) => GeoPosition.create(
+  Geographic copyWith({num? x, num? y, num? z, num? m}) => Geographic.create(
         x: x ?? _lon,
         y: y ?? _lat,
         z: z ?? _elev,
@@ -113,7 +113,7 @@ class GeoPosition extends BasePosition {
       );
 
   @override
-  GeoPosition transform(TransformPosition transform) => transform(this);
+  Geographic transform(TransformPosition transform) => transform(this);
 
   @override
   int get spatialDimension => typeCoords.spatialDimension;
@@ -158,15 +158,15 @@ class GeoPosition extends BasePosition {
 
   @override
   bool operator ==(Object other) =>
-      other is GeoPosition && GeoPosition.testEquals(this, other);
+      other is Geographic && Geographic.testEquals(this, other);
 
   @override
-  int get hashCode => GeoPosition.hash(this);
+  int get hashCode => Geographic.hash(this);
 
   @override
-  bool equals2D(BasePosition other, {num? toleranceHoriz}) =>
-      other is GeoPosition &&
-      GeoPosition.testEquals2D(
+  bool equals2D(Position other, {num? toleranceHoriz}) =>
+      other is Geographic &&
+      Geographic.testEquals2D(
         this,
         other,
         toleranceHoriz: toleranceHoriz?.toDouble(),
@@ -174,12 +174,12 @@ class GeoPosition extends BasePosition {
 
   @override
   bool equals3D(
-    BasePosition other, {
+    Position other, {
     num? toleranceHoriz,
     num? toleranceVert,
   }) =>
-      other is GeoPosition &&
-      GeoPosition.testEquals3D(
+      other is Geographic &&
+      Geographic.testEquals3D(
         this,
         other,
         toleranceHoriz: toleranceHoriz?.toDouble(),
@@ -195,7 +195,7 @@ class GeoPosition extends BasePosition {
   ///
   /// For geographic coordinates, the coordinate ordering is:
   /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
-  static double getValue(GeoPosition position, int i) {
+  static double getValue(Geographic position, int i) {
     if (position.is3D) {
       switch (i) {
         case 0:
@@ -227,7 +227,7 @@ class GeoPosition extends BasePosition {
   ///
   /// For geographic coordinates, the coordinate ordering is:
   /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
-  static Iterable<double> getValues(GeoPosition position) sync* {
+  static Iterable<double> getValues(Geographic position) sync* {
     yield position.lon;
     yield position.lat;
     if (position.is3D) {
@@ -239,20 +239,20 @@ class GeoPosition extends BasePosition {
   }
 
   /// True if positions [p1] and [p2] equals by testing all coordinate values.
-  static bool testEquals(GeoPosition p1, GeoPosition p2) =>
+  static bool testEquals(Geographic p1, Geographic p2) =>
       p1.lon == p2.lon &&
       p1.lat == p2.lat &&
       p1.optElev == p2.optElev &&
       p1.optM == p2.optM;
 
   /// The hash code for [position].
-  static int hash(GeoPosition position) =>
+  static int hash(Geographic position) =>
       Object.hash(position.lon, position.lat, position.optElev, position.optM);
 
   /// True if geo positions [p1] and [p2] equals by testing 2D coordinates only.
   static bool testEquals2D(
-    GeoPosition p1,
-    GeoPosition p2, {
+    Geographic p1,
+    Geographic p2, {
     double? toleranceHoriz,
   }) {
     assertTolerance(toleranceHoriz);
@@ -264,13 +264,13 @@ class GeoPosition extends BasePosition {
 
   /// True if geo positions [p1] and [p2] equals by testing 3D coordinates only.
   static bool testEquals3D(
-    GeoPosition p1,
-    GeoPosition p2, {
+    Geographic p1,
+    Geographic p2, {
     double? toleranceHoriz,
     double? toleranceVert,
   }) {
     assertTolerance(toleranceVert);
-    if (!GeoPosition.testEquals2D(p1, p2, toleranceHoriz: toleranceHoriz)) {
+    if (!Geographic.testEquals2D(p1, p2, toleranceHoriz: toleranceHoriz)) {
       return false;
     }
     if (!p1.is3D || !p1.is3D) {

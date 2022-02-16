@@ -96,26 +96,26 @@ class Proj4Adapter with ProjectionAdapter {
   final String toCrs;
 
   @override
-  Projection<Position> forward() =>
-      _ProjectionProxy(factory: Position.create, tuple: tuple, inverse: false);
+  Projection<Projected> forward() =>
+      _ProjectionProxy(factory: Projected.create, tuple: tuple, inverse: false);
 
   @override
-  Projection<R> forwardTo<R extends BasePosition>(CreatePosition<R> factory) =>
+  Projection<R> forwardTo<R extends Position>(CreatePosition<R> factory) =>
       _ProjectionProxy(factory: factory, tuple: tuple, inverse: false);
 
   @override
-  Projection<GeoPosition> inverse() => _ProjectionProxy(
-        factory: GeoPosition.create,
+  Projection<Geographic> inverse() => _ProjectionProxy(
+        factory: Geographic.create,
         tuple: tuple,
         inverse: true,
       );
 
   @override
-  Projection<R> inverseTo<R extends BasePosition>(CreatePosition<R> factory) =>
+  Projection<R> inverseTo<R extends Position>(CreatePosition<R> factory) =>
       _ProjectionProxy(factory: factory, tuple: tuple, inverse: true);
 }
 
-class _ProjectionProxy<R extends BasePosition> with Projection<R> {
+class _ProjectionProxy<R extends Position> with Projection<R> {
   const _ProjectionProxy({
     required this.factory,
     required this.tuple,
@@ -127,12 +127,12 @@ class _ProjectionProxy<R extends BasePosition> with Projection<R> {
   final bool inverse;
 
   @override
-  R project(BasePosition source, {CreatePosition<R>? to}) {
+  R project(Position source, {CreatePosition<R>? to}) {
     // source coordinates (as a Point instance of proj4dart)
     // (if geographical source coords: longitude is at x, latitude is at y)
     final hasZ = source.is3D;
     final p4d.Point point;
-    if (source is Position) {
+    if (source is Projected) {
       point = hasZ
           ? p4d.Point.withZ(
               x: source.x.toDouble(),
@@ -143,7 +143,7 @@ class _ProjectionProxy<R extends BasePosition> with Projection<R> {
               x: source.x.toDouble(),
               y: source.y.toDouble(),
             );
-    } else if (source is GeoPosition) {
+    } else if (source is Geographic) {
       point = hasZ
           ? p4d.Point.withZ(
               x: source.lon,

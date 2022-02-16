@@ -41,34 +41,34 @@ class _Wgs84ToWebMercatorAdapter with ProjectionAdapter {
   String get toCrs => 'EPSG:3857';
 
   @override
-  Projection<Position> forward() =>
-      const _Wgs84ToWebMercatorProjection(Position.create);
+  Projection<Projected> forward() =>
+      const _Wgs84ToWebMercatorProjection(Projected.create);
 
   @override
-  Projection<R> forwardTo<R extends BasePosition>(
+  Projection<R> forwardTo<R extends Position>(
     CreatePosition<R> factory,
   ) =>
       _Wgs84ToWebMercatorProjection(factory);
 
   @override
-  Projection<GeoPosition> inverse() =>
-      const _WebMercatorToWgs84Projection(GeoPosition.create);
+  Projection<Geographic> inverse() =>
+      const _WebMercatorToWgs84Projection(Geographic.create);
 
   @override
-  Projection<R> inverseTo<R extends BasePosition>(
+  Projection<R> inverseTo<R extends Position>(
     CreatePosition<R> factory,
   ) =>
       _WebMercatorToWgs84Projection(factory);
 }
 
-class _Wgs84ToWebMercatorProjection<R extends BasePosition> with Projection<R> {
+class _Wgs84ToWebMercatorProjection<R extends Position> with Projection<R> {
   const _Wgs84ToWebMercatorProjection(this.factory);
 
   final CreatePosition<R> factory;
 
   @override
-  R project(BasePosition source, {CreatePosition<R>? to}) {
-    if (source is! GeoPosition) {
+  R project(Position source, {CreatePosition<R>? to}) {
+    if (source is! Geographic) {
       throw const FormatException('Source should be geographic position');
     }
 
@@ -92,14 +92,14 @@ class _Wgs84ToWebMercatorProjection<R extends BasePosition> with Projection<R> {
   }
 }
 
-class _WebMercatorToWgs84Projection<R extends BasePosition> with Projection<R> {
+class _WebMercatorToWgs84Projection<R extends Position> with Projection<R> {
   const _WebMercatorToWgs84Projection(this.factory);
 
   final CreatePosition<R> factory;
 
   @override
-  R project(BasePosition source, {CreatePosition<R>? to}) {
-    if (source is! Position) {
+  R project(Position source, {CreatePosition<R>? to}) {
+    if (source is! Projected) {
       throw const FormatException('Source should be projected position');
     }
 

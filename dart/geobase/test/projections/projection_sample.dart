@@ -10,7 +10,7 @@ import 'package:geobase/geobase.dart';
 
 import 'package:test/test.dart';
 
-void expectProjected<T1 extends BasePosition, T2 extends BasePosition>(
+void expectProjected<T1 extends Position, T2 extends Position>(
   T1 actual,
   T2 expected, [
   num? tol,
@@ -44,12 +44,12 @@ const wgs84ToWebMercatorData = [
   [180.0, 85.051129, -20037508.34, 20037508.63],
 ];
 
-Iterable<GeoPosition> testWgs84Points() => wgs84ToWebMercatorData
-    .map((coords) => GeoPosition(lon: coords[0], lat: coords[1]))
+Iterable<Geographic> testWgs84Points() => wgs84ToWebMercatorData
+    .map((coords) => Geographic(lon: coords[0], lat: coords[1]))
     .toList(growable: false);
 
-Iterable<Position> testWebMercatorPoints() => wgs84ToWebMercatorData
-    .map((coords) => Position(x: coords[2], y: coords[3]))
+Iterable<Projected> testWebMercatorPoints() => wgs84ToWebMercatorData
+    .map((coords) => Projected(x: coords[2], y: coords[3]))
     .toList(growable: false);
 
 const wgs84ToWebMercatorExterior = [
@@ -67,20 +67,20 @@ const wgs84ToWebMercatorInterior = [
   [25.0, 25.0, 2782987.27, 2875744.62],
 ];
 
-Iterable<Iterable<GeoPosition>> testWgs84Rings() => [
+Iterable<Iterable<Geographic>> testWgs84Rings() => [
       wgs84ToWebMercatorExterior
-          .map((coords) => GeoPosition(lon: coords[0], lat: coords[1]))
+          .map((coords) => Geographic(lon: coords[0], lat: coords[1]))
           .toList(growable: false),
       wgs84ToWebMercatorInterior
-          .map((coords) => GeoPosition(lon: coords[0], lat: coords[1]))
+          .map((coords) => Geographic(lon: coords[0], lat: coords[1]))
           .toList(growable: false),
     ];
 
-Iterable<Iterable<Position>> testWebMercatorRings() => [
+Iterable<Iterable<Projected>> testWebMercatorRings() => [
       wgs84ToWebMercatorExterior
-          .map((coords) => Position(x: coords[2], y: coords[3]))
+          .map((coords) => Projected(x: coords[2], y: coords[3]))
           .toList(growable: false),
       wgs84ToWebMercatorInterior
-          .map((coords) => Position(x: coords[2], y: coords[3]))
+          .map((coords) => Projected(x: coords[2], y: coords[3]))
           .toList(growable: false),
     ];
