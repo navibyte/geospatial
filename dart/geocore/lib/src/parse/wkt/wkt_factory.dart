@@ -5,8 +5,8 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import '/src/base/spatial.dart';
-import '/src/coordinates/cartesian.dart';
 import '/src/coordinates/geographic.dart';
+import '/src/coordinates/projected.dart';
 import '/src/parse/factory.dart';
 import '/src/utils/wkt_data.dart';
 
@@ -50,8 +50,8 @@ const wktGeographic = WktFactory<GeoPoint>(
 /// 'MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON', 'GEOMETRYCOLLECTION'.
 ///
 /// See [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry).
-const wktCartesian = WktFactory<Point>(
-  pointFactory: cartesianPointsWithM,
+const wktProjected = WktFactory<Point>(
+  pointFactory: projectedPointsWithM,
 );
 
 /// A geospatial object factory capable of parsing WKT geometries from text.

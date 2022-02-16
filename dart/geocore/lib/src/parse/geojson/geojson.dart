@@ -8,15 +8,15 @@ import 'dart:convert';
 import 'dart:math' as math;
 
 import '/src/base/spatial.dart';
-import '/src/coordinates/cartesian.dart';
 import '/src/coordinates/geographic.dart';
+import '/src/coordinates/projected.dart';
 import '/src/data/feature.dart';
 import '/src/parse/factory.dart';
 
 /// A GeoJSON factory using [point] factory to create any points of [T].
 ///
 /// Use [geoJsonGeographic] instead of this if points created should be
-/// geographic coordinates, or [geoJsonCartesian] if points should be projected
+/// geographic coordinates, or [geoJsonProjected] if points should be projected
 /// or cartesian coordinates.
 ///
 /// Use [bounds] to specify a factory for `Bounds` objects.
@@ -35,7 +35,7 @@ GeoJsonFactory<T> geoJson<T extends Point>(
 
 /// A GeoJSON factory using [point] factory to create geographic points of [T].
 ///
-/// Use [geoJsonCartesian] instead of this if points created should be projected
+/// Use [geoJsonProjected] instead of this if points created should be projected
 /// or cartesian coordinates, or [geoJson] if points can be anything.
 ///
 /// Use [bounds] to specify a factory for `Bounds` objects.
@@ -60,7 +60,7 @@ GeoJsonFactory<T> geoJsonGeographic<T extends GeoPoint>(
 /// Use [bounds] to specify a factory for `Bounds` objects.
 ///
 /// Use [feature] to define a factory for `Feature` objects.
-GeoJsonFactory<T> geoJsonCartesian<T extends CartesianPoint>(
+GeoJsonFactory<T> geoJsonProjected<T extends ProjectedPoint>(
   PointFactory<T> point, {
   CreateBounds<T>? bounds,
   CreateFeature? feature,
@@ -83,9 +83,9 @@ const geoJSON = GeoJsonFactory<GeoPoint>(
 /// The default GeoJSON factory instace assuming projected coordinates.
 ///
 /// Result type candidates for point objects: [Point2], [Point3].
-@Deprecated('Use geoJsonCartesian() or geoJson() instead')
+@Deprecated('Use geoJsonProjected() or geoJson() instead')
 const geoJSONProjected = GeoJsonFactory<Point>(
-  pointFactory: cartesianPoints,
+  pointFactory: projectedPoints,
   boundsFactory: Bounds.fromCoords,
 );
 

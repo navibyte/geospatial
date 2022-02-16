@@ -157,7 +157,7 @@ void _testToWgs84WithPoints<R extends GeoPoint>(
   expect(fcProjectedFirst.properties, {'prop1': 'a', 'prop2': 100});
 }
 
-void _testToWebMercatorWithPoints<R extends CartesianPoint>(
+void _testToWebMercatorWithPoints<R extends ProjectedPoint>(
   CreatePosition<R> factory,
 ) {
   final toWebMercator = wgs84ToWebMercator.forwardTo(factory);

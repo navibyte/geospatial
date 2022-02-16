@@ -20,11 +20,11 @@ import '/src/base/spatial.dart';
 import '/src/utils/num.dart';
 import '/src/utils/wkt.dart';
 
-import 'cartesian_point.dart';
+import 'projected_point.dart';
 
 /// An immutable point with X and Y as num values.
 @immutable
-class Point2 extends CartesianPoint<num> {
+class Point2 extends ProjectedPoint<num> {
   /// A point at given [x] and [y].
   const Point2({required this.x, required this.y});
 
@@ -547,7 +547,7 @@ class Point3m extends Point3 {
 
 /// An immutable point with X and Y as integer values.
 @immutable
-class Point2i extends CartesianPoint<int> {
+class Point2i extends ProjectedPoint<int> {
   /// A point at given [x] and [y].
   const Point2i({required this.x, required this.y});
 

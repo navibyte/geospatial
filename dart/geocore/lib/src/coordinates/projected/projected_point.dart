@@ -8,25 +8,25 @@ import 'package:geobase/geobase.dart';
 
 import '/src/base/spatial.dart';
 
-/// A read-only cartesian (or projected) point with [x], [y], [z] and [m].
+/// A read-only projected (or cartesian) point with [x], [y], [z] and [m].
 ///
 /// Coordinate values of type [C] are either `num` (allowing `double` or `int`),
 /// `double` or `int`.
-abstract class CartesianPoint<C extends num> extends Point<C> {
+abstract class ProjectedPoint<C extends num> extends Point<C> {
   /// Default `const` constructor to allow extending this abstract class.
-  const CartesianPoint();
+  const ProjectedPoint();
 
   @override
-  CartesianPoint copyWith({num? x, num? y, num? z, num? m});
+  ProjectedPoint copyWith({num? x, num? y, num? z, num? m});
 
   @override
-  CartesianPoint newWith({num x = 0.0, num y = 0.0, num? z, num? m});
+  ProjectedPoint newWith({num x = 0.0, num y = 0.0, num? z, num? m});
 
   @override
-  CartesianPoint newFrom(Iterable<num> coords, {int? offset, int? length});
+  ProjectedPoint newFrom(Iterable<num> coords, {int? offset, int? length});
 
   @override
-  CartesianPoint transform(TransformPosition transform);
+  ProjectedPoint transform(TransformPosition transform);
 
   @override
   bool get isGeographic => false;

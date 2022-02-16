@@ -151,8 +151,8 @@ Parsing [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_ge
   wktParser.parse('POINT (100.0 200.0)'); // => Point2;
   wktParser.parse('POINT M (100.0 200.0 5.0)'); // => Point2m;
 
-  // Cartesian (or projected) coordinates (Point2, Point2m, Point3 or Point3m)
-  wktCartesian.parse('LINESTRING (200.1 500.9, 210.2 510.4)');
+  // Projected (or cartesian) coordinates (Point2, Point2m, Point3 or Point3m)
+  wktProjected.parse('LINESTRING (200.1 500.9, 210.2 510.4)');
 
   // Geographic coordinates (GeoPoint2, GeoPoint2m, GeoPoint3 or GeoPoint3m)
   wktGeographic.parse(
@@ -201,8 +201,8 @@ For example `Point3` can be created in many ways:
   Point3.tryParse('nop') ?? Point3.parse('708221.0 5707225.0 45.0');
 
   // The same point parsed using the WKT parser for projected geometries.
-  // Here `wktCartesian` is a global constant for a WKT factory implementation.
-  wktCartesian.parse('POINT Z (708221.0 5707225.0 45.0)');
+  // Here `wktProjected` is a global constant for a WKT factory implementation.
+  wktProjected.parse('POINT Z (708221.0 5707225.0 45.0)');
 ```
 
 All other point classes have similar constructors.
@@ -333,7 +333,7 @@ Or below are examples of more direct ways to construct line strings:
   );
 
   // Using the WKT factory produces the same result as the previous sample.
-  wktCartesian.parse<Point3m>(
+  wktProjected.parse<Point3m>(
     'LINESTRING ZM(10.0 11.0 12.0 5.1, 20.0 21.0 22.0 5.2, 30.0 31.0 32.0 5.3)',
   );
 
@@ -430,7 +430,7 @@ There is also `GeometryCollection`:
   ]);
 
   // A geometry collection can also be parsed from WKT text.
-  wktCartesian.parse<Point2>(
+  wktProjected.parse<Point2>(
     '''
       GEOMETRYCOLLECTION (
         POINT (40 10),
@@ -701,11 +701,11 @@ Samples to parse from WKT text representation of geometry:
 
 ```dart
   // Parse projected points from WKT (result is different concrete classes).
-  wktCartesian.parse('POINT (100.0 200.0)'); // => Point2
-  wktCartesian.parse('POINT M (100.0 200.0 5.0)'); // => Point2m
-  wktCartesian.parse('POINT (100.0 200.0 300.0)'); // => Point3
-  wktCartesian.parse('POINT Z (100.0 200.0 300.0)'); // => Point3
-  wktCartesian.parse('POINT ZM (100.0 200.0 300.0 5.0)'); // => Point3m
+  wktProjected.parse('POINT (100.0 200.0)'); // => Point2
+  wktProjected.parse('POINT M (100.0 200.0 5.0)'); // => Point2m
+  wktProjected.parse('POINT (100.0 200.0 300.0)'); // => Point3
+  wktProjected.parse('POINT Z (100.0 200.0 300.0)'); // => Point3
+  wktProjected.parse('POINT ZM (100.0 200.0 300.0 5.0)'); // => Point3m
 
   // Parse geographical line string, from (10.0 50.0) to (11.0 51.0).
   wkt(GeoPoint2.coordinates).parse('LINESTRING (10.0 50.0, 11.0 51.0)');

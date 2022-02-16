@@ -5,8 +5,8 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import '/src/base/spatial.dart';
-import '/src/coordinates/cartesian.dart';
 import '/src/coordinates/geographic.dart';
+import '/src/coordinates/projected.dart';
 
 /// A constant factory for geographic [GeoPoint] objects without M coordinate.
 ///
@@ -21,18 +21,18 @@ const PointFactory<GeoPoint> geographicPoints = _CreateGeoPoint();
 PointFactory<GeoPoint> geographicPointsWithM({required bool expectM}) =>
     _CreateGeoPointAllowingM(expectM: expectM);
 
-/// A constant factory for [CartesianPoint] objects without M coordinate.
+/// A constant factory for [ProjectedPoint] objects without M coordinate.
 ///
 /// Result type candidates for objects created by the factory: [Point2],
 /// [Point3].
-const PointFactory<CartesianPoint> cartesianPoints = _CreateCartesianPoint();
+const PointFactory<ProjectedPoint> projectedPoints = _CreateProjectedPoint();
 
-/// Returns a factory for [CartesianPoint] objects allowing M coordinate.
+/// Returns a factory for [ProjectedPoint] objects allowing M coordinate.
 ///
 /// Result type candidates for objects created by a factory: [Point2],
 /// [Point2m], [Point3], [Point3m].
-PointFactory<CartesianPoint> cartesianPointsWithM({required bool expectM}) =>
-    _CreateCartesianPointAllowingM(expectM: expectM);
+PointFactory<ProjectedPoint> projectedPointsWithM({required bool expectM}) =>
+    _CreateProjectedPointAllowingM(expectM: expectM);
 
 /// Returns a factory for cartesian and geographic [Point] objects without M.
 ///
@@ -127,14 +127,14 @@ class _CreateGeoPointAllowingM extends _CreateGeoPoint {
   }
 }
 
-class _CreateCartesianPoint implements PointFactory<CartesianPoint> {
-  const _CreateCartesianPoint();
+class _CreateProjectedPoint implements PointFactory<ProjectedPoint> {
+  const _CreateProjectedPoint();
 
   @override
   bool get isMeasured => false;
 
   @override
-  CartesianPoint newFrom(Iterable<num> coords, {int? offset, int? length}) {
+  ProjectedPoint newFrom(Iterable<num> coords, {int? offset, int? length}) {
     CoordinateFactory.checkCoords(2, coords, offset: offset, length: length);
     final len = length ?? coords.length;
     if (len >= 3) {
@@ -146,21 +146,21 @@ class _CreateCartesianPoint implements PointFactory<CartesianPoint> {
   }
 
   @override
-  CartesianPoint newWith({num x = 0.0, num y = 0.0, num? z, num? m}) =>
+  ProjectedPoint newWith({num x = 0.0, num y = 0.0, num? z, num? m}) =>
       z != null
           ? Point3.xyz(x.toDouble(), y.toDouble(), z.toDouble())
           : Point2.xy(x.toDouble(), y.toDouble());
 }
 
-class _CreateCartesianPointAllowingM extends _CreateCartesianPoint {
-  const _CreateCartesianPointAllowingM({required bool expectM})
+class _CreateProjectedPointAllowingM extends _CreateProjectedPoint {
+  const _CreateProjectedPointAllowingM({required bool expectM})
       : isMeasured = expectM;
 
   @override
   final bool isMeasured;
 
   @override
-  CartesianPoint newFrom(Iterable<num> coords, {int? offset, int? length}) {
+  ProjectedPoint newFrom(Iterable<num> coords, {int? offset, int? length}) {
     if (!isMeasured) {
       return super.newFrom(coords, offset: offset, length: length);
     } else {
@@ -176,7 +176,7 @@ class _CreateCartesianPointAllowingM extends _CreateCartesianPoint {
   }
 
   @override
-  CartesianPoint newWith({num x = 0.0, num y = 0.0, num? z, num? m}) {
+  ProjectedPoint newWith({num x = 0.0, num y = 0.0, num? z, num? m}) {
     if (!isMeasured) {
       return super.newWith(x: x, y: y, z: z, m: m);
     } else {
@@ -208,7 +208,7 @@ class _CreateAnyPoint implements PointFactory {
       return const _CreateGeoPoint()
           .newFrom(coords, offset: offset, length: length);
     } else {
-      return const _CreateCartesianPoint()
+      return const _CreateProjectedPoint()
           .newFrom(coords, offset: offset, length: length);
     }
   }
@@ -218,7 +218,7 @@ class _CreateAnyPoint implements PointFactory {
     if (expectGeographic) {
       return const _CreateGeoPoint().newWith(x: x, y: y, z: z, m: m);
     } else {
-      return const _CreateCartesianPoint().newWith(x: x, y: y, z: z, m: m);
+      return const _CreateProjectedPoint().newWith(x: x, y: y, z: z, m: m);
     }
   }
 }
@@ -240,7 +240,7 @@ class _CreateAnyPointAllowingM implements PointFactory {
       return _CreateGeoPointAllowingM(expectM: isMeasured)
           .newFrom(coords, offset: offset, length: length);
     } else {
-      return _CreateCartesianPointAllowingM(expectM: isMeasured)
+      return _CreateProjectedPointAllowingM(expectM: isMeasured)
           .newFrom(coords, offset: offset, length: length);
     }
   }
@@ -251,7 +251,7 @@ class _CreateAnyPointAllowingM implements PointFactory {
       return _CreateGeoPointAllowingM(expectM: isMeasured)
           .newWith(x: x, y: y, z: z, m: m);
     } else {
-      return _CreateCartesianPointAllowingM(expectM: isMeasured)
+      return _CreateProjectedPointAllowingM(expectM: isMeasured)
           .newWith(x: x, y: y, z: z, m: m);
     }
   }

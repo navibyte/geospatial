@@ -13,6 +13,6 @@ library coordinates;
 
 export 'base.dart';
 
-export 'src/coordinates/cartesian.dart';
 export 'src/coordinates/crs.dart';
 export 'src/coordinates/geographic.dart';
+export 'src/coordinates/projected.dart';
