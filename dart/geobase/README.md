@@ -19,6 +19,7 @@ systems.
   * 🌎 supported formats: [GeoJSON](https://geojson.org/) 
 * 📃 geospatial data writers for geometries and coordinates:
   * 🪧 supported formats: [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)
+* 🏗️ coordinate transformations and projections (initial support)
 
 **This package is at BETA stage, interfaces not fully final yet.** 
 
@@ -56,7 +57,8 @@ A sample to write a `Point` geometry to WKT (with z and m coordinates too):
       ..geometryWithPosition(
         type: Geom.point,
         coordType: Coords.xyzm,
-        coordinates: const Position(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
+        coordinates:
+            const Geographic(lon: 10.123, lat: 20.25, elev: -30.95, m: -1.999),
       )
       ..toString(),
   );
@@ -78,9 +80,9 @@ A sample to write a `LineString` geometry to GeoJSON:
         type: Geom.lineString,
         bbox: const GeoBox(west: -1.1, south: -3.49, east: 3.5, north: -1.1),
         coordinates: [
-          const GeoPosition(lon: -1.1, lat: -1.1),
-          const GeoPosition(lon: 2.1, lat: -2.5),
-          const GeoPosition(lon: 3.5, lat: -3.49),
+          const Geographic(lon: -1.1, lat: -1.1),
+          const Geographic(lon: 2.1, lat: -2.5),
+          const Geographic(lon: 3.5, lat: -3.49),
         ],
       )
       ..toString(),
@@ -106,7 +108,7 @@ A sample to write a `Feature` geometry to GeoJSON:
         id: 'fid-1',
         geometries: (gw) => gw.geometryWithPosition(
           type: Geom.point,
-          coordinates: const GeoPosition(lon: 10.123, lat: 20.25),
+          coordinates: const Geographic(lon: 10.123, lat: 20.25),
         ),
         properties: {
           'foo': 100,
@@ -124,8 +126,7 @@ This is a [Dart](https://dart.dev/) package named `geobase` under the
 [geospatial](https://github.com/navibyte/geospatial) code repository. 
 
 See also the [geocore](https://pub.dev/packages/geocore) package for geometry
-and feature data structures, data parsers, coordinate transformations and other
-utitilies.  
+and feature data structures, data parsers and other utilities.  
 
 ## Authors
 

@@ -4,8 +4,10 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:geobase/geobase.dart';
 import 'package:proj4dart/proj4dart.dart' as p4d;
+
+import '/src/base/coordinates.dart';
+import '/src/base/project.dart';
 
 /// Resolves a projection adapter between [fromCrs] and [toCrs].
 ///

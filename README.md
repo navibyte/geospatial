@@ -33,6 +33,7 @@ Key features of the [geobase](https://pub.dev/packages/geobase) package:
   * 🌎 supported formats: [GeoJSON](https://geojson.org/) 
 * 📃 geospatial data writers for geometries and coordinates:
   * 🪧 supported formats: [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)
+* 🏗️ coordinate transformations and projections (initial support)
 
 Key features of the [geocore](https://pub.dev/packages/geocore) package:
 
@@ -46,7 +47,6 @@ Key features of the [geocore](https://pub.dev/packages/geocore) package:
 * 🌎 [GeoJSON](https://geojson.org/) data parser
 * 🪧 [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) 
 (Well-known text representation of geometry) data parser 
-* 🏗️ coordinate transformations and projections (initial support)
 
 ## :magic_wand: Samples
 

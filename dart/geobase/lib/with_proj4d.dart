@@ -6,15 +6,15 @@
 
 /// Projections provided by the external `proj4dart` package.
 ///
-/// The `geocore` package implements a projection adapter that acts as a wrapper
+/// The `geobase` package implements a projection adapter that acts as a wrapper
 /// and uses internally the projection and coordinate reference system support
 /// of the `proj4dart` package to which there's a dependency.
 ///
-/// This library exports also all classes of `package:geocore/base.dart`.
+/// This library exports also all classes of `package:geobase/geobase.dart`.
 ///
-/// Usage: import `package:geocore/proj4d.dart`
-library proj4d;
+/// Usage: import `package:geobase/with_proj4d.dart`
+library with_proj4d;
 
-export 'base.dart';
+export 'geobase.dart';
 
-export 'src/proj/proj4d.dart';
+export 'src/projections/proj4d.dart';

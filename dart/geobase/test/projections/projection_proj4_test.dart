@@ -4,19 +4,13 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:equatable/equatable.dart';
-
 import 'package:geobase/with_proj4d.dart';
-import 'package:geocore/geocore.dart';
 
 import 'package:test/test.dart';
 
 import 'projection_sample.dart';
 
 void main() {
-  // configure Equatable to apply toString() default impls
-  EquatableConfig.stringify = true;
-
   group('Test proj4dart with built in projections', () {
     final adapterWgs84ToWM = proj4dart('EPSG:4326', 'EPSG:3857');
     final adapterWMToWgs84 = Proj4Adapter.resolve('EPSG:3857', 'EPSG:4326');
@@ -33,38 +27,26 @@ void main() {
     });
 
     test('wgs84ToWebMercator.forward', () {
-      final toWebMercatorProj4a = adapterWgs84ToWM.forwardTo(Point3m.create);
-      final toWebMercatorProj4b = adapterWMToWgs84.inverseTo(Point3m.create);
-      final toWebMercatorGeocore =
-          wgs84ToWebMercator.forwardTo(Point3m.create);
+      final toWebMercatorProj4a = adapterWgs84ToWM.forward();
+      final toWebMercatorProj4b = adapterWMToWgs84.inverseTo(Projected.create);
       for (final coords in wgs84ToWebMercatorData) {
-        final geoPoint3 =
-            GeoPoint3m(lon: coords[0], lat: coords[1], elev: 5.1, m: 6.2);
-        final point3 = Point3m(x: coords[2], y: coords[3], z: 5.1, m: 6.2);
-        expectProjected(geoPoint3.project(toWebMercatorProj4a), point3, 0.01);
-        expectProjected(geoPoint3.project(toWebMercatorProj4b), point3, 0.01);
-        expectProjected(
-          geoPoint3.project(toWebMercatorProj4a),
-          geoPoint3.project(toWebMercatorGeocore),
-          0.01,
-        );
+        final geo =
+            Geographic(lon: coords[0], lat: coords[1], elev: 5.1, m: 6.2);
+        final proj = Projected(x: coords[2], y: coords[3], z: 5.1, m: 6.2);
+        expectProjected(toWebMercatorProj4a.project(geo), proj, 0.01);
+        expectProjected(toWebMercatorProj4b.project(geo), proj, 0.01);
       }
     });
 
     test('wgs84ToWebMercator.inverse', () {
-      final toWgs84Proj4a = adapterWgs84ToWM.inverseTo(GeoPoint3m.create);
-      final toWgs84Proj4b = adapterWMToWgs84.forwardTo(GeoPoint3m.create);
-      final toWgs84Geocore = wgs84ToWebMercator.inverseTo(GeoPoint3m.create);
+      final toWgs84Proj4a = adapterWgs84ToWM.inverse();
+      final toWgs84Proj4b = adapterWMToWgs84.forwardTo(Geographic.create);
       for (final coords in wgs84ToWebMercatorData) {
-        final geoPoint3 =
-            GeoPoint3m(lon: coords[0], lat: coords[1], elev: 5.1, m: 6.2);
-        final point3 = Point3m(x: coords[2], y: coords[3], z: 5.1, m: 6.2);
-        expectProjected(point3.project(toWgs84Proj4a), geoPoint3);
-        expectProjected(point3.project(toWgs84Proj4b), geoPoint3);
-        expectProjected(
-          point3.project(toWgs84Proj4a),
-          point3.project(toWgs84Geocore),
-        );
+        final geo =
+            Geographic(lon: coords[0], lat: coords[1], elev: 5.1, m: 6.2);
+        final proj = Projected(x: coords[2], y: coords[3], z: 5.1, m: 6.2);
+        expectProjected(toWgs84Proj4a.project(proj), geo);
+        expectProjected(toWgs84Proj4b.project(proj), geo);
       }
     });
   });
@@ -118,16 +100,16 @@ void main() {
           expect(adapter.fromCrs, 'EPSG:4326');
           expect(adapter.toCrs, 'EPSG:23700');
 
-          const p = Point2(x: 561651.8408065987, y: 172658.61998377228);
+          const proj = Projected(x: 561651.8408065987, y: 172658.61998377228);
           const geo =
-              GeoPoint2(lon: 17.888058560281515, lat: 46.89226406700879);
+              Geographic(lon: 17.888058560281515, lat: 46.89226406700879);
           expectProjected(
-            geo.project(adapter.forwardTo(Point2.create)),
-            p,
+            adapter.forward().project(geo),
+            proj,
             defsAccuracyProj[i],
           );
           expectProjected(
-            p.project(adapter.inverseTo(GeoPoint2.create)),
+            adapter.inverse().project(proj),
             geo,
             defsAccuracyWgs84[i],
           );
@@ -146,24 +128,24 @@ void main() {
       // this is NOT very geodetically accurate test (values are NOT reference
       // checked), but tests that lat-lon-elev coordinates are converted
       // to geocentric XYZ and vice versa
-      const geocentric = Point3(
+      const geocentric = Projected(
         x: -3356242.3698167196,
         y: 5168160.035350793,
         z: 1640136.37486220,
       );
-      const geodetic = GeoPoint3(
+      const geodetic = Geographic(
         lon: 123.0,
         lat: 15.0,
         elev: 140.0,
       );
       expectProjected(
-        geodetic.project(adapter.forwardTo(Point3.create)),
+        adapter.forward().project(geodetic),
         geocentric,
         0.0000001,
         0.0000001,
       );
       expectProjected(
-        geocentric.project(adapter.inverseTo(GeoPoint3.create)),
+        adapter.inverse().project(geocentric),
         geodetic,
         0.0000001,
         0.0000001,

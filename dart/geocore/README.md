@@ -14,7 +14,6 @@
 * 🌎 [GeoJSON](https://geojson.org/) data parser
 * 🪧 [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) 
 (Well-known text representation of geometry) data parser 
-* 🏗️ coordinate transformations and projections (initial support)
 
 ## Package
 
@@ -36,15 +35,13 @@ only a certain subset instead of the whole **geocore** library:
 Library         | Exports also | Description 
 --------------- | ----------- | -----------------------------------------------
 **base**        | | Base classes for geospatial geometries and temporal objects.
-**coordinates** | base | Cartesian and geographic points with some common coordinate transforms.
+**coordinates** | base | Projected and geographic points with some common coordinate transforms.
 **data**        | base, coordinates | Geospatial features and geometries (linestring, polygon, multi geometries).
 **parse**       | base, coordinates, data | GeoJSON and WKT (Well-known text representation of geometry) data parsers.
-**proj4d**      | base | Projections provided by the external [proj4dart](https://pub.dev/packages/proj4dart) package.
 
 All the mini-libraries have dependencies to the 
 [equatable](https://pub.dev/packages/equatable) and
-[geobase](https://pub.dev/packages/geobase) packages. The **proj4d** library 
-depends also on the [proj4dart](https://pub.dev/packages/proj4dart) package.
+[geobase](https://pub.dev/packages/geobase) packages.
 
 ## Introduction
 
@@ -101,23 +98,6 @@ A feature (a geospatial entity) contains an id, a geometry and properties:
       'city': 'London',
     },
   );
-```
-
-Coordinate projections based on the external [proj4dart](https://pub.dev/packages/proj4dart) package:
-
-```dart
-  // A projection adapter from WGS84 (EPSG:4326) to EPSG:23700 (with definition)
-  // (based on the sample at https://pub.dev/packages/proj4dart).
-  final adapter = proj4dart(
-    'EPSG:4326',
-    'EPSG:23700',
-    toDef: '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 '
-        '+k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 '
-        '+towgs84=52.17,-71.82,-14.9,0,0,0,0 +units=m +no_defs',
-  );
-
-  // Apply a forward projection to EPSG:23700 with points represented as Point2.
-  GeoPoint2(lon: 17.8880, lat: 46.8922).project(adapter.forward(Point2.create));
 ```
 
 Parsing [GeoJSON](https://geojson.org/) data:
@@ -531,44 +511,6 @@ that is *a coordinate-based local, regional or global system used to locate geog
 
 This library does not define any `crs` constants, please refer to registries
 like [The EPSG dataset](https://epsg.org/).
-
-### Projections between coordinate reference systems
-
-The package a projection adapter to the external 
-[proj4dart](https://pub.dev/packages/proj4dart) package. Adapter instances can
-be accessed using a global function:
-
-```dart
-/// Resolves a projection adapter between [fromCrs] and [toCrs].
-///
-/// As based on the Proj4dart package, it has built-in support for following crs
-/// codes: "EPSG:4326" (with alias "WGS84"), "EPSG:4269", "EPSG:3857" (with
-/// aliases "EPSG:3785", "GOOGLE", "EPSG:900913", "EPSG:102113").
-///
-/// For all other crs codes, also a projection definition must be given via
-/// [fromDef] or [toDef]. Proj4 definition strings, OGC WKT definitions and
-/// ESRI WKT definitions are supported. More info from the Proj4dart package.
-///
-/// Throws FormatException if projections could not be resolved.
-Proj4Adapter proj4dart(
-  String fromCrs,
-  String toCrs, {
-  String? fromDef,
-  String? toDef,
-});
-```
-
-A sample to project from WGS84 to Web Mercator using `proj4dart`:
-
-```dart
-  final adapter = proj4dart('EPSG:4326', 'EPSG:3857');
-  final forward = adapter.forward(Point2.create);
-  final projected = GeoPoint2(lon: -0.0014, lat: 51.4778).project(forward);
-```
-
-Please see the documentation of [proj4dart](https://pub.dev/packages/proj4dart)
-package about it's capabilities, and accuracy of forward and inverse 
-projections.
 
 ### Geospatial features
 
