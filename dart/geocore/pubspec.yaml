@@ -11,7 +11,6 @@ environment:
 dependencies:
   equatable: ^2.0.3
   meta: ^1.7.0
-  proj4dart: ^2.0.0
 
   #geobase: ^0.1.0
   geobase: 
