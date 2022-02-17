@@ -4,6 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'package:geobase/geobase.dart';
 import 'package:geocore/base.dart';
 
 import 'items_query.dart';

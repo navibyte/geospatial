@@ -5,7 +5,6 @@
 ## Features
 
 * 🚀 geospatial data structures (geometry, features and metadata)
-* 📅 temporal data structures (instant, interval)
 * 🌐 *geographic* coordinates (longitude-latitude)
 * 🗺️ *projected* coordinates (cartesian XYZ)
 * 🔷 geometry primitives (bounds or bbox, point, line string, polygon)
@@ -34,7 +33,7 @@ only a certain subset instead of the whole **geocore** library:
 
 Library         | Exports also | Description 
 --------------- | ----------- | -----------------------------------------------
-**base**        | | Base classes for geospatial geometries and temporal objects.
+**base**        | | Base classes for geospatial geometry objects.
 **coordinates** | base | Projected and geographic points with some common coordinate transforms.
 **data**        | base, coordinates | Geospatial features and geometries (linestring, polygon, multi geometries).
 **parse**       | base, coordinates, data | GeoJSON and WKT (Well-known text representation of geometry) data parsers.
@@ -70,21 +69,12 @@ Geometry types introduced above are based on the
 [Simple Feature Access - Part 1: Common Architecture](https://www.ogc.org/standards/sfa)
 standard by [The Open Geospatial Consortium](https://www.ogc.org/) (OGC).
 
-Spatial bounds, temporal instants and intervals, and extents:
+Spatial bounds:
 
 ```dart
   Bounds.of(min: Point2(x: 10.1, y: 10.1), max: Point2(x: 20.2, y: 20.2));
   Bounds.of(min: Point3i(x: 10, y: 10, z: 3), max: Point3i(x: 20, y: 20, z: 5));
   GeoBounds.bboxLonLat(-20.3, 50.2, 20.5, 60.9);
-
-  Instant(DateTime.utc(2020, 10, 31, 09, 30));
-  Interval.parse('2020-10-01/2020-10-31');
-
-  Extent.single(
-    crs: 'EPSG:4326',
-    bounds: GeoBounds.bboxLonLatElev(-20.3, 50.2, 1108.4, 20.5, 60.9, 1251.4),
-    interval: Interval.openStart(DateTime.utc(2020, 10, 31)),
-  );
 ```
 
 A feature (a geospatial entity) contains an id, a geometry and properties:
@@ -456,61 +446,6 @@ Bounds samples with geographic coordinates:
     max: GeoPoint2(lon: 20.0, lat: 60.0),
   );
 ```
-
-### Temporal instants and intervals
-
-Temporal data can be represented as *instants* (a time stamp) and *intervals*
-(an open or a closed interval between time stamps).
-
-```dart
-  // Temporal instants can be created from `DateTime` or parsed from text.
-  Instant(DateTime.utc(2020, 10, 31, 09, 30));
-  Instant.parse('2020-10-31 09:30Z');
-
-  // Temporal intervals (open-started, open-ended, closed).
-  Interval.openStart(DateTime.utc(2020, 10, 31));
-  Interval.openEnd(DateTime.utc(2020, 10, 01));
-  Interval.closed(DateTime.utc(2020, 10, 01), DateTime.utc(2020, 10, 31));
-
-  // Same intervals parsed (by the "start/end" format, ".." for open limits).
-  Interval.parse('../2020-10-31');
-  Interval.parse('2020-10-01/..');
-  Interval.parse('2020-10-01/2020-10-31');
-```
-
-### Extents
-
-Extent objects have both spatial bounds and temporal interval, and they are
-useful in metadata structures for geospatial data sources.
-
-```dart
-  // An extent with spatial (WGS 84 longitude-latitude) and temporal parts.
-  Extent.single(
-    crs: 'EPSG:4326',
-    bounds: GeoBounds.bboxLonLat(-20.0, 50.0, 20.0, 60.0),
-    interval: Interval.parse('../2020-10-31'),
-  );
-
-  // An extent with multiple spatial bounds and temporal interval segments.
-  Extent.multi(
-    crs: 'EPSG:4326',
-    allBounds: [
-      GeoBounds.bboxLonLat(-20.0, 50.0, 20.0, 60.0),
-      GeoBounds.bboxLonLat(40.0, 50.0, 60.0, 60.0),
-    ],
-    allIntervals: [
-      Interval.parse('2020-10-01/2020-10-05'),
-      Interval.parse('2020-10-27/2020-10-31'),
-    ],
-  );
-```
-
-The `crs` property in extents above refer to a 
-[Coordinate reference system](https://en.wikipedia.org/wiki/Spatial_reference_system) 
-that is *a coordinate-based local, regional or global system used to locate geographical entities*. 
-
-This library does not define any `crs` constants, please refer to registries
-like [The EPSG dataset](https://epsg.org/).
 
 ### Geospatial features
 

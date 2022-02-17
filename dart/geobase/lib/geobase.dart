@@ -22,6 +22,7 @@ export 'src/base/codes.dart';
 export 'src/base/coordinates.dart';
 export 'src/base/project.dart';
 export 'src/base/spatial.dart';
+export 'src/base/time.dart';
 export 'src/base/transforms.dart';
 export 'src/content/encode.dart';
 export 'src/content/formats.dart';

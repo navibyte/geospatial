@@ -5,6 +5,7 @@
 // Docs: https://github.com/navibyte/geospatial
 
 // ignore_for_file: avoid_print, cascade_invocations
+// ignore_for_file: avoid_redundant_argument_values
 
 import 'package:geobase/geobase.dart';
 
@@ -29,6 +30,9 @@ void main() {
   _geoJsonGeometryCollection();
   _geoJsonFeature();
   _geoJsonFeatureCollection();
+
+  // time objects
+  _intervalAndInstant();
 
   // projection samples
   _wgs84Projections();
@@ -301,6 +305,22 @@ void _geoJsonFeatureCollection() {
       )
       ..toString(),
   );
+}
+
+void _intervalAndInstant() {
+  // Instants can be created from `DateTime` or parsed from text.
+  Instant(DateTime.utc(2020, 10, 31, 09, 30));
+  Instant.parse('2020-10-31 09:30Z');
+
+  // Intervals (open-started, open-ended, closed).
+  Interval.openStart(DateTime.utc(2020, 10, 31));
+  Interval.openEnd(DateTime.utc(2020, 10, 01));
+  Interval.closed(DateTime.utc(2020, 10, 01), DateTime.utc(2020, 10, 31));
+
+  // Same intervals parsed (by the "start/end" format, ".." for open limits).
+  Interval.parse('../2020-10-31');
+  Interval.parse('2020-10-01/..');
+  Interval.parse('2020-10-01/2020-10-31');
 }
 
 void _wgs84Projections() {

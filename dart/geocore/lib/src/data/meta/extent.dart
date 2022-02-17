@@ -5,10 +5,10 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import 'package:equatable/equatable.dart';
+import 'package:geobase/geobase.dart' show Interval;
 import 'package:meta/meta.dart';
 
 import '/src/base/spatial.dart';
-import '/src/base/temporal.dart';
 import '/src/coordinates/geographic.dart';
 
 /// Geospatial extent with at least one [allBounds] and optional [allIntervals].

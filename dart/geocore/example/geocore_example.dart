@@ -82,20 +82,11 @@ void _readmeIntro() {
 
   // -----------
 
-  // Spatial bounds, temporal instants and intervals, and extents.
+  // Spatial bounds
 
   Bounds.of(min: Point2(x: 10.1, y: 10.1), max: Point2(x: 20.2, y: 20.2));
   Bounds.of(min: Point3i(x: 10, y: 10, z: 3), max: Point3i(x: 20, y: 20, z: 5));
   GeoBounds.bboxLonLat(-20.3, 50.2, 20.5, 60.9);
-
-  Instant(DateTime.utc(2020, 10, 31, 09, 30));
-  Interval.parse('2020-10-01/2020-10-31');
-
-  Extent.single(
-    crs: 'EPSG:4326',
-    bounds: GeoBounds.bboxLonLatElev(-20.3, 50.2, 1108.4, 20.5, 60.9, 1251.4),
-    interval: Interval.openStart(DateTime.utc(2020, 10, 31)),
-  );
 
   // A feature (a geospatial entity) contains an id, a geometry and properties:
 
@@ -359,44 +350,6 @@ void _readmeIntro() {
   GeoBounds.of(
     min: GeoPoint2(lon: -20.0, lat: 50.0),
     max: GeoPoint2(lon: 20.0, lat: 60.0),
-  );
-
-  // -----------
-
-  // Temporal instants can be created from `DateTime` or parsed from text.
-  Instant(DateTime.utc(2020, 10, 31, 09, 30));
-  Instant.parse('2020-10-31 09:30Z');
-
-  // Temporal intervals (open-started, open-ended, closed).
-  Interval.openStart(DateTime.utc(2020, 10, 31));
-  Interval.openEnd(DateTime.utc(2020, 10, 01));
-  Interval.closed(DateTime.utc(2020, 10, 01), DateTime.utc(2020, 10, 31));
-
-  // Same intervals parsed (by the "start/end" format, ".." for open limits).
-  Interval.parse('../2020-10-31');
-  Interval.parse('2020-10-01/..');
-  Interval.parse('2020-10-01/2020-10-31');
-
-  // -----------
-
-  // An extent with spatial (WGS 84 longitude-latitude) and temporal parts.
-  Extent.single(
-    crs: 'EPSG:4326',
-    bounds: GeoBounds.bboxLonLat(-20.0, 50.0, 20.0, 60.0),
-    interval: Interval.parse('../2020-10-31'),
-  );
-
-  // An extent with multiple spatial bounds and temporal interval segments.
-  Extent.multi(
-    crs: 'EPSG:4326',
-    allBounds: [
-      GeoBounds.bboxLonLat(-20.0, 50.0, 20.0, 60.0),
-      GeoBounds.bboxLonLat(40.0, 50.0, 60.0, 60.0),
-    ],
-    allIntervals: [
-      Interval.parse('2020-10-01/2020-10-05'),
-      Interval.parse('2020-10-27/2020-10-31'),
-    ],
   );
 
   // -----------

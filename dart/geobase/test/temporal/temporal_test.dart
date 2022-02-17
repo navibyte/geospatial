@@ -6,17 +6,13 @@
 
 // ignore_for_file: prefer_const_constructors, avoid_print
 
-import 'package:equatable/equatable.dart';
-
-import 'package:geocore/geocore.dart';
+//import 'package:geobase/src/base/temporal.dart';
+import 'package:geobase/geobase.dart';
 
 import 'package:test/test.dart';
 
 void main() {
-  // configure Equatable to apply toString() default impls
-  EquatableConfig.stringify = true;
-
-  group('Compare temporal events (instants and intervals)', () {
+  group('Compare temporal objects (instants and intervals)', () {
     final t1 = DateTime.parse('2020-10-01 15:45:30Z');
     final t2 = DateTime.parse('2020-10-03 20:30:10Z');
     final t3 = DateTime.parse('2020-10-03 21:30:10Z');

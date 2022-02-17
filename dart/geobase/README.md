@@ -15,11 +15,12 @@ systems.
 * 🔢 enums for geospatial coordinate and geometry types
 * 🌐 *geographic* positions and bounding boxes (longitude-latitude-elevation)
 * 🗺️ *projected* positions and bounding boxes (cartesian XYZ)
+* 🏗️ coordinate transformations and projections (initial support)
+* 📅 temporal data structures (instant, interval)
 * 📃 geospatial data writers for features, geometries, coordinates, properties:
   * 🌎 supported formats: [GeoJSON](https://geojson.org/) 
 * 📃 geospatial data writers for geometries and coordinates:
   * 🪧 supported formats: [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)
-* 🏗️ coordinate transformations and projections (initial support)
 
 **This package is at BETA stage, interfaces not fully final yet.** 
 

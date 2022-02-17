@@ -4,15 +4,12 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// Base classes for geospatial geometries and temporal objects.
+/// Base classes for geospatial geometries objects.
 ///
 /// *Spatial* classes include coordinates, points, bounds, point series, and
 /// transform and projection abstractions.
-///
-/// *Temporal* classes include temporal instants and intervals.
 ///
 /// Usage: import `package:geocore/base.dart`
 library base;
 
 export 'src/base/spatial.dart';
-export 'src/base/temporal.dart';

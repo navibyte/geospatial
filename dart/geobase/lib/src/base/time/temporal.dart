@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// A base class for *temporal* events like *instants* and *intervals*.
+/// A base class for *temporal* objects like *instants* and *intervals*.
 abstract class Temporal {
   /// Default `const` constructor to allow extending this abstract class.
   const Temporal();
@@ -29,7 +29,7 @@ abstract class Temporal {
   @override
   String toString();
 
-  /// Returns true if this *temporal* event occurs fully after [time].
+  /// Returns true if this occurs fully after [time].
   ///
   /// See `DateTime.isAfter` for reference.
   bool isAfterTime(DateTime time);
