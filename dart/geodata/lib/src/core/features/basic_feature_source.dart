@@ -18,8 +18,10 @@ abstract class BasicFeatureSource<ItemType extends FeatureItem,
     ItemsType extends FeatureItems> {
   /// Fetches a single feature by [id] from this source.
   ///
+  /// An identifier should be an integer number (int or BigInt) or a string.
+  ///
   /// Throws `ServiceException<FeatureFailure>` in a case of a failure.
-  Future<ItemType> itemById(String id);
+  Future<ItemType> itemById(Object id);
 
   /// Fetches all features items from this source.
   ///

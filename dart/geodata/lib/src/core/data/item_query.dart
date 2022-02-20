@@ -17,9 +17,8 @@ class ItemQuery extends GeospatialQuery {
 
   /// An identifier specifying an item on a geodata source.
   ///
-  /// Note that an identifier could be textual or a number but represented here
-  /// as a String object.
-  final String id;
+  /// An identifier should be an integer number (int or BigInt) or a string.
+  final Object id;
 
   @override
   List<Object?> get props => [id, crs, extra];

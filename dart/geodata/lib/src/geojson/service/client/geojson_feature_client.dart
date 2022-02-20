@@ -88,7 +88,7 @@ class _GeoJSONFeatureSource implements BasicFeatureSource {
   final GeoJsonFactory parser;
 
   @override
-  Future<FeatureItem> itemById(String id) async {
+  Future<FeatureItem> itemById(Object id) async {
     // get items as paged response
     Paged<FeatureItems>? page = await itemsAllPaged();
 

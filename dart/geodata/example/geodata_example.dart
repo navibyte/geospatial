@@ -68,7 +68,7 @@ Future<void> main(List<String> args) async {
     switch (args[5]) {
       case 'id':
         query = ItemQuery(
-          id: args[6],
+          id: int.tryParse(args[6]) ?? args[6],
         );
         maxPagedResults = 1;
         break;

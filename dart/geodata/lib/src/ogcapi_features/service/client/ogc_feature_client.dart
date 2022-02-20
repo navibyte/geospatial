@@ -153,7 +153,7 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
   }
 
   @override
-  Future<OGCFeatureItem> itemById(String id) => item(ItemQuery(id: id));
+  Future<OGCFeatureItem> itemById(Object id) => item(ItemQuery(id: id));
 
   @override
   Future<OGCFeatureItems> itemsAll({int? limit}) =>
