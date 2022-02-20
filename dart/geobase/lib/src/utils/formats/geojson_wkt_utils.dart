@@ -316,21 +316,12 @@ abstract class _BaseTextWriter with GeometryWriter, CoordinateWriter {
   void _coordArrayEnd();
 
   void _coordPosition(Position coordinates) {
-    if (coordinates is Projected) {
-      _coordPoint(
-        x: coordinates.x,
-        y: coordinates.y,
-        z: coordinates.optZ,
-        m: coordinates.optM,
-      );
-    } else if (coordinates is Geographic) {
-      _coordPoint(
-        x: coordinates.lon,
-        y: coordinates.lat,
-        z: coordinates.optElev,
-        m: coordinates.optM,
-      );
-    }
+    _coordPoint(
+      x: coordinates.x,
+      y: coordinates.y,
+      z: coordinates.optZ,
+      m: coordinates.optM,
+    );
   }
 
   void _coordPoint({
@@ -883,13 +874,8 @@ class _WktLikeTextWriter extends _BaseTextWriter {
     }
   }
 
-  void _printPosition(Position position) {
-    if (position is Projected) {
+  void _printPosition(Position position) =>
       _printPoint(position.x, position.y, position.optZ, position.optM);
-    } else if (position is Geographic) {
-      _printPoint(position.lon, position.lat, position.optElev, position.optM);
-    }
-  }
 
   void _printPoint(
     num x,
@@ -1027,14 +1013,7 @@ class _WktTextWriter extends _WktLikeTextWriter {
   void box(Box bbox) {
     // WKT does not recognize bounding box, so convert to POLYGON
     final hasZ = bbox.is3D;
-    num? midZ;
-    if (hasZ) {
-      if (bbox is ProjBox) {
-        midZ = 0.5 * bbox.minZ! + 0.5 * bbox.maxZ!;
-      } else if (bbox is GeoBox) {
-        midZ = 0.5 * bbox.minElev! + 0.5 * bbox.maxElev!;
-      }
-    }
+    final midZ = hasZ ? 0.5 * bbox.minZ! + 0.5 * bbox.maxZ! : null;
     final hasM = bbox.isMeasured;
     final midM = hasM ? 0.5 * bbox.minM! + 0.5 * bbox.maxM! : null;
 
@@ -1061,19 +1040,11 @@ class _WktTextWriter extends _WktLikeTextWriter {
     }
     _coordArray();
     _coordArray();
-    if (bbox is ProjBox) {
-      _coordPoint(x: bbox.minX, y: bbox.minY, z: bbox.minZ, m: bbox.minM);
-      _coordPoint(x: bbox.maxX, y: bbox.minY, z: midZ, m: midM);
-      _coordPoint(x: bbox.maxX, y: bbox.maxY, z: bbox.maxZ, m: bbox.maxM);
-      _coordPoint(x: bbox.minX, y: bbox.maxY, z: midZ, m: midM);
-      _coordPoint(x: bbox.minX, y: bbox.minY, z: bbox.minZ, m: bbox.minM);
-    } else if (bbox is GeoBox) {
-      _coordPoint(x: bbox.west, y: bbox.south, z: bbox.minElev, m: bbox.minM);
-      _coordPoint(x: bbox.east, y: bbox.south, z: midZ, m: midM);
-      _coordPoint(x: bbox.east, y: bbox.north, z: bbox.maxElev, m: bbox.maxM);
-      _coordPoint(x: bbox.west, y: bbox.north, z: midZ, m: midM);
-      _coordPoint(x: bbox.west, y: bbox.south, z: bbox.minElev, m: bbox.minM);
-    }
+    _coordPoint(x: bbox.minX, y: bbox.minY, z: bbox.minZ, m: bbox.minM);
+    _coordPoint(x: bbox.maxX, y: bbox.minY, z: midZ, m: midM);
+    _coordPoint(x: bbox.maxX, y: bbox.maxY, z: bbox.maxZ, m: bbox.maxM);
+    _coordPoint(x: bbox.minX, y: bbox.maxY, z: midZ, m: midM);
+    _coordPoint(x: bbox.minX, y: bbox.minY, z: bbox.minZ, m: bbox.minM);
     _coordArrayEnd();
     _coordArrayEnd();
     _endCoordType();

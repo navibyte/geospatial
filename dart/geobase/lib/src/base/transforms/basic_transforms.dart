@@ -29,15 +29,15 @@ TransformPosition translatePoint<C extends num>({
       if (dim == 2) {
         // point is (X, Y)
         return source.copyWith(
-          x: dx != null ? source[0] + dx : null,
-          y: dy != null ? source[1] + dy : null,
+          x: dx != null ? source.x + dx : null,
+          y: dy != null ? source.y + dy : null,
         ) as T;
       } else {
         // point could be (X, Y, Z), (X, Y, M) or (X, Y, Z, M)
         return source.copyWith(
-          x: dx != null ? source[0] + dx : null,
-          y: dy != null ? source[1] + dy : null,
-          z: dz != null && source.is3D ? source[2] + dz : null,
+          x: dx != null ? source.x + dx : null,
+          y: dy != null ? source.y + dy : null,
+          z: dz != null && source.is3D ? source.z + dz : null,
           m: dm != null && source.isMeasured ? source.m + dm : null,
         ) as T;
       }
@@ -61,15 +61,15 @@ TransformPosition scalePoint<C extends num>({
       if (dim == 2) {
         // point is (X, Y)
         return source.copyWith(
-          x: sx != null ? sx * source[0] : null,
-          y: sy != null ? sy * source[1] : null,
+          x: sx != null ? sx * source.x : null,
+          y: sy != null ? sy * source.y : null,
         ) as T;
       } else {
         // point could be (X, Y, Z), (X, Y, M) or (X, Y, Z, M)
         return source.copyWith(
-          x: sx != null ? sx * source[0] : null,
-          y: sy != null ? sy * source[1] : null,
-          z: sz != null && source.is3D ? sz * source[2] : null,
+          x: sx != null ? sx * source.x : null,
+          y: sy != null ? sy * source.y : null,
+          z: sz != null && source.is3D ? sz * source.z : null,
           m: sm != null && source.isMeasured ? sm * source.m : null,
         ) as T;
       }
@@ -88,9 +88,9 @@ TransformPosition scalePointBy<C extends num>(C scale) =>
       } else {
         // point could be (X, Y, Z), (X, Y, M) or (X, Y, Z, M)
         return source.copyWith(
-          x: scale * source[0],
-          y: scale * source[1],
-          z: source.is3D ? scale * source[2] : null,
+          x: scale * source.x,
+          y: scale * source.y,
+          z: source.is3D ? scale * source.z : null,
           m: source.isMeasured ? scale * source.m : null,
         ) as T;
       }
@@ -104,8 +104,8 @@ TransformPosition rotatePoint2D(num radians, {num? cx, num? cy}) =>
       final s = math.sin(radians);
       final c = math.cos(radians);
 
-      var x = source[0];
-      var y = source[1];
+      var x = source.x;
+      var y = source.y;
 
       // if has pivot point, then move origin
       if (cx != null && cy != null) {

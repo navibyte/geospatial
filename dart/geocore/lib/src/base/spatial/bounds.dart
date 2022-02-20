@@ -75,7 +75,7 @@ abstract class Bounds<T extends Point> extends Bounded
   T get max;
 
   @override
-  Iterable<T> get corners2D => ProjBox.createCorners2D(
+  Iterable<T> get corners2D => Box.createCorners2D(
         this,
         ({required num x, required num y, num? z, num? m}) =>
             min.newWith(x: x, y: y, z: z, m: m) as T,

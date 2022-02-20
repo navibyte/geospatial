@@ -103,4 +103,35 @@ abstract class Box extends Positionable {
     num? toleranceHoriz,
     num? toleranceVert,
   });
+
+  // ---------------------------------------------------------------------------
+  // Static methods with default logic, used by ProjBox and GeoBox too
+
+  /// Returns all distinct (in 2D) corners for this axis aligned bounding box.
+  static Iterable<R> createCorners2D<R extends Position>(
+    Box box,
+    CreatePosition<R> factory,
+  ) {
+    final min = box.min;
+    final max = box.max;
+    if (min == max) {
+      return [
+        min.copyTo(factory),
+      ];
+    } else if (min.x == max.x || min.y == max.y) {
+      return [
+        min.copyTo(factory),
+        max.copyTo(factory),
+      ];
+    } else {
+      final midZ = box.is3D ? 0.5 * min.z + 0.5 * max.z : null;
+      final midM = box.isMeasured ? 0.5 * min.m + 0.5 * max.m : null;
+      return [
+        min.copyTo(factory),
+        factory(x: max.x, y: min.y, z: midZ, m: midM),
+        max.copyTo(factory),
+        factory(x: min.x, y: max.y, z: midZ, m: midM),
+      ];
+    }
+  }
 }

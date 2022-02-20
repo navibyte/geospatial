@@ -10,7 +10,6 @@ import '/src/base/codes.dart';
 import '/src/utils/tolerance.dart';
 
 import 'box.dart';
-import 'position.dart';
 import 'projected.dart';
 
 /// A bounding box with [minX], [minY], [maxX] and [maxY] coordinates.
@@ -94,7 +93,7 @@ class ProjBox extends Box {
 
   @override
   Iterable<Projected> get corners2D =>
-      ProjBox.createCorners2D(this, Projected.create);
+      Box.createCorners2D(this, Projected.create);
 
   @override
   int get spatialDimension => typeCoords.spatialDimension;
@@ -164,7 +163,7 @@ class ProjBox extends Box {
       );
 
   // ---------------------------------------------------------------------------
-  // Static methods with default logic, used by Box itself too.
+  // Static methods with default logic, used by ProjBox itself too.
 
   /// True if [box1] and [box2] equals by testing all coordinate values.
   static bool testEquals(ProjBox box1, ProjBox box2) =>
@@ -234,34 +233,6 @@ class ProjBox extends Box {
           (maxZ1 - maxZ2).abs() <= toleranceVert;
     } else {
       return box1.minZ == box2.minZ && box1.maxZ == box2.maxZ;
-    }
-  }
-
-  /// Returns all distinct (in 2D) corners for this axis aligned bounding box.
-  static Iterable<R> createCorners2D<R extends Projected>(
-    ProjBox box,
-    CreatePosition<R> factory,
-  ) {
-    final min = box.min;
-    final max = box.max;
-    if (min == max) {
-      return [
-        min.copyTo(factory),
-      ];
-    } else if (min.x == max.x || min.y == max.y) {
-      return [
-        min.copyTo(factory),
-        max.copyTo(factory),
-      ];
-    } else {
-      final midZ = box.is3D ? 0.5 * min.z + 0.5 * max.z : null;
-      final midM = box.isMeasured ? 0.5 * min.m + 0.5 * max.m : null;
-      return [
-        min.copyTo(factory),
-        factory(x: max.x, y: min.y, z: midZ, m: midM),
-        max.copyTo(factory),
-        factory(x: min.x, y: max.y, z: midZ, m: midM),
-      ];
     }
   }
 }

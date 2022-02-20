@@ -68,13 +68,9 @@ class _Wgs84ToWebMercatorProjection<R extends Position> with Projection<R> {
 
   @override
   R project(Position source, {CreatePosition<R>? to}) {
-    if (source is! Geographic) {
-      throw const FormatException('Source should be geographic position');
-    }
-
     // source coordinates
-    final lon = source.lon;
-    final lat = source.lat;
+    final lon = source.x; // longitude at x
+    final lat = source.y; // latitude at y
 
     // project (lon, lat) to (x, y)
     final x = lon * 20037508.34 / 180.0;
@@ -86,7 +82,7 @@ class _Wgs84ToWebMercatorProjection<R extends Position> with Projection<R> {
     return (to ?? factory).call(
       x: x,
       y: y,
-      z: source.optElev,
+      z: source.optZ,
       m: source.optM,
     );
   }
@@ -99,10 +95,6 @@ class _WebMercatorToWgs84Projection<R extends Position> with Projection<R> {
 
   @override
   R project(Position source, {CreatePosition<R>? to}) {
-    if (source is! Projected) {
-      throw const FormatException('Source should be projected position');
-    }
-
     // source coordinates
     final x = source.x;
     final y = source.y;

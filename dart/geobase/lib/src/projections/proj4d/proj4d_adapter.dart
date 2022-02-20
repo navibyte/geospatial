@@ -133,32 +133,16 @@ class _ProjectionProxy<R extends Position> with Projection<R> {
     // source coordinates (as a Point instance of proj4dart)
     // (if geographical source coords: longitude is at x, latitude is at y)
     final hasZ = source.is3D;
-    final p4d.Point point;
-    if (source is Projected) {
-      point = hasZ
-          ? p4d.Point.withZ(
-              x: source.x.toDouble(),
-              y: source.y.toDouble(),
-              z: source.z.toDouble(),
-            )
-          : p4d.Point(
-              x: source.x.toDouble(),
-              y: source.y.toDouble(),
-            );
-    } else if (source is Geographic) {
-      point = hasZ
-          ? p4d.Point.withZ(
-              x: source.lon,
-              y: source.lat,
-              z: source.elev,
-            )
-          : p4d.Point(
-              x: source.lon,
-              y: source.lat,
-            );
-    } else {
-      throw const FormatException('Unknow source position type');
-    }
+    final point = hasZ
+        ? p4d.Point.withZ(
+            x: source.x.toDouble(),
+            y: source.y.toDouble(),
+            z: source.z.toDouble(),
+          )
+        : p4d.Point(
+            x: source.x.toDouble(),
+            y: source.y.toDouble(),
+          );
 
     // project using forward or inverse projection of the tuple
     final p4d.Point projected;
