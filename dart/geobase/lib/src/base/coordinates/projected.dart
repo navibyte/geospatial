@@ -96,6 +96,10 @@ class Projected extends Position {
   @override
   Iterable<num> get values => Projected.getValues(this);
 
+  @override
+  R copyTo<R extends Position>(CreatePosition<R> factory) =>
+      factory.call(x: _x, y: _y, z: _z, m: _m);
+
   /// Copies the position with optional [x], [y], [z] and [m] overriding values.
   ///
   /// For example:

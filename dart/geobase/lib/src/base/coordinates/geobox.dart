@@ -11,6 +11,7 @@ import '/src/utils/tolerance.dart';
 
 import 'box.dart';
 import 'geographic.dart';
+import 'position.dart';
 
 /// A geographic bounding box with [west], [south], [east] and [north] values.
 ///
@@ -131,6 +132,10 @@ class GeoBox extends Box {
         elev: _maxElev,
         m: _maxM,
       );
+
+  @override
+  Iterable<Geographic> get corners2D =>
+      GeoBox.createCorners2D(this, Geographic.create);
 
   @override
   int get spatialDimension => typeCoords.spatialDimension;
@@ -271,6 +276,34 @@ class GeoBox extends Box {
           (maxElev1 - maxElev2).abs() <= toleranceVert;
     } else {
       return box1.minElev == box2.minElev && box1.maxElev == box2.maxElev;
+    }
+  }
+
+  /// Returns all distinct (in 2D) corners for this axis aligned bounding box.
+  static Iterable<R> createCorners2D<R extends Geographic>(
+    GeoBox box,
+    CreatePosition<R> factory,
+  ) {
+    final min = box.min;
+    final max = box.max;
+    if (min == max) {
+      return [
+        min.copyTo(factory),
+      ];
+    } else if (min.lon == max.lon || min.lat == max.lat) {
+      return [
+        min.copyTo(factory),
+        max.copyTo(factory),
+      ];
+    } else {
+      final midElev = box.is3D ? 0.5 * min.elev + 0.5 * max.elev : null;
+      final midM = box.isMeasured ? 0.5 * min.m + 0.5 * max.m : null;
+      return [
+        min.copyTo(factory),
+        factory(x: max.lon, y: min.lat, z: midElev, m: midM),
+        max.copyTo(factory),
+        factory(x: min.lon, y: max.lat, z: midElev, m: midM),
+      ];
     }
   }
 }

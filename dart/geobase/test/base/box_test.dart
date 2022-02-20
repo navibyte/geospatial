@@ -42,6 +42,34 @@ void main() {
         false,
       );
     });
+
+    test('Corners', () {
+      expect(
+        const ProjBox(minX: 1, minY: 1, minZ: 1, maxX: 1, maxY: 1, maxZ: 1)
+            .corners2D,
+        [
+          const Projected(x: 1, y: 1, z: 1),
+        ],
+      );
+      expect(
+        const ProjBox(minX: 1, minY: 1, minZ: 1, maxX: 1, maxY: 3, maxZ: 3)
+            .corners2D,
+        [
+          const Projected(x: 1, y: 1, z: 1),
+          const Projected(x: 1, y: 3, z: 3),
+        ],
+      );
+      expect(
+        const ProjBox(minX: 1, minY: 1, minZ: 1, maxX: 3, maxY: 3, maxZ: 3)
+            .corners2D,
+        [
+          const Projected(x: 1, y: 1, z: 1),
+          const Projected(x: 3, y: 1, z: 2),
+          const Projected(x: 3, y: 3, z: 3),
+          const Projected(x: 1, y: 3, z: 2),
+        ],
+      );
+    });
   });
 
   group('GeoBox class', () {
@@ -75,6 +103,34 @@ void main() {
       expect(
         p1.equals3D(p2, toleranceHoriz: 0.00011, toleranceVert: 0.0009),
         false,
+      );
+    });
+
+    test('Corners', () {
+      expect(
+        const GeoBox(west: 1, south: 1, minM: 1, east: 1, north: 1, maxM: 1)
+            .corners2D,
+        [
+          const Geographic(lon: 1, lat: 1, m: 1),
+        ],
+      );
+      expect(
+        const GeoBox(west: 1, south: 1, minM: 1, east: 3, north: 1, maxM: 3)
+            .corners2D,
+        [
+          const Geographic(lon: 1, lat: 1, m: 1),
+          const Geographic(lon: 3, lat: 1, m: 3),
+        ],
+      );
+      expect(
+        const GeoBox(west: 1, south: 1, minM: 1, east: 3, north: 3, maxM: 3)
+            .corners2D,
+        [
+          const Geographic(lon: 1, lat: 1, m: 1),
+          const Geographic(lon: 3, lat: 1, m: 2),
+          const Geographic(lon: 3, lat: 3, m: 3),
+          const Geographic(lon: 1, lat: 3, m: 2),
+        ],
       );
     });
   });

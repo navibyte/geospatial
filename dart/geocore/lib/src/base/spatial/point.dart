@@ -183,6 +183,10 @@ abstract class Point<C extends num> extends Geometry
         coordType: typeCoords,
       );
 
+  @override
+  R copyTo<R extends Position>(CreatePosition<R> factory) =>
+      factory.call(x: x, y: y, z: optZ, m: optM);
+
   /// Copies this point with optional [x], [y], [z] and [m] overriding values.
   /// 
   /// The copied point is compatible by coordinate type with this point.

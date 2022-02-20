@@ -77,6 +77,9 @@ abstract class Position extends Positionable {
   /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
   Iterable<num> get values;
 
+  /// Copies this position to a new position created by the [factory].
+  R copyTo<R extends Position>(CreatePosition<R> factory);
+
   /// Copies the position with optional [x], [y], [z] and [m] overriding values.
   ///
   /// When copying `Geographic` then coordinates has correspondence:

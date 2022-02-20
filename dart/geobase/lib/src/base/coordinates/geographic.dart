@@ -96,6 +96,10 @@ class Geographic extends Position {
   @override
   Iterable<double> get values => Geographic.getValues(this);
 
+  @override
+  R copyTo<R extends Position>(CreatePosition<R> factory) =>
+      factory.call(x: _lon, y: _lat, z: _elev, m: _m);
+
   /// Copies the position with optional [x], [y], [z] and [m] overriding values.
   ///
   /// Coordinate values from parameters are copied as:

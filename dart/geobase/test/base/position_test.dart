@@ -57,6 +57,13 @@ void main() {
       expect(t1.hashCode, t2.hashCode);
       expect(t1.hashCode, isNot(t3.hashCode));
 
+      // copy to
+      expect(p1, p1.copyTo(Projected.create));
+      expect(p1, isNot(p1.copyTo(Geographic.create)));
+      expect(p1, p1.copyTo(_TestXYZM.create));
+      expect(t1, t1.copyTo(Projected.create));
+      expect(t1, t1.copyTo(_TestXYZM.create));
+
       // test between Position and class implementing it's interface
       expect(p1, t2);
       expect(t1, p2);
@@ -149,6 +156,10 @@ void main() {
       expect(p1.equals2D(p3), false);
       expect(p1.equals3D(p2), true);
       expect(p1.equals3D(p3), false);
+
+      // copy to
+      expect(p1, p1.copyTo(Geographic.create));
+      expect(p1, isNot(p1.copyTo(Projected.create)));
     });
 
     test('Equals with tolerance', () {
@@ -211,6 +222,13 @@ class _TestXYZM implements Projected {
     required this.z,
     required this.m,
   });
+
+  const _TestXYZM.create({required num x, required num y, num? z, num? m})
+      : this(x: x, y: y, z: z ?? 0, m: m ?? 0);
+
+  @override
+  R copyTo<R extends Position>(CreatePosition<R> factory) =>
+      factory.call(x: x, y: y, z: z, m: m);
 
   @override
   Projected copyWith({num? x, num? y, num? z, num? m}) => Projected(

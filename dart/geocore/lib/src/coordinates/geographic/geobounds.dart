@@ -198,6 +198,13 @@ class GeoBounds<T extends GeoPoint> extends BoundsBase<T> implements GeoBox {
       );
 
   @override
+  Iterable<T> get corners2D => GeoBox.createCorners2D(
+        this,
+        ({required num x, required num y, num? z, num? m}) =>
+            min.newWith(x: x, y: y, z: z, m: m) as T,
+      );
+
+  @override
   bool get isGeographic => true;
 
   @override

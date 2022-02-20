@@ -17,12 +17,12 @@ import '/src/base/coordinates.dart';
 /// future to project using other data structures than positions also. If
 /// extended, then the mixin provides a default implementation for any new
 /// methods.
-mixin Projection<R extends Position> {
-  /// Projects the [source] position to a position of [R].
+mixin Projection<T extends Position> {
+  /// Projects the [source] position to a position of [T].
   ///
-  /// When [to] is provided, then target positions of [R] are created using that
+  /// When [to] is provided, then target positions of [T] are created using that
   /// as a factory function. Otherwise the projection uses it's own factory.
   ///
   /// Throws FormatException if cannot project.
-  R project(Position source, {CreatePosition<R>? to});
+  T project(Position source, {CreatePosition<T>? to});
 }

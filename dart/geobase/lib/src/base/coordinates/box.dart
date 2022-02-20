@@ -37,6 +37,12 @@ abstract class Box extends Positionable {
   /// The maximum position (or east-north) of this bounding box.
   Position get max;
 
+  /// Returns all distinct (in 2D) corners for this axis aligned bounding box.
+  ///
+  /// May return 1 (when `min == max`), 2 (when either or both 2D coordinates
+  /// equals between min and max) or 4 positions (otherwise).
+  Iterable<Position> get corners2D;
+
   /// True if this box equals with [other] by testing 2D coordinates only.
   ///
   /// If [toleranceHoriz] is given, then differences on 2D coordinate values
