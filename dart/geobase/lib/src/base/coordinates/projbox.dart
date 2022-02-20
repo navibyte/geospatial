@@ -4,12 +4,15 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'dart:math' as math;
+
 import 'package:meta/meta.dart';
 
 import '/src/base/codes.dart';
 import '/src/utils/tolerance.dart';
 
 import 'box.dart';
+import 'position.dart';
 import 'projected.dart';
 
 /// A bounding box with [minX], [minY], [maxX] and [maxY] coordinates.
@@ -39,6 +42,48 @@ class ProjBox extends Box {
         _maxY = maxY,
         _maxZ = maxZ,
         _maxM = maxM;
+
+  /// A minimum bounding box calculated from [positions].
+  factory ProjBox.from(Iterable<Position> positions) {
+    // calculate mininum and maximum coordinates
+    num? minX, minY, minZ, minM;
+    num? maxX, maxY, maxZ, maxM;
+    var isFirst = true;
+    for (final cp in positions) {
+      if (isFirst) {
+        minX = cp.x;
+        minY = cp.y;
+        minZ = cp.optZ;
+        minM = cp.optM;
+        maxX = cp.x;
+        maxY = cp.y;
+        maxZ = cp.optZ;
+        maxM = cp.optM;
+      } else {
+        minX = math.min(minX!, cp.x);
+        minY = math.min(minY!, cp.y);
+        minZ = cp.is3D && minZ != null ? math.min(minZ, cp.z) : null;
+        minM = cp.isMeasured && minM != null ? math.min(minM, cp.m) : null;
+        maxX = math.max(maxX!, cp.x);
+        maxY = math.max(maxY!, cp.y);
+        maxZ = cp.is3D && maxZ != null ? math.max(maxZ, cp.z) : null;
+        maxM = cp.isMeasured && maxM != null ? math.max(maxM, cp.m) : null;
+      }
+      isFirst = false;
+    }
+
+    // create a new bounding box
+    return ProjBox(
+      minX: minX!,
+      minY: minY!,
+      minZ: minZ,
+      minM: minM,
+      maxX: maxX!,
+      maxY: maxY!,
+      maxZ: maxZ,
+      maxM: maxM,
+    );
+  }
 
   final num _minX;
   final num _minY;

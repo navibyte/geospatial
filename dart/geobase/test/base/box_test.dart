@@ -70,6 +70,48 @@ void main() {
         ],
       );
     });
+
+    test('Create from positions', () {
+      expect(
+        ProjBox.from(const [
+          Projected(x: 1, y: 1, z: 1),
+        ]),
+        const ProjBox(minX: 1, minY: 1, minZ: 1, maxX: 1, maxY: 1, maxZ: 1),
+      );
+      expect(
+        ProjBox.from(const [
+          Projected(x: 1, y: 1, z: 1),
+          Projected(x: 1, y: 3, z: 3),
+        ]),
+        const ProjBox(minX: 1, minY: 1, minZ: 1, maxX: 1, maxY: 3, maxZ: 3),
+      );
+      expect(
+        ProjBox.from(const [
+          Projected(x: 1, y: 1, z: 1),
+          Projected(x: 3, y: 1, z: 2),
+          Projected(x: 3, y: 3, z: 3),
+          Projected(x: 1, y: 3, z: 2),
+        ]),
+        const ProjBox(minX: 1, minY: 1, minZ: 1, maxX: 3, maxY: 3, maxZ: 3),
+      );
+      expect(
+        ProjBox.from(const [
+          Projected(x: 3, y: 134, z: 21, m: -23),
+          Projected(x: -13, y: 38.48, z: 19.224, m: -10.5),
+          Projected(x: 14.2, y: 94, z: 31, m: -0.4),
+        ]),
+        const ProjBox(
+          minX: -13,
+          minY: 38.48,
+          minZ: 19.224,
+          minM: -23,
+          maxX: 14.2,
+          maxY: 134,
+          maxZ: 31,
+          maxM: -0.4,
+        ),
+      );
+    });
   });
 
   group('GeoBox class', () {
