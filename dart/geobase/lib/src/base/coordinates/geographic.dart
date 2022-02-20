@@ -20,6 +20,11 @@ import 'position.dart';
 /// represented as deegrees. The unit for [elev] is meters.
 @immutable
 class Geographic extends Position {
+  final double _lon;
+  final double _lat;
+  final double? _elev;
+  final double? _m;
+
   /// A geographic position with [lon] and [lat], and optional [elev] and [m].
   ///
   /// Longitude is normalized to the range `[-180.0, 180.0[` using the formula
@@ -47,11 +52,6 @@ class Geographic extends Position {
           elev: z?.toDouble(),
           m: m?.toDouble(),
         );
-
-  final double _lon;
-  final double _lat;
-  final double? _elev;
-  final double? _m;
 
   /// The longitude coordinate.
   double get lon => _lon;

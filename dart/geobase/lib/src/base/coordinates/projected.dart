@@ -30,6 +30,11 @@ import 'position.dart';
 /// (x, y, z, m).
 @immutable
 class Projected extends Position {
+  final num _x;
+  final num _y;
+  final num? _z;
+  final num? _m;
+
   /// A projected position with [x], [y], and optional [z] and [m] coordinates.
   const Projected({required num x, required num y, num? z, num? m})
       : _x = x,
@@ -43,11 +48,6 @@ class Projected extends Position {
         _y = y,
         _z = z,
         _m = m;
-
-  final num _x;
-  final num _y;
-  final num? _z;
-  final num? _m;
 
   @override
   num get x => _x;

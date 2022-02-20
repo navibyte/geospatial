@@ -29,6 +29,15 @@ import 'geographic.dart';
 /// measured boxes can be provided too.
 @immutable
 class GeoBox extends Box {
+  final double _west;
+  final double _south;
+  final double? _minElev;
+  final double? _minM;
+  final double _east;
+  final double _north;
+  final double? _maxElev;
+  final double? _maxM;
+
   /// A geographic bounding box with [west], [south], [east] and [north] values.
   ///
   /// West and east represents geographic longitude coordinates values. South
@@ -61,15 +70,6 @@ class GeoBox extends Box {
         _north = north,
         _maxElev = maxElev,
         _maxM = maxM;
-
-  final double _west;
-  final double _south;
-  final double? _minElev;
-  final double? _minM;
-  final double _east;
-  final double _north;
-  final double? _maxElev;
-  final double? _maxM;
 
   /// The west coordinate as geographic longitude.
   double get west => _west;

@@ -21,6 +21,15 @@ import 'projected.dart';
 /// measured boxes can be provided too.
 @immutable
 class ProjBox extends Box {
+  final num _minX;
+  final num _minY;
+  final num? _minZ;
+  final num? _minM;
+  final num _maxX;
+  final num _maxY;
+  final num? _maxZ;
+  final num? _maxM;
+
   /// A bounding box with [minX], [minY], [maxX] and [maxY] coordinates.
   ///
   /// Optional [minZ] and [maxZ] for 3D boxes, and [minM] and [maxM] for
@@ -84,15 +93,6 @@ class ProjBox extends Box {
       maxM: maxM,
     );
   }
-
-  final num _minX;
-  final num _minY;
-  final num? _minZ;
-  final num? _minM;
-  final num _maxX;
-  final num _maxY;
-  final num? _maxZ;
-  final num? _maxM;
 
   @override
   num get minX => _minX;
