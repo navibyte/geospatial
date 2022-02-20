@@ -104,6 +104,24 @@ class GeoBox extends Box {
   @override
   double? get maxM => _maxM;
 
+  @override
+  num get minX => _west;
+
+  @override
+  num get minY => _south;
+
+  @override
+  num? get minZ => _minElev;
+
+  @override
+  num get maxX => _east;
+
+  @override
+  num get maxY => _north;
+
+  @override
+  num? get maxZ => _maxElev;
+
   /// The "west-south" geographic position of this bounding box.
   ///
   /// For geographic bounding boxes this represents the most **southwesterly**

@@ -49,29 +49,16 @@ class Projected extends Position {
   final num? _z;
   final num? _m;
 
-  /// The x coordinate value.
-  ///
-  /// For geographic coordinates x represents *longitude*.
+  @override
   num get x => _x;
 
-  /// The y coordinate value.
-  ///
-  /// For geographic coordinates y represents *latitude*.
+  @override
   num get y => _y;
 
-  /// The z coordinate value. Returns zero if not available.
-  ///
-  /// You can also use [is3D] to check whether z coordinate is available, or
-  /// [optZ] returns z coordinate as nullable value.
-  ///
-  /// For geographic coordinates z represents *elevation* or *altitude*.
+  @override
   num get z => _z ?? 0;
 
-  /// The z coordinate value optionally. Returns null if not available.
-  ///
-  /// You can also use [is3D] to check whether z coordinate is available.
-  ///
-  /// For geographic coordinates z represents *elevation* or *altitude*.
+  @override
   num? get optZ => _z;
 
   @override

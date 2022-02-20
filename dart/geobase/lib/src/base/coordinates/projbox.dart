@@ -50,37 +50,27 @@ class ProjBox extends Box {
   final num? _maxZ;
   final num? _maxM;
 
-  /// The minimum x (or west) coordinate.
+  @override
   num get minX => _minX;
 
-  /// The minimum y (or south) coordinate.
+  @override
   num get minY => _minY;
 
-  /// The minimum z coordinate optionally. Returns null if not available.
-  ///
-  /// You can also use [is3D] to check whether z coordinate available.
+  @override
   num? get minZ => _minZ;
 
-  /// The minimum m coordinate optionally. Returns null if not available.
-  ///
-  /// You can also use [isMeasured] to check whether m coordinate is available.
   @override
   num? get minM => _minM;
 
-  /// The maximum x (or east) coordinate.
+  @override
   num get maxX => _maxX;
 
-  /// The maximum y (or north) coordinate.
+  @override
   num get maxY => _maxY;
 
-  /// The maximum z coordinate optionally. Returns null if not available.
-  ///
-  /// You can also use [is3D] to check whether z coordinate available.
+  @override
   num? get maxZ => _maxZ;
 
-  /// The maximum m coordinate optionally. Returns null if not available.
-  ///
-  /// You can also use [isMeasured] to check whether m coordinate is available.
   @override
   num? get maxM => _maxM;
 

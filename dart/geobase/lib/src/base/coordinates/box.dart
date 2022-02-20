@@ -21,10 +21,44 @@ abstract class Box extends Positionable {
   /// Default `const` constructor to allow extending this abstract class.
   const Box();
 
+  /// The minimum x (or west) coordinate.
+  ///
+  /// For geographic coordinates minX represents *west* longitude.
+  num get minX;
+
+  /// The minimum y (or south) coordinate.
+  ///
+  /// For geographic coordinates minY represents *south* latitude.
+  num get minY;
+
+  /// The minimum z coordinate optionally. Returns null if not available.
+  ///
+  /// For geographic coordinates minZ represents minimum elevation or altitude.
+  ///
+  /// You can also use [is3D] to check whether z coordinate available.
+  num? get minZ;
+
   /// The minimum m coordinate optionally. Returns null if not available.
   ///
   /// You can also use [isMeasured] to check whether m coordinate is available.
   num? get minM;
+
+  /// The maximum x (or east) coordinate.
+  ///
+  /// For geographic coordinates maxX represents *east* longitude.
+  num get maxX;
+
+  /// The maximum y (or north) coordinate.
+  ///
+  /// For geographic coordinates maxY represents *north* latitude.
+  num get maxY;
+
+  /// The maximum z coordinate optionally. Returns null if not available.
+  ///
+  /// For geographic coordinates maxZ represents maximum elevation or altitude.
+  ///
+  /// You can also use [is3D] to check whether z coordinate available.
+  num? get maxZ;
 
   /// The maximum m coordinate optionally. Returns null if not available.
   ///

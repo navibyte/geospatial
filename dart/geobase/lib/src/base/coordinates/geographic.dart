@@ -80,6 +80,18 @@ class Geographic extends Position {
   @override
   double? get optM => _m;
 
+  @override
+  num get x => _lon;
+
+  @override
+  num get y => _lat;
+
+  @override
+  num get z => _elev ?? 0;
+
+  @override
+  num? get optZ => _elev;
+
   /// A coordinate value by the coordinate axis index [i].
   ///
   /// Returns zero when a coordinate axis is not available.

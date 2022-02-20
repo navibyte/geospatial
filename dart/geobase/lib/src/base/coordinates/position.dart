@@ -40,6 +40,31 @@ abstract class Position extends Positionable {
   /// Default `const` constructor to allow extending this abstract class.
   const Position();
 
+  /// The x coordinate value.
+  ///
+  /// For geographic coordinates x represents *longitude*.
+  num get x;
+
+  /// The y coordinate value.
+  ///
+  /// For geographic coordinates y represents *latitude*.
+  num get y;
+
+  /// The z coordinate value. Returns zero if not available.
+  ///
+  /// You can also use [is3D] to check whether z coordinate is available, or
+  /// [optZ] returns z coordinate as nullable value.
+  ///
+  /// For geographic coordinates z represents *elevation* or *altitude*.
+  num get z;
+
+  /// The z coordinate value optionally. Returns null if not available.
+  ///
+  /// You can also use [is3D] to check whether z coordinate is available.
+  ///
+  /// For geographic coordinates z represents *elevation* or *altitude*.
+  num? get optZ;
+
   /// The m ("measure") coordinate value. Returns zero if not available.
   ///
   /// You can also use [isMeasured] to check whether m coordinate is available,
