@@ -13,8 +13,10 @@ import '/src/coordinates/geographic.dart';
 
 /// Geospatial extent with at least one [allBounds] and optional [allIntervals].
 @immutable
+@Deprecated('Use GeoExtent from the geobase package instead')
 class Extent with EquatableMixin {
   /// Extent with [crs], at least one bounds and intervals (with >= 0 items).
+  @Deprecated('Use GeoExtent from the geobase package instead')
   const Extent({
     required this.crs,
     required this.allBounds,
@@ -22,6 +24,7 @@ class Extent with EquatableMixin {
   });
 
   /// Extent with [crs], exactly one [bounds] and an optional [interval].
+  @Deprecated('Use GeoExtent from the geobase package instead')
   Extent.single({
     required String crs,
     required GeoBounds bounds,
@@ -33,6 +36,7 @@ class Extent with EquatableMixin {
         );
 
   /// Extent with [crs], at least one bounds and optional intervals.
+  @Deprecated('Use GeoExtent from the geobase package instead')
   const Extent.multi({
     required String crs,
     required Iterable<GeoBounds> allBounds,
