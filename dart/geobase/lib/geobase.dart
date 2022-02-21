@@ -26,3 +26,4 @@ export 'src/base/time.dart';
 export 'src/base/transforms.dart';
 export 'src/content/encode.dart';
 export 'src/content/formats.dart';
+export 'src/data/extent.dart';
