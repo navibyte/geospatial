@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:geocore/data.dart';
+import 'package:geobase/geobase.dart';
 
 import '/src/common/links.dart';
 
@@ -29,7 +29,7 @@ class CollectionMeta extends ResourceMeta {
   final String id;
 
   /// An optional geospatial [extent] for this collection.
-  final Extent? extent;
+  final GeoExtent? extent;
 
   @override
   List<Object?> get props => [id, title, description, links, extent];

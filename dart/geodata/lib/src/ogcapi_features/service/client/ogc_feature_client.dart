@@ -214,8 +214,8 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
     // form a query url
     final limit = query.limit;
     final crs = query.crs;
-    final bboxCrs = query.boundsCrs;
-    final bbox = query.bounds?.valuesAsString();
+    final bboxCrs = query.bboxCrs;
+    final bbox = query.bbox?.toString();
     final datetime = query.timeFrame?.toString();
     var params = <String, String>{
       //'f': 'json',
@@ -350,59 +350,93 @@ CollectionMeta _collectionFromData(Map<String, Object?> data) {
   );
 }
 
-/// Parses [Extent] data structure from a json snippet.
-Extent _extentFromData(Map<String, Object?> data) {
+/// Parses [GeoExtent] data structure from a json snippet.
+GeoExtent _extentFromData(Map<String, Object?> data) {
   final spatial = data['spatial'];
   final spatialIsMap = spatial is Map<String, Object?>;
   final crs = (spatialIsMap ? spatial['crs'] as String? : null) ??
       'http://www.opengis.net/def/crs/OGC/1.3/CRS84';
 
   // try to parse bboxes
-  Iterable<GeoBounds> allBounds;
+  SpatialExtent<GeoBox> spatialExtent;
   final bbox = spatialIsMap ? spatial['bbox'] as Iterable<Object?>? : null;
   if (bbox != null) {
     // by standard: "bbox" is a list of bboxes
-    allBounds = bbox.map(
-      (dynamic e) => GeoBounds.from((e as Iterable<Object?>).cast<num>()),
+    spatialExtent = SpatialExtent.multi(
+      bbox.map((e) => _bboxFromData(e! as List<Object?>)),
+      crs: crs,
     );
   } else {
     // not standard: assume "spatial" as one bbox
     try {
-      allBounds = [GeoBounds.from((spatial! as Iterable<Object?>).cast<num>())];
+      spatialExtent =
+          SpatialExtent.single(_bboxFromData(spatial! as List<Object?>));
     } catch (_) {
-      // fallback
-      allBounds = [GeoBounds.world()];
+      // fallback (world extent)
+      spatialExtent = const SpatialExtent.single(
+        GeoBox(west: -180.0, south: -90.0, east: 180.0, north: 90.0),
+      );
     }
   }
 
   // try to parse temporal intervals
-  Iterable<Interval>? allIntervals;
+  TemporalExtent? temporalExtent;
   final temporal = data['temporal'];
   if (temporal != null) {
     final interval =
         temporal is Map<String, Object?> ? temporal['interval'] : null;
     if (interval != null && interval is Iterable<Object?>) {
       // by standard: "interval" is a list of intervals
-      allIntervals =
-          interval.map((e) => Interval.fromData(e! as Iterable<Object?>));
+      temporalExtent = TemporalExtent.multi(
+        interval.map((e) => Interval.fromData(e! as Iterable<Object?>)),
+      );
     } else {
       // not standard: assume "temporal" as one interval
       try {
-        allIntervals = [Interval.fromData(temporal as Iterable<Object?>)];
+        temporalExtent = TemporalExtent.single(
+          Interval.fromData(temporal as Iterable<Object?>),
+        );
       } catch (_) {
         // no fallback need, just no temporal interval then
       }
     }
   }
 
-  // combine to Extent
-  if (allIntervals != null) {
-    return Extent.multi(
-      crs: crs,
-      allBounds: allBounds,
-      allIntervals: allIntervals,
-    );
-  } else {
-    return Extent.multi(crs: crs, allBounds: allBounds);
+  return GeoExtent(
+    spatial: spatialExtent,
+    temporal: temporalExtent,
+  );
+}
+
+GeoBox _bboxFromData(List<Object?> bbox) {
+  if (bbox.length == 4 || bbox.length == 6) {
+    final is3D = bbox.length == 6;
+    return is3D
+        ? GeoBox(
+            west: _parseDouble(bbox[0]),
+            south: _parseDouble(bbox[1]),
+            minElev: _parseDouble(bbox[2]),
+            east: _parseDouble(bbox[3]),
+            north: _parseDouble(bbox[4]),
+            maxElev: _parseDouble(bbox[5]),
+          )
+        : GeoBox(
+            west: _parseDouble(bbox[0]),
+            south: _parseDouble(bbox[1]),
+            east: _parseDouble(bbox[2]),
+            north: _parseDouble(bbox[3]),
+          );
   }
+  throw const FormatException('Cannot parse bbox');
+}
+
+double _parseDouble(Object? data) {
+  if (data != null) {
+    if (data is num) {
+      return data.toDouble();
+    } else if (data is String) {
+      return double.parse(data);
+    }
+  }
+  throw FormatException('Cannot parse $data to double');
 }

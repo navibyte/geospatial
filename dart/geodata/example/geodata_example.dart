@@ -7,6 +7,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:equatable/equatable.dart';
+import 'package:geobase/geobase.dart';
 import 'package:geocore/data.dart';
 
 import 'package:geodata/geojson_client.dart';
@@ -76,9 +77,24 @@ Future<void> main(List<String> args) async {
         if (serviceType != 'geojson') {
           final bbox = args[6].split(',');
           if (bbox.length == 4 || bbox.length == 6) {
+            final is3D = bbox.length == 6;
             query = BoundedItemsQuery(
               limit: limit,
-              bounds: GeoBounds.from(bbox.map<num>(double.parse)),
+              bbox: is3D
+                  ? GeoBox(
+                      west: double.parse(bbox[0]),
+                      south: double.parse(bbox[1]),
+                      minElev: double.parse(bbox[2]),
+                      east: double.parse(bbox[3]),
+                      north: double.parse(bbox[4]),
+                      maxElev: double.parse(bbox[5]),
+                    )
+                  : GeoBox(
+                      west: double.parse(bbox[0]),
+                      south: double.parse(bbox[1]),
+                      east: double.parse(bbox[2]),
+                      north: double.parse(bbox[3]),
+                    ),
             );
           }
         }
@@ -264,14 +280,17 @@ void _printCollection(CollectionMeta meta) {
   _printResource(meta);
   final extent = meta.extent;
   if (extent != null) {
-    print('    extent crs: ${extent.crs}');
-    for (final bounds in extent.allBounds) {
-      print('    spatial bbox min: ${bounds.min.values}');
-      print('    spatial bbox max: ${bounds.max.values}');
+    print('    extent crs: ${extent.spatial.crs}');
+    for (final bounds in extent.spatial.boxes) {
+      print('    spatial bbox min: ${bounds.min}');
+      print('    spatial bbox max: ${bounds.max}');
     }
-    for (final interval in extent.allIntervals) {
-      if (!interval.isOpen) {
-        print('    temporal interval: $interval');
+    final temporal = extent.temporal;
+    if (temporal != null) {
+      for (final interval in temporal.intervals) {
+        if (!interval.isOpen) {
+          print('    temporal interval: $interval');
+        }
       }
     }
   }

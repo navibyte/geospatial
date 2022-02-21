@@ -5,7 +5,6 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import 'package:geobase/geobase.dart';
-import 'package:geocore/base.dart';
 
 import 'items_query.dart';
 
@@ -14,8 +13,8 @@ class BoundedItemsQuery extends ItemsQuery {
   /// A query with bounds for requesting items from a geospatial data source.
   const BoundedItemsQuery({
     String? crs,
-    this.boundsCrs,
-    this.bounds,
+    this.bboxCrs,
+    this.bbox,
     this.timeFrame,
     int? limit,
     Map<String, Object?>? extra,
@@ -31,8 +30,8 @@ class BoundedItemsQuery extends ItemsQuery {
       query is BoundedItemsQuery
           ? BoundedItemsQuery(
               crs: query.crs,
-              boundsCrs: query.boundsCrs,
-              bounds: query.bounds,
+              bboxCrs: query.bboxCrs,
+              bbox: query.bbox,
               timeFrame: query.timeFrame,
               limit: query.limit,
               extra: query.extra,
@@ -43,15 +42,15 @@ class BoundedItemsQuery extends ItemsQuery {
               extra: query?.extra,
             );
 
-  /// An optional coordinate reference system used by [bounds].
-  final String? boundsCrs;
+  /// An optional coordinate reference system used by [bbox].
+  final String? bboxCrs;
 
-  /// An optional [bounds] as a geospatial bounding filter (like `bbox`).
-  final Bounds? bounds;
+  /// An optional [bbox] as a geospatial bounding filter (like `bbox`).
+  final Box? bbox;
 
   /// An optional time frame as a temporal object (ie. instant or interval).
   final Temporal? timeFrame;
 
   @override
-  List<Object?> get props => [crs, boundsCrs, bounds, timeFrame, limit, extra];
+  List<Object?> get props => [crs, bboxCrs, bbox, timeFrame, limit, extra];
 }
