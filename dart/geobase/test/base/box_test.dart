@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+// ignore_for_file: require_trailing_commas
+
 import 'package:geobase/geobase.dart';
 
 import 'package:test/test.dart';
@@ -111,6 +113,88 @@ void main() {
           maxM: -0.4,
         ),
       );
+    });
+
+    test('Test interacts', () {
+      const box1 = ProjBox(minX: 1.1, minY: 1.1, maxX: 2.2, maxY: 2.2);
+      const box2 = ProjBox(minX: 2.0, minY: 1.1, maxX: 3.2, maxY: 2.2);
+      const box3 = ProjBox(minX: 2.3, minY: 1.1, maxX: 3.2, maxY: 2.2);
+      const box4 = ProjBox(minX: 1.2, minY: 1.2, maxX: 2.1, maxY: 2.1);
+
+      expect(box1.intersects2D(box2), true);
+      expect(box1.intersects2D(box3), false);
+      expect(box2.intersects2D(box3), true);
+      expect(box1.intersects2D(box4), true);
+      expect(box1.intersects(box2), true);
+      expect(box1.intersects(box3), false);
+      expect(box2.intersects(box3), true);
+      expect(box1.intersects(box4), true);
+
+      const box1b = ProjBox(
+          minX: 1.1, minY: 1.1, maxX: 2.2, maxY: 2.2, minZ: 1.1, maxZ: 2.2);
+
+      expect(box1b.intersects2D(box2), true);
+      expect(box1b.intersects2D(box3), false);
+      expect(box1b.intersects2D(box4), true);
+      expect(box1b.intersects(box2), false);
+      expect(box1b.intersects(box3), false);
+      expect(box1b.intersects(box4), false);
+
+      const box2b = ProjBox(
+          minX: 2.0, minY: 1.1, maxX: 3.2, maxY: 2.2, minZ: 0.5, maxZ: 1.0);
+
+      expect(box1b.intersects2D(box2b), true);
+      expect(box1b.intersects(box2b), false);
+
+      const box2c = ProjBox(
+          minX: 2.0, minY: 1.1, maxX: 3.2, maxY: 2.2, minZ: 0.5, maxZ: 3.5);
+
+      expect(box1b.intersects2D(box2c), true);
+      expect(box1b.intersects(box2c), true);
+
+      const box2d = ProjBox(
+          minX: 2.0,
+          minY: 1.1,
+          maxX: 3.2,
+          maxY: 2.2,
+          minZ: 0.5,
+          maxZ: 3.5,
+          minM: 4.0,
+          maxM: 5.0);
+
+      expect(box1b.intersects2D(box2d), true);
+      expect(box1b.intersects(box2d), false);
+
+      const box2e = ProjBox(
+          minX: 2.0,
+          minY: 1.1,
+          maxX: 3.2,
+          maxY: 2.2,
+          minZ: 0.5,
+          maxZ: 3.5,
+          minM: 3.0,
+          maxM: 4.0);
+
+      expect(box2d.intersects2D(box2e), true);
+      expect(box2d.intersects(box2e), true);
+
+      const point1 = Projected(x: 2.05, y: 1.1);
+      const point2 = Projected(x: 2.05, y: 2.2000000001);
+
+      expect(box1.intersectsPoint(point1), true);
+      expect(box1.intersectsPoint(point2), false);
+      expect(box1.intersectsPoint2D(point1), true);
+      expect(box1.intersectsPoint2D(point2), false);
+
+      expect(box2e.intersectsPoint(point1), false);
+      expect(box2e.intersectsPoint(point2), false);
+      expect(box2e.intersectsPoint2D(point1), true);
+      expect(box2e.intersectsPoint2D(point2), false);
+
+      const point3 = Projected(x: 2.05, y: 1.1, z: 3.5, m: 3.3);
+
+      expect(box2e.intersectsPoint(point3), true);
+      expect(box2e.intersectsPoint2D(point3), true);
     });
   });
 

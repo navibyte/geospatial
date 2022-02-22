@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import '/src/utils/tolerance.dart';
+
 import 'positionable.dart';
 
 /// Creates a new position of [T] from [x] and [y], and optional [z] and [m].
@@ -121,7 +123,8 @@ abstract class Position extends Positionable {
   /// tolerance. Otherwise value must be exactly same.
   ///
   /// Tolerance values must be null or positive (>= 0).
-  bool equals2D(Position other, {num? toleranceHoriz});
+  bool equals2D(Position other, {num? toleranceHoriz}) =>
+      Position.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
 
   /// True if this position equals with [other] by testing 3D coordinates only.
   ///
@@ -139,5 +142,106 @@ abstract class Position extends Positionable {
     Position other, {
     num? toleranceHoriz,
     num? toleranceVert,
-  });
+  }) =>
+      Position.testEquals3D(
+        this,
+        other,
+        toleranceHoriz: toleranceHoriz,
+        toleranceVert: toleranceVert,
+      );
+
+  // ---------------------------------------------------------------------------
+  // Static methods with default logic, used by Position, Projected and
+  // Geographic.
+
+  /// A coordinate value of [position] by the coordinate axis index [i].
+  ///
+  /// Returns zero when a coordinate axis is not available.
+  ///
+  /// For projected or cartesian coordinates, the coordinate ordering is:
+  /// (x, y), (x, y, m), (x, y, z) or (x, y, z, m).
+  ///
+  /// For geographic coordinates, the coordinate ordering is:
+  /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
+  static num getValue(Position position, int i) {
+    if (position.is3D) {
+      switch (i) {
+        case 0:
+          return position.x;
+        case 1:
+          return position.y;
+        case 2:
+          return position.z;
+        case 3:
+          return position.m; // returns m or 0
+        default:
+          return 0;
+      }
+    } else {
+      switch (i) {
+        case 0:
+          return position.x;
+        case 1:
+          return position.y;
+        case 2:
+          return position.m; // returns m or 0
+        default:
+          return 0;
+      }
+    }
+  }
+
+  /// Coordinate values of [position] as an iterable of 2, 3 or 4 items.
+  ///
+  /// For projected or cartesian coordinates, the coordinate ordering is:
+  /// (x, y), (x, y, m), (x, y, z) or (x, y, z, m).
+  ///
+  /// For geographic coordinates, the coordinate ordering is:
+  /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
+  static Iterable<num> getValues(Position position) sync* {
+    yield position.x;
+    yield position.y;
+    if (position.is3D) {
+      yield position.z;
+    }
+    if (position.isMeasured) {
+      yield position.m;
+    }
+  }
+
+  /// True if positions [p1] and [p2] equals by testing all coordinate values.
+  static bool testEquals(Position p1, Position p2) =>
+      p1.x == p2.x && p1.y == p2.y && p1.optZ == p2.optZ && p1.optM == p2.optM;
+
+  /// The hash code for [position].
+  static int hash(Position position) =>
+      Object.hash(position.x, position.y, position.optZ, position.optM);
+
+  /// True if positions [p1] and [p2] equals by testing 2D coordinates only.
+  static bool testEquals2D(Position p1, Position p2, {num? toleranceHoriz}) {
+    assertTolerance(toleranceHoriz);
+    return toleranceHoriz != null
+        ? (p1.x - p2.x).abs() <= toleranceHoriz &&
+            (p1.y - p2.y).abs() <= toleranceHoriz
+        : p1.x == p2.x && p1.y == p2.y;
+  }
+
+  /// True if positions [p1] and [p2] equals by testing 3D coordinates only.
+  static bool testEquals3D(
+    Position p1,
+    Position p2, {
+    num? toleranceHoriz,
+    num? toleranceVert,
+  }) {
+    assertTolerance(toleranceVert);
+    if (!Position.testEquals2D(p1, p2, toleranceHoriz: toleranceHoriz)) {
+      return false;
+    }
+    if (!p1.is3D || !p1.is3D) {
+      return false;
+    }
+    return toleranceVert != null
+        ? (p1.z - p2.z).abs() <= toleranceVert
+        : p1.z == p2.z;
+  }
 }

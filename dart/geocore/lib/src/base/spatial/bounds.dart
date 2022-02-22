@@ -174,76 +174,18 @@ abstract class Bounds<T extends Point> extends Bounded
     CreatePosition<R>? to,
   });
 
-  /// Returns true if this bounds intesects with [other] bounds in 2D.
-  ///
-  /// Only X ja Y are compared on intersection calculation.
-  ///
-  /// If this bounds or [other] bounds is empty, then always return false.
-  bool intersects2D(Bounds other) {
-    return !(min.x > other.max.x ||
-        max.x < other.min.x ||
-        min.y > other.max.y ||
-        max.y < other.min.y);
-  }
+  @override
+  bool intersects2D(Box other) => Box.testIntersects2D(this, other);
 
-  /// Returns true if this bounds intesects with [other] bounds.
-  ///
-  /// X ja Y are always compared on intersection calculation. Z is compared only
-  /// if this and [other] bounds has 3D coordinates. M is compared only if this
-  /// and [other] bounds has M coordinate values.
-  ///
-  /// If this bounds or [other] bounds is empty, then always return false.
-  bool intersects(Bounds other) {
-    if (min.x > other.max.x ||
-        max.x < other.min.x ||
-        min.y > other.max.y ||
-        max.y < other.min.y) {
-      return false;
-    }
-    if (is3D && other.is3D && min.z > other.max.z || max.z < other.min.z) {
-      return false;
-    }
-    if (isMeasured && other.isMeasured && min.m > other.max.m ||
-        max.m < other.min.m) {
-      return false;
-    }
-    return true;
-  }
+  @override
+  bool intersects(Box other) => Box.testIntersects(this, other);
 
-  /// Returns true if this bounds intesects with [point] in 2D.
-  ///
-  /// Only X ja Y are compared on intersection calculation.
-  ///
-  /// If this bounds or [point] is empty, then always return false.
-  bool intersectsPoint2D(Point point) {
-    return !(min.x > point.x ||
-        max.x < point.x ||
-        min.y > point.y ||
-        max.y < point.y);
-  }
+  @override
+  bool intersectsPoint2D(Position point) =>
+      Box.testIntersectsPoint2D(this, point);
 
-  /// Returns true if this bounds intesects with [point].
-  ///
-  /// X ja Y are always compared on intersection calculation. Z is compared only
-  /// if this bounds and [point] has 3D coordinates. M is compared only if this
-  /// bounds and [point] has M coordinate values.
-  ///
-  /// If this bounds or [point] is empty, then always return false.
-  bool intersectsPoint(Point point) {
-    if (min.x > point.x ||
-        max.x < point.x ||
-        min.y > point.y ||
-        max.y < point.y) {
-      return false;
-    }
-    if (is3D && point.is3D && min.z > point.z || max.z < point.z) {
-      return false;
-    }
-    if (isMeasured && point.isMeasured && min.m > point.m || max.m < point.m) {
-      return false;
-    }
-    return true;
-  }
+  @override
+  bool intersectsPoint(Position point) => Box.testIntersectsPoint(this, point);
 }
 
 /// An immutable bounds with min and max points for limits.
@@ -301,15 +243,14 @@ class BoundsBase<T extends Point> extends Bounds<T> {
 
   @override
   bool operator ==(Object other) =>
-      other is Bounds && ProjBox.testEquals(this, other);
+      other is Bounds && Box.testEquals(this, other);
 
   @override
-  int get hashCode => ProjBox.hash(this);
+  int get hashCode => Box.hash(this);
 
   @override
   bool equals2D(Box other, {num? toleranceHoriz}) =>
-      other is ProjBox &&
-      ProjBox.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
+      Box.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
 
   @override
   bool equals3D(
@@ -317,8 +258,7 @@ class BoundsBase<T extends Point> extends Bounds<T> {
     num? toleranceHoriz,
     num? toleranceVert,
   }) =>
-      other is ProjBox &&
-      ProjBox.testEquals3D(
+      Box.testEquals3D(
         this,
         other,
         toleranceHoriz: toleranceHoriz,

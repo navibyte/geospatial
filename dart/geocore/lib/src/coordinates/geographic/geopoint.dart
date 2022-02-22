@@ -59,31 +59,8 @@ abstract class GeoPoint extends Point<double> implements Geographic {
 
   @override
   bool operator ==(Object other) =>
-      other is GeoPoint && Geographic.testEquals(this, other);
+      other is GeoPoint && Position.testEquals(this, other);
 
   @override
-  int get hashCode => Geographic.hash(this);
-
-  @override
-  bool equals2D(Position other, {num? toleranceHoriz}) =>
-      other is Geographic &&
-      Geographic.testEquals2D(
-        this,
-        other,
-        toleranceHoriz: toleranceHoriz?.toDouble(),
-      );
-
-  @override
-  bool equals3D(
-    Position other, {
-    num? toleranceHoriz,
-    num? toleranceVert,
-  }) =>
-      other is Geographic &&
-      Geographic.testEquals3D(
-        this,
-        other,
-        toleranceHoriz: toleranceHoriz?.toDouble(),
-        toleranceVert: toleranceVert?.toDouble(),
-      );
+  int get hashCode => Position.hash(this);
 }

@@ -7,7 +7,6 @@
 import 'package:meta/meta.dart';
 
 import '/src/base/codes.dart';
-import '/src/utils/tolerance.dart';
 
 import 'box.dart';
 import 'geographic.dart';
@@ -198,101 +197,8 @@ class GeoBox extends Box {
 
   @override
   bool operator ==(Object other) =>
-      other is GeoBox && GeoBox.testEquals(this, other);
+      other is GeoBox && Box.testEquals(this, other);
 
   @override
-  int get hashCode => GeoBox.hash(this);
-
-  @override
-  bool equals2D(Box other, {num? toleranceHoriz}) =>
-      other is GeoBox &&
-      GeoBox.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
-
-  @override
-  bool equals3D(
-    Box other, {
-    num? toleranceHoriz,
-    num? toleranceVert,
-  }) =>
-      other is GeoBox &&
-      GeoBox.testEquals3D(
-        this,
-        other,
-        toleranceHoriz: toleranceHoriz,
-        toleranceVert: toleranceVert,
-      );
-
-  // ---------------------------------------------------------------------------
-  // Static methods with default logic, used by GeoBox itself too.
-
-  /// True if [box1] and [box2] equals by testing all coordinate values.
-  static bool testEquals(GeoBox box1, GeoBox box2) =>
-      box1.west == box2.west &&
-      box1.south == box2.south &&
-      box1.minElev == box2.minElev &&
-      box1.minM == box2.minM &&
-      box1.east == box2.east &&
-      box1.north == box2.north &&
-      box1.maxElev == box2.maxElev &&
-      box1.maxM == box2.maxM;
-
-  /// The hash code for [box].
-  static int hash(GeoBox box) => Object.hash(
-        box.west,
-        box.south,
-        box.minElev,
-        box.minM,
-        box.east,
-        box.north,
-        box.maxElev,
-        box.maxM,
-      );
-
-  /// True if positions [box1] and [box2] equals by testing 2D coordinates only.
-  static bool testEquals2D(
-    GeoBox box1,
-    GeoBox box2, {
-    num? toleranceHoriz,
-  }) {
-    assertTolerance(toleranceHoriz);
-    return toleranceHoriz != null
-        ? (box1.west - box2.west).abs() <= toleranceHoriz &&
-            (box1.south - box2.south).abs() <= toleranceHoriz &&
-            (box1.east - box2.east).abs() <= toleranceHoriz &&
-            (box1.north - box2.north).abs() <= toleranceHoriz
-        : box1.west == box2.west &&
-            box1.south == box2.south &&
-            box1.east == box2.east &&
-            box1.north == box2.north;
-  }
-
-  /// True if positions [box1] and [box2] equals by testing 3D coordinates only.
-  static bool testEquals3D(
-    GeoBox box1,
-    GeoBox box2, {
-    num? toleranceHoriz,
-    num? toleranceVert,
-  }) {
-    assertTolerance(toleranceVert);
-    if (!GeoBox.testEquals2D(box1, box2, toleranceHoriz: toleranceHoriz)) {
-      return false;
-    }
-    if (!box1.is3D || !box1.is3D) {
-      return false;
-    }
-    if (toleranceVert != null) {
-      final minElev1 = box1.minElev;
-      final maxElev1 = box1.maxElev;
-      final minElev2 = box2.minElev;
-      final maxElev2 = box2.maxElev;
-      return minElev1 != null &&
-          maxElev1 != null &&
-          minElev2 != null &&
-          maxElev2 != null &&
-          (minElev1 - minElev2).abs() <= toleranceVert &&
-          (maxElev1 - maxElev2).abs() <= toleranceVert;
-    } else {
-      return box1.minElev == box2.minElev && box1.maxElev == box2.maxElev;
-    }
-  }
+  int get hashCode => Box.hash(this);
 }

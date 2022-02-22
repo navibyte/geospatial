@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import '/src/utils/tolerance.dart';
+
 import 'position.dart';
 import 'positionable.dart';
 
@@ -84,7 +86,8 @@ abstract class Box extends Positionable {
   /// tolerance. Otherwise value must be exactly same.
   ///
   /// Tolerance values must be null or positive (>= 0).
-  bool equals2D(Box other, {num? toleranceHoriz});
+  bool equals2D(Box other, {num? toleranceHoriz}) =>
+      Box.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
 
   /// True if this box equals with [other] by testing 3D coordinates only.
   ///
@@ -102,10 +105,45 @@ abstract class Box extends Positionable {
     Box other, {
     num? toleranceHoriz,
     num? toleranceVert,
-  });
+  }) =>
+      Box.testEquals3D(
+        this,
+        other,
+        toleranceHoriz: toleranceHoriz,
+        toleranceVert: toleranceVert,
+      );
+
+  /// Returns true if this bounding box intersects with [other] box in 2D.
+  ///
+  /// Only x ja y (or lon and lat) are compared on intersection calculation.
+  bool intersects2D(Box other) => Box.testIntersects2D(this, other);
+
+  /// Returns true if this bounding box intesects with [other] box.
+  ///
+  /// X ja y (or lon and lat) are always compared on intersection calculation.
+  /// 
+  /// This and [other] must equal on [is3D] and [isMeasured] properties. Z (or 
+  /// elev) is further compared when both has z coordinates, and m is compared
+  /// when both has m coordinates.
+  bool intersects(Box other) => Box.testIntersects(this, other);
+
+  /// Returns true if this bounding box intesects with [point] in 2D.
+  ///
+  /// Only x ja y (or lon and lat) are compared on intersection calculation.
+  bool intersectsPoint2D(Position point) =>
+      Box.testIntersectsPoint2D(this, point);
+
+  /// Returns true if this bounding box intesects with [point].
+  ///
+  /// X ja y (or lon and lat) are always compared on intersection calculation.
+  /// 
+  /// This and [point] must equal on [is3D] and [isMeasured] properties. Z (or 
+  /// elev) is further compared when both has z coordinates, and m is compared
+  /// when both has m coordinates.
+  bool intersectsPoint(Position point) => Box.testIntersectsPoint(this, point);
 
   // ---------------------------------------------------------------------------
-  // Static methods with default logic, used by ProjBox and GeoBox too
+  // Static methods with default logic, used by Box, ProjBox and GeoBox.
 
   /// Returns all distinct (in 2D) corners for this axis aligned bounding box.
   static Iterable<R> createCorners2D<R extends Position>(
@@ -133,5 +171,133 @@ abstract class Box extends Positionable {
         factory(x: min.x, y: max.y, z: midZ, m: midM),
       ];
     }
+  }
+
+  /// True if [box1] and [box2] equals by testing all coordinate values.
+  static bool testEquals(Box box1, Box box2) =>
+      box1.minX == box2.minX &&
+      box1.minY == box2.minY &&
+      box1.minZ == box2.minZ &&
+      box1.minM == box2.minM &&
+      box1.maxX == box2.maxX &&
+      box1.maxY == box2.maxY &&
+      box1.maxZ == box2.maxZ &&
+      box1.maxM == box2.maxM;
+
+  /// The hash code for [box].
+  static int hash(Box box) => Object.hash(
+        box.minX,
+        box.minY,
+        box.minZ,
+        box.minM,
+        box.maxX,
+        box.maxY,
+        box.maxZ,
+        box.maxM,
+      );
+
+  /// True if positions [box1] and [box2] equals by testing 2D coordinates only.
+  static bool testEquals2D(
+    Box box1,
+    Box box2, {
+    num? toleranceHoriz,
+  }) {
+    assertTolerance(toleranceHoriz);
+    return toleranceHoriz != null
+        ? (box1.minX - box2.minX).abs() <= toleranceHoriz &&
+            (box1.minY - box2.minY).abs() <= toleranceHoriz &&
+            (box1.maxX - box2.maxX).abs() <= toleranceHoriz &&
+            (box1.maxY - box2.maxY).abs() <= toleranceHoriz
+        : box1.minX == box2.minX &&
+            box1.minY == box2.minY &&
+            box1.maxX == box2.maxX &&
+            box1.maxY == box2.maxY;
+  }
+
+  /// True if positions [box1] and [box2] equals by testing 3D coordinates only.
+  static bool testEquals3D(
+    Box box1,
+    Box box2, {
+    num? toleranceHoriz,
+    num? toleranceVert,
+  }) {
+    assertTolerance(toleranceVert);
+    if (!Box.testEquals2D(box1, box2, toleranceHoriz: toleranceHoriz)) {
+      return false;
+    }
+    if (!box1.is3D || !box1.is3D) {
+      return false;
+    }
+    if (toleranceVert != null) {
+      final minZ1 = box1.minZ;
+      final maxZ1 = box1.maxZ;
+      final minZ2 = box2.minZ;
+      final maxZ2 = box2.maxZ;
+      return minZ1 != null &&
+          maxZ1 != null &&
+          minZ2 != null &&
+          maxZ2 != null &&
+          (minZ1 - minZ2).abs() <= toleranceVert &&
+          (maxZ1 - maxZ2).abs() <= toleranceVert;
+    } else {
+      return box1.minZ == box2.minZ && box1.maxZ == box2.maxZ;
+    }
+  }
+
+  /// Returns true if [box1] and [box2] intersects in 2D.
+  static bool testIntersects2D(Box box1, Box box2) {
+    return !(box1.minX > box2.maxX ||
+        box1.maxX < box2.minX ||
+        box1.minY > box2.maxY ||
+        box1.maxY < box2.minY);
+  }
+
+  /// Returns true if [box1] and [box2] intersects.
+  static bool testIntersects(Box box1, Box box2) {
+    if (box1.minX > box2.maxX ||
+        box1.maxX < box2.minX ||
+        box1.minY > box2.maxY ||
+        box1.maxY < box2.minY) {
+      return false;
+    }
+    if (box1.is3D != box2.is3D || box1.isMeasured != box2.isMeasured) {
+      return false;
+    }
+    if (box1.is3D && (box1.minZ! > box2.maxZ! || box1.maxZ! < box2.minZ!)) {
+      return false;
+    }
+    if (box1.isMeasured &&
+        (box1.minM! > box2.maxM! || box1.maxM! < box2.minM!)) {
+      return false;
+    }
+    return true;
+  }
+
+  /// Returns true if [box] intesects with [point] in 2D.
+  static bool testIntersectsPoint2D(Box box, Position point) {
+    return !(box.minX > point.x ||
+        box.maxX < point.x ||
+        box.minY > point.y ||
+        box.maxY < point.y);
+  }
+
+  /// Returns true if [box] intesects with [point].
+  static bool testIntersectsPoint(Box box, Position point) {
+    if (box.minX > point.x ||
+        box.maxX < point.x ||
+        box.minY > point.y ||
+        box.maxY < point.y) {
+      return false;
+    }
+    if (box.is3D != point.is3D || box.isMeasured != point.isMeasured) {
+      return false;
+    }
+    if (box.is3D && (box.minZ! > point.z || box.maxZ! < point.z)) {
+      return false;
+    }
+    if (box.isMeasured && (box.minM! > point.m || box.maxM! < point.m)) {
+      return false;
+    }
+    return true;
   }
 }

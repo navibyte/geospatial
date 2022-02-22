@@ -35,27 +35,8 @@ abstract class ProjectedPoint<C extends num> extends Point<C> {
   bool operator ==(Object other) =>
       other is Point &&
       isGeographic == other.isGeographic &&
-      Projected.testEquals(this, other);
+      Position.testEquals(this, other);
 
   @override
-  int get hashCode => Projected.hash(this);
-
-  @override
-  bool equals2D(Position other, {num? toleranceHoriz}) =>
-      other is Projected &&
-      Projected.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
-
-  @override
-  bool equals3D(
-    Position other, {
-    num? toleranceHoriz,
-    num? toleranceVert,
-  }) =>
-      other is Projected &&
-      Projected.testEquals3D(
-        this,
-        other,
-        toleranceHoriz: toleranceHoriz,
-        toleranceVert: toleranceVert,
-      );
+  int get hashCode => Position.hash(this);
 }

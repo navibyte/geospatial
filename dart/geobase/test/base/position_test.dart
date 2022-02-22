@@ -242,10 +242,10 @@ class _TestXYZM implements Projected {
   Projected transform(TransformPosition transform) => transform(this);
 
   @override
-  num operator [](int i) => Projected.getValue(this, i);
+  num operator [](int i) => Position.getValue(this, i);
 
   @override
-  Iterable<num> get values => Projected.getValues(this);
+  Iterable<num> get values => Position.getValues(this);
 
   @override
   final num x;
@@ -289,8 +289,7 @@ class _TestXYZM implements Projected {
 
   @override
   bool equals2D(Position other, {num? toleranceHoriz}) =>
-      other is Projected &&
-      Projected.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
+      Position.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
 
   @override
   bool equals3D(
@@ -298,8 +297,7 @@ class _TestXYZM implements Projected {
     num? toleranceHoriz,
     num? toleranceVert,
   }) =>
-      other is Projected &&
-      Projected.testEquals3D(
+      Position.testEquals3D(
         this,
         other,
         toleranceHoriz: toleranceHoriz,
@@ -308,8 +306,8 @@ class _TestXYZM implements Projected {
 
   @override
   bool operator ==(Object other) =>
-      other is Projected && Projected.testEquals(this, other);
+      other is Projected && Position.testEquals(this, other);
 
   @override
-  int get hashCode => Projected.hash(this);
+  int get hashCode => Position.hash(this);
 }

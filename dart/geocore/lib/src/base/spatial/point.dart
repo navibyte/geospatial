@@ -188,7 +188,7 @@ abstract class Point<C extends num> extends Geometry
       factory.call(x: x, y: y, z: optZ, m: optM);
 
   /// Copies this point with optional [x], [y], [z] and [m] overriding values.
-  /// 
+  ///
   /// The copied point is compatible by coordinate type with this point.
   ///
   /// Optional [x], [y], [z] and [m] values, when given, override values of
@@ -214,4 +214,21 @@ abstract class Point<C extends num> extends Geometry
     CreatePosition<R>? to,
   }) =>
       projection.project(this, to: to);
+
+  @override
+  bool equals2D(Position other, {num? toleranceHoriz}) =>
+      Position.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
+
+  @override
+  bool equals3D(
+    Position other, {
+    num? toleranceHoriz,
+    num? toleranceVert,
+  }) =>
+      Position.testEquals3D(
+        this,
+        other,
+        toleranceHoriz: toleranceHoriz,
+        toleranceVert: toleranceVert,
+      );
 }
