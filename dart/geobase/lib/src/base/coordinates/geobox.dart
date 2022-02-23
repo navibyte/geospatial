@@ -70,6 +70,31 @@ class GeoBox extends Box {
         _maxElev = maxElev,
         _maxM = maxM;
 
+  /// A bounding box from parameters compatible with `CreateBox` function type.
+  GeoBox.create({
+    required num minX,
+    required num minY,
+    num? minZ,
+    num? minM,
+    required num maxX,
+    required num maxY,
+    num? maxZ,
+    num? maxM,
+  })  : _west = minX.toDouble(),
+        _south = minY.toDouble(),
+        _minElev = minZ?.toDouble(),
+        _minM = minM?.toDouble(),
+        _east = maxX.toDouble(),
+        _north = maxY.toDouble(),
+        _maxElev = maxZ?.toDouble(),
+        _maxM = maxM?.toDouble();
+
+  /// A minimum bounding box calculated from [positions].
+  ///
+  /// Throws FormatException if cannot create (ie. [positions] is empty).
+  factory GeoBox.from(Iterable<Geographic> positions) =>
+      Box.createBoxFrom(positions, GeoBox.create);
+
   /// The west coordinate as geographic longitude.
   double get west => _west;
 

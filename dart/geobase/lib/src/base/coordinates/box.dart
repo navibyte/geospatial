@@ -4,10 +4,34 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'dart:math' as math;
+
 import '/src/utils/tolerance.dart';
 
 import 'position.dart';
 import 'positionable.dart';
+
+/// Creates a new bounding box from [minX], [minY], [maxX] and [maxY] values.
+///
+/// Optional [minZ] and [maxZ] for 3D boxes, and [minM] and [maxM] for
+/// measured boxes can be provided too.
+///
+/// For projected or cartesian bounding boxes (`ProjBox`), coordinates axis are
+/// applied as is.
+///
+/// For geographic bounding boxes (`GeoBox`), coordinates are applied as:
+/// `minX` => `west`, `minY` => `south`, `minZ` => `minElev`, `minM` => `minM`,
+/// `maxX` => `east`, `maxY` => `north`, `maxZ` => `maxElev`, `maxM` => `maxM`
+typedef CreateBox<T extends Box> = T Function({
+  required num minX,
+  required num minY,
+  num? minZ,
+  num? minM,
+  required num maxX,
+  required num maxY,
+  num? maxZ,
+  num? maxM,
+});
 
 /// A base interface for axis-aligned bounding boxes with min & max coordinates.
 ///
@@ -121,8 +145,8 @@ abstract class Box extends Positionable {
   /// Returns true if this bounding box intesects with [other] box.
   ///
   /// X ja y (or lon and lat) are always compared on intersection calculation.
-  /// 
-  /// This and [other] must equal on [is3D] and [isMeasured] properties. Z (or 
+  ///
+  /// This and [other] must equal on [is3D] and [isMeasured] properties. Z (or
   /// elev) is further compared when both has z coordinates, and m is compared
   /// when both has m coordinates.
   bool intersects(Box other) => Box.testIntersects(this, other);
@@ -136,8 +160,8 @@ abstract class Box extends Positionable {
   /// Returns true if this bounding box intesects with [point].
   ///
   /// X ja y (or lon and lat) are always compared on intersection calculation.
-  /// 
-  /// This and [point] must equal on [is3D] and [isMeasured] properties. Z (or 
+  ///
+  /// This and [point] must equal on [is3D] and [isMeasured] properties. Z (or
   /// elev) is further compared when both has z coordinates, and m is compared
   /// when both has m coordinates.
   bool intersectsPoint(Position point) => Box.testIntersectsPoint(this, point);
@@ -171,6 +195,57 @@ abstract class Box extends Positionable {
         factory(x: min.x, y: max.y, z: midZ, m: midM),
       ];
     }
+  }
+
+  /// A minimum bounding box created by [factory], calculated from [positions].
+  /// 
+  /// Throws FormatException if cannot create (ie. [positions] is empty).
+  static R createBoxFrom<R extends Box>(
+    Iterable<Position> positions,
+    CreateBox<R> factory,
+  ) {
+    // calculate mininum and maximum coordinates
+    num? minX, minY, minZ, minM;
+    num? maxX, maxY, maxZ, maxM;
+    var isFirst = true;
+    for (final cp in positions) {
+      if (isFirst) {
+        minX = cp.x;
+        minY = cp.y;
+        minZ = cp.optZ;
+        minM = cp.optM;
+        maxX = cp.x;
+        maxY = cp.y;
+        maxZ = cp.optZ;
+        maxM = cp.optM;
+      } else {
+        minX = math.min(minX!, cp.x);
+        minY = math.min(minY!, cp.y);
+        minZ = cp.is3D && minZ != null ? math.min(minZ, cp.z) : null;
+        minM = cp.isMeasured && minM != null ? math.min(minM, cp.m) : null;
+        maxX = math.max(maxX!, cp.x);
+        maxY = math.max(maxY!, cp.y);
+        maxZ = cp.is3D && maxZ != null ? math.max(maxZ, cp.z) : null;
+        maxM = cp.isMeasured && maxM != null ? math.max(maxM, cp.m) : null;
+      }
+      isFirst = false;
+    }
+
+    if(isFirst) {
+      throw const FormatException('Positions should not be empty.');
+    }
+
+    // create a new bounding box
+    return factory.call(
+      minX: minX!,
+      minY: minY!,
+      minZ: minZ,
+      minM: minM,
+      maxX: maxX!,
+      maxY: maxY!,
+      maxZ: maxZ,
+      maxM: maxM,
+    );
   }
 
   /// True if [box1] and [box2] equals by testing all coordinate values.
