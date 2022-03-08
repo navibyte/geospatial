@@ -172,27 +172,6 @@ Projected bounding boxes:
   );
 ```
 
-### Temporal data
-
-Temporal data can be represented as *instants* (a time stamp) and *intervals*
-(an open or a closed interval between time stamps).
-
-```dart
-  // Instants can be created from `DateTime` or parsed from text.
-  Instant(DateTime.utc(2020, 10, 31, 09, 30));
-  Instant.parse('2020-10-31 09:30Z');
-
-  // Intervals (open-started, open-ended, closed).
-  Interval.openStart(DateTime.utc(2020, 10, 31));
-  Interval.openEnd(DateTime.utc(2020, 10, 01));
-  Interval.closed(DateTime.utc(2020, 10, 01), DateTime.utc(2020, 10, 31));
-
-  // Same intervals parsed (by the "start/end" format, ".." for open limits).
-  Interval.parse('../2020-10-31');
-  Interval.parse('2020-10-01/..');
-  Interval.parse('2020-10-01/2020-10-31');
-```
-
 ### Geometry types
 
 Geometry types introduced above are based on the
@@ -307,6 +286,61 @@ A sample to write a `Point` geometry to WKT (with z and m coordinates too):
       ..toString(),
   );
 ```
+
+### Temporal data
+
+Temporal data can be represented as *instants* (a time stamp) and *intervals*
+(an open or a closed interval between time stamps).
+
+```dart
+  // Instants can be created from `DateTime` or parsed from text.
+  Instant(DateTime.utc(2020, 10, 31, 09, 30));
+  Instant.parse('2020-10-31 09:30Z');
+
+  // Intervals (open-started, open-ended, closed).
+  Interval.openStart(DateTime.utc(2020, 10, 31));
+  Interval.openEnd(DateTime.utc(2020, 10, 01));
+  Interval.closed(DateTime.utc(2020, 10, 01), DateTime.utc(2020, 10, 31));
+
+  // Same intervals parsed (by the "start/end" format, ".." for open limits).
+  Interval.parse('../2020-10-31');
+  Interval.parse('2020-10-01/..');
+  Interval.parse('2020-10-01/2020-10-31');
+```
+
+### Geospatial extents
+
+Extent objects have both spatial bounds and temporal interval, and they are
+useful in metadata structures for geospatial data sources.
+
+```dart
+  // An extent with spatial (WGS 84 longitude-latitude) and temporal parts.
+  GeoExtent.single(
+    crs: 'EPSG:4326',
+    bbox: const GeoBox(west: -20.0, south: 50.0, east: 20.0, north: 60.0),
+    interval: Interval.parse('../2020-10-31'),
+  );
+
+  // An extent with multiple spatial bounds and temporal interval segments.
+  GeoExtent.multi(
+    crs: 'EPSG:4326',
+    boxes: const [
+      GeoBox(west: -20.0, south: 50.0, east: 20.0, north: 60.0),
+      GeoBox(west: 40.0, south: 50.0, east: 60.0, north: 60.0),
+    ],
+    intervals: [
+      Interval.parse('2020-10-01/2020-10-05'),
+      Interval.parse('2020-10-27/2020-10-31'),
+    ],
+  );
+```
+
+The `crs` property in extents above refer to a 
+[Coordinate reference system](https://en.wikipedia.org/wiki/Spatial_reference_system) 
+that is *a coordinate-based local, regional or global system used to locate geographical entities*. 
+
+This library does not define any `crs` constants, please refer to registries
+like [The EPSG dataset](https://epsg.org/).
 
 ### Projections
 

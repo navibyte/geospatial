@@ -40,6 +40,9 @@ void main() {
   // time objects
   _intervalAndInstant();
 
+  // extents
+   _geoExtent();
+
   // projection samples
   _wgs84Projections();
 
@@ -396,6 +399,28 @@ void _intervalAndInstant() {
   Interval.parse('../2020-10-31');
   Interval.parse('2020-10-01/..');
   Interval.parse('2020-10-01/2020-10-31');
+}
+
+void _geoExtent() {
+  // An extent with spatial (WGS 84 longitude-latitude) and temporal parts.
+  GeoExtent.single(
+    crs: 'EPSG:4326',
+    bbox: const GeoBox(west: -20.0, south: 50.0, east: 20.0, north: 60.0),
+    interval: Interval.parse('../2020-10-31'),
+  );
+
+  // An extent with multiple spatial bounds and temporal interval segments.
+  GeoExtent.multi(
+    crs: 'EPSG:4326',
+    boxes: const [
+      GeoBox(west: -20.0, south: 50.0, east: 20.0, north: 60.0),
+      GeoBox(west: 40.0, south: 50.0, east: 60.0, north: 60.0),
+    ],
+    intervals: [
+      Interval.parse('2020-10-01/2020-10-05'),
+      Interval.parse('2020-10-27/2020-10-31'),
+    ],
+  );
 }
 
 void _wgs84Projections() {
