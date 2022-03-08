@@ -16,8 +16,6 @@
 
 ## Package
 
-**This package is at BETA stage, interfaces not fully final yet.** 
-
 This is a [Dart](https://dart.dev/) package named `geocore` under the 
 [geospatial](https://github.com/navibyte/geospatial) code repository. 
 

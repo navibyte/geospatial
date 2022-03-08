@@ -16,6 +16,12 @@ dart example/geobase_example.dart
 */
 
 void main() {
+  // Coordinates
+  _geographicPosition();
+  _geographicBbox();
+  _projectedPosition();
+  _projectedBbox();
+
   // WKT samples
   _wktPointGeometry();
   _wktPointGeometryWithZ();
@@ -39,6 +45,75 @@ void main() {
 
   // transform samples
   _basicTransfroms();
+}
+
+void _geographicPosition() {
+  // Geographic position with longitude and latitude
+  const Geographic(lon: -0.0014, lat: 51.4778);
+
+  // Geographic position with longitude, latitude and elevation.
+  const Geographic(lon: -0.0014, lat: 51.4778, elev: 45.0);
+
+  // Geographic position with longitude, latitude, elevation and measure.
+  const Geographic(lon: -0.0014, lat: 51.4778, elev: 45.0, m: 123.0);
+}
+
+void _geographicBbox() {
+  // Geographic bbox (-20.0 .. 20.0 in longitude, 50.0 .. 60.0 in latitude).
+  const GeoBox(west: -20.0, south: 50.0, east: 20.0, north: 60.0);
+
+  // Geographic bbox with limits on elevation coordinate too.
+  const GeoBox(
+    west: -20.0,
+    south: 50.0,
+    minElev: 100.0,
+    east: 20.0,
+    north: 60.0,
+    maxElev: 200.0,
+  );
+
+  // Geographic bbox with limits on elevation and measure coordinates too.
+  const GeoBox(
+    west: -20.0,
+    south: 50.0,
+    minElev: 100.0,
+    minM: 5.0,
+    east: 20.0,
+    north: 60.0,
+    maxElev: 200.0,
+    maxM: 6.0,
+  );
+}
+
+void _projectedPosition() {
+  // Projected position with x and y.
+  const Projected(x: 708221.0, y: 5707225.0);
+
+  // Projected position with x, y and z.
+  const Projected(x: 708221.0, y: 5707225.0, z: 45.0);
+
+  // Projected position with x, y, z and m.
+  const Projected(x: 708221.0, y: 5707225.0, z: 45.0, m: 123.0);
+}
+
+void _projectedBbox() {
+  // Projected bbox with limits on x and y.
+  const ProjBox(minX: 10, minY: 10, maxX: 20, maxY: 20);
+
+  // Projected bbox with limits on x, y and z.
+  const ProjBox(minX: 10, minY: 10, minZ: 10, maxX: 20, maxY: 20, maxZ: 20);
+
+  // Projected bbox with limits on x, y, z and m.
+  const ProjBox(
+    minX: 10,
+    minY: 10,
+    minZ: 10,
+    minM: 10,
+    maxX: 20,
+    maxY: 20,
+    maxZ: 20,
+    maxM: 20,
+  );
 }
 
 void _wktPointGeometry() {
@@ -327,12 +402,12 @@ void _wgs84Projections() {
   // Built-in coordinate projections (currently only between WGS84 and
   // Web Mercator)
 
-  // From GeoPoint2 (WGS 84 longitude-latitude) to Point2 (Web Mercator metric)
+  // Geographic (WGS 84 longitude-latitude) to Projected (Web Mercator metric)
   final forward = wgs84ToWebMercator.forward();
   final projected =
       forward.project(const Geographic(lon: -0.0014, lat: 51.4778));
 
-  // From Point2 (Web Mercator metric) to GeoPoint2 (WGS 84 longitude-latitude)
+  // Projected (Web Mercator metric) to Geographic (WGS 84 longitude-latitude)
   final inverse = wgs84ToWebMercator.inverse();
   final unprojected = inverse.project(projected);
 
@@ -340,8 +415,15 @@ void _wgs84Projections() {
 }
 
 void _basicTransfroms() {
+  // Create a point and transform it with the built-in translation that returns
+  // `Position(x: 110.0, y: 220.0, z: 50.0, m: 1.25)` after transform.
+  print(
+    const Projected(x: 100.0, y: 200.0, z: 50.0, m: 1.25)
+        .transform(translatePoint(dx: 10.0, dy: 20.0)),
+  );
+
   // Create a point and transform it with a custom translation that returns
-  // `Position(x: 110.0, y: 220.0, z: 50.0, m: 1.25)` after projection.
+  // `Position(x: 110.0, y: 220.0, z: 50.0, m: 1.25)` after transform.
   print(
     const Projected(x: 100.0, y: 200.0, z: 50.0, m: 1.25)
         .transform(_sampleFixedTranslate),
