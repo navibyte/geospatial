@@ -22,7 +22,7 @@ void main() {
   EquatableConfig.stringify = true;
 
   group('Test transformations with simple translate', () {
-    final translate1 = translatePoint(dx: 1.0, dy: 2.0, dz: 3.0, dm: 4.0);
+    final translate1 = translatePosition(dx: 1.0, dy: 2.0, dz: 3.0, dm: 4.0);
     test('Immutable point classes (cartesian points)', () {
       expect(
         Point2.xy(10.0, 20.0).transform(translate1),
@@ -244,7 +244,7 @@ void main() {
   });
 
   group('Test projections with simple scale (each scale own factor)', () {
-    final scale1 = scalePoint(sx: 2.6, sy: 3.0, sz: 4.0, sm: 5.0);
+    final scale1 = scalePosition(sx: 2.6, sy: 3.0, sz: 4.0, sm: 5.0);
 
     test('Point classes', () {
       expect(
@@ -259,7 +259,7 @@ void main() {
   });
 
   group('Test projections with simple scale (one factor for all axes)', () {
-    final scale1 = scalePointBy(1.5);
+    final scale1 = scalePositionBy(1.5);
 
     test('Point classes', () {
       expect(
@@ -284,7 +284,7 @@ void main() {
       ];
 
       for (final t in tests) {
-        final rot = rotatePoint2D(
+        final rot = rotatePosition2D(
           _angleToRad(t[0].toDouble()),
           cx: t[1],
           cy: t[2],

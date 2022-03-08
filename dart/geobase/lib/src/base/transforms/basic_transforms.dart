@@ -18,7 +18,7 @@ import '/src/base/coordinates.dart';
 ///
 /// If a point to be translated do not have an axis even if a translation delta
 /// for that axis is given, then such delta is ignored.
-TransformPosition translatePoint<C extends num>({
+TransformPosition translatePosition<C extends num>({
   C? dx,
   C? dy,
   C? dz,
@@ -50,7 +50,7 @@ TransformPosition translatePoint<C extends num>({
 ///
 /// If a point to be scaled do not have an axis even if a scale factor
 /// for that axis is given, then such factor is ignored.
-TransformPosition scalePoint<C extends num>({
+TransformPosition scalePosition<C extends num>({
   C? sx,
   C? sy,
   C? sz,
@@ -76,7 +76,7 @@ TransformPosition scalePoint<C extends num>({
     };
 
 /// Returns a function to scale positions by the [scale] factor.
-TransformPosition scalePointBy<C extends num>(C scale) =>
+TransformPosition scalePositionBy<C extends num>(C scale) =>
     <T extends Position>(T source) {
       final dim = source.coordinateDimension;
       if (dim == 2) {
@@ -99,7 +99,7 @@ TransformPosition scalePointBy<C extends num>(C scale) =>
 /// Returns a function to rotate positions by the [radians] around the origin.
 ///
 /// If both [cx] and [cy] are given then rotate points around this pivot point.
-TransformPosition rotatePoint2D(num radians, {num? cx, num? cy}) =>
+TransformPosition rotatePosition2D(num radians, {num? cx, num? cy}) =>
     <T extends Position>(T source) {
       final s = math.sin(radians);
       final c = math.cos(radians);

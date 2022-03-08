@@ -365,7 +365,7 @@ This sample uses the built-int `translatePoint` function:
   // `Position(x: 110.0, y: 220.0, z: 50.0, m: 1.25)` after transform.
   print(
     const Projected(x: 100.0, y: 200.0, z: 50.0, m: 1.25)
-        .transform(translatePoint(dx: 10.0, dy: 20.0)),
+        .transform(translatePosition(dx: 10.0, dy: 20.0)),
   );
 ```
 

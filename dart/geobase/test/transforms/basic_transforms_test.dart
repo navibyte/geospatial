@@ -10,7 +10,7 @@ import 'package:test/test.dart';
 
 void main() {
   group('Test transformations with simple translate', () {
-    final translate1 = translatePoint(dx: 1.0, dy: 2.0, dz: 3.0, dm: 4.0);
+    final translate1 = translatePosition(dx: 1.0, dy: 2.0, dz: 3.0, dm: 4.0);
     test('Immutable point classes (projected points)', () {
       expect(
         const Projected(x: 10.0, y: 20.0).transform(translate1),
