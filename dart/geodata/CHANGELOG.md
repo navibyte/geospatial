@@ -1,5 +1,18 @@
 ## 0.8.0
 
+Major and breaking changes compared to version 0.7.2.
+
+After changes key features of this [geodata](https://pub.dev/packages/geodata)
+package:
+* Client-side data source abstraction for geospatial feature service Web APIs
+* Implementations to read geospatial features
+  * [GeoJSON](https://geojson.org/) features from Web APIs or files
+  * [OGC API Features](https://ogcapi.ogc.org/features/) based services (partial support)
+
+Depends on
+* [geobase](https://pub.dev/packages/geobase)
+* [geocore](https://pub.dev/packages/geocore)
+
 ⚠️ Breaking changes:
 - [Refactor Feature class inheritance and types of id and properties members #39](https://github.com/navibyte/geospatial/issues/39)
 - [Restructuring web api client for geospatial data #46](https://github.com/navibyte/geospatial/issues/46)
@@ -7,6 +20,9 @@
 
 📚 Documentation:
 - [Update copyright clauses (years 2020-2022) and licenses #66](https://github.com/navibyte/geospatial/issues/66)
+
+🛠 Maintenance:
+- [Upgrade to Dart 2.15 #90](https://github.com/navibyte/geospatial/issues/90)
 
 ## 0.7.2
 
