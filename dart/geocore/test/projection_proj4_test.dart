@@ -35,8 +35,7 @@ void main() {
     test('wgs84ToWebMercator.forward', () {
       final toWebMercatorProj4a = adapterWgs84ToWM.forwardTo(Point3m.create);
       final toWebMercatorProj4b = adapterWMToWgs84.inverseTo(Point3m.create);
-      final toWebMercatorGeocore =
-          wgs84ToWebMercator.forwardTo(Point3m.create);
+      final toWebMercatorGeocore = wgs84ToWebMercator.forwardTo(Point3m.create);
       for (final coords in wgs84ToWebMercatorData) {
         final geoPoint3 =
             GeoPoint3m(lon: coords[0], lat: coords[1], elev: 5.1, m: 6.2);

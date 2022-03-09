@@ -1,11 +1,31 @@
 ## 0.8.0
 
+Major and breaking changes compared to version 0.7.2.
+
+Some classes generalized and moved to the 
+[geobase](https://pub.dev/packages/geobase) package, that is depended on.
+
+After changes key features of this [geocore](https://pub.dev/packages/geocore)
+package:
+
+* 🚀 geospatial data structures (geometry, features and metadata)
+* 🌐 *geographic* coordinates (longitude-latitude)
+* 🗺️ *projected* coordinates (cartesian XYZ)
+* 🔷 geometry primitives (bounds or bbox, point, line string, polygon)
+* 🧩 multi geometries (multi point, multi line string, multi polygon, geometry collections)
+* ⭐ feature objects (with id, properties and geometry) and feature collections
+* 🌎 [GeoJSON](https://geojson.org/) data parser
+* 🪧 [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) 
+(Well-known text representation of geometry) data parser 
+
 ⚠️ Breaking changes:
 - [Refactor Feature class inheritance and types of id and properties members #39](https://github.com/navibyte/geospatial/issues/39)
 - [Define more specific return type on newWith and newFrom methods of Point sub classes #41](https://github.com/navibyte/geospatial/issues/41)
 - [Populate results by default when intersecting with bounds on point and bounded series #42](https://github.com/navibyte/geospatial/issues/42)
 - [Define consistent mini library exports with base classes included #31](https://github.com/navibyte/geospatial/issues/31)
 - [Move temporal classes to "base" mini-library #69](https://github.com/navibyte/geospatial/issues/69)
+- [Generalize and move project and transform from geocore to geobase #95](https://github.com/navibyte/geospatial/issues/95)
+- [Intersects bounds generalized on geobase #97](https://github.com/navibyte/geospatial/issues/97)
 
 🧩 Features:
 - [Add copyWith method to Point classes #43](https://github.com/navibyte/geospatial/issues/43)
