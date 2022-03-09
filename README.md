@@ -55,22 +55,28 @@ Key features of the [geodata](https://pub.dev/packages/geodata) package:
 
 ## :newspaper_roll: News
 
+2022-03-09
+* Latest versions published on pub.dev:
+   * [geobase](https://pub.dev/packages/geobase/versions/0.1.0), see [changelog](dart/geobase/CHANGELOG.md#010) for details
+   * [geocore](https://pub.dev/packages/geocore/versions/0.8.0), see [changelog](dart/geocore/CHANGELOG.md#080) for details
+   * [geodata](https://pub.dev/packages/geodata/versions/0.8.0), see [changelog](dart/geodata/CHANGELOG.md#080) for details
+
 2022-02-06
 * A new package `geobase` with code originating and generalized from `geocore`:
    * The pre-release version `0.1.0-a.0` of the upcoming BETA-release 0.1.0
-   * [geobase](https://pub.dev/packages/geobase/versions/0.1.0-a.0), see [changelog](dart/geobase/CHANGELOG.md#010) for details
+   * [geobase](https://pub.dev/packages/geobase/versions/0.1.0-a.0)
 * Also the pre-release version `0.8.0-a.9` of the upcoming BETA-release 0.8.0 for:
-   * [geocore](https://pub.dev/packages/geocore/versions/0.8.0-a.9), see [changelog](dart/geocore/CHANGELOG.md#080) for details
-   * [geodata](https://pub.dev/packages/geodata/versions/0.8.0-a.9), see [changelog](dart/geodata/CHANGELOG.md#080) for details
+   * [geocore](https://pub.dev/packages/geocore/versions/0.8.0-a.9)
+   * [geodata](https://pub.dev/packages/geodata/versions/0.8.0-a.9)
 
 
 2022-01-09
 * The pre-release version `0.8.0-a.7` of the upcoming BETA-release 0.8.0
-   * [geocore](https://pub.dev/packages/geocore/versions/0.8.0-a.7), see [changelog](dart/geocore/CHANGELOG.md#080) for details
-   * [geodata](https://pub.dev/packages/geodata/versions/0.8.0-a.7), see [changelog](dart/geodata/CHANGELOG.md#080) for details
+   * [geocore](https://pub.dev/packages/geocore/versions/0.8.0-a.7)
+   * [geodata](https://pub.dev/packages/geodata/versions/0.8.0-a.7)
 
 2021-12-04
-* The first pre-release of the upcoming 0.8.0 version of [geocore](https://pub.dev/packages/geocore/versions/0.8.0-a.2), see [changelog](dart/geocore/CHANGELOG.md#080) for details
+* The first pre-release of the upcoming 0.8.0 version of [geocore](https://pub.dev/packages/geocore/versions/0.8.0-a.2)
   * breaking changes with Feature classes, removed dependency to the [attributes](https://pub.dev/packages/attributes) package
   * also the preview of coordinate transformation abstractions and other enhancements
 
@@ -148,10 +154,6 @@ Key features of the [geodata](https://pub.dev/packages/geodata) package:
 ## :building_construction: Roadmap
 
 See [issues](https://github.com/navibyte/geospatial/issues).
-
-Currently the BETA-version 0.8.0 is under development, pre-release versions 
-available at pub.dev for [geocore](https://pub.dev/packages/geocore/versions) and 
-[geodata](https://pub.dev/packages/geodata/versions).
 
 Targeting version 1.0.0 by August 2022.
 
