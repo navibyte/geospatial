@@ -72,6 +72,9 @@ Type          | Description
 `lonLatM`     | Geographic coordinates (longitude, latitude, m)
 `lonLatElevM` | Geographic coordinates (longitude, latitude, elevation, m)
 
+The `m` coordinate represents a measurement or a value on a linear referencing
+system (like time).
+
 There are base interfaces (abstract classes) for positions and bounding boxes.
 
 Interface     | Description

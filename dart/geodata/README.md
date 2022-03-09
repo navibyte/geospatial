@@ -4,14 +4,14 @@
 
 ## Features
 
-* Client-side data source abstractions
-  * common geospatial Web APIs
-  * geospatial feature services
-* Data source implementations to read geospatial features
+* Client-side data source abstraction for geospatial feature service Web APIs
+* Implementations to read geospatial features
   * [GeoJSON](https://geojson.org/) features from Web APIs or files
-  * [OGC API Features](https://ogcapi.ogc.org/features/) based services
-* Also (partially) conforming to following standards
-  * [OGC API Common](https://ogcapi.ogc.org/common/)
+  * [OGC API Features](https://ogcapi.ogc.org/features/) based services (partial support)
+
+The client-side support for the
+[OGC API Features](https://ogcapi.ogc.org/features/) standard is not complete,
+however key functionality of `Part1` of the standard is supported.
 
 ## Package
 
