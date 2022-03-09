@@ -41,7 +41,7 @@ void main() {
   _intervalAndInstant();
 
   // extents
-   _geoExtent();
+  _geoExtent();
 
   // projection samples
   _wgs84Projections();

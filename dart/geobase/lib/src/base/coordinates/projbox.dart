@@ -68,7 +68,7 @@ class ProjBox extends Box {
         _maxM = maxM;
 
   /// A minimum bounding box calculated from [positions].
-  /// 
+  ///
   /// Throws FormatException if cannot create (ie. [positions] is empty).
   factory ProjBox.from(Iterable<Projected> positions) =>
       Box.createBoxFrom(positions, ProjBox.create);

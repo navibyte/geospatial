@@ -198,7 +198,7 @@ abstract class Box extends Positionable {
   }
 
   /// A minimum bounding box created by [factory], calculated from [positions].
-  /// 
+  ///
   /// Throws FormatException if cannot create (ie. [positions] is empty).
   static R createBoxFrom<R extends Box>(
     Iterable<Position> positions,
@@ -231,7 +231,7 @@ abstract class Box extends Positionable {
       isFirst = false;
     }
 
-    if(isFirst) {
+    if (isFirst) {
       throw const FormatException('Positions should not be empty.');
     }
 

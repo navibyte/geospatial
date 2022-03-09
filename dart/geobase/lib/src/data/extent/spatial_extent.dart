@@ -16,7 +16,8 @@ class SpatialExtent<T extends Box> {
   final String _crs;
 
   /// A spatial extent of one [bbox] (coordinate reference system in [crs]).
-  const SpatialExtent.single(T bbox, {
+  const SpatialExtent.single(
+    T bbox, {
     String crs = 'http://www.opengis.net/def/crs/OGC/1.3/CRS84',
   })  : _first = bbox,
         _boxes = null,
