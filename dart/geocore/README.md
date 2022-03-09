@@ -26,15 +26,20 @@ dependencies:
   geocore: ^0.8.0
 ```
 
+And then import it:
+
+```dart
+import `package:geocore/geocore.dart`
+```
+
 The package contains also following mini-libraries, that can be used to import
 only a certain subset instead of the whole **geocore** library:
 
 Library         | Exports also | Description 
 --------------- | ----------- | -----------------------------------------------
 **base**        | | Base classes for geospatial geometry objects.
-**coordinates** | base | Projected and geographic points with some common coordinate transforms.
+**coordinates** | base | Projected and geographic coordinates.
 **data**        | base, coordinates | Geospatial features and geometries (linestring, polygon, multi geometries).
-**parse**       | base, coordinates, data | GeoJSON and WKT (Well-known text representation of geometry) data parsers.
 
 All the mini-libraries have dependencies to the 
 [equatable](https://pub.dev/packages/equatable) and

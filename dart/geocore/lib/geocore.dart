@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// Geospatial data (points, geometry, features, meta) and parsers.
+/// Geospatial data (geometry, features, meta) and parsers (WKT, GeoJSON).
 ///
 /// Usage: import `package:geocore/geocore.dart`
 library geocore;
@@ -13,4 +13,7 @@ library geocore;
 export 'base.dart';
 export 'coordinates.dart';
 export 'data.dart';
-export 'parse.dart';
+
+export 'src/parse/factory.dart';
+export 'src/parse/geojson.dart';
+export 'src/parse/wkt.dart';

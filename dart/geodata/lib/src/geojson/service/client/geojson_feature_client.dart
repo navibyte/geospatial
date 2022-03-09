@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:geocore/parse.dart';
+import 'package:geocore/geocore.dart';
 import 'package:http/http.dart' as http;
 
 import '/src/common/paged.dart';
