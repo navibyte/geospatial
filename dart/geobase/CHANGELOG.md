@@ -2,6 +2,8 @@
 
 🧩 Features:
 - [Create position instances from num iterables or text #101](https://github.com/navibyte/geospatial/issues/101)
+- [Distance (haversine) between geographic positions #102](https://github.com/navibyte/geospatial/issues/102)
+- [Create box instances from num iterables or text #103](https://github.com/navibyte/geospatial/issues/103)
 
 ## 0.1.0
 

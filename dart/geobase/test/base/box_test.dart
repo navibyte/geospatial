@@ -12,6 +12,59 @@ import 'package:test/test.dart';
 
 void main() {
   group('ProjBox class', () {
+    test('Test factories', () {
+      const box1 = ProjBox(
+        minX: 1.1,
+        minY: 1.2,
+        maxX: 2.1,
+        maxY: 2.2,
+      );
+      const box2 = ProjBox(
+        minX: 1.1,
+        minY: 1.2,
+        minZ: 1.3,
+        maxX: 2.1,
+        maxY: 2.2,
+        maxZ: 2.3,
+      );
+      const box3 = ProjBox(
+        minX: 1.1,
+        minY: 1.2,
+        minM: 1.4,
+        maxX: 2.1,
+        maxY: 2.2,
+        maxM: 2.4,
+      );
+      const box4 = ProjBox(
+        minX: 1.1,
+        minY: 1.2,
+        minZ: 1.3,
+        minM: 1.4,
+        maxX: 2.1,
+        maxY: 2.2,
+        maxZ: 2.3,
+        maxM: 2.4,
+      );
+
+      expect(ProjBox.fromCoords(const [1.1, 1.2, 2.1, 2.2]), box1);
+      expect(ProjBox.fromText('1.1,1.2,2.1,2.2'), box1);
+      expect(ProjBox.fromText(box1.toString()), box1);
+
+      expect(ProjBox.fromCoords(const [1.1, 1.2, 1.3, 2.1, 2.2, 2.3]), box2);
+      expect(ProjBox.fromText('1.1,1.2,1.3,2.1,2.2,2.3'), box2);
+      expect(ProjBox.fromText(box2.toString()), box2);
+
+      expect(ProjBox.fromCoords(const [1.1, 1.2, 1.4, 2.1, 2.2, 2.4]),
+          isNot(box3));
+      expect(ProjBox.fromText('1.1,1.2,,1.4,2.1,2.2,,2.4'), box3);
+      expect(ProjBox.fromText(box3.toString()), box3);
+
+      expect(ProjBox.fromCoords(const [1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.3, 2.4]),
+          box4);
+      expect(ProjBox.fromText('1.1,1.2,1.3,1.4,2.1,2.2,2.3,2.4'), box4);
+      expect(ProjBox.fromText(box4.toString()), box4);
+    });
+
     test('Equals with tolerance', () {
       const p1 = ProjBox(
         minX: 1.0002,
@@ -199,6 +252,59 @@ void main() {
   });
 
   group('GeoBox class', () {
+    test('Test factories', () {
+      const box1 = GeoBox(
+        west: 1.1,
+        south: 1.2,
+        east: 2.1,
+        north: 2.2,
+      );
+      const box2 = GeoBox(
+        west: 1.1,
+        south: 1.2,
+        minElev: 1.3,
+        east: 2.1,
+        north: 2.2,
+        maxElev: 2.3,
+      );
+      const box3 = GeoBox(
+        west: 1.1,
+        south: 1.2,
+        minM: 1.4,
+        east: 2.1,
+        north: 2.2,
+        maxM: 2.4,
+      );
+      const box4 = GeoBox(
+        west: 1.1,
+        south: 1.2,
+        minElev: 1.3,
+        minM: 1.4,
+        east: 2.1,
+        north: 2.2,
+        maxElev: 2.3,
+        maxM: 2.4,
+      );
+
+      expect(GeoBox.fromCoords(const [1.1, 1.2, 2.1, 2.2]), box1);
+      expect(GeoBox.fromText('1.1,1.2,2.1,2.2'), box1);
+      expect(GeoBox.fromText(box1.toString()), box1);
+
+      expect(GeoBox.fromCoords(const [1.1, 1.2, 1.3, 2.1, 2.2, 2.3]), box2);
+      expect(GeoBox.fromText('1.1,1.2,1.3,2.1,2.2,2.3'), box2);
+      expect(GeoBox.fromText(box2.toString()), box2);
+
+      expect(
+          GeoBox.fromCoords(const [1.1, 1.2, 1.4, 2.1, 2.2, 2.4]), isNot(box3));
+      expect(GeoBox.fromText('1.1,1.2,,1.4,2.1,2.2,,2.4'), box3);
+      expect(GeoBox.fromText(box3.toString()), box3);
+
+      expect(GeoBox.fromCoords(const [1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.3, 2.4]),
+          box4);
+      expect(GeoBox.fromText('1.1,1.2,1.3,1.4,2.1,2.2,2.3,2.4'), box4);
+      expect(GeoBox.fromText(box4.toString()), box4);
+    });
+
     test('Equals with tolerance', () {
       const p1 = GeoBox(
         east: 1.0002,

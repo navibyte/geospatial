@@ -6,6 +6,7 @@
 
 import 'dart:math' as math;
 
+import '/src/utils/num.dart';
 import '/src/utils/tolerance.dart';
 
 import 'position.dart';
@@ -168,6 +169,124 @@ abstract class Box extends Positionable {
 
   // ---------------------------------------------------------------------------
   // Static methods with default logic, used by Box, ProjBox and GeoBox.
+
+  /// Creates a bounding box of [R] from [coords] starting from [offset].
+  ///
+  /// A valid [coords] contains coordinate values for one of these combinations:
+  /// - minX, minY, maxX, maxY
+  /// - minX, minY, minZ, maxX, maxY, maxZ
+  /// - minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  ///
+  /// A bounding box instance is created using the factory function [to].
+  static R createFromCoords<R extends Box>(
+    Iterable<num> coords, {
+    required CreateBox<R> to,
+    int offset = 0,
+  }) {
+    final len = coords.length - offset;
+    if (len < 4) {
+      throw const FormatException('Coords must contain at least four items');
+    }
+    if (len >= 8) {
+      return to.call(
+        minX: coords.elementAt(offset),
+        minY: coords.elementAt(offset + 1),
+        minZ: coords.elementAt(offset + 2),
+        minM: coords.elementAt(offset + 3),
+        maxX: coords.elementAt(offset + 4),
+        maxY: coords.elementAt(offset + 5),
+        maxZ: coords.elementAt(offset + 6),
+        maxM: coords.elementAt(offset + 7),
+      );
+    } else if (len >= 6) {
+      return to.call(
+        minX: coords.elementAt(offset),
+        minY: coords.elementAt(offset + 1),
+        minZ: coords.elementAt(offset + 2),
+        maxX: coords.elementAt(offset + 3),
+        maxY: coords.elementAt(offset + 4),
+        maxZ: coords.elementAt(offset + 5),
+      );
+    } else {
+      return to.call(
+        minX: coords.elementAt(offset),
+        minY: coords.elementAt(offset + 1),
+        maxX: coords.elementAt(offset + 2),
+        maxY: coords.elementAt(offset + 3),
+      );
+    }
+  }
+
+  /// Creates a bounding box of [R] from [text].
+  ///
+  /// A valid [text] contains coordinate values for one of these combinations:
+  /// - minX, minY, maxX, maxY
+  /// - minX, minY, minZ, maxX, maxY, maxZ
+  /// - minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  ///
+  /// Coordinate values in [text] are separated by [delimiter].
+  ///
+  /// A bounding box instance is created using the factory function [to].
+  static R createFromText<R extends Box>(
+    String text, {
+    required CreateBox<R> to,
+    Pattern? delimiter = ',',
+  }) {
+    final coords = parseNullableNumValuesFromText(text, delimiter: delimiter);
+    final len = coords.length;
+    if (len < 4) {
+      throw const FormatException('Coords must contain at least four items');
+    }
+    if (len >= 8) {
+      final minX = coords.elementAt(0);
+      final minY = coords.elementAt(1);
+      final maxX = coords.elementAt(4);
+      final maxY = coords.elementAt(5);
+      if (minX == null || minY == null || maxX == null || maxY == null) {
+        throw const FormatException('minX, minY, maxX and maxY are required.');
+      }
+      return to.call(
+        minX: minX,
+        minY: minY,
+        minZ: coords.elementAt(2),
+        minM: coords.elementAt(3),
+        maxX: maxX,
+        maxY: maxY,
+        maxZ: coords.elementAt(6),
+        maxM: coords.elementAt(7),
+      );
+    } else if (len >= 6) {
+      final minX = coords.elementAt(0);
+      final minY = coords.elementAt(1);
+      final maxX = coords.elementAt(3);
+      final maxY = coords.elementAt(4);
+      if (minX == null || minY == null || maxX == null || maxY == null) {
+        throw const FormatException('minX, minY, maxX and maxY are required.');
+      }
+      return to.call(
+        minX: minX,
+        minY: minY,
+        minZ: coords.elementAt(2),
+        maxX: maxX,
+        maxY: maxY,
+        maxZ: coords.elementAt(5),
+      );
+    } else {
+      final minX = coords.elementAt(0);
+      final minY = coords.elementAt(1);
+      final maxX = coords.elementAt(2);
+      final maxY = coords.elementAt(3);
+      if (minX == null || minY == null || maxX == null || maxY == null) {
+        throw const FormatException('minX, minY, maxX and maxY are required.');
+      }
+      return to.call(
+        minX: minX,
+        minY: minY,
+        maxX: maxX,
+        maxY: maxY,
+      );
+    }
+  }
 
   /// Returns all distinct (in 2D) corners for this axis aligned bounding box.
   static Iterable<R> createCorners2D<R extends Position>(

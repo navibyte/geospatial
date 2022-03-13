@@ -95,6 +95,32 @@ class GeoBox extends Box {
   factory GeoBox.from(Iterable<Geographic> positions) =>
       Box.createBoxFrom(positions, GeoBox.create);
 
+  /// Creates a bounding box from [coords] starting from [offset].
+  ///
+  /// A valid [coords] contains coordinate values for one of these combinations:
+  /// - west, south, east, north
+  /// - west, south, minElev, east, north, maxElev
+  /// - west, south, minElev, minM, east, north, maxElev, maxM
+  factory GeoBox.fromCoords(
+    Iterable<num> coords, {
+    int offset = 0,
+  }) =>
+      Box.createFromCoords(coords, to: GeoBox.create, offset: offset);
+
+  /// Creates a bounding box from [text].
+  ///
+  /// A valid [text] contains coordinate values for one of these combinations:
+  /// - west, south, east, north
+  /// - west, south, minElev, east, north, maxElev
+  /// - west, south, minElev, minM, east, north, maxElev, maxM
+  ///
+  /// Coordinate values in [text] are separated by [delimiter].
+  factory GeoBox.fromText(
+    String text, {
+    Pattern? delimiter = ',',
+  }) =>
+      Box.createFromText(text, to: GeoBox.create, delimiter: delimiter);
+
   /// The west coordinate as geographic longitude.
   double get west => _west;
 
@@ -208,7 +234,7 @@ class GeoBox extends Box {
       case Coords.lonLatElev:
         return '$_west,$_south,$_minElev,$_east,$_north,$_maxElev';
       case Coords.lonLatM:
-        return '$_west,$_south,$_minM,$_east,$_east,$_maxM';
+        return '$_west,$_south,,$_minM,$_east,$_north,,$_maxM';
       case Coords.lonLatElevM:
         return '$_west,$_south,$_minElev,$_minM,'
             '$_east,$_north,$_maxElev,$_maxM';

@@ -73,6 +73,32 @@ class ProjBox extends Box {
   factory ProjBox.from(Iterable<Projected> positions) =>
       Box.createBoxFrom(positions, ProjBox.create);
 
+  /// Creates a bounding box from [coords] starting from [offset].
+  ///
+  /// A valid [coords] contains coordinate values for one of these combinations:
+  /// - minX, minY, maxX, maxY
+  /// - minX, minY, minZ, maxX, maxY, maxZ
+  /// - minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  factory ProjBox.fromCoords(
+    Iterable<num> coords, {
+    int offset = 0,
+  }) =>
+      Box.createFromCoords(coords, to: ProjBox.create, offset: offset);
+
+  /// Creates a bounding box from [text].
+  ///
+  /// A valid [text] contains coordinate values for one of these combinations:
+  /// - minX, minY, maxX, maxY
+  /// - minX, minY, minZ, maxX, maxY, maxZ
+  /// - minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  ///
+  /// Coordinate values in [text] are separated by [delimiter].
+  factory ProjBox.fromText(
+    String text, {
+    Pattern? delimiter = ',',
+  }) =>
+      Box.createFromText(text, to: ProjBox.create, delimiter: delimiter);
+
   @override
   num get minX => _minX;
 
@@ -149,7 +175,7 @@ class ProjBox extends Box {
       case Coords.xyz:
         return '$_minX,$_minY,$_minZ,$_maxX,$_maxY,$_maxZ';
       case Coords.xym:
-        return '$_minX,$_minY,$_minM,$_maxX,$_maxY,$_maxM';
+        return '$_minX,$_minY,,$_minM,$_maxX,$_maxY,,$_maxM';
       case Coords.xyzm:
         return '$_minX,$_minY,$_minZ,$_minM,$_maxX,$_maxY,$_maxZ,$_maxM';
       case Coords.lonLat:
