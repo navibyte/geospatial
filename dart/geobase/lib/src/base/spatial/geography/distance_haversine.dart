@@ -9,7 +9,7 @@ import 'dart:math';
 import '/src/base/coordinates.dart';
 
 /// Returns a distance in meters between [position1] and [position2].
-/// 
+///
 /// Given [earthRadius] is used for calculation with the approximate mean radius
 /// as a default.
 double distanceHaversine(

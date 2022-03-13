@@ -41,7 +41,7 @@ Iterable<num> parseNumValuesFromText(
 }
 
 /// Returns a lazy iterable parsing values from [text] separated by [delimiter].
-/// 
+///
 /// Empty value items on [text] are returned as null.
 ///
 /// If [delimiter] is not provided, values are separated by whitespace.

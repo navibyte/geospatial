@@ -20,7 +20,7 @@ and properties.
 
 ## Getting started
 
-The package requires at least [Dart](https://dart.dev/) SDK 2.12, and it
+The package requires at least [Dart](https://dart.dev/) SDK 2.15, and it
 supports all [Dart](https://dart.dev/) and [Flutter](https://flutter.dev/)
 platforms.
 
