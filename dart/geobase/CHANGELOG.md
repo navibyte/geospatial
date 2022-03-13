@@ -1,3 +1,7 @@
+## 0.1.1
+
+🧩 Features:
+
 ## 0.1.0
 
 Initial version with some code originating from `geocore` package:
