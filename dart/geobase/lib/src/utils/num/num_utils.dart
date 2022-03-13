@@ -41,6 +41,34 @@ Iterable<num> parseNumValuesFromText(
 }
 
 /// Returns a lazy iterable parsing values from [text] separated by [delimiter].
+/// 
+/// Empty value items on [text] are returned as null.
+///
+/// If [delimiter] is not provided, values are separated by whitespace.
+///
+/// Throws `FormatException` if cannot parse. Lazy iteration may also throw.
+///
+/// If [text] contains less than [minCount] value items, then `FormatException``
+/// is also thrown.
+Iterable<num?> parseNullableNumValuesFromText(
+  String text, {
+  Pattern? delimiter,
+  int minCount = 2,
+}) {
+  // check argumemts
+  if (delimiter == '') throw const FormatException('Invalid delimiter');
+  // split by delimiter and checks that there are enough items
+  final parts = text.trim().split(delimiter ?? _splitByWhitespace);
+  if (parts.length < minCount) {
+    throw const FormatException('Too few value items');
+  }
+  // returns lazy iterable for num? values, iteration steps may throw
+  // FormatException (by double.parse). Empty coords are converted to null.
+  return parts
+      .map<num?>((value) => value.isEmpty ? null : double.parse(value.trim()));
+}
+
+/// Returns a lazy iterable parsing values from [text] separated by [delimiter].
 ///
 /// If [delimiter] is not provided, values are separated by whitespace.
 ///

@@ -13,7 +13,7 @@ import 'package:test/test.dart';
 
 void main() {
   group('Projected class', () {
-    test('Coordinate access', () {
+    test('Coordinate access and factories', () {
       const p1 = Projected(x: 1.0, y: 2.0);
       const p2 = Projected(x: 1.0, y: 2.0, z: 3.0);
       const p3 = Projected(x: 1.0, y: 2.0, m: 4.0);
@@ -30,6 +30,26 @@ void main() {
         [p1.optZ, p1.optM, p2.optM, p3.optZ],
         [null, null, null, null],
       );
+
+      expect(Projected.from(const [1.0, 2.0]), p1);
+      expect(Projected.from(const [1.0, 2.0, 3.0]), p2);
+      expect(Projected.from(const [1.0, 2.0, 4.0]), isNot(p3));
+      expect(Projected.from(const [1.0, 2.0, 3.0, 4.0]), p4);
+
+      expect(Projected.fromText('1.0,2.0'), p1);
+      expect(Projected.fromText('1.0,2.0,3.0'), p2);
+      expect(Projected.fromText('1.0,2.0,,4.0'), p3);
+      expect(Projected.fromText('1.0,2.0,3.0,4.0'), p4);
+
+      expect(Projected.fromText(p1.toString()), p1);
+      expect(Projected.fromText(p2.toString()), p2);
+      expect(Projected.fromText(p3.toString()), p3);
+      expect(Projected.fromText(p4.toString()), p4);
+      expect(Projected.fromText('1.0 2.0 3.0 4.0', delimiter: ' '), p4);
+
+      expect(() => Projected.from(const [1.0]), throwsFormatException);
+      expect(() => Projected.fromText('1.0'), throwsFormatException);
+      expect(() => Projected.fromText('1.0,2.0,x'), throwsFormatException);
     });
 
     test('Equals and hashCode', () {
@@ -123,7 +143,7 @@ void main() {
   });
 
   group('Geographic class', () {
-    test('Coordinate access', () {
+    test('Coordinate access and factories', () {
       const p1 = Geographic(lon: 1.0, lat: 2.0);
       const p2 = Geographic(lon: 1.0, lat: 2.0, elev: 3.0);
       const p3 = Geographic(lon: 1.0, lat: 2.0, m: 4.0);
@@ -140,6 +160,16 @@ void main() {
         [p1.optElev, p1.optM, p2.optM, p3.optElev],
         [null, null, null, null],
       );
+
+      expect(Geographic.from(const [1.0, 2.0]), p1);
+      expect(Geographic.from(const [1.0, 2.0, 3.0]), p2);
+      expect(Geographic.from(const [1.0, 2.0, 4.0]), isNot(p3));
+      expect(Geographic.from(const [1.0, 2.0, 3.0, 4.0]), p4);
+
+      expect(Geographic.fromText('1.0,2.0'), p1);
+      expect(Geographic.fromText('1.0,2.0,3.0'), p2);
+      expect(Geographic.fromText('1.0,2.0,,4.0'), p3);
+      expect(Geographic.fromText('1.0,2.0,3.0,4.0'), p4);
     });
 
     test('Equals and hashCode', () {

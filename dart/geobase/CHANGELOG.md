@@ -1,6 +1,7 @@
 ## 0.1.1
 
 🧩 Features:
+- [Create position instances from num iterables or text #101](https://github.com/navibyte/geospatial/issues/101)
 
 ## 0.1.0
 

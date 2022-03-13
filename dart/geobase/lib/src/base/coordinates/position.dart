@@ -4,6 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import '/src/utils/num.dart';
 import '/src/utils/tolerance.dart';
 
 import 'positionable.dart';
@@ -153,6 +154,62 @@ abstract class Position extends Positionable {
   // ---------------------------------------------------------------------------
   // Static methods with default logic, used by Position, Projected and
   // Geographic.
+
+  /// Creates a position of [R] from [coords] given in order: x, y, [z, m].
+  ///
+  /// The [coords] must contain at least two coordinate values (x and y)
+  /// starting from [offset]. If [coords] contains three values, then 3rd item
+  /// is z. If [coords] contains four values, then 4th item is m.
+  ///
+  /// A position instance is created using the factory function [to].
+  static R createFrom<R extends Position>(
+    Iterable<num> coords, {
+    required CreatePosition<R> to,
+    int offset = 0,
+  }) {
+    final len = coords.length - offset;
+    if (len < 2) {
+      throw const FormatException('Coords must contain at least two items');
+    }
+    return to.call(
+      x: coords.elementAt(offset),
+      y: coords.elementAt(offset + 1),
+      z: len >= 3 ? coords.elementAt(offset + 2) : null,
+      m: len >= 4 ? coords.elementAt(offset + 3) : null,
+    );
+  }
+
+  /// Creates a position of [R] from [text] given in order: x, y, [z, m].
+  ///
+  /// Coordinate values in [text] are separated by [delimiter].
+  ///
+  /// The [text] must contain at least two coordinate values (x and y). If
+  /// [text] contains three values, then 3rd item is z. If [text] contains four
+  /// values, then 4th item is m.
+  ///
+  /// A position instance is created using the factory function [to].
+  static R createFromText<R extends Position>(
+    String text, {
+    required CreatePosition<R> to,
+    Pattern? delimiter = ',',
+  }) {
+    final coords = parseNullableNumValuesFromText(text, delimiter: delimiter);
+    final len = coords.length;
+    if (len < 2) {
+      throw const FormatException('Coords must contain at least two items');
+    }
+    final x = coords.elementAt(0);
+    final y = coords.elementAt(1);
+    if (x == null || y == null) {
+      throw const FormatException('X and y are required.');
+    }
+    return to.call(
+      x: x,
+      y: y,
+      z: len >= 3 ? coords.elementAt(2) : null,
+      m: len >= 4 ? coords.elementAt(3) : null,
+    );
+  }
 
   /// A coordinate value of [position] by the coordinate axis index [i].
   ///

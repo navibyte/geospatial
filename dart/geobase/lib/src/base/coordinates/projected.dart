@@ -48,6 +48,35 @@ class Projected extends Position {
         _z = z,
         _m = m;
 
+  /// Creates a position from [coords] given in order: x, y, [z, m].
+  ///
+  /// The [coords] must contain at least two coordinate values (x and y)
+  /// starting from [offset]. If [coords] contains three values, then 3rd item
+  /// is z. If [coords] contains four values, then 4th item is m.
+  factory Projected.from(Iterable<num> coords, {int offset = 0}) =>
+      Position.createFrom(
+        coords,
+        to: Projected.create,
+        offset: offset,
+      );
+
+  /// Creates a position from [text] given in order: x, y, [z, m].
+  ///
+  /// Coordinate values in [text] are separated by [delimiter].
+  ///
+  /// The [text] must contain at least two coordinate values (x and y). If
+  /// [text] contains three values, then 3rd item is z. If [text] contains four
+  /// values, then 4th item is m.
+  factory Projected.fromText(
+    String text, {
+    Pattern? delimiter = ',',
+  }) =>
+      Position.createFromText(
+        text,
+        to: Projected.create,
+        delimiter: delimiter,
+      );
+
   @override
   num get x => _x;
 
@@ -132,7 +161,7 @@ class Projected extends Position {
       case Coords.xyz:
         return '$_x,$_y,$_z';
       case Coords.xym:
-        return '$_x,$_y,$_m';
+        return '$_x,$_y,,$_m';
       case Coords.xyzm:
         return '$_x,$_y,$_z,$_m';
       case Coords.lonLat:

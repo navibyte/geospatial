@@ -52,6 +52,35 @@ class Geographic extends Position {
           m: m?.toDouble(),
         );
 
+  /// Creates a position from [coords] given in order: lon, lat, [elev, m].
+  ///
+  /// The [coords] must contain at least two coordinate values (lon and lat)
+  /// starting from [offset]. If [coords] contains three values, then 3rd item
+  /// is elev. If [coords] contains four values, then 4th item is m.
+  factory Geographic.from(Iterable<num> coords, {int offset = 0}) =>
+      Position.createFrom(
+        coords,
+        to: Geographic.create,
+        offset: offset,
+      );
+
+  /// Creates a position from [text] given in order: lon, lat, [elev, m].
+  ///
+  /// Coordinate values in [text] are separated by [delimiter].
+  ///
+  /// The [text] must contain at least two coordinate values (lon and lat). If
+  /// [text] contains three values, then 3rd item is elev. If [text] contains
+  /// four values, then 4th item is m.
+  factory Geographic.fromText(
+    String text, {
+    Pattern? delimiter = ',',
+  }) =>
+      Position.createFromText(
+        text,
+        to: Geographic.create,
+        delimiter: delimiter,
+      );
+
   /// The longitude coordinate.
   double get lon => _lon;
 
@@ -156,7 +185,7 @@ class Geographic extends Position {
       case Coords.lonLatElev:
         return '$_lon,$_lat,$_elev';
       case Coords.lonLatM:
-        return '$_lon,$_lat,$_m';
+        return '$_lon,$_lat,,$_m';
       case Coords.lonLatElevM:
         return '$_lon,$_lat,$_elev,$_m';
       case Coords.xy:
