@@ -8,7 +8,6 @@ import 'package:geobase/geobase.dart';
 import 'package:meta/meta.dart';
 
 import '/src/base/spatial.dart';
-import '/src/utils/geography.dart';
 import '/src/utils/num.dart';
 import '/src/utils/wkt.dart';
 
@@ -137,8 +136,7 @@ class GeoPoint2 extends GeoPoint {
   final double lat;
 
   @override
-  double distanceTo(GeoPoint other) =>
-      distanceHaversine(lon, lat, other.lon, other.lat);
+  double distanceTo(GeoPoint other) => distanceHaversine(this, other);
 
   @override
   GeoPoint2 copyWith({num? x, num? y, num? z, num? m}) => GeoPoint2(

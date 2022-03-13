@@ -5,7 +5,6 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import '/src/base/spatial.dart';
-import '/src/utils/geography.dart';
 
 import 'geopoint.dart';
 
@@ -31,6 +30,5 @@ class GeoPointWrapper<T extends GeoPoint> extends PointWrapper<T, double>
   double? get optElev => point.optElev;
 
   @override
-  double distanceTo(GeoPoint other) =>
-      distanceHaversine(lon, lat, other.lon, other.lat);
+  double distanceTo(GeoPoint other) => point.distanceTo(other);
 }

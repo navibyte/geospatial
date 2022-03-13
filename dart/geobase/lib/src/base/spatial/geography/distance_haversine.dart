@@ -6,12 +6,25 @@
 
 import 'dart:math';
 
-/// Distance returns a distance between two points. Result is meters.
-double distanceHaversine(double lon1, double lat1, double lon2, double lat2) {
-  // using "haversine" formula
-  // see: http://mathforum.org/library/drmath/view/51879.html
+import '/src/base/coordinates.dart';
 
-  const earthRadius = 6371000.0;
+/// Returns a distance in meters between [position1] and [position2].
+/// 
+/// Given [earthRadius] is used for calculation with the approximate mean radius
+/// as a default.
+double distanceHaversine(
+  Geographic position1,
+  Geographic position2, {
+  double earthRadius = 6371000.0,
+}) {
+  // https://en.wikipedia.org/wiki/Haversine_formula
+
+  // coordinates
+  final lon1 = position1.lon;
+  final lat1 = position1.lat;
+  final lon2 = position2.lon;
+  final lat2 = position2.lat;
+
   const toRad = pi / 180.0;
 
   final lat1Rad = lat1 * toRad;
