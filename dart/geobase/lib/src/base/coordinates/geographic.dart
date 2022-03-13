@@ -57,8 +57,8 @@ class Geographic extends Position {
   /// The [coords] must contain at least two coordinate values (lon and lat)
   /// starting from [offset]. If [coords] contains three values, then 3rd item
   /// is elev. If [coords] contains four values, then 4th item is m.
-  factory Geographic.from(Iterable<num> coords, {int offset = 0}) =>
-      Position.createFrom(
+  factory Geographic.fromCoords(Iterable<num> coords, {int offset = 0}) =>
+      Position.createFromCoords(
         coords,
         to: Geographic.create,
         offset: offset,

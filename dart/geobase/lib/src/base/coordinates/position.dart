@@ -162,7 +162,7 @@ abstract class Position extends Positionable {
   /// is z. If [coords] contains four values, then 4th item is m.
   ///
   /// A position instance is created using the factory function [to].
-  static R createFrom<R extends Position>(
+  static R createFromCoords<R extends Position>(
     Iterable<num> coords, {
     required CreatePosition<R> to,
     int offset = 0,

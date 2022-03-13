@@ -31,10 +31,10 @@ void main() {
         [null, null, null, null],
       );
 
-      expect(Projected.from(const [1.0, 2.0]), p1);
-      expect(Projected.from(const [1.0, 2.0, 3.0]), p2);
-      expect(Projected.from(const [1.0, 2.0, 4.0]), isNot(p3));
-      expect(Projected.from(const [1.0, 2.0, 3.0, 4.0]), p4);
+      expect(Projected.fromCoords(const [1.0, 2.0]), p1);
+      expect(Projected.fromCoords(const [1.0, 2.0, 3.0]), p2);
+      expect(Projected.fromCoords(const [1.0, 2.0, 4.0]), isNot(p3));
+      expect(Projected.fromCoords(const [1.0, 2.0, 3.0, 4.0]), p4);
 
       expect(Projected.fromText('1.0,2.0'), p1);
       expect(Projected.fromText('1.0,2.0,3.0'), p2);
@@ -47,7 +47,7 @@ void main() {
       expect(Projected.fromText(p4.toString()), p4);
       expect(Projected.fromText('1.0 2.0 3.0 4.0', delimiter: ' '), p4);
 
-      expect(() => Projected.from(const [1.0]), throwsFormatException);
+      expect(() => Projected.fromCoords(const [1.0]), throwsFormatException);
       expect(() => Projected.fromText('1.0'), throwsFormatException);
       expect(() => Projected.fromText('1.0,2.0,x'), throwsFormatException);
     });
@@ -161,10 +161,10 @@ void main() {
         [null, null, null, null],
       );
 
-      expect(Geographic.from(const [1.0, 2.0]), p1);
-      expect(Geographic.from(const [1.0, 2.0, 3.0]), p2);
-      expect(Geographic.from(const [1.0, 2.0, 4.0]), isNot(p3));
-      expect(Geographic.from(const [1.0, 2.0, 3.0, 4.0]), p4);
+      expect(Geographic.fromCoords(const [1.0, 2.0]), p1);
+      expect(Geographic.fromCoords(const [1.0, 2.0, 3.0]), p2);
+      expect(Geographic.fromCoords(const [1.0, 2.0, 4.0]), isNot(p3));
+      expect(Geographic.fromCoords(const [1.0, 2.0, 3.0, 4.0]), p4);
 
       expect(Geographic.fromText('1.0,2.0'), p1);
       expect(Geographic.fromText('1.0,2.0,3.0'), p2);

@@ -53,8 +53,8 @@ class Projected extends Position {
   /// The [coords] must contain at least two coordinate values (x and y)
   /// starting from [offset]. If [coords] contains three values, then 3rd item
   /// is z. If [coords] contains four values, then 4th item is m.
-  factory Projected.from(Iterable<num> coords, {int offset = 0}) =>
-      Position.createFrom(
+  factory Projected.fromCoords(Iterable<num> coords, {int offset = 0}) =>
+      Position.createFromCoords(
         coords,
         to: Projected.create,
         offset: offset,
