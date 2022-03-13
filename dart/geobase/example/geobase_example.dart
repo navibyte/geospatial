@@ -59,6 +59,11 @@ void _geographicPosition() {
 
   // Geographic position with longitude, latitude, elevation and measure.
   const Geographic(lon: -0.0014, lat: 51.4778, elev: 45.0, m: 123.0);
+
+  // The last sample also from num iterable or text.
+  Geographic.fromCoords(const [-0.0014, 51.4778, 45.0, 123.0]);
+  Geographic.fromText('-0.0014,51.4778,45.0,123.0');
+  Geographic.fromText('-0.0014 51.4778 45.0 123.0', delimiter: ' ');
 }
 
 void _geographicBbox() {
@@ -74,6 +79,10 @@ void _geographicBbox() {
     north: 60.0,
     maxElev: 200.0,
   );
+
+  // The last sample also from num iterable or text.
+  ProjBox.fromCoords(const [-20.0, 50.0, 100.0, 20.0, 60.0, 200.0]);
+  ProjBox.fromText('-20.0,50.0,100.0,20.0,60.0,200.0');
 
   // Geographic bbox with limits on elevation and measure coordinates too.
   const GeoBox(
@@ -97,6 +106,11 @@ void _projectedPosition() {
 
   // Projected position with x, y, z and m.
   const Projected(x: 708221.0, y: 5707225.0, z: 45.0, m: 123.0);
+
+  // The last sample also from num iterable or text.
+  Projected.fromCoords(const [708221.0, 5707225.0, 45.0, 123.0]);
+  Projected.fromText('708221.0,5707225.0,45.0,123.0');
+  Projected.fromText('708221.0 5707225.0 45.0 123.0', delimiter: ' ');
 }
 
 void _projectedBbox() {
@@ -105,6 +119,10 @@ void _projectedBbox() {
 
   // Projected bbox with limits on x, y and z.
   const ProjBox(minX: 10, minY: 10, minZ: 10, maxX: 20, maxY: 20, maxZ: 20);
+
+  // The last sample also from num iterable or text.
+  ProjBox.fromCoords(const [10, 10, 10, 20, 20, 20]);
+  ProjBox.fromText('10,10,10,20,20,20');
 
   // Projected bbox with limits on x, y, z and m.
   const ProjBox(

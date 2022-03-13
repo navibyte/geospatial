@@ -28,7 +28,7 @@ Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geobase: ^0.1.0
+  geobase: ^0.1.1
 ```
 
 Import it:
@@ -99,7 +99,7 @@ Class         | Description
 Geographic positions:
 
 ```dart
-  // Geographic position with longitude and latitude.
+  // Geographic position with longitude and latitude
   const Geographic(lon: -0.0014, lat: 51.4778);
 
   // Geographic position with longitude, latitude and elevation.
@@ -107,6 +107,11 @@ Geographic positions:
 
   // Geographic position with longitude, latitude, elevation and measure.
   const Geographic(lon: -0.0014, lat: 51.4778, elev: 45.0, m: 123.0);
+
+  // The last sample also from num iterable or text.
+  Geographic.fromCoords(const [-0.0014, 51.4778, 45.0, 123.0]);
+  Geographic.fromText('-0.0014,51.4778,45.0,123.0');
+  Geographic.fromText('-0.0014 51.4778 45.0 123.0', delimiter: ' ');
 ```
 
 Geographic bounding boxes:
@@ -124,6 +129,10 @@ Geographic bounding boxes:
     north: 60.0,
     maxElev: 200.0,
   );
+
+  // The last sample also from num iterable or text.
+  ProjBox.fromCoords(const [-20.0, 50.0, 100.0, 20.0, 60.0, 200.0]);
+  ProjBox.fromText('-20.0,50.0,100.0,20.0,60.0,200.0');
 
   // Geographic bbox with limits on elevation and measure coordinates too.
   const GeoBox(
@@ -151,6 +160,11 @@ Projected positions:
 
   // Projected position with x, y, z and m.
   const Projected(x: 708221.0, y: 5707225.0, z: 45.0, m: 123.0);
+
+  // The last sample also from num iterable or text.
+  Projected.fromCoords(const [708221.0, 5707225.0, 45.0, 123.0]);
+  Projected.fromText('708221.0,5707225.0,45.0,123.0');
+  Projected.fromText('708221.0 5707225.0 45.0 123.0', delimiter: ' ');
 ```
 
 Projected bounding boxes:
@@ -161,6 +175,10 @@ Projected bounding boxes:
 
   // Projected bbox with limits on x, y and z.
   const ProjBox(minX: 10, minY: 10, minZ: 10, maxX: 20, maxY: 20, maxZ: 20);
+
+  // The last sample also from num iterable or text.
+  ProjBox.fromCoords(const [10, 10, 10, 20, 20, 20]);
+  ProjBox.fromText('10,10,10,20,20,20');
 
   // Projected bbox with limits on x, y, z and m.
   const ProjBox(
@@ -404,6 +422,23 @@ This sample uses the built-int `translatePoint` function:
     const Projected(x: 100.0, y: 200.0, z: 50.0, m: 1.25)
         .transform(translatePosition(dx: 10.0, dy: 20.0)),
   );
+```
+
+### Geographic algorithms
+
+Currently supported, a distance between geographic positions using the
+[Haversine formula](https://en.wikipedia.org/wiki/Haversine_formula).
+
+```dart
+/// Returns a distance in meters between [position1] and [position2].
+/// 
+/// Given [earthRadius] is used for calculation with the approximate mean radius
+/// as a default.
+double distanceHaversine(
+  Geographic position1,
+  Geographic position2, {
+  double earthRadius = 6371000.0,
+});
 ```
 
 ## Package
