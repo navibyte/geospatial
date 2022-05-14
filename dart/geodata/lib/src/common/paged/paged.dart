@@ -23,5 +23,6 @@ mixin Paged<T> {
   /// Get a previous set of items from a resource asynchronously.
   ///
   /// Returns null if a previous set of items isn't available.
+  // ignore: avoid_redundant_argument_values
   Future<Paged<T>?> previous() => Future.value(null);
 }

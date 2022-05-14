@@ -22,4 +22,4 @@ dependencies:
 
 dev_dependencies:
   test: ^1.16.4
-  very_good_analysis: ^2.4.0
+  very_good_analysis: ^3.0.0

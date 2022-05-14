@@ -1,4 +1,4 @@
-# Analysis options / lint rules (2021-10-22 / "packages edition")
+# Analysis options / lint rules (2022-05-14 / "packages edition")
 #
 # Documentation (official for Dart)
 #     https://pub.dev/packages/lints
@@ -21,7 +21,7 @@
 #
 # Applied package
 #     https://pub.dev/packages/very_good_analysis
-#     2.4.0+
+#     3.0.0+
 
 include: package:very_good_analysis/analysis_options.yaml
 
