@@ -1,3 +1,7 @@
+## 0.9.0
+
+Development version: 0.9.0-dev.0
+
 ## 0.8.1
 
 Small fix with latest dependency to `geobase` version 0.1.1 and `geocore`
