@@ -20,12 +20,16 @@
 /// Usage: import `package:geobase/geobase.dart`
 library geobase;
 
-export 'src/base/codes.dart';
-export 'src/base/coordinates.dart';
-export 'src/base/project.dart';
-export 'src/base/spatial.dart';
-export 'src/base/time.dart';
-export 'src/base/transforms.dart';
-export 'src/content/encode.dart';
-export 'src/content/formats.dart';
+export 'src/codes/coords.dart';
+export 'src/codes/geom.dart';
+export 'src/coordinates/base.dart';
+export 'src/coordinates/geographic.dart';
+export 'src/coordinates/projected.dart';
+export 'src/coordinates/projection.dart';
+export 'src/coordinates/transforms.dart';
 export 'src/data/extent.dart';
+export 'src/data/time.dart';
+export 'src/geodesy/spherical.dart';
+export 'src/projections/wgs84.dart';
+export 'src/vector/encode.dart';
+export 'src/vector/formats.dart';

@@ -17,4 +17,4 @@ library with_proj4d;
 
 export 'geobase.dart';
 
-export 'src/projections/proj4d.dart';
+export 'src/projections_ext/proj4d.dart';

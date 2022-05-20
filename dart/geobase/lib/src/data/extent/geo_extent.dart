@@ -6,8 +6,8 @@
 
 import 'package:meta/meta.dart';
 
-import '/src/base/coordinates.dart';
-import '/src/base/time.dart';
+import '/src/coordinates/geographic.dart';
+import '/src/data/time.dart';
 
 import 'spatial_extent.dart';
 import 'temporal_extent.dart';
