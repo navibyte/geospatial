@@ -2,6 +2,10 @@
 
 Development version: 0.9.0-dev.0
 
+🛠 Maintenance:
+- [Upgrade to Dart 2.17 #105](https://github.com/navibyte/geospatial/issues/105)
+- [Apply very_good_analysis 3.0.0+ lint rules #104](https://github.com/navibyte/geospatial/issues/104)
+
 ## 0.8.1
 
 Small fix with latest dependency to `geobase` version 0.1.1 and `geocore`

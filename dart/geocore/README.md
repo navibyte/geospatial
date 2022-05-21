@@ -23,7 +23,7 @@ To use, add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geocore: ^0.8.1
+  geocore: ^0.9.0-dev.0
 ```
 
 And then import it:
