@@ -14,27 +14,46 @@
 /// [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry).
 enum Geom {
   /// The type for the `POINT` geometry.
-  point,
+  point('POINT', 'Point'),
 
   /// The type for the `LINESTRING` geometry.
-  lineString,
+  lineString('LINESTRING', 'LineString'),
 
   /// The type for the `POLYGON` geometry.
-  polygon,
+  polygon('POLYGON', 'Polygon'),
 
   /// The type for the `GEOMETRYCOLLECTION` geometry.
-  geometryCollection,
+  geometryCollection('GEOMETRYCOLLECTION', 'GeometryCollection'),
 
   /// The type for the `MULTIPOINT` geometry.
-  multiPoint,
+  multiPoint('MULTIPOINT', 'MultiPoint'),
 
   /// The type for the `MULTILINESTRING` geometry.
-  multiLineString,
+  multiLineString('MULTILINESTRING', 'MultiLineString'),
 
   /// The type for the `MULTIPOLYGON` geometry.
-  multiPolygon,
+  multiPolygon('MULTIPOLYGON', 'MultiPolygon');
+
+  /// Create an enum for a geometry type.
+  const Geom(this.nameWkt, this.nameGeoJson);
+
+  /// The WKT name for an enum, ie. `POINT` for the point type.
+  final String nameWkt;
+
+  /// The GeoJSON type for an enum, ie. `Point` for the point type.
+  final String nameGeoJson;
+
+  /// True for the collection of other geometries (geometryCollection).
+  bool get isCollection => this == Geom.geometryCollection;
+
+  /// True for multi geometries (multiPoint, multiLineString, multiPolygon).
+  bool get isMulti =>
+      this == Geom.multiPoint ||
+      this == Geom.multiLineString ||
+      this == Geom.multiPolygon;
 }
 
+/*
 /// An extension for the [Geom] enum.
 extension GeomExtension on Geom {
   /// True for the collection of other geometries (geometryCollection).
@@ -86,3 +105,4 @@ extension GeomExtension on Geom {
     }
   }
 }
+*/

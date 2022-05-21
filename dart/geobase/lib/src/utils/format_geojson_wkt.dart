@@ -1017,7 +1017,7 @@ class _WktTextWriter extends _WktLikeTextWriter {
     // check optional expected coordinate type
     final coordType = _coordTypes.isNotEmpty
         ? _coordTypes.last
-        : CoordsExtension.select(
+        : Coords.select(
             isGeographic: bbox.isGeographic,
             is3D: hasZ,
             isMeasured: hasM,

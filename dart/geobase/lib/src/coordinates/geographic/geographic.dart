@@ -170,7 +170,7 @@ class Geographic extends Position {
   bool get isMeasured => _m != null;
 
   @override
-  Coords get typeCoords => CoordsExtension.select(
+  Coords get typeCoords => Coords.select(
         isGeographic: isGeographic,
         is3D: is3D,
         isMeasured: isMeasured,

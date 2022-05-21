@@ -308,7 +308,7 @@ class _TestXYZM implements Projected {
   bool get isMeasured => true;
 
   @override
-  Coords get typeCoords => CoordsExtension.select(
+  Coords get typeCoords => Coords.select(
         isGeographic: isGeographic,
         is3D: is3D,
         isMeasured: isMeasured,

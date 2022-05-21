@@ -161,7 +161,7 @@ class ProjBox extends Box {
   bool get isMeasured => _minM != null;
 
   @override
-  Coords get typeCoords => CoordsExtension.select(
+  Coords get typeCoords => Coords.select(
         isGeographic: isGeographic,
         is3D: is3D,
         isMeasured: isMeasured,
