@@ -71,24 +71,6 @@ GeoJsonFactory<T> geoJsonProjected<T extends ProjectedPoint>(
       featureFactory: feature,
     );
 
-/// The default GeoJSON factory instace assuming geographic CRS80 coordinates.
-///
-/// Result type candidates for point objects: [GeoPoint2], [GeoPoint3].
-@Deprecated('Use geoJsonGeographic() or geoJson() instead')
-const geoJSON = GeoJsonFactory<GeoPoint>(
-  pointFactory: geographicPoints,
-  boundsFactory: GeoBounds.fromCoords,
-);
-
-/// The default GeoJSON factory instace assuming projected coordinates.
-///
-/// Result type candidates for point objects: [Point2], [Point3].
-@Deprecated('Use geoJsonProjected() or geoJson() instead')
-const geoJSONProjected = GeoJsonFactory<Point>(
-  pointFactory: projectedPoints,
-  boundsFactory: Bounds.fromCoords,
-);
-
 /// The default [CreateFeature] forwarding directly to Feature.view() factory.
 ///
 /// This factory omits [jsonObject] parameter.

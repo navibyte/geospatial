@@ -16,5 +16,4 @@ export 'base.dart';
 export 'coordinates.dart';
 
 export 'src/data/feature.dart';
-export 'src/data/meta.dart';
 export 'src/data/simple_geometry.dart';

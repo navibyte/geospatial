@@ -92,10 +92,6 @@ class GeoPoint2 extends GeoPoint {
   static const PointFactory<GeoPoint2> coordinates =
       CastingPointFactory<GeoPoint2>(GeoPoint2.origin());
 
-  /// A [PointFactory] creating [GeoPoint2] instances.
-  @Deprecated('Use coordinates instead')
-  static const PointFactory<GeoPoint2> geometry = coordinates;
-
   @override
   int get coordinateDimension => 2;
 
@@ -243,10 +239,6 @@ class GeoPoint2m extends GeoPoint2 {
   static const PointFactory<GeoPoint2m> coordinates =
       CastingPointFactory<GeoPoint2m>(GeoPoint2m.origin());
 
-  /// A [PointFactory] creating [GeoPoint2m] instances.
-  @Deprecated('Use coordinates instead')
-  static const PointFactory<GeoPoint2m> geometry = coordinates;
-
   @override
   int get coordinateDimension => 3;
 
@@ -378,10 +370,6 @@ class GeoPoint3 extends GeoPoint2 {
   /// A [PointFactory] creating [GeoPoint3] instances.
   static const PointFactory<GeoPoint3> coordinates =
       CastingPointFactory<GeoPoint3>(GeoPoint3.origin());
-
-  /// A [PointFactory] creating [GeoPoint3] instances.
-  @Deprecated('Use coordinates instead')
-  static const PointFactory<GeoPoint3> geometry = coordinates;
 
   @override
   int get coordinateDimension => 3;
@@ -537,10 +525,6 @@ class GeoPoint3m extends GeoPoint3 {
   /// A [PointFactory] creating [GeoPoint3m] instances.
   static const PointFactory<GeoPoint3m> coordinates =
       CastingPointFactory<GeoPoint3m>(GeoPoint3m.origin());
-
-  /// A [PointFactory] creating [GeoPoint3m] instances.
-  @Deprecated('Use coordinates instead')
-  static const PointFactory<GeoPoint3m> geometry = coordinates;
 
   @override
   int get coordinateDimension => 4;

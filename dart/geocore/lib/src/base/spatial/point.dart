@@ -160,22 +160,6 @@ abstract class Point<C extends num> extends Geometry
     return buf.toString();
   }
 
-  /// A string representation of coordinate values separated by [delimiter].
-  ///
-  /// If [delimiter] is not provided, values are separated by whitespace. For
-  /// example "10.1 20.2" is returned for a point with x=10.1 and y=20.2.
-  ///
-  /// Use [fractionDigits] to set a number of decimals to nums with decimals.
-  @Deprecated('Use toStringAs() instead')
-  String toText({
-    String delimiter = ' ',
-    int? fractionDigits,
-  }) {
-    final buf = StringBuffer();
-    writeValues(buf, delimiter: delimiter, decimals: fractionDigits);
-    return buf.toString();
-  }
-
   @override
   void writeTo(GeometryWriter writer) => writer.geometryWithPosition(
         type: Geom.point,

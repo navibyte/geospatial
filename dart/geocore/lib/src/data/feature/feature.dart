@@ -46,44 +46,6 @@ class Feature<T extends Geometry> extends FeatureWritable implements Bounded {
         _geometry = geometry,
         _featureBounds = bounds;
 
-  /// A new feature of optional [id], [properties], [geometry] and [bounds].
-  ///
-  /// The [properties] is used as a reference by a feature. Any changes on
-  /// source reflect also on feature properties.
-  ///
-  /// If an optional [bounds] for a new feature is not provided then [geometry]
-  /// bounds is used also as feature bounds when accessed.
-  @Deprecated('Use Feature() instead')
-  const Feature.view({
-    String? id,
-    required Map<String, Object?> properties,
-    T? geometry,
-    Bounds? bounds,
-  })  : _id = id,
-        _properties = properties,
-        _geometry = geometry,
-        _featureBounds = bounds;
-
-  /// A new feature of optional [id], [properties], [geometry] and [bounds].
-  ///
-  /// The [properties] (when given) is copied as `Map.of(properties)`.
-  ///
-  /// If an optional [bounds] for a new feature is not provided then [geometry]
-  /// bounds is used also as feature bounds when accessed.
-  @Deprecated('Use Feature() instead')
-  factory Feature.of({
-    String? id,
-    required Map<String, Object?> properties,
-    T? geometry,
-    Bounds? bounds,
-  }) =>
-      Feature<T>(
-        id: id,
-        geometry: geometry,
-        properties: Map.of(properties),
-        bounds: bounds,
-      );
-
   /// An optional identifier (null, int, BigInt or String) for this feature.
   Object? get id => _id;
 

@@ -26,20 +26,6 @@ class GeometryCollection<E extends Geometry> extends Geometry
             ? geometries
             : BoundedSeries.view(geometries);
 
-  /// Create an [GeometryCollection] instance backed by [source].
-  ///
-  /// An optional [bounds] can be provided or it's lazy calculated if null.
-  @Deprecated('Use default constructor instead')
-  factory GeometryCollection.view(Iterable<E> source, {Bounds? bounds}) =>
-      GeometryCollection(BoundedSeries<E>.view(source, bounds: bounds));
-
-  /// Create an immutable [GeometryCollection] with items copied from [source].
-  ///
-  /// An optional [bounds] can be provided or it's lazy calculated if null.
-  @Deprecated('Use default constructor instead')
-  factory GeometryCollection.from(Iterable<E> source, {Bounds? bounds}) =>
-      GeometryCollection(BoundedSeries<E>.from(source, bounds: bounds));
-
   /// All [geometries] for this geometry collection.
   final BoundedSeries<E> geometries;
 

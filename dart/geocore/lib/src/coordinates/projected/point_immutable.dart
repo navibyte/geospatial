@@ -91,11 +91,6 @@ class Point2 extends ProjectedPoint<num> {
   static const PointFactory<Point2> coordinates =
       CastingPointFactory<Point2>(Point2.origin());
 
-  /// A [PointFactory] creating [Point2] instances.
-  ///
-  @Deprecated('Use coordinates instead')
-  static const PointFactory<Point2> geometry = coordinates;
-
   @override
   int get coordinateDimension => 2;
 
@@ -223,10 +218,6 @@ class Point2m extends Point2 {
   static const PointFactory<Point2m> coordinates =
       CastingPointFactory<Point2m>(Point2m.origin());
 
-  /// A [PointFactory] creating [Point2m] instances.
-  @Deprecated('Use coordinates instead')
-  static const PointFactory<Point2m> geometry = coordinates;
-
   @override
   int get coordinateDimension => 3;
 
@@ -350,10 +341,6 @@ class Point3 extends Point2 {
   /// A [PointFactory] creating [Point3] instances.
   static const PointFactory<Point3> coordinates =
       CastingPointFactory<Point3>(Point3.origin());
-
-  /// A [PointFactory] creating [Point3] instances.
-  @Deprecated('Use coordinates instead')
-  static const PointFactory<Point3> geometry = coordinates;
 
   @override
   int get coordinateDimension => 3;
@@ -482,10 +469,6 @@ class Point3m extends Point3 {
   static const PointFactory<Point3m> coordinates =
       CastingPointFactory<Point3m>(Point3m.origin());
 
-  /// A [PointFactory] creating [Point3m] instances.
-  @Deprecated('Use coordinates instead')
-  static const PointFactory<Point3m> geometry = coordinates;
-
   @override
   int get coordinateDimension => 4;
 
@@ -610,10 +593,6 @@ class Point2i extends ProjectedPoint<int> {
   /// A [PointFactory] creating [Point2i] instances.
   static const PointFactory<Point2i> coordinates =
       CastingPointFactory<Point2i>(Point2i.origin());
-
-  /// A [PointFactory] creating [Point2i] instances.
-  @Deprecated('Use coordinates instead')
-  static const PointFactory<Point2i> geometry = coordinates;
 
   @override
   int get coordinateDimension => 2;
@@ -753,10 +732,6 @@ class Point3i extends Point2i {
   /// A [PointFactory] creating [Point3i] instances.
   static const PointFactory<Point3i> coordinates =
       CastingPointFactory<Point3i>(Point3i.origin());
-
-  /// A [PointFactory] creating [Point3i] instances.
-  @Deprecated('Use coordinates instead')
-  static const PointFactory<Point3i> geometry = coordinates;
 
   @override
   int get coordinateDimension => 3;

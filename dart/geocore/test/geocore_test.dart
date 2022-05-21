@@ -193,21 +193,6 @@ void main() {
     const p3 = Point3.xyz(10.001, 20.000, 30);
     const p3i = Point3i.xyz(10, 20, 30);
 
-    test('toText with Point3 and Point3i', () {
-      // ignore: deprecated_member_use_from_same_package
-      expect(p3dec.toText(), '10.1 20.217 30.73942');
-      // ignore: deprecated_member_use_from_same_package
-      expect(p3dec.toText(fractionDigits: 0), '10 20 31');
-      // ignore: deprecated_member_use_from_same_package
-      expect(p3dec.toText(fractionDigits: 3), '10.100 20.217 30.739');
-      // ignore: deprecated_member_use_from_same_package
-      expect(p3.toText(fractionDigits: 3), '10.001 20 30');
-      // ignore: deprecated_member_use_from_same_package
-      expect(p3.toText(fractionDigits: 2), '10.00 20 30');
-      // ignore: deprecated_member_use_from_same_package
-      expect(p3i.toText(fractionDigits: 2), '10 20 30');
-    });
-
     test('toStringAs (defaultFormat) with Point3 and Point3i', () {
       expect(p3dec.toStringAs(), '10.1,20.217,30.73942');
       expect(p3dec.toStringAs(decimals: 0), '10,20,31');
