@@ -6,7 +6,7 @@
 
 import 'package:meta/meta.dart';
 
-import '/src/data/time.dart';
+import '/src/meta/time.dart';
 
 /// An extent with 1 to N intervals in defined temporal reference system.
 @immutable

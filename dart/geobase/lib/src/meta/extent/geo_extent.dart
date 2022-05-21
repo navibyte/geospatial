@@ -7,7 +7,7 @@
 import 'package:meta/meta.dart';
 
 import '/src/coordinates/geographic.dart';
-import '/src/data/time.dart';
+import '/src/meta/time.dart';
 
 import 'spatial_extent.dart';
 import 'temporal_extent.dart';
