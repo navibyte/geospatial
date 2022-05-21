@@ -15,7 +15,7 @@ import 'geopoint.dart';
 class GeoPointWrapper<T extends GeoPoint> extends PointWrapper<T, double>
     implements GeoPoint {
   /// Creates a geographic position by wrapping [point].
-  const GeoPointWrapper(T point) : super(point);
+  const GeoPointWrapper(super.point);
 
   @override
   double get lon => point.lon;

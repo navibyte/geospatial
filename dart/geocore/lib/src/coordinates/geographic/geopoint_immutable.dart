@@ -170,8 +170,7 @@ class GeoPoint2m extends GeoPoint2 {
   /// Longitude is normalized to the range `[-180.0, 180.0[` using the formula
   /// `(lon + 180.0) % 360.0 - 180.0` and latitude is clamped to the
   /// range `[-90.0, 90.0]`.
-  const GeoPoint2m({required double lon, required double lat, this.m = 0.0})
-      : super(lon: lon, lat: lat);
+  const GeoPoint2m({required super.lon, required super.lat, this.m = 0.0});
 
   /// A geographic position with coordinates given in order [lon], [lat], [m].
   const GeoPoint2m.lonLatM(double lon, double lat, double m)
@@ -307,8 +306,7 @@ class GeoPoint2m extends GeoPoint2 {
 /// An immutable geographic position with longitude, latitude and elevation.
 class GeoPoint3 extends GeoPoint2 {
   /// A geographic position from [lon], [lat] and [elev].
-  const GeoPoint3({required double lon, required double lat, this.elev = 0.0})
-      : super(lon: lon, lat: lat);
+  const GeoPoint3({required super.lon, required super.lat, this.elev = 0.0});
 
   /// A geographic position, coordinates given in order [lon], [lat], [elev].
   const GeoPoint3.lonLatElev(double lon, double lat, this.elev)
@@ -458,11 +456,11 @@ class GeoPoint3m extends GeoPoint3 {
   /// `(lon + 180.0) % 360.0 - 180.0` and latitude is clamped to the
   /// range `[-90.0, 90.0]`.
   const GeoPoint3m({
-    required double lon,
-    required double lat,
-    double elev = 0.0,
+    required super.lon,
+    required super.lat,
+    super.elev,
     this.m = 0.0,
-  }) : super(lon: lon, lat: lat, elev: elev);
+  });
 
   /// A geographic position, coordinates in order [lon], [lat], [elev], [m].
   const GeoPoint3m.lonLatElevM(double lon, double lat, double elev, double m)

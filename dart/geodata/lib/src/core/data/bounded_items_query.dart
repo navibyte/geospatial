@@ -12,13 +12,13 @@ import 'items_query.dart';
 class BoundedItemsQuery extends ItemsQuery {
   /// A query with bounds for requesting items from a geospatial data source.
   const BoundedItemsQuery({
-    String? crs,
+    super.crs,
     this.bboxCrs,
     this.bbox,
     this.timeFrame,
-    int? limit,
-    Map<String, Object?>? extra,
-  }) : super(crs: crs, limit: limit, extra: extra);
+    super.limit,
+    super.extra,
+  });
 
   /// A new query with query parameters copied from an optional [query].
   ///

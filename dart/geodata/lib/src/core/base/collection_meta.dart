@@ -6,8 +6,6 @@
 
 import 'package:geobase/geobase.dart';
 
-import '/src/common/links.dart';
-
 import 'resource_meta.dart';
 
 /// Metadata for a collection resource.
@@ -17,11 +15,11 @@ class CollectionMeta extends ResourceMeta {
   /// Create a metadata instance for a collection resource.
   const CollectionMeta({
     required this.id,
-    required String title,
-    String? description,
-    required Links links,
+    required super.title,
+    super.description,
+    required super.links,
     this.extent,
-  }) : super(title: title, description: description, links: links);
+  });
 
   /// The required [id] of the collection.
   ///

@@ -11,9 +11,9 @@ class ItemQuery extends GeospatialQuery {
   /// A query for requesting an item from a geospatial data source by [id].
   const ItemQuery({
     required this.id,
-    String? crs,
-    Map<String, Object?>? extra,
-  }) : super(crs: crs, extra: extra);
+    super.crs,
+    super.extra,
+  });
 
   /// An identifier specifying an item on a geodata source.
   ///

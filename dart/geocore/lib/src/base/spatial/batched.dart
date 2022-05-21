@@ -53,11 +53,10 @@ abstract class _BatchedSeries<S extends _BatchedSeries<S, E>, E>
 /// Known sub classes: [_BoundedSeriesView], [_PointSeriesView].
 abstract class _BatchedSeriesView<S extends _BatchedSeries<S, E>, E>
     extends UnmodifiableListView<E> implements _BatchedSeries<S, E> {
-  _BatchedSeriesView(Iterable<E> source, {required Bounds? boundsExplicit})
+  _BatchedSeriesView(super.source, {required Bounds? boundsExplicit})
       : _boundsCurrent = boundsExplicit,
         _isBoundsCalculated = boundsExplicit != null,
-        _boundsExplicit = boundsExplicit,
-        super(source);
+        _boundsExplicit = boundsExplicit;
 
   Bounds? _boundsCurrent;
   bool _isBoundsCalculated;

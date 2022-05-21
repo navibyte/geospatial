@@ -374,10 +374,10 @@ abstract class _BaseTextWriter with GeometryWriter, CoordinateWriter {
 
 class _DefaultTextWriter extends _BaseTextWriter {
   _DefaultTextWriter({
-    StringSink? buffer,
-    int? decimals,
+    super.buffer,
+    super.decimals,
     this.ignoreMeasured = false,
-  }) : super(buffer: buffer, decimals: decimals);
+  });
 
   final bool ignoreMeasured;
 
@@ -522,15 +522,11 @@ class _DefaultTextWriter extends _BaseTextWriter {
 class _GeoJsonTextWriter extends _DefaultTextWriter
     with FeatureWriter, PropertyWriter {
   _GeoJsonTextWriter({
-    StringSink? buffer,
-    int? decimals,
-    bool ignoreMeasured = false,
+    super.buffer,
+    super.decimals,
+    super.ignoreMeasured,
     this.ignoreForeignMembers = false,
-  }) : super(
-          buffer: buffer,
-          decimals: decimals,
-          ignoreMeasured: ignoreMeasured,
-        );
+  });
 
   final bool ignoreForeignMembers;
 
@@ -799,8 +795,7 @@ class _GeoJsonTextWriter extends _DefaultTextWriter
 // Writer for the "wkt like" format --------------------------------------------
 
 class _WktLikeTextWriter extends _BaseTextWriter {
-  _WktLikeTextWriter({StringSink? buffer, int? decimals})
-      : super(buffer: buffer, decimals: decimals);
+  _WktLikeTextWriter({super.buffer, super.decimals});
 
   @override
   void _startObjectArray({int? count}) {
@@ -951,8 +946,7 @@ class _WktLikeTextWriter extends _BaseTextWriter {
 // Writer for the "wkt" format -------------------------------------------------
 
 class _WktTextWriter extends _WktLikeTextWriter {
-  _WktTextWriter({StringSink? buffer, int? decimals})
-      : super(buffer: buffer, decimals: decimals);
+  _WktTextWriter({super.buffer, super.decimals});
 
   @override
   bool _geometryBeforeCoordinates({

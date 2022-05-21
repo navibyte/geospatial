@@ -155,8 +155,7 @@ class Point2 extends ProjectedPoint<num> {
 /// An immutable point with X, Y and M as num values.
 class Point2m extends Point2 {
   /// A point at given [x], [y] and [m] (m is zero by default).
-  const Point2m({required num x, required num y, this.m = 0.0})
-      : super(x: x, y: y);
+  const Point2m({required super.x, required super.y, this.m = 0.0});
 
   /// A point with coordinates given in order [x], [y], [m].
   const Point2m.xym(num x, num y, this.m) : super(x: x, y: y);
@@ -284,8 +283,7 @@ class Point2m extends Point2 {
 /// An immutable point with X, Y and Z as num values.
 class Point3 extends Point2 {
   /// A point at given [x], [y] and [z] (z is zero by default).
-  const Point3({required num x, required num y, this.z = 0.0})
-      : super(x: x, y: y);
+  const Point3({required super.x, required super.y, this.z = 0.0});
 
   /// A point with coordinates given in order [x], [y], [z].
   const Point3.xyz(num x, num y, this.z) : super(x: x, y: y);
@@ -416,8 +414,7 @@ class Point3 extends Point2 {
 /// An immutable point with X, Y, Z and M as num values.
 class Point3m extends Point3 {
   /// A point at given [x], [y], [z] and [m] (z and m are zero by default).
-  const Point3m({required num x, required num y, num z = 0.0, this.m = 0.0})
-      : super(x: x, y: y, z: z);
+  const Point3m({required super.x, required super.y, super.z, this.m = 0.0});
 
   /// A point with coordinates given in order [x], [y], [z], [m].
   const Point3m.xyzm(num x, num y, num z, this.m) : super(x: x, y: y, z: z);
@@ -689,8 +686,7 @@ class Point2i extends ProjectedPoint<int> {
 /// An immutable point with X, Y and Z as integer values.
 class Point3i extends Point2i {
   /// A point at given [x], [y] and [z] (z is zero by default).
-  const Point3i({required int x, required int y, this.z = 0})
-      : super(x: x, y: y);
+  const Point3i({required super.x, required super.y, this.z = 0});
 
   /// A point with coordinates given in order: x, y, z.
   const Point3i.xyz(int x, int y, this.z) : super(x: x, y: y);

@@ -10,10 +10,10 @@ import '/src/core/data.dart';
 class ItemsQuery extends GeospatialQuery {
   /// A query for requesting items from a geospatial data source.
   const ItemsQuery({
-    String? crs,
+    super.crs,
     this.limit,
-    final Map<String, Object?>? extra,
-  }) : super(crs: crs, extra: extra);
+    super.extra,
+  });
 
   /// An optional [limit] setting maximum number of items returned.
   ///

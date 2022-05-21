@@ -39,8 +39,8 @@ abstract class BoundedSeries<E extends Bounded>
 class _BoundedSeriesView<E extends Bounded>
     extends _BatchedSeriesView<BoundedSeries<E>, E>
     implements BoundedSeries<E> {
-  _BoundedSeriesView(Iterable<E> source, {Bounds? bounds})
-      : super(source, boundsExplicit: bounds);
+  _BoundedSeriesView(super.source, {Bounds? bounds})
+      : super(boundsExplicit: bounds);
 
   @override
   Bounds? _calculateBounds() {

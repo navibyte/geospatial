@@ -4,8 +4,6 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:geocore/data.dart';
-
 import '/src/common/links.dart';
 import '/src/core/features.dart';
 
@@ -17,9 +15,9 @@ import '/src/core/features.dart';
 class OGCFeatureItems extends FeatureItems with LinksAware {
   /// Create a feature items instance with [collection] and optional [meta].
   const OGCFeatureItems(
-    FeatureCollection collection, {
-    Map<String, Object?>? meta,
-  }) : super(collection, meta: meta);
+    super.collection, {
+    super.meta,
+  });
 
   // Note : Following getters access external data outside actual parsing code,
   // so there's some extra care to ensure nulls or empty data is returned if

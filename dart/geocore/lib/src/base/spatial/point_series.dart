@@ -144,8 +144,8 @@ mixin PointSeriesMixin<E extends Point> implements PointSeries<E> {
 /// The implementation may change in future.
 class _PointSeriesView<E extends Point>
     extends _BatchedSeriesView<PointSeries<E>, E> with PointSeriesMixin<E> {
-  _PointSeriesView(Iterable<E> source, {Bounds? bounds})
-      : super(source, boundsExplicit: bounds);
+  _PointSeriesView(super.source, {Bounds? bounds})
+      : super(boundsExplicit: bounds);
 
   @override
   Bounds? _calculateBounds() {

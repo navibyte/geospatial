@@ -122,12 +122,10 @@ class GeoJsonFactory<PointType extends Point>
   ///
   /// An optional [featureFactory] can be given also.
   const GeoJsonFactory({
-    required PointFactory<PointType> pointFactory,
-    required CreateBounds<PointType> boundsFactory,
+    required super.pointFactory,
+    required super.boundsFactory,
     CreateFeature? featureFactory,
   }) : super(
-          pointFactory: pointFactory,
-          boundsFactory: boundsFactory,
           featureFactory: featureFactory ?? _defaultFeatureFactory,
         );
 

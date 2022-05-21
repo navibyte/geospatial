@@ -24,9 +24,9 @@ class GeoBounds<T extends GeoPoint> extends BoundsBase<T> implements GeoBox {
   ///
   /// [min] and [max] objects set on the bounds may or may not to be immutable.
   const GeoBounds.of({
-    required T min,
-    required T max,
-  }) : super(min: min, max: max);
+    required super.min,
+    required super.max,
+  });
 
   /// Geographic bounds from [values] with two points (both a list of nums).
   factory GeoBounds.make(
