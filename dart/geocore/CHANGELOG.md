@@ -2,6 +2,9 @@
 
 Development version: 0.9.0-dev.0
 
+⚠️ Breaking changes:
+- Removed previously deprecated classes and members
+
 🛠 Maintenance:
 - [Upgrade to Dart 2.17 #105](https://github.com/navibyte/geospatial/issues/105)
 - [Apply very_good_analysis 3.0.0+ lint rules #104](https://github.com/navibyte/geospatial/issues/104)
