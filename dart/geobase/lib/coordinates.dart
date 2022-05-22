@@ -11,6 +11,7 @@
 /// Usage: import `package:geobase/coordinates.dart`
 library coordinates;
 
+export 'src/codes/coords.dart';
 export 'src/coordinates/base.dart';
 export 'src/coordinates/geographic.dart';
 export 'src/coordinates/projected.dart';

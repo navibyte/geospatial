@@ -6,7 +6,6 @@
 
 // ignore_for_file: lines_longer_than_80_chars
 
-import 'package:geobase/codes.dart';
 import 'package:geobase/coordinates.dart';
 import 'package:geobase/vector.dart';
 

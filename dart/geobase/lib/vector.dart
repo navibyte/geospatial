@@ -17,5 +17,6 @@
 /// Usage: import `package:geobase/vector.dart`
 library vector;
 
+export 'src/codes/geom.dart';
 export 'src/vector/encode.dart';
 export 'src/vector/formats.dart';

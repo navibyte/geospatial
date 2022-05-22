@@ -6,8 +6,8 @@
 
 // ignore_for_file: prefer_const_declarations
 
-import 'package:geobase/codes.dart';
 import 'package:geobase/coordinates.dart';
+
 import 'package:meta/meta.dart';
 
 import 'package:test/test.dart';

@@ -33,3 +33,15 @@ export 'src/projections/wgs84.dart';
 export 'src/transforms/basic.dart';
 export 'src/vector/encode.dart';
 export 'src/vector/formats.dart';
+
+/*
+/// Enums for geospatial coordinate and geometry types.
+///
+/// This libary exports a subset of `package:geobase/geobase.dart`.
+///
+/// Usage: import `package:geobase/codes.dart`
+library codes;
+
+export 'src/codes/coords.dart';
+export 'src/codes/geom.dart';
+*/
