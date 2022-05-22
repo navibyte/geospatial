@@ -384,8 +384,11 @@ Coordinate projections based on the external
 [proj4dart](https://pub.dev/packages/proj4dart) package:
 
 ```dart
-// need the special import instead of 'package:geobase/geobase.dart'
-import 'package:geobase/with_proj4d.dart';
+// import the default geobase library
+import 'package:geobase/geobase.dart';
+
+// need also an additional import with dependency to `proj4dart` 
+import 'package:geobase/projections_proj4d.dart';
 
 // A projection adapter from WGS84 (EPSG:4326) to EPSG:23700 (with definition)
 // (based on the sample at https://pub.dev/packages/proj4dart).

@@ -6,7 +6,11 @@
 
 // ignore_for_file: avoid_print, cascade_invocations
 
-import 'package:geobase/with_proj4d.dart';
+// import the default geobase library
+import 'package:geobase/geobase.dart';
+
+// need also an additional import with dependency to `proj4dart`
+import 'package:geobase/projections_proj4d.dart';
 
 /*
 To test run this from command line: 

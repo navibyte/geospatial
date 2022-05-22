@@ -2,6 +2,9 @@
 
 Development version: 0.2.0-dev.3
 
+🧩 Features:
+- [Mini-libraries for geobase #109](https://github.com/navibyte/geospatial/issues/109)
+
 🛠 Maintenance:
 - [Upgrade to Dart 2.17 #105](https://github.com/navibyte/geospatial/issues/105)
 - [Apply very_good_analysis 3.0.0+ lint rules #104](https://github.com/navibyte/geospatial/issues/104)

@@ -6,7 +6,7 @@
 
 // ignore_for_file: require_trailing_commas
 
-import 'package:geobase/geobase.dart';
+import 'package:geobase/coordinates.dart';
 
 import 'package:test/test.dart';
 

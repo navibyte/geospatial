@@ -6,7 +6,7 @@
 
 // ignore_for_file: prefer_const_constructors, avoid_print
 
-import 'package:geobase/geobase.dart';
+import 'package:geobase/meta.dart';
 
 import 'package:test/test.dart';
 
