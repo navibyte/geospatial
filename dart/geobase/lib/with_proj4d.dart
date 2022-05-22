@@ -15,6 +15,20 @@
 /// Usage: import `package:geobase/with_proj4d.dart`
 library with_proj4d;
 
-export 'geobase.dart';
+// export same packages as `package:geobase/geobase.dart`
+export 'src/codes/coords.dart';
+export 'src/codes/geom.dart';
+export 'src/coordinates/base.dart';
+export 'src/coordinates/geographic.dart';
+export 'src/coordinates/projected.dart';
+export 'src/coordinates/projection.dart';
+export 'src/geodesy/spherical.dart';
+export 'src/meta/extent.dart';
+export 'src/meta/time.dart';
+export 'src/projections/wgs84.dart';
+export 'src/transforms/basic.dart';
+export 'src/vector/encode.dart';
+export 'src/vector/formats.dart';
 
+// ignore: directives_ordering
 export 'src/projections_ext/proj4d.dart';
