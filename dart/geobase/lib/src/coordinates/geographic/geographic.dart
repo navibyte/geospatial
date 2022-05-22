@@ -51,7 +51,7 @@ class Geographic extends Position {
           m: m?.toDouble(),
         );
 
-  /// Creates a position from [coords] given in order: lon, lat, [elev, m].
+  /// Creates a position from [coords] given in order: lon, lat, elev, m.
   ///
   /// The [coords] must contain at least two coordinate values (lon and lat)
   /// starting from [offset]. If [coords] contains three values, then 3rd item
@@ -63,7 +63,7 @@ class Geographic extends Position {
         offset: offset,
       );
 
-  /// Creates a position from [text] given in order: lon, lat, [elev, m].
+  /// Creates a position from [text] given in order: lon, lat, elev, m.
   ///
   /// Coordinate values in [text] are separated by [delimiter].
   ///

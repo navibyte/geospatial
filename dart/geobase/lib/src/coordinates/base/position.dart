@@ -23,9 +23,9 @@ typedef CreatePosition<T extends Position> = T Function({
   num? m,
 });
 
-/// A function to transform the [source] position of [T] to a position of [T].
+/// A function to transform the [source] position of `T` to a position of `T`.
 ///
-/// Target positions of [T] are created using [source] itself as a factory.
+/// Target positions of `T` are created using [source] itself as a factory.
 ///
 /// Throws FormatException if cannot transform.
 typedef TransformPosition = T Function<T extends Position>(T source);
@@ -155,7 +155,7 @@ abstract class Position extends Positionable {
   // Static methods with default logic, used by Position, Projected and
   // Geographic.
 
-  /// Creates a position of [R] from [coords] given in order: x, y, [z, m].
+  /// Creates a position of [R] from [coords] given in order: x, y, z, m.
   ///
   /// The [coords] must contain at least two coordinate values (x and y)
   /// starting from [offset]. If [coords] contains three values, then 3rd item
@@ -179,7 +179,7 @@ abstract class Position extends Positionable {
     );
   }
 
-  /// Creates a position of [R] from [text] given in order: x, y, [z, m].
+  /// Creates a position of [R] from [text] given in order: x, y, z, m.
   ///
   /// Coordinate values in [text] are separated by [delimiter].
   ///

@@ -47,7 +47,7 @@ class Projected extends Position {
         _z = z,
         _m = m;
 
-  /// Creates a position from [coords] given in order: x, y, [z, m].
+  /// Creates a position from [coords] given in order: x, y, z, m.
   ///
   /// The [coords] must contain at least two coordinate values (x and y)
   /// starting from [offset]. If [coords] contains three values, then 3rd item
@@ -59,7 +59,7 @@ class Projected extends Position {
         offset: offset,
       );
 
-  /// Creates a position from [text] given in order: x, y, [z, m].
+  /// Creates a position from [text] given in order: x, y, z, m.
   ///
   /// Coordinate values in [text] are separated by [delimiter].
   ///
