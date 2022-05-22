@@ -4,10 +4,11 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:geobase/geobase.dart';
+import 'package:geobase/coordinates.dart';
 import 'package:meta/meta.dart';
 
 import '/src/base/spatial.dart';
+import '/src/utils/distance_haversine.dart';
 import '/src/utils/num.dart';
 import '/src/utils/wkt.dart';
 

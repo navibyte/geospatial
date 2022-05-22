@@ -6,7 +6,8 @@
 
 import 'package:equatable/equatable.dart';
 
-import 'package:geobase/with_proj4d.dart';
+import 'package:geobase/geobase.dart';
+import 'package:geobase/projections_proj4d.dart';
 import 'package:geocore/geocore.dart';
 
 import 'package:test/test.dart';

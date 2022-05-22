@@ -6,7 +6,8 @@
 
 import 'dart:collection';
 
-import 'package:geobase/geobase.dart';
+import 'package:geobase/coordinates.dart';
+import 'package:geobase/vector.dart';
 import 'package:meta/meta.dart';
 
 import '/src/utils/bounds.dart';

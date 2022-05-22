@@ -12,7 +12,7 @@
 // * Point2i with x and y as int values
 // * Point3i with x, y and z as int values
 
-import 'package:geobase/geobase.dart';
+import 'package:geobase/coordinates.dart';
 import 'package:meta/meta.dart';
 
 import '/src/base/spatial.dart';
