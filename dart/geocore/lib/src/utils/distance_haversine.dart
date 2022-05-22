@@ -5,7 +5,7 @@
 // Docs: https://github.com/navibyte/geospatial
 
 // NOTE: Copied from geobase (/src/geodesy/spherical/distance_haversine.dart).
-//       Now as a "temporary" copy also in geocore utils. 
+//       Now as a "temporary" copy also in geocore utils.
 
 import 'dart:math';
 
