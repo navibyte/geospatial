@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:geobase/geobase.dart';
+import 'package:geobase/meta.dart';
 
 import 'resource_meta.dart';
 

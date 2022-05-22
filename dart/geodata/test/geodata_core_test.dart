@@ -10,7 +10,7 @@
 
 import 'package:equatable/equatable.dart';
 
-import 'package:geobase/geobase.dart';
+import 'package:geobase/meta.dart';
 import 'package:geocore/coordinates.dart';
 import 'package:geodata/core.dart';
 

@@ -7,7 +7,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:equatable/equatable.dart';
-import 'package:geobase/geobase.dart';
+import 'package:geobase/coordinates.dart';
 import 'package:geocore/data.dart';
 
 import 'package:geodata/geojson_client.dart';

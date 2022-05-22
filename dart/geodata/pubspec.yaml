@@ -12,11 +12,11 @@ dependencies:
   http: ^0.13.4
   meta: ^1.8.0
 
-  geobase: ^0.2.0-dev.0
+  geobase: ^0.2.0-dev.5
   #geobase: 
   #  path: ../geobase
 
-  geocore: ^0.9.0-dev.0
+  geocore: ^0.9.0-dev.1
   #geocore: 
   #  path: ../geocore
 
