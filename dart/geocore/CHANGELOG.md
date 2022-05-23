@@ -1,9 +1,12 @@
 ## 0.9.0
 
-Development version: 0.9.0-dev.1
+Development version: 0.9.0-dev.2
 
 ⚠️ Breaking changes:
 - Removed previously deprecated classes and members
+
+🧩 Features:
+- [Export key classes of geobase also from geocore #108](https://github.com/navibyte/geospatial/issues/108)
 
 🛠 Maintenance:
 - [Upgrade to Dart 2.17 #105](https://github.com/navibyte/geospatial/issues/105)
