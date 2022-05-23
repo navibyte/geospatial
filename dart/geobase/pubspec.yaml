@@ -8,7 +8,7 @@ environment:
   sdk: '>=2.17.0 <3.0.0'
 
 dependencies:
-  meta: any
+  meta: ^1.7.0
   proj4dart: ^2.0.0
       
 dev_dependencies:

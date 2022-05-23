@@ -10,7 +10,7 @@ environment:
 dependencies:
   equatable: ^2.0.3 
   http: ^0.13.4
-  meta: any
+  meta: ^1.7.0
 
   geobase: ^0.2.0-dev.5
   #geobase: 
