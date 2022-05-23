@@ -9,8 +9,24 @@
 /// This library exports also all classes of `package:geocore/base.dart` and
 /// `package:geocore/coordinates.dart`.
 ///
+/// Exports also Geom, GeometryWriter, GeometryFormat, FeatureWriter, 
+/// FeatureFormat, defaultFormat, wktLikeFormat, geoJsonFormat and wktForma 
+/// from 'package:geobase/vector.dart'.
+///
 /// Usage: import `package:geocore/data.dart`
 library data;
+
+export 'package:geobase/vector.dart'
+    show
+        Geom,
+        GeometryWriter,
+        GeometryFormat,
+        FeatureWriter,
+        FeatureFormat,
+        defaultFormat,
+        wktLikeFormat,
+        geoJsonFormat,
+        wktFormat;
 
 export 'base.dart';
 export 'coordinates.dart';

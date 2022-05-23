@@ -8,8 +8,14 @@
 ///
 /// *Spatial* classes include coordinates, points, bounds, point series, and
 /// transform and projection abstractions.
+/// 
+/// Exports also Coords, Position, TransformPosition, CreatePosition, Box and
+/// Projection from 'package:geobase/coordinates.dart'.
 ///
 /// Usage: import `package:geocore/base.dart`
 library base;
+
+export 'package:geobase/coordinates.dart'
+    show Coords, Position, TransformPosition, CreatePosition, Box, Projection;
 
 export 'src/base/spatial.dart';
