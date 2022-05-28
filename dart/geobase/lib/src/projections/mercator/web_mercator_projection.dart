@@ -4,12 +4,12 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'dart:math' as math;
-
 import '/src/coordinates/base.dart';
 import '/src/coordinates/geographic.dart';
 import '/src/coordinates/projected.dart';
 import '/src/coordinates/projection.dart';
+
+import 'web_mercator_converter.dart';
 
 // More information about WGS 84 and Web Mercator
 // https://epsg.io/3857
@@ -21,17 +21,20 @@ import '/src/coordinates/projection.dart';
 /// A projection adapter between WGS84 geographic and Web Mercator positions.
 ///
 /// Use `forward` of the adapter to return a projection for:
-/// * source: `lon` and `lat` coordinates ("EPSG:4326" / WGS84)
-/// * target: `x` and `y` coordinates ("EPSG:3857" / Web Mercator)
+/// * source: `lon` and `lat` coordinates ("EPSG:4326", WGS 84)
+/// * target: `x` and `y` coordinates ("EPSG:3857", WGS 84 / Web Mercator)
 ///
 /// Use `inverse` of the adapter to return a projection for:
-/// * source: `x` and `y` coordinates ("EPSG:3857" / Web Mercator)
-/// * target: `lon` and `lat` coordinates ("EPSG:4326" / WGS84)
+/// * source: `x` and `y` coordinates ("EPSG:3857", WGS 84 / Web Mercator)
+/// * target: `lon` and `lat` coordinates ("EPSG:4326", WGS 84)
 ///
 /// Other coordinates, if available in the source and if expected for target
 /// coordinates, are just copied (`elev` <=> `z` and `m` <=> `m`) without any
 /// changes.
 const ProjectionAdapter wgs84ToWebMercator = _Wgs84ToWebMercatorAdapter();
+
+// A local helper class for conversions.
+const _converter = WebMercatorConverter();
 
 class _Wgs84ToWebMercatorAdapter with ProjectionAdapter {
   const _Wgs84ToWebMercatorAdapter();
@@ -74,16 +77,12 @@ class _Wgs84ToWebMercatorProjection<R extends Position> with Projection<R> {
     final lon = source.x; // longitude at x
     final lat = source.y; // latitude at y
 
-    // project (lon, lat) to (x, y)
-    final x = lon * 20037508.34 / 180.0;
-    final y0 =
-        math.log(math.tan((90.0 + lat) * math.pi / 360.0)) / (math.pi / 180.0);
-    final y = y0 * 20037508.34 / 180;
-
-    // return a projected position with optional z and m coordinates unchanged
+    // return a projected position
     return (to ?? factory).call(
-      x: x,
-      y: y,
+      // project (lon, lat) to (x, y)
+      x: _converter.toProjectedX(lon),
+      y: _converter.toProjectedY(lat),
+      // optional z and m coordinates unchanged
       z: source.optZ,
       m: source.optM,
     );
@@ -97,21 +96,12 @@ class _WebMercatorToWgs84Projection<R extends Position> with Projection<R> {
 
   @override
   R project(Position source, {CreatePosition<R>? to}) {
-    // source coordinates
-    final x = source.x;
-    final y = source.y;
-
-    // unproject (x, y) to (lon, lat)
-    final lon = (x / 20037508.34) * 180.0;
-    final lat0 = (y / 20037508.34) * 180.0;
-    final lat = 180.0 /
-        math.pi *
-        (2 * math.atan(math.exp(lat0 * math.pi / 180.0)) - math.pi / 2);
-
-    // return an unprojected position with optional z and m coords unchanged
+    // return an unprojected position
     return (to ?? factory).call(
-      x: lon,
-      y: lat,
+      // unproject (x, y) to (lon, lat)
+      x: _converter.toLongitude(source.x),
+      y: _converter.toLatitude(source.y),
+      // optional z and m coords unchanged
       z: source.optZ,
       m: source.optM,
     );

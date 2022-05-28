@@ -365,15 +365,15 @@ like [The EPSG dataset](https://epsg.org/).
 
 ### Projections
 
-Built-in coordinate projections (currently only between WGS84 and Web Mercator):
+Built-in coordinate projections (currently only between WGS84 and Web Mercator. 
 
 ```dart
-  // Geographic (WGS 84 longitude-latitude) to Projected (Web Mercator metric)
+  // Geographic (WGS 84 longitude-latitude) to Projected (WGS 84 Web Mercator)
   final forward = wgs84ToWebMercator.forward();
   final projected =
       forward.project(const Geographic(lon: -0.0014, lat: 51.4778));
 
-  // Projected (Web Mercator metric) to Geographic (WGS 84 longitude-latitude)
+  // Projected (WGS 84 Web Mercator) to Geographic (WGS 84 longitude-latitude)
   final inverse = wgs84ToWebMercator.inverse();
   final unprojected = inverse.project(projected);
 

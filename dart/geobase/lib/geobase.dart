@@ -29,7 +29,7 @@ export 'src/coordinates/projection.dart';
 export 'src/geodesy/spherical.dart';
 export 'src/meta/extent.dart';
 export 'src/meta/time.dart';
-export 'src/projections/wgs84.dart';
+export 'src/projections/mercator.dart';
 export 'src/transforms/basic.dart';
 export 'src/vector/encode.dart';
 export 'src/vector/formats.dart';
