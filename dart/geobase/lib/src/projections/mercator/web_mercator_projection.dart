@@ -8,8 +8,7 @@ import '/src/coordinates/base.dart';
 import '/src/coordinates/geographic.dart';
 import '/src/coordinates/projected.dart';
 import '/src/coordinates/projection.dart';
-
-import 'web_mercator_converter.dart';
+import '/src/utils/web_mercator_converter.dart';
 
 // More information about WGS 84 and Web Mercator
 // https://epsg.io/3857
@@ -34,7 +33,7 @@ import 'web_mercator_converter.dart';
 const ProjectionAdapter wgs84ToWebMercator = _Wgs84ToWebMercatorAdapter();
 
 // A local helper class for conversions.
-const _converter = WebMercatorConverter();
+const _converter = WebMercatorConverter.epsg3857();
 
 class _Wgs84ToWebMercatorAdapter with ProjectionAdapter {
   const _Wgs84ToWebMercatorAdapter();
