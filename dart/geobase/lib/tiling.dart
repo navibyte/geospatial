@@ -7,7 +7,7 @@
 /// Tiling schemes and tile matrix sets (web mercator)
 ///
 /// This libary exports a subset of `package:geobase/geobase.dart`.
-/// 
+///
 /// Usage: import `package:geobase/tiling.dart`
 library tiling;
 

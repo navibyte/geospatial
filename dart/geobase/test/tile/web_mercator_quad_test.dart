@@ -113,7 +113,9 @@ void main() {
 
           // world to pixel
           expectMapPoint2(
-              webMercator.worldToPixel(world, zoom: zoom), pixelRef);
+            webMercator.worldToPixel(world, zoom: zoom),
+            pixelRef,
+          );
 
           // world to tile
           expectMapPoint2(webMercator.worldToTile(world, zoom: zoom), tileRef);

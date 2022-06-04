@@ -6,9 +6,9 @@
 
 /// The position of the origin in a tile matrix.
 enum TileMatrixOrigin {
-  /// The origin is positioned at the top-left corner of a tile matrix. 
+  /// The origin is positioned at the top-left corner of a tile matrix.
   topLeft,
 
-  /// The origin is positioned at the bottom-left corner of a tile matrix. 
+  /// The origin is positioned at the bottom-left corner of a tile matrix.
   bottomLeft,
 }
