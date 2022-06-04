@@ -11,6 +11,7 @@
 /// * *geographic* positions and bounding boxes (longitude-latitude-elevation)
 /// * *projected* positions and bounding boxes (cartesian XYZ)
 /// * coordinate transformations and projections (initial support)
+/// * tiling schemes and tile matrix sets (web mercator)
 /// * temporal data structures (instant, interval)
 /// * geospatial data writers for features, geometries, coordinates, properties:
 ///   * supported formats: [GeoJSON](https://geojson.org/)
@@ -30,6 +31,8 @@ export 'src/geodesy/spherical.dart';
 export 'src/meta/extent.dart';
 export 'src/meta/time.dart';
 export 'src/projections/mercator.dart';
+export 'src/tiling/core.dart';
+export 'src/tiling/tilematrix.dart';
 export 'src/transforms/basic.dart';
 export 'src/vector/encode.dart';
 export 'src/vector/formats.dart';

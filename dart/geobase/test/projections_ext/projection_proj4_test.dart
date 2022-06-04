@@ -34,8 +34,8 @@ void main() {
         final geo =
             Geographic(lon: coords[0], lat: coords[1], elev: 5.1, m: 6.2);
         final proj = Projected(x: coords[2], y: coords[3], z: 5.1, m: 6.2);
-        expectProjected(toWebMercatorProj4a.project(geo), proj, 0.01);
-        expectProjected(toWebMercatorProj4b.project(geo), proj, 0.01);
+        expectPosition(toWebMercatorProj4a.project(geo), proj, 0.01);
+        expectPosition(toWebMercatorProj4b.project(geo), proj, 0.01);
       }
     });
 
@@ -46,8 +46,8 @@ void main() {
         final geo =
             Geographic(lon: coords[0], lat: coords[1], elev: 5.1, m: 6.2);
         final proj = Projected(x: coords[2], y: coords[3], z: 5.1, m: 6.2);
-        expectProjected(toWgs84Proj4a.project(proj), geo);
-        expectProjected(toWgs84Proj4b.project(proj), geo);
+        expectPosition(toWgs84Proj4a.project(proj), geo);
+        expectPosition(toWgs84Proj4b.project(proj), geo);
       }
     });
   });
@@ -104,12 +104,12 @@ void main() {
           const proj = Projected(x: 561651.8408065987, y: 172658.61998377228);
           const geo =
               Geographic(lon: 17.888058560281515, lat: 46.89226406700879);
-          expectProjected(
+          expectPosition(
             adapter.forward().project(geo),
             proj,
             defsAccuracyProj[i],
           );
-          expectProjected(
+          expectPosition(
             adapter.inverse().project(proj),
             geo,
             defsAccuracyWgs84[i],
@@ -139,13 +139,13 @@ void main() {
         lat: 15.0,
         elev: 140.0,
       );
-      expectProjected(
+      expectPosition(
         adapter.forward().project(geodetic),
         geocentric,
         0.0000001,
         0.0000001,
       );
-      expectProjected(
+      expectPosition(
         adapter.inverse().project(geocentric),
         geodetic,
         0.0000001,

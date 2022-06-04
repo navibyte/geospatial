@@ -10,7 +10,7 @@ import 'package:geobase/geobase.dart';
 
 import 'package:test/test.dart';
 
-void expectProjected<T1 extends Position, T2 extends Position>(
+void expectPosition<T1 extends Position, T2 extends Position>(
   T1 actual,
   T2 expected, [
   num? tol,

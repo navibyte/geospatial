@@ -98,8 +98,8 @@ class _WebMercatorToWgs84Projection<R extends Position> with Projection<R> {
     // return an unprojected position
     return (to ?? factory).call(
       // unproject (x, y) to (lon, lat)
-      x: _converter.toLongitude(source.x),
-      y: _converter.toLatitude(source.y),
+      x: _converter.fromProjectedX(source.x),
+      y: _converter.fromProjectedY(source.y),
       // optional z and m coords unchanged
       z: source.optZ,
       m: source.optM,

@@ -7,7 +7,7 @@
 import '/src/utils/num.dart';
 import '/src/utils/tolerance.dart';
 
-import 'positionable.dart';
+import 'position2.dart';
 
 /// Creates a new position of [T] from [x] and [y], and optional [z] and [m].
 ///
@@ -31,27 +31,12 @@ typedef CreatePosition<T extends Position> = T Function({
 typedef TransformPosition = T Function<T extends Position>(T source);
 
 /// A base interface for geospatial positions.
-//
-/// This interface defines coordinate value only for the m axis. Sub classes
-/// define coordinate values for other axes (x, y and z for projected or
-/// cartesian positions, and longitude, latitude and elevation for geographic
-/// positions).
 ///
 /// The known sub classes are `Projected` (with x, y, z and m coordinates) and
 /// `Geographic` (with lon, lat, elev and m coordinates).
-abstract class Position extends Positionable {
+abstract class Position extends Position2 {
   /// Default `const` constructor to allow extending this abstract class.
   const Position();
-
-  /// The x coordinate value.
-  ///
-  /// For geographic coordinates x represents *longitude*.
-  num get x;
-
-  /// The y coordinate value.
-  ///
-  /// For geographic coordinates y represents *latitude*.
-  num get y;
 
   /// The z coordinate value. Returns zero if not available.
   ///
@@ -94,6 +79,7 @@ abstract class Position extends Positionable {
   ///
   /// For geographic coordinates, the coordinate ordering is:
   /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
+  @override
   num operator [](int i);
 
   /// Coordinate values of this position as an iterable of 2, 3 or 4 items.
@@ -103,6 +89,7 @@ abstract class Position extends Positionable {
   ///
   /// For geographic coordinates, the coordinate ordering is:
   /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
+  @override
   Iterable<num> get values;
 
   /// Copies this position to a new position created by the [factory].
@@ -124,6 +111,7 @@ abstract class Position extends Positionable {
   /// tolerance. Otherwise value must be exactly same.
   ///
   /// Tolerance values must be null or positive (>= 0).
+  @override
   bool equals2D(Position other, {num? toleranceHoriz}) =>
       Position.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
 
