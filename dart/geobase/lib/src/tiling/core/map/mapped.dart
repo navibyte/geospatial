@@ -10,7 +10,7 @@ import '/src/coordinates/base.dart';
 
 /// Mapped coordinates with [point] at the [zoom] level.
 @immutable
-class Mapped<T extends Position2> {
+class Mapped<T extends Position> {
   final num _zoom;
   final T _point;
 

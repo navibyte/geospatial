@@ -8,14 +8,15 @@ import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
 import '/src/coordinates/base.dart';
+import '/src/coordinates/projected.dart';
 
 import 'mapped.dart';
 
 /// Mapped coordinates with the ([x], [y]) point at the [zoom] level.
 ///
-/// [x], [y] and [zoom] have integer values.
+/// Coordinates [x], [y] and [zoom] have integer values.
 @immutable
-class MapPoint2i implements Mapped<Position2>, Position2 {
+class MapPoint2i implements Mapped<MapPoint2i>, Projected {
   @override
   final int zoom;
 
@@ -31,8 +32,25 @@ class MapPoint2i implements Mapped<Position2>, Position2 {
   const MapPoint2i({required this.zoom, required this.x, required this.y});
 
   @override
-  Position2 get point => this;
+  MapPoint2i get point => this;
 
+  @override
+  num get z => 0;
+
+  @override
+  num? get optZ => null;
+
+  @override
+  num get m => 0;
+
+  @override
+  num? get optM => null;
+
+  /// A coordinate value by the coordinate axis index [i].
+  ///
+  /// Returns zero when a coordinate axis is not available.
+  ///
+  /// For mapped coordinates, the coordinate ordering is: (x, y)
   @override
   int operator [](int i) {
     switch (i) {
@@ -45,8 +63,32 @@ class MapPoint2i implements Mapped<Position2>, Position2 {
     }
   }
 
+  /// Coordinate values of this position as an iterable of 2 items.
+  ///
+  /// For mapped coordinates, the coordinate ordering is: (x, y)
   @override
   Iterable<int> get values => [x, y];
+
+  @override
+  R copyTo<R extends Position>(CreatePosition<R> factory) =>
+      factory.call(x: x, y: y);
+
+  /// Copies the point with optional [zoom], [x] and [y] overriding values.
+  ///
+  /// Parameters [z] and [m] are ignored as `MapPoint2i` does not support them.
+  ///
+  /// For example: `MapPoint2i(zoom: 2, x: 1, y: 1).copyWith(y: 2)` equals to
+  /// `MapPoint2i(zoom: 2, x: 1, y: 2)`.
+  @override
+  MapPoint2i copyWith({int? zoom, num? x, num? y, num? z, num? m}) =>
+      MapPoint2i(
+        zoom: zoom ?? this.zoom,
+        x: (x ?? this.x).round(),
+        y: (y ?? this.y).round(),
+      );
+
+  @override
+  Projected transform(TransformPosition transform) => transform.call(this);
 
   @override
   int get spatialDimension => 2;
@@ -67,13 +109,21 @@ class MapPoint2i implements Mapped<Position2>, Position2 {
   Coords get typeCoords => Coords.xy; // Note: "zoom" is not coordinate but LOD
 
   @override
-  bool equals2D(Position2 other, {num? toleranceHoriz}) {
-    // here we check only x, y regardless of zoom
-    return toleranceHoriz != null
-        ? (x - other.x).abs() <= toleranceHoriz &&
-            (y - other.y).abs() <= toleranceHoriz
-        : x == other.x && y == other.y;
-  }
+  bool equals2D(Position other, {num? toleranceHoriz}) =>
+      Position.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
+
+  @override
+  bool equals3D(
+    Position other, {
+    num? toleranceHoriz,
+    num? toleranceVert,
+  }) =>
+      Position.testEquals3D(
+        this,
+        other,
+        toleranceHoriz: toleranceHoriz,
+        toleranceVert: toleranceVert,
+      );
 
   @override
   String toString() {
