@@ -128,7 +128,7 @@ class Projected extends Position {
       );
 
   @override
-  Projected transform(TransformPosition transform) => transform(this);
+  Projected transform(TransformPosition transform) => transform.call(this);
 
   @override
   int get spatialDimension => typeCoords.spatialDimension;

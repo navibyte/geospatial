@@ -152,7 +152,7 @@ class Geographic extends Position {
       );
 
   @override
-  Geographic transform(TransformPosition transform) => transform(this);
+  Geographic transform(TransformPosition transform) => transform.call(this);
 
   @override
   int get spatialDimension => typeCoords.spatialDimension;
