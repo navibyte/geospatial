@@ -1,10 +1,11 @@
 ## 0.2.0
 
-Development version: 0.2.0-dev.7
+Development version: 0.2.0-dev.8
 
 🧩 Features:
 - [Mini-libraries for geobase #109](https://github.com/navibyte/geospatial/issues/109)
 - [Conversion between WGS84 (lon-lat) and Web Mercator Quad tile matrix set #57](https://github.com/navibyte/geospatial/issues/57)
+- [MapPoint2i renamed to ScalableXY, and implementing Projected and Scalable #116](https://github.com/navibyte/geospatial/issues/116)
 
 🛠 Maintenance:
 - [Upgrade to Dart 2.17 #105](https://github.com/navibyte/geospatial/issues/105)

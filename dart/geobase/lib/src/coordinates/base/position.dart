@@ -38,7 +38,7 @@ abstract class Position extends Positionable {
   /// Default `const` constructor to allow extending this abstract class.
   const Position();
 
- /// The x coordinate value.
+  /// The x coordinate value.
   ///
   /// For geographic coordinates x represents *longitude*.
   num get x;
