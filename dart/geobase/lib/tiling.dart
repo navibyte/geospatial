@@ -11,5 +11,5 @@
 /// Usage: import `package:geobase/tiling.dart`
 library tiling;
 
-export 'src/tiling/core.dart';
+export 'src/tiling/convert.dart';
 export 'src/tiling/tilematrix.dart';

@@ -16,3 +16,4 @@ export 'src/coordinates/base.dart';
 export 'src/coordinates/geographic.dart';
 export 'src/coordinates/projected.dart';
 export 'src/coordinates/projection.dart';
+export 'src/coordinates/scalable.dart';

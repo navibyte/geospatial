@@ -6,7 +6,8 @@
 
 import 'package:meta/meta.dart';
 
-import '/src/tiling/core/map.dart';
+import '/src/coordinates/scalable.dart';
+import '/src/tiling/convert/map.dart';
 import '/src/tiling/tilematrix/base.dart';
 import '/src/utils/web_mercator_converter.dart';
 
@@ -103,7 +104,7 @@ class WebMercatorQuad extends GeoTileMatrixSet {
   ///
   /// See also:
   /// https://docs.microsoft.com/en-us/bingmaps/articles/bing-maps-tile-system
-  MapPoint2i quadKeyToTile(String quadKey) {
+  ScalableXY quadKeyToTile(String quadKey) {
     // zoom level from the quad key length
     final zoomFromKey = quadKey.length;
 
@@ -142,7 +143,7 @@ class WebMercatorQuad extends GeoTileMatrixSet {
     }
 
     // the result
-    return MapPoint2i(
+    return ScalableXY(
       zoom: zoomFromKey,
       x: tx,
       y: ty,
@@ -153,7 +154,7 @@ class WebMercatorQuad extends GeoTileMatrixSet {
   ///
   /// See also:
   /// https://docs.microsoft.com/en-us/bingmaps/articles/bing-maps-tile-system
-  String tileToQuadKey(MapPoint2i tile) {
+  String tileToQuadKey(ScalableXY tile) {
     // tile x and y
     final tx = tile.x;
     final int ty;

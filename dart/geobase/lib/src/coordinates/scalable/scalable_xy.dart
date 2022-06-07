@@ -10,13 +10,13 @@ import '/src/codes/coords.dart';
 import '/src/coordinates/base.dart';
 import '/src/coordinates/projected.dart';
 
-import 'mapped.dart';
+import 'scalable.dart';
 
-/// Mapped coordinates with the ([x], [y]) point at the [zoom] level.
+/// Scalable ([x], [y]) projected coordinates at the [zoom] level.
 ///
 /// Coordinates [x], [y] and [zoom] have integer values.
 @immutable
-class MapPoint2i implements Mapped<MapPoint2i>, Projected {
+class ScalableXY implements Scalable, Projected {
   @override
   final int zoom;
 
@@ -28,11 +28,8 @@ class MapPoint2i implements Mapped<MapPoint2i>, Projected {
   @override
   final int y;
 
-  /// Create mapped coordinates with the ([x], [y]) point at the [zoom] level.
-  const MapPoint2i({required this.zoom, required this.x, required this.y});
-
-  @override
-  MapPoint2i get point => this;
+  /// Create scalable ([x], [y]) projected coordinates at the [zoom] level.
+  const ScalableXY({required this.zoom, required this.x, required this.y});
 
   @override
   num get z => 0;
@@ -65,7 +62,7 @@ class MapPoint2i implements Mapped<MapPoint2i>, Projected {
 
   /// Coordinate values of this position as an iterable of 2 items.
   ///
-  /// For mapped coordinates, the coordinate ordering is: (x, y)
+  /// For scalable coordinates, the coordinate ordering is: (x, y)
   @override
   Iterable<int> get values => [x, y];
 
@@ -80,8 +77,8 @@ class MapPoint2i implements Mapped<MapPoint2i>, Projected {
   /// For example: `MapPoint2i(zoom: 2, x: 1, y: 1).copyWith(y: 2)` equals to
   /// `MapPoint2i(zoom: 2, x: 1, y: 2)`.
   @override
-  MapPoint2i copyWith({int? zoom, num? x, num? y, num? z, num? m}) =>
-      MapPoint2i(
+  ScalableXY copyWith({int? zoom, num? x, num? y, num? z, num? m}) =>
+      ScalableXY(
         zoom: zoom ?? this.zoom,
         x: (x ?? this.x).round(),
         y: (y ?? this.y).round(),
@@ -132,7 +129,7 @@ class MapPoint2i implements Mapped<MapPoint2i>, Projected {
 
   @override
   bool operator ==(Object other) =>
-      other is MapPoint2i && zoom == other.zoom && x == other.x && y == other.y;
+      other is ScalableXY && zoom == other.zoom && x == other.x && y == other.y;
 
   @override
   int get hashCode => Object.hash(zoom, x, y);

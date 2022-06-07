@@ -6,7 +6,7 @@
 
 import '/src/coordinates/geographic.dart';
 import '/src/coordinates/projected.dart';
-import '/src/tiling/core/map.dart';
+import '/src/coordinates/scalable.dart';
 
 import 'tile_matrix_origin.dart';
 import 'tile_matrix_set.dart';
@@ -23,13 +23,13 @@ abstract class GeoTileMatrixSet extends TileMatrixSet {
   Projected positionToWorld(Geographic position);
 
   @override
-  MapPoint2i positionToPixel(Geographic position, {int zoom = 0});
+  ScalableXY positionToPixel(Geographic position, {int zoom = 0});
 
   @override
-  MapPoint2i positionToTile(Geographic position, {int zoom = 0});
+  ScalableXY positionToTile(Geographic position, {int zoom = 0});
 
   @override
-  Geographic pixelToPosition(MapPoint2i pixel) {
+  Geographic pixelToPosition(ScalableXY pixel) {
     // map size: number of pixels for x and y at the given zoom level
     final width = mapWidth(pixel.zoom);
     final height = mapHeight(pixel.zoom);
@@ -60,7 +60,7 @@ abstract class GeoTileMatrixSet extends TileMatrixSet {
   }
 
   @override
-  GeoBox tileToBounds(MapPoint2i tile) {
+  GeoBox tileToBounds(ScalableXY tile) {
     // tile coordinates
     final tx = tile.x;
     final int ty;

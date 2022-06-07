@@ -6,7 +6,7 @@
 
 import 'dart:math' as math;
 
-import '/src/tiling/core/map.dart';
+import '/src/tiling/convert/map.dart';
 
 const _minLat = -85.05112878;
 const _maxLat = 85.05112878;
