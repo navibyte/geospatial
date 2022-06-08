@@ -1,2 +1,2 @@
 export 'scalable/scalable.dart';
-export 'scalable/scalable_xy.dart';
+export 'scalable/scalable2i.dart';

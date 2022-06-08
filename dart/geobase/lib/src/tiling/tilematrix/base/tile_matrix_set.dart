@@ -129,7 +129,7 @@ abstract class TileMatrixSet {
   /// Coordinate value ranges:
   /// - pixel x (int): `0 .. mapWidth(zoom) - 1`
   /// - pixel y (int): `0 .. mapHeight(zoom) - 1`
-  ScalableXY positionToPixel(covariant Position position, {int zoom = 0}) {
+  Scalable2i positionToPixel(covariant Position position, {int zoom = 0}) {
     // map size: number of pixels for x and y at the given zoom level
     final width = mapWidth(zoom);
     final height = mapHeight(zoom);
@@ -154,7 +154,7 @@ abstract class TileMatrixSet {
         break;
     }
 
-    return ScalableXY(
+    return Scalable2i(
       zoom: zoom,
       x: px,
       y: py,
@@ -166,7 +166,7 @@ abstract class TileMatrixSet {
   /// Coordinate value ranges:
   /// - tile x (int): `0 .. matrixWidth(zoom) - 1`
   /// - tile y (int): `0 .. matrixHeight(zoom) - 1`
-  ScalableXY positionToTile(covariant Position position, {int zoom = 0}) {
+  Scalable2i positionToTile(covariant Position position, {int zoom = 0}) {
     // matrix size: number of tiles for x and y at the given zoom level
     final width = matrixWidth(zoom);
     final height = matrixHeight(zoom);
@@ -192,7 +192,7 @@ abstract class TileMatrixSet {
     }
 
     // handle origin variations and return result
-    return ScalableXY(
+    return Scalable2i(
       zoom: zoom,
       x: tx,
       y: ty,
@@ -206,9 +206,9 @@ abstract class TileMatrixSet {
   /// - world y (double): `0.0 .. mapHeight(0)`
   /// - pixel x (int): `0 .. mapWidth(zoom) - 1`
   /// - pixel y (int): `0 .. mapHeight(zoom) - 1`
-  ScalableXY worldToPixel(Projected world, {int zoom = 0}) {
+  Scalable2i worldToPixel(Projected world, {int zoom = 0}) {
     final scale = 1 << zoom;
-    return ScalableXY(
+    return Scalable2i(
       zoom: zoom,
       x: (world.x * scale).floor().clamp(0, mapWidth(zoom) - 1),
       y: (world.y * scale).floor().clamp(0, mapHeight(zoom) - 1),
@@ -222,9 +222,9 @@ abstract class TileMatrixSet {
   /// - world y (double): `0.0 .. mapHeight(0)`
   /// - tile x (int): `0 .. matrixWidth(zoom) - 1`
   /// - tile y (int): `0 .. matrixHeight(zoom) - 1`
-  ScalableXY worldToTile(Projected world, {int zoom = 0}) {
+  Scalable2i worldToTile(Projected world, {int zoom = 0}) {
     final scale = (1 << zoom) / tileSize;
-    return ScalableXY(
+    return Scalable2i(
       zoom: zoom,
       x: (world.x * scale).floor().clamp(0, matrixWidth(zoom) - 1),
       y: (world.y * scale).floor().clamp(0, matrixHeight(zoom) - 1),
@@ -236,7 +236,7 @@ abstract class TileMatrixSet {
   /// Coordinate value ranges:
   /// - pixel x (int): `0 .. mapWidth(zoom) - 1`
   /// - pixel y (int): `0 .. mapHeight(zoom) - 1`
-  Position pixelToPosition(ScalableXY pixel);
+  Position pixelToPosition(Scalable2i pixel);
 
   /// Returns a tile covering a region in [pixel] coordinates.
   ///
@@ -245,13 +245,13 @@ abstract class TileMatrixSet {
   /// - pixel y (int): `0 .. mapHeight(zoom) - 1`
   /// - tile x (int): `0 .. matrixWidth(zoom) - 1`
   /// - tile y (int): `0 .. matrixHeight(zoom) - 1`
-  ScalableXY pixelToTile(ScalableXY pixel) {
+  Scalable2i pixelToTile(Scalable2i pixel) {
     // from pixel to tile coordinates
     final tx = (pixel.x / tileSize).floor();
     final ty = (pixel.y / tileSize).floor();
 
     // return result
-    return ScalableXY(
+    return Scalable2i(
       zoom: pixel.zoom,
       x: tx,
       y: ty,
@@ -263,5 +263,5 @@ abstract class TileMatrixSet {
   /// Coordinate value ranges:
   /// - tile x (int): `0 .. matrixWidth(zoom) - 1`
   /// - tile y (int): `0 .. matrixHeight(zoom) - 1`
-  Box tileToBounds(ScalableXY tile);
+  Box tileToBounds(Scalable2i tile);
 }

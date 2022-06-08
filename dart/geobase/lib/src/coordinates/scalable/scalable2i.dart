@@ -16,7 +16,7 @@ import 'scalable.dart';
 ///
 /// Coordinates [x], [y] and [zoom] have integer values.
 @immutable
-class ScalableXY implements Scalable, Projected {
+class Scalable2i implements Scalable, Projected {
   @override
   final int zoom;
 
@@ -29,7 +29,7 @@ class ScalableXY implements Scalable, Projected {
   final int y;
 
   /// Create scalable ([x], [y]) projected coordinates at the [zoom] level.
-  const ScalableXY({required this.zoom, required this.x, required this.y});
+  const Scalable2i({required this.zoom, required this.x, required this.y});
 
   @override
   num get z => 0;
@@ -77,8 +77,8 @@ class ScalableXY implements Scalable, Projected {
   /// For example: `MapPoint2i(zoom: 2, x: 1, y: 1).copyWith(y: 2)` equals to
   /// `MapPoint2i(zoom: 2, x: 1, y: 2)`.
   @override
-  ScalableXY copyWith({int? zoom, num? x, num? y, num? z, num? m}) =>
-      ScalableXY(
+  Scalable2i copyWith({int? zoom, num? x, num? y, num? z, num? m}) =>
+      Scalable2i(
         zoom: zoom ?? this.zoom,
         x: (x ?? this.x).round(),
         y: (y ?? this.y).round(),
@@ -129,7 +129,7 @@ class ScalableXY implements Scalable, Projected {
 
   @override
   bool operator ==(Object other) =>
-      other is ScalableXY && zoom == other.zoom && x == other.x && y == other.y;
+      other is Scalable2i && zoom == other.zoom && x == other.x && y == other.y;
 
   @override
   int get hashCode => Object.hash(zoom, x, y);

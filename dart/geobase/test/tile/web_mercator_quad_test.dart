@@ -162,13 +162,13 @@ void main() {
         //print(bounds);
 
         // calculate tile bounds (top-left tile matrix)
-        final tile1 = ScalableXY(zoom: zoom, x: tileX, y: tileY);
+        final tile1 = Scalable2i(zoom: zoom, x: tileX, y: tileY);
         final tileBounds1 = webMercator.tileToBounds(tile1);
         //print(tileBounds1);
         expect(tileBounds1.equals2D(bounds, toleranceHoriz: 0.002), true);
 
         // calculate tile bounds (bottom-left tile matrix)
-        final tile2 = ScalableXY(zoom: zoom, x: tileX, y: tmsY);
+        final tile2 = Scalable2i(zoom: zoom, x: tileX, y: tmsY);
         final tileBounds2 = tmsMercator.tileToBounds(tile2);
         //print(tileBounds2);
         expect(tileBounds2.equals2D(bounds, toleranceHoriz: 0.002), true);
@@ -182,7 +182,7 @@ void main() {
         final tileY = quadTest[2] as int;
         final quadKey = quadTest[3] as String;
 
-        final tile = ScalableXY(zoom: zoom, x: tileX, y: tileY);
+        final tile = Scalable2i(zoom: zoom, x: tileX, y: tileY);
         expect(webMercator.tileToQuadKey(tile), quadKey);
 
         final tileFromQuadkey = webMercator.quadKeyToTile(quadKey);
@@ -193,8 +193,8 @@ void main() {
 }
 
 void expectMapPoint2(
-  ScalableXY actual,
-  ScalableXY expected, [
+  Scalable2i actual,
+  Scalable2i expected, [
   num? tol,
 ]) {
   final equals = actual.equals2D(
@@ -216,20 +216,20 @@ Projected _refToWorld(Geographic position, int zoom) {
   return Projected(x: world[0], y: world[1]);
 }
 
-ScalableXY _refToPixel(Geographic position, int zoom) {
+Scalable2i _refToPixel(Geographic position, int zoom) {
   final world = _refProject(position);
   final scale = 1 << zoom;
-  return ScalableXY(
+  return Scalable2i(
     zoom: zoom,
     x: (world[0] * scale).floor().clamp(0, 256 * scale - 1),
     y: (world[1] * scale).floor().clamp(0, 256 * scale - 1),
   );
 }
 
-ScalableXY _refToTile(Geographic position, int zoom) {
+Scalable2i _refToTile(Geographic position, int zoom) {
   final world = _refProject(position);
   final scale = 1 << zoom;
-  return ScalableXY(
+  return Scalable2i(
     zoom: zoom,
     x: (world[0] * scale / 256).floor().clamp(0, scale - 1),
     y: (world[1] * scale / 256).floor().clamp(0, scale - 1),

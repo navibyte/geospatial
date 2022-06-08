@@ -104,7 +104,7 @@ class WebMercatorQuad extends GeoTileMatrixSet {
   ///
   /// See also:
   /// https://docs.microsoft.com/en-us/bingmaps/articles/bing-maps-tile-system
-  ScalableXY quadKeyToTile(String quadKey) {
+  Scalable2i quadKeyToTile(String quadKey) {
     // zoom level from the quad key length
     final zoomFromKey = quadKey.length;
 
@@ -143,7 +143,7 @@ class WebMercatorQuad extends GeoTileMatrixSet {
     }
 
     // the result
-    return ScalableXY(
+    return Scalable2i(
       zoom: zoomFromKey,
       x: tx,
       y: ty,
@@ -154,7 +154,7 @@ class WebMercatorQuad extends GeoTileMatrixSet {
   ///
   /// See also:
   /// https://docs.microsoft.com/en-us/bingmaps/articles/bing-maps-tile-system
-  String tileToQuadKey(ScalableXY tile) {
+  String tileToQuadKey(Scalable2i tile) {
     // tile x and y
     final tx = tile.x;
     final int ty;
