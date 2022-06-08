@@ -25,7 +25,7 @@ const _samples = [
   Geographic(lon: -185.0, lat: 23.458),
 ];
 
-const _scales = [
+const _scales256 = [
   // zoom, matrix size, map size, resolution, scale denominator, tile lon width
   <num>[1, 2, 512, 78271.5170, 295829355.45, 180.0],
   <num>[2, 4, 1024, 39135.7585, 147914677.73, 90.0],
@@ -34,6 +34,12 @@ const _scales = [
   <num>[15, 32768, 8388608, 4.7773, 18055.99, 0.011],
   <num>[19, 524288, 134217728, 0.2986, 1128.50, double.nan],
   <num>[23, 8388608, 2147483648, 0.0187, 70.53, double.nan],
+];
+
+const _scales512 = [
+  // zoom, matrix size, map size, res (lat 0), res (20), res (40), res (60)
+  <num>[1, 2, 1024, 39135.742, 36775.568, 29979.718, 19567.871],
+  <num>[6, 64, 32768, 1222.992, 1149.237, 936.866, 611.496],
 ];
 
 const _bounds = [
@@ -75,6 +81,9 @@ void main() {
     final webMercator = WebMercatorQuad.epsg3857();
     final tmsMercator = WebMercatorQuad.epsg3857(
       origin: TileMatrixOrigin.bottomLeft,
+    );
+    final tile512Mercator = WebMercatorQuad.epsg3857(
+      tileSize: 512,
     );
     test('Compare conversions to reference sample tests', () {
       for (final pos in _samples) {
@@ -123,8 +132,8 @@ void main() {
       }
     });
 
-    test('Check sizes, scales and resolutions', () {
-      for (final level in _scales) {
+    test('Check sizes, scales and resolutions for 256x256 tiles', () {
+      for (final level in _scales256) {
         final zoom = level[0] as int;
         final matrixSize = level[1] as int;
         final mapSize = level[2] as int;
@@ -142,6 +151,34 @@ void main() {
             closeTo(tileLon, 0.01),
           );
         }
+      }
+    });
+
+    test('Check sizes, scales and resolutions for 512x512 tiles', () {
+      for (final level in _scales512) {
+        final zoom = level[0] as int;
+        final matrixSize = level[1] as int;
+        final mapSize = level[2] as int;
+        final res0 = level[3] as double;
+        final res20 = level[4] as double;
+        final res40 = level[5] as double;
+        final res60 = level[6] as double;
+
+        expect(tile512Mercator.matrixSize(zoom), matrixSize);
+        expect(tile512Mercator.mapSize(zoom), mapSize);
+        expect(tile512Mercator.pixelResolution(zoom), closeTo(res0, 0.02));
+        expect(
+          tile512Mercator.pixelResolutionAt(latitude: 20, zoom: zoom),
+          closeTo(res20, 0.02),
+        );
+        expect(
+          tile512Mercator.pixelResolutionAt(latitude: -40, zoom: zoom),
+          closeTo(res40, 0.02),
+        );
+        expect(
+          tile512Mercator.pixelResolutionAt(latitude: 60, zoom: zoom),
+          closeTo(res60, 0.02),
+        );
       }
     });
 
