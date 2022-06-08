@@ -77,6 +77,15 @@ const _quadkeys = [
 */
 
 void main() {
+  group('Basic tiling scheme tests', () {
+    test('Test Scalable2i coordinates', () {
+      const ref = Scalable2i(zoom: 9, x: 23, y: 11);
+      expect(Scalable2i.fromCoords(const [9, 23, 11]), ref);
+      expect(Scalable2i.fromText('9;23;11', delimiter: ';'), ref);
+      expect(Scalable2i.factory(zoom: 9).call(x: 23, y: 11), ref);
+    });
+  });
+
   group('Test WebMercatorQuad', () {
     final webMercator = WebMercatorQuad.epsg3857();
     final tmsMercator = WebMercatorQuad.epsg3857(

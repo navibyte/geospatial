@@ -9,6 +9,7 @@ import 'package:meta/meta.dart';
 import '/src/codes/coords.dart';
 import '/src/coordinates/base.dart';
 import '/src/coordinates/projected.dart';
+import '/src/utils/num.dart';
 
 import 'scalable.dart';
 
@@ -30,6 +31,39 @@ class Scalable2i implements Scalable, Projected {
 
   /// Create scalable ([x], [y]) projected coordinates at the [zoom] level.
   const Scalable2i({required this.zoom, required this.x, required this.y});
+
+  /// A factory function creating scalable ([x], [y]) coordinates at [zoom].
+  /// 
+  /// The returned function is compatible with the `CreatePosition` function
+  /// type.
+  static CreatePosition<Scalable2i> factory({int zoom = 0}) {
+    return ({required num x, required num y, num? z, num? m}) =>
+        Scalable2i(zoom: zoom, x: x.round(), y: y.round());
+  }
+
+  /// Creates scalable coordinates from [coords] given in order: zoom, x, y.
+  factory Scalable2i.fromCoords(Iterable<num> coords, {int offset = 0}) {
+    final len = coords.length - offset;
+    if (len < 3) {
+      throw const FormatException('Coords must contain at least three items');
+    }
+    return Scalable2i(
+      zoom: coords.elementAt(offset).round(),
+      x: coords.elementAt(offset + 1).round(),
+      y: coords.elementAt(offset + 2).round(),
+    );
+  }
+
+  /// Creates scalable coordinates from [text] given in order: zoom, x, y.
+  ///
+  /// Coordinate values in [text] are separated by [delimiter].
+  factory Scalable2i.fromText(
+    String text, {
+    Pattern? delimiter = ',',
+  }) {
+    final coords = parseNumValuesFromText(text, delimiter: delimiter);
+    return Scalable2i.fromCoords(coords);
+  }
 
   @override
   num get z => 0;
