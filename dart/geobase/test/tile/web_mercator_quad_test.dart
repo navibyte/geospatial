@@ -100,20 +100,23 @@ void main() {
         expectPosition(
           world,
           _refToWorld(pos, 0),
-          0.000000000001,
+          0.0, // as tolerance
         );
         for (var zoom = 0; zoom <= 25; zoom++) {
           // geographic position to pixel
           final pixel = webMercator.positionToPixel(pos, zoom: zoom);
           final pixelRef = _refToPixel(pos, zoom);
-          expectMapPoint2(pixel, pixelRef);
+          expectMapPoint2(
+            pixel,
+            pixelRef,
+          );
 
           // calculated pixel back to geographic position (not accurate anymore)
           final unprojectedPos = webMercator.pixelToPosition(pixel);
           expectPosition(
             unprojectedPos,
             pos,
-            webMercator.pixelWidthLongitudal(zoom) / 2.0, // as tolerance
+            webMercator.pixelWidthLongitudal(zoom), // as tolerance
           );
 
           // and again to pixel
@@ -236,16 +239,31 @@ void main() {
       }
     });
   });
+
+  /*
+  group('Measure WebMercatorQuad', () {
+    final webMercator = WebMercatorQuad.epsg3857();
+    test('Compare geographic to world', () {
+      for (final pos in _samples) {
+        final world1 = webMercator.positionToWorld(pos);
+        final world2 = _refToWorld(pos, 0);
+        final xdiff = (world1.x - world2.x).abs();
+        final ydiff = (world1.y - world2.y).abs();
+        print('$xdiff $ydiff ($pos $world1)');
+      }
+    });
+  });
+  */
 }
 
 void expectMapPoint2(
   Scalable2i actual,
-  Scalable2i expected, [
+  Scalable2i expected, {
   num? tol,
-]) {
+}) {
   final equals = actual.equals2D(
     expected,
-    toleranceHoriz: tol ?? 0.0000001,
+    toleranceHoriz: tol,
   );
   if (!equals) {
     print('"$actual" not equals to "$expected"');

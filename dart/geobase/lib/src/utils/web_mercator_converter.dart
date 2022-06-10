@@ -47,7 +47,7 @@ class WebMercatorConverter implements MapConverter {
   /// X origin at the prime meridian (lon: 0), X axis from west to east.
   double toProjectedX(num longitude) {
     final lon = clampLongitude(longitude);
-    return lon * _originShift / 180.0;
+    return lon * _earthCircumference / 360;
   }
 
   /// Converts geographic [latitude] to projected map y coordinate (meters).
@@ -55,9 +55,9 @@ class WebMercatorConverter implements MapConverter {
   /// Y origin at the equator (lat: 0), Y from south to north.
   double toProjectedY(num latitude) {
     final lat = clampLatitude(latitude);
-    final y0 =
-        math.log(math.tan((90.0 + lat) * math.pi / 360.0)) / (math.pi / 180.0);
-    return y0 * _originShift / 180.0;
+    final sinLat = math.sin(lat * math.pi / 180);
+    final y = math.log((1 + sinLat) / (1 - sinLat)) / (4 * math.pi);
+    return y * _earthCircumference;
   }
 
   /// Converts projected map [x] coordinate (meters) to geographic longitude.
@@ -65,7 +65,7 @@ class WebMercatorConverter implements MapConverter {
   /// X origin at the prime meridian (lon: 0), X axis from west to east.
   double fromProjectedX(num x) {
     final xc = x.clamp(-_originShift, _originShift);
-    return (xc / _originShift) * 180.0;
+    return (xc / _earthCircumference) * 360;
   }
 
   /// Converts projected map [y] coordinate (meters) to geographic latitude.
@@ -73,10 +73,8 @@ class WebMercatorConverter implements MapConverter {
   /// Y origin at the equator (lat: 0), Y from south to north.
   double fromProjectedY(num y) {
     final yc = y.clamp(-_originShift, _originShift);
-    final lat0 = (yc / _originShift) * 180.0;
-    return 180.0 /
-        math.pi *
-        (2 * math.atan(math.exp(lat0 * math.pi / 180.0)) - math.pi / 2);
+    final y0 = yc / _earthCircumference;
+    return 90 - 360 * math.atan(math.exp(-y0 * 2 * math.pi)) / math.pi;
   }
 
   /// Converts geographic [longitude] to x coordinate with range (0, [width]).
@@ -85,7 +83,7 @@ class WebMercatorConverter implements MapConverter {
   @override
   double toMappedX(num longitude, {num width = 256}) {
     final lon = clampLongitude(longitude);
-    return (180.0 + lon) * width / 360.0;
+    return (0.5 + lon / 360.0) * width;
   }
 
   /// Converts geographic [latitude] to y coordinate with range (0, [height]).
@@ -94,10 +92,9 @@ class WebMercatorConverter implements MapConverter {
   @override
   double toMappedY(num latitude, {num height = 256}) {
     final lat = clampLatitude(latitude);
-    final y0 =
-        math.log(math.tan((90.0 + lat) * math.pi / 360.0)) / (math.pi / 180.0);
-    final sizePer2 = height / 2;
-    return sizePer2 - (y0 * sizePer2 / 180.0);
+    final sinLat = math.sin(lat * math.pi / 180);
+    final y = 0.5 - math.log((1 + sinLat) / (1 - sinLat)) / (4 * math.pi);
+    return y * height;
   }
 
   /// Converts [x] coordinate with range (0, [width]) to geographic longitude.
@@ -106,7 +103,7 @@ class WebMercatorConverter implements MapConverter {
   @override
   double fromMappedX(num x, {num width = 256}) {
     final xc = x.clamp(0, width);
-    return (xc / width) * 360.0 - 180.0;
+    return ((xc / width) - 0.5) * 360;
   }
 
   /// Converts [y] coordinate with range (0, [height]) to geographic latitude.
@@ -115,10 +112,7 @@ class WebMercatorConverter implements MapConverter {
   @override
   double fromMappedY(num y, {num height = 256}) {
     final yc = y.clamp(0, height);
-    final sizePer2 = height / 2;
-    final lat0 = ((sizePer2 - yc) / sizePer2) * 180.0;
-    return 180.0 /
-        math.pi *
-        (2 * math.atan(math.exp(lat0 * math.pi / 180.0)) - math.pi / 2);
+    final y0 = 0.5 - yc / height;
+    return 90 - 360 * math.atan(math.exp(-y0 * 2 * math.pi)) / math.pi;
   }
 }
