@@ -33,7 +33,7 @@ class Scalable2i implements Scalable, Projected {
   const Scalable2i({required this.zoom, required this.x, required this.y});
 
   /// A factory function creating scalable ([x], [y]) coordinates at [zoom].
-  /// 
+  ///
   /// The returned function is compatible with the `CreatePosition` function
   /// type.
   static CreatePosition<Scalable2i> factory({int zoom = 0}) {
