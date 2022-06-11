@@ -6,7 +6,7 @@
 
 import 'dart:math' as math;
 
-import '/src/tiling/convert/map.dart';
+import '/src/tiling/convert/scaled_converter.dart';
 
 const _minLat = -85.05112878;
 const _maxLat = 85.05112878;
@@ -17,7 +17,7 @@ const _earthCircumference = 2 * math.pi * _earthRadius; // in meters
 const _originShift = _earthCircumference / 2.0; // in meters (~ 20037508.34)
 
 /// A helper class to convert geographic coordinates to Web Mercator projection.
-class WebMercatorConverter implements MapConverter {
+class WebMercatorConverter implements ScaledConverter {
   /// Create a converter from geographic coordinates to mercator projection.
   ///
   /// This implementation is based on the WGS 84 / Web Mercator projection
@@ -42,7 +42,7 @@ class WebMercatorConverter implements MapConverter {
     return (math.cos(lat * math.pi / 180) * earthCircumference) / size;
   }
 
-  /// Converts geographic [longitude] to projected map x coordinate (meters).
+  /// Converts geographic [longitude] to projected map x coordinate (metric).
   ///
   /// X origin at the prime meridian (lon: 0), X axis from west to east.
   double toProjectedX(num longitude) {
@@ -50,7 +50,7 @@ class WebMercatorConverter implements MapConverter {
     return lon * _earthCircumference / 360;
   }
 
-  /// Converts geographic [latitude] to projected map y coordinate (meters).
+  /// Converts geographic [latitude] to projected map y coordinate (metric).
   ///
   /// Y origin at the equator (lat: 0), Y from south to north.
   double toProjectedY(num latitude) {
@@ -60,7 +60,7 @@ class WebMercatorConverter implements MapConverter {
     return y * _earthCircumference;
   }
 
-  /// Converts projected map [x] coordinate (meters) to geographic longitude.
+  /// Converts projected map [x] coordinate (metric) to geographic longitude.
   ///
   /// X origin at the prime meridian (lon: 0), X axis from west to east.
   double fromProjectedX(num x) {
@@ -68,7 +68,7 @@ class WebMercatorConverter implements MapConverter {
     return (xc / _earthCircumference) * 360;
   }
 
-  /// Converts projected map [y] coordinate (meters) to geographic latitude.
+  /// Converts projected map [y] coordinate (metric) to geographic latitude.
   ///
   /// Y origin at the equator (lat: 0), Y from south to north.
   double fromProjectedY(num y) {
@@ -81,7 +81,7 @@ class WebMercatorConverter implements MapConverter {
   ///
   /// X origin at the anti-meridian (lon: -180), X axis from west to east.
   @override
-  double toMappedX(num longitude, {num width = 256}) {
+  double toScaledX(num longitude, {num width = 256}) {
     final lon = clampLongitude(longitude);
     return (0.5 + lon / 360.0) * width;
   }
@@ -90,7 +90,7 @@ class WebMercatorConverter implements MapConverter {
   ///
   /// Y origin near the north pole (lat: 85.05112878), Y from north to south.
   @override
-  double toMappedY(num latitude, {num height = 256}) {
+  double toScaledY(num latitude, {num height = 256}) {
     final lat = clampLatitude(latitude);
     final sinLat = math.sin(lat * math.pi / 180);
     final y = 0.5 - math.log((1 + sinLat) / (1 - sinLat)) / (4 * math.pi);
@@ -101,7 +101,7 @@ class WebMercatorConverter implements MapConverter {
   ///
   /// X origin at the anti-meridian (lon: -180), X axis from west to east.
   @override
-  double fromMappedX(num x, {num width = 256}) {
+  double fromScaledX(num x, {num width = 256}) {
     final xc = x.clamp(0, width);
     return ((xc / width) - 0.5) * 360;
   }
@@ -110,7 +110,7 @@ class WebMercatorConverter implements MapConverter {
   ///
   /// Y origin near the north pole (lat: 85.05112878), Y from north to south.
   @override
-  double fromMappedY(num y, {num height = 256}) {
+  double fromScaledY(num y, {num height = 256}) {
     final yc = y.clamp(0, height);
     final y0 = 0.5 - yc / height;
     return 90 - 360 * math.atan(math.exp(-y0 * 2 * math.pi)) / math.pi;

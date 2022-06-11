@@ -7,7 +7,7 @@
 import 'package:meta/meta.dart';
 
 import '/src/coordinates/scalable.dart';
-import '/src/tiling/convert/map.dart';
+import '/src/tiling/convert/scaled_converter.dart';
 import '/src/tiling/tilematrix/base.dart';
 import '/src/utils/web_mercator_converter.dart';
 
@@ -42,7 +42,7 @@ class WebMercatorQuad extends GeoTileMatrixSet {
   final WebMercatorConverter _converter;
 
   @override
-  MapConverter get converter => _converter;
+  ScaledConverter get converter => _converter;
 
   /// The number of tiles at [zoom] (level of detail) in one axis.
   int matrixSize(int zoom) => 1 << zoom;

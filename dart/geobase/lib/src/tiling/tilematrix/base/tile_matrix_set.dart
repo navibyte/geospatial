@@ -7,7 +7,7 @@
 import '/src/coordinates/base.dart';
 import '/src/coordinates/projected.dart';
 import '/src/coordinates/scalable.dart';
-import '/src/tiling/convert/map.dart';
+import '/src/tiling/convert/scaled_converter.dart';
 
 import 'tile_matrix_origin.dart';
 
@@ -87,7 +87,7 @@ abstract class TileMatrixSet {
 */
 
   /// A map converter between geospatial positions and map coordinates.
-  MapConverter get converter;
+  ScaledConverter get converter;
 
   /// Transforms [position] to world coordinates.
   ///
@@ -100,8 +100,8 @@ abstract class TileMatrixSet {
     final height = mapHeight(0);
 
     // project (geographic or projected) position to pixel coordinates
-    final px = converter.toMappedX(position.x, width: width);
-    var py = converter.toMappedY(position.y, height: height);
+    final px = converter.toScaledX(position.x, width: width);
+    var py = converter.toScaledY(position.y, height: height);
 
     // handle origin variations
     switch (origin) {
@@ -136,11 +136,11 @@ abstract class TileMatrixSet {
 
     // project (geographic or projected) position to pixel coordinates
     final px = converter
-        .toMappedX(position.x, width: width)
+        .toScaledX(position.x, width: width)
         .floor()
         .clamp(0, width - 1);
     var py = converter
-        .toMappedY(position.y, height: height)
+        .toScaledY(position.y, height: height)
         .floor()
         .clamp(0, height - 1);
 
@@ -173,11 +173,11 @@ abstract class TileMatrixSet {
 
     // project (geographic or projected) position to tile coordinates
     final tx = converter
-        .toMappedX(position.x, width: width)
+        .toScaledX(position.x, width: width)
         .floor()
         .clamp(0, width - 1);
     var ty = converter
-        .toMappedY(position.y, height: height)
+        .toScaledY(position.y, height: height)
         .floor()
         .clamp(0, height - 1);
 

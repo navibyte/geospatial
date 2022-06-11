@@ -54,8 +54,8 @@ abstract class GeoTileMatrixSet extends TileMatrixSet {
     // (where size is either map width or map height)
     // - then unprojected to geographic coordinates
     return Geographic(
-      lon: converter.fromMappedX(px + 0.5, width: width),
-      lat: converter.fromMappedY(py + 0.5, height: height),
+      lon: converter.fromScaledX(px + 0.5, width: width),
+      lat: converter.fromScaledY(py + 0.5, height: height),
     );
   }
 
@@ -85,10 +85,10 @@ abstract class GeoTileMatrixSet extends TileMatrixSet {
 
     // unproject corners of box in pixel coordinates to geographic positions
     return GeoBox(
-      west: converter.fromMappedX(pxWest, width: width),
-      south: converter.fromMappedY(pyNorth + tileSize, height: height),
-      east: converter.fromMappedX(pxWest + tileSize, width: width),
-      north: converter.fromMappedY(pyNorth, height: height),
+      west: converter.fromScaledX(pxWest, width: width),
+      south: converter.fromScaledY(pyNorth + tileSize, height: height),
+      east: converter.fromScaledX(pxWest + tileSize, width: width),
+      north: converter.fromScaledY(pyNorth, height: height),
     );
   }
 }
