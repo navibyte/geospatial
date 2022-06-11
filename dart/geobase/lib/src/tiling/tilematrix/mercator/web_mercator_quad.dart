@@ -6,6 +6,7 @@
 
 import 'package:meta/meta.dart';
 
+import '/src/constants/screen_ppi.dart';
 import '/src/coordinates/scalable.dart';
 import '/src/tiling/convert/scaled_converter.dart';
 import '/src/tiling/tilematrix/base.dart';
@@ -82,21 +83,24 @@ class WebMercatorQuad extends GeoTileMatrixSet {
   @override
   double scaleDenominator(
     int zoom, {
-    double screenDpi = 96,
+    double screenPPI = screenPPIbyOGC,
   }) =>
-      pixelResolution(zoom) * screenDpi / 0.0254;
+      pixelResolution(zoom) * screenPPI / 0.0254;
 
   /// The pixel ground resolution in meters at given [latitude] and [zoom].
   double pixelResolutionAt({required double latitude, required int zoom}) =>
       _converter.pixelResolutionAt(latitude, mapSize(zoom));
 
-  /// The map scale denominator at given [latitude], [zoom] and [screenDpi].
+  /// The map scale denominator at given [latitude], [zoom] and [screenPPI].
+  ///
+  /// By default [screenPPI] of ~ 90.7 ppi is used (based on a screen pixel of
+  /// 0.28 mm defined by OGC). Another common value is 96 ppi.
   double scaleDenominatorAt({
     required double latitude,
     required int zoom,
-    double screenDpi = 96,
+    double screenPPI = screenPPIbyOGC,
   }) =>
-      pixelResolutionAt(latitude: latitude, zoom: zoom) * screenDpi / 0.0254;
+      pixelResolutionAt(latitude: latitude, zoom: zoom) * screenPPI / 0.0254;
 
   /// Returns a tile identified by [quadKey] (as specified by Microsoft).
   ///

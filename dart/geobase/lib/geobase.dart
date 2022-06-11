@@ -23,6 +23,7 @@ library geobase;
 
 export 'src/codes/coords.dart';
 export 'src/codes/geom.dart';
+export 'src/constants/screen_ppi.dart';
 export 'src/coordinates/base.dart';
 export 'src/coordinates/geographic.dart';
 export 'src/coordinates/projected.dart';

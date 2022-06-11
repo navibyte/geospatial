@@ -4,6 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import '/src/constants/screen_ppi.dart';
 import '/src/coordinates/base.dart';
 import '/src/coordinates/projected.dart';
 import '/src/coordinates/scalable.dart';
@@ -53,13 +54,16 @@ abstract class TileMatrixSet {
   /// like along the equator or a meridian depending on a projection.
   double pixelResolution(int zoom);
 
-  /// The map scale denominator at [zoom] and [screenDpi].
+  /// The map scale denominator at [zoom] and [screenPPI].
   ///
   /// This is a nominal scale denominator that may be accurate only in some
   /// positions like along the equator or a meridian depending on a projection.
+  /// 
+  /// By default [screenPPI] of ~ 90.7 ppi is used (based on a screen pixel of 
+  /// 0.28 mm defined by OGC). Another common value is 96 ppi.
   double scaleDenominator(
     int zoom, {
-    double screenDpi = 96,
+    double screenPPI = screenPPIbyOGC,
   });
 
 /* 

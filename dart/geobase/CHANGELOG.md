@@ -6,6 +6,7 @@ Development version: 0.2.0-dev.9
 - [Mini-libraries for geobase #109](https://github.com/navibyte/geospatial/issues/109)
 - [Conversion between WGS84 (lon-lat) and Web Mercator Quad tile matrix set #57](https://github.com/navibyte/geospatial/issues/57)
 - [MapPoint2i renamed to ScalableXY, and implementing Projected and Scalable #116](https://github.com/navibyte/geospatial/issues/116)
+- [Use OGC specified screen pixel size / ppi when calculating scale denominator #119](https://github.com/navibyte/geospatial/issues/119)
 
 🛠 Maintenance:
 - [Upgrade to Dart 2.17 #105](https://github.com/navibyte/geospatial/issues/105)

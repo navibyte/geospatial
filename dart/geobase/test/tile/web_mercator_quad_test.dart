@@ -26,14 +26,16 @@ const _samples = [
 ];
 
 const _scales256 = [
+  // see https://docs.opengeospatial.org/is/17-083r2/17-083r2.html
+
   // zoom, matrix size, map size, resolution, scale denominator, tile lon width
-  <num>[1, 2, 512, 78271.5170, 295829355.45, 180.0],
-  <num>[2, 4, 1024, 39135.7585, 147914677.73, 90.0],
-  <num>[6, 64, 16384, 2445.9849, 9244667.36, 5.625],
-  <num>[10, 1024, 262144, 152.8741, 577791.71, 0.352],
-  <num>[15, 32768, 8388608, 4.7773, 18055.99, 0.011],
-  <num>[19, 524288, 134217728, 0.2986, 1128.50, double.nan],
-  <num>[23, 8388608, 2147483648, 0.0187, 70.53, double.nan],
+  <num>[1, 2, 512, 78271.51696402048, 279541132.014358, 180.0],
+  <num>[2, 4, 1024, 39135.75848201023, 139770566.007179, 90.0],
+  <num>[6, 64, 16384, 2445.984905125640, 8735660.37544871, 5.625],
+  <num>[10, 1024, 262144, 152.8740565703525, 545978.773465544, 0.3515625],
+  <num>[15, 32768, 8388608, 4.777314267823516, 17061.8366707982, 0.01098632813],
+  <num>[19, 524288, 134217728, 0.29858214117, 1066.36479192489, 45 / 65536],
+  <num>[23, 8388608, 2147483648, 0.01866138386, 66.6477994953056, 45 / 1048576],
 ];
 
 const _scales512 = [
@@ -155,12 +157,12 @@ void main() {
 
         expect(webMercator.matrixSize(zoom), matrixSize);
         expect(webMercator.mapSize(zoom), mapSize);
-        expect(webMercator.pixelResolution(zoom), closeTo(res, 0.01));
-        expect(webMercator.scaleDenominator(zoom), closeTo(scale, 0.01));
+        expect(webMercator.pixelResolution(zoom), closeTo(res, 0.000001));
+        expect(webMercator.scaleDenominator(zoom), closeTo(scale, 0.000001));
         if (!tileLon.isNaN) {
           expect(
             webMercator.tileWidthLongitudal(zoom),
-            closeTo(tileLon, 0.01),
+            closeTo(tileLon, 0.000001),
           );
         }
       }
