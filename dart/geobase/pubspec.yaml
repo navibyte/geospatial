@@ -1,6 +1,6 @@
 name: geobase
 description: Geospatial coordinates (geographic and projected), projections and data writers (GeoJSON, WKT) for Dart. 
-version: 0.2.0-dev.9
+version: 0.2.0-dev.10
 repository: https://github.com/navibyte/geospatial
 homepage: https://github.com/navibyte/geospatial/tree/main/dart/geobase
 

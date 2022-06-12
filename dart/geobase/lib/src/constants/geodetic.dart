@@ -25,7 +25,7 @@ const minLatitudeWebMercator = -85.05112878;
 const maxLatitudeWebMercator = 85.05112878;
 
 /// The earth equatorial radius in meters as specified by WGS 84.
-const earthRadiusWgs84 = 6378137.0; 
+const earthRadiusWgs84 = 6378137.0;
 
 /// The earth circumference in meters (from earth equatorial radius by WGS 84).
 const earthCircumferenceWgs84 = 2 * math.pi * earthRadiusWgs84;

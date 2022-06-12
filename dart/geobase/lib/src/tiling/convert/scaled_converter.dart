@@ -8,7 +8,7 @@
 ///
 /// Geospatial positions may represent geographic or projected coordinates
 /// defined by a spatial coordinate reference system.
-/// 
+///
 /// Scaled coordinates are projected coordinates scaled to a defined range
 /// most often defined by a tiling scheme.
 abstract class ScaledConverter {

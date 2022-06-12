@@ -12,7 +12,7 @@ and properties.
 * 🌐 *geographic* positions and bounding boxes (longitude-latitude-elevation)
 * 🗺️ *projected* positions and bounding boxes (cartesian XYZ)
 * 🏗️ coordinate transformations and projections (initial support)
-* 🔢 tiling schemes and tile matrix sets (web mercator)
+* 🔢 tiling schemes and tile matrix sets (web mercator, global geodetic)
 * 📅 temporal data structures (instant, interval)
 * 📃 geospatial data writers for features, geometries, coordinates, properties:
   * 🌎 supported formats: [GeoJSON](https://geojson.org/) 
@@ -29,7 +29,7 @@ Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geobase: ^0.2.0-dev.9
+  geobase: ^0.2.0-dev.10
 ```
 
 Import it:
