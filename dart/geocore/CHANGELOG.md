@@ -1,6 +1,6 @@
 ## 0.9.0
 
-Development version: 0.9.0-dev.2
+Development version: 0.9.0-dev.3
 
 ⚠️ Breaking changes:
 - Removed previously deprecated classes and members

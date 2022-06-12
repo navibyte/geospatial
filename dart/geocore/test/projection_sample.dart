@@ -48,7 +48,6 @@ const wgs84ToWebMercatorData = [
   [180.0, 85.05112878, -20037508.34, 20037508.34],
 ];
 
-
 PointSeries<GeoPoint2> testWgs84Points() => PointSeries.from(
       wgs84ToWebMercatorData
           .map((coords) => GeoPoint2(lon: coords[0], lat: coords[1]))

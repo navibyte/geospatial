@@ -11,7 +11,7 @@
 ///
 /// Exports also `Coords`, `Position`, `TransformPosition`, `CreatePosition`,
 /// `Box` and `Projection` from `package:geobase/coordinates.dart`.
-/// 
+///
 /// Usage: import `package:geocore/base.dart`
 library base;
 
