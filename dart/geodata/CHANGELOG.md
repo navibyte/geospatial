@@ -1,6 +1,6 @@
 ## 0.9.0
 
-Development version: 0.9.0-dev.2
+Development version: 0.9.0-dev.3
 
 🛠 Maintenance:
 - [Upgrade to Dart 2.17 #105](https://github.com/navibyte/geospatial/issues/105)
