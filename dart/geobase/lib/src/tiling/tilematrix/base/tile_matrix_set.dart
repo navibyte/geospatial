@@ -14,6 +14,9 @@ import 'tile_matrix_origin.dart';
 
 /// A tiling scheme represented as a set of tile matrices (grids).
 abstract class TileMatrixSet {
+  /// Default `const` constructor to allow extending this abstract class.
+  const TileMatrixSet();
+
   /// The maximum (suggested) zoom level for this tile matrix set.
   ///
   /// Note that some methods may allow larger zoom values when zoom value is
@@ -38,7 +41,7 @@ abstract class TileMatrixSet {
   /// The number of pixels ("map height") at [zoom] in the Y axis.
   int mapHeight(int zoom);
 
-  /// The tile ground resolution in meters at [zoom].
+  /// The tile resolution (often ground resolution in meters) at [zoom].
   ///
   /// Should equal to `tileSize * pixelResolution(zoom)`.
   ///
@@ -46,7 +49,7 @@ abstract class TileMatrixSet {
   /// like along the equator or a meridian depending on a projection.
   double tileResolution(int zoom);
 
-  /// The pixel ground resolution in meters at [zoom].
+  /// The pixel resolution (often ground resolution in meters) at [zoom].
   ///
   /// Should equal to `tileResolution(zoom) / tileSize`.
   ///
@@ -58,8 +61,8 @@ abstract class TileMatrixSet {
   ///
   /// This is a nominal scale denominator that may be accurate only in some
   /// positions like along the equator or a meridian depending on a projection.
-  /// 
-  /// By default [screenPPI] of ~ 90.7 ppi is used (based on a screen pixel of 
+  ///
+  /// By default [screenPPI] of ~ 90.7 ppi is used (based on a screen pixel of
   /// 0.28 mm defined by OGC). Another common value is 96 ppi.
   double scaleDenominator(
     int zoom, {
@@ -123,8 +126,8 @@ abstract class TileMatrixSet {
       y: py.clamp(0.0, height),
 
       // optional z and m are copied
-      z: position.z,
-      m: position.m,
+      z: position.optZ,
+      m: position.optM,
     );
   }
 

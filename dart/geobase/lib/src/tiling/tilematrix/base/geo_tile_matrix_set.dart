@@ -13,6 +13,9 @@ import 'tile_matrix_set.dart';
 
 /// A tile matrix set with conversions between tiles and geographic positions.
 abstract class GeoTileMatrixSet extends TileMatrixSet {
+  /// Default `const` constructor to allow extending this abstract class.
+  const GeoTileMatrixSet();
+
   /// The tile (longitudal) width in degrees at [zoom].
   double tileWidthLongitudal(int zoom) => 360.0 / matrixWidth(zoom);
 

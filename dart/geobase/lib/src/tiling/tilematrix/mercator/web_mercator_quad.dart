@@ -12,7 +12,9 @@ import '/src/tiling/convert/scaled_converter.dart';
 import '/src/tiling/tilematrix/base.dart';
 import '/src/utils/web_mercator_converter.dart';
 
-/// "Web Mercator Quad" tile matrix set aka "Google Maps Compatible".
+const WebMercatorConverter _converterEpsg3857 = WebMercatorConverter.epsg3857();
+
+/// "Web Mercator Quad" tile matrix set.
 ///
 /// More information:
 /// https://en.wikipedia.org/wiki/Web_Mercator_projection
@@ -22,28 +24,34 @@ import '/src/utils/web_mercator_converter.dart';
 class WebMercatorQuad extends GeoTileMatrixSet {
   /// Create "Web Mercator Quad" tile matrix set with [tileSize] and [origin].
   ///
+  /// Tiles are defined in the WGS 84 / Web Mercator projection ("EPSG:3857")
+  /// aka "Pseudo-Mercator" or "Spherical Mercator" or "Google Maps Compatible".
+  ///
+  /// [OGC Two Dimensional Tile Matrix Set](https://docs.opengeospatial.org/is/17-083r2/17-083r2.html):
+  /// "Level 0 allows representing most of the world (limited to latitudes
+  /// between approximately ±85 degrees) in a single tile of 256x256 pixels
+  /// (Mercator projection cannot cover the whole world because mathematically
+  /// the poles are at infinity). The next level represents most of the world
+  /// in 2x2 tiles of 256x256 pixels and so on in powers of 2. Mercator
+  /// projection distorts the pixel size closer to the poles. The pixel sizes
+  /// provided here are only valid next to the equator."
+  ///
   /// Normally use 256 or 512 pixels for [tileSize].
   ///
   /// By default [origin] for tiles and pixels is "top-left", for example
   /// a tile (0, 0) is located in the north-west corner of the world map. This
-  /// is the notation used by "Google Maps Compatible" tile services. You can
-  /// set [origin] to "bottom-left", the notation used by TMS (Tile Map Service)
+  /// is the notation used by many web map tiled services. You can also set
+  /// [origin] to "bottom-left", the notation used by TMS (Tile Map Service)
   /// specification.
-  ///
-  /// This implementation is based on the WGS 84 / Web Mercator projection
-  /// ("EPSG:3857") aka "Pseudo-Mercator" or "Spherical Mercator".
-  WebMercatorQuad.epsg3857({
+  const WebMercatorQuad.epsg3857({
     this.maxZoom = 22,
     this.tileSize = 256,
     this.origin = TileMatrixOrigin.topLeft,
   })  : assert(maxZoom >= 0, 'Max zoom must be >= 0'),
-        assert(tileSize > 0, 'Tile size must be > 0'),
-        _converter = const WebMercatorConverter.epsg3857();
-
-  final WebMercatorConverter _converter;
+        assert(tileSize > 0, 'Tile size must be > 0');
 
   @override
-  ScaledConverter get converter => _converter;
+  ScaledConverter get converter => _converterEpsg3857;
 
   /// The number of tiles at [zoom] (level of detail) in one axis.
   int matrixSize(int zoom) => 1 << zoom;
@@ -72,13 +80,15 @@ class WebMercatorQuad extends GeoTileMatrixSet {
   @override
   int mapHeight(int zoom) => mapSize(zoom);
 
+  /// The tile ground resolution in meters at [zoom].
   @override
   double tileResolution(int zoom) =>
-      _converter.earthCircumference / matrixSize(zoom);
+      _converterEpsg3857.earthCircumference / matrixSize(zoom);
 
+  /// The pixel ground resolution in meters at [zoom].
   @override
   double pixelResolution(int zoom) =>
-      _converter.earthCircumference / mapSize(zoom);
+      _converterEpsg3857.earthCircumference / mapSize(zoom);
 
   @override
   double scaleDenominator(
@@ -89,7 +99,7 @@ class WebMercatorQuad extends GeoTileMatrixSet {
 
   /// The pixel ground resolution in meters at given [latitude] and [zoom].
   double pixelResolutionAt({required double latitude, required int zoom}) =>
-      _converter.pixelResolutionAt(latitude, mapSize(zoom));
+      _converterEpsg3857.pixelResolutionAt(latitude, mapSize(zoom));
 
   /// The map scale denominator at given [latitude], [zoom] and [screenPPI].
   ///

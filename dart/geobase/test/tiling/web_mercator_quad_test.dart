@@ -13,6 +13,8 @@ import 'package:test/test.dart';
 
 import '../projections/projection_sample.dart';
 
+import 'tiling_samples.dart';
+
 const _samples = [
   Geographic(lon: 0.0, lat: 0.0),
   Geographic(lon: -87.65, lat: 41.85),
@@ -89,11 +91,11 @@ void main() {
   });
 
   group('Test WebMercatorQuad', () {
-    final webMercator = WebMercatorQuad.epsg3857();
-    final tmsMercator = WebMercatorQuad.epsg3857(
+    const webMercator = WebMercatorQuad.epsg3857();
+    const tmsMercator = WebMercatorQuad.epsg3857(
       origin: TileMatrixOrigin.bottomLeft,
     );
-    final tile512Mercator = WebMercatorQuad.epsg3857(
+    const tile512Mercator = WebMercatorQuad.epsg3857(
       tileSize: 512,
     );
     test('Compare conversions to reference sample tests', () {
@@ -108,7 +110,7 @@ void main() {
           // geographic position to pixel
           final pixel = webMercator.positionToPixel(pos, zoom: zoom);
           final pixelRef = _refToPixel(pos, zoom);
-          expectMapPoint2(
+          expectScaled2i(
             pixel,
             pixelRef,
           );
@@ -124,24 +126,24 @@ void main() {
           // and again to pixel
           final pixel2 =
               webMercator.positionToPixel(unprojectedPos, zoom: zoom);
-          expectMapPoint2(pixel2, pixelRef);
+          expectScaled2i(pixel2, pixelRef);
 
           // geographic position to tile
           final tile = webMercator.positionToTile(pos, zoom: zoom);
           final tileRef = _refToTile(pos, zoom);
-          expectMapPoint2(tile, tileRef);
+          expectScaled2i(tile, tileRef);
 
           // pixel to tile
-          expectMapPoint2(webMercator.pixelToTile(pixel), tileRef);
+          expectScaled2i(webMercator.pixelToTile(pixel), tileRef);
 
           // world to pixel
-          expectMapPoint2(
+          expectScaled2i(
             webMercator.worldToPixel(world, zoom: zoom),
             pixelRef,
           );
 
           // world to tile
-          expectMapPoint2(webMercator.worldToTile(world, zoom: zoom), tileRef);
+          expectScaled2i(webMercator.worldToTile(world, zoom: zoom), tileRef);
         }
       }
     });
@@ -256,21 +258,6 @@ void main() {
     });
   });
   */
-}
-
-void expectMapPoint2(
-  Scalable2i actual,
-  Scalable2i expected, {
-  num? tol,
-}) {
-  final equals = actual.equals2D(
-    expected,
-    toleranceHoriz: tol,
-  );
-  if (!equals) {
-    print('"$actual" not equals to "$expected"');
-  }
-  expect(equals, isTrue);
 }
 
 // -----------------------------------------------------------------------------
