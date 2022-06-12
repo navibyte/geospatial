@@ -11,7 +11,7 @@ dependencies:
   equatable: ^2.0.3
   meta: ^1.7.0
 
-  geobase: ^0.2.0-dev.6
+  geobase: ^0.2.0-dev.10
   #geobase: 
   #  path: ../geobase
 
