@@ -94,4 +94,19 @@ abstract class GeoTileMatrixSet extends TileMatrixSet {
       north: converter.fromScaledY(pyNorth, height: height),
     );
   }
+
+  @override
+  GeoBox mapBounds() {
+    // map size: number of pixels for x and y at the zoom 0
+    final width = mapWidth(0);
+    final height = mapHeight(0);
+
+    // unproject corners of box in pixel coordinates to geographic positions
+    return GeoBox(
+      west: converter.fromScaledX(0.0, width: width),
+      south: converter.fromScaledY(height, height: height),
+      east: converter.fromScaledX(width, width: width),
+      north: converter.fromScaledY(0.0, height: height),
+    );
+  }
 }

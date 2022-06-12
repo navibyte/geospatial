@@ -52,6 +52,7 @@ void main() {
         expectScaled2i(crs84.worldToPixel(world, zoom: pixel.zoom), pixel);
         expectScaled2i(crs84.worldToTile(world, zoom: tile.zoom), tile);
         expectPosition(crs84.pixelToPosition(pixel), pos, 0.2);
+        expectPosition(crs84.pixelToWorld(pixel), world, 0.3);
         expect(crs84.tileToBounds(tile), tileBounds);
       }
     });
@@ -71,6 +72,19 @@ void main() {
         expect(crs84.mapWidth(zoom), matrixWidth * crs84.tileSize);
         expect(crs84.mapHeight(zoom), matrixHeight * crs84.tileSize);
       }
+    });
+
+    test('Check map bounds', () {
+      const expected = GeoBox(
+        west: minLongitude,
+        south: minLatitude,
+        east: maxLongitude,
+        north: maxLatitude,
+      );
+      expect(
+        crs84.mapBounds().equals2D(expected, toleranceHoriz: 0.000000001),
+        true,
+      );
     });
   });
 }

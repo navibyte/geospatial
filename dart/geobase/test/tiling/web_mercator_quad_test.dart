@@ -137,10 +137,16 @@ void main() {
           expectScaled2i(webMercator.pixelToTile(pixel), tileRef);
 
           // world to pixel
+          final pixel3 = webMercator.worldToPixel(world, zoom: zoom);
           expectScaled2i(
-            webMercator.worldToPixel(world, zoom: zoom),
+            pixel3,
             pixelRef,
           );
+
+          // pixel to world
+          expectPosition(webMercator.pixelToWorld(pixel), world, 0.5);
+          expectPosition(webMercator.pixelToWorld(pixel2), world, 0.5);
+          expectPosition(webMercator.pixelToWorld(pixel3), world, 0.5);
 
           // world to tile
           expectScaled2i(webMercator.worldToTile(world, zoom: zoom), tileRef);
@@ -226,6 +232,29 @@ void main() {
         //print(tileBounds2);
         expect(tileBounds2.equals2D(bounds, toleranceHoriz: 0.002), true);
       }
+    });
+
+    test('Check map bounds', () {
+      const expected = GeoBox(
+        west: minLongitude,
+        south: minLatitudeWebMercator,
+        east: maxLongitude,
+        north: maxLatitudeWebMercator,
+      );
+      expect(
+        webMercator.mapBounds().equals2D(expected, toleranceHoriz: 0.000000001),
+        true,
+      );
+      expect(
+        tmsMercator.mapBounds().equals2D(expected, toleranceHoriz: 0.000000001),
+        true,
+      );
+      expect(
+        tile512Mercator
+            .mapBounds()
+            .equals2D(expected, toleranceHoriz: 0.000000001),
+        true,
+      );
     });
 
     test('Test quad key', () {

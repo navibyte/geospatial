@@ -101,7 +101,7 @@ abstract class TileMatrixSet {
   /// - world x (double): `0.0 .. mapWidth(0)`
   /// - world y (double): `0.0 .. mapHeight(0)`
   Projected positionToWorld(covariant Position position) {
-    // map size: number of pixels for x and y at the zoom level 0
+    // world coordinates size: number of pixels for x and y at the zoom level 0
     final width = mapWidth(0);
     final height = mapHeight(0);
 
@@ -237,6 +237,33 @@ abstract class TileMatrixSet {
     );
   }
 
+  /// Transforms [pixel] coordinates to world coordinates.
+  ///
+  /// Coordinate value ranges:
+  /// - pixel x (int): `0 .. mapWidth(zoom) - 1`
+  /// - pixel y (int): `0 .. mapHeight(zoom) - 1`
+  /// - world x (double): `0.0 .. mapWidth(0)`
+  /// - world y (double): `0.0 .. mapHeight(0)`
+  Projected pixelToWorld(Scalable2i pixel) {
+    // convert pixel coordinates to world coordinates
+    // - pixel range is: 0 .. size-1 (integer)
+    // - this is first approximated to: 0.5 .. size-0.5
+    // (where size is either map width or map height)
+    // - then mapped to world coordinates (double values at zoom 0)
+    final x = (pixel.x + 0.5) / (1 << pixel.zoom);
+    final y = (pixel.y + 0.5) / (1 << pixel.zoom);
+
+    // world coordinates size: number of pixels for x and y at the zoom level 0
+    final width = mapWidth(0);
+    final height = mapHeight(0);
+
+    return Projected(
+      // x and y coordinates projected to world coordinates
+      x: x.clamp(0.0, width),
+      y: y.clamp(0.0, height),
+    );
+  }
+
   /// Transforms [pixel] coordinates to a position.
   ///
   /// Coordinate value ranges:
@@ -270,4 +297,7 @@ abstract class TileMatrixSet {
   /// - tile x (int): `0 .. matrixWidth(zoom) - 1`
   /// - tile y (int): `0 .. matrixHeight(zoom) - 1`
   Box tileToBounds(Scalable2i tile);
+
+  /// Returns a bounding box with min and max positions for the whole map.
+  Box mapBounds();
 }
