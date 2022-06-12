@@ -6,6 +6,7 @@
 
 import 'package:meta/meta.dart';
 
+import '/src/codes/canvas_origin.dart';
 import '/src/constants/geodetic.dart';
 import '/src/constants/screen_ppi.dart';
 import '/src/tiling/convert/scaled_converter.dart';
@@ -36,7 +37,7 @@ class GlobalGeodeticQuad extends GeoTileMatrixSet {
   const GlobalGeodeticQuad.worldCrs84({
     this.maxZoom = 22,
     this.tileSize = 256,
-    this.origin = TileMatrixOrigin.topLeft,
+    this.origin = CanvasOrigin.topLeft,
   })  : assert(maxZoom >= 0, 'Max zoom must be >= 0'),
         assert(tileSize > 0, 'Tile size must be > 0');
 
@@ -50,7 +51,7 @@ class GlobalGeodeticQuad extends GeoTileMatrixSet {
   final int tileSize;
 
   @override
-  final TileMatrixOrigin origin;
+  final CanvasOrigin origin;
 
   @override
   int matrixWidth(int zoom) => 2 << zoom;

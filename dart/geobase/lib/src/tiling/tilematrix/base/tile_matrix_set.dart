@@ -4,13 +4,12 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import '/src/codes/canvas_origin.dart';
 import '/src/constants/screen_ppi.dart';
 import '/src/coordinates/base.dart';
 import '/src/coordinates/projected.dart';
 import '/src/coordinates/scalable.dart';
 import '/src/tiling/convert/scaled_converter.dart';
-
-import 'tile_matrix_origin.dart';
 
 /// A tiling scheme represented as a set of tile matrices (grids).
 abstract class TileMatrixSet {
@@ -27,7 +26,7 @@ abstract class TileMatrixSet {
   int get tileSize;
 
   /// The position of the origin in a tile matrix and map pixel "canvas".
-  TileMatrixOrigin get origin;
+  CanvasOrigin get origin;
 
   /// The number of tiles ("matrix width") at [zoom] in the X axis.
   int matrixWidth(int zoom);
@@ -112,10 +111,10 @@ abstract class TileMatrixSet {
 
     // handle origin variations
     switch (origin) {
-      case TileMatrixOrigin.topLeft:
+      case CanvasOrigin.topLeft:
         // nop
         break;
-      case TileMatrixOrigin.bottomLeft:
+      case CanvasOrigin.bottomLeft:
         py = height - py;
         break;
     }
@@ -153,10 +152,10 @@ abstract class TileMatrixSet {
 
     // handle origin variations
     switch (origin) {
-      case TileMatrixOrigin.topLeft:
+      case CanvasOrigin.topLeft:
         // nop
         break;
-      case TileMatrixOrigin.bottomLeft:
+      case CanvasOrigin.bottomLeft:
         py = (height - 1) - py;
         break;
     }
@@ -190,10 +189,10 @@ abstract class TileMatrixSet {
 
     // handle origin variations
     switch (origin) {
-      case TileMatrixOrigin.topLeft:
+      case CanvasOrigin.topLeft:
         // nop
         break;
-      case TileMatrixOrigin.bottomLeft:
+      case CanvasOrigin.bottomLeft:
         ty = (height - 1) - ty;
         break;
     }

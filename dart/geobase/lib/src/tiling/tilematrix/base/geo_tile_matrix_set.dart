@@ -4,11 +4,11 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import '/src/codes/canvas_origin.dart';
 import '/src/coordinates/geographic.dart';
 import '/src/coordinates/projected.dart';
 import '/src/coordinates/scalable.dart';
 
-import 'tile_matrix_origin.dart';
 import 'tile_matrix_set.dart';
 
 /// A tile matrix set with conversions between tiles and geographic positions.
@@ -43,10 +43,10 @@ abstract class GeoTileMatrixSet extends TileMatrixSet {
 
     // handle origin variations
     switch (origin) {
-      case TileMatrixOrigin.topLeft:
+      case CanvasOrigin.topLeft:
         py = pixel.y;
         break;
-      case TileMatrixOrigin.bottomLeft:
+      case CanvasOrigin.bottomLeft:
         py = (height - 1) - pixel.y;
         break;
     }
@@ -70,10 +70,10 @@ abstract class GeoTileMatrixSet extends TileMatrixSet {
 
     // handle origin variations
     switch (origin) {
-      case TileMatrixOrigin.topLeft:
+      case CanvasOrigin.topLeft:
         ty = tile.y;
         break;
-      case TileMatrixOrigin.bottomLeft:
+      case CanvasOrigin.bottomLeft:
         ty = (matrixHeight(tile.zoom) - 1) - tile.y;
         break;
     }

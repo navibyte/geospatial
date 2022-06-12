@@ -4,11 +4,11 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// The position of the origin in a tile matrix.
-enum TileMatrixOrigin {
-  /// The origin is positioned at the top-left corner of a tile matrix.
+/// The position of the origin in a canvas or a grid.
+enum CanvasOrigin {
+  /// The origin is positioned at the top-left corner of a canvas or a grid.
   topLeft,
 
-  /// The origin is positioned at the bottom-left corner of a tile matrix.
+  /// The origin is positioned at the bottom-left corner of a canvas or a grid.
   bottomLeft,
 }

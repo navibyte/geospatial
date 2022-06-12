@@ -93,7 +93,7 @@ void main() {
   group('Test WebMercatorQuad', () {
     const webMercator = WebMercatorQuad.epsg3857();
     const tmsMercator = WebMercatorQuad.epsg3857(
-      origin: TileMatrixOrigin.bottomLeft,
+      origin: CanvasOrigin.bottomLeft,
     );
     const tile512Mercator = WebMercatorQuad.epsg3857(
       tileSize: 512,

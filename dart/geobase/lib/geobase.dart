@@ -21,6 +21,7 @@
 /// Usage: import `package:geobase/geobase.dart`
 library geobase;
 
+export 'src/codes/canvas_origin.dart';
 export 'src/codes/coords.dart';
 export 'src/codes/geom.dart';
 export 'src/constants/geodetic.dart';

@@ -6,6 +6,7 @@
 
 import 'package:meta/meta.dart';
 
+import '/src/codes/canvas_origin.dart';
 import '/src/constants/screen_ppi.dart';
 import '/src/coordinates/scalable.dart';
 import '/src/tiling/convert/scaled_converter.dart';
@@ -46,7 +47,7 @@ class WebMercatorQuad extends GeoTileMatrixSet {
   const WebMercatorQuad.epsg3857({
     this.maxZoom = 22,
     this.tileSize = 256,
-    this.origin = TileMatrixOrigin.topLeft,
+    this.origin = CanvasOrigin.topLeft,
   })  : assert(maxZoom >= 0, 'Max zoom must be >= 0'),
         assert(tileSize > 0, 'Tile size must be > 0');
 
@@ -66,7 +67,7 @@ class WebMercatorQuad extends GeoTileMatrixSet {
   final int tileSize;
 
   @override
-  final TileMatrixOrigin origin;
+  final CanvasOrigin origin;
 
   @override
   int matrixWidth(int zoom) => matrixSize(zoom);
@@ -147,10 +148,10 @@ class WebMercatorQuad extends GeoTileMatrixSet {
 
     // handle origin variations
     switch (origin) {
-      case TileMatrixOrigin.topLeft:
+      case CanvasOrigin.topLeft:
         // nop
         break;
-      case TileMatrixOrigin.bottomLeft:
+      case CanvasOrigin.bottomLeft:
         final size = matrixSize(zoomFromKey);
         ty = (size - 1) - ty;
         break;
@@ -175,10 +176,10 @@ class WebMercatorQuad extends GeoTileMatrixSet {
 
     // handle origin variations
     switch (origin) {
-      case TileMatrixOrigin.topLeft:
+      case CanvasOrigin.topLeft:
         ty = tile.y;
         break;
-      case TileMatrixOrigin.bottomLeft:
+      case CanvasOrigin.bottomLeft:
         final size = matrixSize(tile.zoom);
         ty = (size - 1) - tile.y;
         break;
