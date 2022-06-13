@@ -32,6 +32,37 @@ abstract class GeoTileMatrixSet extends TileMatrixSet {
   Scalable2i positionToTile(Geographic position, {int zoom = 0});
 
   @override
+  Geographic worldToPosition(Projected world) {
+    // world coordinates size: number of pixels for x and y at the zoom level 0
+    final width = mapWidth(0);
+    final height = mapHeight(0);
+
+    // world coordinates
+    final px = world.x;
+    final num py;
+
+    // handle origin variations
+    switch (origin) {
+      case CanvasOrigin.topLeft:
+        py = world.y;
+        break;
+      case CanvasOrigin.bottomLeft:
+        py = height - world.y;
+        break;
+    }
+
+    // unproject world coordinates to geographic position
+    return Geographic(
+      lon: converter.fromScaledX(px, width: width),
+      lat: converter.fromScaledY(py, height: height),
+
+      // optional z and m are copied
+      elev: world.optZ?.toDouble(),
+      m: world.optM?.toDouble(),
+    );
+  }
+
+  @override
   Geographic pixelToPosition(Scalable2i pixel) {
     // map size: number of pixels for x and y at the given zoom level
     final width = mapWidth(pixel.zoom);

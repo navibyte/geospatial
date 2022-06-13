@@ -49,6 +49,7 @@ void main() {
         expectPosition(crs84.positionToWorld(pos), world, 0.000001);
         expectScaled2i(crs84.positionToPixel(pos, zoom: pixel.zoom), pixel);
         expectScaled2i(crs84.positionToTile(pos, zoom: tile.zoom), tile);
+        expectPosition(crs84.worldToPosition(world), pos, 0.0000001);
         expectScaled2i(crs84.worldToPixel(world, zoom: pixel.zoom), pixel);
         expectScaled2i(crs84.worldToTile(world, zoom: tile.zoom), tile);
         expectPosition(crs84.pixelToPosition(pixel), pos, 0.2);

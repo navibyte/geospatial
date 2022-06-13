@@ -106,6 +106,7 @@ void main() {
           _refToWorld(pos, 0),
           0.0, // as tolerance
         );
+        expectPosition(webMercator.worldToPosition(world), pos, 0.000000001);
         for (var zoom = 0; zoom <= 25; zoom++) {
           // geographic position to pixel
           final pixel = webMercator.positionToPixel(pos, zoom: zoom);

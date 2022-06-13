@@ -515,7 +515,7 @@ void _webMercatorQuad() {
   print(quad.pixelToPosition(pixel)); // longitude: -0.17578 latitude: 51.50874
 
   // world coordinates returns geographic positions still accurately
-  // todo implement
+  print(quad.worldToPosition(world)); // longitude: -0.00140 latitude: 51.47780
 
   // a quad key is a string identifier for tiles
   print(quad.tileToQuadKey(tile)); // "03"
@@ -589,8 +589,8 @@ void _globalGeodeticQuad() {
   print(quad.pixelToPosition(pixel)); // longitude: -0.08789 latitude: 51.41602
 
   // world coordinates returns geographic positions still accurately
-  // todo implement
-
+  print(quad.worldToPosition(world)); // longitude: -0.00140 latitude: 51.4778
+  
   // tile size can be checked dynamically
   print(quad.tileSize); // 256
 

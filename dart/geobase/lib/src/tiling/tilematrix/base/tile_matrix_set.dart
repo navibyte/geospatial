@@ -205,6 +205,13 @@ abstract class TileMatrixSet {
     );
   }
 
+  /// Transforms [world] coordinates to a position.
+  ///
+  /// Coordinate value ranges:
+  /// - world x (double): `0.0 .. mapWidth(0)`
+  /// - world y (double): `0.0 .. mapHeight(0)`
+  Position worldToPosition(Projected world);
+
   /// Transforms [world] coordinates to pixel coordinates at [zoom].
   ///
   /// Coordinate value ranges:
