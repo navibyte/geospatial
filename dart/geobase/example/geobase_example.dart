@@ -522,8 +522,9 @@ void _webMercatorQuad() {
   print(quad.quadKeyToTile('03')); // zoom=2 x=1 y=1
   print(quad.quadKeyToTile('0321')); // zoom=4 x=5 y=6
 
-  // tile size can be checked dynamically
+  // tile size and map bounds can be checked dynamically
   print(quad.tileSize); // 256
+  print(quad.mapBounds()); // ~ west: -180 south: -85.05 east: 180 north: 85.05
 
   // matrix width and height tells number of tiles in a given zoom level
   print('${quad.matrixWidth(2)} x ${quad.matrixHeight(2)}'); // 4 x 4
@@ -591,8 +592,9 @@ void _globalGeodeticQuad() {
   // world coordinates returns geographic positions still accurately
   print(quad.worldToPosition(world)); // longitude: -0.00140 latitude: 51.4778
 
-  // tile size can be checked dynamically
+  // tile size and map bounds can be checked dynamically
   print(quad.tileSize); // 256
+  print(quad.mapBounds()); // west: -180 south: -90 east: 180 north: 90
 
   // matrix width and height tells number of tiles in a given zoom level
   print('${quad.matrixWidth(2)} x ${quad.matrixHeight(2)}'); // 8 x 4
