@@ -17,25 +17,89 @@ const WebMercatorConverter _converterEpsg3857 = WebMercatorConverter.epsg3857();
 
 /// "Web Mercator Quad" tile matrix set.
 ///
+/// [OGC Two Dimensional Tile Matrix Set](https://docs.opengeospatial.org/is/17-083r2/17-083r2.html):
+/// "Level 0 allows representing most of the world (limited to latitudes
+/// between approximately ±85 degrees) in a single tile of 256x256 pixels
+/// (Mercator projection cannot cover the whole world because mathematically
+/// the poles are at infinity). The next level represents most of the world
+/// in 2x2 tiles of 256x256 pixels and so on in powers of 2. Mercator
+/// projection distorts the pixel size closer to the poles. The pixel sizes
+/// provided here are only valid next to the equator."
+///
+/// Using "Web Mercator Quad" involves following coordinates:
+/// * *position*: geographic coordinates (longitude, latitude)
+/// * *world*: a position projected to the pixel space of the map at level 0
+/// * *pixel*: pixel coordinates (x, y) in the pixel space of the map at zoom
+/// * *tile*: tile coordinates (x, y) in the tile matrix at zoom
+/// 
+/// The web mercator projection is often used to project geographic coordinates
+/// to metric projected coordinates, with x and y value range of (-20037508.34,
+/// 20037508.34). However this tile matrix implementation converts directly 
+/// between geographic coordinates and world / pixel / tile coordinates. 
+///
+/// Coordinate value ranges for the world covered by the tile matrix set (when
+/// tile size is 256 pixels):
+/// * position / longitude: (-180.0°, 180.0°)
+/// * position / latitude: (-85.051129°, 85.051129°)
+/// * world / x and y: (0.0, 256.0)
+/// * pixel at level 0 / x and y: (0, 255)
+/// * pixel at level 2 / x and y: (0, 1023)
+/// * tile at level 0 / x and y: (0, 0)
+/// * tile at level 2 / x and y: (0, 3)
+/// 
+/// Tile coordinates at level 0 (one tile covering the world between latitudes
+/// -85.051129° and 85.051129°):
+/// 
+/// -------
+/// | 0,0 | 
+/// -------
+/// 
+/// Tile coordinates at level 1 (tile matrix width is 2 and height is 2):
+/// 
+/// -------------
+/// | 0,0 | 1,0 | 
+/// -------------
+/// | 0,1 | 1,1 | 
+/// -------------
+/// 
+/// Tile coordinates at level 2 (tile matrix width is 4 and height is 4):
+/// 
+/// -------------------------
+/// | 0,0 | 1,0 | 2,0 | 3,0 | 
+/// -------------------------
+/// | 0,1 | 1,1 | 2,1 | 3,1 | 
+/// -------------------------
+/// | 0,2 | 1,2 | 2,2 | 3,2 | 
+/// -------------------------
+/// | 0,3 | 1,3 | 2,3 | 3,3 | 
+/// -------------------------
+/// 
+/// Each tile contains 256 x 256 pixels when the tile size is 256. As for level
+/// 2 there are 4 x 4 tiles, then the map canvas size is 1024 x 1024 pixels for
+/// that level. If the tile size is 512, then the map canvas size is 2048 x 2048
+/// pixels.
+/// 
+/// Examples above uses "top-left" origin for world, pixel and tile coordinates.
+/// If "bottom-left" origin is used then y coordinates must be flipped, for
+/// example zoom level 1:
+/// 
+/// -------------
+/// | 0,1 | 1,1 | 
+/// -------------
+/// | 0,0 | 1,0 | 
+/// -------------
+/// 
 /// More information:
 /// https://en.wikipedia.org/wiki/Web_Mercator_projection
 /// https://developers.google.com/maps/documentation/javascript/coordinates
 /// https://docs.microsoft.com/en-us/bingmaps/articles/bing-maps-tile-system
+/// https://docs.opengeospatial.org/is/17-083r2/17-083r2.html
 @immutable
 class WebMercatorQuad extends GeoTileMatrixSet {
   /// Create "Web Mercator Quad" tile matrix set with [tileSize] and [origin].
   ///
   /// Tiles are defined in the WGS 84 / Web Mercator projection ("EPSG:3857")
   /// aka "Pseudo-Mercator" or "Spherical Mercator" or "Google Maps Compatible".
-  ///
-  /// [OGC Two Dimensional Tile Matrix Set](https://docs.opengeospatial.org/is/17-083r2/17-083r2.html):
-  /// "Level 0 allows representing most of the world (limited to latitudes
-  /// between approximately ±85 degrees) in a single tile of 256x256 pixels
-  /// (Mercator projection cannot cover the whole world because mathematically
-  /// the poles are at infinity). The next level represents most of the world
-  /// in 2x2 tiles of 256x256 pixels and so on in powers of 2. Mercator
-  /// projection distorts the pixel size closer to the poles. The pixel sizes
-  /// provided here are only valid next to the equator."
   ///
   /// Normally use 256 or 512 pixels for [tileSize].
   ///

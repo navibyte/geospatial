@@ -23,12 +23,14 @@ void main() {
   _projectedBbox();
 
   // WKT samples
+  print('\nWKT samples');
   _wktPointGeometry();
   _wktPointGeometryWithZ();
   _wktPointGeometryWithM();
   _wktPointGeometryWithZM();
 
   // GeoJSON samples
+  print('\nGeoJSON samples');
   _geoJsonPointGeometry();
   _geoJsonPointGeometryDecimals();
   _geoJsonPointGeometryCustomStringBuffer();
@@ -44,9 +46,17 @@ void main() {
   _geoExtent();
 
   // projection samples
+  print('\nProjection samples');
   _wgs84Projections();
 
+  // tiling schemes
+  print('\nWeb Mercator Quad');
+  _webMercatorQuad();
+  print('\nGlobal Geodetic Quad');
+  _globalGeodeticQuad();
+
   // transform samples
+  print('\nBasic transforms');
   _basicTransfroms();
 }
 
@@ -455,6 +465,147 @@ void _wgs84Projections() {
   final unprojected = inverse.project(projected);
 
   print('$unprojected <=> $projected');
+}
+
+/// "Web Mercator Quad" tile matrix set.
+///
+/// [OGC Two Dimensional Tile Matrix Set](https://docs.opengeospatial.org/is/17-083r2/17-083r2.html):
+/// "Level 0 allows representing most of the world (limited to latitudes
+/// between approximately ±85 degrees) in a single tile of 256x256 pixels
+/// (Mercator projection cannot cover the whole world because mathematically
+/// the poles are at infinity). The next level represents most of the world
+/// in 2x2 tiles of 256x256 pixels and so on in powers of 2. Mercator
+/// projection distorts the pixel size closer to the poles. The pixel sizes
+/// provided here are only valid next to the equator."
+///
+/// Using "Web Mercator Quad" involves following coordinates:
+/// * *position*: geographic coordinates (longitude, latitude)
+/// * *world*: a position projected to the pixel space of the map at level 0
+/// * *pixel*: pixel coordinates (x, y) in the pixel space of the map at zoom
+/// * *tile*: tile coordinates (x, y) in the tile matrix at zoom
+void _webMercatorQuad() {
+  // "WebMercatorQuad" tile matrix set with 256 x 256 pixel tiles and with
+  // "top-left" origin for the tile matrix and map pixel space
+  const quad = WebMercatorQuad.epsg3857();
+
+  // source position as geographic coordinates
+  const position = Geographic(lon: -0.0014, lat: 51.4778);
+
+  // get world, tile and pixel coordinates for a geographic position
+  print(quad.positionToWorld(position)); // ~ x=127.999004 y=85.160341
+  print(quad.positionToTile(position, zoom: 2)); // zoom=2 x=1 y=1
+  print(quad.positionToPixel(position, zoom: 2)); // zoom=2 x=511 y=340
+  print(quad.positionToPixel(position, zoom: 4)); // zoom=4 x=2047 y=1362
+
+  // world coordinates can be instantiated as projected coordinates
+  // x range: (0.0, 256.0) / y range: (0.0, 256.0)
+  const world = Projected(x: 127.99900444444444, y: 85.16034098329446);
+
+  // from world coordinates to tile and pixel coordinates
+  print(quad.worldToTile(world, zoom: 2)); // zoom=2 x=1 y=1
+  print(quad.worldToPixel(world, zoom: 2)); // zoom=2 x=511 y=340
+  print(quad.worldToPixel(world, zoom: 4)); // zoom=4 x=2047 y=1362
+
+  // tile and pixel coordinates with integer values can be defined too
+  const tile = Scalable2i(zoom: 2, x: 1, y: 1);
+  const pixel = Scalable2i(zoom: 2, x: 511, y: 340);
+
+  // get tile bounds and pixel position (accucy lost) as geographic coordinates
+  print(quad.tileToBounds(tile)); // west: -90 south: 0 east: 0 north: 66.51326
+  print(quad.pixelToPosition(pixel)); // longitude: -0.17578 latitude: 51.50874
+
+  // world coordinates returns geographic positions still accurately
+  // todo implement
+
+  // a quad key is a string identifier for tiles
+  print(quad.tileToQuadKey(tile)); // "03"
+  print(quad.quadKeyToTile('03')); // zoom=2 x=1 y=1
+  print(quad.quadKeyToTile('0321')); // zoom=4 x=5 y=6
+
+  // tile size can be checked dynamically
+  print(quad.tileSize); // 256
+
+  // matrix width and height tells number of tiles in a given zoom level
+  print('${quad.matrixWidth(2)} x ${quad.matrixHeight(2)}'); // 4 x 4
+  print('${quad.matrixWidth(10)} x ${quad.matrixHeight(10)}'); // 1024 x 1024
+
+  // map width and height tells number of pixels in a given zoom level
+  print('${quad.mapWidth(2)} x ${quad.mapHeight(2)}'); // 1024 x 1024
+  print('${quad.mapWidth(10)} x ${quad.mapHeight(10)}'); // 262144 x 262144
+
+  // ground resolutions and scale denominator for zoom level 10 at the Equator
+  print(quad.tileResolution(10)); // ~ 39135.76 (meters)
+  print(quad.pixelResolution(10)); // ~ 152.87 (meters)
+  print(quad.scaleDenominator(10)); // ~ 545978.77
+
+  // ground resolutions and scale denominator for zoom level 10 at lat 51.4778
+  print(quad.pixelResolutionAt(latitude: 51.4778, zoom: 10)); // ~ 95.21 (m)
+  print(quad.scaleDenominatorAt(latitude: 51.4778, zoom: 10)); // ~ 340045.31
+}
+
+/// "Global Geodetic Quad" tile matrix set ("World CRS84 Quad" for WGS 84).
+///
+/// Tiles are defined in the Equirectangular Plate Carrée projection in the
+/// CRS84 coordinate reference system (longitude, latitude) for the whole
+/// world. At the zoom level 0 the world is covered by two tiles (tile matrix
+/// width is 2 and matrix height is 1). The western tile (x=0, y=0) is for the
+/// negative longitudes and the eastern tile (x=1, y=0) for the positive
+/// longitudes.
+///
+/// Using "Global Geodetic Quad" involves following coordinates:
+/// * *position*: geographic coordinates (longitude, latitude)
+/// * *world*: a position scaled to the pixel space of the map at level 0
+/// * *pixel*: pixel coordinates (x, y) in the pixel space of the map at zoom
+/// * *tile*: tile coordinates (x, y) in the tile matrix at zoom
+void _globalGeodeticQuad() {
+  // "World CRS 84" tile matrix set with 256 x 256 pixel tiles and with
+  // "top-left" origin for the tile matrix and map pixel space
+  const quad = GlobalGeodeticQuad.worldCrs84();
+
+  // source position as geographic coordinates
+  const position = Geographic(lon: -0.0014, lat: 51.4778);
+
+  // get world, tile and pixel coordinates for a geographic position
+  print(quad.positionToWorld(position)); // ~ x=255.998009 y=54.787129
+  print(quad.positionToTile(position, zoom: 2)); // zoom=2 x=3 y=0
+  print(quad.positionToPixel(position, zoom: 2)); // zoom=2 x=1023 y=219
+  print(quad.positionToPixel(position, zoom: 4)); // zoom=4 x=4095 y=876
+
+  // world coordinates can be instantiated as projected coordinates
+  // x range: (0.0, 512.0) / y range: (0.0, 256.0)
+  const world = Projected(x: 255.99800888888888, y: 54.78712888888889);
+
+  // from world coordinates to tile and pixel coordinates
+  print(quad.worldToTile(world, zoom: 2)); // zoom=2 x=3 y=0
+  print(quad.worldToPixel(world, zoom: 2)); // zoom=2 x=1023 y=219
+  print(quad.worldToPixel(world, zoom: 4)); //  zoom=4 x=4095 y=876
+
+  // tile and pixel coordinates with integer values can be defined too
+  const tile = Scalable2i(zoom: 2, x: 3, y: 0);
+  const pixel = Scalable2i(zoom: 2, x: 1023, y: 219);
+
+  // get tile bounds and pixel position (accucy lost) as geographic coordinates
+  print(quad.tileToBounds(tile)); // west: -45 south: 45 east: 0 north: 90
+  print(quad.pixelToPosition(pixel)); // longitude: -0.08789 latitude: 51.41602
+
+  // world coordinates returns geographic positions still accurately
+  // todo implement
+
+  // tile size can be checked dynamically
+  print(quad.tileSize); // 256
+
+  // matrix width and height tells number of tiles in a given zoom level
+  print('${quad.matrixWidth(2)} x ${quad.matrixHeight(2)}'); // 8 x 4
+  print('${quad.matrixWidth(10)} x ${quad.matrixHeight(10)}'); // 2048 x 1024
+
+  // map width and height tells number of pixels in a given zoom level
+  print('${quad.mapWidth(2)} x ${quad.mapHeight(2)}'); // 2048 x 1024
+  print('${quad.mapWidth(10)} x ${quad.mapHeight(10)}'); // 524288 x 262144
+
+  // arc resolutions and scale denominator for zoom level 10 at the Equator
+  print(quad.tileResolution(10)); // ~ 0.175781 (° degrees)
+  print(quad.pixelResolution(10)); // ~ 0.000686646 (° degrees)
+  print(quad.scaleDenominator(10)); // ~ 272989.39
 }
 
 void _basicTransfroms() {
