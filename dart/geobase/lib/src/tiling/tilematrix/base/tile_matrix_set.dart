@@ -40,21 +40,27 @@ abstract class TileMatrixSet {
   /// The number of pixels ("map height") at [zoom] in the Y axis.
   int mapHeight(int zoom);
 
-  /// The tile resolution (often ground resolution in meters) at [zoom].
+  /// The groud resolution (in meters) of a tile at [zoom].
   ///
-  /// Should equal to `tileSize * pixelResolution(zoom)`.
+  /// Should equal to `tileSize * pixelGroundResolution(zoom)`.
   ///
   /// This is a nominal resolution that may be accurate only in some positions
-  /// like along the equator or a meridian depending on a projection.
-  double tileResolution(int zoom);
+  /// like along the equator or a meridian depending on a projection. And it's
+  /// possible that in some tile matrix sets the "ground resolution" concept
+  /// is not natural at all, then values returned should be considered only as
+  /// approximations.
+  double tileGroundResolution(int zoom);
 
-  /// The pixel resolution (often ground resolution in meters) at [zoom].
+  /// The groud resolution (in meters) of a pixel at [zoom].
   ///
-  /// Should equal to `tileResolution(zoom) / tileSize`.
+  /// Should equal to `tileGroundResolution(zoom) / tileSize`.
   ///
   /// This is a nominal resolution that may be accurate only in some positions
-  /// like along the equator or a meridian depending on a projection.
-  double pixelResolution(int zoom);
+  /// like along the equator or a meridian depending on a projection. And it's
+  /// possible that in some tile matrix sets the "ground resolution" concept
+  /// is not natural at all, then values returned should be considered only as
+  /// approximations.
+  double pixelGroundResolution(int zoom);
 
   /// The map scale denominator at [zoom] and [screenPPI].
   ///

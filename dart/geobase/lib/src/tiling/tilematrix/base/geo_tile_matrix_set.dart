@@ -16,11 +16,21 @@ abstract class GeoTileMatrixSet extends TileMatrixSet {
   /// Default `const` constructor to allow extending this abstract class.
   const GeoTileMatrixSet();
 
-  /// The tile (longitudal) width in degrees at [zoom].
-  double tileWidthLongitudal(int zoom) => 360.0 / matrixWidth(zoom);
+  /// The arc resolution (longitudal) of a tile in degrees at [zoom].
+  ///
+  /// Should equal to `pixelArcResolution(zoom) * tileSize`.
+  ///
+  /// This is a nominal resolution that may be accurate only in some positions
+  /// like along the equator or a meridian depending on a projection.
+  double tileArcResolution(int zoom) => 360.0 / matrixWidth(zoom);
 
-  /// The pixel (longitudal) width in degrees at [zoom].
-  double pixelWidthLongitudal(int zoom) => 360.0 / mapWidth(zoom);
+  /// The arc resolution (longitudal) of a pixel in degrees at [zoom].
+  ///
+  /// Should equal to `tileArcResolution(zoom) / tileSize`.
+  ///
+  /// This is a nominal resolution that may be accurate only in some positions
+  /// like along the equator or a meridian depending on a projection.
+  double pixelArcResolution(int zoom) => 360.0 / mapWidth(zoom);
 
   @override
   Projected positionToWorld(Geographic position);

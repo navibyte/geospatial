@@ -31,11 +31,11 @@ const WebMercatorConverter _converterEpsg3857 = WebMercatorConverter.epsg3857();
 /// * *world*: a position projected to the pixel space of the map at level 0
 /// * *pixel*: pixel coordinates (x, y) in the pixel space of the map at zoom
 /// * *tile*: tile coordinates (x, y) in the tile matrix at zoom
-/// 
+///
 /// The web mercator projection is often used to project geographic coordinates
 /// to metric projected coordinates, with x and y value range of (-20037508.34,
-/// 20037508.34). However this tile matrix implementation converts directly 
-/// between geographic coordinates and world / pixel / tile coordinates. 
+/// 20037508.34). However this tile matrix implementation converts directly
+/// between geographic coordinates and world / pixel / tile coordinates.
 ///
 /// Coordinate value ranges for the world covered by the tile matrix set (when
 /// tile size is 256 pixels):
@@ -46,49 +46,49 @@ const WebMercatorConverter _converterEpsg3857 = WebMercatorConverter.epsg3857();
 /// * pixel at level 2 / x and y: (0, 1023)
 /// * tile at level 0 / x and y: (0, 0)
 /// * tile at level 2 / x and y: (0, 3)
-/// 
+///
 /// Tile coordinates at level 0 (one tile covering the world between latitudes
 /// -85.051129° and 85.051129°):
-/// 
+///
 /// -------
-/// | 0,0 | 
+/// | 0,0 |
 /// -------
-/// 
+///
 /// Tile coordinates at level 1 (tile matrix width is 2 and height is 2):
-/// 
+///
 /// -------------
-/// | 0,0 | 1,0 | 
+/// | 0,0 | 1,0 |
 /// -------------
-/// | 0,1 | 1,1 | 
+/// | 0,1 | 1,1 |
 /// -------------
-/// 
+///
 /// Tile coordinates at level 2 (tile matrix width is 4 and height is 4):
-/// 
+///
 /// -------------------------
-/// | 0,0 | 1,0 | 2,0 | 3,0 | 
+/// | 0,0 | 1,0 | 2,0 | 3,0 |
 /// -------------------------
-/// | 0,1 | 1,1 | 2,1 | 3,1 | 
+/// | 0,1 | 1,1 | 2,1 | 3,1 |
 /// -------------------------
-/// | 0,2 | 1,2 | 2,2 | 3,2 | 
+/// | 0,2 | 1,2 | 2,2 | 3,2 |
 /// -------------------------
-/// | 0,3 | 1,3 | 2,3 | 3,3 | 
+/// | 0,3 | 1,3 | 2,3 | 3,3 |
 /// -------------------------
-/// 
+///
 /// Each tile contains 256 x 256 pixels when the tile size is 256. As for level
 /// 2 there are 4 x 4 tiles, then the map canvas size is 1024 x 1024 pixels for
 /// that level. If the tile size is 512, then the map canvas size is 2048 x 2048
 /// pixels.
-/// 
+///
 /// Examples above uses "top-left" origin for world, pixel and tile coordinates.
 /// If "bottom-left" origin is used then y coordinates must be flipped, for
 /// example zoom level 1:
-/// 
+///
 /// -------------
-/// | 0,1 | 1,1 | 
+/// | 0,1 | 1,1 |
 /// -------------
-/// | 0,0 | 1,0 | 
+/// | 0,0 | 1,0 |
 /// -------------
-/// 
+///
 /// More information:
 /// https://en.wikipedia.org/wiki/Web_Mercator_projection
 /// https://developers.google.com/maps/documentation/javascript/coordinates
@@ -147,12 +147,12 @@ class WebMercatorQuad extends GeoTileMatrixSet {
 
   /// The tile ground resolution in meters at [zoom].
   @override
-  double tileResolution(int zoom) =>
+  double tileGroundResolution(int zoom) =>
       _converterEpsg3857.earthCircumference / matrixSize(zoom);
 
   /// The pixel ground resolution in meters at [zoom].
   @override
-  double pixelResolution(int zoom) =>
+  double pixelGroundResolution(int zoom) =>
       _converterEpsg3857.earthCircumference / mapSize(zoom);
 
   @override
@@ -160,10 +160,13 @@ class WebMercatorQuad extends GeoTileMatrixSet {
     int zoom, {
     double screenPPI = screenPPIbyOGC,
   }) =>
-      pixelResolution(zoom) * screenPPI / 0.0254;
+      pixelGroundResolution(zoom) * screenPPI / 0.0254;
 
   /// The pixel ground resolution in meters at given [latitude] and [zoom].
-  double pixelResolutionAt({required double latitude, required int zoom}) =>
+  double pixelGroundResolutionAt({
+    required double latitude,
+    required int zoom,
+  }) =>
       _converterEpsg3857.pixelResolutionAt(latitude, mapSize(zoom));
 
   /// The map scale denominator at given [latitude], [zoom] and [screenPPI].
@@ -175,7 +178,9 @@ class WebMercatorQuad extends GeoTileMatrixSet {
     required int zoom,
     double screenPPI = screenPPIbyOGC,
   }) =>
-      pixelResolutionAt(latitude: latitude, zoom: zoom) * screenPPI / 0.0254;
+      pixelGroundResolutionAt(latitude: latitude, zoom: zoom) *
+      screenPPI /
+      0.0254;
 
   /// Returns a tile identified by [quadKey] (as specified by Microsoft).
   ///

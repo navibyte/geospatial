@@ -121,7 +121,7 @@ void main() {
           expectPosition(
             unprojectedPos,
             pos,
-            webMercator.pixelWidthLongitudal(zoom), // as tolerance
+            webMercator.pixelArcResolution(zoom), // as tolerance
           );
 
           // and again to pixel
@@ -166,11 +166,11 @@ void main() {
 
         expect(webMercator.matrixSize(zoom), matrixSize);
         expect(webMercator.mapSize(zoom), mapSize);
-        expect(webMercator.pixelResolution(zoom), closeTo(res, 0.000001));
+        expect(webMercator.pixelGroundResolution(zoom), closeTo(res, 0.000001));
         expect(webMercator.scaleDenominator(zoom), closeTo(scale, 0.000001));
         if (!tileLon.isNaN) {
           expect(
-            webMercator.tileWidthLongitudal(zoom),
+            webMercator.tileArcResolution(zoom),
             closeTo(tileLon, 0.000001),
           );
         }
@@ -189,17 +189,20 @@ void main() {
 
         expect(tile512Mercator.matrixSize(zoom), matrixSize);
         expect(tile512Mercator.mapSize(zoom), mapSize);
-        expect(tile512Mercator.pixelResolution(zoom), closeTo(res0, 0.02));
         expect(
-          tile512Mercator.pixelResolutionAt(latitude: 20, zoom: zoom),
+          tile512Mercator.pixelGroundResolution(zoom),
+          closeTo(res0, 0.02),
+        );
+        expect(
+          tile512Mercator.pixelGroundResolutionAt(latitude: 20, zoom: zoom),
           closeTo(res20, 0.02),
         );
         expect(
-          tile512Mercator.pixelResolutionAt(latitude: -40, zoom: zoom),
+          tile512Mercator.pixelGroundResolutionAt(latitude: -40, zoom: zoom),
           closeTo(res40, 0.02),
         );
         expect(
-          tile512Mercator.pixelResolutionAt(latitude: 60, zoom: zoom),
+          tile512Mercator.pixelGroundResolutionAt(latitude: 60, zoom: zoom),
           closeTo(res60, 0.02),
         );
       }

@@ -29,7 +29,7 @@ const _samples = [
 ];
 
 const _scales256 = [
-  // zoom, scale denominator, resolution, matrix width, matrix height
+  // zoom, scale denominator, arc resolution, matrix width, matrix height
   <num>[0, 279541132.0143589, 0.703125000000000, 2, 1],
   <num>[4, 17471320.75089743, 0.0439453125000000, 32, 16],
   <num>[17, 2132.729583849784, 0.00000536441802978516, 262144, 131072],
@@ -67,7 +67,7 @@ void main() {
         final matrixHeight = level[4] as int;
 
         expect(crs84.scaleDenominator(zoom), closeTo(scale, 0.000001));
-        expect(crs84.pixelResolution(zoom), closeTo(res, 0.000001));
+        expect(crs84.pixelArcResolution(zoom), closeTo(res, 0.000001));
         expect(crs84.matrixWidth(zoom), matrixWidth);
         expect(crs84.matrixHeight(zoom), matrixHeight);
         expect(crs84.mapWidth(zoom), matrixWidth * crs84.tileSize);

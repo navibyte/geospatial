@@ -534,12 +534,12 @@ void _webMercatorQuad() {
   print('${quad.mapWidth(10)} x ${quad.mapHeight(10)}'); // 262144 x 262144
 
   // ground resolutions and scale denominator for zoom level 10 at the Equator
-  print(quad.tileResolution(10)); // ~ 39135.76 (meters)
-  print(quad.pixelResolution(10)); // ~ 152.87 (meters)
+  print(quad.tileGroundResolution(10)); // ~ 39135.76 (meters)
+  print(quad.pixelGroundResolution(10)); // ~ 152.87 (meters)
   print(quad.scaleDenominator(10)); // ~ 545978.77
 
   // ground resolutions and scale denominator for zoom level 10 at lat 51.4778
-  print(quad.pixelResolutionAt(latitude: 51.4778, zoom: 10)); // ~ 95.21 (m)
+  print(quad.pixelGroundResolutionAt(latitude: 51.4778, zoom: 10)); // ~ 95.21
   print(quad.scaleDenominatorAt(latitude: 51.4778, zoom: 10)); // ~ 340045.31
 }
 
@@ -590,7 +590,7 @@ void _globalGeodeticQuad() {
 
   // world coordinates returns geographic positions still accurately
   print(quad.worldToPosition(world)); // longitude: -0.00140 latitude: 51.4778
-  
+
   // tile size can be checked dynamically
   print(quad.tileSize); // 256
 
@@ -603,8 +603,8 @@ void _globalGeodeticQuad() {
   print('${quad.mapWidth(10)} x ${quad.mapHeight(10)}'); // 524288 x 262144
 
   // arc resolutions and scale denominator for zoom level 10 at the Equator
-  print(quad.tileResolution(10)); // ~ 0.175781 (° degrees)
-  print(quad.pixelResolution(10)); // ~ 0.000686646 (° degrees)
+  print(quad.tileArcResolution(10)); // ~ 0.175781 (° degrees)
+  print(quad.pixelArcResolution(10)); // ~ 0.000686646 (° degrees)
   print(quad.scaleDenominator(10)); // ~ 272989.39
 }
 

@@ -43,13 +43,13 @@ import '/src/tiling/tilematrix/base.dart';
 /// * tile at level 2 / y: (0, 3)
 ///
 /// Tile coordinates at level 0 (two tiles covering the whole world):
-/// 
+///
 /// -------------
 /// | 0,0 | 1,0 |
 /// -------------
 ///
 /// Tile coordinates at level 1 (tile matrix width is 4 and height is 2):
-/// 
+///
 /// -------------------------
 /// | 0,0 | 1,0 | 2,0 | 3,0 |
 /// -------------------------
@@ -57,7 +57,7 @@ import '/src/tiling/tilematrix/base.dart';
 /// -------------------------
 ///
 /// Tile coordinates at level 2 (tile matrix width is 8 and height is 4):
-/// 
+///
 /// -------------------------------------------------
 /// | 0,0 | 1,0 | 2,0 | 3,0 | 4,0 | 5,0 | 6,0 | 7,0 |
 /// -------------------------------------------------
@@ -76,7 +76,7 @@ import '/src/tiling/tilematrix/base.dart';
 /// Examples above uses "top-left" origin for world, pixel and tile coordinates.
 /// If "bottom-left" origin is used then y coordinates must be flipped, for
 /// example zoom level 1:
-/// 
+///
 /// -------------------------
 /// | 0,1 | 1,1 | 2,1 | 3,1 |
 /// -------------------------
@@ -127,13 +127,13 @@ class GlobalGeodeticQuad extends GeoTileMatrixSet {
   @override
   int mapHeight(int zoom) => tileSize << zoom;
 
-  /// The tile arc resolution in degrees at [zoom].
   @override
-  double tileResolution(int zoom) => 360 / matrixWidth(zoom);
+  double tileGroundResolution(int zoom) =>
+      earthCircumferenceWgs84 / matrixWidth(zoom); // approximate ground res
 
-  /// The pixel arc resolution in degrees at [zoom].
   @override
-  double pixelResolution(int zoom) => 360 / mapWidth(zoom);
+  double pixelGroundResolution(int zoom) =>
+      earthCircumferenceWgs84 / mapWidth(zoom); // approximate ground resolution
 
   @override
   double scaleDenominator(
@@ -142,7 +142,7 @@ class GlobalGeodeticQuad extends GeoTileMatrixSet {
   }) {
     // calculations here aligned to get same scale denominators as specified by
     // by https://docs.opengeospatial.org/is/17-083r2/17-083r2.html
-    return earthCircumferenceWgs84 / mapWidth(zoom) * screenPPI / 0.0254;
+    return pixelGroundResolution(zoom) * screenPPI / 0.0254;
   }
 }
 
