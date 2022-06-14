@@ -5,7 +5,7 @@
 // Docs: https://github.com/navibyte/geospatial
 
 // ignore_for_file: avoid_print, cascade_invocations
-// ignore_for_file: avoid_redundant_argument_values
+// ignore_for_file: avoid_redundant_argument_values, prefer_asserts_with_message
 
 import 'package:geobase/geobase.dart';
 
@@ -21,6 +21,8 @@ void main() {
   _geographicBbox();
   _projectedPosition();
   _projectedBbox();
+  print('\nScalable2i');
+  _scalable2i();
 
   // WKT samples
   print('\nWKT samples');
@@ -145,6 +147,17 @@ void _projectedBbox() {
     maxZ: 20,
     maxM: 20,
   );
+}
+
+void _scalable2i() {
+  // A pixel or a tile with a zoom level (or LOD = level of detail) coordinates.
+  const pixel = Scalable2i(zoom: 9, x: 23, y: 10);
+  print(pixel);
+
+  // Such coordinates can be scaled to other zoom levels.
+  print(pixel.zoomIn()); // => Scalable2i(zoom: 10, x: 46, y: 20);
+  print(pixel.zoomOut()); // => Scalable2i(zoom: 8, x: 11, y: 5);
+  print(pixel.zoomTo(13)); // => Scalable2i(zoom: 13, x: 368, y: 160));
 }
 
 void _wktPointGeometry() {
@@ -509,6 +522,10 @@ void _webMercatorQuad() {
   // tile and pixel coordinates with integer values can be defined too
   const tile = Scalable2i(zoom: 2, x: 1, y: 1);
   const pixel = Scalable2i(zoom: 2, x: 511, y: 340);
+
+  // tile and pixel coordinates can be zoomed (scaled to other level of details)
+  print(pixel.zoomIn()); // zoom=3 x=1022 y=680
+  print(pixel.zoomOut()); // zoom=1 x=255 y=170
 
   // get tile bounds and pixel position (accucy lost) as geographic coordinates
   print(quad.tileToBounds(tile)); // west: -90 south: 0 east: 0 north: 66.51326

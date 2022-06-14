@@ -8,6 +8,7 @@ Development version: 0.2.0-dev.10
 - [MapPoint2i renamed to ScalableXY, and implementing Projected and Scalable #116](https://github.com/navibyte/geospatial/issues/116)
 - [Use OGC specified screen pixel size / ppi when calculating scale denominator #119](https://github.com/navibyte/geospatial/issues/119)
 - [Add World CRS84 TileMatrixSet #114](https://github.com/navibyte/geospatial/issues/114)
+- [Add zoomIn, zoomOut and zoomOut to Scalable2i #121](https://github.com/navibyte/geospatial/issues/121)
 
 🛠 Maintenance:
 - [Upgrade to Dart 2.17 #105](https://github.com/navibyte/geospatial/issues/105)

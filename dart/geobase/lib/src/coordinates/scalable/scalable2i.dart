@@ -13,7 +13,9 @@ import '/src/utils/num.dart';
 
 import 'scalable.dart';
 
-/// Scalable ([x], [y]) projected coordinates at the [zoom] level.
+/// Scalable [x], [y] projected coordinates at the [zoom] level.
+///
+/// [zoom] must be a positive integer.
 ///
 /// Coordinates [x], [y] and [zoom] have integer values.
 @immutable
@@ -29,14 +31,20 @@ class Scalable2i implements Scalable, Projected {
   @override
   final int y;
 
-  /// Create scalable ([x], [y]) projected coordinates at the [zoom] level.
-  const Scalable2i({required this.zoom, required this.x, required this.y});
+  /// Create scalable [x], [y] projected coordinates at the [zoom] level.
+  ///
+  /// [zoom] must be a positive integer.
+  const Scalable2i({required this.zoom, required this.x, required this.y})
+      : assert(zoom >= 0, 'Zoom must be >= 0');
 
-  /// A factory function creating scalable ([x], [y]) coordinates at [zoom].
+  /// A factory function creating scalable [x], [y] coordinates at [zoom].
+  ///
+  /// [zoom] must be a positive integer.
   ///
   /// The returned function is compatible with the `CreatePosition` function
   /// type.
   static CreatePosition<Scalable2i> factory({int zoom = 0}) {
+    assert(zoom >= 0, 'Zoom must be >= 0');
     return ({required num x, required num y, num? z, num? m}) =>
         Scalable2i(zoom: zoom, x: x.round(), y: y.round());
   }
@@ -63,6 +71,42 @@ class Scalable2i implements Scalable, Projected {
   }) {
     final coords = parseNumValuesFromText(text, delimiter: delimiter);
     return Scalable2i.fromCoords(coords);
+  }
+
+  @override
+  Scalable2i zoomIn() => Scalable2i(
+        zoom: zoom + 1,
+        x: x << 1,
+        y: y << 1,
+      );
+
+  @override
+  Scalable2i zoomOut() => zoom == 0
+      ? this
+      : Scalable2i(
+          zoom: zoom - 1,
+          x: x >> 1,
+          y: y >> 1,
+        );
+
+  @override
+  Scalable2i zoomTo(int zoom) {
+    assert(zoom >= 0, 'Zoom must be >= 0');
+    if (this.zoom == zoom) {
+      return this;
+    }
+    final shift = zoom - this.zoom;
+    return shift > 0
+        ? Scalable2i(
+            zoom: zoom,
+            x: x << shift,
+            y: y << shift,
+          )
+        : Scalable2i(
+            zoom: zoom,
+            x: x >> shift.abs(),
+            y: y >> shift.abs(),
+          );
   }
 
   @override
