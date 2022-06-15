@@ -7,12 +7,11 @@
 /// Geospatial coordinates, projections and data writers (GeoJSON, WKT).
 ///
 /// Key features:
-/// * enums for geospatial coordinate and geometry types
 /// * *geographic* positions and bounding boxes (longitude-latitude-elevation)
 /// * *projected* positions and bounding boxes (cartesian XYZ)
 /// * coordinate transformations and projections (initial support)
-/// * tiling schemes and tile matrix sets (web mercator)
-/// * temporal data structures (instant, interval)
+/// * tiling schemes and tile matrix sets (web mercator, global geodetic)
+/// * temporal data structures (instant, interval) and spatial extents
 /// * geospatial data writers for features, geometries, coordinates, properties:
 ///   * supported formats: [GeoJSON](https://geojson.org/)
 /// * geospatial data writers for geometries and coordinates:

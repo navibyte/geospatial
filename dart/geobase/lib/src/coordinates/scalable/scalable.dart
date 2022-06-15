@@ -25,7 +25,7 @@ class Scalable {
   Scalable zoomIn() => Scalable(zoom: zoom + 1);
 
   /// Zooms out by one.
-  /// 
+  ///
   /// The minimum value for [zoom] of the returned scalable object is 0.
   Scalable zoomOut() => Scalable(zoom: math.max(zoom - 1, 0));
 

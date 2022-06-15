@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// Tiling schemes and tile matrix sets (web mercator)
+/// Tiling schemes and tile matrix sets (web mercator, global geodetic).
 ///
 /// This libary exports a subset of `package:geobase/geobase.dart`.
 ///

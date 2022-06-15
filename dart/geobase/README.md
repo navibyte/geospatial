@@ -1,19 +1,17 @@
-<h2 align="center">Geospatial coordinates, projections and writers</h2>
-
 [![pub package](https://img.shields.io/pub/v/geobase.svg)](https://pub.dev/packages/geobase) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause) [![style: very good analysis](https://img.shields.io/badge/style-very_good_analysis-B22C89.svg)](https://pub.dev/packages/very_good_analysis)
 
-The package provides geospatial coordinates (geographic and projected), 
-projections, and data writers for geospatial features, geometries, coordinates
-and properties. 
+<a title="Ktrinko, CC0, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Eckert4.jp"><img alt="World map with Natural Earth data" src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/projections/eckert4/320px-Eckert4.jpg" align="right"></a>
+
+Geospatial coordinates (geographic and projected), projections, tiling schemes,
+and data writers for [GeoJSON](https://geojson.org/) and [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry).
 
 ## Features
 
-* 🔠 enums for geospatial coordinate and geometry types
 * 🌐 *geographic* positions and bounding boxes (longitude-latitude-elevation)
 * 🗺️ *projected* positions and bounding boxes (cartesian XYZ)
 * 🏗️ coordinate transformations and projections (initial support)
 * 🔢 tiling schemes and tile matrix sets (web mercator, global geodetic)
-* 📅 temporal data structures (instant, interval)
+* 📅 temporal data structures (instant, interval) and spatial extents
 * 📃 geospatial data writers for features, geometries, coordinates, properties:
   * 🌎 supported formats: [GeoJSON](https://geojson.org/) 
 * 📃 geospatial data writers for geometries and coordinates:
@@ -29,7 +27,7 @@ Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geobase: ^0.2.0-dev.10
+  geobase: ^0.2.0-dev.11
 ```
 
 Import it:

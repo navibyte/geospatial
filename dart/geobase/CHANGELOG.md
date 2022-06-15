@@ -1,6 +1,6 @@
 ## 0.2.0
 
-Development version: 0.2.0-dev.10
+Development version: 0.2.0-dev.11
 
 🧩 Features:
 - [Mini-libraries for geobase #109](https://github.com/navibyte/geospatial/issues/109)
