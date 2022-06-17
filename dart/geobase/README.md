@@ -420,6 +420,22 @@ structures.
 
 ## Other features
 
+### Constants
+
+Constants defined by the package:
+
+Constant                  | Value          | Description
+------------------------- | -------------- | -----------
+`minLongitude`            | `-180.0`       | The minimum value for geographic longitude.
+`maxLongitude`            | `180.0`        | The maximum value for geographic longitude.
+`minLatitude`             | `-90.0`        | The minimum value for geographic latitude.
+`maxLatitude `            | `90.0`         | The maximum value for geographic latitude.
+`minLatitudeWebMercator`  | `-85.05112878` | The minimum value for geographic latitude inside Web Mercator coverage
+`maxLatitudeWebMercator`  | `85.05112878`  | The maximum value for geographic latitude inside Web Mercator coverage
+`earthRadiusWgs84`        | `6378137.0`    | The earth equatorial radius in meters as specified by WGS 84.
+`earthCircumferenceWgs84` | `2 * math.pi * earthRadiusWgs84` |  The earth circumference in meters (from earth equatorial radius by WGS 84).
+`screenPPIbyOGC`          | `0.0254 / 0.00028` | OGC defines a screen pixel of 0.28 mm that approximates to 90.7 ppi.
+
 ### Transforms
 
 *Projections* described in previous chaperts project coordinates between
