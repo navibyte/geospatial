@@ -126,7 +126,9 @@ an optional measure (m) coordinate.
 
 A projected map position might be defined as *easting* (E) and *northing* (N)
 coordinates. It's suggested that then E == `x` and N == `y`, but a coordinate
-reference system might specify something else too. The `m` coordinate represents
+reference system might specify something else too. 
+
+The `m` coordinate represents
 a measurement or a value on a linear referencing system (like time). It could be
 associated with a 2D position (x, y, m) or a 3D position (x, y, z, m).
 
@@ -197,20 +199,20 @@ level, with all value as integers.
 
 ### Web Mercator Quad
 
-<a title="TheCrazyWhovian, CC BY-SA 4.0 &lt;https://creativecommons.org/licenses/by-sa/4.0/deed.en&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:WebMercator.png"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/projections/mercator/534px-WebMercator.png" align="right"></a>
+<a title="TheCrazyWhovian, CC BY-SA 4.0 &lt;https://creativecommons.org/licenses/by-sa/4.0/deed.en&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:WebMercator.png"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/projections/webmercator/534px-WebMercator.png" align="right"></a>
 
 `WebMercatorQuad` is a "Google Maps Compatible" tile matrix set with tiles
 defined in the WGS 84 / Web Mercator projection ("EPSG:3857").
-
-[OGC Two Dimensional Tile Matrix Set](https://docs.opengeospatial.org/is/17-083r2/17-083r2.html) specifies:
-
-> Level 0 allows representing most of the world (limited to latitudes between approximately ±85 degrees) in a single tile of 256x256 pixels (Mercator projection cannot cover the whole world because mathematically the poles are at infinity). The next level represents most of the world in 2x2 tiles of 256x256 pixels and so on in powers of 2. Mercator projection distorts the pixel size closer to the poles. The pixel sizes provided here are only valid next to the equator.
 
 Using `WebMercatorQuad` involves following coordinates:
 * *position*: geographic coordinates (longitude, latitude)
 * *world*: a position projected to the pixel space of the map at level 0
 * *pixel*: pixel coordinates (x, y) in the pixel space of the map at zoom
 * *tile*: tile coordinates (x, y) in the tile matrix at zoom
+
+[OGC Two Dimensional Tile Matrix Set](https://docs.opengeospatial.org/is/17-083r2/17-083r2.html) specifies:
+
+> Level 0 allows representing most of the world (limited to latitudes between approximately ±85 degrees) in a single tile of 256x256 pixels (Mercator projection cannot cover the whole world because mathematically the poles are at infinity). The next level represents most of the world in 2x2 tiles of 256x256 pixels and so on in powers of 2. Mercator projection distorts the pixel size closer to the poles. The pixel sizes provided here are only valid next to the equator.
 
 ```dart
  // "WebMercatorQuad" tile matrix set with 256 x 256 pixel tiles and with
@@ -279,7 +281,7 @@ Using `WebMercatorQuad` involves following coordinates:
 
 ### Global Geodetic Quad
 
-<a title="Daniel R. Strebe, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Equirectangular_projection_SW.jpg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/projections/platecarree/320px_Equirectangular_projection_SW.jpg" align="right"></a>
+<a title="Daniel R. Strebe, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Equirectangular_projection_SW.jpg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/projections/platecarree/320px-Equirectangular_projection_SW.jpg" align="right"></a>
 
 `GlobalGeodeticQuad (or "World CRS84 Quad" for WGS 84) is a tile matrix set with
 tiles defined in the *Equirectangular Plate Carrée* projection in the geographic
@@ -288,12 +290,6 @@ coordinate reference system (longitude, latitude) for the whole world.
 At the zoom level 0 the world is covered by two tiles (tile matrix width is 2
 and matrix height is 1). The western tile (x=0, y=0) is for the negative
 longitudes and the eastern tile (x=1, y=0) for the positive longitudes.
-
-Using `GlobalGeodeticQuad` involves following coordinates:
-* *position*: geographic coordinates (longitude, latitude)
-* *world*: a position scaled to the pixel space of the map at level 0
-* *pixel*: pixel coordinates (x, y) in the pixel space of the map at zoom
-* *tile*: tile coordinates (x, y) in the tile matrix at zoom
 
 ```dart
   // "World CRS 84" tile matrix set with 256 x 256 pixel tiles and with
@@ -351,7 +347,7 @@ Using `GlobalGeodeticQuad` involves following coordinates:
 
 ### WGS 84 to Web Mercator
 
-Built-in coordinate projections (currently only between WGS84 and Web Mercator. 
+Built-in coordinate projections (currently only between WGS84 and Web Mercator). 
 
 ```dart
   // Geographic (WGS 84 longitude-latitude) to Projected (WGS 84 Web Mercator)
