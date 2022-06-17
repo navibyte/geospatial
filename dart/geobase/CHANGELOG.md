@@ -1,6 +1,7 @@
 ## 0.2.0
 
-Development version: 0.2.0-dev.11
+✨ New: Tiling schemes and tile matrix sets (web mercator, global geodetic). 
+Also other improvements on coordinates, and refactorings on the code structure.
 
 🧩 Features:
 - [Mini-libraries for geobase #109](https://github.com/navibyte/geospatial/issues/109)

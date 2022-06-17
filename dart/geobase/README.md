@@ -7,6 +7,11 @@ and data writers for [GeoJSON](https://geojson.org/) and [WKT](https://en.wikipe
 
 ## Features
 
+✨ New (0.2.0): Tiling schemes and tile matrix sets (web mercator, global
+geodetic). Also other improvements on coordinates, and refactorings on the code
+structure.
+
+Key features:
 * 🌐 *geographic* positions and bounding boxes (longitude-latitude-elevation)
 * 🗺️ *projected* positions and bounding boxes (cartesian XYZ)
 * 🏗️ coordinate transformations and projections (initial support)
@@ -27,7 +32,7 @@ Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geobase: ^0.2.0-dev.11
+  geobase: ^0.2.0
 ```
 
 Import it:
@@ -36,7 +41,41 @@ Import it:
 import `package:geobase/geobase.dart`
 ```
 
-A sample to write a `Point` geometry with a geographic position to GeoJSON:
+Geographic, projected and scalable coordinates:
+
+```dart
+  // Geographic position with longitude, latitude and elevation.
+  const Geographic(lon: -0.0014, lat: 51.4778, elev: 45.0);
+
+  // Projected position with x, y and z.
+  const Projected(x: 708221.0, y: 5707225.0, z: 45.0);
+
+  // A pixel or a tile with a zoom level (or LOD = level of detail) coordinates.
+  const Scalable2i(zoom: 9, x: 23, y: 10);
+```
+
+Bounding boxes:
+
+```dart
+  // Geographic bbox (-20.0 .. 20.0 in longitude, 50.0 .. 60.0 in latitude).
+  const GeoBox(west: -20.0, south: 50.0, east: 20.0, north: 60.0);
+
+  // Projected bbox with limits on x and y.
+  const ProjBox(minX: 10, minY: 10, maxX: 20, maxY: 20);
+```
+
+Tiling schemes, a sample with Web Mercator:
+
+```dart
+  // "WebMercatorQuad" tile matrix set with 256 x 256 pixel tiles
+  const quad = WebMercatorQuad.epsg3857();
+
+  // converting a geographic position to tile coordinates at zoom level 2
+  quad.positionToTile(Geographic(lon: -0.0014, lat: 51.4778), zoom: 2)); 
+```
+
+A sample to write a `Point` geometry with a geographic position to
+[GeoJSON](https://geojson.org/):
 
 ```dart
   // geometry writer for GeoJSON, with number of decimals for text output set
@@ -53,6 +92,8 @@ A sample to write a `Point` geometry with a geographic position to GeoJSON:
       ..toString(),
   );
 ```
+
+See more examples and instructions how to use the package on chapters below.
 
 ## Coordinates
 
@@ -122,10 +163,8 @@ Geographic bounding boxes:
 <a title="Sommacal alfonso, CC BY-SA 4.0 &lt;https://creativecommons.org/licenses/by-sa/4.0/deed.en&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Cartesian_coordinates.png"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/coordinates/cartesian/Cartesian_coordinates.png" align="right"></a>
 
 *Projected* coordinates represent projected or cartesian (XYZ) coordinates with
-an optional measure (m) coordinate. 
-
-A projected map position might be defined as *easting* (E) and *northing* (N)
-coordinates. It's suggested that then E == `x` and N == `y`, but a coordinate
+an optional measure (m) coordinate. For projected map positions `x` often
+represents *easting* (E) and `y` represents *northing* (N), however a coordinate
 reference system might specify something else too. 
 
 The `m` coordinate represents
@@ -215,7 +254,7 @@ Using `WebMercatorQuad` involves following coordinates:
 > Level 0 allows representing most of the world (limited to latitudes between approximately ±85 degrees) in a single tile of 256x256 pixels (Mercator projection cannot cover the whole world because mathematically the poles are at infinity). The next level represents most of the world in 2x2 tiles of 256x256 pixels and so on in powers of 2. Mercator projection distorts the pixel size closer to the poles. The pixel sizes provided here are only valid next to the equator.
 
 ```dart
- // "WebMercatorQuad" tile matrix set with 256 x 256 pixel tiles and with
+  // "WebMercatorQuad" tile matrix set with 256 x 256 pixel tiles and with
   // "top-left" origin for the tile matrix and map pixel space
   const quad = WebMercatorQuad.epsg3857();
 
@@ -669,10 +708,9 @@ This is a [Dart](https://dart.dev/) package named `geobase` under the
 [geospatial](https://github.com/navibyte/geospatial) code repository. 
 
 See also the [geocore](https://pub.dev/packages/geocore) package for geometry
-and feature data structures, data parsers and other utilities. 
-
-The [geodata](https://pub.dev/packages/geodata) package provdies a geospatial
-API client to read [GeoJSON](https://geojson.org/) and other geospatial data
+and feature data structures, data parsers and other utilities. The 
+[geodata](https://pub.dev/packages/geodata) package provdies a geospatial API
+client to read [GeoJSON](https://geojson.org/) and other geospatial data
 sources.  
 
 ## Authors
