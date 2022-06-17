@@ -18,6 +18,10 @@ import 'scalable.dart';
 /// [zoom] must be a positive integer.
 ///
 /// Coordinates [x], [y] and [zoom] have integer values.
+/// 
+/// Scalable coordinates are projected coordinates associated with some level of
+/// detail (LOD) or `zoom` level. They are used for example by tiling schemes to
+/// represent *pixels* and *tiles* of tile matrices.
 @immutable
 class Scalable2i implements Scalable, Projected {
   @override

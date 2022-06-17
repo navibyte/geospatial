@@ -16,6 +16,10 @@ import '/src/coordinates/base.dart';
 ///
 /// Longitude (range `[-180.0, 180.0[`) and latitude (range `[-90.0, 90.0]`) are
 /// represented as deegrees. The unit for [elev] is meters.
+/// 
+/// *Geographic* coordinates are based on a spherical or ellipsoidal coordinate
+/// system representing positions on the Earth as longitude ([lon]) and latitude
+/// ([lat]). 
 @immutable
 class Geographic extends Position {
   final double _lon;
