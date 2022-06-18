@@ -28,6 +28,7 @@ void main() {
   // call simple demos
   _parseGeoJSON();
   _readmeIntro();
+  _geoJsonFeatureCollection();
 }
 
 void _parseGeoJSON() {
@@ -387,4 +388,51 @@ void _readmeIntro() {
     'POLYGON ((40 15, 50 50, 15 45, 10 15, 40 15),'
     ' (25 25, 25 40, 35 30, 25 25))',
   );
+}
+
+void _geoJsonFeatureCollection() {
+  // feature writer for GeoJSON
+  final writer = geoJsonFormat().featuresToText();
+
+  // create feature collection with two features
+  final collection = FeatureCollection(
+    bounds: GeoBounds.of(
+      min: GeoPoint2(lon: -1.1, lat: -3.49),
+      max: GeoPoint2(lon: 10.12, lat: 20.25),
+    ),
+    features: [
+      Feature(
+        id: 'fid-1',
+        geometry: GeoPoint2(lon: 10.123, lat: 20.25),
+        properties: {
+          'foo': 100,
+          'bar': 'this is property value',
+        },
+      ),
+      Feature(
+        id: 'fid-1',
+        geometry: LineString.make(
+          [
+            [-1.1, -1.1],
+            [2.1, -2.5],
+            [3.5, -3.49]
+          ],
+          GeoPoint2.coordinates,
+          type: LineStringType.any,
+          bounds: GeoBounds.make(
+            [
+              [-1.1, -3.49],
+              [3.5, -1.1]
+            ],
+            GeoPoint2.coordinates,
+          ),
+        ),
+        properties: {},
+      ),
+    ],
+  );
+
+  // write and print GeoJSON
+  collection.writeTo(writer);
+  print(writer.toString());
 }
