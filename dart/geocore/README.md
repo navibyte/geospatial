@@ -23,7 +23,7 @@ To use, add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geocore: ^0.9.0-dev.3
+  geocore: ^0.9.0-dev.4
 ```
 
 And then import it:
@@ -44,6 +44,9 @@ Library         | Exports also | Description
 All the mini-libraries have dependencies to the 
 [equatable](https://pub.dev/packages/equatable) and
 [geobase](https://pub.dev/packages/geobase) packages.
+
+Please note that some of the most often used classes from 
+[geobase](https://pub.dev/packages/geobase) are also re-exported by `geocore`.
 
 ## Introduction
 
