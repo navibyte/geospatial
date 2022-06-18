@@ -1,9 +1,17 @@
-<h2 align="center">GeoJSON and OGC API clients for Dart</h2>
-
 [![pub package](https://img.shields.io/pub/v/geodata.svg)](https://pub.dev/packages/geodata) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause) [![style: very good analysis](https://img.shields.io/badge/style-very_good_analysis-B22C89.svg)](https://pub.dev/packages/very_good_analysis)
+
+<a title="Public domain, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Winkel_triple_projection_SW.jpg"><img alt="Equirectangular projection" src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/projections/winkel/320px-Winkel_triple_projection_SW.jpg" align="right"></a>
+
+Geospatial feature service Web APIs with support for 
+[GeoJSON](https://geojson.org/) and 
+[OGC API Features](https://ogcapi.ogc.org/features/) clients for Dart.
 
 ## Features
 
+✨ New: Updated with latest [geobase](https://pub.dev/packages/geobase) version
+0.2.1 and [geocore](https://pub.dev/packages/geocore) version 0.9.0.
+
+Key features:
 * Client-side data source abstraction for geospatial feature service Web APIs
 * Implementations to read geospatial features
   * [GeoJSON](https://geojson.org/) features from Web APIs or files
@@ -15,14 +23,15 @@ however key functionality of `Part1` of the standard is supported.
 
 ## Package
 
-This is a [Dart](https://dart.dev/) package named `geodata` under the 
-[geospatial](https://github.com/navibyte/geospatial) code repository. 
+The package requires at least [Dart](https://dart.dev/) SDK 2.17, and it
+supports all [Dart](https://dart.dev/) and [Flutter](https://flutter.dev/)
+platforms.
 
 To use, add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geodata: ^0.9.0-dev.3
+  geodata: ^0.9.0-dev.4
 ```
 
 The package contains also following mini-libraries, that can be used to import
