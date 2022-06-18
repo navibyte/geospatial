@@ -5,7 +5,7 @@
 <a title="Stefan Kühn (Fotograf), CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Azimutalprojektion-schief_kl-cropped.png"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/projections/azimutal/Azimutalprojektion-schief_kl-cropped.png" align="right"></a>
 
 **Geospatial** data structures, tools and utilities for 
-[Dart](https://dart.dev/) and [Flutter](https://flutter.dev/) mobile developers.
+[Dart](https://dart.dev/) and [Flutter](https://flutter.dev/).
 
 [![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev/) [![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)](https://flutter.dev/)
 
@@ -16,7 +16,7 @@
 
 Code           | Package | Description 
 -------------- | --------| -----------
-:triangular_ruler: [geobase](dart/geobase) | [![pub package](https://img.shields.io/pub/v/geobase.svg)](https://pub.dev/packages/geobase) | Geospatial coordinates (geographic and projected), projections and data writers ([GeoJSON](https://geojson.org/), [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)).
+:triangular_ruler: [geobase](dart/geobase) | [![pub package](https://img.shields.io/pub/v/geobase.svg)](https://pub.dev/packages/geobase) | Geospatial coordinates, projections, tiling schemes, and data writers for [GeoJSON](https://geojson.org/) and [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry).
 :globe_with_meridians: [geocore](dart/geocore) | [![pub package](https://img.shields.io/pub/v/geocore.svg)](https://pub.dev/packages/geocore) | Geospatial data (points, geometry, features, meta) structures, and parsers ([GeoJSON](https://geojson.org/), [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)).
 :earth_americas: [geodata](dart/geodata) | [![pub package](https://img.shields.io/pub/v/geodata.svg)](https://pub.dev/packages/geodata) | A geospatial API client to read [GeoJSON](https://geojson.org/) and other geospatial data sources.  
 
@@ -24,11 +24,11 @@ Code           | Package | Description
 
 Key features of the [geobase](https://pub.dev/packages/geobase) package:
 
-* 🔢 enums for geospatial coordinate and geometry types
 * 🌐 *geographic* positions and bounding boxes (longitude-latitude-elevation)
 * 🗺️ *projected* positions and bounding boxes (cartesian XYZ)
 * 🏗️ coordinate transformations and projections (initial support)
-* 📅 temporal data structures (instant, interval)
+* 🔢 tiling schemes and tile matrix sets (web mercator, global geodetic)
+* 📅 temporal data structures (instant, interval) and spatial extents
 * 📃 geospatial data writers for features, geometries, coordinates, properties:
   * 🌎 supported formats: [GeoJSON](https://geojson.org/) 
 * 📃 geospatial data writers for geometries and coordinates:
@@ -55,11 +55,17 @@ Key features of the [geodata](https://pub.dev/packages/geodata) package:
 
 ## :newspaper_roll: News
 
+2022-06-18
+* [geobase](https://pub.dev/packages/geobase/versions/0.2.0) (0.2.0), see [changelog](dart/geobase/CHANGELOG.md#020) for details
+  * ✨ New: Tiling schemes and tile matrix sets (web mercator, global geodetic). 
+Also other improvements on coordinates, and refactorings on the code structure.  
+* [geocore](https://pub.dev/packages/geocore/versions/0.9.0) (0.9.0), see [changelog](dart/geocore/CHANGELOG.md#090) for details
+* [geodata](https://pub.dev/packages/geodata/versions/0.9.0) (0.9.0), see [changelog](dart/geodata/CHANGELOG.md#090) for details
+
 2022-03-09
-* Latest versions published on pub.dev:
-   * [geobase](https://pub.dev/packages/geobase/versions/0.1.0), see [changelog](dart/geobase/CHANGELOG.md#010) for details
-   * [geocore](https://pub.dev/packages/geocore/versions/0.8.0), see [changelog](dart/geocore/CHANGELOG.md#080) for details
-   * [geodata](https://pub.dev/packages/geodata/versions/0.8.0), see [changelog](dart/geodata/CHANGELOG.md#080) for details
+* [geobase](https://pub.dev/packages/geobase/versions/0.1.0) (0.1.0), see [changelog](dart/geobase/CHANGELOG.md#010) for details
+* [geocore](https://pub.dev/packages/geocore/versions/0.8.0) (0.8.0), see [changelog](dart/geocore/CHANGELOG.md#080) for details
+* [geodata](https://pub.dev/packages/geodata/versions/0.8.0) (0.8.0), see [changelog](dart/geodata/CHANGELOG.md#080) for details
 
 2022-02-06
 * A new package `geobase` with code originating and generalized from `geocore`:
@@ -155,8 +161,6 @@ Key features of the [geodata](https://pub.dev/packages/geodata) package:
 
 See [issues](https://github.com/navibyte/geospatial/issues).
 
-Targeting version 1.0.0 by August 2022.
-
 ## :house_with_garden: Authors
 
 This project is authored by [Navibyte](https://navibyte.com).
@@ -198,6 +202,8 @@ SDKs:
 * [Flutter](https://flutter.dev/) 
 
 Latest on SDKs
+* [Dart 2.17](https://medium.com/dartlang/dart-2-17-b216bfc80c5d) with enum member support, parameter forwarding to super classes, flexibility for named parameters, and more
+* [Dart 2.17](https://medium.com/dartlang/dart-2-16-improved-tooling-and-platform-handling-dd87abd6bad1) with improved tooling and platform handling
 * [Dart 2.15](https://medium.com/dartlang/dart-2-15-7e7a598e508a) with fast concurrency, constructor tear-offs, improved enums, and more
 * [Dart 2.14](https://medium.com/dartlang/announcing-dart-2-14-b48b9bb2fb67) with Apple Silicon support, default lints etc.
 * [Dart 2.13](https://medium.com/dartlang/announcing-dart-2-13-c6d547b57067) with new type aliases and more
@@ -233,4 +239,9 @@ Package @ pub.dev | Code @ GitHub | Description
 [http](https://pub.dev/packages/http) | [dart-lang/http](https://github.com/dart-lang/http) | A composable API for making HTTP requests in Dart.
 [meta](https://pub.dev/packages/meta) | [dart-lang/sdk](https://github.com/dart-lang/sdk/tree/master/pkg/meta) | This package defines annotations that can be used by the tools that are shipped with the Dart SDK.
 [proj4dart](https://pub.dev/packages/proj4dart) | [maRci002/proj4dart](https://github.com/maRci002/proj4dart) | Proj4dart is a Dart library to transform point coordinates from one coordinate system to another, including datum transformations (Dart version of proj4js/proj4js).
+
+In some previous releases also following are utilized:
+
+Package @ pub.dev | Code @ GitHub | Description
+----------------- | ------------- | -----------
 [synchronized](https://pub.dev/packages/synchronized) | [tekartik/synchronized.dart](https://github.com/tekartik/synchronized.dart/tree/master/synchronized) | Basic lock mechanism to prevent concurrent access to asynchronous code.
