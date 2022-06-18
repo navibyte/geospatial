@@ -414,10 +414,10 @@ void _pointToGeoJsonAndWKT() {
   // print with default format
   print('Default format: ${point.toString()}');
   print('Default format (decimals = 0): ${point.toStringAs(decimals: 0)}');
-  
+
   // print with WKT format
   print('WKT format: ${point.toStringAs(format: wktFormat())}');
-  
+
   // print with GeoJSON format
   print('GeoJSON format: ${point.toStringAs(format: geoJsonFormat())}');
   print(

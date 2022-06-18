@@ -1,6 +1,6 @@
 ## 0.9.0
 
-Development version: 0.9.0-dev.5
+Development version: 0.9.0-dev.6
 
 With dependency to `geobase` version 0.2.1.
 
