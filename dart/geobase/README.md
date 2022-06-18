@@ -7,9 +7,8 @@ and data writers for [GeoJSON](https://geojson.org/) and [WKT](https://en.wikipe
 
 ## Features
 
-✨ New (0.2.0): Tiling schemes and tile matrix sets (web mercator, global
-geodetic). Also other improvements on coordinates, and refactorings on the code
-structure.
+✨ New: Tiling schemes and tile matrix sets (web mercator, global geodetic). 
+Also other improvements on coordinates, and refactorings on the code structure.
 
 Key features:
 * 🌐 *geographic* positions and bounding boxes (longitude-latitude-elevation)
@@ -22,7 +21,7 @@ Key features:
 * 📃 geospatial data writers for geometries and coordinates:
   * 🪧 supported formats: [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)
 
-## Getting started
+## Package
 
 The package requires at least [Dart](https://dart.dev/) SDK 2.17, and it
 supports all [Dart](https://dart.dev/) and [Flutter](https://flutter.dev/)
@@ -32,7 +31,7 @@ Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geobase: ^0.2.0
+  geobase: ^0.2.1
 ```
 
 Import it:
@@ -40,6 +39,27 @@ Import it:
 ```dart
 import `package:geobase/geobase.dart`
 ```
+
+The package contains also following mini-libraries, that can be used to import
+only a certain subset instead of the whole **geobase** library:
+
+Library                | Description 
+---------------------- | ----------- 
+**codes**              | Enums (codes) for geospatial coordinate, geometry types and canvas origin.
+**constants**          | Geodetic and screen related constants.
+**coordinates**        | Geographic and projected positions and bounding boxes.
+**meta**               | Temporal data structures (instant, interval) and spatial extents.
+**projections_proj4d** | Projections provided by the external [proj4dart](https://pub.dev/packages/proj4dart) package.
+**tiling**             | Tiling schemes and tile matrix sets (web mercator, global geodetic).
+**vector**             | Data writers for geospatial vector data (features, geometries, coordinates).
+
+See also the [geocore](https://pub.dev/packages/geocore) package for geometry
+and feature data structures, data parsers and other utilities. The 
+[geodata](https://pub.dev/packages/geodata) package provdies a geospatial API
+client to read [GeoJSON](https://geojson.org/) and other geospatial data
+sources.  
+
+## Introduction
 
 Geographic, projected and scalable coordinates:
 
@@ -253,6 +273,9 @@ Using `WebMercatorQuad` involves following coordinates:
 
 > Level 0 allows representing most of the world (limited to latitudes between approximately ±85 degrees) in a single tile of 256x256 pixels (Mercator projection cannot cover the whole world because mathematically the poles are at infinity). The next level represents most of the world in 2x2 tiles of 256x256 pixels and so on in powers of 2. Mercator projection distorts the pixel size closer to the poles. The pixel sizes provided here are only valid next to the equator.
 
+See below how to calcalate between geographic positions, world coordinates,
+pixel coordinates and tile coordinates:
+
 ```dart
   // "WebMercatorQuad" tile matrix set with 256 x 256 pixel tiles and with
   // "top-left" origin for the tile matrix and map pixel space
@@ -322,9 +345,8 @@ Using `WebMercatorQuad` involves following coordinates:
 
 <a title="Daniel R. Strebe, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Equirectangular_projection_SW.jpg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/projections/platecarree/320px-Equirectangular_projection_SW.jpg" align="right"></a>
 
-`GlobalGeodeticQuad (or "World CRS84 Quad" for WGS 84) is a tile matrix set with
-tiles defined in the *Equirectangular Plate Carrée* projection in the geographic
-coordinate reference system (longitude, latitude) for the whole world.
+`GlobalGeodeticQuad` (or "World CRS84 Quad" for WGS 84) is a tile matrix set
+with tiles defined in the *Equirectangular Plate Carrée* projection.
 
 At the zoom level 0 the world is covered by two tiles (tile matrix width is 2
 and matrix height is 1). The western tile (x=0, y=0) is for the negative
@@ -387,6 +409,9 @@ longitudes and the eastern tile (x=1, y=0) for the positive longitudes.
 ### WGS 84 to Web Mercator
 
 Built-in coordinate projections (currently only between WGS84 and Web Mercator). 
+
+Here projected coordinates are metric coordinates with both x and y values 
+having the valid value range of (-20037508.34, 20037508.34).
 
 ```dart
   // Geographic (WGS 84 longitude-latitude) to Projected (WGS 84 Web Mercator)
@@ -701,17 +726,6 @@ double distanceHaversine(
   double earthRadius = 6371000.0,
 });
 ```
-
-## Package
-
-This is a [Dart](https://dart.dev/) package named `geobase` under the 
-[geospatial](https://github.com/navibyte/geospatial) code repository. 
-
-See also the [geocore](https://pub.dev/packages/geocore) package for geometry
-and feature data structures, data parsers and other utilities. The 
-[geodata](https://pub.dev/packages/geodata) package provdies a geospatial API
-client to read [GeoJSON](https://geojson.org/) and other geospatial data
-sources.  
 
 ## Authors
 

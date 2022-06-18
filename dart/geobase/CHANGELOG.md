@@ -1,3 +1,8 @@
+## 0.2.1
+
+🐛 Bugs fixed:
+- [Ambiguous reexports on geobase 0.2.0 with constants #122](https://github.com/navibyte/geospatial/issues/122)
+
 ## 0.2.0
 
 ✨ New: Tiling schemes and tile matrix sets (web mercator, global geodetic). 
