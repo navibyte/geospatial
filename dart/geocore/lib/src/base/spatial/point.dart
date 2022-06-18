@@ -49,7 +49,7 @@ abstract class Point<C extends num> extends Geometry
   Bounds? get bounds => Bounds.of(min: this, max: this);
 
   @override
-  Bounds? get boundsExplicit => Bounds.of(min: this, max: this);
+  Bounds? get boundsExplicit => null; 
 
   @override
   Point? get onePoint => this;
