@@ -9,9 +9,9 @@
 /// Exports `Coords`, `Position`, `TransformPosition`, `CreatePosition`, `Box`
 /// and `Projection` from `package:geobase/coordinates.dart`.
 ///
-/// Exports also `Geom`, `GeometryWriter`, `GeometryFormat`, `FeatureWriter`,
-/// `FeatureFormat`, `defaultFormat`, `wktLikeFormat`, `geoJsonFormat` and
-/// `wktFormat` from `package:geobase/vector.dart`.
+/// Exports also `Geom`, `CoordinateWriter`, `GeometryWriter`, `GeometryFormat`,
+/// `FeatureWriter`, `FeatureFormat`, `defaultFormat`, `wktLikeFormat`,
+/// `geoJsonFormat` and `wktFormat` from `package:geobase/vector.dart`.
 ///
 /// Usage: import `package:geocore/geocore.dart`
 library geocore;
