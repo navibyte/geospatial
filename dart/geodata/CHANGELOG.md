@@ -1,9 +1,8 @@
 ## 0.9.0
 
-Development version: 0.9.0-dev.4
-
-Updated with latest [geobase](https://pub.dev/packages/geobase) version
-0.2.1 and [geocore](https://pub.dev/packages/geocore) version 0.9.0.
+✨ Updated with latest [geobase](https://pub.dev/packages/geobase) version
+0.2.1 and [geocore](https://pub.dev/packages/geocore) version 0.9.0 based on
+[Dart](https://dart.dev/) SDK 2.17.
 
 🛠 Maintenance:
 - [Upgrade to Dart 2.17 #105](https://github.com/navibyte/geospatial/issues/105)

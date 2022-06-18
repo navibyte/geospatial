@@ -9,7 +9,8 @@ Geospatial feature service Web APIs with support for
 ## Features
 
 ✨ New: Updated with latest [geobase](https://pub.dev/packages/geobase) version
-0.2.1 and [geocore](https://pub.dev/packages/geocore) version 0.9.0.
+0.2.1 and [geocore](https://pub.dev/packages/geocore) version 0.9.0 based on
+[Dart](https://dart.dev/) SDK 2.17.
 
 Key features:
 * Client-side data source abstraction for geospatial feature service Web APIs
@@ -31,7 +32,7 @@ To use, add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geodata: ^0.9.0-dev.4
+  geodata: ^0.9.0
 ```
 
 The package contains also following mini-libraries, that can be used to import
