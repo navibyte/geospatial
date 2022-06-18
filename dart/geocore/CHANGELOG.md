@@ -1,8 +1,8 @@
 ## 0.9.0
 
-Development version: 0.9.0-dev.6
-
-With dependency to `geobase` version 0.2.1.
+Updated with latest [geobase](https://pub.dev/packages/geobase) version
+0.2.1 (also re-exports some portions of it) based on [Dart](https://dart.dev/)
+SDK 2.17.
 
 ⚠️ Breaking changes:
 - Removed previously deprecated classes and members

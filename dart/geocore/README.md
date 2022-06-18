@@ -8,7 +8,8 @@ Geospatial data structures (points, geometry, features, meta) and parsers
 ## Features
 
 ✨ New: Updated with latest [geobase](https://pub.dev/packages/geobase) version
-0.2.1 (also re-exports some portions of it).
+0.2.1 (also re-exports some portions of it) based on [Dart](https://dart.dev/)
+SDK 2.17.
 
 Key features:
 * 🚀 geospatial data structures (geometry, features and metadata)
@@ -23,14 +24,15 @@ Key features:
 
 ## Package
 
-This is a [Dart](https://dart.dev/) package named `geocore` under the 
-[geospatial](https://github.com/navibyte/geospatial) code repository. 
+The package requires at least [Dart](https://dart.dev/) SDK 2.17, and it
+supports all [Dart](https://dart.dev/) and [Flutter](https://flutter.dev/)
+platforms.
 
 To use, add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geocore: ^0.9.0-dev.6
+  geocore: ^0.9.0
 ```
 
 And then import it:
