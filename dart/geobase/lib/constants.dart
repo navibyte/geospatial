@@ -9,7 +9,7 @@
 /// This libary exports a subset of `package:geobase/geobase.dart`.
 ///
 /// Usage: import `package:geobase/constants.dart`
-library codes;
+library constants;
 
 export 'src/constants/geodetic.dart';
 export 'src/constants/screen_ppi.dart';
