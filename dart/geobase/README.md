@@ -459,6 +459,52 @@ projections.
 
 ## Vector (data writers)
 
+### About formats and writers
+
+*Format* classes provide methods for accessing *writers* that allow writing 
+coordinate, geometry and feature objects to a output stream (like text buffer).
+
+Formats available:
+
+Format   | Factory function | Writers supported by Format
+-------- | ---------------- | ---------------------------
+[GeoJSON](https://geojson.org/)  | `geoJsonFormat()` | Coordinates, Geometries, Features
+[WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) | `wktFormat()` | Coordinates, Geometries
+
+There are also constants `defaultFormat` (a text format aligned with GeoJSON but
+output is somewhat simpler) and `wktLikeFormat` (a text format aligned with
+WKT).
+
+All formats mentioned above have following writers:
+
+```dart
+  /// Returns a writer formatting string representations of coordinate data.
+  ///
+  /// When an optional [buffer] is given, then representations are written into
+  /// it (without clearing any content it might already contain).
+  ///
+  /// Use [decimals] to set a number of decimals (not applied if no decimals).
+  ///
+  /// After writing some objects with coordinate data into a writer, the string
+  /// representation can be accessed using `toString()` of it (or via [buffer]
+  /// when such is given).
+  CoordinateWriter coordinatesToText({StringSink? buffer, int? decimals});
+
+  /// Returns a writer formatting string representations of geometry objects.
+  GeometryWriter geometriesToText({StringSink? buffer, int? decimals});
+}
+```
+
+A format object returned by `geoJsonFormat()` has also the following writer:
+
+```dart
+  /// Returns a writer formatting string representations of feature objects.
+  FeatureWriter featuresToText({StringSink? buffer, int? decimals});
+```
+
+See `CoordinateWriter`, `GeometryWriter` and `FeatureWriter` for more 
+information how to use those writers. Some samples in next chapters.
+
 ### GeoJSON writer
 
 The `geoJsonFormat()` function can be used to access writers for coordinates, 

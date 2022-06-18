@@ -1,9 +1,9 @@
 [![pub package](https://img.shields.io/pub/v/geocore.svg)](https://pub.dev/packages/geocore) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause) [![style: very good analysis](https://img.shields.io/badge/style-very_good_analysis-B22C89.svg)](https://pub.dev/packages/very_good_analysis)
 
-<a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_Point.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_Point.svg"></a> | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_LineString.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_LineString.svg"></a> | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_Polygon.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_Polygon.svg"></a> | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_Polygon_with_hole.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_Polygon_with_hole.svg"></a>
-
 Geospatial data structures (points, geometry, features, meta) and parsers 
 ([GeoJSON](https://geojson.org/), [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)) for Dart. 
+
+ <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_MultiPoint.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_MultiPoint.svg"></a> <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_LineString.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_LineString.svg"></a> <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_Polygon.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_Polygon.svg"></a> <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_Polygon_with_hole.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_Polygon_with_hole.svg"></a> <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_GeometryCollection.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_GeometryCollection.svg"></a>
 
 ## Features
 
@@ -609,6 +609,142 @@ Samples to parse from WKT text representation of geometry:
 
 Supported WKT geometry types: `POINT`, `LINESTRING`, `POLYGON`, `MULTIPOINT`, 
 `MULTILINESTRING`, `MULTIPOLYGON` and `GEOMETRYCOLLECTION`.
+
+### GeoJSON and WKT writers
+
+*Format* classes provide methods for accessing *writers* that allow writing 
+coordinate, geometry and feature objects to a output stream (like text buffer).
+
+Formats available:
+
+Format   | Factory function | Writers supported by Format
+-------- | ---------------- | ---------------------------
+[GeoJSON](https://geojson.org/)  | `geoJsonFormat()` | Coordinates, Geometries, Features
+[WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) | `wktFormat()` | Coordinates, Geometries
+
+There are also constants `defaultFormat` (a text format aligned with GeoJSON but
+output is somewhat simpler) and `wktLikeFormat` (a text format aligned with
+WKT).
+
+All formats mentioned above have following writers:
+
+```dart
+  /// Returns a writer formatting string representations of coordinate data.
+  ///
+  /// When an optional [buffer] is given, then representations are written into
+  /// it (without clearing any content it might already contain).
+  ///
+  /// Use [decimals] to set a number of decimals (not applied if no decimals).
+  ///
+  /// After writing some objects with coordinate data into a writer, the string
+  /// representation can be accessed using `toString()` of it (or via [buffer]
+  /// when such is given).
+  CoordinateWriter coordinatesToText({StringSink? buffer, int? decimals});
+
+  /// Returns a writer formatting string representations of geometry objects.
+  GeometryWriter geometriesToText({StringSink? buffer, int? decimals});
+}
+```
+
+A format object returned by `geoJsonFormat()` has also the following writer:
+
+```dart
+  /// Returns a writer formatting string representations of feature objects.
+  FeatureWriter featuresToText({StringSink? buffer, int? decimals});
+```
+
+See `CoordinateWriter`, `GeometryWriter` and `FeatureWriter` for more 
+information how to use those writers.
+
+Formats and writers are re-exported from the 
+[geobase](https://pub.dev/packages/geobase) package that also provides more
+documentation.
+
+A sample to print coordinates of a point geometry below.
+
+```dart
+  // create a point (XYZ)
+  final point = Point3(x: 10.123, y: 20.25, z: -30.95);
+
+  // print with default format
+  print('Default format: ${point.toString()}');
+  print('Default format (decimals = 0): ${point.toStringAs(decimals: 0)}');
+  
+  // print with WKT format
+  print('WKT format: ${point.toStringAs(format: wktFormat())}');
+  
+  // print with GeoJSON format
+  print('GeoJSON format: ${point.toStringAs(format: geoJsonFormat())}');
+  print(
+    'GeoJSON (decimals = 1) format: ${point.toStringAs(
+      format: geoJsonFormat(),
+      decimals: 1,
+    )}',
+  );
+```
+
+The sample below creates a GeoJSON feature writer, then create a feature
+collection, and finally uses a writer to print it as GeoJSON text.
+
+```dart
+  // feature writer for GeoJSON
+  final writer = geoJsonFormat().featuresToText();
+
+  // create feature collection with two features
+  final collection = FeatureCollection(
+    bounds: GeoBounds.of(
+      min: GeoPoint2(lon: -1.1, lat: -3.49),
+      max: GeoPoint2(lon: 10.12, lat: 20.25),
+    ),
+    features: [
+      Feature(
+        id: 'fid-1',
+        geometry: GeoPoint2(lon: 10.123, lat: 20.25),
+        properties: {
+          'foo': 100,
+          'bar': 'this is property value',
+        },
+      ),
+      Feature(
+        geometry: LineString.make(
+          [
+            [-1.1, -1.1],
+            [2.1, -2.5],
+            [3.5, -3.49]
+          ],
+          GeoPoint2.coordinates,
+          type: LineStringType.any,
+          bounds: GeoBounds.make(
+            [
+              [-1.1, -3.49],
+              [3.5, -1.1]
+            ],
+            GeoPoint2.coordinates,
+          ),
+        ),
+        properties: {},
+      ),
+    ],
+  );
+
+  // write and print GeoJSON
+  collection.writeTo(writer);
+  print(writer.toString());
+
+  // the previous line prints (however without line breaks):
+  //    {"type":"FeatureCollection",
+  //     "bbox":[-1.1,-3.49,10.123,20.25],
+  //     "features":[
+  //        {"type":"Feature",
+  //         "id":"fid-1",
+  //         "geometry":{"type":"Point","coordinates":[10.123,20.25]},
+  //         "properties":{"foo":100,"bar":"this is property value"}},
+  //        {"type":"Feature",
+  //         "geometry":{"type":"LineString",
+  //                     "bbox":[-1.1,-3.49,3.5,-1.1],
+  //                     "coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]},
+  //         "properties":{}}]}
+```
 
 ## Authors
 

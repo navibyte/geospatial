@@ -28,6 +28,14 @@ void main() {
   // call simple demos
   _parseGeoJSON();
   _readmeIntro();
+
+  print('\nWrite Point values as string');
+  _pointValuesAsString();
+
+  print('\nWrite Point to different formats');
+  _pointToGeoJsonAndWKT();
+
+  print('\nFeatureCollection as GeoJSON');
   _geoJsonFeatureCollection();
 }
 
@@ -390,6 +398,36 @@ void _readmeIntro() {
   );
 }
 
+void _pointValuesAsString() {
+  // create a point (XYZ)
+  final point = Point3(x: 10.123, y: 20.25, z: -30.95);
+
+  // print value list as string
+  print('Values: ${point.valuesAsString()}');
+  print('Values (delimiter = ";"): ${point.valuesAsString(delimiter: ';')}');
+}
+
+void _pointToGeoJsonAndWKT() {
+  // create a point (XYZ)
+  final point = Point3(x: 10.123, y: 20.25, z: -30.95);
+
+  // print with default format
+  print('Default format: ${point.toString()}');
+  print('Default format (decimals = 0): ${point.toStringAs(decimals: 0)}');
+  
+  // print with WKT format
+  print('WKT format: ${point.toStringAs(format: wktFormat())}');
+  
+  // print with GeoJSON format
+  print('GeoJSON format: ${point.toStringAs(format: geoJsonFormat())}');
+  print(
+    'GeoJSON (decimals = 1) format: ${point.toStringAs(
+      format: geoJsonFormat(),
+      decimals: 1,
+    )}',
+  );
+}
+
 void _geoJsonFeatureCollection() {
   // feature writer for GeoJSON
   final writer = geoJsonFormat().featuresToText();
@@ -410,7 +448,6 @@ void _geoJsonFeatureCollection() {
         },
       ),
       Feature(
-        id: 'fid-1',
         geometry: LineString.make(
           [
             [-1.1, -1.1],
@@ -435,4 +472,18 @@ void _geoJsonFeatureCollection() {
   // write and print GeoJSON
   collection.writeTo(writer);
   print(writer.toString());
+
+  // the previous line prints (however without line breaks):
+  //    {"type":"FeatureCollection",
+  //     "bbox":[-1.1,-3.49,10.123,20.25],
+  //     "features":[
+  //        {"type":"Feature",
+  //         "id":"fid-1",
+  //         "geometry":{"type":"Point","coordinates":[10.123,20.25]},
+  //         "properties":{"foo":100,"bar":"this is property value"}},
+  //        {"type":"Feature",
+  //         "geometry":{"type":"LineString",
+  //                     "bbox":[-1.1,-3.49,3.5,-1.1],
+  //                     "coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]},
+  //         "properties":{}}]}
 }
