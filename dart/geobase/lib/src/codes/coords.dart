@@ -15,6 +15,7 @@ enum Coords {
     is3D: false,
     isMeasured: false,
     isGeographic: false,
+    idWkb: 0,
     specifierWkt: null,
   ),
 
@@ -27,6 +28,7 @@ enum Coords {
     is3D: true,
     isMeasured: false,
     isGeographic: false,
+    idWkb: 1000,
     specifierWkt: 'Z',
   ),
 
@@ -39,6 +41,7 @@ enum Coords {
     is3D: false,
     isMeasured: true,
     isGeographic: false,
+    idWkb: 2000,
     specifierWkt: 'M',
   ),
 
@@ -51,6 +54,7 @@ enum Coords {
     is3D: true,
     isMeasured: true,
     isGeographic: false,
+    idWkb: 3000,
     specifierWkt: 'ZM',
   ),
 
@@ -63,6 +67,7 @@ enum Coords {
     is3D: false,
     isMeasured: false,
     isGeographic: true,
+    idWkb: 0,
     specifierWkt: null,
   ),
 
@@ -75,6 +80,7 @@ enum Coords {
     is3D: true,
     isMeasured: false,
     isGeographic: true,
+    idWkb: 1000,
     specifierWkt: 'Z',
   ),
 
@@ -87,6 +93,7 @@ enum Coords {
     is3D: false,
     isMeasured: true,
     isGeographic: true,
+    idWkb: 2000,
     specifierWkt: 'M',
   ),
 
@@ -99,6 +106,7 @@ enum Coords {
     is3D: true,
     isMeasured: true,
     isGeographic: true,
+    idWkb: 3000,
     specifierWkt: 'ZM',
   );
 
@@ -109,6 +117,7 @@ enum Coords {
     required this.is3D,
     required this.isMeasured,
     required this.isGeographic,
+    required this.idWkb,
     required this.specifierWkt,
   });
 
@@ -128,6 +137,18 @@ enum Coords {
   ///
   /// If false, then coordinates are projected or cartesian (with x and y).
   final bool isGeographic;
+
+  /// The WKB type for coordinates, ie. `1000` for coordinates with Z.
+  /// 
+  /// Expected values are:
+  /// * `0` for 2D coordinates: (x,y) or (lon,lat)
+  /// * `1000` for 3D coordinates: (x,y,z) or (lon,lat,elev)
+  /// * `2000` for measured coordinates: (x,y,m) or (lon,lat,m)
+  /// * `3000` for 3D / measured coordinates: (x,y,z,m) or (lon,lat,elev,m)
+  /// 
+  /// References: 
+  /// * [Simple Feature Access - Part 1: Common Architecture](https://www.ogc.org/standards/sfa)
+  final int idWkb;
 
   /// An optional WKT specifier for coordinates, ie. `Z`, `M` or `ZM`.
   final String? specifierWkt;
