@@ -10,7 +10,8 @@ import 'dart:typed_data';
 ///
 /// The [ByteWriter] class is (at least currently) an internal utility class.
 class ByteWriter {
-  final Endian _endian;
+  /// Endianness to be used when writing a sequence of bytes.
+  final Endian endian;
 
   /// A writer (integer and floating point values) writing a sequence of bytes.
   /// 
@@ -18,7 +19,7 @@ class ByteWriter {
   /// specified.
   ///
   /// [endian] specifies endianness to be used when writing a sequence of bytes.
-  ByteWriter.buffered({Endian endian = Endian.big}) : _endian = endian;
+  ByteWriter.buffered({Endian endian = Endian.big}) : endian = endian;
 
   /// Collects the data written to a sequence of bytes in a Uint8List.
   Uint8List toBytes() {
