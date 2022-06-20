@@ -1,3 +1,10 @@
+## 0.10.0
+
+Development version `0.10.0-dev.0`.
+
+🧩 Features:
+- [Add WKB encoding/decoding support #115](https://github.com/navibyte/geospatial/issues/115)
+
 ## 0.9.0
 
 Updated with latest [geobase](https://pub.dev/packages/geobase) version

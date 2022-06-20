@@ -1,3 +1,10 @@
+## 0.3.0
+
+Development version `0.3.0-dev.0`.
+
+🧩 Features:
+- [Add WKB encoding/decoding support #115](https://github.com/navibyte/geospatial/issues/115)
+
 ## 0.2.1
 
 🐛 Bugs fixed:
