@@ -28,51 +28,6 @@ class DefaultFormat implements GeometryFormat {
       _DefaultTextWriter(buffer: buffer, decimals: decimals);
 }
 
-/// A format for formatting geometries and features to GeoJSON.
-///
-/// This format implements [FeatureFormat] (that implements [GeometryFormat]).
-///
-/// Rules applied by the format conforms with the GeoJSON formatting of
-/// coordinate lists and geometries.
-class GeoJsonFormat with FeatureFormat {
-  /// Returns a format for formatting geometries and features to GeoJSON.
-  const GeoJsonFormat({
-    bool ignoreMeasured = false,
-    bool ignoreForeignMembers = false,
-  })  : _ignoreMeasured = ignoreMeasured,
-        _ignoreForeignMembers = ignoreForeignMembers;
-
-  final bool _ignoreMeasured;
-  final bool _ignoreForeignMembers;
-
-  @override
-  CoordinateWriter coordinatesToText({StringSink? buffer, int? decimals}) =>
-      _GeoJsonTextWriter(
-        buffer: buffer,
-        decimals: decimals,
-        ignoreMeasured: _ignoreMeasured,
-        ignoreForeignMembers: _ignoreForeignMembers,
-      );
-
-  @override
-  GeometryWriter geometriesToText({StringSink? buffer, int? decimals}) =>
-      _GeoJsonTextWriter(
-        buffer: buffer,
-        decimals: decimals,
-        ignoreMeasured: _ignoreMeasured,
-        ignoreForeignMembers: _ignoreForeignMembers,
-      );
-
-  @override
-  FeatureWriter featuresToText({StringSink? buffer, int? decimals}) =>
-      _GeoJsonTextWriter(
-        buffer: buffer,
-        decimals: decimals,
-        ignoreMeasured: _ignoreMeasured,
-        ignoreForeignMembers: _ignoreForeignMembers,
-      );
-}
-
 /// The WKT (like) format for geometries (implements [GeometryFormat]).
 ///
 /// Rules applied by the format are aligned with WKT (Well-known text
@@ -88,23 +43,6 @@ class WktLikeFormat implements GeometryFormat {
   @override
   GeometryWriter geometriesToText({StringSink? buffer, int? decimals}) =>
       _WktLikeTextWriter(buffer: buffer, decimals: decimals);
-}
-
-/// The WKT format for geometries (implements [GeometryFormat]).
-///
-/// Rules applied by the format conforms with WKT (Well-known text
-/// representation of geometry) formatting of coordinate lists and geometries.
-class WktFormat implements GeometryFormat {
-  /// The WKT format for geometries.
-  const WktFormat();
-
-  @override
-  CoordinateWriter coordinatesToText({StringSink? buffer, int? decimals}) =>
-      _WktTextWriter(buffer: buffer, decimals: decimals);
-
-  @override
-  GeometryWriter geometriesToText({StringSink? buffer, int? decimals}) =>
-      _WktTextWriter(buffer: buffer, decimals: decimals);
 }
 
 // -----------------------------------------------------------------------------
@@ -519,18 +457,23 @@ class _DefaultTextWriter extends _BaseTextWriter {
 
 // Writer  for the "GeoJSON" format --------------------------------------------
 
-class _GeoJsonTextWriter extends _DefaultTextWriter
+/// A feature writer for GeoJSON text output.
+class GeoJsonTextWriter extends _DefaultTextWriter
     with FeatureWriter, PropertyWriter {
-  _GeoJsonTextWriter({
+  /// A feature writer for GeoJSON text output.
+  GeoJsonTextWriter({
     super.buffer,
     super.decimals,
     super.ignoreMeasured,
     this.ignoreForeignMembers = false,
   });
 
+  /// When [ignoreForeignMembers] is set to true, then such JSON elements that
+  /// are not described by the GeoJSON specification, are ignored. See the
+  /// section 6.1 of the specifcation (RFC 7946).
   final bool ignoreForeignMembers;
 
-  _GeoJsonTextWriter _subWriter() => _GeoJsonTextWriter(
+  GeoJsonTextWriter _subWriter() => GeoJsonTextWriter(
         buffer: _buffer,
         decimals: decimals,
         ignoreMeasured: ignoreMeasured,
@@ -945,8 +888,10 @@ class _WktLikeTextWriter extends _BaseTextWriter {
 
 // Writer for the "wkt" format -------------------------------------------------
 
-class _WktTextWriter extends _WktLikeTextWriter {
-  _WktTextWriter({super.buffer, super.decimals});
+/// A geometry writer for WKT text output.
+class WktTextWriter extends _WktLikeTextWriter {
+  /// A geometry writer for WKT text output.
+  WktTextWriter({super.buffer, super.decimals});
 
   @override
   bool _geometryBeforeCoordinates({
@@ -1007,18 +952,18 @@ class _WktTextWriter extends _WktLikeTextWriter {
   }
 
   @override
-  void box(Box bbox) {
+  void box(Box box) {
     // WKT does not recognize bounding box, so convert to POLYGON
-    final hasZ = bbox.is3D;
-    final midZ = hasZ ? 0.5 * bbox.minZ! + 0.5 * bbox.maxZ! : null;
-    final hasM = bbox.isMeasured;
-    final midM = hasM ? 0.5 * bbox.minM! + 0.5 * bbox.maxM! : null;
+    final hasZ = box.is3D;
+    final midZ = hasZ ? 0.5 * box.minZ! + 0.5 * box.maxZ! : null;
+    final hasM = box.isMeasured;
+    final midM = hasM ? 0.5 * box.minM! + 0.5 * box.maxM! : null;
 
     // check optional expected coordinate type
     final coordType = _coordTypes.isNotEmpty
         ? _coordTypes.last
         : Coords.select(
-            isGeographic: bbox.isGeographic,
+            isGeographic: box.isGeographic,
             is3D: hasZ,
             isMeasured: hasM,
           );
@@ -1037,11 +982,11 @@ class _WktTextWriter extends _WktLikeTextWriter {
     }
     _coordArray();
     _coordArray();
-    _coordPoint(x: bbox.minX, y: bbox.minY, z: bbox.minZ, m: bbox.minM);
-    _coordPoint(x: bbox.maxX, y: bbox.minY, z: midZ, m: midM);
-    _coordPoint(x: bbox.maxX, y: bbox.maxY, z: bbox.maxZ, m: bbox.maxM);
-    _coordPoint(x: bbox.minX, y: bbox.maxY, z: midZ, m: midM);
-    _coordPoint(x: bbox.minX, y: bbox.minY, z: bbox.minZ, m: bbox.minM);
+    _coordPoint(x: box.minX, y: box.minY, z: box.minZ, m: box.minM);
+    _coordPoint(x: box.maxX, y: box.minY, z: midZ, m: midM);
+    _coordPoint(x: box.maxX, y: box.maxY, z: box.maxZ, m: box.maxM);
+    _coordPoint(x: box.minX, y: box.maxY, z: midZ, m: midM);
+    _coordPoint(x: box.minX, y: box.minY, z: box.minZ, m: box.minM);
     _coordArrayEnd();
     _coordArrayEnd();
     _endCoordType();

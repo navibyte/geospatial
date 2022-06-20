@@ -671,15 +671,15 @@ A sample to print coordinates of a point geometry below.
   // print with default format
   print('Default format: ${point.toString()}');
   print('Default format (decimals = 0): ${point.toStringAs(decimals: 0)}');
-  
+
   // print with WKT format
-  print('WKT format: ${point.toStringAs(format: wktFormat())}');
-  
+  print('WKT format: ${point.toStringAs(format: WKT())}');
+
   // print with GeoJSON format
-  print('GeoJSON format: ${point.toStringAs(format: geoJsonFormat())}');
+  print('GeoJSON format: ${point.toStringAs(format: GeoJSON())}');
   print(
     'GeoJSON (decimals = 1) format: ${point.toStringAs(
-      format: geoJsonFormat(),
+      format: GeoJSON(),
       decimals: 1,
     )}',
   );
@@ -690,7 +690,7 @@ collection, and finally uses a writer to print it as GeoJSON text.
 
 ```dart
   // feature writer for GeoJSON
-  final writer = geoJsonFormat().featuresToText();
+  final writer = GeoJSON().featuresToText();
 
   // create feature collection with two features
   final collection = FeatureCollection(

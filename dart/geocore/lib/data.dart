@@ -14,7 +14,7 @@
 ///
 /// Exports also `Geom`, `CoordinateWriter`, `GeometryWriter`, `GeometryFormat`,
 /// `FeatureWriter`, `FeatureFormat`, `defaultFormat`, `wktLikeFormat`,
-/// `geoJsonFormat` and `wktFormat` from `package:geobase/vector.dart`.
+/// `GeoJSON` and `WKT` from `package:geobase/vector.dart`.
 ///
 /// Usage: import `package:geocore/data.dart`
 library data;
@@ -29,8 +29,8 @@ export 'package:geobase/vector.dart'
         FeatureFormat,
         defaultFormat,
         wktLikeFormat,
-        geoJsonFormat,
-        wktFormat;
+        GeoJSON,
+        WKT;
 
 export 'base.dart';
 export 'coordinates.dart';

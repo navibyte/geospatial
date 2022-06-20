@@ -162,7 +162,7 @@ void _scalable2i() {
 
 void _wktPointGeometry() {
   // geometry writer for WKT
-  final writer = wktFormat().geometriesToText();
+  final writer = WKT().geometriesToText();
 
   // prints:
   //    POINT(10.123 20.25)
@@ -178,7 +178,7 @@ void _wktPointGeometry() {
 
 void _wktPointGeometryWithZ() {
   // geometry writer for WKT
-  final writer = wktFormat().geometriesToText();
+  final writer = WKT().geometriesToText();
 
   // prints:
   //    POINT Z(10.123 20.25 -30.95)
@@ -195,7 +195,7 @@ void _wktPointGeometryWithZ() {
 
 void _wktPointGeometryWithM() {
   // geometry writer for WKT
-  final writer = wktFormat().geometriesToText();
+  final writer = WKT().geometriesToText();
 
   // prints:
   //    POINT M(10.123 20.25 -1.999)
@@ -212,7 +212,7 @@ void _wktPointGeometryWithM() {
 
 void _wktPointGeometryWithZM() {
   // geometry writer for WKT
-  final writer = wktFormat().geometriesToText();
+  final writer = WKT().geometriesToText();
 
   // prints:
   //    POINT ZM(10.123 20.25 -30.95 -1.999)
@@ -230,7 +230,7 @@ void _wktPointGeometryWithZM() {
 
 void _geoJsonPointGeometry() {
   // geometry writer for GeoJSON
-  final writer = geoJsonFormat().geometriesToText();
+  final writer = GeoJSON().geometriesToText();
 
   // prints:
   //    {"type":"Point","coordinates":[10.123,20.25]}
@@ -246,7 +246,7 @@ void _geoJsonPointGeometry() {
 
 void _geoJsonPointGeometryDecimals() {
   // geometry writer for GeoJSON, with number of decimals for text output set
-  final writer = geoJsonFormat().geometriesToText(decimals: 1);
+  final writer = GeoJSON().geometriesToText(decimals: 1);
 
   // prints:
   //    {"type":"Point","coordinates":[10.1,20.3]}
@@ -263,7 +263,7 @@ void _geoJsonPointGeometryDecimals() {
 void _geoJsonPointGeometryCustomStringBuffer() {
   // geometry writer for GeoJSON with a custom string buffer
   final buf = StringBuffer();
-  final writer = geoJsonFormat().geometriesToText(buffer: buf);
+  final writer = GeoJSON().geometriesToText(buffer: buf);
 
   // write both directly to buffer and via geometry writer
   buf.write('{"geometry":');
@@ -280,7 +280,7 @@ void _geoJsonPointGeometryCustomStringBuffer() {
 
 void _geoJsonLineStringGeometryWithBbox() {
   // geometry writer for GeoJSON
-  final writer = geoJsonFormat().geometriesToText();
+  final writer = GeoJSON().geometriesToText();
 
   // prints (however without line breaks):
   //    {"type":"LineString",
@@ -303,7 +303,7 @@ void _geoJsonLineStringGeometryWithBbox() {
 
 void _geoJsonGeometryCollection() {
   // geometry writer for GeoJSON
-  final writer = geoJsonFormat().geometriesToText();
+  final writer = GeoJSON().geometriesToText();
 
   // prints (however without line breaks):
   //    {"type":"GeometryCollection",
@@ -340,7 +340,7 @@ void _geoJsonGeometryCollection() {
 
 void _geoJsonFeature() {
   // feature writer for GeoJSON
-  final writer = geoJsonFormat().featuresToText();
+  final writer = GeoJSON().featuresToText();
 
   // prints (however without line breaks):
   //    {"type":"Feature",
@@ -369,7 +369,7 @@ void _geoJsonFeature() {
 
 void _geoJsonFeatureCollection() {
   // feature writer for GeoJSON
-  final writer = geoJsonFormat().featuresToText();
+  final writer = GeoJSON().featuresToText();
 
   // prints (however without line breaks):
   //    {"type":"FeatureCollection",

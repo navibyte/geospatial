@@ -99,7 +99,7 @@ A sample to write a `Point` geometry with a geographic position to
 
 ```dart
   // geometry writer for GeoJSON, with number of decimals for text output set
-  final writer = geoJsonFormat().geometriesToText(decimals: 1);
+  final writer = GeoJSON().geometriesToText(decimals: 1);
 
   // prints:
   //    {"type":"Point","coordinates":[10.1,20.3]}
@@ -515,7 +515,7 @@ A sample to write a `LineString` geometry to GeoJSON:
 
 ```dart
   // geometry writer for GeoJSON
-  final writer = geoJsonFormat().geometriesToText();
+  final writer = GeoJSON().geometriesToText();
 
   // prints (however without line breaks):
   //    {"type":"LineString",
@@ -540,7 +540,7 @@ A sample to write a `Feature` geometry to GeoJSON:
 
 ```dart
   // feature writer for GeoJSON
-  final writer = geoJsonFormat().featuresToText();
+  final writer = GeoJSON().featuresToText();
 
   // prints (however without line breaks):
   //    {"type":"Feature",
@@ -579,7 +579,7 @@ A sample to write a `Point` geometry to WKT (with z and m coordinates too):
 
 ```dart
   // geometry writer for WKT
-  final writer = wktFormat().geometriesToText();
+  final writer = WKT().geometriesToText();
 
   // prints:
   //    POINT ZM(10.123 20.25 -30.95 -1.999)

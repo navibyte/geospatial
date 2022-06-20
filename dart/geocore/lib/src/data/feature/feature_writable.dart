@@ -16,11 +16,11 @@ abstract class FeatureWritable {
 
   /// A string representation of this object, with an optional [format] applied.
   ///
-  /// When [format] is not given, then [geoJsonFormat] is used.
+  /// When [format] is not given, then [GeoJSON] is used.
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
   String toStringAs({FeatureFormat? format, int? decimals}) {
-    final f = format ?? geoJsonFormat();
+    final f = format ?? GeoJSON();
     final writer = f.featuresToText(decimals: decimals);
     writeTo(writer);
     return writer.toString();

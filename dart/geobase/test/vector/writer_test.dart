@@ -764,13 +764,13 @@ void _testAllWriters<T extends BaseWriter>(
     decimals: defDecimals,
   );
   _testWriterOfGeometryFormat<T>(
-    geoJsonFormat(),
+    GeoJSON(),
     content,
     expected: geoJson,
     decimals: geoJsonDecimals,
   );
   _testWriterOfGeometryFormat<T>(
-    geoJsonFormat(ignoreMeasured: true, ignoreForeignMembers: true),
+    GeoJSON(ignoreMeasured: true, ignoreForeignMembers: true),
     content,
     expected: geoJsonStrict ?? geoJson,
     decimals: geoJsonDecimals,
@@ -782,7 +782,7 @@ void _testAllWriters<T extends BaseWriter>(
     decimals: wktLikeDecimals,
   );
   _testWriterOfGeometryFormat<T>(
-    wktFormat(),
+    WKT(),
     content,
     expected: wkt,
     decimals: wktDecimals,
@@ -796,13 +796,13 @@ void _testGeoJsonWriters<T extends BaseWriter>(
   int? decimals,
 }) {
   _testWriterOfFeatureFormat<T>(
-    geoJsonFormat(),
+    GeoJSON(),
     content,
     expected: geoJson,
     decimals: decimals,
   );
   _testWriterOfFeatureFormat<T>(
-    geoJsonFormat(ignoreMeasured: true, ignoreForeignMembers: true),
+    GeoJSON(ignoreMeasured: true, ignoreForeignMembers: true),
     content,
     expected: geoJsonStrict ?? geoJson,
     decimals: decimals,
