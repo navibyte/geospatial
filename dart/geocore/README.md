@@ -108,7 +108,7 @@ A feature (a geospatial entity) contains an id, a geometry and properties:
 Parsing [GeoJSON](https://geojson.org/) data:
 
 ```dart
-  final geoJsonParser = geoJsonGeographic(GeoPoint3.coordinates);
+  final geoJsonParser = GeoJSON().parserGeographic(GeoPoint3.coordinates);
   geoJsonParser.feature(
     '''
     {
@@ -132,18 +132,19 @@ Parsing [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_ge
 
 ```dart
   // Parse using specific point factories for coordinates with and without M
-  final wktParser = wkt(Point2.coordinates, Point2m.coordinates);
+  final wktParser = WKT().parser(Point2.coordinates, Point2m.coordinates);
   wktParser.parse('POINT (100.0 200.0)'); // => Point2;
   wktParser.parse('POINT M (100.0 200.0 5.0)'); // => Point2m;
 
   // Projected (or cartesian) coordinates (Point2, Point2m, Point3 or Point3m)
-  wktProjected.parse('LINESTRING (200.1 500.9, 210.2 510.4)');
+  WKT().parserProjected().parse('LINESTRING (200.1 500.9, 210.2 510.4)');
 
   // Geographic coordinates (GeoPoint2, GeoPoint2m, GeoPoint3 or GeoPoint3m)
-  wktGeographic.parse(
-    'POLYGON ((40 15, 50 50, 15 45, 10 15, 40 15),'
-    ' (25 25, 25 40, 35 30, 25 25))',
-  );
+  WKT().parserGeographic().parse(
+        'POLYGON ((40 15, 50 50, 15 45, 10 15, 40 15),'
+        ' (25 25, 25 40, 35 30, 25 25))',
+      );
+
 ```
 
 ## User guide
@@ -187,7 +188,7 @@ For example `Point3` can be created in many ways:
 
   // The same point parsed using the WKT parser for projected geometries.
   // Here `wktProjected` is a global constant for a WKT factory implementation.
-  wktProjected.parse('POINT Z (708221.0 5707225.0 45.0)');
+  WKT().parserProjected().parse('POINT Z (708221.0 5707225.0 45.0)');
 ```
 
 All other point classes have similar constructors.
@@ -251,7 +252,7 @@ See below how to create `GeoPoint3m` instances (other classes in similar ways):
   GeoPoint3m.parse('-0.0014 51.4778 45.0 123.0');
 
   // The WKT parser for geographic coordinates parses full representations.
-  wktGeographic.parse('POINT ZM (-0.0014 51.4778 45.0 123.0)');
+  WKT().parserGeographic().parse('POINT ZM (-0.0014 51.4778 45.0 123.0)');
 ```
 
 ### Point series
@@ -318,9 +319,10 @@ Or below are examples of more direct ways to construct line strings:
   );
 
   // Using the WKT factory produces the same result as the previous sample.
-  wktProjected.parse<Point3m>(
-    'LINESTRING ZM(10.0 11.0 12.0 5.1, 20.0 21.0 22.0 5.2, 30.0 31.0 32.0 5.3)',
-  );
+  WKT().parserProjected().parse<Point3m>(
+        'LINESTRING ZM(10.0 11.0 12.0 5.1, 20.0 21.0'
+        ' 22.0 5.2, 30.0 31.0 32.0 5.3)',
+      );
 
   // Also this sample, parsing from WKT compatible text, gives the same result.
   LineString.parse(
@@ -415,7 +417,7 @@ There is also `GeometryCollection`:
   ]);
 
   // A geometry collection can also be parsed from WKT text.
-  wktProjected.parse<Point2>(
+  WKT().parserProjected().parse<Point2>(
     '''
       GEOMETRYCOLLECTION (
         POINT (40 10),
@@ -541,8 +543,9 @@ The sample code:
   ''';
 
   // parse FeatureCollection using a GeoJSON parser with geographic coordinates
-  final geoJsonParser = geoJsonGeographic(geographicPoints);
-  final fc = geoJsonParser.featureCollection(sample);
+  final format = GeoJSON();
+  final parser = format.parserGeographic(geographicPoints);
+  final fc = parser.featureCollection(sample);
 
   // loop through features and print id, geometry and properties for each
   for (final f in fc.features) {
@@ -575,13 +578,15 @@ constructors that allows parsing coordinate values from WKT compatible text
 (like a point using `Point2.parse('100.0 200.0')` factory).
 
 When parsing full WKT geometry text representations, with a geometry type id and
-coordinate values, the `WktFactory` class can be used. There are two global 
-constants of class instances for different use cases:
+coordinate values, the `WktFactory` class can be used. There are two main parser
+implementations for different use cases:
 
-Global constant | Use cases
---------------- | ---------
-`wktProjected`  | Parsing geometries with projected or cartesian coordinates.
-`wktGeographic` | Parsing geometries with geographic coordinates (like WGS 84).
+Parser factory             | Use cases
+-------------------------- | ---------
+`WKT().parserProjected()`  | Parsing geometries with projected or cartesian coordinates.
+`WKT().parserGeographic()` | Parsing geometries with geographic coordinates (like WGS 84).
+
+Other custom parsers for WKT format can be created via `WKT().parser()` method.
 
 Imports:
 
@@ -592,18 +597,24 @@ import 'package:geocore/parse.dart';
 Samples to parse from WKT text representation of geometry:
 
 ```dart
+  // get WKT format
+  final format = WKT();
+
   // Parse projected points from WKT (result is different concrete classes).
-  wktProjected.parse('POINT (100.0 200.0)'); // => Point2
-  wktProjected.parse('POINT M (100.0 200.0 5.0)'); // => Point2m
-  wktProjected.parse('POINT (100.0 200.0 300.0)'); // => Point3
-  wktProjected.parse('POINT Z (100.0 200.0 300.0)'); // => Point3
-  wktProjected.parse('POINT ZM (100.0 200.0 300.0 5.0)'); // => Point3m
+  final parser1 = format.parserProjected();
+  parser1.parse('POINT (100.0 200.0)'); // => Point2
+  parser1.parse('POINT M (100.0 200.0 5.0)'); // => Point2m
+  parser1.parse('POINT (100.0 200.0 300.0)'); // => Point3
+  parser1.parse('POINT Z (100.0 200.0 300.0)'); // => Point3
+  parser1.parse('POINT ZM (100.0 200.0 300.0 5.0)'); // => Point3m
 
   // Parse geographical line string, from (10.0 50.0) to (11.0 51.0).
-  wkt(GeoPoint2.coordinates).parse('LINESTRING (10.0 50.0, 11.0 51.0)');
+  final parser2 = format.parser(GeoPoint2.coordinates);
+  parser2.parse('LINESTRING (10.0 50.0, 11.0 51.0)');
 
   // Parse geographical polygon with a hole.
-  wktGeographic.parse(
+  final parser3 = format.parserGeographic();
+  parser3.parse(
     'POLYGON ((40 15, 50 50, 15 45, 10 15, 40 15),'
     ' (25 25, 25 40, 35 30, 25 25))',
   );
@@ -617,12 +628,15 @@ Supported WKT geometry types: `POINT`, `LINESTRING`, `POLYGON`, `MULTIPOINT`,
 *Format* classes provide methods for accessing *writers* that allow writing 
 coordinate, geometry and feature objects to a output stream (like text buffer).
 
+Formats (and their extensions) may also support parsing functionality, as 
+already described above, but here *writers* are discussed.
+
 Formats available:
 
-Format   | Factory function | Writers supported by Format
--------- | ---------------- | ---------------------------
-[GeoJSON](https://geojson.org/)  | `geoJsonFormat()` | Coordinates, Geometries, Features
-[WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) | `wktFormat()` | Coordinates, Geometries
+Format   | Factory | Writers supported by Format
+-------- | ------- | ---------------------------
+[GeoJSON](https://geojson.org/)  | `GeoJSON()` | Coordinates, Geometries, Features
+[WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) | `WKT()` | Coordinates, Geometries
 
 There are also constants `defaultFormat` (a text format aligned with GeoJSON but
 output is somewhat simpler) and `wktLikeFormat` (a text format aligned with
@@ -648,7 +662,7 @@ All formats mentioned above have following writers:
 }
 ```
 
-A format object returned by `geoJsonFormat()` has also the following writer:
+A format object returned by `GeoJSON()` has also the following writer:
 
 ```dart
   /// Returns a writer formatting string representations of feature objects.
@@ -685,12 +699,15 @@ A sample to print coordinates of a point geometry below.
   );
 ```
 
-The sample below creates a GeoJSON feature writer, then create a feature
-collection, and finally uses a writer to print it as GeoJSON text.
+The sample below creates a GeoJSON format and feature writer, then create a
+feature collection, and finally uses a writer to print it as GeoJSON text.
 
 ```dart
+  // get GeoJSON format
+  final format = GeoJSON();
+
   // feature writer for GeoJSON
-  final writer = GeoJSON().featuresToText();
+  final writer = format.featuresToText();
 
   // create feature collection with two features
   final collection = FeatureCollection(

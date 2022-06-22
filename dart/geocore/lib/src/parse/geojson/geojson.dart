@@ -7,21 +7,82 @@
 import 'dart:convert';
 import 'dart:math' as math;
 
+import 'package:geobase/vector.dart';
+
 import '/src/base/spatial.dart';
 import '/src/coordinates/geographic.dart';
 import '/src/coordinates/projected.dart';
 import '/src/data/feature.dart';
 import '/src/parse/factory.dart';
 
+/// GeoJSON format extensions providing access to GeoJSON parsers via format.
+extension GeoJSONExtension on GeoJSON {
+  /// A GeoJSON factory using [point] factory to create any points of [T].
+  ///
+  /// Use [parserGeographic] instead of this if points created should be
+  /// geographic coordinates, or [parserProjected] if points should be projected
+  /// or cartesian coordinates.
+  ///
+  /// Use [bounds] to specify a factory for `Bounds` objects.
+  ///
+  /// Use [feature] to define a factory for `Feature` objects.
+  GeoJsonFactory<T> parser<T extends Point>(
+    PointFactory<T> point, {
+    CreateBounds<T>? bounds,
+    CreateFeature? feature,
+  }) =>
+      GeoJsonFactory<T>(
+        pointFactory: point,
+        boundsFactory: bounds ?? Bounds.fromCoords,
+        featureFactory: feature,
+      );
+
+  /// A GeoJSON factory using [point] factory to create geographic points of T.
+  ///
+  /// Use [parserProjected] instead of this if points created should be
+  /// projected or cartesian coordinates, or [parser] if points can be
+  /// anything.
+  ///
+  /// Use [bounds] to specify a factory for `Bounds` objects.
+  ///
+  /// Use [feature] to define a factory for `Feature` objects.
+  GeoJsonFactory<T> parserGeographic<T extends GeoPoint>(
+    PointFactory<T> point, {
+    CreateBounds<T>? bounds,
+    CreateFeature? feature,
+  }) =>
+      GeoJsonFactory<T>(
+        pointFactory: point,
+        boundsFactory: bounds ?? GeoBounds.fromCoords,
+        featureFactory: feature,
+      );
+
+  /// A GeoJSON factory using [point] factory to create cartesian points of [T].
+  ///
+  /// Use [parserGeographic] instead of this if points created should be
+  /// geographic coordinates, or [parser] if points can be anything.
+  ///
+  /// Use [bounds] to specify a factory for `Bounds` objects.
+  ///
+  /// Use [feature] to define a factory for `Feature` objects.
+  GeoJsonFactory<T> parserProjected<T extends ProjectedPoint>(
+    PointFactory<T> point, {
+    CreateBounds<T>? bounds,
+    CreateFeature? feature,
+  }) =>
+      GeoJsonFactory<T>(
+        pointFactory: point,
+        boundsFactory: bounds ?? Bounds.fromCoords,
+        featureFactory: feature,
+      );
+}
+
 /// A GeoJSON factory using [point] factory to create any points of [T].
-///
-/// Use [geoJsonGeographic] instead of this if points created should be
-/// geographic coordinates, or [geoJsonProjected] if points should be projected
-/// or cartesian coordinates.
 ///
 /// Use [bounds] to specify a factory for `Bounds` objects.
 ///
 /// Use [feature] to define a factory for `Feature` objects.
+@Deprecated('Use GeoJSON().parser() instead.')
 GeoJsonFactory<T> geoJson<T extends Point>(
   PointFactory<T> point, {
   CreateBounds<T>? bounds,
@@ -34,13 +95,11 @@ GeoJsonFactory<T> geoJson<T extends Point>(
     );
 
 /// A GeoJSON factory using [point] factory to create geographic points of [T].
-///
-/// Use [geoJsonProjected] instead of this if points created should be projected
-/// or cartesian coordinates, or [geoJson] if points can be anything.
-///
+/// 
 /// Use [bounds] to specify a factory for `Bounds` objects.
 ///
 /// Use [feature] to define a factory for `Feature` objects.
+@Deprecated('Use GeoJSON().parserGeographic() instead.')
 GeoJsonFactory<T> geoJsonGeographic<T extends GeoPoint>(
   PointFactory<T> point, {
   CreateBounds<T>? bounds,
@@ -54,12 +113,10 @@ GeoJsonFactory<T> geoJsonGeographic<T extends GeoPoint>(
 
 /// A GeoJSON factory using [point] factory to create cartesian points of [T].
 ///
-/// Use [geoJsonGeographic] instead of this if points created should be
-/// geographic coordinates, or [geoJson] if points can be anything.
-///
 /// Use [bounds] to specify a factory for `Bounds` objects.
 ///
 /// Use [feature] to define a factory for `Feature` objects.
+@Deprecated('Use GeoJSON().parserProjected() instead.')
 GeoJsonFactory<T> geoJsonProjected<T extends ProjectedPoint>(
   PointFactory<T> point, {
   CreateBounds<T>? bounds,

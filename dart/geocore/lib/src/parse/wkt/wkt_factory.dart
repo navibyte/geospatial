@@ -4,11 +4,60 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'package:geobase/vector.dart';
+
 import '/src/base/spatial.dart';
 import '/src/coordinates/geographic.dart';
 import '/src/coordinates/projected.dart';
 import '/src/parse/factory.dart';
 import '/src/utils/wkt_data.dart';
+
+/// WKT format extensions providing access to WKT parsers via format.
+extension WKTExtension on WKT {
+  /// Creates a WKT factory instace using the [point] factory.
+  ///
+  /// An optional [pointWithM] factory can be given to instantiate any point
+  /// objects with M coordinates.
+  ///
+  /// Supported WKT geometry types: 'POINT', 'LINESTRING', 'POLYGON',
+  /// 'MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON', 'GEOMETRYCOLLECTION'.
+  ///
+  /// See [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry).
+  WktFactory<T> parser<T extends Point>(
+    PointFactory<T> point, [
+    PointFactory<T>? pointWithM,
+  ]) =>
+      WktFactory<T>(
+        pointFactory: ({required bool expectM}) =>
+            expectM ? pointWithM ?? point : point,
+      );
+
+  /// The default WKT factory instace assuming geographic CRS80 coordinates.
+  ///
+  /// Result type candidates for point objects: [GeoPoint2], [GeoPoint2m],
+  /// [GeoPoint3], [GeoPoint3m].
+  ///
+  /// Supported WKT geometry types: 'POINT', 'LINESTRING', 'POLYGON',
+  /// 'MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON', 'GEOMETRYCOLLECTION'.
+  ///
+  /// See [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry).
+  WktFactory<GeoPoint> parserGeographic() => const WktFactory<GeoPoint>(
+        pointFactory: geographicPointsWithM,
+      );
+
+  /// The default WKT factory instace assuming cartesian/projected coordinates.
+  ///
+  /// Result type candidates for point objects: [Point2], [Point2m], [Point3],
+  /// [Point3m].
+  ///
+  /// Supported WKT geometry types: 'POINT', 'LINESTRING', 'POLYGON',
+  /// 'MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON', 'GEOMETRYCOLLECTION'.
+  ///
+  /// See [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry).
+  WktFactory<Point> parserProjected() => const WktFactory<Point>(
+        pointFactory: projectedPointsWithM,
+      );
+}
 
 /// Creates a WKT factory instace using the [point] factory.
 ///
@@ -19,6 +68,7 @@ import '/src/utils/wkt_data.dart';
 /// 'MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON', 'GEOMETRYCOLLECTION'.
 ///
 /// See [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry).
+@Deprecated('Use WKT().parser() instead.')
 WktFactory<T> wkt<T extends Point>(
   PointFactory<T> point, [
   PointFactory<T>? pointWithM,
@@ -37,6 +87,7 @@ WktFactory<T> wkt<T extends Point>(
 /// 'MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON', 'GEOMETRYCOLLECTION'.
 ///
 /// See [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry).
+@Deprecated('Use WKT().parserGeographic() instead.')
 const wktGeographic = WktFactory<GeoPoint>(
   pointFactory: geographicPointsWithM,
 );
@@ -50,6 +101,7 @@ const wktGeographic = WktFactory<GeoPoint>(
 /// 'MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON', 'GEOMETRYCOLLECTION'.
 ///
 /// See [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry).
+@Deprecated('Use WKT().parserProjected() instead.')
 const wktProjected = WktFactory<Point>(
   pointFactory: projectedPointsWithM,
 );

@@ -211,8 +211,11 @@ void _wktPointGeometryWithM() {
 }
 
 void _wktPointGeometryWithZM() {
+  // get WKT format
+  final format = WKT();
+
   // geometry writer for WKT
-  final writer = WKT().geometriesToText();
+  final writer = format.geometriesToText();
 
   // prints:
   //    POINT ZM(10.123 20.25 -30.95 -1.999)
@@ -229,8 +232,11 @@ void _wktPointGeometryWithZM() {
 }
 
 void _geoJsonPointGeometry() {
+  // get GeoJSON format
+  final format = GeoJSON();
+
   // geometry writer for GeoJSON
-  final writer = GeoJSON().geometriesToText();
+  final writer = format.geometriesToText();
 
   // prints:
   //    {"type":"Point","coordinates":[10.123,20.25]}
@@ -279,8 +285,11 @@ void _geoJsonPointGeometryCustomStringBuffer() {
 }
 
 void _geoJsonLineStringGeometryWithBbox() {
+  // get GeoJSON format
+  final format = GeoJSON();
+
   // geometry writer for GeoJSON
-  final writer = GeoJSON().geometriesToText();
+  final writer = format.geometriesToText();
 
   // prints (however without line breaks):
   //    {"type":"LineString",
@@ -339,8 +348,11 @@ void _geoJsonGeometryCollection() {
 }
 
 void _geoJsonFeature() {
+  // get GeoJSON format
+  final format = GeoJSON();
+
   // feature writer for GeoJSON
-  final writer = GeoJSON().featuresToText();
+  final writer = format.featuresToText();
 
   // prints (however without line breaks):
   //    {"type":"Feature",

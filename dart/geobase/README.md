@@ -98,11 +98,14 @@ A sample to write a `Point` geometry with a geographic position to
 [GeoJSON](https://geojson.org/):
 
 ```dart
-  // geometry writer for GeoJSON, with number of decimals for text output set
-  final writer = GeoJSON().geometriesToText(decimals: 1);
+  // get GeoJSON format
+  final format = GeoJSON();
+
+  // geometry writer for GeoJSON
+  final writer = format.geometriesToText();
 
   // prints:
-  //    {"type":"Point","coordinates":[10.1,20.3]}
+  //    {"type":"Point","coordinates":[10.123,20.25]}
   print(
     writer
       ..geometryWithPosition(
@@ -466,10 +469,10 @@ coordinate, geometry and feature objects to a output stream (like text buffer).
 
 Formats available:
 
-Format   | Factory function | Writers supported by Format
--------- | ---------------- | ---------------------------
-[GeoJSON](https://geojson.org/)  | `geoJsonFormat()` | Coordinates, Geometries, Features
-[WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) | `wktFormat()` | Coordinates, Geometries
+Format   | Factory | Writers supported by Format
+-------- | ------- | ---------------------------
+[GeoJSON](https://geojson.org/)  | `GeoJSON()` | Coordinates, Geometries, Features
+[WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) | `WKT()` | Coordinates, Geometries
 
 There are also constants `defaultFormat` (a text format aligned with GeoJSON but
 output is somewhat simpler) and `wktLikeFormat` (a text format aligned with
@@ -495,7 +498,7 @@ All formats mentioned above have following writers:
 }
 ```
 
-A format object returned by `geoJsonFormat()` has also the following writer:
+A format object returned by `GeoJSON()` has also the following writer:
 
 ```dart
   /// Returns a writer formatting string representations of feature objects.
@@ -507,15 +510,18 @@ information how to use those writers. Some samples in next chapters.
 
 ### GeoJSON writer
 
-The `geoJsonFormat()` function can be used to access writers for coordinates, 
+The `GeoJSON` class can be used to access writers for coordinates, 
 geometries and features producing [GeoJSON](https://geojson.org/) compatible
 text.
 
 A sample to write a `LineString` geometry to GeoJSON:
 
 ```dart
+    // get GeoJSON format
+  final format = GeoJSON();
+
   // geometry writer for GeoJSON
-  final writer = GeoJSON().geometriesToText();
+  final writer = format.geometriesToText();
 
   // prints (however without line breaks):
   //    {"type":"LineString",
@@ -539,8 +545,11 @@ A sample to write a `LineString` geometry to GeoJSON:
 A sample to write a `Feature` geometry to GeoJSON:
 
 ```dart
+  // get GeoJSON format
+  final format = GeoJSON();
+
   // feature writer for GeoJSON
-  final writer = GeoJSON().featuresToText();
+  final writer = format.featuresToText();
 
   // prints (however without line breaks):
   //    {"type":"Feature",
@@ -569,7 +578,7 @@ A sample to write a `Feature` geometry to GeoJSON:
 
 ### WKT writer
 
-The `wktFormat()` function can be used to access writers for coordinates and 
+The `WKT` class can be used to access writers for coordinates and 
 geometries producing 
 [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)
 compatible text. However feature objects cannot be written to WKT even if 
@@ -578,8 +587,11 @@ supported by GeoJSON.
 A sample to write a `Point` geometry to WKT (with z and m coordinates too):
 
 ```dart
+  // get WKT format
+  final format = WKT();
+
   // geometry writer for WKT
-  final writer = WKT().geometriesToText();
+  final writer = format.geometriesToText();
 
   // prints:
   //    POINT ZM(10.123 20.25 -30.95 -1.999)

@@ -25,8 +25,8 @@ void main() {
       // NOP
     });
 
-    final parser2D = geoJsonGeographic(GeoPoint2.coordinates);
-    final parser3D = geoJsonGeographic(GeoPoint3.coordinates);
+    final parser2D = GeoJSON().parserGeographic(GeoPoint2.coordinates);
+    final parser3D = GeoJSON().parserGeographic(GeoPoint3.coordinates);
     test('Basic feature', () {
       final f = parser2D.feature(geojsonFeature);
       expect(f.geometry, GeoPoint2.from([125.6, 10.1]));

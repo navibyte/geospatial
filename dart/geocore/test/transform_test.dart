@@ -222,7 +222,7 @@ void main() {
       );
     });
 
-    final parser2D = geoJsonGeographic(geographicPoints);
+    final parser2D = GeoJSON().parserGeographic(geographicPoints);
 
     test('Feature', () {
       final f = parser2D.feature(geojsonFeature).transform(translate1);
