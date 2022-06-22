@@ -42,7 +42,7 @@ BasicFeatureSource geoJsonHttpClient({
         client: client,
         headers: headers,
       ),
-      parser: parser ?? geoJsonGeographic(geographicPoints),
+      parser: parser ?? GeoJSON().parserGeographic(geographicPoints),
     );
 
 /// A client for accessing a `GeoJSON` feature collection from [source];
@@ -63,7 +63,7 @@ BasicFeatureSource geoJsonFutureClient(
 }) =>
     _GeoJSONFeatureSource(
       source,
-      parser: parser ?? geoJsonGeographic(geographicPoints),
+      parser: parser ?? GeoJSON().parserGeographic(geographicPoints),
     );
 
 // -----------------------------------------------------------------------------

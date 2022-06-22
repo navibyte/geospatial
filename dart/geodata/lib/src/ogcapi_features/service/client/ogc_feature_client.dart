@@ -45,7 +45,7 @@ OGCFeatureService ogcApiFeaturesHttpClient({
         client: client,
         headers: headers,
       ),
-      parser: parser ?? geoJsonGeographic(geographicPoints),
+      parser: parser ?? GeoJSON().parserGeographic(geographicPoints),
     );
 
 // -----------------------------------------------------------------------------

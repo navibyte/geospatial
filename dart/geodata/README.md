@@ -32,7 +32,7 @@ To use, add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geodata: ^0.9.0
+  geodata: ^0.10.0-dev.0
 ```
 
 The package contains also following mini-libraries, that can be used to import

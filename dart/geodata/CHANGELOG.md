@@ -1,3 +1,7 @@
+## 0.10.0
+
+Development version `0.10.0-dev.0`.
+
 ## 0.9.0
 
 ✨ Updated with latest [geobase](https://pub.dev/packages/geobase) version
