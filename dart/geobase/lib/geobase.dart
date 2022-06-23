@@ -37,5 +37,6 @@ export 'src/projections/mercator.dart';
 export 'src/tiling/convert.dart';
 export 'src/tiling/tilematrix.dart';
 export 'src/transforms/basic.dart';
+export 'src/vector/content.dart';
 export 'src/vector/encode.dart';
 export 'src/vector/formats.dart';

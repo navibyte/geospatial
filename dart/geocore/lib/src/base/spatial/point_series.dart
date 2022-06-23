@@ -104,7 +104,7 @@ abstract class PointSeries<E extends Point>
   });
 
   /// Writes this point series object to [writer].
-  void writeTo(CoordinateWriter writer);
+  void writeTo(CoordinateContent writer);
 }
 
 /// A partial implementation of [PointSeries] as a mixin.
@@ -129,13 +129,13 @@ mixin PointSeriesMixin<E extends Point> implements PointSeries<E> {
   num m(int index) => this[index].m;
 
   @override
-  void writeTo(CoordinateWriter writer) => writer.positions1D(this);
+  void writeTo(CoordinateContent output) => output.positions1D(this);
 
   @override
   String toString() {
     final writer = defaultFormat.coordinatesToText();
     // ignore: cascade_invocations
-    writer.positions1D(this);
+    writer.output.positions1D(this);
     return writer.toString();
   }
 }

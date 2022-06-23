@@ -92,9 +92,9 @@ class Feature<T extends Geometry> extends FeatureWritable implements Bounded {
   Bounds? get boundsExplicit => _featureBounds;
 
   @override
-  void writeTo(FeatureWriter writer) {
+  void writeTo(FeatureContent output) {
     final geom = _geometry;
-    writer.feature(
+    output.feature(
       id: _id,
       geometries: geom?.writeTo,
       properties: _properties,

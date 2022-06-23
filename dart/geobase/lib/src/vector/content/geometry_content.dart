@@ -9,13 +9,14 @@ import '/src/codes/geom.dart';
 import '/src/coordinates/base.dart';
 import '/src/coordinates/geographic.dart';
 import '/src/coordinates/projected.dart';
-import '/src/vector/encode/base.dart';
 
-/// A function that is capable of writing a geometry to [writer].
-typedef WriteGeometries = void Function(GeometryWriter writer);
+/// A function that is capable of writing a geometry to [output].
+typedef WriteGeometries = void Function(GeometryContent output);
 
-/// An interface to write geometry objects into some content format.
-mixin GeometryWriter implements BaseWriter {
+/// An interface to write geometry objects to a geospatial content receiver.
+/// 
+/// A receiver could be a geospatial data format writer or an object factory.
+mixin GeometryContent {
   /// Writes a geometry of [type] with a position from [coordinates].
   ///
   /// Use [name] to specify a name for a geometry (when applicable).

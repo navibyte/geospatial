@@ -11,8 +11,8 @@ abstract class FeatureWritable {
   /// Default `const` constructor to allow extending this abstract class.
   const FeatureWritable();
 
-  /// Writes this feature object to [writer].
-  void writeTo(FeatureWriter writer);
+  /// Writes this feature object to [output].
+  void writeTo(FeatureContent output);
 
   /// A string representation of this object, with an optional [format] applied.
   ///
@@ -22,7 +22,7 @@ abstract class FeatureWritable {
   String toStringAs({FeatureFormat? format, int? decimals}) {
     final f = format ?? GeoJSON();
     final writer = f.featuresToText(decimals: decimals);
-    writeTo(writer);
+    writeTo(writer.output);
     return writer.toString();
   }
 }

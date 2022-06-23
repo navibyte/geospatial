@@ -161,8 +161,8 @@ abstract class Bounds<T extends Point> extends Bounded
     return buf.toString();
   }
 
-  /// Writes this bounds object to [writer].
-  void writeTo(CoordinateWriter writer) => writer.box(this);
+  /// Writes this bounds object to [output].
+  void writeTo(CoordinateContent output) => output.box(this);
 
   /// Returns new bounds transformed from this bounds using [transform].
   @override

@@ -7,15 +7,18 @@
 import '/src/coordinates/base.dart';
 import '/src/coordinates/geographic.dart';
 import '/src/coordinates/projected.dart';
-import '/src/vector/encode/base.dart';
-import '/src/vector/encode/geometry.dart';
 
-/// A function that is capable of writing features to [writer].
-typedef WriteFeatures = void Function(FeatureWriter writer);
+import 'geometry_content.dart';
+import 'property_content.dart';
 
-/// An interface to write features into some content format.
-mixin FeatureWriter implements BaseWriter {
-  /// Writes a feature collection with [features].
+/// A function that is capable of writing features to [output].
+typedef WriteFeatures = void Function(FeatureContent output);
+
+/// An interface to write features to a geospatial content receiver.
+/// 
+/// A receiver could be a geospatial data format writer or an object factory.
+mixin FeatureContent  {
+  /// Writes a feature collection represented by [features].
   ///
   /// An optional expected [count], when given, hints the count of features.
   ///
@@ -29,12 +32,12 @@ mixin FeatureWriter implements BaseWriter {
   ///
   /// An example:
   /// ```dart
-  ///   writer.featureCollection(
+  ///   content.featureCollection(
   ///       count: 2,
-  ///       features: (fw) => fw
+  ///       features: (feat) => feat
   ///           ..feature(
   ///               id: '1',
-  ///               geometries: (gw) => gw.geometry(
+  ///               geometries: (geom) => geom.geometry(
   ///                  type: Geom.point,
   ///                  coordinates: const Position(x: 10.123, y: 20.25),
   ///               ),
@@ -57,12 +60,12 @@ mixin FeatureWriter implements BaseWriter {
     WriteProperties? extra,
   });
 
-  /// Writes a feature with [id], [geometries] and [properties].
+  /// Writes a feature represented by [id], [geometries] and [properties].
   ///
   /// The [id], when non-null, should be either a string or an integer number.
   ///
   /// At least one geometry using [geometries] should be written using methods
-  /// defined by [GeometryWriter]. When there are more than one geometry, it's
+  /// defined by [GeometryContent]. When there are more than one geometry, it's
   /// recommended to use the `name` argument when writing those.
   ///
   /// An optional [bbox] can used set a minimum bounding box for a feature
@@ -76,9 +79,9 @@ mixin FeatureWriter implements BaseWriter {
   ///
   /// An example:
   /// ```dart
-  ///   writer.feature(
+  ///   content.feature(
   ///       id: '1',
-  ///       geometries: (gw) => gw.geometry(
+  ///       geometries: (geom) => geom.geometry(
   ///          type: Geom.point,
   ///          coordinates: const Position(x: 10.123, y: 20.25),
   ///       ),

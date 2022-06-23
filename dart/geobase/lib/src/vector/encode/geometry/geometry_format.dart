@@ -4,8 +4,9 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/vector/encode/coordinates.dart';
-import '/src/vector/encode/geometry.dart';
+import '/src/vector/content/coordinates_content.dart';
+import '/src/vector/content/geometry_content.dart';
+import '/src/vector/encode/base.dart';
 
 /// An interface specifying methods to format geometry objects.
 abstract class GeometryFormat {
@@ -19,7 +20,10 @@ abstract class GeometryFormat {
   /// After writing some objects with coordinate data into a writer, the string
   /// representation can be accessed using `toString()` of it (or via [buffer]
   /// when such is given).
-  CoordinateWriter coordinatesToText({StringSink? buffer, int? decimals});
+  ContentWriter<CoordinateContent> coordinatesToText({
+    StringSink? buffer,
+    int? decimals,
+  });
 
   /// Returns a writer formatting string representations of geometry objects.
   ///
@@ -31,5 +35,8 @@ abstract class GeometryFormat {
   /// After writing some objects with coordinate data into a writer, the string
   /// representation can be accessed using `toString()` of it (or via [buffer]
   /// when such is given).
-  GeometryWriter geometriesToText({StringSink? buffer, int? decimals});
+  ContentWriter<GeometryContent> geometriesToText({
+    StringSink? buffer,
+    int? decimals,
+  });
 }

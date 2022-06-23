@@ -68,15 +68,15 @@ abstract class Geometry extends Bounded {
     CreatePosition<R>? to,
   });
 
-  /// Writes this geometry object to [writer].
-  void writeTo(GeometryWriter writer);
+  /// Writes this geometry object to [output].
+  void writeTo(GeometryContent output);
 
   /// A string representation of this geometry, with [format] applied.
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
   String toStringAs({GeometryFormat format = defaultFormat, int? decimals}) {
     final writer = format.geometriesToText(decimals: decimals);
-    writeTo(writer);
+    writeTo(writer.output);
     return writer.toString();
   }
 }
@@ -109,7 +109,7 @@ class _EmptyGeometry extends Geometry {
   Point? get onePoint => null;
 
   @override
-  void writeTo(GeometryWriter writer) => writer.emptyGeometry(typeGeom);
+  void writeTo(GeometryContent output) => output.emptyGeometry(typeGeom);
 
   @override
   Geometry transform(TransformPosition transform) => this;

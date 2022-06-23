@@ -5,7 +5,8 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import '/src/utils/format_geojson_wkt.dart';
-import '/src/vector/encode/coordinates.dart';
+import '/src/vector/content.dart';
+import '/src/vector/encode/base.dart';
 import '/src/vector/encode/geometry.dart';
 
 /// The WKT format for geometries (implements [GeometryFormat]).
@@ -46,10 +47,16 @@ class WKT implements GeometryFormat {
   WKT();
 
   @override
-  CoordinateWriter coordinatesToText({StringSink? buffer, int? decimals}) =>
+  ContentWriter<CoordinateContent> coordinatesToText({
+    StringSink? buffer,
+    int? decimals,
+  }) =>
       WktTextWriter(buffer: buffer, decimals: decimals);
 
   @override
-  GeometryWriter geometriesToText({StringSink? buffer, int? decimals}) =>
+  ContentWriter<GeometryContent> geometriesToText({
+    StringSink? buffer,
+    int? decimals,
+  }) =>
       WktTextWriter(buffer: buffer, decimals: decimals);
 }

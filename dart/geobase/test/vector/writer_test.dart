@@ -14,32 +14,32 @@ import 'package:test/test.dart';
 void main() {
   group('Test geometry, coordinate and bounds writers', () {
     test('Position coordinates', () {
-      _testAllWriters<CoordinateWriter>(
-        (writer) => writer.position(const Projected(x: 10.123, y: 20.25)),
+      _testAllWriters<CoordinateContent>(
+        (output) => output.position(const Projected(x: 10.123, y: 20.25)),
         def: '10.123,20.25',
         geoJson: '10.123,20.25',
         wktLike: '10.123 20.25',
         wkt: '10.123 20.25',
       );
-      _testAllWriters<CoordinateWriter>(
-        (writer) =>
-            writer.position(const Projected(x: 10.123, y: 20.25, z: -30.95)),
+      _testAllWriters<CoordinateContent>(
+        (output) =>
+            output.position(const Projected(x: 10.123, y: 20.25, z: -30.95)),
         def: '10.123,20.25,-30.95',
         geoJson: '10.123,20.25,-30.95',
         wktLike: '10.123 20.25 -30.95',
         wkt: '10.123 20.25 -30.95',
       );
-      _testAllWriters<CoordinateWriter>(
-        (writer) =>
-            writer.position(const Projected(x: 10.123, y: 20.25, m: -1.999)),
+      _testAllWriters<CoordinateContent>(
+        (output) =>
+            output.position(const Projected(x: 10.123, y: 20.25, m: -1.999)),
         def: '10.123,20.25,0,-1.999',
         geoJson: '10.123,20.25,0,-1.999',
         geoJsonStrict: '10.123,20.25',
         wktLike: '10.123 20.25 0 -1.999',
         wkt: '10.123 20.25 0 -1.999',
       );
-      _testAllWriters<CoordinateWriter>(
-        (writer) => writer.position(
+      _testAllWriters<CoordinateContent>(
+        (output) => output.position(
           const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
         ),
         def: '10.1,20.3,-30.9,-2.0',
@@ -54,8 +54,8 @@ void main() {
       );
     });
     test('GeoPosition coordinates', () {
-      _testAllWriters<CoordinateWriter>(
-        (writer) => writer.position(
+      _testAllWriters<CoordinateContent>(
+        (output) => output.position(
           const Geographic(lon: 10.123, lat: 20.25, elev: -30.95, m: -1.999),
         ),
         def: '10.1,20.3,-30.9,-2.0',
@@ -70,8 +70,8 @@ void main() {
       );
     });
     test('Box coordinates', () {
-      _testAllWriters<CoordinateWriter>(
-        (writer) => writer.box(
+      _testAllWriters<CoordinateContent>(
+        (output) => output.box(
           const ProjBox(
             minX: 10.123,
             minY: 20.25,
@@ -85,8 +85,8 @@ void main() {
         wkt: 'POLYGON((10.123 20.25,12.485 20.25,12.485 25.195,10.123 '
             '25.195,10.123 20.25))',
       );
-      _testAllWriters<CoordinateWriter>(
-        (writer) => writer.box(
+      _testAllWriters<CoordinateContent>(
+        (output) => output.box(
           const ProjBox(
             minX: 10.123,
             minY: 20.25,
@@ -108,8 +108,8 @@ void main() {
       );
     });
     test('GeoBox coordinates', () {
-      _testAllWriters<CoordinateWriter>(
-        (writer) => writer.box(
+      _testAllWriters<CoordinateContent>(
+        (output) => output.box(
           const GeoBox(
             west: 10.123,
             south: 20.25,
@@ -131,8 +131,8 @@ void main() {
       );
     });
     test('PointSeries coordinates', () {
-      _testAllWriters<CoordinateWriter>(
-        (writer) => writer.positions1D([
+      _testAllWriters<CoordinateContent>(
+        (output) => output.positions1D([
           const Projected(x: 10.123, y: 20.25),
           const Projected(x: 10.123, y: 20.25, z: -30.95),
           const Projected(x: 10.123, y: 20.25, m: -1.999),
@@ -143,8 +143,8 @@ void main() {
         wktLike: '10.123 20.25,10.123 20.25 -30.95,10.123 20.25 0 -1.999',
         wkt: '10.123 20.25,10.123 20.25 -30.95,10.123 20.25 0 -1.999',
       );
-      _testAllWriters<CoordinateWriter>(
-        (writer) => writer.positions1D([
+      _testAllWriters<CoordinateContent>(
+        (output) => output.positions1D([
           const Projected(x: 10.123, y: 20.25),
           const Projected(x: 10.123, y: 20.25, m: -1.999),
           const Projected(x: 10.123, y: 20.25, z: -30.95),
@@ -155,8 +155,8 @@ void main() {
         wktLike: '10.123 20.25,10.123 20.25 0 -1.999,10.123 20.25 -30.95',
         wkt: '10.123 20.25,10.123 20.25 0 -1.999,10.123 20.25 -30.95',
       );
-      _testAllWriters<CoordinateWriter>(
-        (writer) => writer.positions1D([
+      _testAllWriters<CoordinateContent>(
+        (output) => output.positions1D([
           const Projected(x: 10.123, y: 20.25),
           const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
           const Projected(x: 10.123, y: 20.25),
@@ -167,8 +167,8 @@ void main() {
         wktLike: '10.123 20.25,10.123 20.25 -30.95 -1.999,10.123 20.25',
         wkt: '10.123 20.25,10.123 20.25 -30.95 -1.999,10.123 20.25',
       );
-      _testAllWriters<CoordinateWriter>(
-        (writer) => writer.positions1D([
+      _testAllWriters<CoordinateContent>(
+        (output) => output.positions1D([
           const Projected(x: 10, y: 20),
           const Projected(x: 11, y: 21, z: -30.95, m: -1.1),
           const Projected(x: 12, y: 22, m: 2.2),
@@ -182,8 +182,8 @@ void main() {
       );
     });
     test('Point geometry', () {
-      _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometryWithPosition(
+      _testAllWriters<GeometryContent>(
+        (output) => output.geometryWithPosition(
           type: Geom.point,
           coordinates: const Projected(x: 10.123, y: 20.25),
         ),
@@ -192,8 +192,8 @@ void main() {
         wktLike: '10.123 20.25',
         wkt: 'POINT(10.123 20.25)',
       );
-      _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometryWithPosition(
+      _testAllWriters<GeometryContent>(
+        (output) => output.geometryWithPosition(
           type: Geom.point,
           coordinates: const Projected(x: 10.123, y: 20.25, z: -30.95),
         ),
@@ -202,8 +202,8 @@ void main() {
         wktLike: '10.123 20.25 -30.95',
         wkt: 'POINT(10.123 20.25 -30.95)',
       );
-      _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometryWithPosition(
+      _testAllWriters<GeometryContent>(
+        (output) => output.geometryWithPosition(
           type: Geom.point,
           coordinates: const Projected(x: 10.123, y: 20.25, m: -1.999),
         ),
@@ -213,8 +213,8 @@ void main() {
         wktLike: '10.123 20.25 0 -1.999',
         wkt: 'POINT(10.123 20.25 0 -1.999)',
       );
-      _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometryWithPosition(
+      _testAllWriters<GeometryContent>(
+        (output) => output.geometryWithPosition(
           type: Geom.point,
           coordinates:
               const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
@@ -225,8 +225,8 @@ void main() {
         wktLike: '10.123 20.25 -30.95 -1.999',
         wkt: 'POINT(10.123 20.25 -30.95 -1.999)',
       );
-      _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometryWithPosition(
+      _testAllWriters<GeometryContent>(
+        (output) => output.geometryWithPosition(
           type: Geom.point,
           coordinates: const Projected(x: 10.123, y: 20.25, z: -30.95),
           coordType: Coords.xyz,
@@ -236,8 +236,8 @@ void main() {
         wktLike: '10.123 20.25 -30.95',
         wkt: 'POINT Z(10.123 20.25 -30.95)',
       );
-      _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometryWithPosition(
+      _testAllWriters<GeometryContent>(
+        (output) => output.geometryWithPosition(
           type: Geom.point,
           coordinates:
               const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
@@ -248,8 +248,8 @@ void main() {
         wktLike: '10.123 20.25 -30.95',
         wkt: 'POINT Z(10.123 20.25 -30.95)',
       );
-      _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometryWithPosition(
+      _testAllWriters<GeometryContent>(
+        (output) => output.geometryWithPosition(
           type: Geom.point,
           coordinates: const Projected(x: 10.123, y: 20.25, z: -30.95),
           coordType: Coords.xy,
@@ -259,8 +259,8 @@ void main() {
         wktLike: '10.123 20.25',
         wkt: 'POINT(10.123 20.25)',
       );
-      _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometryWithPosition(
+      _testAllWriters<GeometryContent>(
+        (output) => output.geometryWithPosition(
           type: Geom.point,
           coordinates: const Projected(x: 10.123, y: 20.25),
           coordType: Coords.xyz,
@@ -270,8 +270,8 @@ void main() {
         wktLike: '10.123 20.25 0',
         wkt: 'POINT Z(10.123 20.25 0)',
       );
-      _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometryWithPosition(
+      _testAllWriters<GeometryContent>(
+        (output) => output.geometryWithPosition(
           type: Geom.point,
           coordinates:
               const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
@@ -283,8 +283,8 @@ void main() {
         wktLike: '10.123 20.25 -1.999',
         wkt: 'POINT M(10.123 20.25 -1.999)',
       );
-      _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometryWithPosition(
+      _testAllWriters<GeometryContent>(
+        (output) => output.geometryWithPosition(
           type: Geom.point,
           coordinates:
               const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
@@ -296,8 +296,8 @@ void main() {
         wktLike: '10.123 20.25 -30.95 -1.999',
         wkt: 'POINT ZM(10.123 20.25 -30.95 -1.999)',
       );
-      _testAllWriters<GeometryWriter>(
-        (writer) => writer.emptyGeometry(Geom.point),
+      _testAllWriters<GeometryContent>(
+        (output) => output.emptyGeometry(Geom.point),
         def: '',
         geoJson: '{"type":"Point","coordinates":[]}',
         wktLike: '',
@@ -305,8 +305,8 @@ void main() {
       );
     });
     test('MultiPoint geometry', () {
-      _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometryWithPositions1D(
+      _testAllWriters<GeometryContent>(
+        (output) => output.geometryWithPositions1D(
           type: Geom.multiPoint,
           coordinates: [
             const Projected(x: 10.123, y: 20.25),
@@ -321,8 +321,8 @@ void main() {
       );
     });
     test('LineString geometry', () {
-      _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometryWithPositions1D(
+      _testAllWriters<GeometryContent>(
+        (output) => output.geometryWithPositions1D(
           type: Geom.lineString,
           bbox: const ProjBox(minX: -1.1, minY: -3.49, maxX: 3.5, maxY: -1.1),
           coordinates: [
@@ -338,8 +338,8 @@ void main() {
         wktLike: '-1.1 -1.1,2.1 -2.5,3.5 -3.49',
         wkt: 'LINESTRING(-1.1 -1.1,2.1 -2.5,3.5 -3.49)',
       );
-      _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometryWithPositions1D(
+      _testAllWriters<GeometryContent>(
+        (output) => output.geometryWithPositions1D(
           type: Geom.lineString,
           coordType: Coords.xym,
           bbox: const ProjBox(
@@ -368,8 +368,8 @@ void main() {
         wktLike: '-1.1 -1.1 0,2.1 -2.5 4.99,3.5 -3.49 0',
         wkt: 'LINESTRING M(-1.1 -1.1 0,2.1 -2.5 4.99,3.5 -3.49 0)',
       );
-      _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometryWithPositions1D(
+      _testAllWriters<GeometryContent>(
+        (output) => output.geometryWithPositions1D(
           type: Geom.lineString,
           coordType: Coords.xyzm,
           bbox: const ProjBox(
@@ -402,8 +402,8 @@ void main() {
       );
     });
     test('MultiLineString geometry', () {
-      _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometryWithPositions2D(
+      _testAllWriters<GeometryContent>(
+        (output) => output.geometryWithPositions2D(
           type: Geom.multiLineString,
           coordinates: [
             [
@@ -426,8 +426,8 @@ void main() {
       );
     });
     test('Polygon geometry', () {
-      _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometryWithPositions2D(
+      _testAllWriters<GeometryContent>(
+        (output) => output.geometryWithPositions2D(
           type: Geom.polygon,
           coordinates: [
             [
@@ -446,8 +446,8 @@ void main() {
       );
     });
     test('MultiPolygon geometry', () {
-      _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometryWithPositions3D(
+      _testAllWriters<GeometryContent>(
+        (output) => output.geometryWithPositions3D(
           type: Geom.multiPolygon,
           coordinates: [
             [
@@ -468,9 +468,9 @@ void main() {
       );
     });
     test('GeometryCollection geometry', () {
-      _testAllWriters<GeometryWriter>(
-        (writer) => writer.geometryCollection(
-          geometries: (gw) => gw
+      _testAllWriters<GeometryContent>(
+        (output) => output.geometryCollection(
+          geometries: (geom) => geom
             ..geometryWithPosition(
               type: Geom.point,
               coordinates: const Projected(x: 10.123, y: 20.25, z: -30.95),
@@ -501,8 +501,8 @@ void main() {
 
   group('Test feature writers', () {
     test('Feature', () {
-      _testGeoJsonWriters<FeatureWriter>(
-        (writer) => writer.feature(
+      _testGeoJsonWriters<FeatureContent>(
+        (output) => output.feature(
           id: 'fid-1',
           bbox: const ProjBox(
             minX: -1.1,
@@ -514,7 +514,7 @@ void main() {
             maxZ: 0,
             maxM: 4.99,
           ),
-          geometries: (gw) => gw.geometryWithPositions1D(
+          geometries: (geom) => geom.geometryWithPositions1D(
             type: Geom.lineString,
             coordType: Coords.xyzm,
             coordinates: [
@@ -532,10 +532,10 @@ void main() {
         geoJsonStrict:
             '{"type":"Feature","id":"fid-1","bbox":[-1.1,-3.49,-0.5,3.5,-1.1,0],"geometry":{"type":"LineString","coordinates":[[-1.1,-1.1,0],[2.1,-2.5,0],[3.5,-3.49,-0.5]]},"properties":{"prop":1}}',
       );
-      _testGeoJsonWriters<FeatureWriter>(
-        (writer) => writer.feature(
+      _testGeoJsonWriters<FeatureContent>(
+        (output) => output.feature(
           id: 'fid-1',
-          geometries: (gw) => gw.geometryWithPosition(
+          geometries: (geom) => geom.geometryWithPosition(
             type: Geom.point,
             coordinates: const Projected(x: 10.123, y: 20.25),
           ),
@@ -549,9 +549,9 @@ void main() {
             '"coordinates":[10.123,20.25]},"properties":{"foo":100,"bar":'
             '"this is property value","baz":true}}',
       );
-      _testGeoJsonWriters<FeatureWriter>(
-        (writer) => writer.feature(
-          geometries: (gw) => gw.geometryWithPosition(
+      _testGeoJsonWriters<FeatureContent>(
+        (output) => output.feature(
+          geometries: (geom) => geom.geometryWithPosition(
             type: Geom.point,
             coordinates: const Projected(x: 10.123, y: 20.25),
           ),
@@ -566,10 +566,10 @@ void main() {
             '"coordinates":[10.123,20.25]},"properties":{"foo":{'
             '"bar":"this is property value","baz":[true,false]}}}',
       );
-      _testGeoJsonWriters<FeatureWriter>(
-        (writer) => writer.feature(
-          geometries: (gw) {
-            gw
+      _testGeoJsonWriters<FeatureContent>(
+        (output) => output.feature(
+          geometries: (geom) {
+            geom
               ..geometryWithPosition(
                 type: Geom.point,
                 coordinates: const Projected(x: 10.123, y: 20.25),
@@ -580,7 +580,7 @@ void main() {
                 coordinates: const Projected(x: 1, y: 2, z: 3, m: 4),
               );
           },
-          extra: (pw) => pw.properties('extra', {
+          extra: (props) => props.properties('extra', {
             'foo': {
               'bar': 'this is property value',
               'baz': [true, false],
@@ -598,18 +598,18 @@ void main() {
       );
     });
     test('FeatureCollection', () {
-      _testGeoJsonWriters<FeatureWriter>(
-        (writer) => writer.featureCollection(
+      _testGeoJsonWriters<FeatureContent>(
+        (output) => output.featureCollection(
           bbox: const ProjBox(
             minX: -1.1,
             minY: -3.49,
             maxX: 10.123,
             maxY: 20.25,
           ),
-          features: (fw) => fw
+          features: (feat) => feat
             ..feature(
               id: 'fid-1',
-              geometries: (gw) => gw.geometryWithPosition(
+              geometries: (geom) => geom.geometryWithPosition(
                 type: Geom.point,
                 coordinates: const Projected(x: 10.123, y: 20.25),
               ),
@@ -619,7 +619,7 @@ void main() {
               },
             )
             ..feature(
-              geometries: (gw) => gw.geometryWithPositions1D(
+              geometries: (geom) => geom.geometryWithPositions1D(
                 type: Geom.lineString,
                 bbox: const ProjBox(
                   minX: -1.1,
@@ -638,43 +638,43 @@ void main() {
         geoJson:
             '{"type":"FeatureCollection","bbox":[-1.1,-3.49,10.123,20.25],"features":[{"type":"Feature","id":"fid-1","geometry":{"type":"Point","coordinates":[10.123,20.25]},"properties":{"foo":100,"bar":"this is property value"}},{"type":"Feature","geometry":{"type":"LineString","bbox":[-1.1,-3.49,3.5,-1.1],"coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]},"properties":{}}]}',
       );
-      _testGeoJsonWriters<FeatureWriter>(
-        (writer) => writer.featureCollection(features: (fw) {}),
+      _testGeoJsonWriters<FeatureContent>(
+        (output) => output.featureCollection(features: (feat) {}),
         geoJson: '{"type":"FeatureCollection","features":[]}',
       );
-      _testGeoJsonWriters<FeatureWriter>(
-        (writer) => writer.featureCollection(
-          features: (fw) {},
-          extra: (pw) => pw.property('prop1', 'value1'),
+      _testGeoJsonWriters<FeatureContent>(
+        (output) => output.featureCollection(
+          features: (feat) {},
+          extra: (props) => props.property('prop1', 'value1'),
         ),
         geoJson: '{"type":"FeatureCollection","features":[],"prop1":"value1"}',
         geoJsonStrict: '{"type":"FeatureCollection","features":[]}',
       );
-      _testGeoJsonWriters<FeatureWriter>(
-        (writer) => writer.featureCollection(
-          features: (fw) {},
-          extra: (pw) => pw.properties('map1', {'prop1': 'value1'}),
+      _testGeoJsonWriters<FeatureContent>(
+        (output) => output.featureCollection(
+          features: (feat) {},
+          extra: (props) => props.properties('map1', {'prop1': 'value1'}),
         ),
         geoJson: '{"type":"FeatureCollection",'
             '"features":[],"map1":{"prop1":"value1"}}',
         geoJsonStrict: '{"type":"FeatureCollection","features":[]}',
       );
-      _testGeoJsonWriters<FeatureWriter>(
-        (writer) => writer.featureCollection(
-          features: (fw) => fw.featureCollection(features: (fw) {}),
+      _testGeoJsonWriters<FeatureContent>(
+        (output) => output.featureCollection(
+          features: (feat) => feat.featureCollection(features: (fw) {}),
         ),
         geoJson: '{"type":"FeatureCollection","features":[]}',
       );
-      _testGeoJsonWriters<FeatureWriter>(
-        (writer) => writer.featureCollection(
-          features: (fw) => fw.feature(),
+      _testGeoJsonWriters<FeatureContent>(
+        (output) => output.featureCollection(
+          features: (feat) => feat.feature(),
         ),
         geoJson: '{"type":"FeatureCollection","features":'
             '[{"type":"Feature","properties":{}}]}',
       );
-      _testGeoJsonWriters<FeatureWriter>(
-        (writer) => writer.featureCollection(
-          features: (fw) => fw
+      _testGeoJsonWriters<FeatureContent>(
+        (output) => output.featureCollection(
+          features: (feat) => feat
             ..feature()
             ..feature(),
         ),
@@ -682,12 +682,12 @@ void main() {
             '[{"type":"Feature","properties":{}},'
             '{"type":"Feature","properties":{}}]}',
       );
-      _testGeoJsonWriters<FeatureWriter>(
-        (writer) => writer.featureCollection(
-          features: (fw) => fw
-            ..feature(extra: (pw) => pw.property('prop1', 'value1'))
+      _testGeoJsonWriters<FeatureContent>(
+        (output) => output.featureCollection(
+          features: (feat) => feat
+            ..feature(extra: (props) => props.property('prop1', 'value1'))
             ..feature(
-              extra: (pw) => pw.properties('map1', {'prop1': 'value1'}),
+              extra: (props) => props.properties('map1', {'prop1': 'value1'}),
             ),
         ),
         geoJson: '{"type":"FeatureCollection","features":'
@@ -697,19 +697,19 @@ void main() {
             '[{"type":"Feature","properties":{}},'
             '{"type":"Feature","properties":{}}]}',
       );
-      _testGeoJsonWriters<FeatureWriter>(
-        (writer) => writer.featureCollection(
+      _testGeoJsonWriters<FeatureContent>(
+        (output) => output.featureCollection(
           count: 2,
-          features: (fw) => fw
+          features: (feat) => feat
             ..feature(
               id: 1,
               properties: {'test1': 3},
-              extra: (pw) => pw.property('p1', BigInt.one),
+              extra: (props) => props.property('p1', BigInt.one),
             )
             ..feature(
               id: '2',
               properties: {},
-              extra: (pw) => pw.properties('map1', {'p2': 2}),
+              extra: (props) => props.properties('map1', {'p2': 2}),
             ),
         ),
         geoJson: '{"type":"FeatureCollection","features":'
@@ -719,12 +719,12 @@ void main() {
             '[{"type":"Feature","id":1,"properties":{"test1":3}},'
             '{"type":"Feature","id":"2","properties":{}}]}',
       );
-      _testGeoJsonWriters<FeatureWriter>(
-        (writer) => writer.featureCollection(
+      _testGeoJsonWriters<FeatureContent>(
+        (output) => output.featureCollection(
           count: 2,
-          features: (fw) => fw
+          features: (feat) => feat
             ..feature(
-              geometries: (gw) => gw.geometryWithPosition(
+              geometries: (geom) => geom.geometryWithPosition(
                 type: Geom.point,
                 coordinates: const Projected(x: 1, y: 2),
               ),
@@ -732,7 +732,7 @@ void main() {
             )
             ..feature(
               id: '2',
-              geometries: (gw) => gw.emptyGeometry(Geom.point),
+              geometries: (geom) => geom.emptyGeometry(Geom.point),
               properties: {},
             ),
         ),
@@ -745,8 +745,8 @@ void main() {
   });
 }
 
-void _testAllWriters<T extends BaseWriter>(
-  void Function(T writer) content, {
+void _testAllWriters<T>(
+  void Function(T output) content, {
   required String def,
   required String geoJson,
   String? geoJsonStrict,
@@ -789,8 +789,8 @@ void _testAllWriters<T extends BaseWriter>(
   );
 }
 
-void _testGeoJsonWriters<T extends BaseWriter>(
-  void Function(T writer) content, {
+void _testGeoJsonWriters<T>(
+  void Function(T output) content, {
   required String geoJson,
   String? geoJsonStrict,
   int? decimals,
@@ -809,32 +809,33 @@ void _testGeoJsonWriters<T extends BaseWriter>(
   );
 }
 
-void _testWriterOfGeometryFormat<T extends BaseWriter>(
+void _testWriterOfGeometryFormat<T>(
   GeometryFormat format,
-  void Function(T writer) content, {
+  void Function(T output) content, {
   required String expected,
   int? decimals,
 }) {
-  final T writer;
-  if (T == CoordinateWriter) {
-    writer = format.coordinatesToText(decimals: decimals) as T;
+  if (T == CoordinateContent) {
+    final writer = format.coordinatesToText(decimals: decimals);
+    content(writer.output as T);
+    expect(writer.toString(), expected);
   } else {
-    assert(T == GeometryWriter, 'expecting geometry writer');
-    writer = format.geometriesToText(decimals: decimals) as T;
+    assert(T == GeometryContent, 'expecting geometry writer');
+    final writer = format.geometriesToText(decimals: decimals);
+    content(writer.output as T);
+    expect(writer.toString(), expected);
   }
-  content(writer);
-  expect(writer.toString(), expected);
 }
 
-void _testWriterOfFeatureFormat<T extends BaseWriter>(
+void _testWriterOfFeatureFormat<T>(
   FeatureFormat format,
-  void Function(T writer) content, {
+  void Function(T output) content, {
   required String expected,
   int? decimals,
 }) {
-  if (T == FeatureWriter) {
-    final writer = format.featuresToText(decimals: decimals) as T;
-    content(writer);
+  if (T == FeatureContent) {
+    final writer = format.featuresToText(decimals: decimals);
+    content(writer.output as T);
     expect(writer.toString(), expected);
   } else {
     _testWriterOfGeometryFormat(

@@ -7,23 +7,24 @@
 import '/src/coordinates/base.dart';
 import '/src/coordinates/geographic.dart';
 import '/src/coordinates/projected.dart';
-import '/src/vector/encode/base.dart';
 
-/// An interface to write objects with coordinate data into some content format.
-mixin CoordinateWriter implements BaseWriter {
-  /// Writes a bounding box from [bbox].
+/// An interface to write coordinate data to a geospatial content receiver.
+/// 
+/// A receiver could be a geospatial data format writer or an object factory.
+mixin CoordinateContent {
+  /// Writes a bounding box represented by [bbox].
   ///
   /// Known [Box] sub classes are [ProjBox] (projected or cartesian coordinates)
   /// and [GeoBox] (geographic coordinates).
   void box(Box bbox);
 
-  /// Writes a position from [coordinates].
+  /// Writes a position represented by [coordinates].
   ///
   /// Known [Position] sub classes are [Projected] (projected or cartesian
   /// coordinates) and [Geographic] (geographic coordinates).
   void position(Position coordinates);
 
-  /// Writes a position array from [coordinates].
+  /// Writes a position array represented by [coordinates].
   ///
   /// The [coordinates] array is a 1-dimensional iterable.
   ///
@@ -31,7 +32,7 @@ mixin CoordinateWriter implements BaseWriter {
   /// coordinates) and [Geographic] (geographic coordinates).
   void positions1D(Iterable<Position> coordinates);
 
-  /// Writes a position array from [coordinates].
+  /// Writes a position array represented by [coordinates].
   ///
   /// The [coordinates] array is a 2-dimensional iterable.
   ///
@@ -39,7 +40,7 @@ mixin CoordinateWriter implements BaseWriter {
   /// coordinates) and [Geographic] (geographic coordinates).
   void positions2D(Iterable<Iterable<Position>> coordinates);
 
-  /// Writes a position array from [coordinates].
+  /// Writes a position array represented by [coordinates].
   ///
   /// The [coordinates] array is a 3-dimensional iterable.
   ///

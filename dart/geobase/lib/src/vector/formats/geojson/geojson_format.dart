@@ -5,7 +5,8 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import '/src/utils/format_geojson_wkt.dart';
-import '/src/vector/encode/coordinates.dart';
+import '/src/vector/content.dart';
+import '/src/vector/encode/base.dart';
 import '/src/vector/encode/features.dart';
 import '/src/vector/encode/geometry.dart';
 
@@ -83,7 +84,7 @@ class GeoJSON with FeatureFormat {
   ///    and meaning of additional elements is beyond the scope of this
   ///    specification, and additional elements MAY be ignored by parsers."
   ///
-  /// This implementation allows printing M coordinates, when available on 
+  /// This implementation allows printing M coordinates, when available on
   /// source data. Such M coordinate values are always formatted as "fourth
   /// element.". However, it's possible that other implementations cannot read
   /// them:
@@ -108,7 +109,10 @@ class GeoJSON with FeatureFormat {
   final bool _ignoreForeignMembers;
 
   @override
-  CoordinateWriter coordinatesToText({StringSink? buffer, int? decimals}) =>
+  ContentWriter<CoordinateContent> coordinatesToText({
+    StringSink? buffer,
+    int? decimals,
+  }) =>
       GeoJsonTextWriter(
         buffer: buffer,
         decimals: decimals,
@@ -117,7 +121,10 @@ class GeoJSON with FeatureFormat {
       );
 
   @override
-  GeometryWriter geometriesToText({StringSink? buffer, int? decimals}) =>
+  ContentWriter<GeometryContent> geometriesToText({
+    StringSink? buffer,
+    int? decimals,
+  }) =>
       GeoJsonTextWriter(
         buffer: buffer,
         decimals: decimals,
@@ -126,7 +133,10 @@ class GeoJSON with FeatureFormat {
       );
 
   @override
-  FeatureWriter featuresToText({StringSink? buffer, int? decimals}) =>
+  ContentWriter<FeatureContent> featuresToText({
+    StringSink? buffer,
+    int? decimals,
+  }) =>
       GeoJsonTextWriter(
         buffer: buffer,
         decimals: decimals,

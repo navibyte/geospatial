@@ -62,10 +62,10 @@ class GeometryCollection<E extends Geometry> extends Geometry
   List<Object?> get props => [geometries];
 
   @override
-  void writeTo(GeometryWriter writer) {
+  void writeTo(GeometryContent output) {
     // note: no need to inform is3D/hasM of the first point, as sub items on
     // a collection are geometries, and each of them should inform those
-    writer.geometryCollection(
+    output.geometryCollection(
       geometries: (gw) {
         for (final item in geometries) {
           item.writeTo(gw);
@@ -159,9 +159,9 @@ class MultiPoint<E extends Point> extends Geometry with EquatableMixin {
   Iterable<Position> get coordinates => points;
 
   @override
-  void writeTo(GeometryWriter writer) {
+  void writeTo(GeometryContent output) {
     final point = onePoint;
-    writer.geometryWithPositions1D(
+    output.geometryWithPositions1D(
       type: Geom.multiPoint,
       coordinates: coordinates,
       coordType: point?.typeCoords,
@@ -260,9 +260,9 @@ class MultiLineString<T extends Point> extends Geometry with EquatableMixin {
       lineStrings.map<Iterable<Position>>((e) => e.chain);
 
   @override
-  void writeTo(GeometryWriter writer) {
+  void writeTo(GeometryContent output) {
     final point = onePoint;
-    writer.geometryWithPositions2D(
+    output.geometryWithPositions2D(
       type: Geom.multiLineString,
       coordinates: coordinates,
       coordType: point?.typeCoords,
@@ -366,9 +366,9 @@ class MultiPolygon<T extends Point> extends Geometry with EquatableMixin {
       );
 
   @override
-  void writeTo(GeometryWriter writer) {
+  void writeTo(GeometryContent output) {
     final point = onePoint;
-    writer.geometryWithPositions3D(
+    output.geometryWithPositions3D(
       type: Geom.multiPolygon,
       coordinates: coordinates,
       coordType: point?.typeCoords,

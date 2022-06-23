@@ -18,5 +18,6 @@
 library vector;
 
 export 'src/codes/geom.dart';
+export 'src/vector/content.dart';
 export 'src/vector/encode.dart';
 export 'src/vector/formats.dart';

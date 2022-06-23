@@ -443,7 +443,7 @@ void _geoJsonFeatureCollection() {
   // feature writer for GeoJSON
   final writer = format.featuresToText();
 
-  // create feature collection with two features
+  // create a feature collection with two features
   final collection = FeatureCollection(
     bounds: GeoBounds.of(
       min: GeoPoint2(lon: -1.1, lat: -3.49),
@@ -480,9 +480,12 @@ void _geoJsonFeatureCollection() {
     ],
   );
 
-  // write and print GeoJSON
-  collection.writeTo(writer);
-  print(writer.toString());
+  // write the feture collection to the output interface of the writer
+  // (writer.output is FeatureContent)
+  collection.writeTo(writer.output);
+
+  // print GeoJSON text
+  print(writer);
 
   // the previous line prints (however without line breaks):
   //    {"type":"FeatureCollection",

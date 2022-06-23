@@ -4,9 +4,11 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// An interface to write objects into some content format.
-// ignore: one_member_abstracts
-abstract class BaseWriter {
+/// An interface to write content of [T] into some content format.
+abstract class ContentWriter<T extends Object> {
+  /// The content [output] interface that is used by a client to write content.
+  T get output;
+
   /// A string representation of content already written to this (text) writer.
   ///
   /// Must return a valid string representation when this writer is writing to

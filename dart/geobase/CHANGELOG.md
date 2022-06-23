@@ -2,7 +2,11 @@
 
 Development version `0.3.0-dev.0`.
 
+⚠️ Breaking changes:
+- [Rename writers and content interfaces to generalize #127](https://github.com/navibyte/geospatial/issues/127)
+
 🧩 Features:
+- [Combine writers and parsers for formats (GeoJSON, WKT) consistently #125](https://github.com/navibyte/geospatial/issues/125)
 - [Add WKB encoding/decoding support #115](https://github.com/navibyte/geospatial/issues/115)
 
 ## 0.2.1

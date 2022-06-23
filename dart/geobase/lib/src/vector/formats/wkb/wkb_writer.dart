@@ -10,7 +10,7 @@ import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/coordinates/base.dart';
 import '/src/utils/byte_writer.dart';
-import '/src/vector/encode/geometry.dart';
+import '/src/vector/content.dart';
 
 /// Writer [geometries] to a sequence of bytes as specified by WKB format.
 Uint8List writeWkb(WriteGeometries geometries) {
@@ -19,7 +19,7 @@ Uint8List writeWkb(WriteGeometries geometries) {
   return writer.toBytes();
 }
 
-class _WkbGeometryWriter with GeometryWriter {
+class _WkbGeometryWriter with GeometryContent {
   final ByteWriter writer;
   final Coords? forcedTypeCoords;
 
@@ -281,7 +281,7 @@ class _WkbGeometryWriter with GeometryWriter {
 
 // -----------------------------------------------------------------------------
 
-class _GeometryCollector with GeometryWriter {
+class _GeometryCollector with GeometryContent {
   bool hasZ = false;
   bool hasM = false;
   bool hasProjected = false;

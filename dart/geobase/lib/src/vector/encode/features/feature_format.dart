@@ -4,9 +4,9 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import '/src/vector/content/feature_content.dart';
+import '/src/vector/encode/base.dart';
 import '/src/vector/encode/geometry.dart';
-
-import 'feature_writer.dart';
 
 /// An interface for geospatial features (+ geometries and coordinates) format.
 mixin FeatureFormat implements GeometryFormat {
@@ -20,5 +20,8 @@ mixin FeatureFormat implements GeometryFormat {
   /// After writing some objects with coordinate data into a writer, the string
   /// representation can be accessed using `toString()` of it (or via [buffer]
   /// when such is given).
-  FeatureWriter featuresToText({StringSink? buffer, int? decimals});
+  ContentWriter<FeatureContent> featuresToText({
+    StringSink? buffer,
+    int? decimals,
+  });
 }

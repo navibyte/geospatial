@@ -144,7 +144,6 @@ Parsing [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_ge
         'POLYGON ((40 15, 50 50, 15 45, 10 15, 40 15),'
         ' (25 25, 25 40, 35 30, 25 25))',
       );
-
 ```
 
 ## User guide
@@ -655,10 +654,16 @@ All formats mentioned above have following writers:
   /// After writing some objects with coordinate data into a writer, the string
   /// representation can be accessed using `toString()` of it (or via [buffer]
   /// when such is given).
-  CoordinateWriter coordinatesToText({StringSink? buffer, int? decimals});
+  ContentWriter<CoordinateContent> coordinatesToText({
+    StringSink? buffer,
+    int? decimals,
+  });
 
   /// Returns a writer formatting string representations of geometry objects.
-  GeometryWriter geometriesToText({StringSink? buffer, int? decimals});
+  ContentWriter<GeometryContent> geometriesToText({
+    StringSink? buffer,
+    int? decimals,
+  });
 }
 ```
 
@@ -666,13 +671,16 @@ A format object returned by `GeoJSON()` has also the following writer:
 
 ```dart
   /// Returns a writer formatting string representations of feature objects.
-  FeatureWriter featuresToText({StringSink? buffer, int? decimals});
+  ContentWriter<FeatureContent> featuresToText({
+    StringSink? buffer,
+    int? decimals,
+  });
 ```
 
-See `CoordinateWriter`, `GeometryWriter` and `FeatureWriter` for more 
-information how to use those writers.
+See `ContentWriter`, `CoordinateContent`, `GeometryContent` and `FeatureContent`
+for more information. 
 
-Formats and writers are re-exported from the 
+Formats, content interfaces and writers are re-exported from the 
 [geobase](https://pub.dev/packages/geobase) package that also provides more
 documentation.
 
@@ -709,7 +717,7 @@ feature collection, and finally uses a writer to print it as GeoJSON text.
   // feature writer for GeoJSON
   final writer = format.featuresToText();
 
-  // create feature collection with two features
+  // create a feature collection with two features
   final collection = FeatureCollection(
     bounds: GeoBounds.of(
       min: GeoPoint2(lon: -1.1, lat: -3.49),
@@ -746,9 +754,12 @@ feature collection, and finally uses a writer to print it as GeoJSON text.
     ],
   );
 
-  // write and print GeoJSON
-  collection.writeTo(writer);
-  print(writer.toString());
+  // write the feture collection to the output interface of the writer
+  // (writer.output is FeatureContent)
+  collection.writeTo(writer.output);
+
+  // print GeoJSON text
+  print(writer);
 
   // the previous line prints (however without line breaks):
   //    {"type":"FeatureCollection",

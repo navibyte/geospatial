@@ -4,18 +4,18 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'base_writer.dart';
+/// A function that is capable of writing properties to [output].
+typedef WriteProperties = void Function(PropertyContent output);
 
-/// A function that is capable of writing properties to [writer].
-typedef WriteProperties = void Function(PropertyWriter writer);
-
-/// An interface to write properties into some content format.
-mixin PropertyWriter implements BaseWriter {
+/// An interface to write properties to a geospatial content receiver.
+/// 
+/// A receiver could be a geospatial data format writer or an object factory..
+mixin PropertyContent {
   /// Writes a property map named by [name] and with contents in [map].
   ///
   /// An example:
   /// ```dart
-  ///   writer.properties('someProps', {
+  ///  content.properties('someProps', {
   ///             'foo': 100,
   ///             'bar': 'this is property value',
   ///             'baz': true,
@@ -27,9 +27,9 @@ mixin PropertyWriter implements BaseWriter {
   ///
   /// An example:
   /// ```dart
-  ///   writer..property('foo': 100)
-  ///         ..property('bar': 'this is property value')
-  ///         ..property('baz': true);
+  ///   content..property('foo': 100)
+  ///          ..property('bar': 'this is property value')
+  ///          ..property('baz': true);
   /// ```
   void property(String name, Object? value);
 }
