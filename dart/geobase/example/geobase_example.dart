@@ -166,10 +166,7 @@ void _wktPointGeometry() {
 
   // prints:
   //    POINT(10.123 20.25)
-  writer.output.geometryWithPosition(
-    type: Geom.point,
-    coordinates: const Projected(x: 10.123, y: 20.25),
-  );
+  writer.output.point(const Projected(x: 10.123, y: 20.25));
   print(writer);
 }
 
@@ -179,10 +176,9 @@ void _wktPointGeometryWithZ() {
 
   // prints:
   //    POINT Z(10.123 20.25 -30.95)
-  writer.output.geometryWithPosition(
-    type: Geom.point,
+  writer.output.point(
+    const Projected(x: 10.123, y: 20.25, z: -30.95),
     coordType: Coords.xyz,
-    coordinates: const Projected(x: 10.123, y: 20.25, z: -30.95),
   );
   print(writer);
 }
@@ -193,10 +189,9 @@ void _wktPointGeometryWithM() {
 
   // prints:
   //    POINT M(10.123 20.25 -1.999)
-  writer.output.geometryWithPosition(
-    type: Geom.point,
+  writer.output.point(
+    const Projected(x: 10.123, y: 20.25, m: -1.999),
     coordType: Coords.xym,
-    coordinates: const Projected(x: 10.123, y: 20.25, m: -1.999),
   );
   print(writer);
 }
@@ -210,11 +205,9 @@ void _wktPointGeometryWithZM() {
 
   // prints:
   //    POINT ZM(10.123 20.25 -30.95 -1.999)
-  writer.output.geometryWithPosition(
-    type: Geom.point,
+  writer.output.point(
+    const Geographic(lon: 10.123, lat: 20.25, elev: -30.95, m: -1.999),
     coordType: Coords.xyzm,
-    coordinates:
-        const Geographic(lon: 10.123, lat: 20.25, elev: -30.95, m: -1.999),
   );
   print(writer);
 }
@@ -228,10 +221,7 @@ void _geoJsonPointGeometry() {
 
   // prints:
   //    {"type":"Point","coordinates":[10.123,20.25]}
-  writer.output.geometryWithPosition(
-    type: Geom.point,
-    coordinates: const Geographic(lon: 10.123, lat: 20.25),
-  );
+  writer.output.point(const Geographic(lon: 10.123, lat: 20.25));
   print(writer);
 }
 
@@ -241,10 +231,7 @@ void _geoJsonPointGeometryDecimals() {
 
   // prints:
   //    {"type":"Point","coordinates":[10.1,20.3]}
-  writer.output.geometryWithPosition(
-    type: Geom.point,
-    coordinates: const Geographic(lon: 10.123, lat: 20.25),
-  );
+  writer.output.point(const Geographic(lon: 10.123, lat: 20.25));
   print(writer);
 }
 
@@ -255,10 +242,7 @@ void _geoJsonPointGeometryCustomStringBuffer() {
 
   // write both directly to buffer and via geometry writer
   buf.write('{"geometry":');
-  writer.output.geometryWithPosition(
-    type: Geom.point,
-    coordinates: const Geographic(lon: 10.123, lat: 20.25),
-  );
+  writer.output.point(const Geographic(lon: 10.123, lat: 20.25));
   buf.write('}');
 
   // prints:
@@ -277,14 +261,13 @@ void _geoJsonLineStringGeometryWithBbox() {
   //    {"type":"LineString",
   //     "bbox":[-1.1,-3.49,3.5,-1.1],
   //     "coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]}
-  writer.output.geometryWithPositions1D(
-    type: Geom.lineString,
-    bbox: const GeoBox(west: -1.1, south: -3.49, east: 3.5, north: -1.1),
-    coordinates: [
+  writer.output.lineString(
+    [
       const Geographic(lon: -1.1, lat: -1.1),
       const Geographic(lon: 2.1, lat: -2.5),
       const Geographic(lon: 3.5, lat: -3.49),
     ],
+    bbox: const GeoBox(west: -1.1, south: -3.49, east: 3.5, north: -1.1),
   );
   print(writer);
 }
@@ -303,14 +286,12 @@ void _geoJsonGeometryCollection() {
 
   writer.output.geometryCollection(
     geometries: (geom) => geom // geom is GeometryContent
-      ..geometryWithPosition(
-        type: Geom.point,
-        coordinates: const Geographic(lon: 10.123, lat: 20.25, elev: -30.95),
+      ..point(
+        const Geographic(lon: 10.123, lat: 20.25, elev: -30.95),
         coordType: Coords.xyz,
       )
-      ..geometryWithPositions2D(
-        type: Geom.polygon,
-        coordinates: [
+      ..polygon(
+        [
           [
             const Geographic(lon: 10.1, lat: 10.1),
             const Geographic(lon: 5, lat: 9),
@@ -339,10 +320,7 @@ void _geoJsonFeature() {
   //        {"foo":100,"bar":"this is property value","baz":true}}
   writer.output.feature(
     id: 'fid-1',
-    geometries: (geom) => geom.geometryWithPosition(
-      type: Geom.point,
-      coordinates: const Geographic(lon: 10.123, lat: 20.25),
-    ),
+    geometries: (geom) => geom.point(const Geographic(lon: 10.123, lat: 20.25)),
     properties: {
       'foo': 100,
       'bar': 'this is property value',
@@ -379,9 +357,8 @@ void _geoJsonFeatureCollection() {
     features: (feat) => feat // feat is FeatureContent
       ..feature(
         id: 'fid-1',
-        geometries: (geom) => geom.geometryWithPosition(
-          type: Geom.point,
-          coordinates: const Geographic(lon: 10.123, lat: 20.25),
+        geometries: (geom) => geom.point(
+          const Geographic(lon: 10.123, lat: 20.25),
         ),
         properties: {
           'foo': 100,
@@ -389,19 +366,18 @@ void _geoJsonFeatureCollection() {
         },
       )
       ..feature(
-        geometries: (geom) => geom.geometryWithPositions1D(
-          type: Geom.lineString,
+        geometries: (geom) => geom.lineString(
+          [
+            const Geographic(lon: -1.1, lat: -1.1),
+            const Geographic(lon: 2.1, lat: -2.5),
+            const Geographic(lon: 3.5, lat: -3.49),
+          ],
           bbox: const GeoBox(
             west: -1.1,
             south: -3.49,
             east: 3.5,
             north: -1.1,
           ),
-          coordinates: [
-            const Geographic(lon: -1.1, lat: -1.1),
-            const Geographic(lon: 2.1, lat: -2.5),
-            const Geographic(lon: 3.5, lat: -3.49),
-          ],
         ),
       ),
   );

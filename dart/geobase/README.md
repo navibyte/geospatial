@@ -106,10 +106,7 @@ A sample to write a `Point` geometry with a geographic position to
 
   // prints:
   //    {"type":"Point","coordinates":[10.123,20.25]}
-  writer.output.geometryWithPosition(
-    type: Geom.point,
-    coordinates: const Geographic(lon: 10.123, lat: 20.25),
-  );
+  writer.output.point(const Geographic(lon: 10.123, lat: 20.25));
   print(writer);
 ```
 
@@ -533,14 +530,13 @@ A sample to write a `LineString` geometry to GeoJSON:
   //    {"type":"LineString",
   //     "bbox":[-1.1,-3.49,3.5,-1.1],
   //     "coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]}
-  writer.output.geometryWithPositions1D(
-    type: Geom.lineString,
-    bbox: const GeoBox(west: -1.1, south: -3.49, east: 3.5, north: -1.1),
-    coordinates: [
+  writer.output.lineString(
+    [
       const Geographic(lon: -1.1, lat: -1.1),
       const Geographic(lon: 2.1, lat: -2.5),
       const Geographic(lon: 3.5, lat: -3.49),
     ],
+    bbox: const GeoBox(west: -1.1, south: -3.49, east: 3.5, north: -1.1),
   );
   print(writer);
 ```
@@ -563,10 +559,7 @@ A sample to write a `Feature` geometry to GeoJSON:
   //        {"foo":100,"bar":"this is property value","baz":true}}
   writer.output.feature(
     id: 'fid-1',
-    geometries: (geom) => geom.geometryWithPosition(
-      type: Geom.point,
-      coordinates: const Geographic(lon: 10.123, lat: 20.25),
-    ),
+    geometries: (geom) => geom.point(const Geographic(lon: 10.123, lat: 20.25)),
     properties: {
       'foo': 100,
       'bar': 'this is property value',
@@ -595,11 +588,9 @@ A sample to write a `Point` geometry to WKT (with z and m coordinates too):
 
   // prints:
   //    POINT ZM(10.123 20.25 -30.95 -1.999)
-  writer.output.geometryWithPosition(
-    type: Geom.point,
+  writer.output.point(
+    const Geographic(lon: 10.123, lat: 20.25, elev: -30.95, m: -1.999),
     coordType: Coords.xyzm,
-    coordinates:
-        const Geographic(lon: 10.123, lat: 20.25, elev: -30.95, m: -1.999),
   );
   print(writer);
 ```

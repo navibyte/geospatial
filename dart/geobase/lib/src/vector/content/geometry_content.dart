@@ -10,14 +10,17 @@ import '/src/coordinates/base.dart';
 import '/src/coordinates/geographic.dart';
 import '/src/coordinates/projected.dart';
 
+import 'simple_geometry_content.dart';
+
 /// A function that is capable of writing a geometry to [output].
 typedef WriteGeometries = void Function(GeometryContent output);
 
 /// An interface to write geometry objects to a geospatial content receiver.
-/// 
+///
 /// A receiver could be a geospatial data format writer or an object factory.
-mixin GeometryContent {
-  /// Writes a geometry of [type] with a position from [coordinates].
+mixin GeometryContent implements SimpleGeometryContent {
+  ///
+  /// The [coordinates] represents a single position.
   ///
   /// Use [name] to specify a name for a geometry (when applicable).
   ///
@@ -107,26 +110,91 @@ mixin GeometryContent {
     Box? bbox,
   });
 
-  /// Writes a geometry collection of [geometries].
-  ///
-  /// An optional expected [count], when given, hints the count of geometries.
-  ///
-  /// Use [name] to specify a name for a geometry (when applicable).
-  ///
-  /// An optional [bbox] can used set a minimum bounding box for a geometry
-  /// written. A writer implementation may use it or ignore it.
-  ///
-  /// Known [Box] sub classes are [ProjBox] (projected or cartesian coordinates)
-  /// and [GeoBox] (geographic coordinates).
-  void geometryCollection({
-    required WriteGeometries geometries,
-    int? count,
+  @override
+  void point(
+    Position coordinates, {
     String? name,
-    Box? bbox,
-  });
+    Coords? coordType,
+  }) =>
+      geometryWithPosition(
+        type: Geom.point,
+        coordinates: coordinates,
+        name: name,
+        coordType: coordType,
+      );
 
-  /// Writes an empty geometry of [type].
-  ///
-  /// Use [name] to specify a name for a geometry (when applicable).
-  void emptyGeometry(Geom type, {String? name});
+  @override
+  void lineString(
+    Iterable<Position> coordinates, {
+    String? name,
+    Coords? coordType,
+    Box? bbox,
+  }) =>
+      geometryWithPositions1D(
+        type: Geom.lineString,
+        coordinates: coordinates,
+        name: name,
+        coordType: coordType,
+        bbox: bbox,
+      );
+
+  @override
+  void polygon(
+    Iterable<Iterable<Position>> coordinates, {
+    String? name,
+    Coords? coordType,
+    Box? bbox,
+  }) =>
+      geometryWithPositions2D(
+        type: Geom.polygon,
+        coordinates: coordinates,
+        name: name,
+        coordType: coordType,
+        bbox: bbox,
+      );
+
+  @override
+  void multiPoint(
+    Iterable<Position> coordinates, {
+    String? name,
+    Coords? coordType,
+    Box? bbox,
+  }) =>
+      geometryWithPositions1D(
+        type: Geom.multiPoint,
+        coordinates: coordinates,
+        name: name,
+        coordType: coordType,
+        bbox: bbox,
+      );
+
+  @override
+  void multiLineString(
+    Iterable<Iterable<Position>> coordinates, {
+    String? name,
+    Coords? coordType,
+    Box? bbox,
+  }) =>
+      geometryWithPositions2D(
+        type: Geom.multiLineString,
+        coordinates: coordinates,
+        name: name,
+        coordType: coordType,
+        bbox: bbox,
+      );
+
+  @override
+  void multiPolygon(
+    Iterable<Iterable<Iterable<Position>>> coordinates, {
+    String? name,
+    Coords? coordType,
+    Box? bbox,
+  }) =>
+      geometryWithPositions3D(
+        type: Geom.multiPolygon,
+        coordinates: coordinates,
+        name: name,
+        coordType: coordType,
+        bbox: bbox,
+      );
 }

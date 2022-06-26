@@ -69,7 +69,7 @@ abstract class Geometry extends Bounded {
   });
 
   /// Writes this geometry object to [output].
-  void writeTo(GeometryContent output);
+  void writeTo(SimpleGeometryContent output);
 
   /// A string representation of this geometry, with [format] applied.
   ///
@@ -109,7 +109,7 @@ class _EmptyGeometry extends Geometry {
   Point? get onePoint => null;
 
   @override
-  void writeTo(GeometryContent output) => output.emptyGeometry(typeGeom);
+  void writeTo(SimpleGeometryContent output) => output.emptyGeometry(typeGeom);
 
   @override
   Geometry transform(TransformPosition transform) => this;
