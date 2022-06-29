@@ -9,6 +9,7 @@ import 'package:meta/meta.dart';
 import '/src/codes/coords.dart';
 import '/src/coordinates/base.dart';
 import '/src/coordinates/projected.dart';
+import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 
 import 'scalable.dart';
@@ -55,15 +56,32 @@ class Scalable2i implements Scalable, Projected {
 
   /// Creates scalable coordinates from [coords] given in order: zoom, x, y.
   factory Scalable2i.fromCoords(Iterable<num> coords, {int offset = 0}) {
-    final len = coords.length - offset;
-    if (len < 3) {
-      throw const FormatException('Coords must contain at least three items');
+    // resolve iterator for source coordinates
+    final Iterator<num> iter;
+    if (offset == 0) {
+      iter = coords.iterator;
+    } else if (coords.length >= offset + 2) {
+      iter = coords.skip(offset).iterator;
+    } else {
+      throw invalidCoordinates;
     }
-    return Scalable2i(
-      zoom: coords.elementAt(offset).round(),
-      x: coords.elementAt(offset + 1).round(),
-      y: coords.elementAt(offset + 2).round(),
-    );
+
+    // iterate at least to zoom, x and y  => then create position
+    if (iter.moveNext()) {
+      final zoom = iter.current;
+      if (iter.moveNext()) {
+        final x = iter.current;
+        if (iter.moveNext()) {
+          final y = iter.current;
+          return Scalable2i(
+            zoom: zoom.round(),
+            x: x.round(),
+            y: y.round(),
+          );
+        }
+      }
+    }
+    throw invalidCoordinates;
   }
 
   /// Creates scalable coordinates from [text] given in order: zoom, x, y.

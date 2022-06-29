@@ -296,7 +296,7 @@ abstract class _BaseTextWriter<T extends Object>
         }
       }
     }
-    throw illegalCoordinates;
+    throw invalidCoordinates;
   }
 
   void _coordPoint({
@@ -452,7 +452,7 @@ class _DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
         }
       }
     }
-    throw illegalCoordinates;
+    throw invalidCoordinates;
   }
 
   void _printPoint(
@@ -894,7 +894,7 @@ class _WktLikeTextWriter<T extends Object> extends _BaseTextWriter<T> {
         }
       }
     }
-    throw illegalCoordinates;
+    throw invalidCoordinates;
   }
 
   void _printPoint(

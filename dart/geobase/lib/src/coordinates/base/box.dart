@@ -191,7 +191,7 @@ abstract class Box extends Positionable {
     } else if (box is Iterable<num>) {
       return createFromCoords(box, to: to);
     }
-    throw illegalCoordinates;
+    throw invalidCoordinates;
   }
 
   /// Creates a bounding box of [R] from [coords] starting from [offset].
@@ -207,36 +207,61 @@ abstract class Box extends Positionable {
     required CreateBox<R> to,
     int offset = 0,
   }) {
-    final len = coords.length - offset;
-    if (len < 4) {
-      throw const FormatException('Coords must contain at least four items');
+    // resolve iterator for source coordinates
+    final Iterator<num> iter;
+    if (offset == 0) {
+      iter = coords.iterator;
+    } else if (coords.length >= offset + 4) {
+      iter = coords.skip(offset).iterator;
+    } else {
+      throw invalidCoordinates;
     }
-    if (len >= 8) {
-      return to.call(
-        minX: coords.elementAt(offset),
-        minY: coords.elementAt(offset + 1),
-        minZ: coords.elementAt(offset + 2),
-        minM: coords.elementAt(offset + 3),
-        maxX: coords.elementAt(offset + 4),
-        maxY: coords.elementAt(offset + 5),
-        maxZ: coords.elementAt(offset + 6),
-        maxM: coords.elementAt(offset + 7),
-      );
-    } else if (len >= 6) {
-      return to.call(
-        minX: coords.elementAt(offset),
-        minY: coords.elementAt(offset + 1),
-        minZ: coords.elementAt(offset + 2),
-        maxX: coords.elementAt(offset + 3),
-        maxY: coords.elementAt(offset + 4),
-        maxZ: coords.elementAt(offset + 5),
-      );
+
+    // must contain at least four numbers
+    if (!iter.moveNext()) throw invalidCoordinates;
+    final c0 = iter.current;
+    if (!iter.moveNext()) throw invalidCoordinates;
+    final c1 = iter.current;
+    if (!iter.moveNext()) throw invalidCoordinates;
+    final c2 = iter.current;
+    if (!iter.moveNext()) throw invalidCoordinates;
+    final c3 = iter.current;
+
+    // rest 4 are optional
+    final c4 = iter.moveNext() ? iter.current : null;
+    final c5 = iter.moveNext() ? iter.current : null;
+    final c6 = iter.moveNext() ? iter.current : null;
+    final c7 = iter.moveNext() ? iter.current : null;
+
+    // create bounding box
+    if (c4 != null && c5 != null) {
+      if (c6 != null && c7 != null) {
+        return to.call(
+          minX: c0,
+          minY: c1,
+          minZ: c2,
+          minM: c3,
+          maxX: c4,
+          maxY: c5,
+          maxZ: c6,
+          maxM: c7,
+        );
+      } else {
+        return to.call(
+          minX: c0,
+          minY: c1,
+          minZ: c2,
+          maxX: c3,
+          maxY: c4,
+          maxZ: c5,
+        );
+      }
     } else {
       return to.call(
-        minX: coords.elementAt(offset),
-        minY: coords.elementAt(offset + 1),
-        maxX: coords.elementAt(offset + 2),
-        maxY: coords.elementAt(offset + 3),
+        minX: c0,
+        minY: c1,
+        maxX: c2,
+        maxY: c3,
       );
     }
   }
@@ -257,59 +282,77 @@ abstract class Box extends Positionable {
     Pattern? delimiter = ',',
   }) {
     final coords = parseNullableNumValuesFromText(text, delimiter: delimiter);
-    final len = coords.length;
-    if (len < 4) {
-      throw const FormatException('Coords must contain at least four items');
+    final iter = coords.iterator;
+
+    // must contain at least four numbers
+    if (!iter.moveNext()) throw invalidCoordinates;
+    final c0 = iter.current;
+    if (!iter.moveNext()) throw invalidCoordinates;
+    final c1 = iter.current;
+    if (!iter.moveNext()) throw invalidCoordinates;
+    final c2 = iter.current;
+    if (!iter.moveNext()) throw invalidCoordinates;
+    final c3 = iter.current;
+
+    // rest 4 are optional
+    var len = 4;
+    num? c4;
+    num? c5;
+    num? c6;
+    num? c7;
+    if (iter.moveNext()) {
+      c4 = iter.current;
+      len++;
+      if (iter.moveNext()) {
+        c5 = iter.current;
+        len++;
+        if (iter.moveNext()) {
+          c6 = iter.current;
+          len++;
+          if (iter.moveNext()) {
+            c7 = iter.current;
+            len++;
+          }
+        }
+      }
     }
+
+    // create bounding box
     if (len >= 8) {
-      final minX = coords.elementAt(0);
-      final minY = coords.elementAt(1);
-      final maxX = coords.elementAt(4);
-      final maxY = coords.elementAt(5);
-      if (minX == null || minY == null || maxX == null || maxY == null) {
-        throw const FormatException('minX, minY, maxX and maxY are required.');
+      if (c0 != null && c1 != null && c4 != null && c5 != null) {
+        return to.call(
+          minX: c0,
+          minY: c1,
+          minZ: c2,
+          minM: c3,
+          maxX: c4,
+          maxY: c5,
+          maxZ: c6,
+          maxM: c7,
+        );
       }
-      return to.call(
-        minX: minX,
-        minY: minY,
-        minZ: coords.elementAt(2),
-        minM: coords.elementAt(3),
-        maxX: maxX,
-        maxY: maxY,
-        maxZ: coords.elementAt(6),
-        maxM: coords.elementAt(7),
-      );
     } else if (len >= 6) {
-      final minX = coords.elementAt(0);
-      final minY = coords.elementAt(1);
-      final maxX = coords.elementAt(3);
-      final maxY = coords.elementAt(4);
-      if (minX == null || minY == null || maxX == null || maxY == null) {
-        throw const FormatException('minX, minY, maxX and maxY are required.');
+      if (c0 != null && c1 != null && c3 != null && c4 != null) {
+        return to.call(
+          minX: c0,
+          minY: c1,
+          minZ: c2,
+          maxX: c3,
+          maxY: c4,
+          maxZ: c5,
+        );
       }
-      return to.call(
-        minX: minX,
-        minY: minY,
-        minZ: coords.elementAt(2),
-        maxX: maxX,
-        maxY: maxY,
-        maxZ: coords.elementAt(5),
-      );
-    } else {
-      final minX = coords.elementAt(0);
-      final minY = coords.elementAt(1);
-      final maxX = coords.elementAt(2);
-      final maxY = coords.elementAt(3);
-      if (minX == null || minY == null || maxX == null || maxY == null) {
-        throw const FormatException('minX, minY, maxX and maxY are required.');
+    } else if (len >= 4) {
+      if (c0 != null && c1 != null && c2 != null && c3 != null) {
+        return to.call(
+          minX: c0,
+          minY: c1,
+          maxX: c2,
+          maxY: c3,
+        );
       }
-      return to.call(
-        minX: minX,
-        minY: minY,
-        maxX: maxX,
-        maxY: maxY,
-      );
     }
+    throw invalidCoordinates;
   }
 
   /// Returns all distinct (in 2D) corners for this axis aligned bounding box.

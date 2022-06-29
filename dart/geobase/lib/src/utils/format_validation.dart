@@ -4,5 +4,5 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// "Illegal coordinates" as a `FormatException`.
-const illegalCoordinates = FormatException('Illegal coordinates');
+/// Invalid coordinate type or values.
+const invalidCoordinates = FormatException('Invalid coordinates');

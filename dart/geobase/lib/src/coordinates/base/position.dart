@@ -172,8 +172,8 @@ abstract class Position extends Positionable {
   /// If [position] is [R] already, then it's returned.
   ///
   /// If [position] is `Iterable<num>`, then a position instance is created
-  /// using the factory function [to]. Allowed coordinate value combinations: 
-  /// (x, y), (x, y, z) and (x, y, z, m). 
+  /// using the factory function [to]. Allowed coordinate value combinations:
+  /// (x, y), (x, y, z) and (x, y, z, m).
   ///
   /// Otherwise throws `FormatException`.
   static R createFromObject<R extends Position>(
@@ -185,7 +185,7 @@ abstract class Position extends Positionable {
     } else if (position is Iterable<num>) {
       return createFromCoords(position, to: to);
     }
-    throw illegalCoordinates;
+    throw invalidCoordinates;
   }
 
   /// Creates a position of [R] from [coords] given in order: x, y, z, m.
@@ -200,16 +200,27 @@ abstract class Position extends Positionable {
     required CreatePosition<R> to,
     int offset = 0,
   }) {
-    final len = coords.length - offset;
-    if (len < 2) {
-      throw const FormatException('Coords must contain at least two items');
+    // resolve iterator for source coordinates
+    final Iterator<num> iter;
+    if (offset == 0) {
+      iter = coords.iterator;
+    } else if (coords.length >= offset + 2) {
+      iter = coords.skip(offset).iterator;
+    } else {
+      throw invalidCoordinates;
     }
-    return to.call(
-      x: coords.elementAt(offset),
-      y: coords.elementAt(offset + 1),
-      z: len >= 3 ? coords.elementAt(offset + 2) : null,
-      m: len >= 4 ? coords.elementAt(offset + 3) : null,
-    );
+
+    // iterate at least to x and y + optionally z + m => then create position
+    if (iter.moveNext()) {
+      final x = iter.current;
+      if (iter.moveNext()) {
+        final y = iter.current;
+        final optZ = iter.moveNext() ? iter.current : null;
+        final optM = iter.moveNext() ? iter.current : null;
+        return to.call(x: x, y: y, z: optZ, m: optM);
+      }
+    }
+    throw invalidCoordinates;
   }
 
   /// Creates a position of [R] from [text] given in order: x, y, z, m.
@@ -227,21 +238,19 @@ abstract class Position extends Positionable {
     Pattern? delimiter = ',',
   }) {
     final coords = parseNullableNumValuesFromText(text, delimiter: delimiter);
-    final len = coords.length;
-    if (len < 2) {
-      throw const FormatException('Coords must contain at least two items');
+    final iter = coords.iterator;
+    if (iter.moveNext()) {
+      final x = iter.current;
+      if (iter.moveNext()) {
+        final y = iter.current;
+        if (x != null && y != null) {
+          final optZ = iter.moveNext() ? iter.current : null;
+          final optM = iter.moveNext() ? iter.current : null;
+          return to.call(x: x, y: y, z: optZ, m: optM);
+        }
+      }
     }
-    final x = coords.elementAt(0);
-    final y = coords.elementAt(1);
-    if (x == null || y == null) {
-      throw const FormatException('X and y are required.');
-    }
-    return to.call(
-      x: x,
-      y: y,
-      z: len >= 3 ? coords.elementAt(2) : null,
-      m: len >= 4 ? coords.elementAt(3) : null,
-    );
+    throw invalidCoordinates;
   }
 
   /// A coordinate value of [position] by the coordinate axis index [i].

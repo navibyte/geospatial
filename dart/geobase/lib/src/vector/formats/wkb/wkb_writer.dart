@@ -261,10 +261,10 @@ class _WkbGeometryWriter with GeometryContent {
         }
       }
       if (!ok) {
-        throw illegalCoordinates;
+        throw invalidCoordinates;
       }
     } else {
-      throw illegalCoordinates;
+      throw invalidCoordinates;
     }
 
     switch (typeCoords) {
@@ -404,7 +404,7 @@ Coords _typeCoordsWithPosition(
       }
     }
     // no valid type (Position or Iterable<num>) for coordinates => throw
-    throw illegalCoordinates;
+    throw invalidCoordinates;
   }
 }
 

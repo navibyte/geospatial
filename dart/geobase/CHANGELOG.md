@@ -12,6 +12,9 @@ Development version `0.3.0-dev.0`.
 - [Combine writers and parsers for formats (GeoJSON, WKT) consistently #125](https://github.com/navibyte/geospatial/issues/125)
 - [Add WKB encoding/decoding support #115](https://github.com/navibyte/geospatial/issues/115)
 
+🛠 Refactoring:
+- [Optimize reading from iterable of coordinate values #131](https://github.com/navibyte/geospatial/issues/131)
+
 ## 0.2.1
 
 🐛 Bugs fixed:

@@ -82,8 +82,8 @@ TransformPosition scalePositionBy<C extends num>(C scale) =>
       if (dim == 2) {
         // point is (X, Y)
         return source.copyWith(
-          x: scale * source[0],
-          y: scale * source[1],
+          x: scale * source.x,
+          y: scale * source.y,
         ) as T;
       } else {
         // point could be (X, Y, Z), (X, Y, M) or (X, Y, Z, M)
