@@ -690,14 +690,10 @@ Coordinate types supported are defined by the `Coords` enum.
 
 Type          | Description
 ------------- | -----------
-`xy`          | Projected or cartesian coordinates (x, y)
-`xyz`         | Projected or cartesian coordinates (x, y, z)
-`xym`         | Projected or cartesian coordinates (x, y, m)
-`xyzm`        | Projected or cartesian coordinates (x, y, z, m)
-`lonLat`      | Geographic coordinates (longitude, latitude)
-`lonLatElev`  | Geographic coordinates (longitude, latitude, elevation)
-`lonLatM`     | Geographic coordinates (longitude, latitude, m)
-`lonLatElevM` | Geographic coordinates (longitude, latitude, elevation, m)
+`xy`          | Projected (x, y) or geographic (longitude, latitude) coordinates
+`xyz`         | Projected (x, y, z) or geographic (longitude, latitude, elevation) coordinates
+`xym`         | Projected (x, y, m) or geographic (longitude, latitude, m) coordinates
+`xyzm`        | Projected (x, y, z, m) or geographic (longitude, latitude, elevation, m) coordinates
 
 The `m` coordinate represents a measurement or a value on a linear referencing
 system (like time).

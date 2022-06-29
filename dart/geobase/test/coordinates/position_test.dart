@@ -310,7 +310,6 @@ class _TestXYZM implements Projected {
 
   @override
   Coords get typeCoords => Coords.select(
-        isGeographic: isGeographic,
         is3D: is3D,
         isMeasured: isMeasured,
       );

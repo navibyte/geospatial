@@ -161,7 +161,6 @@ class _WkbGeometryWriter with GeometryContent {
     geometries.call(collector);
     final typeCoords = forcedTypeCoords ??
         Coords.select(
-          isGeographic: collector.numGeometries > 0 && !collector.hasProjected,
           is3D: collector.hasZ,
           isMeasured: collector.hasM,
         );
@@ -271,7 +270,6 @@ class _WkbGeometryWriter with GeometryContent {
     switch (typeCoords) {
       // 2D point
       case Coords.xy:
-      case Coords.lonLat:
         writer
           ..writeFloat64(x.toDouble())
           ..writeFloat64(y.toDouble());
@@ -279,7 +277,6 @@ class _WkbGeometryWriter with GeometryContent {
 
       // Z point
       case Coords.xyz:
-      case Coords.lonLatElev:
         writer
           ..writeFloat64(x.toDouble())
           ..writeFloat64(y.toDouble())
@@ -288,7 +285,6 @@ class _WkbGeometryWriter with GeometryContent {
 
       // M point
       case Coords.xym:
-      case Coords.lonLatM:
         writer
           ..writeFloat64(x.toDouble())
           ..writeFloat64(y.toDouble())
@@ -297,7 +293,6 @@ class _WkbGeometryWriter with GeometryContent {
 
       // ZM point
       case Coords.xyzm:
-      case Coords.lonLatElevM:
         writer
           ..writeFloat64(x.toDouble())
           ..writeFloat64(y.toDouble())
@@ -313,7 +308,6 @@ class _WkbGeometryWriter with GeometryContent {
 class _GeometryCollector with GeometryContent {
   bool hasZ = false;
   bool hasM = false;
-  bool hasProjected = false;
   int numGeometries = 0;
 
   @override
@@ -327,7 +321,6 @@ class _GeometryCollector with GeometryContent {
     final typeCoords = _typeCoordsWithPosition(coordinates, coordType);
     hasZ |= typeCoords.is3D;
     hasM |= typeCoords.isMeasured;
-    hasProjected |= !typeCoords.isGeographic;
     numGeometries++;
   }
 
@@ -342,7 +335,6 @@ class _GeometryCollector with GeometryContent {
     final typeCoords = _typeCoordsWithPositions1D(coordinates, coordType);
     hasZ |= typeCoords.is3D;
     hasM |= typeCoords.isMeasured;
-    hasProjected |= !typeCoords.isGeographic;
     numGeometries++;
   }
 
@@ -357,7 +349,6 @@ class _GeometryCollector with GeometryContent {
     final typeCoords = _typeCoordsWithPositions2D(coordinates, coordType);
     hasZ |= typeCoords.is3D;
     hasM |= typeCoords.isMeasured;
-    hasProjected |= !typeCoords.isGeographic;
     numGeometries++;
   }
 
@@ -372,7 +363,6 @@ class _GeometryCollector with GeometryContent {
     final typeCoords = _typeCoordsWithPositions3D(coordinates, coordType);
     hasZ |= typeCoords.is3D;
     hasM |= typeCoords.isMeasured;
-    hasProjected |= !typeCoords.isGeographic;
     numGeometries++;
   }
 
@@ -383,13 +373,11 @@ class _GeometryCollector with GeometryContent {
     String? name,
     Object? bbox,
   }) {
-    hasProjected |= true;
     numGeometries++;
   }
 
   @override
   void emptyGeometry(Geom type, {String? name}) {
-    hasProjected |= true;
     numGeometries++;
   }
 }

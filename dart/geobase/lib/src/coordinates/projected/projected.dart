@@ -147,7 +147,6 @@ class Projected extends Position {
 
   @override
   Coords get typeCoords => Coords.select(
-        isGeographic: isGeographic,
         is3D: is3D,
         isMeasured: isMeasured,
       );
@@ -163,11 +162,6 @@ class Projected extends Position {
         return '$_x,$_y,,$_m';
       case Coords.xyzm:
         return '$_x,$_y,$_z,$_m';
-      case Coords.lonLat:
-      case Coords.lonLatElev:
-      case Coords.lonLatM:
-      case Coords.lonLatElevM:
-        return '<not geographic>';
     }
   }
 

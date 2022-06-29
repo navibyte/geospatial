@@ -1046,7 +1046,6 @@ class WktTextWriter<T extends Object> extends _WktLikeTextWriter<T> {
     final coordType = _coordTypes.isNotEmpty
         ? _coordTypes.last
         : Coords.select(
-            isGeographic: box.isGeographic,
             is3D: hasZ,
             isMeasured: hasM,
           );

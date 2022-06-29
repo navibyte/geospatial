@@ -6,6 +6,7 @@ Development version `0.3.0-dev.0`.
 - [Rename writers and content interfaces to generalize #127](https://github.com/navibyte/geospatial/issues/127)
 - [Geometry content written with more specific methods #128](https://github.com/navibyte/geospatial/issues/128)
 - [Allow coordinate value arrays along with position arrays on content interfaces #129](https://github.com/navibyte/geospatial/issues/129)
+- [Simplify Coords enum #130](https://github.com/navibyte/geospatial/issues/130)
 
 🧩 Features:
 - [Combine writers and parsers for formats (GeoJSON, WKT) consistently #125](https://github.com/navibyte/geospatial/issues/125)

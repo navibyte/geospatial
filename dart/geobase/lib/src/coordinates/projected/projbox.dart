@@ -162,7 +162,6 @@ class ProjBox extends Box {
 
   @override
   Coords get typeCoords => Coords.select(
-        isGeographic: isGeographic,
         is3D: is3D,
         isMeasured: isMeasured,
       );
@@ -178,11 +177,6 @@ class ProjBox extends Box {
         return '$_minX,$_minY,,$_minM,$_maxX,$_maxY,,$_maxM';
       case Coords.xyzm:
         return '$_minX,$_minY,$_minZ,$_minM,$_maxX,$_maxY,$_maxZ,$_maxM';
-      case Coords.lonLat:
-      case Coords.lonLatElev:
-      case Coords.lonLatM:
-      case Coords.lonLatElevM:
-        return '<not geographic>';
     }
   }
 

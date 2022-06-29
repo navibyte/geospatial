@@ -35,6 +35,22 @@ typedef TransformPosition = T Function<T extends Position>(T source);
 ///
 /// The known sub classes are `Projected` (with x, y, z and m coordinates) and
 /// `Geographic` (with lon, lat, elev and m coordinates).
+///
+/// All implementations must contain at least [x] and [y] coordinate values, but
+/// [z] and [m] coordinates are optional (getters should return zero value when
+/// such a coordinate axis is not available).
+///
+/// When a position contains geographic coordinates, then by default [x]
+/// represents *longitude*, [y] represents *latitude*, and [z] represents
+/// *elevation* (or *height* or *altitude*).
+///
+/// A projected map position might be defined as *easting* (E) and *northing*
+/// (N) coordinates. It's suggested that then E == [x] and N == [y], but a
+/// coordinate reference system might specify something else too.
+///
+/// [m] represents a measurement or a value on a linear referencing system (like
+/// time). It could be associated with a 2D position (x, y, m) or a 3D position
+/// (x, y, z, m).
 abstract class Position extends Positionable {
   /// Default `const` constructor to allow extending this abstract class.
   const Position();

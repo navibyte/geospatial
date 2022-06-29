@@ -20,6 +20,10 @@ import '/src/coordinates/base.dart';
 /// *Geographic* coordinates are based on a spherical or ellipsoidal coordinate
 /// system representing positions on the Earth as longitude ([lon]) and latitude
 /// ([lat]).
+/// 
+/// [m] represents a measurement or a value on a linear referencing system (like
+/// time). It could be associated with a 2D position (lon, lat, m) or a 3D
+/// position (lon, lat, elev, m).
 @immutable
 class Geographic extends Position {
   final double _lon;
@@ -175,7 +179,6 @@ class Geographic extends Position {
 
   @override
   Coords get typeCoords => Coords.select(
-        isGeographic: isGeographic,
         is3D: is3D,
         isMeasured: isMeasured,
       );
@@ -183,19 +186,14 @@ class Geographic extends Position {
   @override
   String toString() {
     switch (typeCoords) {
-      case Coords.lonLat:
-        return '$_lon,$_lat';
-      case Coords.lonLatElev:
-        return '$_lon,$_lat,$_elev';
-      case Coords.lonLatM:
-        return '$_lon,$_lat,,$_m';
-      case Coords.lonLatElevM:
-        return '$_lon,$_lat,$_elev,$_m';
       case Coords.xy:
+        return '$_lon,$_lat';
       case Coords.xyz:
+        return '$_lon,$_lat,$_elev';
       case Coords.xym:
+        return '$_lon,$_lat,,$_m';
       case Coords.xyzm:
-        return '<not projected>';
+        return '$_lon,$_lat,$_elev,$_m';
     }
   }
 

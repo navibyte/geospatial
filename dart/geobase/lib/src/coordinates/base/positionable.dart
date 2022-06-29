@@ -34,7 +34,7 @@ abstract class Positionable extends Measurable {
   /// True for geographic positions (with longitude and latitude coordinates).
   ///
   /// If false is returned, then coordinates are projected or cartesian (with
-  /// x and coordinates).
+  /// x and y coordinates).
   bool get isGeographic;
 
   /// Returns the type for coordinates of this position.

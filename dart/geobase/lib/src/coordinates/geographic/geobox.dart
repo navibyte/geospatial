@@ -221,7 +221,6 @@ class GeoBox extends Box {
 
   @override
   Coords get typeCoords => Coords.select(
-        isGeographic: isGeographic,
         is3D: is3D,
         isMeasured: isMeasured,
       );
@@ -229,20 +228,15 @@ class GeoBox extends Box {
   @override
   String toString() {
     switch (typeCoords) {
-      case Coords.lonLat:
+      case Coords.xy:
         return '$_west,$_south,$_east,$_north';
-      case Coords.lonLatElev:
+      case Coords.xyz:
         return '$_west,$_south,$_minElev,$_east,$_north,$_maxElev';
-      case Coords.lonLatM:
+      case Coords.xym:
         return '$_west,$_south,,$_minM,$_east,$_north,,$_maxM';
-      case Coords.lonLatElevM:
+      case Coords.xyzm:
         return '$_west,$_south,$_minElev,$_minM,'
             '$_east,$_north,$_maxElev,$_maxM';
-      case Coords.xy:
-      case Coords.xyz:
-      case Coords.xym:
-      case Coords.xyzm:
-        return '<not projected>';
     }
   }
 
