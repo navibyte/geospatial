@@ -30,6 +30,7 @@ void main() {
   _wktPointGeometryWithZ();
   _wktPointGeometryWithM();
   _wktPointGeometryWithZM();
+  _wktPointGeometryWithZMShortened();
 
   // GeoJSON samples
   print('\nGeoJSON samples');
@@ -37,6 +38,7 @@ void main() {
   _geoJsonPointGeometryDecimals();
   _geoJsonPointGeometryCustomStringBuffer();
   _geoJsonLineStringGeometryWithBbox();
+  _geoJsonLineStringGeometryWithBboxShortened();
   _geoJsonGeometryCollection();
   _geoJsonFeature();
   _geoJsonFeatureCollection();
@@ -212,6 +214,12 @@ void _wktPointGeometryWithZM() {
   print(writer);
 }
 
+void _wktPointGeometryWithZMShortened() {
+  final writer = WKT().geometriesToText();
+  writer.output.point([10.123, 20.25, -30.95, -1.999], coordType: Coords.xyzm);
+  print(writer);
+}
+
 void _geoJsonPointGeometry() {
   // get GeoJSON format
   final format = GeoJSON();
@@ -268,6 +276,19 @@ void _geoJsonLineStringGeometryWithBbox() {
       const Geographic(lon: 3.5, lat: -3.49),
     ],
     bbox: const GeoBox(west: -1.1, south: -3.49, east: 3.5, north: -1.1),
+  );
+  print(writer);
+}
+
+void _geoJsonLineStringGeometryWithBboxShortened() {
+  final writer = GeoJSON().geometriesToText();
+  writer.output.lineString(
+    [
+      [-1.1, -1.1],
+      [2.1, -2.5],
+      [3.5, -3.49],
+    ],
+    bbox: [-1.1, -3.49, 3.5, -1.1],
   );
   print(writer);
 }

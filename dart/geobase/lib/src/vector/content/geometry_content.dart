@@ -18,101 +18,153 @@ typedef WriteGeometries = void Function(GeometryContent output);
 /// An interface to write geometry objects to a geospatial content receiver.
 ///
 /// A receiver could be a geospatial data format writer or an object factory.
+///
+/// This mixin supports specific simple geometry types defined by
+/// [SimpleGeometryContent] and also other (non-specific) geometry types
+/// supported by implementers of the mixin.
+///
+/// Coordinate positions are represented either as [Position] or
+/// `Iterable<num>`. Bounding boxes are represented either as [Box] or
+/// `Iterable<num>`.
 mixin GeometryContent implements SimpleGeometryContent {
+  /// Writes a geometry of [type] with a position represented by [coordinates].
   ///
-  /// The [coordinates] represents a single position.
+  /// The [coordinates] represents a single position of [Position] or
+  /// `Iterable<num>`.
   ///
   /// Use [name] to specify a name for a geometry (when applicable).
   ///
   /// Use [coordType] to define the type of coordinates.
   ///
-  /// An optional [bbox] can used set a minimum bounding box for a geometry
-  /// written. A writer implementation may use it or ignore it.
+  /// An optional [bbox] of [Box] or `Iterable<num>` can used set a minimum
+  /// bounding box for a geometry written. A writer implementation may use it or
+  /// ignore it.
   ///
   /// Known [Position] sub classes are [Projected] (projected or cartesian
   /// coordinates) and [Geographic] (geographic coordinates). Known [Box] sub
   /// classes are [ProjBox] (projected or cartesian coordinates) and [GeoBox]
-  /// (geographic coordinates).
+  /// (geographic coordinates). Other sub classes are supported too.
+  ///
+  /// Allowed [coordinates] value combinations for `Iterable<num>` are:
+  /// (x, y), (x, y, z) and (x, y, z, m).
+  ///
+  /// Allowed [bbox] coordinate value combinations for `Iterable<num>` are:
+  /// - minX, minY, maxX, maxY
+  /// - minX, minY, minZ, maxX, maxY, maxZ
+  /// - minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
   void geometryWithPosition({
     required Geom type,
-    required Position coordinates,
+    required Object coordinates,
     String? name,
     Coords? coordType,
-    Box? bbox,
+    Object? bbox,
   });
 
   /// Writes a geometry of [type] with a position array from [coordinates].
   ///
-  /// The [coordinates] array is a 1-dimensional iterable.
+  /// The [coordinates] iterable is an array containing `Object` items
+  /// representing positions of points. Supported sub classes for items are
+  /// [Position] and `Iterable<num>`.
   ///
   /// Use [name] to specify a name for a geometry (when applicable).
   ///
   /// Use [coordType] to define the type of coordinates.
   ///
-  /// An optional [bbox] can used set a minimum bounding box for a geometry
-  /// written. A writer implementation may use it or ignore it.
+  /// An optional [bbox] of [Box] or `Iterable<num>` can used set a minimum
+  /// bounding box for a geometry written. A writer implementation may use it or
+  /// ignore it.
   ///
   /// Known [Position] sub classes are [Projected] (projected or cartesian
   /// coordinates) and [Geographic] (geographic coordinates). Known [Box] sub
   /// classes are [ProjBox] (projected or cartesian coordinates) and [GeoBox]
-  /// (geographic coordinates).
+  /// (geographic coordinates). Other sub classes are supported too.
+  ///
+  /// Allowed [coordinates] value combinations for `Iterable<num>` are:
+  /// (x, y), (x, y, z) and (x, y, z, m).
+  ///
+  /// Allowed [bbox] coordinate value combinations for `Iterable<num>` are:
+  /// - minX, minY, maxX, maxY
+  /// - minX, minY, minZ, maxX, maxY, maxZ
+  /// - minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
   void geometryWithPositions1D({
     required Geom type,
-    required Iterable<Position> coordinates,
+    required Iterable<Object> coordinates,
     String? name,
     Coords? coordType,
-    Box? bbox,
+    Object? bbox,
   });
 
   /// Writes a geometry of [type] with a position array from [coordinates].
   ///
-  /// The [coordinates] array is a 2-dimensional iterable.
+  /// The [coordinates] iterable is an array of arrays containing `Object` items
+  /// representing positions of points. Supported sub classes for items are
+  /// [Position] and `Iterable<num>`.
   ///
   /// Use [name] to specify a name for a geometry (when applicable).
   ///
   /// Use [coordType] to define the type of coordinates.
   ///
-  /// An optional [bbox] can used set a minimum bounding box for a geometry
-  /// written. A writer implementation may use it or ignore it.
+  /// An optional [bbox] of [Box] or `Iterable<num>` can used set a minimum
+  /// bounding box for a geometry written. A writer implementation may use it or
+  /// ignore it.
   ///
   /// Known [Position] sub classes are [Projected] (projected or cartesian
   /// coordinates) and [Geographic] (geographic coordinates). Known [Box] sub
   /// classes are [ProjBox] (projected or cartesian coordinates) and [GeoBox]
-  /// (geographic coordinates).
+  /// (geographic coordinates). Other sub classes are supported too.
+  ///
+  /// Allowed [coordinates] value combinations for `Iterable<num>` are:
+  /// (x, y), (x, y, z) and (x, y, z, m).
+  ///
+  /// Allowed [bbox] coordinate value combinations for `Iterable<num>` are:
+  /// - minX, minY, maxX, maxY
+  /// - minX, minY, minZ, maxX, maxY, maxZ
+  /// - minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
   void geometryWithPositions2D({
     required Geom type,
-    required Iterable<Iterable<Position>> coordinates,
+    required Iterable<Iterable<Object>> coordinates,
     String? name,
     Coords? coordType,
-    Box? bbox,
+    Object? bbox,
   });
 
   /// Writes a geometry of [type] with a position array from [coordinates].
   ///
-  /// The [coordinates] array is a 3-dimensional iterable.
+  /// The [coordinates] iterable is an array of arrays of arrays containing
+  /// `Object` items representing positions of points. Supported sub classes for
+  /// items are [Position] and `Iterable<num>`.
   ///
   /// Use [name] to specify a name for a geometry (when applicable).
   ///
   /// Use [coordType] to define the type of coordinates.
   ///
-  /// An optional [bbox] can used set a minimum bounding box for a geometry
-  /// written. A writer implementation may use it or ignore it.
+  /// An optional [bbox] of [Box] or `Iterable<num>` can used set a minimum
+  /// bounding box for a geometry written. A writer implementation may use it or
+  /// ignore it.
   ///
   /// Known [Position] sub classes are [Projected] (projected or cartesian
   /// coordinates) and [Geographic] (geographic coordinates). Known [Box] sub
   /// classes are [ProjBox] (projected or cartesian coordinates) and [GeoBox]
-  /// (geographic coordinates).
+  /// (geographic coordinates). Other sub classes are supported too.
+  ///
+  /// Allowed [coordinates] value combinations for `Iterable<num>` are:
+  /// (x, y), (x, y, z) and (x, y, z, m).
+  ///
+  /// Allowed [bbox] coordinate value combinations for `Iterable<num>` are:
+  /// - minX, minY, maxX, maxY
+  /// - minX, minY, minZ, maxX, maxY, maxZ
+  /// - minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
   void geometryWithPositions3D({
     required Geom type,
-    required Iterable<Iterable<Iterable<Position>>> coordinates,
+    required Iterable<Iterable<Iterable<Object>>> coordinates,
     String? name,
     Coords? coordType,
-    Box? bbox,
+    Object? bbox,
   });
 
   @override
   void point(
-    Position coordinates, {
+    Object coordinates, {
     String? name,
     Coords? coordType,
   }) =>
@@ -125,10 +177,10 @@ mixin GeometryContent implements SimpleGeometryContent {
 
   @override
   void lineString(
-    Iterable<Position> coordinates, {
+    Iterable<Object> coordinates, {
     String? name,
     Coords? coordType,
-    Box? bbox,
+    Object? bbox,
   }) =>
       geometryWithPositions1D(
         type: Geom.lineString,
@@ -140,10 +192,10 @@ mixin GeometryContent implements SimpleGeometryContent {
 
   @override
   void polygon(
-    Iterable<Iterable<Position>> coordinates, {
+    Iterable<Iterable<Object>> coordinates, {
     String? name,
     Coords? coordType,
-    Box? bbox,
+    Object? bbox,
   }) =>
       geometryWithPositions2D(
         type: Geom.polygon,
@@ -155,10 +207,10 @@ mixin GeometryContent implements SimpleGeometryContent {
 
   @override
   void multiPoint(
-    Iterable<Position> coordinates, {
+    Iterable<Object> coordinates, {
     String? name,
     Coords? coordType,
-    Box? bbox,
+    Object? bbox,
   }) =>
       geometryWithPositions1D(
         type: Geom.multiPoint,
@@ -170,10 +222,10 @@ mixin GeometryContent implements SimpleGeometryContent {
 
   @override
   void multiLineString(
-    Iterable<Iterable<Position>> coordinates, {
+    Iterable<Iterable<Object>> coordinates, {
     String? name,
     Coords? coordType,
-    Box? bbox,
+    Object? bbox,
   }) =>
       geometryWithPositions2D(
         type: Geom.multiLineString,
@@ -185,10 +237,10 @@ mixin GeometryContent implements SimpleGeometryContent {
 
   @override
   void multiPolygon(
-    Iterable<Iterable<Iterable<Position>>> coordinates, {
+    Iterable<Iterable<Iterable<Object>>> coordinates, {
     String? name,
     Coords? coordType,
-    Box? bbox,
+    Object? bbox,
   }) =>
       geometryWithPositions3D(
         type: Geom.multiPolygon,

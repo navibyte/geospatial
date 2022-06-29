@@ -4,6 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 import '/src/utils/tolerance.dart';
 
@@ -149,6 +150,27 @@ abstract class Position extends Positionable {
   // ---------------------------------------------------------------------------
   // Static methods with default logic, used by Position, Projected and
   // Geographic.
+
+  /// Creates a position of [R] from [position] (of [R] or `Iterable<num>`).
+  ///
+  /// If [position] is [R] already, then it's returned.
+  ///
+  /// If [position] is `Iterable<num>`, then a position instance is created
+  /// using the factory function [to]. Allowed coordinate value combinations: 
+  /// (x, y), (x, y, z) and (x, y, z, m). 
+  ///
+  /// Otherwise throws `FormatException`.
+  static R createFromObject<R extends Position>(
+    Object position, {
+    required CreatePosition<R> to,
+  }) {
+    if (position is R) {
+      return position;
+    } else if (position is Iterable<num>) {
+      return createFromCoords(position, to: to);
+    }
+    throw illegalCoordinates;
+  }
 
   /// Creates a position of [R] from [coords] given in order: x, y, z, m.
   ///

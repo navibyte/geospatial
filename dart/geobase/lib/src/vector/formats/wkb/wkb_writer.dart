@@ -10,6 +10,7 @@ import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/coordinates/base.dart';
 import '/src/utils/byte_writer.dart';
+import '/src/utils/format_validation.dart';
 import '/src/vector/content.dart';
 
 /// Writer [geometries] to a sequence of bytes as specified by WKB format.
@@ -31,10 +32,10 @@ class _WkbGeometryWriter with GeometryContent {
   @override
   void geometryWithPosition({
     required Geom type,
-    required Position coordinates,
+    required Object coordinates,
     String? name,
     Coords? coordType,
-    Box? bbox,
+    Object? bbox,
   }) {
     // detect type for coordinates
     final typeCoords =
@@ -50,10 +51,10 @@ class _WkbGeometryWriter with GeometryContent {
   @override
   void geometryWithPositions1D({
     required Geom type,
-    required Iterable<Position> coordinates,
+    required Iterable<Object> coordinates,
     String? name,
     Coords? coordType,
-    Box? bbox,
+    Object? bbox,
   }) {
     // detect type for coordinates
     final typeCoords =
@@ -80,10 +81,10 @@ class _WkbGeometryWriter with GeometryContent {
   @override
   void geometryWithPositions2D({
     required Geom type,
-    required Iterable<Iterable<Position>> coordinates,
+    required Iterable<Iterable<Object>> coordinates,
     String? name,
     Coords? coordType,
-    Box? bbox,
+    Object? bbox,
   }) {
     // detect type for coordinates
     final typeCoords =
@@ -117,10 +118,10 @@ class _WkbGeometryWriter with GeometryContent {
   @override
   void geometryWithPositions3D({
     required Geom type,
-    required Iterable<Iterable<Iterable<Position>>> coordinates,
+    required Iterable<Iterable<Iterable<Object>>> coordinates,
     String? name,
     Coords? coordType,
-    Box? bbox,
+    Object? bbox,
   }) {
     // detect type for coordinates
     final typeCoords =
@@ -153,7 +154,7 @@ class _WkbGeometryWriter with GeometryContent {
     required WriteGeometries geometries,
     int? count,
     String? name,
-    Box? bbox,
+    Object? bbox,
   }) {
     // first calculate number of geometries and analyze coordinate types
     final collector = _GeometryCollector();
@@ -228,7 +229,7 @@ class _WkbGeometryWriter with GeometryContent {
     writer.writeUint32(type);
   }
 
-  void _writePointArray(Iterable<Position> points, Coords typeCoords) {
+  void _writePointArray(Iterable<Object> points, Coords typeCoords) {
     // write numPoints
     writer.writeUint32(points.length);
 
@@ -238,42 +239,70 @@ class _WkbGeometryWriter with GeometryContent {
     }
   }
 
-  void _writePoint(Position point, Coords typeCoords) {
+  void _writePoint(Object point, Coords typeCoords) {
+    num x = 0;
+    num y = 0;
+    num z = 0;
+    num m = 0;
+    if (point is Position) {
+      x = point.x;
+      y = point.y;
+      z = point.z;
+      m = point.m;
+    } else if (point is Iterable<num>) {
+      var ok = false;
+      final iter = point.iterator;
+      if (iter.moveNext()) {
+        x = iter.current;
+        if (iter.moveNext()) {
+          y = iter.current;
+          z = iter.moveNext() ? iter.current : 0;
+          m = iter.moveNext() ? iter.current : 0;
+          ok = true;
+        }
+      }
+      if (!ok) {
+        throw illegalCoordinates;
+      }
+    } else {
+      throw illegalCoordinates;
+    }
+
     switch (typeCoords) {
       // 2D point
       case Coords.xy:
       case Coords.lonLat:
         writer
-          ..writeFloat64(point.x.toDouble())
-          ..writeFloat64(point.y.toDouble());
+          ..writeFloat64(x.toDouble())
+          ..writeFloat64(y.toDouble());
         break;
 
       // Z point
       case Coords.xyz:
       case Coords.lonLatElev:
         writer
-          ..writeFloat64(point.x.toDouble())
-          ..writeFloat64(point.y.toDouble())
-          ..writeFloat64(point.z.toDouble());
+          ..writeFloat64(x.toDouble())
+          ..writeFloat64(y.toDouble())
+          ..writeFloat64(z.toDouble());
         break;
 
       // M point
       case Coords.xym:
       case Coords.lonLatM:
         writer
-          ..writeFloat64(point.x.toDouble())
-          ..writeFloat64(point.y.toDouble())
-          ..writeFloat64(point.m.toDouble());
+          ..writeFloat64(x.toDouble())
+          ..writeFloat64(y.toDouble())
+          ..writeFloat64(m.toDouble());
         break;
 
       // ZM point
       case Coords.xyzm:
       case Coords.lonLatElevM:
         writer
-          ..writeFloat64(point.x.toDouble())
-          ..writeFloat64(point.y.toDouble())
-          ..writeFloat64(point.z.toDouble())
-          ..writeFloat64(point.m.toDouble());
+          ..writeFloat64(x.toDouble())
+          ..writeFloat64(y.toDouble())
+          ..writeFloat64(z.toDouble())
+          ..writeFloat64(m.toDouble());
         break;
     }
   }
@@ -290,10 +319,10 @@ class _GeometryCollector with GeometryContent {
   @override
   void geometryWithPosition({
     required Geom type,
-    required Position coordinates,
+    required Object coordinates,
     String? name,
     Coords? coordType,
-    Box? bbox,
+    Object? bbox,
   }) {
     final typeCoords = _typeCoordsWithPosition(coordinates, coordType);
     hasZ |= typeCoords.is3D;
@@ -305,10 +334,10 @@ class _GeometryCollector with GeometryContent {
   @override
   void geometryWithPositions1D({
     required Geom type,
-    required Iterable<Position> coordinates,
+    required Iterable<Object> coordinates,
     String? name,
     Coords? coordType,
-    Box? bbox,
+    Object? bbox,
   }) {
     final typeCoords = _typeCoordsWithPositions1D(coordinates, coordType);
     hasZ |= typeCoords.is3D;
@@ -320,10 +349,10 @@ class _GeometryCollector with GeometryContent {
   @override
   void geometryWithPositions2D({
     required Geom type,
-    required Iterable<Iterable<Position>> coordinates,
+    required Iterable<Iterable<Object>> coordinates,
     String? name,
     Coords? coordType,
-    Box? bbox,
+    Object? bbox,
   }) {
     final typeCoords = _typeCoordsWithPositions2D(coordinates, coordType);
     hasZ |= typeCoords.is3D;
@@ -335,10 +364,10 @@ class _GeometryCollector with GeometryContent {
   @override
   void geometryWithPositions3D({
     required Geom type,
-    required Iterable<Iterable<Iterable<Position>>> coordinates,
+    required Iterable<Iterable<Iterable<Object>>> coordinates,
     String? name,
     Coords? coordType,
-    Box? bbox,
+    Object? bbox,
   }) {
     final typeCoords = _typeCoordsWithPositions3D(coordinates, coordType);
     hasZ |= typeCoords.is3D;
@@ -352,7 +381,7 @@ class _GeometryCollector with GeometryContent {
     required WriteGeometries geometries,
     int? count,
     String? name,
-    Box? bbox,
+    Object? bbox,
   }) {
     hasProjected |= true;
     numGeometries++;
@@ -368,43 +397,59 @@ class _GeometryCollector with GeometryContent {
 // -----------------------------------------------------------------------------
 
 Coords _typeCoordsWithPosition(
-  Position coordinates,
+  Object coordinates,
   Coords? coordType,
 ) {
   // detect type for coordinates
-  return coordType ?? coordinates.typeCoords;
+  if (coordType != null) {
+    return coordType;
+  } else {
+    if (coordinates is Position) {
+      return coordinates.typeCoords;
+    } else if (coordinates is Iterable<num>) {
+      if (coordinates.length >= 4) {
+        return Coords.xyzm;
+      } else if (coordinates.length >= 3) {
+        return Coords.xyz;
+      } else if (coordinates.length >= 2) {
+        return Coords.xy;
+      }
+    }
+    // no valid type (Position or Iterable<num>) for coordinates => throw
+    throw illegalCoordinates;
+  }
 }
 
 Coords _typeCoordsWithPositions1D(
-  Iterable<Position> coordinates,
+  Iterable<Object> coordinates,
   Coords? coordType,
 ) {
   // detect type for coordinates
   if (coordType != null) {
     return coordType;
   } else if (coordinates.isNotEmpty) {
-    return coordinates.first.typeCoords;
+    return _typeCoordsWithPosition(coordinates.first, coordType);
   } else {
     return Coords.xy;
   }
 }
 
 Coords _typeCoordsWithPositions2D(
-  Iterable<Iterable<Position>> coordinates,
+  Iterable<Iterable<Object>> coordinates,
   Coords? coordType,
 ) {
   // detect type for coordinates
   if (coordType != null) {
     return coordType;
   } else if (coordinates.isNotEmpty && coordinates.first.isNotEmpty) {
-    return coordinates.first.first.typeCoords;
+    return _typeCoordsWithPosition(coordinates.first.first, coordType);
   } else {
     return Coords.xy;
   }
 }
 
 Coords _typeCoordsWithPositions3D(
-  Iterable<Iterable<Iterable<Position>>> coordinates,
+  Iterable<Iterable<Iterable<Object>>> coordinates,
   Coords? coordType,
 ) {
   // detect type for coordinates
@@ -413,7 +458,7 @@ Coords _typeCoordsWithPositions3D(
   } else if (coordinates.isNotEmpty &&
       coordinates.first.isNotEmpty &&
       coordinates.first.first.isNotEmpty) {
-    return coordinates.first.first.first.typeCoords;
+    return _typeCoordsWithPosition(coordinates.first.first.first, coordType);
   } else {
     return Coords.xy;
   }

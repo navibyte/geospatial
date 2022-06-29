@@ -541,6 +541,28 @@ A sample to write a `LineString` geometry to GeoJSON:
   print(writer);
 ```
 
+The sample above can be shortened (instead of `Geographic` and `GeoBox` objects
+coordinates are represented as `Iterable<num>` like `[-1.1, -1.1]` or
+`[-1.1, -3.49, 3.5, -1.1]`):
+
+```dart
+  final writer = GeoJSON().geometriesToText();
+  writer.output.lineString(
+    [
+      [-1.1, -1.1],
+      [2.1, -2.5],
+      [3.5, -3.49],
+    ],
+    bbox: [-1.1, -3.49, 3.5, -1.1],
+  );
+  print(writer);
+```
+
+Shortened syntax for writing coordinates as `Iterable<num>` is available for all
+content methods for writing positions, bounding boxes and other geometries, and 
+accepting `Position` (that is `Projected` or `Geographic`) or `Box` (that is
+`ProjBox` or `GeoBox`) objects.
+
 A sample to write a `Feature` geometry to GeoJSON:
 
 ```dart
@@ -592,6 +614,14 @@ A sample to write a `Point` geometry to WKT (with z and m coordinates too):
     const Geographic(lon: 10.123, lat: 20.25, elev: -30.95, m: -1.999),
     coordType: Coords.xyzm,
   );
+  print(writer);
+```
+
+Or shortened:
+
+```dart
+  final writer = WKT().geometriesToText();
+  writer.output.point([10.123, 20.25, -30.95, -1.999], coordType: Coords.xyzm);
   print(writer);
 ```
 

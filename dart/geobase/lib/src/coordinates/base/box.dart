@@ -6,6 +6,7 @@
 
 import 'dart:math' as math;
 
+import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 import '/src/utils/tolerance.dart';
 
@@ -169,6 +170,29 @@ abstract class Box extends Positionable {
 
   // ---------------------------------------------------------------------------
   // Static methods with default logic, used by Box, ProjBox and GeoBox.
+
+  /// Creates a bounding box of [R] from [box] (of [R] or `Iterable<num>`).
+  ///
+  /// If [box] is [R] already, then it's returned.
+  ///
+  /// If [box] is `Iterable<num>`, then a bounding box instance is created using
+  /// the factory function [to]. Allowed coordinate value combinations:
+  /// - minX, minY, maxX, maxY
+  /// - minX, minY, minZ, maxX, maxY, maxZ
+  /// - minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  ///
+  /// Otherwise throws `FormatException`.
+  static R createFromObject<R extends Box>(
+    Object box, {
+    required CreateBox<R> to,
+  }) {
+    if (box is R) {
+      return box;
+    } else if (box is Iterable<num>) {
+      return createFromCoords(box, to: to);
+    }
+    throw illegalCoordinates;
+  }
 
   /// Creates a bounding box of [R] from [coords] starting from [offset].
   ///

@@ -15,7 +15,10 @@ void main() {
   group('Test geometry, coordinate and bounds writers', () {
     test('Position coordinates', () {
       _testAllWriters<CoordinateContent>(
-        [(output) => output.position(const Projected(x: 10.123, y: 20.25))],
+        [
+          (output) => output.position([10.123, 20.25]),
+          (output) => output.position(const Projected(x: 10.123, y: 20.25)),
+        ],
         def: '10.123,20.25',
         geoJson: '10.123,20.25',
         wktLike: '10.123 20.25',
@@ -23,8 +26,9 @@ void main() {
       );
       _testAllWriters<CoordinateContent>(
         [
+          (output) => output.position([10.123, 20.25, -30.95]),
           (output) =>
-              output.position(const Projected(x: 10.123, y: 20.25, z: -30.95))
+              output.position(const Projected(x: 10.123, y: 20.25, z: -30.95)),
         ],
         def: '10.123,20.25,-30.95',
         geoJson: '10.123,20.25,-30.95',
@@ -34,7 +38,7 @@ void main() {
       _testAllWriters<CoordinateContent>(
         [
           (output) =>
-              output.position(const Projected(x: 10.123, y: 20.25, m: -1.999))
+              output.position(const Projected(x: 10.123, y: 20.25, m: -1.999)),
         ],
         def: '10.123,20.25,0,-1.999',
         geoJson: '10.123,20.25,0,-1.999',
@@ -44,9 +48,10 @@ void main() {
       );
       _testAllWriters<CoordinateContent>(
         [
+          (output) => output.position([10.123, 20.25, -30.95, -1.999]),
           (output) => output.position(
                 const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
-              )
+              ),
         ],
         def: '10.1,20.3,-30.9,-2.0',
         geoJson: '10.1,20.3,-30.9,-2.0',
@@ -62,6 +67,7 @@ void main() {
     test('GeoPosition coordinates', () {
       _testAllWriters<CoordinateContent>(
         [
+          (output) => output.position([10.123, 20.25, -30.95, -1.999]),
           (output) => output.position(
                 const Geographic(
                   lon: 10.123,
@@ -69,7 +75,7 @@ void main() {
                   elev: -30.95,
                   m: -1.999,
                 ),
-              )
+              ),
         ],
         def: '10.1,20.3,-30.9,-2.0',
         geoJson: '10.1,20.3,-30.9,-2.0',
@@ -85,6 +91,7 @@ void main() {
     test('Box coordinates', () {
       _testAllWriters<CoordinateContent>(
         [
+          (output) => output.box([10.123, 20.25, 12.485, 25.195]),
           (output) => output.box(
                 const ProjBox(
                   minX: 10.123,
@@ -92,7 +99,7 @@ void main() {
                   maxX: 12.485,
                   maxY: 25.195,
                 ),
-              )
+              ),
         ],
         def: '10.123,20.25,12.485,25.195',
         geoJson: '10.123,20.25,12.485,25.195',
@@ -106,12 +113,67 @@ void main() {
                 const ProjBox(
                   minX: 10.123,
                   minY: 20.25,
+                  minM: -2.9,
+                  maxX: 12.485,
+                  maxY: 25.195,
+                  maxM: -0.9,
+                ),
+              ),
+        ],
+        def: '10.12,20.25,0,-2.90,12.48,25.20,0,-0.90',
+        geoJson: '10.12,20.25,0,-2.90,12.48,25.20,0,-0.90',
+        geoJsonStrict: '10.12,20.25,12.48,25.20',
+        wktLike: '10 20 0 -3,12 25 0 -1',
+        wkt: 'POLYGON M((10.1 20.3 -2.9,12.5 20.3 -1.9,12.5 25.2'
+            ' -0.9,10.1 25.2 -1.9,10.1 20.3 -2.9))',
+        defDecimals: 2,
+        geoJsonDecimals: 2,
+        wktLikeDecimals: 0,
+        wktDecimals: 1,
+      );
+      _testAllWriters<CoordinateContent>(
+        [
+          (output) => output.box(
+                [10.123, 20.25, -15.09, -2.9, 12.485, 25.195, -14.949, -0.9],
+              ),
+          (output) => output.box(
+                const ProjBox(
+                  minX: 10.123,
+                  minY: 20.25,
+                  minZ: -15.09,
+                  minM: -2.9,
+                  maxX: 12.485,
+                  maxY: 25.195,
+                  maxZ: -14.949,
+                  maxM: -0.9,
+                ),
+              ),
+        ],
+        def: '10.12,20.25,-15.09,-2.90,12.48,25.20,-14.95,-0.90',
+        geoJson: '10.12,20.25,-15.09,-2.90,12.48,25.20,-14.95,-0.90',
+        geoJsonStrict: '10.12,20.25,-15.09,12.48,25.20,-14.95',
+        wktLike: '10 20 -15 -3,12 25 -15 -1',
+        wkt: 'POLYGON ZM((10.1 20.3 -15.1 -2.9,12.5 20.3 -15.0 -1.9,12.5 25.2'
+            ' -14.9 -0.9,10.1 25.2 -15.0 -1.9,10.1 20.3 -15.1 -2.9))',
+        defDecimals: 2,
+        geoJsonDecimals: 2,
+        wktLikeDecimals: 0,
+        wktDecimals: 1,
+      );
+      _testAllWriters<CoordinateContent>(
+        [
+          (output) =>
+              output.box([10.123, 20.25, -15.09, 12.485, 25.195, -14.949]),
+          (output) => output.box(
+                const ProjBox(
+                  minX: 10.123,
+                  minY: 20.25,
                   minZ: -15.09,
                   maxX: 12.485,
                   maxY: 25.195,
                   maxZ: -14.949,
                 ),
-              )
+              ),
         ],
         def: '10.12,20.25,-15.09,12.48,25.20,-14.95',
         geoJson: '10.12,20.25,-15.09,12.48,25.20,-14.95',
@@ -127,6 +189,8 @@ void main() {
     test('GeoBox coordinates', () {
       _testAllWriters<CoordinateContent>(
         [
+          (output) =>
+              output.box([10.123, 20.25, -15.09, 12.485, 25.195, -14.949]),
           (output) => output.box(
                 const GeoBox(
                   west: 10.123,
@@ -136,7 +200,7 @@ void main() {
                   north: 25.195,
                   maxElev: -14.949,
                 ),
-              )
+              ),
         ],
         def: '10.12,20.25,-15.09,12.48,25.20,-14.95',
         geoJson: '10.12,20.25,-15.09,12.48,25.20,-14.95',
@@ -156,7 +220,7 @@ void main() {
                 const Projected(x: 10.123, y: 20.25),
                 const Projected(x: 10.123, y: 20.25, z: -30.95),
                 const Projected(x: 10.123, y: 20.25, m: -1.999),
-              ])
+              ]),
         ],
         def: '[10.123,20.25],[10.123,20.25,-30.95],[10.123,20.25,0,-1.999]',
         geoJson: '[10.123,20.25],[10.123,20.25,-30.95],[10.123,20.25,0,-1.999]',
@@ -170,7 +234,7 @@ void main() {
                 const Projected(x: 10.123, y: 20.25),
                 const Projected(x: 10.123, y: 20.25, m: -1.999),
                 const Projected(x: 10.123, y: 20.25, z: -30.95),
-              ])
+              ]),
         ],
         def: '[10.123,20.25],[10.123,20.25,0,-1.999],[10.123,20.25,-30.95]',
         geoJson: '[10.123,20.25],[10.123,20.25,0,-1.999],[10.123,20.25,-30.95]',
@@ -181,10 +245,15 @@ void main() {
       _testAllWriters<CoordinateContent>(
         [
           (output) => output.positions1D([
+                [10.123, 20.25],
+                [10.123, 20.25, -30.95, -1.999],
+                [10.123, 20.25],
+              ]),
+          (output) => output.positions1D([
                 const Projected(x: 10.123, y: 20.25),
                 const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
                 const Projected(x: 10.123, y: 20.25),
-              ])
+              ]),
         ],
         def: '[10.123,20.25],[10.123,20.25,-30.95,-1.999],[10.123,20.25]',
         geoJson: '[10.123,20.25],[10.123,20.25,-30.95,-1.999],[10.123,20.25]',
@@ -211,6 +280,7 @@ void main() {
     test('Point geometry', () {
       _testAllWriters<GeometryContent>(
         [
+          (output) => output.point([10.123, 20.25]),
           (output) => output.point(const Projected(x: 10.123, y: 20.25)),
           (output) => output.geometryWithPosition(
                 type: Geom.point,
@@ -224,6 +294,7 @@ void main() {
       );
       _testAllWriters<GeometryContent>(
         [
+          (output) => output.point([10.123, 20.25, -30.95]),
           (output) => output.point(
                 const Projected(x: 10.123, y: 20.25, z: -30.95),
               ),
@@ -255,6 +326,7 @@ void main() {
       );
       _testAllWriters<GeometryContent>(
         [
+          (output) => output.point([10.123, 20.25, -30.95, -1.999]),
           (output) => output.point(
                 const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
               ),
@@ -273,6 +345,10 @@ void main() {
       _testAllWriters<GeometryContent>(
         [
           (output) => output.point(
+                [10.123, 20.25, -30.95],
+                coordType: Coords.xyz,
+              ),
+          (output) => output.point(
                 const Projected(x: 10.123, y: 20.25, z: -30.95),
                 coordType: Coords.xyz,
               ),
@@ -289,6 +365,10 @@ void main() {
       );
       _testAllWriters<GeometryContent>(
         [
+          (output) => output.point(
+                [10.123, 20.25, -30.95, -1.999],
+                coordType: Coords.xyz,
+              ),
           (output) => output.point(
                 const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
                 coordType: Coords.xyz,
@@ -308,6 +388,10 @@ void main() {
       _testAllWriters<GeometryContent>(
         [
           (output) => output.point(
+                [10.123, 20.25, -30.95],
+                coordType: Coords.xy,
+              ),
+          (output) => output.point(
                 const Projected(x: 10.123, y: 20.25, z: -30.95),
                 coordType: Coords.xy,
               ),
@@ -325,6 +409,10 @@ void main() {
       _testAllWriters<GeometryContent>(
         [
           (output) => output.point(
+                [10.123, 20.25],
+                coordType: Coords.xyz,
+              ),
+          (output) => output.point(
                 const Projected(x: 10.123, y: 20.25),
                 coordType: Coords.xyz,
               ),
@@ -341,6 +429,10 @@ void main() {
       );
       _testAllWriters<GeometryContent>(
         [
+          (output) => output.point(
+                [10.123, 20.25, -30.95, -1.999],
+                coordType: Coords.xym,
+              ),
           (output) => output.point(
                 const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
                 coordType: Coords.xym,
@@ -361,6 +453,10 @@ void main() {
       _testAllWriters<GeometryContent>(
         [
           (output) => output.point(
+                [10.123, 20.25, -30.95, -1.999],
+                coordType: Coords.xyzm,
+              ),
+          (output) => output.point(
                 const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
                 coordType: Coords.xyzm,
               ),
@@ -378,7 +474,9 @@ void main() {
         wkt: 'POINT ZM(10.123 20.25 -30.95 -1.999)',
       );
       _testAllWriters<GeometryContent>(
-        [(output) => output.emptyGeometry(Geom.point)],
+        [
+          (output) => output.emptyGeometry(Geom.point),
+        ],
         def: '',
         geoJson: '{"type":"Point","coordinates":[]}',
         wktLike: '',
@@ -388,6 +486,12 @@ void main() {
     test('MultiPoint geometry', () {
       _testAllWriters<GeometryContent>(
         [
+          (output) => output.multiPoint(
+                [
+                  [10.123, 20.25],
+                  [5.98, -3.47],
+                ],
+              ),
           (output) => output.multiPoint(
                 [
                   const Projected(x: 10.123, y: 20.25),
@@ -412,6 +516,14 @@ void main() {
     test('LineString geometry', () {
       _testAllWriters<GeometryContent>(
         [
+          (output) => output.lineString(
+                [
+                  [-1.1, -1.1],
+                  [2.1, -2.5],
+                  [3.5, -3.49],
+                ],
+                bbox: [-1.1, -3.49, 3.5, -1.1],
+              ),
           (output) => output.lineString(
                 [
                   const Projected(x: -1.1, y: -1.1),
@@ -449,6 +561,15 @@ void main() {
       );
       _testAllWriters<GeometryContent>(
         [
+          (output) => output.lineString(
+                [
+                  [-1.1, -1.1],
+                  [2.1, -2.5, 0, 4.99],
+                  [3.5, -3.49, -0.5],
+                ],
+                coordType: Coords.xym,
+                bbox: [-1.1, -3.49, 0, 0, 3.5, -1.1, 0, 4.99],
+              ),
           (output) => output.lineString(
                 [
                   const Projected(x: -1.1, y: -1.1),
@@ -497,6 +618,15 @@ void main() {
       );
       _testAllWriters<GeometryContent>(
         [
+          (output) => output.lineString(
+                [
+                  [-1.1, -1.1],
+                  [2.1, -2.5, 0, 4.99],
+                  [3.5, -3.49, -0.5],
+                ],
+                coordType: Coords.xyzm,
+                bbox: [-1.1, -3.49, -0.5, 0, 3.5, -1.1, 0, 4.99],
+              ),
           (output) => output.lineString(
                 [
                   const Projected(x: -1.1, y: -1.1),
@@ -554,6 +684,19 @@ void main() {
           (output) => output.multiLineString(
                 [
                   [
+                    [-1.1, -1.1],
+                    [2.1, -2.5],
+                    [3.5, -3.49],
+                  ],
+                  [
+                    [38.19, 57.4],
+                    [43.9, 84.1],
+                  ],
+                ],
+              ),
+          (output) => output.multiLineString(
+                [
+                  [
                     const Projected(x: -1.1, y: -1.1),
                     const Projected(x: 2.1, y: -2.5),
                     const Projected(x: 3.5, y: -3.49),
@@ -593,6 +736,16 @@ void main() {
           (output) => output.polygon(
                 [
                   [
+                    [10.1, 10.1],
+                    [5, 9],
+                    [12, 4],
+                    [10.1, 10.1]
+                  ],
+                ],
+              ),
+          (output) => output.polygon(
+                [
+                  [
                     const Projected(x: 10.1, y: 10.1),
                     const Projected(x: 5, y: 9),
                     const Projected(x: 12, y: 4),
@@ -622,6 +775,18 @@ void main() {
     test('MultiPolygon geometry', () {
       _testAllWriters<GeometryContent>(
         [
+          (output) => output.multiPolygon(
+                [
+                  [
+                    [
+                      [10.1, 10.1],
+                      [5, 9],
+                      [12, 4],
+                      [10.1, 10.1]
+                    ],
+                  ],
+                ],
+              ),
           (output) => output.multiPolygon(
                 [
                   [
@@ -660,6 +825,20 @@ void main() {
         [
           (output) => output.geometryCollection(
                 geometries: (geom) => geom
+                  ..point([10.123, 20.25, -30.95], coordType: Coords.xyz)
+                  ..polygon(
+                    [
+                      [
+                        [10.1, 10.1],
+                        [5, 9],
+                        [12, 4],
+                        [10.1, 10.1]
+                      ],
+                    ],
+                  ),
+              ),
+          (output) => output.geometryCollection(
+                geometries: (geom) => geom
                   ..point(
                     const Projected(x: 10.123, y: 20.25, z: -30.95),
                     coordType: Coords.xyz,
@@ -674,7 +853,7 @@ void main() {
                       ],
                     ],
                   ),
-              )
+              ),
         ],
         def: '[10.123,20.25,-30.95],[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]',
         geoJson: '{"type":"GeometryCollection","geometries":[{"type":"Point",'
