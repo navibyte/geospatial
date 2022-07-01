@@ -282,10 +282,6 @@ void main() {
         [
           (output) => output.point([10.123, 20.25]),
           (output) => output.point(const Projected(x: 10.123, y: 20.25)),
-          (output) => output.geometryWithPosition(
-                type: Geom.point,
-                coordinates: const Projected(x: 10.123, y: 20.25),
-              ),
         ],
         def: '10.123,20.25',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25]}',
@@ -298,10 +294,6 @@ void main() {
           (output) => output.point(
                 const Projected(x: 10.123, y: 20.25, z: -30.95),
               ),
-          (output) => output.geometryWithPosition(
-                type: Geom.point,
-                coordinates: const Projected(x: 10.123, y: 20.25, z: -30.95),
-              ),
         ],
         def: '10.123,20.25,-30.95',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
@@ -312,10 +304,6 @@ void main() {
         [
           (output) => output.point(
                 const Projected(x: 10.123, y: 20.25, m: -1.999),
-              ),
-          (output) => output.geometryWithPosition(
-                type: Geom.point,
-                coordinates: const Projected(x: 10.123, y: 20.25, m: -1.999),
               ),
         ],
         def: '10.123,20.25,0,-1.999',
@@ -329,11 +317,6 @@ void main() {
           (output) => output.point([10.123, 20.25, -30.95, -1.999]),
           (output) => output.point(
                 const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
-              ),
-          (output) => output.geometryWithPosition(
-                type: Geom.point,
-                coordinates:
-                    const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
               ),
         ],
         def: '10.123,20.25,-30.95,-1.999',
@@ -352,11 +335,6 @@ void main() {
                 const Projected(x: 10.123, y: 20.25, z: -30.95),
                 coordType: Coords.xyz,
               ),
-          (output) => output.geometryWithPosition(
-                type: Geom.point,
-                coordinates: const Projected(x: 10.123, y: 20.25, z: -30.95),
-                coordType: Coords.xyz,
-              ),
         ],
         def: '10.123,20.25,-30.95',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
@@ -371,12 +349,6 @@ void main() {
               ),
           (output) => output.point(
                 const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
-                coordType: Coords.xyz,
-              ),
-          (output) => output.geometryWithPosition(
-                type: Geom.point,
-                coordinates:
-                    const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
                 coordType: Coords.xyz,
               ),
         ],
@@ -395,11 +367,6 @@ void main() {
                 const Projected(x: 10.123, y: 20.25, z: -30.95),
                 coordType: Coords.xy,
               ),
-          (output) => output.geometryWithPosition(
-                type: Geom.point,
-                coordinates: const Projected(x: 10.123, y: 20.25, z: -30.95),
-                coordType: Coords.xy,
-              ),
         ],
         def: '10.123,20.25',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25]}',
@@ -414,11 +381,6 @@ void main() {
               ),
           (output) => output.point(
                 const Projected(x: 10.123, y: 20.25),
-                coordType: Coords.xyz,
-              ),
-          (output) => output.geometryWithPosition(
-                type: Geom.point,
-                coordinates: const Projected(x: 10.123, y: 20.25),
                 coordType: Coords.xyz,
               ),
         ],
@@ -437,12 +399,6 @@ void main() {
                 const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
                 coordType: Coords.xym,
               ),
-          (output) => output.geometryWithPosition(
-                type: Geom.point,
-                coordinates:
-                    const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
-                coordType: Coords.xym,
-              ),
         ],
         def: '10.123,20.25,0,-1.999',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,0,-1.999]}',
@@ -458,12 +414,6 @@ void main() {
               ),
           (output) => output.point(
                 const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
-                coordType: Coords.xyzm,
-              ),
-          (output) => output.geometryWithPosition(
-                type: Geom.point,
-                coordinates:
-                    const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
                 coordType: Coords.xyzm,
               ),
         ],
@@ -494,13 +444,6 @@ void main() {
               ),
           (output) => output.multiPoint(
                 [
-                  const Projected(x: 10.123, y: 20.25),
-                  const Projected(x: 5.98, y: -3.47),
-                ],
-              ),
-          (output) => output.geometryWithPositions1D(
-                type: Geom.multiPoint,
-                coordinates: [
                   const Projected(x: 10.123, y: 20.25),
                   const Projected(x: 5.98, y: -3.47),
                 ],
@@ -537,20 +480,6 @@ void main() {
                   maxY: -1.1,
                 ),
               ),
-          (output) => output.geometryWithPositions1D(
-                type: Geom.lineString,
-                bbox: const ProjBox(
-                  minX: -1.1,
-                  minY: -3.49,
-                  maxX: 3.5,
-                  maxY: -1.1,
-                ),
-                coordinates: [
-                  const Projected(x: -1.1, y: -1.1),
-                  const Projected(x: 2.1, y: -2.5),
-                  const Projected(x: 3.5, y: -3.49),
-                ],
-              ),
         ],
         def: '[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]',
         geoJson: '{"type":"LineString",'
@@ -585,23 +514,6 @@ void main() {
                   maxY: -1.1,
                   maxM: 4.99,
                 ),
-              ),
-          (output) => output.geometryWithPositions1D(
-                type: Geom.lineString,
-                coordType: Coords.xym,
-                bbox: const ProjBox(
-                  minX: -1.1,
-                  minY: -3.49,
-                  minM: 0,
-                  maxX: 3.5,
-                  maxY: -1.1,
-                  maxM: 4.99,
-                ),
-                coordinates: [
-                  const Projected(x: -1.1, y: -1.1),
-                  const Projected(x: 2.1, y: -2.5, m: 4.99),
-                  const Projected(x: 3.5, y: -3.49, z: -0.5),
-                ],
               ),
         ],
         def: '[-1.1,-1.1,0,0],[2.1,-2.5,0,4.99],[3.5,-3.49,0,0]',
@@ -644,25 +556,6 @@ void main() {
                   maxZ: 0,
                   maxM: 4.99,
                 ),
-              ),
-          (output) => output.geometryWithPositions1D(
-                type: Geom.lineString,
-                coordType: Coords.xyzm,
-                bbox: const ProjBox(
-                  minX: -1.1,
-                  minY: -3.49,
-                  minZ: -0.5,
-                  minM: 0,
-                  maxX: 3.5,
-                  maxY: -1.1,
-                  maxZ: 0,
-                  maxM: 4.99,
-                ),
-                coordinates: [
-                  const Projected(x: -1.1, y: -1.1),
-                  const Projected(x: 2.1, y: -2.5, m: 4.99),
-                  const Projected(x: 3.5, y: -3.49, z: -0.5),
-                ],
               ),
         ],
         def: '[-1.1,-1.1,0,0],[2.1,-2.5,0,4.99],[3.5,-3.49,-0.5,0]',
@@ -707,20 +600,6 @@ void main() {
                   ],
                 ],
               ),
-          (output) => output.geometryWithPositions2D(
-                type: Geom.multiLineString,
-                coordinates: [
-                  [
-                    const Projected(x: -1.1, y: -1.1),
-                    const Projected(x: 2.1, y: -2.5),
-                    const Projected(x: 3.5, y: -3.49),
-                  ],
-                  [
-                    const Projected(x: 38.19, y: 57.4),
-                    const Projected(x: 43.9, y: 84.1),
-                  ],
-                ],
-              ),
         ],
         def: '[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]],[[38.19,57.4],[43.9,84.1]]',
         geoJson: '{"type":"MultiLineString","coordinates":[[[-1.1,-1.1],'
@@ -745,17 +624,6 @@ void main() {
               ),
           (output) => output.polygon(
                 [
-                  [
-                    const Projected(x: 10.1, y: 10.1),
-                    const Projected(x: 5, y: 9),
-                    const Projected(x: 12, y: 4),
-                    const Projected(x: 10.1, y: 10.1)
-                  ],
-                ],
-              ),
-          (output) => output.geometryWithPositions2D(
-                type: Geom.polygon,
-                coordinates: [
                   [
                     const Projected(x: 10.1, y: 10.1),
                     const Projected(x: 5, y: 9),
@@ -789,19 +657,6 @@ void main() {
               ),
           (output) => output.multiPolygon(
                 [
-                  [
-                    [
-                      const Projected(x: 10.1, y: 10.1),
-                      const Projected(x: 5, y: 9),
-                      const Projected(x: 12, y: 4),
-                      const Projected(x: 10.1, y: 10.1)
-                    ],
-                  ],
-                ],
-              ),
-          (output) => output.geometryWithPositions3D(
-                type: Geom.multiPolygon,
-                coordinates: [
                   [
                     [
                       const Projected(x: 10.1, y: 10.1),

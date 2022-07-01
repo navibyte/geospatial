@@ -30,28 +30,23 @@ class _WkbGeometryWriter with GeometryContent {
   Uint8List toBytes() => writer.toBytes();
 
   @override
-  void geometryWithPosition({
-    required Geom type,
-    required Object coordinates,
+  void point(
+    Object coordinates, {
     String? name,
     Coords? coordType,
-    Object? bbox,
   }) {
     // detect type for coordinates
     final typeCoords =
         forcedTypeCoords ?? _typeCoordsWithPosition(coordinates, coordType);
 
-    // expected geometry types: point
-    if (type == Geom.point) {
-      _writeGeometryHeader(type, typeCoords);
-      _writePoint(coordinates, typeCoords);
-    }
+    // write a point geometry
+    _writeGeometryHeader(Geom.point, typeCoords);
+    _writePoint(coordinates, typeCoords);
   }
 
   @override
-  void geometryWithPositions1D({
-    required Geom type,
-    required Iterable<Object> coordinates,
+  void lineString(
+    Iterable<Object> coordinates, {
     String? name,
     Coords? coordType,
     Object? bbox,
@@ -60,28 +55,14 @@ class _WkbGeometryWriter with GeometryContent {
     final typeCoords =
         forcedTypeCoords ?? _typeCoordsWithPositions1D(coordinates, coordType);
 
-    // expected geometry types: lineString, multiPoint
-    if (type == Geom.lineString) {
-      _writeGeometryHeader(type, typeCoords);
-      _writePointArray(coordinates, typeCoords);
-    } else if (type == Geom.multiPoint) {
-      _writeGeometryHeader(type, typeCoords);
-
-      // write numPoints
-      writer.writeUint32(coordinates.length);
-
-      // write all points
-      for (final point in coordinates) {
-        _writeGeometryHeader(Geom.point, typeCoords);
-        _writePoint(point, typeCoords);
-      }
-    }
+    // write a line string geometry
+    _writeGeometryHeader(Geom.lineString, typeCoords);
+    _writePointArray(coordinates, typeCoords);
   }
 
   @override
-  void geometryWithPositions2D({
-    required Geom type,
-    required Iterable<Iterable<Object>> coordinates,
+  void polygon(
+    Iterable<Iterable<Object>> coordinates, {
     String? name,
     Coords? coordType,
     Object? bbox,
@@ -90,35 +71,69 @@ class _WkbGeometryWriter with GeometryContent {
     final typeCoords =
         forcedTypeCoords ?? _typeCoordsWithPositions2D(coordinates, coordType);
 
-    // expected geometry types: polygon, multiLineString
-    if (type == Geom.polygon) {
-      _writeGeometryHeader(type, typeCoords);
+    // write a polygon geometry
+    _writeGeometryHeader(Geom.polygon, typeCoords);
 
-      // write numRings
-      writer.writeUint32(coordinates.length);
+    // write numRings
+    writer.writeUint32(coordinates.length);
 
-      // write all linear rings (of polygon)
-      for (final linearRing in coordinates) {
-        _writePointArray(linearRing, typeCoords);
-      }
-    } else if (type == Geom.multiLineString) {
-      _writeGeometryHeader(type, typeCoords);
-
-      // write numLineStrings
-      writer.writeUint32(coordinates.length);
-
-      // write all line strings
-      for (final lineString in coordinates) {
-        _writeGeometryHeader(Geom.lineString, typeCoords);
-        _writePointArray(lineString, typeCoords);
-      }
+    // write all linear rings (of polygon)
+    for (final linearRing in coordinates) {
+      _writePointArray(linearRing, typeCoords);
     }
   }
 
   @override
-  void geometryWithPositions3D({
-    required Geom type,
-    required Iterable<Iterable<Iterable<Object>>> coordinates,
+  void multiPoint(
+    Iterable<Object> coordinates, {
+    String? name,
+    Coords? coordType,
+    Object? bbox,
+  }) {
+    // detect type for coordinates
+    final typeCoords =
+        forcedTypeCoords ?? _typeCoordsWithPositions1D(coordinates, coordType);
+
+    // write a multi point geometry
+    _writeGeometryHeader(Geom.multiPoint, typeCoords);
+
+    // write numPoints
+    writer.writeUint32(coordinates.length);
+
+    // write all points
+    for (final point in coordinates) {
+      _writeGeometryHeader(Geom.point, typeCoords);
+      _writePoint(point, typeCoords);
+    }
+  }
+
+  @override
+  void multiLineString(
+    Iterable<Iterable<Object>> coordinates, {
+    String? name,
+    Coords? coordType,
+    Object? bbox,
+  }) {
+    // detect type for coordinates
+    final typeCoords =
+        forcedTypeCoords ?? _typeCoordsWithPositions2D(coordinates, coordType);
+
+    // write a multi line geometry
+    _writeGeometryHeader(Geom.multiLineString, typeCoords);
+
+    // write numLineStrings
+    writer.writeUint32(coordinates.length);
+
+    // write all line strings
+    for (final lineString in coordinates) {
+      _writeGeometryHeader(Geom.lineString, typeCoords);
+      _writePointArray(lineString, typeCoords);
+    }
+  }
+
+  @override
+  void multiPolygon(
+    Iterable<Iterable<Iterable<Object>>> coordinates, {
     String? name,
     Coords? coordType,
     Object? bbox,
@@ -127,24 +142,22 @@ class _WkbGeometryWriter with GeometryContent {
     final typeCoords =
         forcedTypeCoords ?? _typeCoordsWithPositions3D(coordinates, coordType);
 
-    // expected geometry types: multiPolygon
-    if (type == Geom.multiPolygon) {
-      _writeGeometryHeader(type, typeCoords);
+    // write a multi polygon geometry
+    _writeGeometryHeader(Geom.multiPolygon, typeCoords);
 
-      // write numPolygons
-      writer.writeUint32(coordinates.length);
+    // write numPolygons
+    writer.writeUint32(coordinates.length);
 
-      // write all polygons
-      for (final polygon in coordinates) {
-        _writeGeometryHeader(Geom.polygon, typeCoords);
+    // write all polygons
+    for (final polygon in coordinates) {
+      _writeGeometryHeader(Geom.polygon, typeCoords);
 
-        // write numRings
-        writer.writeUint32(polygon.length);
+      // write numRings
+      writer.writeUint32(polygon.length);
 
-        // write all linear rings for a polygon
-        for (final linearRing in polygon) {
-          _writePointArray(linearRing, typeCoords);
-        }
+      // write all linear rings for a polygon
+      for (final linearRing in polygon) {
+        _writePointArray(linearRing, typeCoords);
       }
     }
   }
@@ -311,12 +324,10 @@ class _GeometryCollector with GeometryContent {
   int numGeometries = 0;
 
   @override
-  void geometryWithPosition({
-    required Geom type,
-    required Object coordinates,
+  void point(
+    Object coordinates, {
     String? name,
     Coords? coordType,
-    Object? bbox,
   }) {
     final typeCoords = _typeCoordsWithPosition(coordinates, coordType);
     hasZ |= typeCoords.is3D;
@@ -325,9 +336,8 @@ class _GeometryCollector with GeometryContent {
   }
 
   @override
-  void geometryWithPositions1D({
-    required Geom type,
-    required Iterable<Object> coordinates,
+  void lineString(
+    Iterable<Object> coordinates, {
     String? name,
     Coords? coordType,
     Object? bbox,
@@ -339,9 +349,8 @@ class _GeometryCollector with GeometryContent {
   }
 
   @override
-  void geometryWithPositions2D({
-    required Geom type,
-    required Iterable<Iterable<Object>> coordinates,
+  void polygon(
+    Iterable<Iterable<Object>> coordinates, {
     String? name,
     Coords? coordType,
     Object? bbox,
@@ -353,9 +362,34 @@ class _GeometryCollector with GeometryContent {
   }
 
   @override
-  void geometryWithPositions3D({
-    required Geom type,
-    required Iterable<Iterable<Iterable<Object>>> coordinates,
+  void multiPoint(
+    Iterable<Object> coordinates, {
+    String? name,
+    Coords? coordType,
+    Object? bbox,
+  }) {
+    final typeCoords = _typeCoordsWithPositions1D(coordinates, coordType);
+    hasZ |= typeCoords.is3D;
+    hasM |= typeCoords.isMeasured;
+    numGeometries++;
+  }
+
+  @override
+  void multiLineString(
+    Iterable<Iterable<Object>> coordinates, {
+    String? name,
+    Coords? coordType,
+    Object? bbox,
+  }) {
+    final typeCoords = _typeCoordsWithPositions2D(coordinates, coordType);
+    hasZ |= typeCoords.is3D;
+    hasM |= typeCoords.isMeasured;
+    numGeometries++;
+  }
+
+  @override
+  void multiPolygon(
+    Iterable<Iterable<Iterable<Object>>> coordinates, {
     String? name,
     Coords? coordType,
     Object? bbox,

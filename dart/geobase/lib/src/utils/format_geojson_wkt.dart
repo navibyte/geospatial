@@ -164,18 +164,15 @@ abstract class _BaseTextWriter<T extends Object>
   }
 
   @override
-  void geometryWithPosition({
-    required Geom type,
-    required Object coordinates,
+  void point(
+    Object coordinates, {
     String? name,
     Coords? coordType,
-    Object? bbox,
   }) {
     if (_geometryBeforeCoordinates(
-      type: type,
+      type: Geom.point,
       name: name,
       coordType: coordType,
-      bbox: bbox,
     )) {
       _coordPosition(coordinates);
       _geometryAfterCoordinates();
@@ -183,15 +180,14 @@ abstract class _BaseTextWriter<T extends Object>
   }
 
   @override
-  void geometryWithPositions1D({
-    required Geom type,
-    required Iterable<Object> coordinates,
+  void lineString(
+    Iterable<Object> coordinates, {
     String? name,
     Coords? coordType,
     Object? bbox,
   }) {
     if (_geometryBeforeCoordinates(
-      type: type,
+      type: Geom.lineString,
       name: name,
       coordType: coordType,
       bbox: bbox,
@@ -206,15 +202,14 @@ abstract class _BaseTextWriter<T extends Object>
   }
 
   @override
-  void geometryWithPositions2D({
-    required Geom type,
-    required Iterable<Iterable<Object>> coordinates,
+  void polygon(
+    Iterable<Iterable<Object>> coordinates, {
     String? name,
     Coords? coordType,
     Object? bbox,
   }) {
     if (_geometryBeforeCoordinates(
-      type: type,
+      type: Geom.polygon,
       name: name,
       coordType: coordType,
       bbox: bbox,
@@ -229,15 +224,58 @@ abstract class _BaseTextWriter<T extends Object>
   }
 
   @override
-  void geometryWithPositions3D({
-    required Geom type,
-    required Iterable<Iterable<Iterable<Object>>> coordinates,
+  void multiPoint(
+    Iterable<Object> coordinates, {
     String? name,
     Coords? coordType,
     Object? bbox,
   }) {
     if (_geometryBeforeCoordinates(
-      type: type,
+      type: Geom.multiPoint,
+      name: name,
+      coordType: coordType,
+      bbox: bbox,
+    )) {
+      _coordArray(count: coordinates.length);
+      for (final pos in coordinates) {
+        _coordPosition(pos);
+      }
+      _coordArrayEnd();
+      _geometryAfterCoordinates();
+    }
+  }
+
+  @override
+  void multiLineString(
+    Iterable<Iterable<Object>> coordinates, {
+    String? name,
+    Coords? coordType,
+    Object? bbox,
+  }) {
+    if (_geometryBeforeCoordinates(
+      type: Geom.multiLineString,
+      name: name,
+      coordType: coordType,
+      bbox: bbox,
+    )) {
+      _coordArray(count: coordinates.length);
+      for (final item in coordinates) {
+        positions1D(item);
+      }
+      _coordArrayEnd();
+      _geometryAfterCoordinates();
+    }
+  }
+
+  @override
+  void multiPolygon(
+    Iterable<Iterable<Iterable<Object>>> coordinates, {
+    String? name,
+    Coords? coordType,
+    Object? bbox,
+  }) {
+    if (_geometryBeforeCoordinates(
+      type: Geom.multiPolygon,
       name: name,
       coordType: coordType,
       bbox: bbox,
