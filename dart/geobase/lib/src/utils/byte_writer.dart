@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'dart:math' as math;
+
 import 'dart:typed_data';
 
 /// A writer (integer and floating point values) writing a sequence of bytes.
@@ -13,6 +15,7 @@ class ByteWriter {
   final _ChunkedByteBuffer _buffer;
   ByteData _chunk;
   int _offset = 0;
+  bool _needNewChunk = false;
 
   /// Endianness to be used when writing a sequence of bytes.
   final Endian endian;
@@ -33,27 +36,30 @@ class ByteWriter {
         _chunk = ByteData(bufferSize);
 
   void _reserve(int len) {
-    if (_offset + len > bufferSize) {
-      if (_flush()) {
-        _chunk = ByteData(bufferSize);
+    if (_needNewChunk) {
+      _chunk = ByteData(math.max(bufferSize, len));
+      _offset = 0;
+      _needNewChunk = false;
+    } else {
+      if (_offset + len > bufferSize) {
+        _flush();
+        _chunk = ByteData(math.max(bufferSize, len));
+        _offset = 0;
+        _needNewChunk = false;
       }
     }
   }
 
-  bool _flush() {
+  void _flush() {
     if (_offset > 0) {
       _buffer.addBytes(_chunk.buffer.asUint8List(0, _offset));
-      _offset = 0;
-      return true;
-    } else {
-      _offset = 0;
-      return false;
+      _needNewChunk = true;
     }
   }
 
   /// Collects the data written to a sequence of bytes in a Uint8List.
   Uint8List toBytes() {
-     _flush();
+    _flush();
     return _buffer.toBytes();
   }
 
@@ -109,7 +115,6 @@ class ByteWriter {
     _reserve(8);
     _chunk.setInt64(_offset, value, endian);
     _offset += 8;
-
   }
 
   /// Writes [value] as a single byte (unsigned binary representation).
