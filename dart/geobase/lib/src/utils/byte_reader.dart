@@ -10,88 +10,121 @@ import 'dart:typed_data';
 ///
 /// The [ByteReader] class is (at least currently) an internal utility class.
 class ByteReader {
-  final ByteBuffer _buffer;
-  final Endian _endian;
+  final ByteData _data;
+  int _offset = 0;
+
+  /// Endianness to be used when reading a sequence of bytes.
+  final Endian endian;
 
   /// A reader (integer and floating point values) reading a view of [buffer].
   ///
   /// [endian] specifies endianness to be used when reading a sequence of bytes.
-  ByteReader.view(ByteBuffer buffer, {Endian endian = Endian.big})
-      : _buffer = buffer,
-        _endian = endian;
+  ByteReader.view(ByteBuffer buffer, {this.endian = Endian.big})
+      : _data = ByteData.view(buffer);
 
-  /// Resets a reader to position a cursor to the start of a sequence of bytes.
-  void reset() {
-    // todo
+  void _expect(int len) {
+    if (_offset + len > _data.lengthInBytes) {
+      throw const FormatException('Buffer limits exceeded');
+    }
   }
 
   /// Reads a value from four bytes (IEEE 754 single-precision floating-point).
   ///
   /// See `ByteData.getFloat32` from `dart:typed_data` for reference.
   double readFloat32() {
-    return 0; // todo
+    _expect(4);
+    final value = _data.getFloat32(_offset, endian);
+    _offset += 4;
+    return value;
   }
 
   /// Reads a value from eight bytes (IEEE 754 double-precision floating-point).
   ///
   /// See `ByteData.getFloat64` from `dart:typed_data` for reference.
   double readFloat64() {
-    return 0; // todo
+    _expect(8);
+    final value = _data.getFloat64(_offset, endian);
+    _offset += 8;
+    return value;
   }
 
   /// Reads a value from a single byte (two's complement binary representation).
   ///
   /// See `ByteData.getInt8` from `dart:typed_data` for reference.
   int readInt8() {
-    return 0; // todo
+    _expect(1);
+    final value = _data.getInt8(_offset);
+    _offset += 1;
+    return value;
   }
 
   /// Reads a value from two bytes (two's complement binary representation).
   ///
   /// See `ByteData.getInt16` from `dart:typed_data` for reference.
   int readInt16() {
-    return 0; // todo
+    _expect(2);
+    final value = _data.getInt16(_offset, endian);
+    _offset += 2;
+    return value;
   }
 
   /// Reads a value from four bytes (two's complement binary representation).
   ///
   /// See `ByteData.getInt32` from `dart:typed_data` for reference.
   int readInt32() {
-    return 0; // todo
+    _expect(4);
+    final value = _data.getInt32(_offset, endian);
+    _offset += 4;
+    return value;
   }
 
   /// Reads a value from eight bytes (two's complement binary representation).
   ///
   /// See `ByteData.getInt64` from `dart:typed_data` for reference.
   int readInt64() {
-    return 0; // todo
+    _expect(8);
+    final value = _data.getInt64(_offset, endian);
+    _offset += 8;
+    return value;
   }
 
   /// Reads a value from a single byte (unsigned binary representation).
   ///
   /// See `ByteData.getUint8` from `dart:typed_data` for reference.
   int readUint8() {
-    return 0; // todo
+    _expect(1);
+    final value = _data.getUint8(_offset);
+    _offset += 1;
+    return value;
   }
 
   /// Reads a value from two bytes (unsigned binary representation).
   ///
   /// See `ByteData.getUint16` from `dart:typed_data` for reference.
   int readUint16() {
-    return 0; // todo
+    _expect(2);
+    final value = _data.getUint16(_offset, endian);
+    _offset += 2;
+    return value;
   }
 
   /// Reads a value from four bytes (unsigned binary representation).
   ///
   /// See `ByteData.getUint32` from `dart:typed_data` for reference.
   int readUint32() {
-    return 0; // todo
+    _expect(4);
+    final value = _data.getUint32(_offset, endian);
+    _offset += 4;
+    return value;
   }
 
   /// Reads a value from eight bytes (unsigned binary representation).
   ///
   /// See `ByteData.getUint64` from `dart:typed_data` for reference.
   int readUint64() {
-    return 0; // todo
+    _expect(8);
+    final value = _data.getUint64(_offset, endian);
+    _offset += 8;
+    return value;
   }
 }
