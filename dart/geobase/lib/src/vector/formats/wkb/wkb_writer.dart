@@ -4,29 +4,23 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'dart:typed_data';
+part of 'wkb.dart';
 
-import '/src/codes/coords.dart';
-import '/src/codes/geom.dart';
-import '/src/coordinates/base.dart';
-import '/src/utils/byte_writer.dart';
-import '/src/utils/format_validation.dart';
-import '/src/vector/content.dart';
-
-/// Writer [geometries] to a sequence of bytes as specified by WKB format.
-Uint8List writeWkb(WriteGeometries geometries) {
-  final writer = _WkbGeometryWriter(ByteWriter.buffered());
-  geometries.call(writer);
-  return writer.toBytes();
-}
-
-class _WkbGeometryWriter with GeometryContent {
+class _WkbGeometryWriter
+    with GeometryContent
+    implements ContentWriter<GeometryContent> {
   final ByteWriter writer;
   final Coords? forcedTypeCoords;
 
   _WkbGeometryWriter(this.writer, {this.forcedTypeCoords});
 
-  /// Returns geometry data written as a sequence of bytes in a Uint8List.
+  @override
+  GeometryContent get output => this;
+
+  @override
+  String toString() => base64.encode(toBytes());
+
+  @override
   Uint8List toBytes() => writer.toBytes();
 
   @override

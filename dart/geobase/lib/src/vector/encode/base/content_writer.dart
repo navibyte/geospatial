@@ -4,16 +4,24 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// An interface to write content of [T] into some content format.
+import 'dart:typed_data';
+
+/// An interface to write content of [T] into a content format (text or binary).
 abstract class ContentWriter<T extends Object> {
   /// The content [output] interface that is used by a client to write content.
   T get output;
 
-  /// A string representation of content already written to this (text) writer.
+  /// The text representation of content already written to this writer.
   ///
-  /// Must return a valid string representation when this writer is writing to
-  /// a text output. If an output does not support a string representation then
-  /// returned representation is undefined.
+  /// Returns a valid string representation of content for a text format writer
+  /// and a base64 string representation of content for a binary format writer.
   @override
   String toString();
+
+  /// The binary representation of content already written to this writer.
+  ///
+  /// Returns a valid binary representation of content as a sequence of bytes
+  /// for a binary format writer, and an UTF8 encoded binary representation of
+  /// textual content for a text format writer.
+  Uint8List toBytes();
 }

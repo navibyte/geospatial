@@ -4,6 +4,9 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'dart:convert';
+import 'dart:typed_data';
+
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/coordinates/base.dart';
@@ -378,6 +381,9 @@ abstract class _BaseTextWriter<T extends Object>
 
   @override
   String toString() => _buffer.toString();
+
+  @override
+  Uint8List toBytes() => Uint8List.fromList(utf8.encode(toString()));
 }
 
 // Writer for the "default" format ---------------------------------------------
