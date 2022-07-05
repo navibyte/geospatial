@@ -94,20 +94,17 @@ Tiling schemes, a sample with Web Mercator:
   quad.positionToTile(Geographic(lon: -0.0014, lat: 51.4778), zoom: 2)); 
 ```
 
-A sample to write a `Point` geometry with a geographic position to
+A sample to encode a `Point` geometry with a geographic position to
 [GeoJSON](https://geojson.org/):
 
 ```dart
-  // get GeoJSON format
-  final format = GeoJSON();
-
-  // geometry writer for GeoJSON
-  final writer = format.geometriesToText();
+  // geometry text format encoder for GeoJSON
+  final encoder = GeoJSON.geometry.encoder();
 
   // prints:
   //    {"type":"Point","coordinates":[10.123,20.25]}
-  writer.output.point(const Geographic(lon: 10.123, lat: 20.25));
-  print(writer);
+  encoder.content.point(const Geographic(lon: 10.123, lat: 20.25));
+  print(encoder.toText());
 ```
 
 See more examples and instructions how to use the package on chapters below.
@@ -454,83 +451,69 @@ Please see the documentation of [proj4dart](https://pub.dev/packages/proj4dart)
 package about it's capabilities, and accuracy of forward and inverse 
 projections.
 
-## Vector (data writers)
+## Geospatial vector data
 
-### About formats and writers
+### Content interfaces
 
-*Format* classes provide methods for accessing *writers* that allow writing 
-coordinate, geometry and feature objects to a output stream (like text buffer).
+Content interfaces are used for two main use cases:
+* *writing geospatial data* (coordinates, geometry and features) to text or binary format encoders 
+* *building objects* in decoders reading geospatial data from text or binary formats
 
-Formats available:
+Content interface   | Description
+------------------- | -----------
+`CoordinateContent` | Write coordinate objects (bounding boxes, positions, position arrays).
+`GeometryContent`   | Write geometry objects (supported geometry types: `point`, `lineString`, `polygon`, `multiPoint`, `multiLineString`, `multiPolygon` , `geometryCollection`)
+`FeatureContent`    | Write features (with properties and geometry objects) and feature collections
 
-Format   | Factory | Writers supported by Format
--------- | ------- | ---------------------------
-[GeoJSON](https://geojson.org/)  | `GeoJSON()` | Coordinates, Geometries, Features
-[WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) | `WKT()` | Coordinates, Geometries
+### Text format encoders
 
-There are also constants `defaultFormat` (a text format aligned with GeoJSON but
-output is somewhat simpler) and `wktLikeFormat` (a text format aligned with
+Text formats supported:
+
+Format   | Format class | Content encoders
+-------- | ------------ | ---------------------------
+[GeoJSON](https://geojson.org/)  | `GeoJSON` | Coordinates, Geometries, Features
+[WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) | `WKT` | Coordinates, Geometries
+
+There are also formats `DefaultFormat` (a text format aligned with GeoJSON but
+output is somewhat simpler) and `WktLikeFormat` (a text format aligned with
 WKT).
 
-All formats mentioned above have following writers:
+All formats mentioned above have following content specific formats:
 
 ```dart
-  /// Returns a writer formatting string representations of coordinate data.
-  ///
-  /// When an optional [buffer] is given, then representations are written into
-  /// it (without clearing any content it might already contain).
-  ///
-  /// Use [decimals] to set a number of decimals (not applied if no decimals).
-  ///
-  /// After writing some objects with coordinate data into a writer, the string
-  /// representation can be accessed using `toString()` of it (or via [buffer]
-  /// when such is given).
-  ContentWriter<CoordinateContent> coordinatesToText({
-    StringSink? buffer,
-    int? decimals,
-  });
+  /// The text format for coordinate objects.
+  static const TextFormat<CoordinateContent> coordinate;
 
-  /// Returns a writer formatting string representations of geometry objects.
-  ContentWriter<GeometryContent> geometriesToText({
-    StringSink? buffer,
-    int? decimals,
-  });
-}
+  /// The text format for geometry objects.
+  static const TextFormat<GeometryContent> geometry;
 ```
 
-A format object returned by `GeoJSON()` has also the following writer:
+`GeoJSON` provides also:
 
 ```dart
-  /// Returns a writer formatting string representations of feature objects.
-  ContentWriter<FeatureContent> featuresToText({
-    StringSink? buffer,
-    int? decimals,
-  });
+  /// The text format for feature objects.
+  static const TextFormat<FeatureContent> feature;
 ```
 
-See `ContentWriter`, `CoordinateContent`, `GeometryContent` and `FeatureContent`
-for more information. Also some samples in next chapters.
+See samples below how to use text formats and encoders.
 
-### GeoJSON writer
+### GeoJSON encoder
 
-The `GeoJSON` class can be used to access writers for coordinates, 
+The `GeoJSON` class can be used to access text format encoders for coordinates, 
 geometries and features producing [GeoJSON](https://geojson.org/) compatible
 text.
 
-A sample to write a `LineString` geometry to GeoJSON:
+A sample to encode a `LineString` geometry to GeoJSON:
 
 ```dart
-  // get GeoJSON format
-  final format = GeoJSON();
-
-  // geometry writer for GeoJSON
-  final writer = format.geometriesToText();
+  // geometry text format encoder for GeoJSON
+  final encoder = GeoJSON.geometry.encoder();
 
   // prints (however without line breaks):
   //    {"type":"LineString",
   //     "bbox":[-1.1,-3.49,3.5,-1.1],
   //     "coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]}
-  writer.output.lineString(
+  encoder.content.lineString(
     [
       const Geographic(lon: -1.1, lat: -1.1),
       const Geographic(lon: 2.1, lat: -2.5),
@@ -538,7 +521,7 @@ A sample to write a `LineString` geometry to GeoJSON:
     ],
     bbox: const GeoBox(west: -1.1, south: -3.49, east: 3.5, north: -1.1),
   );
-  print(writer);
+  print(encoder.toText());
 ```
 
 The sample above can be shortened (instead of `Geographic` and `GeoBox` objects
@@ -546,8 +529,8 @@ coordinates are represented as `Iterable<num>` like `[-1.1, -1.1]` or
 `[-1.1, -3.49, 3.5, -1.1]`):
 
 ```dart
-  final writer = GeoJSON().geometriesToText();
-  writer.output.lineString(
+  final encoder = GeoJSON.geometry.encoder();
+  encoder.content.lineString(
     [
       [-1.1, -1.1],
       [2.1, -2.5],
@@ -555,7 +538,7 @@ coordinates are represented as `Iterable<num>` like `[-1.1, -1.1]` or
     ],
     bbox: [-1.1, -3.49, 3.5, -1.1],
   );
-  print(writer);
+  print(encoder.toText());
 ```
 
 Shortened syntax for writing coordinates as `Iterable<num>` is available for all
@@ -563,14 +546,11 @@ content methods for writing positions, bounding boxes and other geometries, and
 accepting `Position` (that is `Projected` or `Geographic`) or `Box` (that is
 `ProjBox` or `GeoBox`) objects.
 
-A sample to write a `Feature` geometry to GeoJSON:
+A sample to encode a `Feature` geometry to GeoJSON:
 
 ```dart
-  // get GeoJSON format
-  final format = GeoJSON();
-
-  // feature writer for GeoJSON
-  final writer = format.featuresToText();
+  // feature text format encoder for GeoJSON
+  final encoder = GeoJSON.feature.encoder();
 
   // prints (however without line breaks):
   //    {"type":"Feature",
@@ -579,7 +559,7 @@ A sample to write a `Feature` geometry to GeoJSON:
   //        {"type":"Point","coordinates":[10.123,20.25]},
   //     "properties":
   //        {"foo":100,"bar":"this is property value","baz":true}}
-  writer.output.feature(
+  encoder.content.feature(
     id: 'fid-1',
     geometries: (geom) => geom.point(const Geographic(lon: 10.123, lat: 20.25)),
     properties: {
@@ -588,41 +568,39 @@ A sample to write a `Feature` geometry to GeoJSON:
       'baz': true,
     },
   );
-  print(writer);
+  print(encoder.toText());
 ```
 
-### WKT writer
+### WKT encoder
 
-The `WKT` class can be used to access writers for coordinates and 
+The `WKT` class can be used to access text format encoders for coordinates and 
 geometries producing 
 [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)
 compatible text. However feature objects cannot be written to WKT even if 
 supported by GeoJSON.
 
-A sample to write a `Point` geometry to WKT (with z and m coordinates too):
+A sample to encode a `Point` geometry to WKT (with z and m coordinates too):
 
 ```dart
-  // get WKT format
-  final format = WKT();
-
-  // geometry writer for WKT
-  final writer = format.geometriesToText();
+  // geometry text format encoder for WKT
+  final encoder = WKT.geometry.encoder();
 
   // prints:
   //    POINT ZM(10.123 20.25 -30.95 -1.999)
-  writer.output.point(
+  encoder.content.point(
     const Geographic(lon: 10.123, lat: 20.25, elev: -30.95, m: -1.999),
     coordType: Coords.xyzm,
   );
-  print(writer);
+  print(encoder.toText());
 ```
 
 Or shortened:
 
 ```dart
-  final writer = WKT().geometriesToText();
-  writer.output.point([10.123, 20.25, -30.95, -1.999], coordType: Coords.xyzm);
-  print(writer);
+  final encoder = WKT.geometry.encoder();
+  encoder.content
+      .point([10.123, 20.25, -30.95, -1.999], coordType: Coords.xyzm);
+  print(encoder.toText());
 ```
 
 ## Meta

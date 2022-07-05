@@ -4,12 +4,10 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// A function that is capable of writing properties to [output].
+/// A function to write properties to [output].
 typedef WriteProperties = void Function(PropertyContent output);
 
-/// An interface to write properties to a geospatial content receiver.
-/// 
-/// A receiver could be a geospatial data format writer or an object factory..
+/// An interface to write properties to format encoders and object builders.
 mixin PropertyContent {
   /// Writes a property map named by [name] and with contents in [map].
   ///

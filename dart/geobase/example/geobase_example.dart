@@ -163,94 +163,89 @@ void _scalable2i() {
 }
 
 void _wktPointGeometry() {
-  // geometry writer for WKT
-  final writer = WKT().geometriesToText();
+  // geometry text format encoder for WKT
+  final encoder = WKT.geometry.encoder();
 
   // prints:
   //    POINT(10.123 20.25)
-  writer.output.point(const Projected(x: 10.123, y: 20.25));
-  print(writer);
+  encoder.content.point(const Projected(x: 10.123, y: 20.25));
+  print(encoder.toText());
 }
 
 void _wktPointGeometryWithZ() {
-  // geometry writer for WKT
-  final writer = WKT().geometriesToText();
+  // geometry text format encoder for WKT
+  final encoder = WKT.geometry.encoder();
 
   // prints:
   //    POINT Z(10.123 20.25 -30.95)
-  writer.output.point(
+  encoder.content.point(
     const Projected(x: 10.123, y: 20.25, z: -30.95),
     coordType: Coords.xyz,
   );
-  print(writer);
+  print(encoder.toText());
 }
 
 void _wktPointGeometryWithM() {
-  // geometry writer for WKT
-  final writer = WKT().geometriesToText();
+  // geometry text format encoder for WKT
+  final encoder = WKT.geometry.encoder();
 
   // prints:
   //    POINT M(10.123 20.25 -1.999)
-  writer.output.point(
+  encoder.content.point(
     const Projected(x: 10.123, y: 20.25, m: -1.999),
     coordType: Coords.xym,
   );
-  print(writer);
+  print(encoder.toText());
 }
 
 void _wktPointGeometryWithZM() {
-  // get WKT format
-  final format = WKT();
-
-  // geometry writer for WKT
-  final writer = format.geometriesToText();
+  // geometry text format encoder for WKT
+  final encoder = WKT.geometry.encoder();
 
   // prints:
   //    POINT ZM(10.123 20.25 -30.95 -1.999)
-  writer.output.point(
+  encoder.content.point(
     const Geographic(lon: 10.123, lat: 20.25, elev: -30.95, m: -1.999),
     coordType: Coords.xyzm,
   );
-  print(writer);
+  print(encoder.toText());
 }
 
 void _wktPointGeometryWithZMShortened() {
-  final writer = WKT().geometriesToText();
-  writer.output.point([10.123, 20.25, -30.95, -1.999], coordType: Coords.xyzm);
-  print(writer);
+  final encoder = WKT.geometry.encoder();
+  encoder.content
+      .point([10.123, 20.25, -30.95, -1.999], coordType: Coords.xyzm);
+  print(encoder.toText());
 }
 
 void _geoJsonPointGeometry() {
-  // get GeoJSON format
-  final format = GeoJSON();
-
-  // geometry writer for GeoJSON
-  final writer = format.geometriesToText();
+  // geometry text format encoder for GeoJSON
+  final encoder = GeoJSON.geometry.encoder();
 
   // prints:
   //    {"type":"Point","coordinates":[10.123,20.25]}
-  writer.output.point(const Geographic(lon: 10.123, lat: 20.25));
-  print(writer);
+  encoder.content.point(const Geographic(lon: 10.123, lat: 20.25));
+  print(encoder.toText());
 }
 
 void _geoJsonPointGeometryDecimals() {
-  // geometry writer for GeoJSON, with number of decimals for text output set
-  final writer = GeoJSON().geometriesToText(decimals: 1);
+  // geometry encoder for GeoJSON, with number of decimals for text output set
+  final encoder = GeoJSON.geometry.encoder(decimals: 1);
 
   // prints:
   //    {"type":"Point","coordinates":[10.1,20.3]}
-  writer.output.point(const Geographic(lon: 10.123, lat: 20.25));
-  print(writer);
+  encoder.content.point(const Geographic(lon: 10.123, lat: 20.25));
+  print(encoder.toText());
 }
 
 void _geoJsonPointGeometryCustomStringBuffer() {
-  // geometry writer for GeoJSON with a custom string buffer
+  // geometry text format encoder for GeoJSON with a custom string buffer
   final buf = StringBuffer();
-  final writer = GeoJSON().geometriesToText(buffer: buf);
+  final encoder = GeoJSON.geometry.encoder(buffer: buf);
 
   // write both directly to buffer and via geometry writer
   buf.write('{"geometry":');
-  writer.output.point(const Geographic(lon: 10.123, lat: 20.25));
+  encoder.content.point(const Geographic(lon: 10.123, lat: 20.25));
   buf.write('}');
 
   // prints:
@@ -259,17 +254,14 @@ void _geoJsonPointGeometryCustomStringBuffer() {
 }
 
 void _geoJsonLineStringGeometryWithBbox() {
-  // get GeoJSON format
-  final format = GeoJSON();
-
-  // geometry writer for GeoJSON
-  final writer = format.geometriesToText();
+  // geometry text format encoder for GeoJSON
+  final encoder = GeoJSON.geometry.encoder();
 
   // prints (however without line breaks):
   //    {"type":"LineString",
   //     "bbox":[-1.1,-3.49,3.5,-1.1],
   //     "coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]}
-  writer.output.lineString(
+  encoder.content.lineString(
     [
       const Geographic(lon: -1.1, lat: -1.1),
       const Geographic(lon: 2.1, lat: -2.5),
@@ -277,12 +269,12 @@ void _geoJsonLineStringGeometryWithBbox() {
     ],
     bbox: const GeoBox(west: -1.1, south: -3.49, east: 3.5, north: -1.1),
   );
-  print(writer);
+  print(encoder.toText());
 }
 
 void _geoJsonLineStringGeometryWithBboxShortened() {
-  final writer = GeoJSON().geometriesToText();
-  writer.output.lineString(
+  final encoder = GeoJSON.geometry.encoder();
+  encoder.content.lineString(
     [
       [-1.1, -1.1],
       [2.1, -2.5],
@@ -290,12 +282,12 @@ void _geoJsonLineStringGeometryWithBboxShortened() {
     ],
     bbox: [-1.1, -3.49, 3.5, -1.1],
   );
-  print(writer);
+  print(encoder.toText());
 }
 
 void _geoJsonGeometryCollection() {
-  // geometry writer for GeoJSON
-  final writer = GeoJSON().geometriesToText();
+  // geometry text format encoder for GeoJSON
+  final encoder = GeoJSON.geometry.encoder();
 
   // prints (however without line breaks):
   //    {"type":"GeometryCollection",
@@ -305,7 +297,7 @@ void _geoJsonGeometryCollection() {
   //        {"type":"Polygon",
   //         "coordinates":[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]}]}
 
-  writer.output.geometryCollection(
+  encoder.content.geometryCollection(
     geometries: (geom) => geom // geom is GeometryContent
       ..point(
         const Geographic(lon: 10.123, lat: 20.25, elev: -30.95),
@@ -322,15 +314,12 @@ void _geoJsonGeometryCollection() {
         ],
       ),
   );
-  print(writer);
+  print(encoder.toText());
 }
 
 void _geoJsonFeature() {
-  // get GeoJSON format
-  final format = GeoJSON();
-
-  // feature writer for GeoJSON
-  final writer = format.featuresToText();
+  // feature text format encoder for GeoJSON
+  final encoder = GeoJSON.feature.encoder();
 
   // prints (however without line breaks):
   //    {"type":"Feature",
@@ -339,7 +328,7 @@ void _geoJsonFeature() {
   //        {"type":"Point","coordinates":[10.123,20.25]},
   //     "properties":
   //        {"foo":100,"bar":"this is property value","baz":true}}
-  writer.output.feature(
+  encoder.content.feature(
     id: 'fid-1',
     geometries: (geom) => geom.point(const Geographic(lon: 10.123, lat: 20.25)),
     properties: {
@@ -348,12 +337,12 @@ void _geoJsonFeature() {
       'baz': true,
     },
   );
-  print(writer);
+  print(encoder.toText());
 }
 
 void _geoJsonFeatureCollection() {
-  // feature writer for GeoJSON
-  final writer = GeoJSON().featuresToText();
+  // feature text format encoder for GeoJSON
+  final encoder = GeoJSON.feature.encoder();
 
   // prints (however without line breaks):
   //    {"type":"FeatureCollection",
@@ -368,7 +357,7 @@ void _geoJsonFeatureCollection() {
   //                     "bbox":[-1.1,-3.49,3.5,-1.1],
   //                     "coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]},
   //         "properties":{}}]}
-  writer.output.featureCollection(
+  encoder.content.featureCollection(
     bbox: const GeoBox(
       west: -1.1,
       south: -3.49,
@@ -402,7 +391,7 @@ void _geoJsonFeatureCollection() {
         ),
       ),
   );
-  print(writer);
+  print(encoder.toText());
 }
 
 void _intervalAndInstant() {

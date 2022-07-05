@@ -19,10 +19,12 @@ abstract class FeatureWritable {
   /// When [format] is not given, then [GeoJSON] is used.
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
-  String toStringAs({FeatureFormat? format, int? decimals}) {
-    final f = format ?? GeoJSON();
-    final writer = f.featuresToText(decimals: decimals);
-    writeTo(writer.output);
-    return writer.toString();
+  String toStringAs({
+    TextFormat<FeatureContent> format = GeoJSON.feature,
+    int? decimals,
+  }) {
+    final writer = format.encoder(decimals: decimals);
+    writeTo(writer.content);
+    return writer.toText();
   }
 }

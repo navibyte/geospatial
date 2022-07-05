@@ -424,24 +424,21 @@ void _pointToGeoJsonAndWKT() {
   print('Default format (decimals = 0): ${point.toStringAs(decimals: 0)}');
 
   // print with WKT format
-  print('WKT format: ${point.toStringAs(format: WKT())}');
+  print('WKT format: ${point.toStringAs(format: WKT.geometry)}');
 
   // print with GeoJSON format
-  print('GeoJSON format: ${point.toStringAs(format: GeoJSON())}');
+  print('GeoJSON format: ${point.toStringAs(format: GeoJSON.geometry)}');
   print(
     'GeoJSON (decimals = 1) format: ${point.toStringAs(
-      format: GeoJSON(),
+      format: GeoJSON.geometry,
       decimals: 1,
     )}',
   );
 }
 
 void _geoJsonFeatureCollection() {
-  // get GeoJSON format
-  final format = GeoJSON();
-
-  // feature writer for GeoJSON
-  final writer = format.featuresToText();
+  // feature text encoder for GeoJSON
+  final encoder = GeoJSON.feature.encoder();
 
   // create a feature collection with two features
   final collection = FeatureCollection(
@@ -480,12 +477,12 @@ void _geoJsonFeatureCollection() {
     ],
   );
 
-  // write the feture collection to the output interface of the writer
-  // (writer.output is FeatureContent)
-  collection.writeTo(writer.output);
+  // write the feture collection to the content interface of the encoder
+  // (encoder.content is FeatureContent)
+  collection.writeTo(encoder.content);
 
   // print GeoJSON text
-  print(writer);
+  print(encoder.toText());
 
   // the previous line prints (however without line breaks):
   //    {"type":"FeatureCollection",

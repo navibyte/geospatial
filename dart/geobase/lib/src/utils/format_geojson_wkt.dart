@@ -14,56 +14,7 @@ import '/src/coordinates/projected.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 import '/src/vector/content.dart';
-import '/src/vector/encode.dart';
-
-/// The default format for geometries (implements [GeometryFormat]).
-///
-/// Rules applied by the format are aligned with GeoJSON.
-class DefaultFormat implements GeometryFormat {
-  /// The default format for geometries.
-  const DefaultFormat();
-
-  @override
-  ContentWriter<CoordinateContent> coordinatesToText({
-    StringSink? buffer,
-    int? decimals,
-  }) =>
-      _DefaultTextWriter(buffer: buffer, decimals: decimals);
-
-  @override
-  ContentWriter<GeometryContent> geometriesToText({
-    StringSink? buffer,
-    int? decimals,
-  }) =>
-      _DefaultTextWriter(buffer: buffer, decimals: decimals);
-}
-
-/// The WKT (like) format for geometries (implements [GeometryFormat]).
-///
-/// Rules applied by the format are aligned with WKT (Well-known text
-/// representation of geometry) formatting of coordinate lists.
-class WktLikeFormat implements GeometryFormat {
-  /// The WKT (like) format for geometries.
-  const WktLikeFormat();
-
-  @override
-  ContentWriter<CoordinateContent> coordinatesToText({
-    StringSink? buffer,
-    int? decimals,
-  }) =>
-      _WktLikeTextWriter(buffer: buffer, decimals: decimals);
-
-  @override
-  ContentWriter<GeometryContent> geometriesToText({
-    StringSink? buffer,
-    int? decimals,
-  }) =>
-      _WktLikeTextWriter(buffer: buffer, decimals: decimals);
-}
-
-// -----------------------------------------------------------------------------
-// Private implementation code below.
-// The implementation may change in future.
+import '/src/vector/encoding.dart';
 
 // Base implementation for writers ---------------------------------------------
 
@@ -80,7 +31,7 @@ enum _Container {
 
 abstract class _BaseTextWriter<T extends Object>
     with GeometryContent, CoordinateContent
-    implements ContentWriter<T> {
+    implements ContentEncoder<T> {
   _BaseTextWriter({StringSink? buffer, this.decimals})
       : _buffer = buffer ?? StringBuffer();
 
@@ -93,7 +44,7 @@ abstract class _BaseTextWriter<T extends Object>
   final List<Coords?> _coordTypes = [];
 
   @override
-  T get output => this as T;
+  T get content => this as T;
 
   void _startContainer(_Container type) {
     _hasItemsOnLevel.add(false);
@@ -380,21 +331,28 @@ abstract class _BaseTextWriter<T extends Object>
   }
 
   @override
-  String toString() => _buffer.toString();
+  Uint8List toBytes() => Uint8List.fromList(utf8.encode(toString()));
 
   @override
-  Uint8List toBytes() => Uint8List.fromList(utf8.encode(toString()));
+  String toText() => _buffer.toString();
+
+  @override
+  String toString() => toText();
 }
 
 // Writer for the "default" format ---------------------------------------------
 
-class _DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
-  _DefaultTextWriter({
+/// A geometery writer for Default text output.
+class DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
+  /// A geometery writer for Default text output.
+  DefaultTextWriter({
     super.buffer,
     super.decimals,
     this.ignoreMeasured = false,
   });
 
+  /// However when [ignoreMeasured] is set to true, then M coordinates are
+  /// ignored from formatting.
   final bool ignoreMeasured;
 
   @override
@@ -555,7 +513,7 @@ class _DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
 // Writer  for the "GeoJSON" format --------------------------------------------
 
 /// A feature writer for GeoJSON text output.
-class GeoJsonTextWriter<T extends Object> extends _DefaultTextWriter<T>
+class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     with FeatureContent, PropertyContent {
   /// A feature writer for GeoJSON text output.
   GeoJsonTextWriter({
@@ -836,8 +794,10 @@ class GeoJsonTextWriter<T extends Object> extends _DefaultTextWriter<T>
 
 // Writer for the "wkt like" format --------------------------------------------
 
-class _WktLikeTextWriter<T extends Object> extends _BaseTextWriter<T> {
-  _WktLikeTextWriter({super.buffer, super.decimals});
+/// A geometry writer for WKT "like" text output.
+class WktLikeTextWriter<T extends Object> extends _BaseTextWriter<T> {
+  /// A geometry writer for WKT "like" text output.
+  WktLikeTextWriter({super.buffer, super.decimals});
 
   @override
   void _startObjectArray({int? count}) {
@@ -1012,7 +972,7 @@ class _WktLikeTextWriter<T extends Object> extends _BaseTextWriter<T> {
 // Writer for the "wkt" format -------------------------------------------------
 
 /// A geometry writer for WKT text output.
-class WktTextWriter<T extends Object> extends _WktLikeTextWriter<T> {
+class WktTextWriter<T extends Object> extends WktLikeTextWriter<T> {
   /// A geometry writer for WKT text output.
   WktTextWriter({super.buffer, super.decimals});
 

@@ -5,9 +5,11 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import '/src/utils/format_geojson_wkt.dart';
-import '/src/vector/encode.dart';
+import '/src/utils/format_impl.dart';
+import '/src/vector/content.dart';
+import '/src/vector/encoding.dart';
 
-/// The WKT (like) format for geometries (implements [GeometryFormat]).
+/// The WKT (like) text format for [coordinate] and [geometry] objects.
 ///
 /// Rules applied by the format are aligned with WKT (Well-known text
 /// representation of geometry) formatting of coordinate lists.
@@ -31,4 +33,12 @@ import '/src/vector/encode.dart';
 /// bounding boxes are formatted as polygons. An example presented above however
 /// format bounding box as a point series of two points (min, max). See also
 /// `wktFormat` that formats them as polygons.
-const GeometryFormat wktLikeFormat = WktLikeFormat();
+class WktLikeFormat {
+  /// The WKT (like) format text format for coordinate objects.
+  static const TextFormat<CoordinateContent> coordinate =
+      TextFormatImpl(WktLikeTextWriter.new);
+
+  /// The WKT (like) format text format for geometry objects.
+  static const TextFormat<GeometryContent> geometry =
+      TextFormatImpl(WktLikeTextWriter.new);
+}

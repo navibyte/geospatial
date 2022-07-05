@@ -10,12 +10,11 @@ import '/src/coordinates/base.dart';
 import '/src/coordinates/geographic.dart';
 import '/src/coordinates/projected.dart';
 
-/// A function that is capable of writing a simple geometry to [output].
+/// A function to write simple geometry data to [output].
 typedef WriteSimpleGeometries = void Function(SimpleGeometryContent output);
 
-/// An interface to write simple geometries to a geospatial content receiver.
-///
-/// A receiver could be a geospatial data format writer or an object factory.
+/// An interface to write simple geometry data to format encoders and object
+/// builders.
 ///
 /// This interface supports following "simple" geometry types introduced in the
 /// [Simple Feature Access - Part 1: Common Architecture](https://www.ogc.org/standards/sfa)

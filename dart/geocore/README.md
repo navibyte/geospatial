@@ -624,65 +624,53 @@ Supported WKT geometry types: `POINT`, `LINESTRING`, `POLYGON`, `MULTIPOINT`,
 
 ### GeoJSON and WKT writers
 
-*Format* classes provide methods for accessing *writers* that allow writing 
-coordinate, geometry and feature objects to a output stream (like text buffer).
+### Content interfaces
 
-Formats (and their extensions) may also support parsing functionality, as 
-already described above, but here *writers* are discussed.
+Content interfaces are used for two main use cases:
+* *writing geospatial data* (coordinates, geometry and features) to text or binary format encoders 
+* *building objects* in decoders reading geospatial data from text or binary formats
 
-Formats available:
+Content interface   | Description
+------------------- | -----------
+`CoordinateContent` | Write coordinate objects (bounding boxes, positions, position arrays).
+`GeometryContent`   | Write geometry objects (supported geometry types: `point`, `lineString`, `polygon`, `multiPoint`, `multiLineString`, `multiPolygon` , `geometryCollection`)
+`FeatureContent`    | Write features (with properties and geometry objects) and feature collections
 
-Format   | Factory | Writers supported by Format
--------- | ------- | ---------------------------
-[GeoJSON](https://geojson.org/)  | `GeoJSON()` | Coordinates, Geometries, Features
-[WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) | `WKT()` | Coordinates, Geometries
+### Text format encoders
 
-There are also constants `defaultFormat` (a text format aligned with GeoJSON but
-output is somewhat simpler) and `wktLikeFormat` (a text format aligned with
+Text formats supported:
+
+Format   | Format class | Content encoders
+-------- | ------------ | ---------------------------
+[GeoJSON](https://geojson.org/)  | `GeoJSON` | Coordinates, Geometries, Features
+[WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) | `WKT` | Coordinates, Geometries
+
+There are also formats `DefaultFormat` (a text format aligned with GeoJSON but
+output is somewhat simpler) and `WktLikeFormat` (a text format aligned with
 WKT).
 
-All formats mentioned above have following writers:
+All formats mentioned above have following content specific formats:
 
 ```dart
-  /// Returns a writer formatting string representations of coordinate data.
-  ///
-  /// When an optional [buffer] is given, then representations are written into
-  /// it (without clearing any content it might already contain).
-  ///
-  /// Use [decimals] to set a number of decimals (not applied if no decimals).
-  ///
-  /// After writing some objects with coordinate data into a writer, the string
-  /// representation can be accessed using `toString()` of it (or via [buffer]
-  /// when such is given).
-  ContentWriter<CoordinateContent> coordinatesToText({
-    StringSink? buffer,
-    int? decimals,
-  });
+  /// The text format for coordinate objects.
+  static const TextFormat<CoordinateContent> coordinate;
 
-  /// Returns a writer formatting string representations of geometry objects.
-  ContentWriter<GeometryContent> geometriesToText({
-    StringSink? buffer,
-    int? decimals,
-  });
-}
+  /// The text format for geometry objects.
+  static const TextFormat<GeometryContent> geometry;
 ```
 
-A format object returned by `GeoJSON()` has also the following writer:
+`GeoJSON` provides also:
 
 ```dart
-  /// Returns a writer formatting string representations of feature objects.
-  ContentWriter<FeatureContent> featuresToText({
-    StringSink? buffer,
-    int? decimals,
-  });
+  /// The text format for feature objects.
+  static const TextFormat<FeatureContent> feature;
 ```
-
-See `ContentWriter`, `CoordinateContent`, `GeometryContent` and `FeatureContent`
-for more information. 
 
 Formats, content interfaces and writers are re-exported from the 
 [geobase](https://pub.dev/packages/geobase) package that also provides more
 documentation.
+
+See samples below how to use text formats and encoders.
 
 A sample to print coordinates of a point geometry below.
 
@@ -695,13 +683,13 @@ A sample to print coordinates of a point geometry below.
   print('Default format (decimals = 0): ${point.toStringAs(decimals: 0)}');
 
   // print with WKT format
-  print('WKT format: ${point.toStringAs(format: WKT())}');
+  print('WKT format: ${point.toStringAs(format: WKT.geometry)}');
 
   // print with GeoJSON format
-  print('GeoJSON format: ${point.toStringAs(format: GeoJSON())}');
+  print('GeoJSON format: ${point.toStringAs(format: GeoJSON.geometry)}');
   print(
     'GeoJSON (decimals = 1) format: ${point.toStringAs(
-      format: GeoJSON(),
+      format: GeoJSON.geometry,
       decimals: 1,
     )}',
   );
@@ -711,11 +699,8 @@ The sample below creates a GeoJSON format and feature writer, then create a
 feature collection, and finally uses a writer to print it as GeoJSON text.
 
 ```dart
-  // get GeoJSON format
-  final format = GeoJSON();
-
-  // feature writer for GeoJSON
-  final writer = format.featuresToText();
+  // feature text encoder for GeoJSON
+  final encoder = GeoJSON.feature.encoder();
 
   // create a feature collection with two features
   final collection = FeatureCollection(
@@ -754,12 +739,12 @@ feature collection, and finally uses a writer to print it as GeoJSON text.
     ],
   );
 
-  // write the feture collection to the output interface of the writer
-  // (writer.output is FeatureContent)
-  collection.writeTo(writer.output);
+  // write the feture collection to the content interface of the encoder
+  // (encoder.content is FeatureContent)
+  collection.writeTo(encoder.content);
 
   // print GeoJSON text
-  print(writer);
+  print(encoder.toText());
 
   // the previous line prints (however without line breaks):
   //    {"type":"FeatureCollection",

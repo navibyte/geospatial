@@ -17,10 +17,10 @@ class ByteWriter {
   int _offset = 0;
   bool _needNewChunk = false;
 
-  /// Endianness to be used when writing a sequence of bytes.
+  /// The endianness for byte sequences written.
   final Endian endian;
 
-  /// The buffer size used for byte chunks.
+  /// The buffer size for writing bytes.
   final int bufferSize;
 
   /// A writer (integer and floating point values) writing a sequence of bytes.
@@ -28,9 +28,9 @@ class ByteWriter {
   /// A writer should be buffered, but it's implementation strategies are not
   /// specified.
   ///
-  /// [endian] specifies endianness to be used when writing a sequence of bytes.
+  /// [endian] specifies endianness for byte sequences written..
   ///
-  /// [bufferSize] specifies the size used for byte chunks.
+  /// [bufferSize] suggests the buffer size for writing bytes.
   ByteWriter.buffered({this.endian = Endian.big, this.bufferSize = 128})
       : _buffer = _ChunkedByteBuffer(),
         _chunk = ByteData(bufferSize);

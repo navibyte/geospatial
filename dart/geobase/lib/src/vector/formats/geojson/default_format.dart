@@ -5,9 +5,11 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import '/src/utils/format_geojson_wkt.dart';
-import '/src/vector/encode/geometry.dart';
+import '/src/utils/format_impl.dart';
+import '/src/vector/content.dart';
+import '/src/vector/encoding.dart';
 
-/// The default format for geometries (implements [GeometryFormat]).
+/// The default text format for [coordinate] and [geometry] objects.
 ///
 /// Rules applied by the format are aligned with GeoJSON.
 ///
@@ -26,4 +28,12 @@ import '/src/vector/encode/geometry.dart';
 /// * multi polygon (with 2D points):
 ///   * `[[[35,10],[45,45],[15,40],[10,20],[35,10]]]`
 /// * coordinates for other geometries with similar principles
-const GeometryFormat defaultFormat = DefaultFormat();
+class DefaultFormat {
+  /// The (default) text format for coordinate objects.
+  static const TextFormat<CoordinateContent> coordinate =
+      TextFormatImpl(DefaultTextWriter.new);
+
+  /// The (default) text format for geometry objects.
+  static const TextFormat<GeometryContent> geometry =
+      TextFormatImpl(DefaultTextWriter.new);
+}

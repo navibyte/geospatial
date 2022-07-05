@@ -133,10 +133,10 @@ mixin PointSeriesMixin<E extends Point> implements PointSeries<E> {
 
   @override
   String toString() {
-    final writer = defaultFormat.coordinatesToText();
+    final writer = DefaultFormat.coordinate.encoder();
     // ignore: cascade_invocations
-    writer.output.positions1D(this);
-    return writer.toString();
+    writer.content.positions1D(this);
+    return writer.toText();
   }
 }
 

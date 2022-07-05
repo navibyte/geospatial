@@ -74,10 +74,13 @@ abstract class Geometry extends Bounded {
   /// A string representation of this geometry, with [format] applied.
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
-  String toStringAs({GeometryFormat format = defaultFormat, int? decimals}) {
-    final writer = format.geometriesToText(decimals: decimals);
-    writeTo(writer.output);
-    return writer.toString();
+  String toStringAs({
+    TextFormat<GeometryContent> format = DefaultFormat.geometry,
+    int? decimals,
+  }) {
+    final writer = format.encoder(decimals: decimals);
+    writeTo(writer.content);
+    return writer.toText();
   }
 }
 

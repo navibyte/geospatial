@@ -966,31 +966,39 @@ void _testAllWriters<T>(
 }) {
   for (final content in contents) {
     _testWriterOfGeometryFormat<T>(
-      defaultFormat,
+      DefaultFormat.coordinate,
+      DefaultFormat.geometry,
       content,
       expected: def,
       decimals: defDecimals,
     );
     _testWriterOfGeometryFormat<T>(
-      GeoJSON(),
+      GeoJSON.coordinate,
+      GeoJSON.geometry,
       content,
       expected: geoJson,
       decimals: geoJsonDecimals,
     );
     _testWriterOfGeometryFormat<T>(
-      GeoJSON(ignoreMeasured: true, ignoreForeignMembers: true),
+      GeoJSON.coordinateFormat(
+        ignoreMeasured: true,
+        ignoreForeignMembers: true,
+      ),
+      GeoJSON.geometryFormat(ignoreMeasured: true, ignoreForeignMembers: true),
       content,
       expected: geoJsonStrict ?? geoJson,
       decimals: geoJsonDecimals,
     );
     _testWriterOfGeometryFormat<T>(
-      wktLikeFormat,
+      WktLikeFormat.coordinate,
+      WktLikeFormat.geometry,
       content,
       expected: wktLike,
       decimals: wktLikeDecimals,
     );
     _testWriterOfGeometryFormat<T>(
-      WKT(),
+      WKT.coordinate,
+      WKT.geometry,
       content,
       expected: wkt,
       decimals: wktDecimals,
@@ -1005,13 +1013,13 @@ void _testGeoJsonWriters<T>(
   int? decimals,
 }) {
   _testWriterOfFeatureFormat<T>(
-    GeoJSON(),
+    GeoJSON.feature,
     content,
     expected: geoJson,
     decimals: decimals,
   );
   _testWriterOfFeatureFormat<T>(
-    GeoJSON(ignoreMeasured: true, ignoreForeignMembers: true),
+    GeoJSON.featureFormat(ignoreMeasured: true, ignoreForeignMembers: true),
     content,
     expected: geoJsonStrict ?? geoJson,
     decimals: decimals,
@@ -1019,39 +1027,35 @@ void _testGeoJsonWriters<T>(
 }
 
 void _testWriterOfGeometryFormat<T>(
-  GeometryFormat format,
+  TextFormat<CoordinateContent> coordinateFormat,
+  TextFormat<GeometryContent> geometryFormat,
   void Function(T output) content, {
   required String expected,
   int? decimals,
 }) {
   if (T == CoordinateContent) {
-    final writer = format.coordinatesToText(decimals: decimals);
-    content(writer.output as T);
-    expect(writer.toString(), expected);
+    final writer = coordinateFormat.encoder(decimals: decimals);
+    content(writer.content as T);
+    expect(writer.toText(), expected);
   } else {
     assert(T == GeometryContent, 'expecting geometry writer');
-    final writer = format.geometriesToText(decimals: decimals);
-    content(writer.output as T);
-    expect(writer.toString(), expected);
+    final writer = geometryFormat.encoder(decimals: decimals);
+    content(writer.content as T);
+    expect(writer.toText(), expected);
   }
 }
 
 void _testWriterOfFeatureFormat<T>(
-  FeatureFormat format,
+  TextFormat<FeatureContent> format,
   void Function(T output) content, {
   required String expected,
   int? decimals,
 }) {
   if (T == FeatureContent) {
-    final writer = format.featuresToText(decimals: decimals);
-    content(writer.output as T);
-    expect(writer.toString(), expected);
+    final writer = format.encoder(decimals: decimals);
+    content(writer.content as T);
+    expect(writer.toText(), expected);
   } else {
-    _testWriterOfGeometryFormat(
-      format,
-      content,
-      expected: expected,
-      decimals: decimals,
-    );
+    throw UnimplementedError('no geometry format supported here');
   }
 }

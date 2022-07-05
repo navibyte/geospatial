@@ -11,12 +11,10 @@ import '/src/coordinates/projected.dart';
 import 'geometry_content.dart';
 import 'property_content.dart';
 
-/// A function that is capable of writing features to [output].
+/// A function to write feature data to [output].
 typedef WriteFeatures = void Function(FeatureContent output);
 
-/// An interface to write features to a geospatial content receiver.
-/// 
-/// A receiver could be a geospatial data format writer or an object factory.
+/// An interface to write feature data to format encoders and object builders.
 mixin FeatureContent  {
   /// Writes a feature collection represented by [features].
   ///

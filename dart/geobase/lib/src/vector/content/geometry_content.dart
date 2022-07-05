@@ -8,12 +8,10 @@ import '/src/coordinates/base.dart';
 
 import 'simple_geometry_content.dart';
 
-/// A function that is capable of writing a geometry to [output].
+/// A function to write geometry data to [output].
 typedef WriteGeometries = void Function(GeometryContent output);
 
-/// An interface to write geometry objects to a geospatial content receiver.
-///
-/// A receiver could be a geospatial data format writer or an object factory.
+/// An interface to write geometry data to format encoders and object builders.
 ///
 /// This mixin supports specific simple geometry types defined by
 /// [SimpleGeometryContent]. It's possible that in future other geometry types

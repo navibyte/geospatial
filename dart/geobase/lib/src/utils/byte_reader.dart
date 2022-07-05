@@ -13,12 +13,12 @@ class ByteReader {
   final ByteData _data;
   int _offset = 0;
 
-  /// Endianness to be used when reading a sequence of bytes.
+  /// The endianness for byte sequences read.
   final Endian endian;
 
   /// A reader (integer and floating point values) reading a view of [buffer].
   ///
-  /// [endian] specifies endianness to be used when reading a sequence of bytes.
+  /// [endian] specifies endianness for byte sequences read.
   ByteReader.view(ByteBuffer buffer, {this.endian = Endian.big})
       : _data = ByteData.view(buffer);
 

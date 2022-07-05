@@ -4,24 +4,27 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-part of 'wkb.dart';
+part of 'wkb_format.dart';
 
-class _WkbGeometryWriter
+class _WkbGeometryEncoder
     with GeometryContent
-    implements ContentWriter<GeometryContent> {
+    implements ContentEncoder<GeometryContent> {
   final ByteWriter writer;
   final Coords? forcedTypeCoords;
 
-  _WkbGeometryWriter(this.writer, {this.forcedTypeCoords});
+  _WkbGeometryEncoder(this.writer, {this.forcedTypeCoords});
 
   @override
-  GeometryContent get output => this;
-
-  @override
-  String toString() => base64.encode(toBytes());
+  GeometryContent get content => this;
 
   @override
   Uint8List toBytes() => writer.toBytes();
+
+  @override
+  String toText() => base64.encode(toBytes());
+
+  @override
+  String toString() => toText();
 
   @override
   void point(
@@ -177,7 +180,7 @@ class _WkbGeometryWriter
     writer.writeUint32(collector.numGeometries);
 
     // recursively write geometries contained in a collection (same byte writer)
-    final subWriter = _WkbGeometryWriter(writer, forcedTypeCoords: typeCoords);
+    final subWriter = _WkbGeometryEncoder(writer, forcedTypeCoords: typeCoords);
     geometries.call(subWriter);
   }
 

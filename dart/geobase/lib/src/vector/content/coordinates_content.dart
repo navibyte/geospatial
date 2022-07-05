@@ -8,9 +8,8 @@ import '/src/coordinates/base.dart';
 import '/src/coordinates/geographic.dart';
 import '/src/coordinates/projected.dart';
 
-/// An interface to write coordinate data to a geospatial content receiver.
-///
-/// A receiver could be a geospatial data format writer or an object factory.
+/// An interface to write coordinate data to format encoders and object
+/// builders.
 /// 
 /// Coordinate positions are represented either as [Position] or 
 /// `Iterable<num>`. Bounding boxes are represented either as [Box] or

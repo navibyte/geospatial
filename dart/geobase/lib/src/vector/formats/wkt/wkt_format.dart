@@ -5,15 +5,11 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import '/src/utils/format_geojson_wkt.dart';
+import '/src/utils/format_impl.dart';
 import '/src/vector/content.dart';
-import '/src/vector/encode/base.dart';
-import '/src/vector/encode/geometry.dart';
+import '/src/vector/encoding.dart';
 
-/// The WKT format for geometries (implements [GeometryFormat]).
-@Deprecated('Instantiate WKT class directly.')
-GeometryFormat wktFormat() => WKT();
-
-/// The WKT format for geometries (implements [GeometryFormat]).
+/// The WKT text format for [coordinate] and [geometry] objects.
 ///
 /// Rules applied by the format conforms with WKT (Well-known text
 /// representation of geometry) formatting of coordinate lists and geometries.
@@ -42,21 +38,12 @@ GeometryFormat wktFormat() => WKT();
 /// Note that WKT does not specify bounding box formatting. Here bounding boxes
 /// are formatted as polygons. See also `wktLikeFormat` that formats them as a
 /// point series of two points (min, max).
-class WKT implements GeometryFormat {
-  /// The WKT format for geometries.
-  WKT();
+class WKT {
+  /// The WKT format text format for coordinate objects.
+  static const TextFormat<CoordinateContent> coordinate =
+      TextFormatImpl(WktTextWriter.new);
 
-  @override
-  ContentWriter<CoordinateContent> coordinatesToText({
-    StringSink? buffer,
-    int? decimals,
-  }) =>
-      WktTextWriter(buffer: buffer, decimals: decimals);
-
-  @override
-  ContentWriter<GeometryContent> geometriesToText({
-    StringSink? buffer,
-    int? decimals,
-  }) =>
-      WktTextWriter(buffer: buffer, decimals: decimals);
+  /// The WKT format text format for geometry objects.
+  static const TextFormat<GeometryContent> geometry =
+      TextFormatImpl(WktTextWriter.new);
 }
