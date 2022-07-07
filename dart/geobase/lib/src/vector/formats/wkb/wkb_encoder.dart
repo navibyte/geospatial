@@ -9,16 +9,28 @@ part of 'wkb_format.dart';
 class _WkbGeometryEncoder
     with GeometryContent
     implements ContentEncoder<GeometryContent> {
-  final ByteWriter writer;
+  final ByteWriter _buffer;
   final Coords? forcedTypeCoords;
 
-  _WkbGeometryEncoder(this.writer, {this.forcedTypeCoords});
+  _WkbGeometryEncoder({
+    Endian endian = Endian.big,
+    int bufferSize = 128,
+  })  : _buffer = ByteWriter.buffered(
+          endian: endian,
+          bufferSize: bufferSize,
+        ),
+        forcedTypeCoords = null;
+
+  _WkbGeometryEncoder.buffer(
+    ByteWriter buffer, {
+    this.forcedTypeCoords,
+  }) : _buffer = buffer;
 
   @override
-  GeometryContent get content => this;
+  GeometryContent get writer => this;
 
   @override
-  Uint8List toBytes() => writer.toBytes();
+  Uint8List toBytes() => _buffer.toBytes();
 
   @override
   String toText() => base64.encode(toBytes());
@@ -72,7 +84,7 @@ class _WkbGeometryEncoder
     _writeGeometryHeader(Geom.polygon, typeCoords);
 
     // write numRings
-    writer.writeUint32(coordinates.length);
+    _buffer.writeUint32(coordinates.length);
 
     // write all linear rings (of polygon)
     for (final linearRing in coordinates) {
@@ -95,7 +107,7 @@ class _WkbGeometryEncoder
     _writeGeometryHeader(Geom.multiPoint, typeCoords);
 
     // write numPoints
-    writer.writeUint32(coordinates.length);
+    _buffer.writeUint32(coordinates.length);
 
     // write all points
     for (final point in coordinates) {
@@ -119,7 +131,7 @@ class _WkbGeometryEncoder
     _writeGeometryHeader(Geom.multiLineString, typeCoords);
 
     // write numLineStrings
-    writer.writeUint32(coordinates.length);
+    _buffer.writeUint32(coordinates.length);
 
     // write all line strings
     for (final lineString in coordinates) {
@@ -143,14 +155,14 @@ class _WkbGeometryEncoder
     _writeGeometryHeader(Geom.multiPolygon, typeCoords);
 
     // write numPolygons
-    writer.writeUint32(coordinates.length);
+    _buffer.writeUint32(coordinates.length);
 
     // write all polygons
     for (final polygon in coordinates) {
       _writeGeometryHeader(Geom.polygon, typeCoords);
 
       // write numRings
-      writer.writeUint32(polygon.length);
+      _buffer.writeUint32(polygon.length);
 
       // write all linear rings for a polygon
       for (final linearRing in polygon) {
@@ -177,10 +189,11 @@ class _WkbGeometryEncoder
 
     // write header for geometry collection
     _writeGeometryHeader(Geom.geometryCollection, typeCoords);
-    writer.writeUint32(collector.numGeometries);
+    _buffer.writeUint32(collector.numGeometries);
 
     // recursively write geometries contained in a collection (same byte writer)
-    final subWriter = _WkbGeometryEncoder(writer, forcedTypeCoords: typeCoords);
+    final subWriter =
+        _WkbGeometryEncoder.buffer(_buffer, forcedTypeCoords: typeCoords);
     geometries.call(subWriter);
   }
 
@@ -191,17 +204,14 @@ class _WkbGeometryEncoder
 
     switch (type) {
       case Geom.point:
-        // this is a spcial case, see => https://trac.osgeo.org/geos/ticket/1005
-        _writeGeometryHeader(type, typeCoords);
-        writer
+        // this is a special case => https://trac.osgeo.org/geos/ticket/1005
+        //                           https://trac.osgeo.org/postgis/ticket/3181
+        // write only x and y as double.nan 
+        // that is POINT(NaN NaN) is considered POINT EMPTY, or something..
+        _writeGeometryHeader(type, Coords.xy);
+        _buffer
           ..writeFloat64(double.nan)
           ..writeFloat64(double.nan);
-        if (typeCoords.is3D) {
-          writer.writeFloat64(double.nan);
-        }
-        if (typeCoords.isMeasured) {
-          writer.writeFloat64(double.nan);
-        }
         break;
       case Geom.lineString:
       case Geom.polygon:
@@ -211,36 +221,36 @@ class _WkbGeometryEncoder
       case Geom.geometryCollection:
         // write geometry with 0 elements (points, rings, geometries, etc.)
         _writeGeometryHeader(type, typeCoords);
-        writer.writeUint32(0);
+        _buffer.writeUint32(0);
         break;
     }
   }
 
   void _writeGeometryHeader(Geom typeGeom, Coords typeCoords) {
     // write byte order
-    switch (writer.endian) {
+    switch (_buffer.endian) {
       // wkbXDR (= 0 // Big Endian) value of the WKBByteOrder enum
       case Endian.big:
-        writer.writeInt8(0);
+        _buffer.writeInt8(0);
         break;
 
       // wkbNDR (= 1 // Little Endian) value of the WKBByteOrder enum
       case Endian.little:
-        writer.writeInt8(1);
+        _buffer.writeInt8(1);
         break;
     }
 
     // enum type (WKBGeometryType) as integer is calculated from geometry and
     // coordinate types as specified by this library
-    final type = typeGeom.idWkb(typeCoords);
+    final type = typeGeom.wkbId(typeCoords);
 
     // write geometry type (as specified by the WKBGeometryType enum)
-    writer.writeUint32(type);
+    _buffer.writeUint32(type);
   }
 
   void _writePointArray(Iterable<Object> points, Coords typeCoords) {
     // write numPoints
-    writer.writeUint32(points.length);
+    _buffer.writeUint32(points.length);
 
     // write points
     for (final point in points) {
@@ -280,14 +290,14 @@ class _WkbGeometryEncoder
     switch (typeCoords) {
       // 2D point
       case Coords.xy:
-        writer
+        _buffer
           ..writeFloat64(x.toDouble())
           ..writeFloat64(y.toDouble());
         break;
 
       // Z point
       case Coords.xyz:
-        writer
+        _buffer
           ..writeFloat64(x.toDouble())
           ..writeFloat64(y.toDouble())
           ..writeFloat64(z.toDouble());
@@ -295,7 +305,7 @@ class _WkbGeometryEncoder
 
       // M point
       case Coords.xym:
-        writer
+        _buffer
           ..writeFloat64(x.toDouble())
           ..writeFloat64(y.toDouble())
           ..writeFloat64(m.toDouble());
@@ -303,7 +313,7 @@ class _WkbGeometryEncoder
 
       // ZM point
       case Coords.xyzm:
-        writer
+        _buffer
           ..writeFloat64(x.toDouble())
           ..writeFloat64(y.toDouble())
           ..writeFloat64(z.toDouble())

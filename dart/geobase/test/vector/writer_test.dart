@@ -1034,14 +1034,14 @@ void _testWriterOfGeometryFormat<T>(
   int? decimals,
 }) {
   if (T == CoordinateContent) {
-    final writer = coordinateFormat.encoder(decimals: decimals);
-    content(writer.content as T);
-    expect(writer.toText(), expected);
+    final encoder = coordinateFormat.encoder(decimals: decimals);
+    content(encoder.writer as T);
+    expect(encoder.toText(), expected);
   } else {
     assert(T == GeometryContent, 'expecting geometry writer');
-    final writer = geometryFormat.encoder(decimals: decimals);
-    content(writer.content as T);
-    expect(writer.toText(), expected);
+    final encoder = geometryFormat.encoder(decimals: decimals);
+    content(encoder.writer as T);
+    expect(encoder.toText(), expected);
   }
 }
 
@@ -1052,9 +1052,9 @@ void _testWriterOfFeatureFormat<T>(
   int? decimals,
 }) {
   if (T == FeatureContent) {
-    final writer = format.encoder(decimals: decimals);
-    content(writer.content as T);
-    expect(writer.toText(), expected);
+    final encoder = format.encoder(decimals: decimals);
+    content(encoder.writer as T);
+    expect(encoder.toText(), expected);
   } else {
     throw UnimplementedError('no geometry format supported here');
   }

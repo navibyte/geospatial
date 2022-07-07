@@ -11,7 +11,7 @@ import 'content_encoder.dart';
 
 /// A mixin to access binary format encoders and decoders for content of [T].
 mixin BinaryFormat<T extends Object> {
-  /// Returns a binary format encoder for content of [T].
+  /// Returns a binary format encoder with content writer of [T].
   ///
   /// [endian] specifies endianness for byte sequences written.
   ///
@@ -24,14 +24,14 @@ mixin BinaryFormat<T extends Object> {
     int bufferSize = 128,
   });
 
-  /// Returns a binary format decoder decoding content of [T] to [target].
+  /// Returns a binary format decoder that decodes content of [T] to [builder].
   /// 
   /// Content decoded by a decoder is sent to a content stream interface
-  /// represented by [target].
+  /// represented by an object [builder].
   ///
   /// [endian] specifies endianness for byte sequences read.
   ContentDecoder decoder(
-    T target, {
+    T builder, {
     Endian endian = Endian.big,
   });
 }

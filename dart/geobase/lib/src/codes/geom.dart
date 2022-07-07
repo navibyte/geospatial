@@ -17,65 +17,65 @@ import 'coords.dart';
 enum Geom {
   /// The type for the `POINT` geometry.
   point(
-    nameWkt: 'POINT',
-    nameGeoJson: 'Point',
-    idWkb2D: 1,
+    wktName: 'POINT',
+    geoJsonName: 'Point',
+    wkbId2D: 1,
   ),
 
   /// The type for the `LINESTRING` geometry.
   lineString(
-    nameWkt: 'LINESTRING',
-    nameGeoJson: 'LineString',
-    idWkb2D: 2,
+    wktName: 'LINESTRING',
+    geoJsonName: 'LineString',
+    wkbId2D: 2,
   ),
 
   /// The type for the `POLYGON` geometry.
   polygon(
-    nameWkt: 'POLYGON',
-    nameGeoJson: 'Polygon',
-    idWkb2D: 3,
+    wktName: 'POLYGON',
+    geoJsonName: 'Polygon',
+    wkbId2D: 3,
   ),
 
   /// The type for the `MULTIPOINT` geometry.
   multiPoint(
-    nameWkt: 'MULTIPOINT',
-    nameGeoJson: 'MultiPoint',
-    idWkb2D: 4,
+    wktName: 'MULTIPOINT',
+    geoJsonName: 'MultiPoint',
+    wkbId2D: 4,
   ),
 
   /// The type for the `MULTILINESTRING` geometry.
   multiLineString(
-    nameWkt: 'MULTILINESTRING',
-    nameGeoJson: 'MultiLineString',
-    idWkb2D: 5,
+    wktName: 'MULTILINESTRING',
+    geoJsonName: 'MultiLineString',
+    wkbId2D: 5,
   ),
 
   /// The type for the `MULTIPOLYGON` geometry.
   multiPolygon(
-    nameWkt: 'MULTIPOLYGON',
-    nameGeoJson: 'MultiPolygon',
-    idWkb2D: 6,
+    wktName: 'MULTIPOLYGON',
+    geoJsonName: 'MultiPolygon',
+    wkbId2D: 6,
   ),
 
   /// The type for the `GEOMETRYCOLLECTION` geometry.
   geometryCollection(
-    nameWkt: 'GEOMETRYCOLLECTION',
-    nameGeoJson: 'GeometryCollection',
-    idWkb2D: 7,
+    wktName: 'GEOMETRYCOLLECTION',
+    geoJsonName: 'GeometryCollection',
+    wkbId2D: 7,
   );
 
   /// Create an enum for a geometry type.
   const Geom({
-    required this.nameWkt,
-    required this.nameGeoJson,
-    required this.idWkb2D,
+    required this.wktName,
+    required this.geoJsonName,
+    required this.wkbId2D,
   });
 
   /// The WKT name for the geometry type, ie. `POINT` for the point type.
-  final String nameWkt;
+  final String wktName;
 
   /// The GeoJSON type for the geometry type, ie. `Point` for the point type.
-  final String nameGeoJson;
+  final String geoJsonName;
 
   /// The WKB type for the (2-dimensional) geometry, ie. `1` for the point type.
   ///
@@ -90,7 +90,7 @@ enum Geom {
   ///
   /// References:
   /// * [Simple Feature Access - Part 1: Common Architecture](https://www.ogc.org/standards/sfa)
-  final int idWkb2D;
+  final int wkbId2D;
 
   /// True for the collection of other geometries (geometryCollection).
   bool get isCollection => this == Geom.geometryCollection;
@@ -104,7 +104,7 @@ enum Geom {
   /// The WKB type for this geometry type and the given [coordinateType].
   ///
   /// Expected values are:
-  /// 
+  ///
   /// Geometry             | 2D   | Z    | M    | ZM
   /// -------------------- | ---- | ---- | ---- | ----
   /// `point`              | 0001 | 1001 | 2001 | 3001
@@ -117,5 +117,39 @@ enum Geom {
   ///
   /// References:
   /// * [Simple Feature Access - Part 1: Common Architecture](https://www.ogc.org/standards/sfa)
-  int idWkb(Coords coordinateType) => coordinateType.idWkb + idWkb2D;
+  int wkbId(Coords coordinateType) => coordinateType.wkbId + wkbId2D;
+
+  /// Selects a [Geom] enum based on the WKB type [id].
+  ///
+  /// Expected values (for the 2-dimensional geometry) are:
+  /// * `1` for the `point` type
+  /// * `2` for the `lineString` type
+  /// * `3` for the `polygon` type
+  /// * `4` for the `multiPoint` type
+  /// * `5` for the `multiLineString` type
+  /// * `6` for the `multiPolygon` type
+  /// * `7` for the `geometryCollection` type
+  ///
+  /// References:
+  /// * [Simple Feature Access - Part 1: Common Architecture](https://www.ogc.org/standards/sfa)
+  static Geom fromWkbId(int id) {
+    switch (id % 1000) {
+      case 1:
+        return Geom.point;
+      case 2:
+        return Geom.lineString;
+      case 3:
+        return Geom.polygon;
+      case 4:
+        return Geom.multiPoint;
+      case 5:
+        return Geom.multiLineString;
+      case 6:
+        return Geom.multiPolygon;
+      case 7:
+        return Geom.geometryCollection;
+      default:
+        throw const FormatException('Invalid WKB id');
+    }
+  }
 }

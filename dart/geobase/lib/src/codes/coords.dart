@@ -12,8 +12,8 @@ enum Coords {
     spatialDimension: 2,
     is3D: false,
     isMeasured: false,
-    idWkb: 0,
-    specifierWkt: null,
+    wkbId: 0,
+    wktSpecifier: null,
   ),
 
   /// 3D coordinates as projected (x, y, z) or geographic (lon, lat, elev).
@@ -22,8 +22,8 @@ enum Coords {
     spatialDimension: 3,
     is3D: true,
     isMeasured: false,
-    idWkb: 1000,
-    specifierWkt: 'Z',
+    wkbId: 1000,
+    wktSpecifier: 'Z',
   ),
 
   /// 2D measured coordinates as projected (x, y, m) or geographic (lon, lat,
@@ -33,8 +33,8 @@ enum Coords {
     spatialDimension: 2,
     is3D: false,
     isMeasured: true,
-    idWkb: 2000,
-    specifierWkt: 'M',
+    wkbId: 2000,
+    wktSpecifier: 'M',
   ),
 
   /// 3D measured coordinates as projected (x, y, z, m) or geographic (lon, lat,
@@ -44,8 +44,8 @@ enum Coords {
     spatialDimension: 3,
     is3D: true,
     isMeasured: true,
-    idWkb: 3000,
-    specifierWkt: 'ZM',
+    wkbId: 3000,
+    wktSpecifier: 'ZM',
   );
 
   /// Create an enum for a coordinate type.
@@ -54,8 +54,8 @@ enum Coords {
     required this.spatialDimension,
     required this.is3D,
     required this.isMeasured,
-    required this.idWkb,
-    required this.specifierWkt,
+    required this.wkbId,
+    required this.wktSpecifier,
   });
 
   /// The number of coordinate values (2, 3 or 4).
@@ -80,10 +80,10 @@ enum Coords {
   ///
   /// References:
   /// * [Simple Feature Access - Part 1: Common Architecture](https://www.ogc.org/standards/sfa)
-  final int idWkb;
+  final int wkbId;
 
   /// An optional WKT specifier for coordinates, ie. `Z`, `M` or `ZM`.
-  final String? specifierWkt;
+  final String? wktSpecifier;
 
   /// Selects a [Coords] enum based on [is3D] and [isMeasured].
   static Coords select({
@@ -94,6 +94,31 @@ enum Coords {
       return isMeasured ? Coords.xyzm : Coords.xyz;
     } else {
       return isMeasured ? Coords.xym : Coords.xy;
+    }
+  }
+
+  /// Selects a [Coords] enum based on the WKB type [id].
+  ///
+  /// Expected values are:
+  /// * `0` for 2D coordinates: (x,y) or (lon,lat)
+  /// * `1000` for 3D coordinates: (x,y,z) or (lon,lat,elev)
+  /// * `2000` for measured coordinates: (x,y,m) or (lon,lat,m)
+  /// * `3000` for 3D / measured coordinates: (x,y,z,m) or (lon,lat,elev,m)
+  ///
+  /// References:
+  /// * [Simple Feature Access - Part 1: Common Architecture](https://www.ogc.org/standards/sfa)
+  static Coords fromWkbId(int id) {
+    switch ((id ~/ 1000) * 1000) {
+      case 0:
+        return Coords.xy;
+      case 1000:
+        return Coords.xyz;
+      case 2000:
+        return Coords.xym;
+      case 3000:
+        return Coords.xyzm;
+      default:
+        throw const FormatException('Invalid WKB id');
     }
   }
 }

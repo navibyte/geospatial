@@ -23,8 +23,8 @@ abstract class FeatureWritable {
     TextFormat<FeatureContent> format = GeoJSON.feature,
     int? decimals,
   }) {
-    final writer = format.encoder(decimals: decimals);
-    writeTo(writer.content);
-    return writer.toText();
+    final encoder = format.encoder(decimals: decimals);
+    writeTo(encoder.writer);
+    return encoder.toText();
   }
 }

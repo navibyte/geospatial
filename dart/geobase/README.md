@@ -513,7 +513,7 @@ A sample to encode a `LineString` geometry to GeoJSON:
   //    {"type":"LineString",
   //     "bbox":[-1.1,-3.49,3.5,-1.1],
   //     "coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]}
-  encoder.content.lineString(
+  encoder.writer.lineString(
     [
       const Geographic(lon: -1.1, lat: -1.1),
       const Geographic(lon: 2.1, lat: -2.5),
@@ -530,7 +530,7 @@ coordinates are represented as `Iterable<num>` like `[-1.1, -1.1]` or
 
 ```dart
   final encoder = GeoJSON.geometry.encoder();
-  encoder.content.lineString(
+  encoder.writer.lineString(
     [
       [-1.1, -1.1],
       [2.1, -2.5],
@@ -559,7 +559,7 @@ A sample to encode a `Feature` geometry to GeoJSON:
   //        {"type":"Point","coordinates":[10.123,20.25]},
   //     "properties":
   //        {"foo":100,"bar":"this is property value","baz":true}}
-  encoder.content.feature(
+  encoder.writer.feature(
     id: 'fid-1',
     geometries: (geom) => geom.point(const Geographic(lon: 10.123, lat: 20.25)),
     properties: {
@@ -587,7 +587,7 @@ A sample to encode a `Point` geometry to WKT (with z and m coordinates too):
 
   // prints:
   //    POINT ZM(10.123 20.25 -30.95 -1.999)
-  encoder.content.point(
+  encoder.writer.point(
     const Geographic(lon: 10.123, lat: 20.25, elev: -30.95, m: -1.999),
     coordType: Coords.xyzm,
   );
@@ -598,7 +598,7 @@ Or shortened:
 
 ```dart
   final encoder = WKT.geometry.encoder();
-  encoder.content
+  encoder.writer
       .point([10.123, 20.25, -30.95, -1.999], coordType: Coords.xyzm);
   print(encoder.toText());
 ```

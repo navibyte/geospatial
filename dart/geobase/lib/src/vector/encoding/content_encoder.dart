@@ -8,12 +8,12 @@ import 'dart:typed_data';
 
 /// An interface to encode some content of [T] into a text or binary format.
 abstract class ContentEncoder<T extends Object> {
-  /// Returns an interface used by a client to write content to this encoder.
+  /// Returns the writer used by a client to write content to this encoder.
   ///
   /// Calling this property never throws, but methods provided by the [T]
   /// interface (that are used to write content) should throw `FormatException`
   /// if writing / encoding fails.
-  T get content;
+  T get writer;
 
   /// The binary representation of content already written to this encoder.
   ///

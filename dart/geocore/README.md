@@ -739,9 +739,9 @@ feature collection, and finally uses a writer to print it as GeoJSON text.
     ],
   );
 
-  // write the feture collection to the content interface of the encoder
-  // (encoder.content is FeatureContent)
-  collection.writeTo(encoder.content);
+  // write the feture collection to the content writer of the encoder
+  // (encoder.writer is FeatureContent)
+  collection.writeTo(encoder.writer);
 
   // print GeoJSON text
   print(encoder.toText());

@@ -477,9 +477,9 @@ void _geoJsonFeatureCollection() {
     ],
   );
 
-  // write the feture collection to the content interface of the encoder
-  // (encoder.content is FeatureContent)
-  collection.writeTo(encoder.content);
+  // write the feture collection to the content writer of the encoder
+  // (encoder.writer is FeatureContent)
+  collection.writeTo(encoder.writer);
 
   // print GeoJSON text
   print(encoder.toText());

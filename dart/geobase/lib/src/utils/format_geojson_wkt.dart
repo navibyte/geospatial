@@ -44,7 +44,7 @@ abstract class _BaseTextWriter<T extends Object>
   final List<Coords?> _coordTypes = [];
 
   @override
-  T get content => this as T;
+  T get writer => this as T;
 
   void _startContainer(_Container type) {
     _hasItemsOnLevel.add(false);
@@ -556,7 +556,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     _startCoordType(coordType);
     _buffer
       ..write('{"type":"')
-      ..write(type.nameGeoJson)
+      ..write(type.geoJsonName)
       ..write('"');
     if (bbox != null) {
       _buffer.write(',"bbox":[');
@@ -628,7 +628,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
       // elsewhere (than under "Feature") write Geometry element without data
       _buffer
         ..write('{"type":"')
-        ..write(type.nameGeoJson)
+        ..write(type.geoJsonName)
         ..write(
           type == Geom.geometryCollection
               ? '","geometries":[]}'
@@ -988,8 +988,8 @@ class WktTextWriter<T extends Object> extends WktLikeTextWriter<T> {
     }
     _startContainer(_Container.geometry);
     _startCoordType(coordType);
-    _buffer.write(type.nameWkt);
-    final specifier = coordType?.specifierWkt;
+    _buffer.write(type.wktName);
+    final specifier = coordType?.wktSpecifier;
     if (specifier != null) {
       _buffer
         ..write(' ')
@@ -1030,7 +1030,7 @@ class WktTextWriter<T extends Object> extends WktLikeTextWriter<T> {
       _buffer.write(',');
     }
     _buffer
-      ..write(type.nameWkt)
+      ..write(type.wktName)
       ..write(' EMPTY');
   }
 
@@ -1059,8 +1059,8 @@ class WktTextWriter<T extends Object> extends WktLikeTextWriter<T> {
     }
     _startContainer(_Container.geometry);
     _startCoordType(coordType);
-    _buffer.write(Geom.polygon.nameWkt);
-    final specifier = coordType?.specifierWkt;
+    _buffer.write(Geom.polygon.wktName);
+    final specifier = coordType?.wktSpecifier;
     if (specifier != null) {
       _buffer
         ..write(' ')

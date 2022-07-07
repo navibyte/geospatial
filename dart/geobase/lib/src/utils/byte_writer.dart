@@ -28,7 +28,7 @@ class ByteWriter {
   /// A writer should be buffered, but it's implementation strategies are not
   /// specified.
   ///
-  /// [endian] specifies endianness for byte sequences written..
+  /// [endian] specifies endianness for byte sequences written.
   ///
   /// [bufferSize] suggests the buffer size for writing bytes.
   ByteWriter.buffered({this.endian = Endian.big, this.bufferSize = 128})
@@ -65,19 +65,23 @@ class ByteWriter {
 
   /// Writes [value] as four bytes (IEEE 754 single-precision floating-point).
   ///
+  /// Uses the parameter [endian] if non-null, otherwise uses `this.endian`.
+  ///
   /// See `ByteData.setFloat32` from `dart:typed_data` for reference.
-  void writeFloat32(double value) {
+  void writeFloat32(double value, [Endian? endian]) {
     _reserve(4);
-    _chunk.setFloat32(_offset, value, endian);
+    _chunk.setFloat32(_offset, value, endian ?? this.endian);
     _offset += 4;
   }
 
   /// Writes [value] as eight bytes (IEEE 754 double-precision floating-point).
   ///
+  /// Uses the parameter [endian] if non-null, otherwise uses `this.endian`.
+  ///
   /// See `ByteData.setFloat64` from `dart:typed_data` for reference.
-  void writeFloat64(double value) {
+  void writeFloat64(double value, [Endian? endian]) {
     _reserve(8);
-    _chunk.setFloat64(_offset, value, endian);
+    _chunk.setFloat64(_offset, value, endian ?? this.endian);
     _offset += 8;
   }
 
@@ -92,32 +96,40 @@ class ByteWriter {
 
   /// Writes [value] as two bytes (two's complement binary representation).
   ///
+  /// Uses the parameter [endian] if non-null, otherwise uses `this.endian`.
+  ///
   /// See `ByteData.setInt16` from `dart:typed_data` for reference.
-  void writeInt16(int value) {
+  void writeInt16(int value, [Endian? endian]) {
     _reserve(2);
-    _chunk.setInt16(_offset, value, endian);
+    _chunk.setInt16(_offset, value, endian ?? this.endian);
     _offset += 2;
   }
 
   /// Writes [value] as four bytes (two's complement binary representation).
   ///
+  /// Uses the parameter [endian] if non-null, otherwise uses `this.endian`.
+  ///
   /// See `ByteData.setInt32` from `dart:typed_data` for reference.
-  void writeInt32(int value) {
+  void writeInt32(int value, [Endian? endian]) {
     _reserve(4);
-    _chunk.setInt32(_offset, value, endian);
+    _chunk.setInt32(_offset, value, endian ?? this.endian);
     _offset += 4;
   }
 
   /// Writes [value] as eight bytes (two's complement binary representation).
   ///
+  /// Uses the parameter [endian] if non-null, otherwise uses `this.endian`.
+  ///
   /// See `ByteData.setInt64` from `dart:typed_data` for reference.
-  void writeInt64(int value) {
+  void writeInt64(int value, [Endian? endian]) {
     _reserve(8);
-    _chunk.setInt64(_offset, value, endian);
+    _chunk.setInt64(_offset, value, endian ?? this.endian);
     _offset += 8;
   }
 
   /// Writes [value] as a single byte (unsigned binary representation).
+  ///
+  /// Uses the parameter [endian] if non-null, otherwise uses `this.endian`.
   ///
   /// See `ByteData.setUint8` from `dart:typed_data` for reference.
   void writeUint8(int value) {
@@ -128,28 +140,34 @@ class ByteWriter {
 
   /// Writes [value] as two bytes (unsigned binary representation).
   ///
+  /// Uses the parameter [endian] if non-null, otherwise uses `this.endian`.
+  ///
   /// See `ByteData.setUint16` from `dart:typed_data` for reference.
-  void writeUint16(int value) {
+  void writeUint16(int value, [Endian? endian]) {
     _reserve(2);
-    _chunk.setUint16(_offset, value, endian);
+    _chunk.setUint16(_offset, value, endian ?? this.endian);
     _offset += 2;
   }
 
   /// Writes [value] as four bytes (unsigned binary representation).
   ///
+  /// Uses the parameter [endian] if non-null, otherwise uses `this.endian`.
+  ///
   /// See `ByteData.setUint32` from `dart:typed_data` for reference.
-  void writeUint32(int value) {
+  void writeUint32(int value, [Endian? endian]) {
     _reserve(4);
-    _chunk.setUint32(_offset, value, endian);
+    _chunk.setUint32(_offset, value, endian ?? this.endian);
     _offset += 4;
   }
 
   /// Writes [value] as eight bytes (unsigned binary representation).
   ///
+  /// Uses the parameter [endian] if non-null, otherwise uses `this.endian`.
+  ///
   /// See `ByteData.setUint64` from `dart:typed_data` for reference.
-  void writeUint64(int value) {
+  void writeUint64(int value, [Endian? endian]) {
     _reserve(8);
-    _chunk.setUint64(_offset, value, endian);
+    _chunk.setUint64(_offset, value, endian ?? this.endian);
     _offset += 8;
   }
 }

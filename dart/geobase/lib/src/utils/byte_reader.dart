@@ -22,28 +22,38 @@ class ByteReader {
   ByteReader.view(ByteBuffer buffer, {this.endian = Endian.big})
       : _data = ByteData.view(buffer);
 
-  void _expect(int len) {
-    if (_offset + len > _data.lengthInBytes) {
+  /// Expect this reader to contain at least [length] bytes left to read.
+  ///
+  /// Throws FormatException if there are less than [length] bytes left.
+  void expect(int length) {
+    if (_offset + length > _data.lengthInBytes) {
       throw const FormatException('Buffer limits exceeded');
     }
   }
 
+  /// Returns true if this reader contains bytes available to read.
+  bool get hasAvailable => _offset < _data.lengthInBytes;
+
   /// Reads a value from four bytes (IEEE 754 single-precision floating-point).
   ///
+  /// Uses the parameter [endian] if non-null, otherwise uses `this.endian`.
+  ///
   /// See `ByteData.getFloat32` from `dart:typed_data` for reference.
-  double readFloat32() {
-    _expect(4);
-    final value = _data.getFloat32(_offset, endian);
+  double readFloat32([Endian? endian]) {
+    expect(4);
+    final value = _data.getFloat32(_offset, endian ?? this.endian);
     _offset += 4;
     return value;
   }
 
   /// Reads a value from eight bytes (IEEE 754 double-precision floating-point).
   ///
+  /// Uses the parameter [endian] if non-null, otherwise uses `this.endian`.
+  ///
   /// See `ByteData.getFloat64` from `dart:typed_data` for reference.
-  double readFloat64() {
-    _expect(8);
-    final value = _data.getFloat64(_offset, endian);
+  double readFloat64([Endian? endian]) {
+    expect(8);
+    final value = _data.getFloat64(_offset, endian ?? this.endian);
     _offset += 8;
     return value;
   }
@@ -52,7 +62,7 @@ class ByteReader {
   ///
   /// See `ByteData.getInt8` from `dart:typed_data` for reference.
   int readInt8() {
-    _expect(1);
+    expect(1);
     final value = _data.getInt8(_offset);
     _offset += 1;
     return value;
@@ -60,30 +70,36 @@ class ByteReader {
 
   /// Reads a value from two bytes (two's complement binary representation).
   ///
+  /// Uses the parameter [endian] if non-null, otherwise uses `this.endian`.
+  ///
   /// See `ByteData.getInt16` from `dart:typed_data` for reference.
-  int readInt16() {
-    _expect(2);
-    final value = _data.getInt16(_offset, endian);
+  int readInt16([Endian? endian]) {
+    expect(2);
+    final value = _data.getInt16(_offset, endian ?? this.endian);
     _offset += 2;
     return value;
   }
 
   /// Reads a value from four bytes (two's complement binary representation).
   ///
+  /// Uses the parameter [endian] if non-null, otherwise uses `this.endian`.
+  ///
   /// See `ByteData.getInt32` from `dart:typed_data` for reference.
-  int readInt32() {
-    _expect(4);
-    final value = _data.getInt32(_offset, endian);
+  int readInt32([Endian? endian]) {
+    expect(4);
+    final value = _data.getInt32(_offset, endian ?? this.endian);
     _offset += 4;
     return value;
   }
 
   /// Reads a value from eight bytes (two's complement binary representation).
   ///
+  /// Uses the parameter [endian] if non-null, otherwise uses `this.endian`.
+  ///
   /// See `ByteData.getInt64` from `dart:typed_data` for reference.
-  int readInt64() {
-    _expect(8);
-    final value = _data.getInt64(_offset, endian);
+  int readInt64([Endian? endian]) {
+    expect(8);
+    final value = _data.getInt64(_offset, endian ?? this.endian);
     _offset += 8;
     return value;
   }
@@ -92,7 +108,7 @@ class ByteReader {
   ///
   /// See `ByteData.getUint8` from `dart:typed_data` for reference.
   int readUint8() {
-    _expect(1);
+    expect(1);
     final value = _data.getUint8(_offset);
     _offset += 1;
     return value;
@@ -100,30 +116,36 @@ class ByteReader {
 
   /// Reads a value from two bytes (unsigned binary representation).
   ///
+  /// Uses the parameter [endian] if non-null, otherwise uses `this.endian`.
+  ///
   /// See `ByteData.getUint16` from `dart:typed_data` for reference.
-  int readUint16() {
-    _expect(2);
-    final value = _data.getUint16(_offset, endian);
+  int readUint16([Endian? endian]) {
+    expect(2);
+    final value = _data.getUint16(_offset, endian ?? this.endian);
     _offset += 2;
     return value;
   }
 
   /// Reads a value from four bytes (unsigned binary representation).
   ///
+  /// Uses the parameter [endian] if non-null, otherwise uses `this.endian`.
+  ///
   /// See `ByteData.getUint32` from `dart:typed_data` for reference.
-  int readUint32() {
-    _expect(4);
-    final value = _data.getUint32(_offset, endian);
+  int readUint32([Endian? endian]) {
+    expect(4);
+    final value = _data.getUint32(_offset, endian ?? this.endian);
     _offset += 4;
     return value;
   }
 
   /// Reads a value from eight bytes (unsigned binary representation).
   ///
+  /// Uses the parameter [endian] if non-null, otherwise uses `this.endian`.
+  ///
   /// See `ByteData.getUint64` from `dart:typed_data` for reference.
-  int readUint64() {
-    _expect(8);
-    final value = _data.getUint64(_offset, endian);
+  int readUint64([Endian? endian]) {
+    expect(8);
+    final value = _data.getUint64(_offset, endian ?? this.endian);
     _offset += 8;
     return value;
   }

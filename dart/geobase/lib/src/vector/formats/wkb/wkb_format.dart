@@ -10,26 +10,27 @@ import 'dart:typed_data';
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/coordinates/base.dart';
+import '/src/utils/byte_reader.dart';
 import '/src/utils/byte_writer.dart';
 import '/src/utils/format_validation.dart';
 import '/src/vector/content.dart';
 import '/src/vector/encoding.dart';
 
+part 'wkb_decoder.dart';
 part 'wkb_encoder.dart';
 
 /// The Well-known binary (WKB) format, see [geometry] for accessing the format.
 ///
 /// More information:
-/// [Well-known binary](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary).
+/// * [Well-known binary](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary).
+/// * [Simple Feature Access - Part 1: Common Architecture](https://www.ogc.org/standards/sfa)
+/// * [ISO 13249-3](https://www.iso.org/standard/60343.html)
+/// * [Well-Known binary from GEOS](https://libgeos.org/specifications/wkb/)
 class WKB {
   /// The Well-known binary (WKB) format.
   const WKB();
 
   /// The Well-known binary (WKB) format for geometries.
-  ///
-  /// The Well-known binary (WKB) format is defined by:
-  /// [Simple Feature Access - Part 1: Common Architecture](https://www.ogc.org/standards/sfa)
-  /// standard by [The Open Geospatial Consortium](https://www.ogc.org/).
   ///
   /// Supported geometry types and their "WKB integer codes" for different
   /// coordinate types:
@@ -43,9 +44,6 @@ class WKB {
   /// `multiLineString`    | 0005 | 1005 | 2005 | 3005
   /// `multiPolygon`       | 0006 | 1006 | 2006 | 3006
   /// `geometryCollection` | 0007 | 1007 | 2007 | 3007
-  ///
-  /// More information:
-  /// [Well-known binary](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary).
   static const BinaryFormat<GeometryContent> geometry =
       _WkbGeometryBinaryFormat();
 }
@@ -58,19 +56,12 @@ class _WkbGeometryBinaryFormat with BinaryFormat<GeometryContent> {
     Endian endian = Endian.big,
     int bufferSize = 128,
   }) =>
-      _WkbGeometryEncoder(
-        ByteWriter.buffered(
-          endian: endian,
-          bufferSize: bufferSize,
-        ),
-      );
+      _WkbGeometryEncoder(endian: endian, bufferSize: bufferSize);
 
   @override
   ContentDecoder decoder(
-    GeometryContent target, {
+    GeometryContent builder, {
     Endian endian = Endian.big,
-  }) {
-    // TODO(x): implement _WkbGeometryDecoder class
-    throw UnimplementedError();
-  }
+  }) =>
+      _WkbGeometryDecoder(builder, endian: endian);
 }
