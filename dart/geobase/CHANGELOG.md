@@ -2,6 +2,9 @@
 
 Development version `0.3.0-dev.0`.
 
+✨ New: Support for [Well-know binary](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary) (WKB). Text and
+binary data formats, encodings and content interfaces also redesigned.
+
 ⚠️ Breaking changes:
 - Content interfaces, content encoders and text formats redesigned
 - [Rename writers and content interfaces to generalize #127](https://github.com/navibyte/geospatial/issues/127)

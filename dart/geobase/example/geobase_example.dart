@@ -32,6 +32,10 @@ void main() {
   _wktPointGeometryWithZM();
   _wktPointGeometryWithZMShortened();
 
+  // WKB samples
+  print('\nWKB samples');
+  _wkbPointGeometryWithZM();
+
   // GeoJSON samples
   print('\nGeoJSON samples');
   _geoJsonPointGeometry();
@@ -213,9 +217,43 @@ void _wktPointGeometryWithZM() {
 
 void _wktPointGeometryWithZMShortened() {
   final encoder = WKT.geometry.encoder();
-  encoder.writer
-      .point([10.123, 20.25, -30.95, -1.999], coordType: Coords.xyzm);
+  encoder.writer.point([10.123, 20.25, -30.95, -1.999], coordType: Coords.xyzm);
   print(encoder.toText());
+}
+
+void _wkbPointGeometryWithZM() {
+  // geometry binary format encoder for WKB
+  final encoder = WKB.geometry.encoder();
+
+  // write geometries (here only point) to content writer of the encoder
+  encoder.writer.point(
+    [10.123, 20.25, -30.95, -1.999],
+    coordType: Coords.xyzm,
+  );
+
+  // get encoded bytes (Uint8List) and Base64 encoded text (String)
+  final wkbBytes = encoder.toBytes();
+  final wkbBytesAsBase64 = encoder.toText();
+
+  // prints (point encoded to WKB binary data, formatted as Base64 text):
+  //    AAAAC7lAJD752yLQ5UA0QAAAAAAAwD7zMzMzMzO///vnbItDlg==
+  print(wkbBytesAsBase64);
+
+  // next decode this WKB binary data and use WKT text format encoder as target
+
+  // geometry text format encoder for WKT
+  final wktEncoder = WKT.geometry.encoder();
+
+  // geometry binary format decoder for WKB
+  // (with content writer of the WKT encoder set as a target for decoding)
+  final decoder = WKB.geometry.decoder(wktEncoder.writer);
+
+  // now decode those WKB bytes created already at the start
+  decoder.decodeBytes(wkbBytes.buffer);
+
+  // finally print WKT text:
+  //    POINT ZM(10.123 20.25 -30.95 -1.999)
+  print(wktEncoder.toText());
 }
 
 void _geoJsonPointGeometry() {

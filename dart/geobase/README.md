@@ -3,12 +3,14 @@
 <a title="Ktrinko, CC0, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Eckert4.jpg"><img alt="World map with Natural Earth data, Excert projection" src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/projections/eckert4/320px-Eckert4.jpg" align="right"></a>
 
 Geospatial coordinates (geographic and projected), projections, tiling schemes,
-and data writers for [GeoJSON](https://geojson.org/) and [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry).
+and vector data support for [GeoJSON](https://geojson.org/),
+[WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)
+and [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary).
 
 ## Features
 
-✨ New: Tiling schemes and tile matrix sets (web mercator, global geodetic). 
-Also other improvements on coordinates, and refactorings on the code structure.
+✨ New: Support for [Well-know binary](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary) (WKB). Text and
+binary data formats, encodings and content interfaces also redesigned.
 
 Key features:
 * 🌐 *geographic* positions and bounding boxes (longitude-latitude-elevation)
@@ -16,10 +18,12 @@ Key features:
 * 🏗️ coordinate transformations and projections (initial support)
 * 🔢 tiling schemes and tile matrix sets (web mercator, global geodetic)
 * 📅 temporal data structures (instant, interval) and spatial extents
-* 📃 geospatial data writers for features, geometries, coordinates, properties:
+* 📃 text format encoders for features, geometries, coordinates, properties:
   * 🌎 supported formats: [GeoJSON](https://geojson.org/) 
-* 📃 geospatial data writers for geometries and coordinates:
+* 📃 text format encoders for geometries and coordinates:
   * 🪧 supported formats: [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)
+* 📃 binary format encoders and decoders for geometries:
+  * 🪧 supported formats: [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary)
 
 ## Package
 
@@ -575,7 +579,7 @@ A sample to encode a `Feature` geometry to GeoJSON:
 
 The `WKT` class can be used to access text format encoders for coordinates and 
 geometries producing 
-[WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)
+[Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)
 compatible text. However feature objects cannot be written to WKT even if 
 supported by GeoJSON.
 
@@ -602,6 +606,105 @@ Or shortened:
       .point([10.123, 20.25, -30.95, -1.999], coordType: Coords.xyzm);
   print(encoder.toText());
 ```
+
+### WKB encoder and decoder
+
+The `WKB` class provides encoders and decoders for
+[Well-known binary](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary)
+binary format supporting simple geometry objects.
+
+See sample below:
+
+```dart
+  // geometry binary format encoder for WKB
+  final encoder = WKB.geometry.encoder();
+
+  // write geometries (here only point) to content writer of the encoder
+  encoder.writer.point(
+    [10.123, 20.25, -30.95, -1.999],
+    coordType: Coords.xyzm,
+  );
+
+  // get encoded bytes (Uint8List) and Base64 encoded text (String)
+  final wkbBytes = encoder.toBytes();
+  final wkbBytesAsBase64 = encoder.toText();
+
+  // prints (point encoded to WKB binary data, formatted as Base64 text):
+  //    AAAAC7lAJD752yLQ5UA0QAAAAAAAwD7zMzMzMzO///vnbItDlg==
+  print(wkbBytesAsBase64);
+
+  // next decode this WKB binary data and use WKT text format encoder as target
+
+  // geometry text format encoder for WKT
+  final wktEncoder = WKT.geometry.encoder();
+
+  // geometry binary format decoder for WKB
+  // (with content writer of the WKT encoder set as a target for decoding)
+  final decoder = WKB.geometry.decoder(wktEncoder.writer);
+
+  // now decode those WKB bytes created already at the start
+  decoder.decodeBytes(wkbBytes.buffer);
+
+  // finally print WKT text:
+  //    POINT ZM(10.123 20.25 -30.95 -1.999)
+  print(wktEncoder.toText());
+```
+
+As descibed above `WKB.geometry.decoder` takes `wktEncoder.writer` as a
+parameter. It implements `GeometryContent` interface and inherits following
+methods from `SimpleGeometryContent`:
+
+```dart
+  /// Writes a point geometry with a position from [coordinates].
+  ///
+  /// The [coordinates] represents a single position of [Position] or
+  /// `Iterable<num>`.
+  ///
+  /// Use [name] to specify a name for a geometry (when applicable).
+  ///
+  /// Use [coordType] to define the type of coordinates.
+  ///
+  /// Known [Position] sub classes are [Projected] (projected or cartesian
+  /// coordinates) and [Geographic] (geographic coordinates). Other sub classes
+  /// are supported too.
+  ///
+  /// Allowed [coordinates] value combinations for `Iterable<num>` are:
+  /// (x, y), (x, y, z) and (x, y, z, m).
+  void point(
+    Object coordinates, {
+    String? name,
+    Coords? coordType,
+  });
+
+  /// Writes a line string geometry with a position array from [coordinates].
+  void lineString(
+    Iterable<Object> coordinates, {
+    String? name,
+    Coords? coordType,
+    Object? bbox,
+  });
+
+  /// Writes a polygon geometry with a position array from [coordinates].
+  void polygon(
+    Iterable<Iterable<Object>> coordinates, {
+    String? name,
+    Coords? coordType,
+    Object? bbox,
+  });
+
+  /// Writes a multi point geometry with a position array from [coordinates].
+  void multiPoint(
+    Iterable<Object> coordinates, {
+    String? name,
+    Coords? coordType,
+    Object? bbox,
+  });
+
+  // Omitted: multiLineString, multiPolygon, geometryCollection, emptyGeometry
+```
+
+By implementing this interface, it's possible to implement a custom geometry
+object builder that receives geometry content via method calls to the interface. 
 
 ## Meta
 

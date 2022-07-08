@@ -59,7 +59,7 @@ class ByteWriter {
   }
 
   void _flush() {
-    if (_offset > 0) {
+    if (!_needNewChunk && _offset > 0) {
       _buffer.addBytes(_chunk.buffer.asUint8List(0, _offset));
       _needNewChunk = true;
     }
