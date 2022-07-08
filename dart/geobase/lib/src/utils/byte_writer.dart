@@ -23,6 +23,11 @@ class ByteWriter {
   /// The buffer size for writing bytes.
   final int bufferSize;
 
+  /// Whether to encode `double.nan` as `-double.nan` on byte data.
+  /// 
+  /// This is applied only by [writeFloat32] and [writeFloat64] methods.
+  final bool nanEncodedAsNegative;
+
   /// A writer (integer and floating point values) writing a sequence of bytes.
   ///
   /// A writer should be buffered, but it's implementation strategies are not
@@ -31,8 +36,11 @@ class ByteWriter {
   /// [endian] specifies endianness for byte sequences written.
   ///
   /// [bufferSize] suggests the buffer size for writing bytes.
-  ByteWriter.buffered({this.endian = Endian.big, this.bufferSize = 128})
-      : _buffer = _ChunkedByteBuffer(),
+  ByteWriter.buffered({
+    this.endian = Endian.big,
+    this.bufferSize = 128,
+    this.nanEncodedAsNegative = false,
+  })  : _buffer = _ChunkedByteBuffer(),
         _chunk = ByteData(bufferSize);
 
   void _reserve(int len) {
@@ -68,9 +76,15 @@ class ByteWriter {
   /// Uses the parameter [endian] if non-null, otherwise uses `this.endian`.
   ///
   /// See `ByteData.setFloat32` from `dart:typed_data` for reference.
+  /// 
+  /// See also configuration parameter [nanEncodedAsNegative].
   void writeFloat32(double value, [Endian? endian]) {
     _reserve(4);
-    _chunk.setFloat32(_offset, value, endian ?? this.endian);
+    _chunk.setFloat32(
+      _offset,
+      nanEncodedAsNegative && value.isNaN ? -double.nan : value,
+      endian ?? this.endian,
+    );
     _offset += 4;
   }
 
@@ -79,9 +93,15 @@ class ByteWriter {
   /// Uses the parameter [endian] if non-null, otherwise uses `this.endian`.
   ///
   /// See `ByteData.setFloat64` from `dart:typed_data` for reference.
+  /// 
+  /// See also configuration parameter [nanEncodedAsNegative].
   void writeFloat64(double value, [Endian? endian]) {
     _reserve(8);
-    _chunk.setFloat64(_offset, value, endian ?? this.endian);
+    _chunk.setFloat64(
+      _offset,
+      nanEncodedAsNegative && value.isNaN ? -double.nan : value,
+      endian ?? this.endian,
+    );
     _offset += 8;
   }
 
@@ -185,7 +205,7 @@ class _ChunkedByteBuffer {
 
   Uint8List toBytes() {
     if (_chunks.length == 1) {
-      return _chunks.first;
+      return _chunks.first.sublist(0, _length);
     } else {
       final buf = Uint8List(_length);
       var start = 0;

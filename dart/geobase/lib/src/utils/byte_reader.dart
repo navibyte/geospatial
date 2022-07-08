@@ -19,8 +19,10 @@ class ByteReader {
   /// A reader (integer and floating point values) reading a view of [buffer].
   ///
   /// [endian] specifies endianness for byte sequences read.
-  ByteReader.view(ByteBuffer buffer, {this.endian = Endian.big})
-      : _data = ByteData.view(buffer);
+  ByteReader.view(
+    ByteBuffer buffer, {
+    this.endian = Endian.big,
+  }) : _data = buffer.asByteData();
 
   /// Expect this reader to contain at least [length] bytes left to read.
   ///
