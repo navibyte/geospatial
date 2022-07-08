@@ -10,7 +10,7 @@ import 'package:meta/meta.dart';
 
 /// A scalable object at the [zoom] level (a positive number).
 @immutable
-class Scalable {
+abstract class Scalable {
   final num _zoom;
 
   /// Create a scalable object at the [zoom] level (a positive number).
@@ -22,13 +22,13 @@ class Scalable {
   num get zoom => _zoom;
 
   /// Zooms in by one.
-  Scalable zoomIn() => Scalable(zoom: zoom + 1);
+  Scalable zoomIn();
 
   /// Zooms out by one.
   ///
   /// The minimum value for [zoom] of the returned scalable object is 0.
-  Scalable zoomOut() => Scalable(zoom: math.max(zoom - 1, 0));
+  Scalable zoomOut();
 
   /// Zooms to the [zoom] level (a positive number).
-  Scalable zoomTo(covariant num zoom) => Scalable(zoom: zoom);
+  Scalable zoomTo(covariant num zoom);
 }

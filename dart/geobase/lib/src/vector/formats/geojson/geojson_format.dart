@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-// ignore_for_file: avoid_positional_boolean_parameters
+import 'package:equatable/equatable.dart';
 
 import '/src/utils/format_geojson_wkt.dart';
 import '/src/utils/format_impl.dart';
@@ -12,7 +12,7 @@ import '/src/vector/content.dart';
 import '/src/vector/encoding.dart';
 
 /// Optional configuration parameters for formatting GeoJSON.
-class GeoJsonConf {
+class GeoJsonConf with EquatableMixin {
   /// When [ignoreMeasured] is set to true, then M coordinates are ignored from
   /// formatting.
   final bool ignoreMeasured;
@@ -27,6 +27,9 @@ class GeoJsonConf {
     this.ignoreMeasured = false,
     this.ignoreForeignMembers = false,
   });
+
+  @override
+  List<Object?> get props => [ignoreMeasured, ignoreForeignMembers];
 }
 
 /// The GeoJSON text format for [coordinate], [geometry] and [feature] objects.
