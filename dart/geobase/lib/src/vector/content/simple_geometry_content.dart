@@ -243,5 +243,8 @@ abstract class SimpleGeometryContent {
   /// Writes an empty geometry of [type].
   ///
   /// Use [name] to specify a name for a geometry (when applicable).
+  /// 
+  /// Note: normally it might be a good idea to avoid "empty geometries" as
+  /// those are encoded and decoded with different ways in different formats.
   void emptyGeometry(Geom type, {String? name});
 }

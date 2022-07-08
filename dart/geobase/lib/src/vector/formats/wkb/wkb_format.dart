@@ -16,6 +16,8 @@ import '/src/utils/format_validation.dart';
 import '/src/vector/content.dart';
 import '/src/vector/encoding.dart';
 
+import 'wkb_conf.dart';
+
 part 'wkb_decoder.dart';
 part 'wkb_encoder.dart';
 
@@ -27,7 +29,6 @@ part 'wkb_encoder.dart';
 /// * [ISO 13249-3](https://www.iso.org/standard/60343.html)
 /// * [Well-Known binary from GEOS](https://libgeos.org/specifications/wkb/)
 class WKB {
-  
   /// The Well-known binary (WKB) format for geometries.
   ///
   /// Supported geometry types and their "WKB integer codes" for different
@@ -44,10 +45,18 @@ class WKB {
   /// `geometryCollection` | 0007 | 1007 | 2007 | 3007
   static const BinaryFormat<GeometryContent> geometry =
       _WkbGeometryBinaryFormat();
+
+  /// The Well-known binary (WKB) format for geometries with optional [conf].
+  /// 
+  /// See [geometry] for more information about supported geometry types.
+  static BinaryFormat<GeometryContent> geometryFormat([WkbConf? conf]) =>
+      _WkbGeometryBinaryFormat(conf);
 }
 
 class _WkbGeometryBinaryFormat with BinaryFormat<GeometryContent> {
-  const _WkbGeometryBinaryFormat();
+  const _WkbGeometryBinaryFormat([this.conf]);
+
+  final WkbConf? conf;
 
   @override
   ContentEncoder<GeometryContent> encoder({
@@ -61,5 +70,5 @@ class _WkbGeometryBinaryFormat with BinaryFormat<GeometryContent> {
     GeometryContent builder, {
     Endian endian = Endian.big,
   }) =>
-      _WkbGeometryDecoder(builder, endian: endian);
+      _WkbGeometryDecoder(builder, endian: endian, conf: conf);
 }

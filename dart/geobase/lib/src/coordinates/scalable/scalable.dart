@@ -4,8 +4,6 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'dart:math' as math;
-
 import 'package:meta/meta.dart';
 
 /// A scalable object at the [zoom] level (a positive number).

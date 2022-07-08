@@ -9,14 +9,17 @@ part of 'wkb_format.dart';
 class _WkbGeometryDecoder implements ContentDecoder {
   final GeometryContent builder;
   final Endian endian;
+  final WkbConf conf;
 
-  _WkbGeometryDecoder(this.builder, {this.endian = Endian.big});
+  _WkbGeometryDecoder(this.builder, {this.endian = Endian.big, WkbConf? conf})
+      : conf = conf ?? const WkbConf();
 
   @override
   void decodeBytes(ByteBuffer source) {
     _WkbGeometryBufferDecoder(
       builder,
       ByteReader.view(source, endian: endian),
+      conf,
     ).buildAll();
   }
 
@@ -27,8 +30,9 @@ class _WkbGeometryDecoder implements ContentDecoder {
 class _WkbGeometryBufferDecoder {
   final SimpleGeometryContent builder;
   final ByteReader buffer;
+  final WkbConf conf;
 
-  _WkbGeometryBufferDecoder(this.builder, this.buffer);
+  _WkbGeometryBufferDecoder(this.builder, this.buffer, this.conf);
 
   void buildAll() {
     // loop as long as some data available, so builds all geometries from buffer
@@ -82,7 +86,7 @@ class _WkbGeometryBufferDecoder {
         // build geometry collection
         builder.geometryCollection(
           // use callback content interface to build "numGeometries" to buffer
-          geometries: (geom) => _WkbGeometryBufferDecoder(geom, buffer)
+          geometries: (geom) => _WkbGeometryBufferDecoder(geom, buffer, conf)
               .buildCounted(numGeometries),
         );
         break;
@@ -91,12 +95,13 @@ class _WkbGeometryBufferDecoder {
 
   void _buildPoint(Coords coordType, Endian endian) {
     final point = _readPoint(coordType, endian);
-    if (point[0] == double.nan && point[1] == double.nan) {
+    if (conf.buildEmptyGeometries &&
+        point[0] == double.nan &&
+        point[1] == double.nan) {
       // this is a special case, see => https://trac.osgeo.org/geos/ticket/1005
       //                             https://trac.osgeo.org/postgis/ticket/3181
       builder.emptyGeometry(Geom.point);
     } else {
-      // point is real point, not empty one
       builder.point(
         point,
         coordType: coordType,
@@ -105,38 +110,51 @@ class _WkbGeometryBufferDecoder {
   }
 
   void _buildLineString(Coords coordType, Endian endian) {
-    builder.lineString(
-      _readPointArray(coordType, endian),
-      coordType: coordType,
-    );
+    final array = _readPointArray(coordType, endian);
+    if (conf.buildEmptyGeometries && array.isEmpty) {
+      builder.emptyGeometry(Geom.lineString);
+    } else {
+      builder.lineString(array, coordType: coordType);
+    }
   }
 
   void _buildPolygon(Coords coordType, Endian endian) {
-    builder.polygon(
-      _readLineStringArray(coordType, endian),
-      coordType: coordType,
-    );
+    final array = _readLineStringArray(coordType, endian);
+    if (conf.buildEmptyGeometries && array.isEmpty) {
+      builder.emptyGeometry(Geom.polygon);
+    } else {
+      builder.polygon(array, coordType: coordType);
+    }
   }
 
   void _buildMultiPoint(Coords coordType, Endian endian) {
-    builder.multiPoint(
-      _readPointArray(coordType, endian, requireHeaderForItems: true),
-      coordType: coordType,
-    );
+    final array =
+        _readPointArray(coordType, endian, requireHeaderForItems: true);
+    if (conf.buildEmptyGeometries && array.isEmpty) {
+      builder.emptyGeometry(Geom.multiPoint);
+    } else {
+      builder.multiPoint(array, coordType: coordType);
+    }
   }
 
   void _buildMultiLineString(Coords coordType, Endian endian) {
-    builder.multiLineString(
-      _readLineStringArray(coordType, endian, requireHeaderForItems: true),
-      coordType: coordType,
-    );
+    final array =
+        _readLineStringArray(coordType, endian, requireHeaderForItems: true);
+    if (conf.buildEmptyGeometries && array.isEmpty) {
+      builder.emptyGeometry(Geom.multiLineString);
+    } else {
+      builder.multiLineString(array, coordType: coordType);
+    }
   }
 
   void _buildMultiPolygon(Coords coordType, Endian endian) {
-    builder.multiPolygon(
-      _readPolygonArray(coordType, endian, requireHeaderForItems: true),
-      coordType: coordType,
-    );
+    final array =
+        _readPolygonArray(coordType, endian, requireHeaderForItems: true);
+    if (conf.buildEmptyGeometries && array.isEmpty) {
+      builder.emptyGeometry(Geom.multiPolygon);
+    } else {
+      builder.multiPolygon(array, coordType: coordType);
+    }
   }
 
   Endian _readByteOrder() {
