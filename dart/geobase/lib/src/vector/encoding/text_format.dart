@@ -6,9 +6,9 @@
 
 import 'content_encoder.dart';
 
-/// A mixin to access text format encoders for content of [T].
-mixin TextFormat<T extends Object> {
-  /// Returns a text format encoder for content of [T].
+/// A mixin to access text format encoders for [Content].
+mixin TextFormat<Content extends Object> {
+  /// Returns a text format encoder for [Content].
   ///
   /// When an optional [buffer] is given, then representations are written into
   /// it (without clearing any content it might already contain).
@@ -18,7 +18,7 @@ mixin TextFormat<T extends Object> {
   /// After writing content objects into an encoder, the text representation can
   /// be accessed using `toText()` of the encoder (or via [buffer] when such
   /// is given).
-  ContentEncoder<T> encoder({
+  ContentEncoder<Content> encoder({
     StringSink? buffer,
     int? decimals,
   });

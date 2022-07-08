@@ -6,24 +6,57 @@
 
 import '/src/vector/encoding.dart';
 
-/// A factory function to create [ContentEncoder] for content of [T].
-typedef CreateTextEncoder<T extends Object> = ContentEncoder<T> Function({
+/// A factory function to create [ContentEncoder] for [Content].
+typedef CreateTextEncoder<Content extends Object> = ContentEncoder<Content>
+    Function({
   StringSink? buffer,
   int? decimals,
 });
 
-/// A helper implementation of [TextFormat] for content of [T].
-class TextFormatImpl<T extends Object> with TextFormat<T> {
-  /// A helper implementation of [TextFormat] for content of [T].
+/// A helper implementation of [TextFormat] for [Content].
+class TextFormatImpl<Content extends Object> with TextFormat<Content> {
+  /// A helper implementation of [TextFormat] for [Content].
   const TextFormatImpl(this.factory);
 
-  /// A factory function to create [ContentEncoder] for content of [T].
-  final CreateTextEncoder<T> factory;
+  /// A factory function to create [ContentEncoder] for [Content].
+  final CreateTextEncoder<Content> factory;
 
   @override
-  ContentEncoder<T> encoder({
+  ContentEncoder<Content> encoder({
     StringSink? buffer,
     int? decimals,
   }) =>
       factory.call(buffer: buffer, decimals: decimals);
+}
+
+/// A factory function to create [ContentEncoder] for [Content] with [Conf].
+typedef CreateTextEncoderConf<Content extends Object, Conf extends Object>
+    = ContentEncoder<Content> Function({
+  StringSink? buffer,
+  int? decimals,
+  Conf? conf,
+});
+
+/// A helper implementation of [TextFormat] for [Content] with [Conf].
+class TextFormatImplConf<Content extends Object, Conf extends Object>
+    with TextFormat<Content> {
+  /// A helper implementation of [TextFormat] for [Content] with [Conf].
+  const TextFormatImplConf(this.factory, {this.conf});
+
+  /// A factory function to create [ContentEncoder] for [Content] with [Conf].
+  final CreateTextEncoderConf<Content, Conf> factory;
+
+  /// Optional configuration.
+  final Conf? conf;
+
+  @override
+  ContentEncoder<Content> encoder({
+    StringSink? buffer,
+    int? decimals,
+  }) =>
+      factory.call(
+        buffer: buffer,
+        decimals: decimals,
+        conf: conf,
+      );
 }

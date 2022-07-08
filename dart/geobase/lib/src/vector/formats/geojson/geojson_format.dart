@@ -7,8 +7,27 @@
 // ignore_for_file: avoid_positional_boolean_parameters
 
 import '/src/utils/format_geojson_wkt.dart';
+import '/src/utils/format_impl.dart';
 import '/src/vector/content.dart';
 import '/src/vector/encoding.dart';
+
+/// Optional configuration parameters for formatting GeoJSON.
+class GeoJsonConf {
+  /// When [ignoreMeasured] is set to true, then M coordinates are ignored from
+  /// formatting.
+  final bool ignoreMeasured;
+
+  /// When [ignoreForeignMembers] is set to true, then such JSON elements that
+  /// are not described by the GeoJSON specification, are ignored. See the
+  /// section 6.1 of the specifcation (RFC 7946).
+  final bool ignoreForeignMembers;
+
+  /// Optional configuration parameters for formatting GeoJSON.
+  const GeoJsonConf({
+    this.ignoreMeasured = false,
+    this.ignoreForeignMembers = false,
+  });
+}
 
 /// The GeoJSON text format for [coordinate], [geometry] and [feature] objects.
 ///
@@ -78,100 +97,34 @@ import '/src/vector/encoding.dart';
 class GeoJSON {
   /// The GeoJSON text format for coordinate objects.
   static const TextFormat<CoordinateContent> coordinate =
-      _GeoJsonTextFormatImpl(GeoJsonTextWriter.new);
+      TextFormatImplConf(GeoJsonTextWriter.new);
 
   /// The GeoJSON text format for geometry objects.
   static const TextFormat<GeometryContent> geometry =
-      _GeoJsonTextFormatImpl(GeoJsonTextWriter.new);
+      TextFormatImplConf(GeoJsonTextWriter.new);
 
   /// The GeoJSON text format for feature objects.
   static const TextFormat<FeatureContent> feature =
-      _GeoJsonTextFormatImpl(GeoJsonTextWriter.new);
+      TextFormatImplConf(GeoJsonTextWriter.new);
 
-  /// The GeoJSON text format for coordinate objects.
-  ///
-  /// When [ignoreMeasured] is set to true, then M coordinates are ignored from
-  /// formatting.
-  ///
-  /// When [ignoreForeignMembers] is set to true, then such JSON elements that
-  /// are not described by the GeoJSON specification, are ignored. See the
-  /// section 6.1 of the specifcation (RFC 7946).
-  static TextFormat<CoordinateContent> coordinateFormat({
-    bool ignoreMeasured = false,
-    bool ignoreForeignMembers = false,
-  }) =>
-      _GeoJsonTextFormatImpl(
+  /// The GeoJSON text format for coordinate objects with optional [conf].
+  static TextFormat<CoordinateContent> coordinateFormat([GeoJsonConf? conf]) =>
+      TextFormatImplConf(
         GeoJsonTextWriter.new,
-        ignoreMeasured,
-        ignoreForeignMembers,
+        conf: conf,
       );
 
-  /// The GeoJSON text format for geometry objects.
-  ///
-  /// When [ignoreMeasured] is set to true, then M coordinates are ignored from
-  /// formatting.
-  ///
-  /// When [ignoreForeignMembers] is set to true, then such JSON elements that
-  /// are not described by the GeoJSON specification, are ignored. See the
-  /// section 6.1 of the specifcation (RFC 7946).
-  static TextFormat<GeometryContent> geometryFormat({
-    bool ignoreMeasured = false,
-    bool ignoreForeignMembers = false,
-  }) =>
-      _GeoJsonTextFormatImpl(
+  /// The GeoJSON text format for geometry objects with optional [conf].
+  static TextFormat<GeometryContent> geometryFormat([GeoJsonConf? conf]) =>
+      TextFormatImplConf(
         GeoJsonTextWriter.new,
-        ignoreMeasured,
-        ignoreForeignMembers,
+        conf: conf,
       );
 
-  /// The GeoJSON text format for feature objects.
-  ///
-  /// When [ignoreMeasured] is set to true, then M coordinates are ignored from
-  /// formatting.
-  ///
-  /// When [ignoreForeignMembers] is set to true, then such JSON elements that
-  /// are not described by the GeoJSON specification, are ignored. See the
-  /// section 6.1 of the specifcation (RFC 7946).
-  static TextFormat<FeatureContent> featureFormat({
-    bool ignoreMeasured = false,
-    bool ignoreForeignMembers = false,
-  }) =>
-      _GeoJsonTextFormatImpl(
+  /// The GeoJSON text format for feature objects with optional [conf].
+  static TextFormat<FeatureContent> featureFormat([GeoJsonConf? conf]) =>
+      TextFormatImplConf(
         GeoJsonTextWriter.new,
-        ignoreMeasured,
-        ignoreForeignMembers,
-      );
-}
-
-typedef _CreateGeoJsonContentEncoder<T extends Object> = ContentEncoder<T>
-    Function({
-  StringSink? buffer,
-  int? decimals,
-  bool ignoreMeasured,
-  bool ignoreForeignMembers,
-});
-
-class _GeoJsonTextFormatImpl<T extends Object> with TextFormat<T> {
-  const _GeoJsonTextFormatImpl(
-    this.factory, [
-    this.ignoreMeasured = false,
-    this.ignoreForeignMembers = false,
-  ]);
-
-  final _CreateGeoJsonContentEncoder<T> factory;
-
-  final bool ignoreMeasured;
-  final bool ignoreForeignMembers;
-
-  @override
-  ContentEncoder<T> encoder({
-    StringSink? buffer,
-    int? decimals,
-  }) =>
-      factory.call(
-        buffer: buffer,
-        decimals: decimals,
-        ignoreMeasured: ignoreMeasured,
-        ignoreForeignMembers: ignoreForeignMembers,
+        conf: conf,
       );
 }

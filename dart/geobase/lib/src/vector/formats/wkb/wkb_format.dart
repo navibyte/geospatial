@@ -27,9 +27,7 @@ part 'wkb_encoder.dart';
 /// * [ISO 13249-3](https://www.iso.org/standard/60343.html)
 /// * [Well-Known binary from GEOS](https://libgeos.org/specifications/wkb/)
 class WKB {
-  /// The Well-known binary (WKB) format.
-  const WKB();
-
+  
   /// The Well-known binary (WKB) format for geometries.
   ///
   /// Supported geometry types and their "WKB integer codes" for different

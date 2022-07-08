@@ -15,6 +15,7 @@ import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 import '/src/vector/content.dart';
 import '/src/vector/encoding.dart';
+import '/src/vector/formats/geojson.dart';
 
 // Base implementation for writers ---------------------------------------------
 
@@ -348,12 +349,11 @@ class DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
   DefaultTextWriter({
     super.buffer,
     super.decimals,
-    this.ignoreMeasured = false,
-  });
+    GeoJsonConf? conf,
+  }) : conf = conf ?? const GeoJsonConf();
 
-  /// However when [ignoreMeasured] is set to true, then M coordinates are
-  /// ignored from formatting.
-  final bool ignoreMeasured;
+  /// Configuration options for GeoJSON and GeoJSON like formats.
+  final GeoJsonConf conf;
 
   @override
   void _startObjectArray({int? count}) {
@@ -468,7 +468,7 @@ class DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
     // print M only in non-strict mode when
     // - explicitely asked or
     // - M exists and not explicitely denied
-    final printM = !ignoreMeasured && (coordType?.isMeasured ?? m != null);
+    final printM = !conf.ignoreMeasured && (coordType?.isMeasured ?? m != null);
     // print Z when
     // - if M is printed too (M should be 4th element, so need Z as 3rd element)
     // - explicitely asked
@@ -519,19 +519,13 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
   GeoJsonTextWriter({
     super.buffer,
     super.decimals,
-    super.ignoreMeasured,
-    this.ignoreForeignMembers = false,
+    super.conf,
   });
-
-  /// When [ignoreForeignMembers] is set to true, then such JSON elements that
-  /// are not described by the GeoJSON specification, are ignored. See the
-  /// section 6.1 of the specifcation (RFC 7946).
-  final bool ignoreForeignMembers;
 
   GeoJsonTextWriter<T> _subWriter() => GeoJsonTextWriter(
         buffer: _buffer,
         decimals: decimals,
-        ignoreMeasured: ignoreMeasured,
+        conf: conf,
       );
 
   @override
@@ -541,7 +535,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     Coords? coordType,
     Object? bbox,
   }) {
-    if (ignoreForeignMembers &&
+    if (conf.ignoreForeignMembers &&
         _atFeature &&
         (name ?? 'geometry') != 'geometry') {
       return false;
@@ -583,7 +577,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     String? name,
     Object? bbox,
   }) {
-    if (ignoreForeignMembers &&
+    if (conf.ignoreForeignMembers &&
         _atFeature &&
         (name ?? 'geometry') != 'geometry') {
       return;
@@ -613,7 +607,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
 
   @override
   void emptyGeometry(Geom type, {String? name}) {
-    if (ignoreForeignMembers &&
+    if (conf.ignoreForeignMembers &&
         _atFeature &&
         (name ?? 'geometry') != 'geometry') {
       return;
@@ -661,7 +655,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     _startObjectArray(count: count);
     features.call(this);
     _endObjectArray();
-    if (!ignoreForeignMembers && extra != null) {
+    if (!conf.ignoreForeignMembers && extra != null) {
       _markItem();
       extra.call(this);
     }
@@ -707,7 +701,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
       'properties',
       properties ?? const <String, Object?>{},
     );
-    if (!ignoreForeignMembers && extra != null) {
+    if (!conf.ignoreForeignMembers && extra != null) {
       extra.call(this);
     }
     _buffer.write('}');

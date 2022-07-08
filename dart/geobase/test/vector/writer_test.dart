@@ -981,10 +981,17 @@ void _testAllWriters<T>(
     );
     _testWriterOfGeometryFormat<T>(
       GeoJSON.coordinateFormat(
-        ignoreMeasured: true,
-        ignoreForeignMembers: true,
+        const GeoJsonConf(
+          ignoreMeasured: true,
+          ignoreForeignMembers: true,
+        ),
       ),
-      GeoJSON.geometryFormat(ignoreMeasured: true, ignoreForeignMembers: true),
+      GeoJSON.geometryFormat(
+        const GeoJsonConf(
+          ignoreMeasured: true,
+          ignoreForeignMembers: true,
+        ),
+      ),
       content,
       expected: geoJsonStrict ?? geoJson,
       decimals: geoJsonDecimals,
@@ -1019,7 +1026,12 @@ void _testGeoJsonWriters<T>(
     decimals: decimals,
   );
   _testWriterOfFeatureFormat<T>(
-    GeoJSON.featureFormat(ignoreMeasured: true, ignoreForeignMembers: true),
+    GeoJSON.featureFormat(
+      const GeoJsonConf(
+        ignoreMeasured: true,
+        ignoreForeignMembers: true,
+      ),
+    ),
     content,
     expected: geoJsonStrict ?? geoJson,
     decimals: decimals,

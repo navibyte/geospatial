@@ -6,14 +6,14 @@
 
 import 'dart:typed_data';
 
-/// An interface to encode some content of [T] into a text or binary format.
-abstract class ContentEncoder<T extends Object> {
-  /// Returns the writer used by a client to write content to this encoder.
+/// An interface to encode [Content] into a text or binary format.
+abstract class ContentEncoder<Content extends Object> {
+  /// Returns the [Content] writer.
   ///
-  /// Calling this property never throws, but methods provided by the [T]
+  /// Calling this property never throws, but methods provided by the [Content]
   /// interface (that are used to write content) should throw `FormatException`
   /// if writing / encoding fails.
-  T get writer;
+  Content get writer;
 
   /// The binary representation of content already written to this encoder.
   ///
