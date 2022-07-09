@@ -105,7 +105,7 @@ abstract class _BaseTextWriter<T extends Object>
   }
 
   bool _geometryBeforeCoordinates({
-    required Geom type,
+    required Geom geomType,
     String? name,
     Coords? coordType,
     Object? bbox,
@@ -122,12 +122,12 @@ abstract class _BaseTextWriter<T extends Object>
   void point(
     Object coordinates, {
     String? name,
-    Coords? coordType,
+    Coords? type,
   }) {
     if (_geometryBeforeCoordinates(
-      type: Geom.point,
+      geomType: Geom.point,
       name: name,
-      coordType: coordType,
+      coordType: type,
     )) {
       _coordPosition(coordinates);
       _geometryAfterCoordinates();
@@ -138,13 +138,13 @@ abstract class _BaseTextWriter<T extends Object>
   void lineString(
     Iterable<Object> coordinates, {
     String? name,
-    Coords? coordType,
+    Coords? type,
     Object? bbox,
   }) {
     if (_geometryBeforeCoordinates(
-      type: Geom.lineString,
+      geomType: Geom.lineString,
       name: name,
-      coordType: coordType,
+      coordType: type,
       bbox: bbox,
     )) {
       _coordArray(count: coordinates.length);
@@ -160,18 +160,18 @@ abstract class _BaseTextWriter<T extends Object>
   void polygon(
     Iterable<Iterable<Object>> coordinates, {
     String? name,
-    Coords? coordType,
+    Coords? type,
     Object? bbox,
   }) {
     if (_geometryBeforeCoordinates(
-      type: Geom.polygon,
+      geomType: Geom.polygon,
       name: name,
-      coordType: coordType,
+      coordType: type,
       bbox: bbox,
     )) {
       _coordArray(count: coordinates.length);
       for (final item in coordinates) {
-        positions1D(item);
+        positions(item);
       }
       _coordArrayEnd();
       _geometryAfterCoordinates();
@@ -182,13 +182,13 @@ abstract class _BaseTextWriter<T extends Object>
   void multiPoint(
     Iterable<Object> coordinates, {
     String? name,
-    Coords? coordType,
+    Coords? type,
     Object? bbox,
   }) {
     if (_geometryBeforeCoordinates(
-      type: Geom.multiPoint,
+      geomType: Geom.multiPoint,
       name: name,
-      coordType: coordType,
+      coordType: type,
       bbox: bbox,
     )) {
       _coordArray(count: coordinates.length);
@@ -204,18 +204,18 @@ abstract class _BaseTextWriter<T extends Object>
   void multiLineString(
     Iterable<Iterable<Object>> coordinates, {
     String? name,
-    Coords? coordType,
+    Coords? type,
     Object? bbox,
   }) {
     if (_geometryBeforeCoordinates(
-      type: Geom.multiLineString,
+      geomType: Geom.multiLineString,
       name: name,
-      coordType: coordType,
+      coordType: type,
       bbox: bbox,
     )) {
       _coordArray(count: coordinates.length);
       for (final item in coordinates) {
-        positions1D(item);
+        positions(item);
       }
       _coordArrayEnd();
       _geometryAfterCoordinates();
@@ -226,18 +226,22 @@ abstract class _BaseTextWriter<T extends Object>
   void multiPolygon(
     Iterable<Iterable<Iterable<Object>>> coordinates, {
     String? name,
-    Coords? coordType,
+    Coords? type,
     Object? bbox,
   }) {
     if (_geometryBeforeCoordinates(
-      type: Geom.multiPolygon,
+      geomType: Geom.multiPolygon,
       name: name,
-      coordType: coordType,
+      coordType: type,
       bbox: bbox,
     )) {
       _coordArray(count: coordinates.length);
       for (final item in coordinates) {
-        positions2D(item);
+        _coordArray(count: item.length);
+        for (final subItem in item) {
+          positions(subItem);
+        }
+        _coordArrayEnd();
       }
       _coordArrayEnd();
       _geometryAfterCoordinates();
@@ -245,13 +249,14 @@ abstract class _BaseTextWriter<T extends Object>
   }
 
   @override
-  void geometryCollection({
-    required WriteGeometries geometries,
+  void geometryCollection(
+    WriteGeometries geometries, {
     int? count,
     String? name,
+    Coords? type,
     Object? bbox,
   }) {
-    _startCoordType(null);
+    _startCoordType(type);
     _startObjectArray(count: count);
     geometries.call(this);
     _endObjectArray();
@@ -303,30 +308,10 @@ abstract class _BaseTextWriter<T extends Object>
   void position(Object coordinates) => _coordPosition(coordinates);
 
   @override
-  void positions1D(Iterable<Object> coordinates) {
+  void positions(Iterable<Object> coordinates) {
     _coordArray(count: coordinates.length);
     for (final pos in coordinates) {
       position(pos);
-    }
-    _coordArrayEnd();
-  }
-
-  @override
-  void positions2D(Iterable<Iterable<Object>> coordinates) {
-    _coordArray(count: coordinates.length);
-    for (final item in coordinates) {
-      positions1D(item);
-    }
-    _coordArrayEnd();
-  }
-
-  @override
-  void positions3D(
-    Iterable<Iterable<Iterable<Object>>> coordinates,
-  ) {
-    _coordArray(count: coordinates.length);
-    for (final item in coordinates) {
-      positions2D(item);
     }
     _coordArrayEnd();
   }
@@ -530,7 +515,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
 
   @override
   bool _geometryBeforeCoordinates({
-    required Geom type,
+    required Geom geomType,
     String? name,
     Coords? coordType,
     Object? bbox,
@@ -550,7 +535,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     _startCoordType(coordType);
     _buffer
       ..write('{"type":"')
-      ..write(type.geoJsonName)
+      ..write(geomType.geoJsonName)
       ..write('"');
     if (bbox != null) {
       _buffer.write(',"bbox":[');
@@ -571,10 +556,11 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
   }
 
   @override
-  void geometryCollection({
-    required WriteGeometries geometries,
+  void geometryCollection(
+    WriteGeometries geometries, {
     int? count,
     String? name,
+    Coords? type,
     Object? bbox,
   }) {
     if (conf.ignoreForeignMembers &&
@@ -589,7 +575,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
       _buffer.write(name == null ? '"geometry":' : '"$name":');
     }
     _startContainer(_Container.geometry);
-    _startCoordType(null);
+    _startCoordType(type);
     _buffer.write('{"type":"GeometryCollection"');
     if (bbox != null) {
       _buffer.write(',"bbox":[');
@@ -632,8 +618,8 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
   }
 
   @override
-  void featureCollection({
-    required WriteFeatures features,
+  void featureCollection(
+    WriteFeatures features, {
     int? count,
     Box? bbox,
     WriteProperties? extra,
@@ -666,7 +652,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
   @override
   void feature({
     Object? id,
-    WriteGeometries? geometries,
+    WriteGeometries? geometry,
     Map<String, Object?>? properties,
     Box? bbox,
     WriteProperties? extra,
@@ -694,8 +680,8 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
       _subWriter().box(bbox);
       _buffer.write(']');
     }
-    if (geometries != null) {
-      geometries.call(this);
+    if (geometry != null) {
+      geometry.call(this);
     }
     _printMapEntryRecursive(
       'properties',
@@ -972,7 +958,7 @@ class WktTextWriter<T extends Object> extends WktLikeTextWriter<T> {
 
   @override
   bool _geometryBeforeCoordinates({
-    required Geom type,
+    required Geom geomType,
     String? name,
     Coords? coordType,
     Object? bbox,
@@ -982,7 +968,7 @@ class WktTextWriter<T extends Object> extends WktLikeTextWriter<T> {
     }
     _startContainer(_Container.geometry);
     _startCoordType(coordType);
-    _buffer.write(type.wktName);
+    _buffer.write(geomType.wktName);
     final specifier = coordType?.wktSpecifier;
     if (specifier != null) {
       _buffer
@@ -999,17 +985,18 @@ class WktTextWriter<T extends Object> extends WktLikeTextWriter<T> {
   }
 
   @override
-  void geometryCollection({
-    required WriteGeometries geometries,
+  void geometryCollection(
+    WriteGeometries geometries, {
     int? count,
     String? name,
+    Coords? type,
     Object? bbox,
   }) {
     if (_markItem()) {
       _buffer.write(',');
     }
     _startContainer(_Container.geometry);
-    _startCoordType(null);
+    _startCoordType(type);
     _buffer.write('GEOMETRYCOLLECTION');
     _startObjectArray(count: count);
     geometries.call(this);

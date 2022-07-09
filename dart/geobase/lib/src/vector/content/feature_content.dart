@@ -15,10 +15,11 @@ import 'property_content.dart';
 typedef WriteFeatures = void Function(FeatureContent output);
 
 /// An interface to write feature data to format encoders and object builders.
-mixin FeatureContent  {
+mixin FeatureContent {
   /// Writes a feature collection represented by [features].
   ///
-  /// An optional expected [count], when given, hints the count of features.
+  /// An optional expected [count], when given, specifies the number of feature
+  /// objects in a collection. Note that when given a count MUST be exact.
   ///
   /// An optional [bbox] can used set a minimum bounding box for a feature
   /// collection written. A writer implementation may use it or ignore it.
@@ -32,13 +33,10 @@ mixin FeatureContent  {
   /// ```dart
   ///   content.featureCollection(
   ///       count: 2,
-  ///       features: (feat) => feat
+  ///       (features) => features
   ///           ..feature(
   ///               id: '1',
-  ///               geometries: (geom) => geom.geometry(
-  ///                  type: Geom.point,
-  ///                  coordinates: const Position(x: 10.123, y: 20.25),
-  ///               ),
+  ///               geometry: (geom) => geom.point([10.123, 20.25]),
   ///               properties: {
   ///                  'foo': 100,
   ///                  'bar': 'this is property value',
@@ -51,20 +49,20 @@ mixin FeatureContent  {
   ///           ),
   ///   );
   /// ```
-  void featureCollection({
-    required WriteFeatures features,
+  void featureCollection(
+    WriteFeatures features, {
     int? count,
     Box? bbox,
     WriteProperties? extra,
   });
 
-  /// Writes a feature represented by [id], [geometries] and [properties].
+  /// Writes a feature represented by [id], [geometry] and [properties].
   ///
   /// The [id], when non-null, should be either a string or an integer number.
   ///
-  /// At least one geometry using [geometries] should be written using methods
+  /// At least one geometry using [geometry] should be written using methods
   /// defined by [GeometryContent]. When there are more than one geometry, it's
-  /// recommended to use the `name` argument when writing those.
+  /// recommended to use the `name` argument when writing those other.
   ///
   /// An optional [bbox] can used set a minimum bounding box for a feature
   /// written. A writer implementation may use it or ignore it.
@@ -79,10 +77,7 @@ mixin FeatureContent  {
   /// ```dart
   ///   content.feature(
   ///       id: '1',
-  ///       geometries: (geom) => geom.geometry(
-  ///          type: Geom.point,
-  ///          coordinates: const Position(x: 10.123, y: 20.25),
-  ///       ),
+  ///       geometry: (geom) => geom.point([10.123, 20.25]),
   ///       properties: {
   ///          'foo': 100,
   ///          'bar': 'this is property value',
@@ -92,7 +87,7 @@ mixin FeatureContent  {
   /// ```
   void feature({
     Object? id,
-    WriteGeometries? geometries,
+    WriteGeometries? geometry,
     Map<String, Object?>? properties,
     Box? bbox,
     WriteProperties? extra,

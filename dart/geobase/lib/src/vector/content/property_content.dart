@@ -25,9 +25,9 @@ mixin PropertyContent {
   ///
   /// An example:
   /// ```dart
-  ///   content..property('foo': 100)
-  ///          ..property('bar': 'this is property value')
-  ///          ..property('baz': true);
+  ///   content..property('foo', 100)
+  ///          ..property('bar', 'this is property value')
+  ///          ..property('baz', true);
   /// ```
   void property(String name, Object? value);
 }

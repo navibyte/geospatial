@@ -31,9 +31,9 @@ abstract class SimpleGeometryContent {
   /// The [coordinates] represents a single position of [Position] or
   /// `Iterable<num>`.
   ///
-  /// Use [name] to specify a name for a geometry (when applicable).
+  /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
-  /// Use [coordType] to define the type of coordinates.
+  /// Use an optional [type] to explicitely specify the type of coordinates.
   ///
   /// Known [Position] sub classes are [Projected] (projected or cartesian
   /// coordinates) and [Geographic] (geographic coordinates). Other sub classes
@@ -41,10 +41,44 @@ abstract class SimpleGeometryContent {
   ///
   /// Allowed [coordinates] value combinations for `Iterable<num>` are:
   /// (x, y), (x, y, z) and (x, y, z, m).
+  ///
+  /// Examples to write a point geometry with 2D coordinates:
+  /// ```dart
+  ///    // using coordinate value list (x, y)
+  ///    content.point([10, 20]);
+  /// 
+  ///    // using the type for positions with projected coordinates
+  ///    // (same coordinates with the previous example)
+  ///    content.point(const Projected(x: 10, y: 20));
+  /// ```
+  /// 
+  /// Examples to write a point geometry with 3D coordinates:
+  /// ```dart
+  ///    // using coordinate value list (x, y, z)
+  ///    content.point([10, 20, 30]);
+  /// 
+  ///    // using the type for positions with geographic coordinates
+  ///    content.point(const Geographic(lon: 10, lat: 20, elev: 30));
+  /// ```
+  /// 
+  /// An example to write a point geometry with 2D coordinates with measurement:
+  /// ```dart
+  ///    // using the type for positions with projected coordinates
+  ///    content.point(const Projected(x: 10, y: 20, m: 40));
+  /// ```
+  /// 
+  /// Examples to write a point geometry with 3D coordinates with measurement:
+  /// ```dart
+  ///    // using coordinate value list (x, y, z, m)
+  ///    content.point([10, 20, 30, 40]);
+  /// 
+  ///    // using the type for positions with projected coordinates
+  ///    content.point(const Projected(x: 10, y: 20, z: 30, m: 40));
+  /// ```
   void point(
     Object coordinates, {
     String? name,
-    Coords? coordType,
+    Coords? type,
   });
 
   /// Writes a line string geometry with a position array from [coordinates].
@@ -53,9 +87,9 @@ abstract class SimpleGeometryContent {
   /// representing positions of points in a line string. Supported sub classes
   /// for items are [Position] and `Iterable<num>`.
   ///
-  /// Use [name] to specify a name for a geometry (when applicable).
+  /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
-  /// Use [coordType] to define the type of coordinates.
+  /// Use an optional [type] to explicitely specify the type of coordinates.
   ///
   /// An optional [bbox] of [Box] or `Iterable<num>` can used set a minimum
   /// bounding box for a geometry written. A writer implementation may use it or
@@ -73,10 +107,22 @@ abstract class SimpleGeometryContent {
   /// - minX, minY, maxX, maxY
   /// - minX, minY, minZ, maxX, maxY, maxZ
   /// - minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  ///
+  /// An example to write a line string with 3 points and a bounding box:
+  /// ```dart
+  ///   content.lineString(
+  ///       [
+  ///            [-1.1, -1.1],
+  ///            [2.1, -2.5],
+  ///            [3.5, -3.49],
+  ///       ],
+  ///       bbox: [-1.1, -3.49, 3.5, -1.1],
+  ///   );
+  /// ```
   void lineString(
     Iterable<Object> coordinates, {
     String? name,
-    Coords? coordType,
+    Coords? type,
     Object? bbox,
   });
 
@@ -87,9 +133,9 @@ abstract class SimpleGeometryContent {
   /// polygon. Supported sub classes for items are [Position] and
   /// `Iterable<num>`.
   ///
-  /// Use [name] to specify a name for a geometry (when applicable).
+  /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
-  /// Use [coordType] to define the type of coordinates.
+  /// Use an optional [type] to explicitely specify the type of coordinates.
   ///
   /// An optional [bbox] of [Box] or `Iterable<num>` can used set a minimum
   /// bounding box for a geometry written. A writer implementation may use it or
@@ -107,10 +153,25 @@ abstract class SimpleGeometryContent {
   /// - minX, minY, maxX, maxY
   /// - minX, minY, minZ, maxX, maxY, maxZ
   /// - minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  ///
+  /// An example to write a polygon geometry with one linear ring containing
+  /// 4 points:
+  /// ```dart
+  ///  content.polygon(
+  ///      [
+  ///        [
+  ///          [10.1, 10.1],
+  ///          [5, 9],
+  ///          [12, 4],
+  ///          [10.1, 10.1],
+  ///        ],
+  ///      ],
+  ///  );
+  /// ```
   void polygon(
     Iterable<Iterable<Object>> coordinates, {
     String? name,
-    Coords? coordType,
+    Coords? type,
     Object? bbox,
   });
 
@@ -120,9 +181,9 @@ abstract class SimpleGeometryContent {
   /// representing positions of points in a multi point collection. Supported
   /// sub classes for items are [Position] and `Iterable<num>`.
   ///
-  /// Use [name] to specify a name for a geometry (when applicable).
+  /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
-  /// Use [coordType] to define the type of coordinates.
+  /// Use an optional [type] to explicitely specify the type of coordinates.
   ///
   /// An optional [bbox] of [Box] or `Iterable<num>` can used set a minimum
   /// bounding box for a geometry written. A writer implementation may use it or
@@ -140,10 +201,21 @@ abstract class SimpleGeometryContent {
   /// - minX, minY, maxX, maxY
   /// - minX, minY, minZ, maxX, maxY, maxZ
   /// - minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  ///
+  /// An example to write a multi point geometry with 3 points:
+  /// ```dart
+  ///   content.multiPoint(
+  ///       [
+  ///            [-1.1, -1.1],
+  ///            [2.1, -2.5],
+  ///            [3.5, -3.49],
+  ///       ],
+  ///   );
+  /// ```
   void multiPoint(
     Iterable<Object> coordinates, {
     String? name,
-    Coords? coordType,
+    Coords? type,
     Object? bbox,
   });
 
@@ -154,9 +226,9 @@ abstract class SimpleGeometryContent {
   /// collection. Supported sub classes for items are [Position] and
   /// `Iterable<num>`.
   ///
-  /// Use [name] to specify a name for a geometry (when applicable).
+  /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
-  /// Use [coordType] to define the type of coordinates.
+  /// Use an optional [type] to explicitely specify the type of coordinates.
   ///
   /// An optional [bbox] of [Box] or `Iterable<num>` can used set a minimum
   /// bounding box for a geometry written. A writer implementation may use it or
@@ -174,10 +246,29 @@ abstract class SimpleGeometryContent {
   /// - minX, minY, maxX, maxY
   /// - minX, minY, minZ, maxX, maxY, maxZ
   /// - minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  ///
+  /// An example to write a multi line string with two line strings:
+  /// ```dart
+  ///  content.multiLineString(
+  ///      [
+  ///        [
+  ///          [10.1, 10.1],
+  ///          [5, 9],
+  ///          [12, 4],
+  ///          [10.1, 10.1],
+  ///        ],
+  ///        [
+  ///          [-1.1, -1.1],
+  ///          [2.1, -2.5],
+  ///          [3.5, -3.49],
+  ///        ],
+  ///      ],
+  ///  );
+  /// ```
   void multiLineString(
     Iterable<Iterable<Object>> coordinates, {
     String? name,
-    Coords? coordType,
+    Coords? type,
     Object? bbox,
   });
 
@@ -188,9 +279,9 @@ abstract class SimpleGeometryContent {
   /// inner) of polygons in a multi polygon collection. Supported sub classes
   /// for items are [Position] and `Iterable<num>`.
   ///
-  /// Use [name] to specify a name for a geometry (when applicable).
+  /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
-  /// Use [coordType] to define the type of coordinates.
+  /// Use an optional [type] to explicitely specify the type of coordinates.
   ///
   /// An optional [bbox] of [Box] or `Iterable<num>` can used set a minimum
   /// bounding box for a geometry written. A writer implementation may use it or
@@ -208,18 +299,45 @@ abstract class SimpleGeometryContent {
   /// - minX, minY, maxX, maxY
   /// - minX, minY, minZ, maxX, maxY, maxZ
   /// - minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  ///
+  /// An example to write a multi polygon geometry with two polygons:
+  /// ```dart
+  ///  content.multiPolygon(
+  ///      [
+  ///        [
+  ///          [
+  ///            [10.1, 10.1],
+  ///            [5, 9],
+  ///            [12, 4],
+  ///            [10.1, 10.1],
+  ///          ],
+  ///        ],
+  ///        [
+  ///          [
+  ///            [110.1, 110.1],
+  ///            [15, 19],
+  ///            [112, 14],
+  ///            [110.1, 110.1],
+  ///          ],
+  ///        ],
+  ///      ],
+  ///  );
+  /// ```
   void multiPolygon(
     Iterable<Iterable<Iterable<Object>>> coordinates, {
     String? name,
-    Coords? coordType,
+    Coords? type,
     Object? bbox,
   });
 
   /// Writes a geometry collection of [geometries].
   ///
-  /// An optional expected [count], when given, hints the count of geometries.
+  /// An optional expected [count], when given, specifies the number of geometry
+  /// objects in a collection. Note that when given a count MUST be exact.
   ///
-  /// Use [name] to specify a name for a geometry (when applicable).
+  /// Use an optional [name] to specify a name for a geometry (when applicable).
+  ///
+  /// Use an optional [type] to explicitely specify the type of coordinates.
   ///
   /// An optional [bbox] of [Box] or `Iterable<num>` can used set a minimum
   /// bounding box for a geometry written. A writer implementation may use it or
@@ -233,18 +351,43 @@ abstract class SimpleGeometryContent {
   /// - minX, minY, maxX, maxY
   /// - minX, minY, minZ, maxX, maxY, maxZ
   /// - minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
-  void geometryCollection({
-    required WriteSimpleGeometries geometries,
+  ///
+  /// An example to write a geometry collection with two child geometries:
+  /// ```dart
+  ///   content.geometryCollection(
+  ///       count: 2,
+  ///       (geom) => geom
+  ///         ..point([10.123, 20.25, -30.95], type: Coords.xyz)
+  ///         ..polygon(
+  ///           [
+  ///             [
+  ///               const Geographic(lon: 10.1, lat: 10.1),
+  ///               const Geographic(lon: 5, lat: 9),
+  ///               const Geographic(lon: 12, lat: 4),
+  ///               const Geographic(lon: 10.1, lat: 10.1)
+  ///             ],
+  ///           ],
+  ///         ),
+  ///     );
+  /// ```
+  void geometryCollection(
+    WriteSimpleGeometries geometries, {
     int? count,
     String? name,
+    Coords? type,
     Object? bbox,
   });
 
   /// Writes an empty geometry of [type].
   ///
   /// Use [name] to specify a name for a geometry (when applicable).
-  /// 
+  ///
   /// Note: normally it might be a good idea to avoid "empty geometries" as
   /// those are encoded and decoded with different ways in different formats.
+  /// 
+  /// An example to write an "empty" point:
+  /// ```dart
+  ///   content.emptyGeometry(Geom.point);
+  /// ```
   void emptyGeometry(Geom type, {String? name});
 }

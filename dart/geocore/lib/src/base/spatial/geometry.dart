@@ -68,8 +68,8 @@ abstract class Geometry extends Bounded {
     CreatePosition<R>? to,
   });
 
-  /// Writes this geometry object to [output].
-  void writeTo(SimpleGeometryContent output);
+  /// Writes this geometry object to [writer].
+  void writeTo(SimpleGeometryContent writer);
 
   /// A string representation of this geometry, with [format] applied.
   ///

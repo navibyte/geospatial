@@ -136,11 +136,11 @@ class Polygon<T extends Point> extends Geometry with EquatableMixin {
       rings.map<Iterable<Position>>((e) => e.chain);
 
   @override
-  void writeTo(SimpleGeometryContent output) {
+  void writeTo(SimpleGeometryContent writer) {
     final point = onePoint;
-    output.polygon(
+    writer.polygon(
       coordinates,
-      coordType: point?.typeCoords,
+      type: point?.typeCoords,
       bbox: boundsExplicit,
     );
   }

@@ -129,12 +129,12 @@ mixin PointSeriesMixin<E extends Point> implements PointSeries<E> {
   num m(int index) => this[index].m;
 
   @override
-  void writeTo(CoordinateContent output) => output.positions1D(this);
+  void writeTo(CoordinateContent writer) => writer.positions(this);
 
   @override
   String toString() {
     final encoder = DefaultFormat.coordinate.encoder();
-    encoder.writer.positions1D(this);
+    encoder.writer.positions(this);
     return encoder.toText();
   }
 }

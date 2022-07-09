@@ -86,7 +86,7 @@ class _WkbGeometryBufferDecoder {
         // build geometry collection
         builder.geometryCollection(
           // use callback content interface to build "numGeometries" to buffer
-          geometries: (geom) => _WkbGeometryBufferDecoder(geom, buffer, conf)
+          (geom) => _WkbGeometryBufferDecoder(geom, buffer, conf)
               .buildCounted(numGeometries),
         );
         break;
@@ -104,7 +104,7 @@ class _WkbGeometryBufferDecoder {
     } else {
       builder.point(
         point,
-        coordType: coordType,
+        type: coordType,
       );
     }
   }
@@ -114,7 +114,7 @@ class _WkbGeometryBufferDecoder {
     if (conf.buildEmptyGeometries && array.isEmpty) {
       builder.emptyGeometry(Geom.lineString);
     } else {
-      builder.lineString(array, coordType: coordType);
+      builder.lineString(array, type: coordType);
     }
   }
 
@@ -123,7 +123,7 @@ class _WkbGeometryBufferDecoder {
     if (conf.buildEmptyGeometries && array.isEmpty) {
       builder.emptyGeometry(Geom.polygon);
     } else {
-      builder.polygon(array, coordType: coordType);
+      builder.polygon(array, type: coordType);
     }
   }
 
@@ -133,7 +133,7 @@ class _WkbGeometryBufferDecoder {
     if (conf.buildEmptyGeometries && array.isEmpty) {
       builder.emptyGeometry(Geom.multiPoint);
     } else {
-      builder.multiPoint(array, coordType: coordType);
+      builder.multiPoint(array, type: coordType);
     }
   }
 
@@ -143,7 +143,7 @@ class _WkbGeometryBufferDecoder {
     if (conf.buildEmptyGeometries && array.isEmpty) {
       builder.emptyGeometry(Geom.multiLineString);
     } else {
-      builder.multiLineString(array, coordType: coordType);
+      builder.multiLineString(array, type: coordType);
     }
   }
 
@@ -153,7 +153,7 @@ class _WkbGeometryBufferDecoder {
     if (conf.buildEmptyGeometries && array.isEmpty) {
       builder.emptyGeometry(Geom.multiPolygon);
     } else {
-      builder.multiPolygon(array, coordType: coordType);
+      builder.multiPolygon(array, type: coordType);
     }
   }
 

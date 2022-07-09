@@ -565,7 +565,7 @@ A sample to encode a `Feature` geometry to GeoJSON:
   //        {"foo":100,"bar":"this is property value","baz":true}}
   encoder.writer.feature(
     id: 'fid-1',
-    geometries: (geom) => geom.point(const Geographic(lon: 10.123, lat: 20.25)),
+    geometry: (geom) => geom.point(const Geographic(lon: 10.123, lat: 20.25)),
     properties: {
       'foo': 100,
       'bar': 'this is property value',
@@ -593,7 +593,7 @@ A sample to encode a `Point` geometry to WKT (with z and m coordinates too):
   //    POINT ZM(10.123 20.25 -30.95 -1.999)
   encoder.writer.point(
     const Geographic(lon: 10.123, lat: 20.25, elev: -30.95, m: -1.999),
-    coordType: Coords.xyzm,
+    type: Coords.xyzm,
   );
   print(encoder.toText());
 ```
@@ -602,8 +602,7 @@ Or shortened:
 
 ```dart
   final encoder = WKT.geometry.encoder();
-  encoder.writer
-      .point([10.123, 20.25, -30.95, -1.999], coordType: Coords.xyzm);
+  encoder.writer.point([10.123, 20.25, -30.95, -1.999], type: Coords.xyzm);
   print(encoder.toText());
 ```
 
@@ -622,7 +621,7 @@ See sample below:
   // write geometries (here only point) to content writer of the encoder
   encoder.writer.point(
     [10.123, 20.25, -30.95, -1.999],
-    coordType: Coords.xyzm,
+    type: Coords.xyzm,
   );
 
   // get encoded bytes (Uint8List) and Base64 encoded text (String)
@@ -660,9 +659,9 @@ methods from `SimpleGeometryContent`:
   /// The [coordinates] represents a single position of [Position] or
   /// `Iterable<num>`.
   ///
-  /// Use [name] to specify a name for a geometry (when applicable).
+  /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
-  /// Use [coordType] to define the type of coordinates.
+  /// Use an optional [type] to explicitely specify the type of coordinates.
   ///
   /// Known [Position] sub classes are [Projected] (projected or cartesian
   /// coordinates) and [Geographic] (geographic coordinates). Other sub classes
@@ -670,33 +669,43 @@ methods from `SimpleGeometryContent`:
   ///
   /// Allowed [coordinates] value combinations for `Iterable<num>` are:
   /// (x, y), (x, y, z) and (x, y, z, m).
+  ///
+  /// Examples to write a point geometry with 2D coordinates:
+  /// ```dart
+  ///    // using coordinate value list (x, y)
+  ///    content.point([10, 20]);
+  /// 
+  ///    // using the type for positions with projected coordinates
+  ///    // (same coordinates with the previous example)
+  ///    content.point(const Projected(x: 10, y: 20));
+  /// ```
   void point(
     Object coordinates, {
     String? name,
-    Coords? coordType,
+    Coords? type,
   });
 
   /// Writes a line string geometry with a position array from [coordinates].
-  void lineString(
+   void lineString(
     Iterable<Object> coordinates, {
     String? name,
-    Coords? coordType,
+    Coords? type,
     Object? bbox,
   });
 
   /// Writes a polygon geometry with a position array from [coordinates].
-  void polygon(
+   void polygon(
     Iterable<Iterable<Object>> coordinates, {
     String? name,
-    Coords? coordType,
+    Coords? type,
     Object? bbox,
   });
 
   /// Writes a multi point geometry with a position array from [coordinates].
-  void multiPoint(
+   void multiPoint(
     Iterable<Object> coordinates, {
     String? name,
-    Coords? coordType,
+    Coords? type,
     Object? bbox,
   });
 

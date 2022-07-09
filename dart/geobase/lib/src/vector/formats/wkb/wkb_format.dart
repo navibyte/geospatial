@@ -63,7 +63,7 @@ class _WkbGeometryBinaryFormat with BinaryFormat<GeometryContent> {
     Endian endian = Endian.big,
     int bufferSize = 128,
   }) =>
-      _WkbGeometryEncoder(endian: endian, bufferSize: bufferSize);
+      _WkbGeometryEncoder(endian: endian, bufferSize: bufferSize, conf: conf);
 
   @override
   ContentDecoder decoder(

@@ -11,8 +11,8 @@ abstract class FeatureWritable {
   /// Default `const` constructor to allow extending this abstract class.
   const FeatureWritable();
 
-  /// Writes this feature object to [output].
-  void writeTo(FeatureContent output);
+  /// Writes this feature object to [writer].
+  void writeTo(FeatureContent writer);
 
   /// A string representation of this object, with an optional [format] applied.
   ///

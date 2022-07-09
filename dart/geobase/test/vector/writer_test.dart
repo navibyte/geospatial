@@ -216,7 +216,7 @@ void main() {
     test('PointSeries coordinates', () {
       _testAllWriters<CoordinateContent>(
         [
-          (output) => output.positions1D([
+          (output) => output.positions([
                 const Projected(x: 10.123, y: 20.25),
                 const Projected(x: 10.123, y: 20.25, z: -30.95),
                 const Projected(x: 10.123, y: 20.25, m: -1.999),
@@ -230,7 +230,7 @@ void main() {
       );
       _testAllWriters<CoordinateContent>(
         [
-          (output) => output.positions1D([
+          (output) => output.positions([
                 const Projected(x: 10.123, y: 20.25),
                 const Projected(x: 10.123, y: 20.25, m: -1.999),
                 const Projected(x: 10.123, y: 20.25, z: -30.95),
@@ -244,12 +244,12 @@ void main() {
       );
       _testAllWriters<CoordinateContent>(
         [
-          (output) => output.positions1D([
+          (output) => output.positions([
                 [10.123, 20.25],
                 [10.123, 20.25, -30.95, -1.999],
                 [10.123, 20.25],
               ]),
-          (output) => output.positions1D([
+          (output) => output.positions([
                 const Projected(x: 10.123, y: 20.25),
                 const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
                 const Projected(x: 10.123, y: 20.25),
@@ -263,7 +263,7 @@ void main() {
       );
       _testAllWriters<CoordinateContent>(
         [
-          (output) => output.positions1D([
+          (output) => output.positions([
                 const Projected(x: 10, y: 20),
                 const Projected(x: 11, y: 21, z: -30.95, m: -1.1),
                 const Projected(x: 12, y: 22, m: 2.2),
@@ -329,11 +329,11 @@ void main() {
         [
           (output) => output.point(
                 [10.123, 20.25, -30.95],
-                coordType: Coords.xyz,
+                type: Coords.xyz,
               ),
           (output) => output.point(
                 const Projected(x: 10.123, y: 20.25, z: -30.95),
-                coordType: Coords.xyz,
+                type: Coords.xyz,
               ),
         ],
         def: '10.123,20.25,-30.95',
@@ -345,11 +345,11 @@ void main() {
         [
           (output) => output.point(
                 [10.123, 20.25, -30.95, -1.999],
-                coordType: Coords.xyz,
+                type: Coords.xyz,
               ),
           (output) => output.point(
                 const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
-                coordType: Coords.xyz,
+                type: Coords.xyz,
               ),
         ],
         def: '10.123,20.25,-30.95',
@@ -361,11 +361,11 @@ void main() {
         [
           (output) => output.point(
                 [10.123, 20.25, -30.95],
-                coordType: Coords.xy,
+                type: Coords.xy,
               ),
           (output) => output.point(
                 const Projected(x: 10.123, y: 20.25, z: -30.95),
-                coordType: Coords.xy,
+                type: Coords.xy,
               ),
         ],
         def: '10.123,20.25',
@@ -377,11 +377,11 @@ void main() {
         [
           (output) => output.point(
                 [10.123, 20.25],
-                coordType: Coords.xyz,
+                type: Coords.xyz,
               ),
           (output) => output.point(
                 const Projected(x: 10.123, y: 20.25),
-                coordType: Coords.xyz,
+                type: Coords.xyz,
               ),
         ],
         def: '10.123,20.25,0',
@@ -393,11 +393,11 @@ void main() {
         [
           (output) => output.point(
                 [10.123, 20.25, -30.95, -1.999],
-                coordType: Coords.xym,
+                type: Coords.xym,
               ),
           (output) => output.point(
                 const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
-                coordType: Coords.xym,
+                type: Coords.xym,
               ),
         ],
         def: '10.123,20.25,0,-1.999',
@@ -410,11 +410,11 @@ void main() {
         [
           (output) => output.point(
                 [10.123, 20.25, -30.95, -1.999],
-                coordType: Coords.xyzm,
+                type: Coords.xyzm,
               ),
           (output) => output.point(
                 const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
-                coordType: Coords.xyzm,
+                type: Coords.xyzm,
               ),
         ],
         def: '10.123,20.25,-30.95,-1.999',
@@ -496,7 +496,7 @@ void main() {
                   [2.1, -2.5, 0, 4.99],
                   [3.5, -3.49, -0.5],
                 ],
-                coordType: Coords.xym,
+                type: Coords.xym,
                 bbox: [-1.1, -3.49, 0, 0, 3.5, -1.1, 0, 4.99],
               ),
           (output) => output.lineString(
@@ -505,7 +505,7 @@ void main() {
                   const Projected(x: 2.1, y: -2.5, m: 4.99),
                   const Projected(x: 3.5, y: -3.49, z: -0.5),
                 ],
-                coordType: Coords.xym,
+                type: Coords.xym,
                 bbox: const ProjBox(
                   minX: -1.1,
                   minY: -3.49,
@@ -536,7 +536,7 @@ void main() {
                   [2.1, -2.5, 0, 4.99],
                   [3.5, -3.49, -0.5],
                 ],
-                coordType: Coords.xyzm,
+                type: Coords.xyzm,
                 bbox: [-1.1, -3.49, -0.5, 0, 3.5, -1.1, 0, 4.99],
               ),
           (output) => output.lineString(
@@ -545,7 +545,7 @@ void main() {
                   const Projected(x: 2.1, y: -2.5, m: 4.99),
                   const Projected(x: 3.5, y: -3.49, z: -0.5),
                 ],
-                coordType: Coords.xyzm,
+                type: Coords.xyzm,
                 bbox: const ProjBox(
                   minX: -1.1,
                   minY: -3.49,
@@ -618,7 +618,7 @@ void main() {
                     [10.1, 10.1],
                     [5, 9],
                     [12, 4],
-                    [10.1, 10.1]
+                    [10.1, 10.1],
                   ],
                 ],
               ),
@@ -679,8 +679,8 @@ void main() {
       _testAllWriters<GeometryContent>(
         [
           (output) => output.geometryCollection(
-                geometries: (geom) => geom
-                  ..point([10.123, 20.25, -30.95], coordType: Coords.xyz)
+                (geom) => geom
+                  ..point([10.123, 20.25, -30.95], type: Coords.xyz)
                   ..polygon(
                     [
                       [
@@ -693,10 +693,10 @@ void main() {
                   ),
               ),
           (output) => output.geometryCollection(
-                geometries: (geom) => geom
+                (geom) => geom
                   ..point(
                     const Projected(x: 10.123, y: 20.25, z: -30.95),
-                    coordType: Coords.xyz,
+                    type: Coords.xyz,
                   )
                   ..polygon(
                     [
@@ -736,13 +736,13 @@ void main() {
             maxZ: 0,
             maxM: 4.99,
           ),
-          geometries: (geom) => geom.lineString(
+          geometry: (geom) => geom.lineString(
             [
               const Projected(x: -1.1, y: -1.1),
               const Projected(x: 2.1, y: -2.5, m: 4.99),
               const Projected(x: 3.5, y: -3.49, z: -0.5),
             ],
-            coordType: Coords.xyzm,
+            type: Coords.xyzm,
           ),
           properties: {
             'prop': 1,
@@ -756,8 +756,7 @@ void main() {
       _testGeoJsonWriters<FeatureContent>(
         (output) => output.feature(
           id: 'fid-1',
-          geometries: (geom) =>
-              geom.point(const Projected(x: 10.123, y: 20.25)),
+          geometry: (geom) => geom.point(const Projected(x: 10.123, y: 20.25)),
           properties: {
             'foo': 100,
             'bar': 'this is property value',
@@ -770,8 +769,7 @@ void main() {
       );
       _testGeoJsonWriters<FeatureContent>(
         (output) => output.feature(
-          geometries: (geom) =>
-              geom.point(const Projected(x: 10.123, y: 20.25)),
+          geometry: (geom) => geom.point(const Projected(x: 10.123, y: 20.25)),
           properties: {
             'foo': {
               'bar': 'this is property value',
@@ -785,14 +783,12 @@ void main() {
       );
       _testGeoJsonWriters<FeatureContent>(
         (output) => output.feature(
-          geometries: (geom) {
-            geom
-              ..point(const Projected(x: 10.123, y: 20.25))
-              ..point(
-                const Projected(x: 1, y: 2, z: 3, m: 4),
-                name: 'geom1',
-              );
-          },
+          geometry: (geom) => geom
+            ..point(const Projected(x: 10.123, y: 20.25))
+            ..point(
+              const Projected(x: 1, y: 2, z: 3, m: 4),
+              name: 'geom1',
+            ),
           extra: (props) => props.properties('extra', {
             'foo': {
               'bar': 'this is property value',
@@ -813,16 +809,10 @@ void main() {
     test('FeatureCollection', () {
       _testGeoJsonWriters<FeatureContent>(
         (output) => output.featureCollection(
-          bbox: const ProjBox(
-            minX: -1.1,
-            minY: -3.49,
-            maxX: 10.123,
-            maxY: 20.25,
-          ),
-          features: (feat) => feat
+          (features) => features
             ..feature(
               id: 'fid-1',
-              geometries: (geom) =>
+              geometry: (geom) =>
                   geom.point(const Projected(x: 10.123, y: 20.25)),
               properties: {
                 'foo': 100,
@@ -830,7 +820,7 @@ void main() {
               },
             )
             ..feature(
-              geometries: (geom) => geom.lineString(
+              geometry: (geom) => geom.lineString(
                 [
                   const Projected(x: -1.1, y: -1.1),
                   const Projected(x: 2.1, y: -2.5),
@@ -844,17 +834,24 @@ void main() {
                 ),
               ),
             ),
+          count: 2,
+          bbox: const ProjBox(
+            minX: -1.1,
+            minY: -3.49,
+            maxX: 10.123,
+            maxY: 20.25,
+          ),
         ),
         geoJson:
             '{"type":"FeatureCollection","bbox":[-1.1,-3.49,10.123,20.25],"features":[{"type":"Feature","id":"fid-1","geometry":{"type":"Point","coordinates":[10.123,20.25]},"properties":{"foo":100,"bar":"this is property value"}},{"type":"Feature","geometry":{"type":"LineString","bbox":[-1.1,-3.49,3.5,-1.1],"coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]},"properties":{}}]}',
       );
       _testGeoJsonWriters<FeatureContent>(
-        (output) => output.featureCollection(features: (feat) {}),
+        (output) => output.featureCollection((features) {}),
         geoJson: '{"type":"FeatureCollection","features":[]}',
       );
       _testGeoJsonWriters<FeatureContent>(
         (output) => output.featureCollection(
-          features: (feat) {},
+          (features) {},
           extra: (props) => props.property('prop1', 'value1'),
         ),
         geoJson: '{"type":"FeatureCollection","features":[],"prop1":"value1"}',
@@ -862,7 +859,7 @@ void main() {
       );
       _testGeoJsonWriters<FeatureContent>(
         (output) => output.featureCollection(
-          features: (feat) {},
+          (features) {},
           extra: (props) => props.properties('map1', {'prop1': 'value1'}),
         ),
         geoJson: '{"type":"FeatureCollection",'
@@ -871,20 +868,20 @@ void main() {
       );
       _testGeoJsonWriters<FeatureContent>(
         (output) => output.featureCollection(
-          features: (feat) => feat.featureCollection(features: (fw) {}),
+          (features) => features.featureCollection((feat) {}),
         ),
         geoJson: '{"type":"FeatureCollection","features":[]}',
       );
       _testGeoJsonWriters<FeatureContent>(
         (output) => output.featureCollection(
-          features: (feat) => feat.feature(),
+          (features) => features.feature(),
         ),
         geoJson: '{"type":"FeatureCollection","features":'
             '[{"type":"Feature","properties":{}}]}',
       );
       _testGeoJsonWriters<FeatureContent>(
         (output) => output.featureCollection(
-          features: (feat) => feat
+          (features) => features
             ..feature()
             ..feature(),
         ),
@@ -894,7 +891,7 @@ void main() {
       );
       _testGeoJsonWriters<FeatureContent>(
         (output) => output.featureCollection(
-          features: (feat) => feat
+          (features) => features
             ..feature(extra: (props) => props.property('prop1', 'value1'))
             ..feature(
               extra: (props) => props.properties('map1', {'prop1': 'value1'}),
@@ -910,7 +907,7 @@ void main() {
       _testGeoJsonWriters<FeatureContent>(
         (output) => output.featureCollection(
           count: 2,
-          features: (feat) => feat
+          (features) => features
             ..feature(
               id: 1,
               properties: {'test1': 3},
@@ -932,14 +929,14 @@ void main() {
       _testGeoJsonWriters<FeatureContent>(
         (output) => output.featureCollection(
           count: 2,
-          features: (feat) => feat
+          (features) => features
             ..feature(
-              geometries: (geom) => geom.point(const Projected(x: 1, y: 2)),
+              geometry: (geom) => geom.point(const Projected(x: 1, y: 2)),
               properties: {'test1': null},
             )
             ..feature(
               id: '2',
-              geometries: (geom) => geom.emptyGeometry(Geom.point),
+              geometry: (geom) => geom.emptyGeometry(Geom.point),
               properties: {},
             ),
         ),

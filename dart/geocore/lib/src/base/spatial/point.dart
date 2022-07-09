@@ -161,9 +161,9 @@ abstract class Point<C extends num> extends Geometry
   }
 
   @override
-  void writeTo(SimpleGeometryContent output) => output.point(
+  void writeTo(SimpleGeometryContent writer) => writer.point(
         this,
-        coordType: typeCoords,
+        type: typeCoords,
       );
 
   @override

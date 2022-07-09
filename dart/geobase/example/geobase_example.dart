@@ -184,7 +184,7 @@ void _wktPointGeometryWithZ() {
   //    POINT Z(10.123 20.25 -30.95)
   encoder.writer.point(
     const Projected(x: 10.123, y: 20.25, z: -30.95),
-    coordType: Coords.xyz,
+    type: Coords.xyz,
   );
   print(encoder.toText());
 }
@@ -197,7 +197,7 @@ void _wktPointGeometryWithM() {
   //    POINT M(10.123 20.25 -1.999)
   encoder.writer.point(
     const Projected(x: 10.123, y: 20.25, m: -1.999),
-    coordType: Coords.xym,
+    type: Coords.xym,
   );
   print(encoder.toText());
 }
@@ -210,14 +210,14 @@ void _wktPointGeometryWithZM() {
   //    POINT ZM(10.123 20.25 -30.95 -1.999)
   encoder.writer.point(
     const Geographic(lon: 10.123, lat: 20.25, elev: -30.95, m: -1.999),
-    coordType: Coords.xyzm,
+    type: Coords.xyzm,
   );
   print(encoder.toText());
 }
 
 void _wktPointGeometryWithZMShortened() {
   final encoder = WKT.geometry.encoder();
-  encoder.writer.point([10.123, 20.25, -30.95, -1.999], coordType: Coords.xyzm);
+  encoder.writer.point([10.123, 20.25, -30.95, -1.999], type: Coords.xyzm);
   print(encoder.toText());
 }
 
@@ -228,7 +228,7 @@ void _wkbPointGeometryWithZM() {
   // write geometries (here only point) to content writer of the encoder
   encoder.writer.point(
     [10.123, 20.25, -30.95, -1.999],
-    coordType: Coords.xyzm,
+    type: Coords.xyzm,
   );
 
   // get encoded bytes (Uint8List) and Base64 encoded text (String)
@@ -336,11 +336,12 @@ void _geoJsonGeometryCollection() {
   //         "coordinates":[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]]}]}
 
   encoder.writer.geometryCollection(
-    geometries: (geom) => geom // geom is GeometryContent
-      ..point(
-        const Geographic(lon: 10.123, lat: 20.25, elev: -30.95),
-        coordType: Coords.xyz,
-      )
+    // optional `count` argument is used to hint encoder of number of items
+    // (this may allow an encoder to optimize writing optimal array structure)
+    count: 2,
+    // callback function to write geometry items, geom is SimpleGeometryContent
+    (geom) => geom
+      ..point([10.123, 20.25, -30.95], type: Coords.xyz)
       ..polygon(
         [
           [
@@ -368,7 +369,7 @@ void _geoJsonFeature() {
   //        {"foo":100,"bar":"this is property value","baz":true}}
   encoder.writer.feature(
     id: 'fid-1',
-    geometries: (geom) => geom.point(const Geographic(lon: 10.123, lat: 20.25)),
+    geometry: (geom) => geom.point(const Geographic(lon: 10.123, lat: 20.25)),
     properties: {
       'foo': 100,
       'bar': 'this is property value',
@@ -397,15 +398,17 @@ void _geoJsonFeatureCollection() {
   //         "properties":{}}]}
   encoder.writer.featureCollection(
     bbox: const GeoBox(
+      // bbox covering the whole feature collection
       west: -1.1,
       south: -3.49,
       east: 10.123,
       north: 20.25,
     ),
-    features: (feat) => feat // feat is FeatureContent
+    count: 2, // expected feature count
+    (features) => features // writing to FeatureContent
       ..feature(
         id: 'fid-1',
-        geometries: (geom) => geom.point(
+        geometry: (geom) => geom.point(
           const Geographic(lon: 10.123, lat: 20.25),
         ),
         properties: {
@@ -414,7 +417,7 @@ void _geoJsonFeatureCollection() {
         },
       )
       ..feature(
-        geometries: (geom) => geom.lineString(
+        geometry: (geom) => geom.lineString(
           [
             const Geographic(lon: -1.1, lat: -1.1),
             const Geographic(lon: 2.1, lat: -2.5),

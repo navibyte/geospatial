@@ -62,13 +62,13 @@ class GeometryCollection<E extends Geometry> extends Geometry
   List<Object?> get props => [geometries];
 
   @override
-  void writeTo(SimpleGeometryContent output) {
+  void writeTo(SimpleGeometryContent writer) {
     // note: no need to inform is3D/hasM of the first point, as sub items on
     // a collection are geometries, and each of them should inform those
-    output.geometryCollection(
-      geometries: (gw) {
+    writer.geometryCollection(
+      (geom) {
         for (final item in geometries) {
-          item.writeTo(gw);
+          item.writeTo(geom);
         }
       },
       count: geometries.length,
@@ -159,11 +159,11 @@ class MultiPoint<E extends Point> extends Geometry with EquatableMixin {
   Iterable<Position> get coordinates => points;
 
   @override
-  void writeTo(SimpleGeometryContent output) {
+  void writeTo(SimpleGeometryContent writer) {
     final point = onePoint;
-    output.multiPoint(
+    writer.multiPoint(
       coordinates,
-      coordType: point?.typeCoords,
+      type: point?.typeCoords,
       bbox: boundsExplicit,
     );
   }
@@ -259,11 +259,11 @@ class MultiLineString<T extends Point> extends Geometry with EquatableMixin {
       lineStrings.map<Iterable<Position>>((e) => e.chain);
 
   @override
-  void writeTo(SimpleGeometryContent output) {
+  void writeTo(SimpleGeometryContent writer) {
     final point = onePoint;
-    output.multiLineString(
+    writer.multiLineString(
       coordinates,
-      coordType: point?.typeCoords,
+      type: point?.typeCoords,
       bbox: boundsExplicit,
     );
   }
@@ -364,11 +364,11 @@ class MultiPolygon<T extends Point> extends Geometry with EquatableMixin {
       );
 
   @override
-  void writeTo(SimpleGeometryContent output) {
+  void writeTo(SimpleGeometryContent writer) {
     final point = onePoint;
-    output.multiPolygon(
+    writer.multiPolygon(
       coordinates,
-      coordType: point?.typeCoords,
+      type: point?.typeCoords,
       bbox: boundsExplicit,
     );
   }

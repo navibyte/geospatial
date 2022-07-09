@@ -65,11 +65,11 @@ class FeatureCollection<E extends Feature> extends FeatureWritable
   Bounds? get boundsExplicit => _collectionBounds ?? features.boundsExplicit;
 
   @override
-  void writeTo(FeatureContent output) {
-    output.featureCollection(
-      features: (fw) {
+  void writeTo(FeatureContent writer) {
+    writer.featureCollection(
+      (feat) {
         for (final item in features) {
-          item.writeTo(output);
+          item.writeTo(feat);
         }
       },
       count: features.length,

@@ -79,7 +79,7 @@ void main() {
           endian,
           'POINT M(2.1 -3.4 0.2)',
           [
-            (writer) => writer.point([2.1, -3.4, 0, 0.2], coordType: Coords.xym)
+            (writer) => writer.point([2.1, -3.4, 0, 0.2], type: Coords.xym)
           ],
         );
 
@@ -166,7 +166,7 @@ void main() {
           '1.0,2.0 2.0),POINT(2.1 -3.4))',
           [
             (writer) => writer.geometryCollection(
-                  geometries: (geom) => geom
+                  (geom) => geom
                     ..lineString(points)
                     ..multiPoint(points)
                     ..point([2.1, -3.4]),
@@ -188,7 +188,7 @@ void main() {
         // hex: 0101000000000000000000F87F000000000000F87F
         //   IEEE specifies NaN in float64 as (big endian) 7ff80000 00000000
         //   in Dart it seems that (using ByteData) need to write `-double.nan`
-        //   this is handled by wkb encoder / byte writer util.... 
+        //   this is handled by wkb encoder / byte writer util....
         'POINT(NaN NaN)',
         [
           (writer) => writer.emptyGeometry(Geom.point),
@@ -229,7 +229,7 @@ void main() {
         [
           (writer) => writer
             ..geometryCollection(
-              geometries: (geom) => geom
+              (geom) => geom
                 ..multiPoint([
                   [0, 0],
                   [1, 1]

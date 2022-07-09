@@ -10,8 +10,8 @@ import '/src/coordinates/projected.dart';
 
 /// An interface to write coordinate data to format encoders and object
 /// builders.
-/// 
-/// Coordinate positions are represented either as [Position] or 
+///
+/// Coordinate positions are represented either as [Position] or
 /// `Iterable<num>`. Bounding boxes are represented either as [Box] or
 /// `Iterable<num>`.
 mixin CoordinateContent {
@@ -25,9 +25,25 @@ mixin CoordinateContent {
   /// - minX, minY, maxX, maxY
   /// - minX, minY, minZ, maxX, maxY, maxZ
   /// - minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  ///
+  /// An example with 2D coordinates:
+  /// ```dart
+  ///    // using coordinate value list (minX, minY, maxX, maxY)
+  ///    content.box([10, 10, 20, 20]);
+  ///
+  ///    // using the type for bounding box with projected coordinates
+  ///    // (same coordinates with the previous example)
+  ///    content.box(
+  ///       const ProjBox(minX: 10, minY: 10, maxX: 20, maxY: 20));
+  ///
+  ///    // using the type for bounding box with geographic coordinates
+  ///    // (between -20.0 .. 20.0 in longitude, 50.0 .. 60.0 in latitude)
+  ///    content.box(
+  ///       const GeoBox(west: -20, south: 50, east: 20, north: 60));
+  /// ```
   void box(Object bbox);
 
-  /// Writes a position represented by [coordinates] of [Position] or
+  /// Writes a single position represented by [coordinates] of [Position] or
   /// `Iterable<num>`.
   ///
   /// Known [Position] sub classes are [Projected] (projected or cartesian
@@ -36,11 +52,45 @@ mixin CoordinateContent {
   ///
   /// Allowed coordinate value combinations for `Iterable<num>` are:
   /// (x, y), (x, y, z) and (x, y, z, m).
+  ///
+  /// An example with 2D coordinates:
+  /// ```dart
+  ///    // using coordinate value list (x, y)
+  ///    content.position([10, 20]);
+  /// 
+  ///    // using the type for positions with projected coordinates
+  ///    // (same coordinates with the previous example)
+  ///    content.position(const Projected(x: 10, y: 20));
+  /// ```
+  /// 
+  /// An example with 3D coordinates:
+  /// ```dart
+  ///    // using coordinate value list (x, y, z)
+  ///    content.position([10, 20, 30]);
+  /// 
+  ///    // using the type for positions with geographic coordinates
+  ///    content.position(const Geographic(lon: 10, lat: 20, elev: 30));
+  /// ```
+  /// 
+  /// An example with 2D coordinates with measurement:
+  /// ```dart
+  ///    // using the type for positions with projected coordinates
+  ///    content.position(const Projected(x: 10, y: 20, m: 40));
+  /// ```
+  /// 
+  /// An example with 3D coordinates with measurement:
+  /// ```dart
+  ///    // using coordinate value list (x, y, z, m)
+  ///    content.position([10, 20, 30, 40]);
+  /// 
+  ///    // using the type for positions with projected coordinates
+  ///    content.position(const Projected(x: 10, y: 20, z: 30, m: 40));
+  /// ```
   void position(Object coordinates);
 
-  /// Writes a position array represented by [coordinates].
+  /// Writes a series of positions represented by [coordinates].
   ///
-  /// The [coordinates] iterable is an array containing `Object` items. 
+  /// The [coordinates] iterable is an array containing `Object` items.
   /// Supported sub classes for items are [Position] and `Iterable<num>`.
   ///
   /// Known [Position] sub classes are [Projected] (projected or cartesian
@@ -49,32 +99,22 @@ mixin CoordinateContent {
   ///
   /// Allowed [coordinates] value combinations for `Iterable<num>` are:
   /// (x, y), (x, y, z) and (x, y, z, m).
-  void positions1D(Iterable<Object> coordinates);
-
-  /// Writes a position array represented by [coordinates].
-  ///
-  /// The [coordinates] iterable is an array of arrays containing `Object`
-  /// items. Supported sub classes for items are [Position] and `Iterable<num>`
-  ///
-  /// Known [Position] sub classes are [Projected] (projected or cartesian
-  /// coordinates) and [Geographic] (geographic coordinates). Other sub classes
-  /// are supported too.
-  ///
-  /// Allowed [coordinates] value combinations for `Iterable<num>` are:
-  /// (x, y), (x, y, z) and (x, y, z, m).
-  void positions2D(Iterable<Iterable<Object>> coordinates);
-
-  /// Writes a position array represented by [coordinates].
-  ///
-  /// The [coordinates] iterable is an array of arrays of arrays containing
-  /// `Object` items. Supported sub classes for items are [Position] and 
-  /// `Iterable<num>`
-  ///
-  /// Known [Position] sub classes are [Projected] (projected or cartesian
-  /// coordinates) and [Geographic] (geographic coordinates). Other sub classes
-  /// are supported too.
-  ///
-  /// Allowed [coordinates] value combinations for `Iterable<num>` are:
-  /// (x, y), (x, y, z) and (x, y, z, m).
-  void positions3D(Iterable<Iterable<Iterable<Object>>> coordinates);
+  /// 
+  /// An example
+  /// ```dart
+  ///      // using list of coordinate value lists
+  ///      content.positions([
+  ///           [10.123, 20.25],
+  ///           [10.123, 20.25, -30.95, -1.999],
+  ///           [10.123, 20.25],
+  ///         ]);
+  ///      
+  ///      // using list of position objects
+  ///      content.positions([
+  ///           const Projected(x: 10.123, y: 20.25),
+  ///           const Projected(x: 10.123, y: 20.25, z: -30.95, m: -1.999),
+  ///           const Projected(x: 10.123, y: 20.25),
+  ///         ]);
+  /// ```
+  void positions(Iterable<Object> coordinates);
 }
