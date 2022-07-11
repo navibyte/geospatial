@@ -56,8 +56,11 @@ void main() {
 
       expect(ProjBox.fromCoords(const [1.1, 1.2, 1.4, 2.1, 2.2, 2.4]),
           isNot(box3));
-      expect(ProjBox.fromText('1.1,1.2,,1.4,2.1,2.2,,2.4'), box3);
-      expect(ProjBox.fromText(box3.toString()), box3);
+      expect(
+        ProjBox.fromText('1.1,1.2,1.4,2.1,2.2,2.4', type: Coords.xym),
+        box3,
+      );
+      expect(ProjBox.fromText(box3.toString(), type: Coords.xym), box3);
 
       expect(ProjBox.fromCoords(const [1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.3, 2.4]),
           box4);
@@ -296,8 +299,11 @@ void main() {
 
       expect(
           GeoBox.fromCoords(const [1.1, 1.2, 1.4, 2.1, 2.2, 2.4]), isNot(box3));
-      expect(GeoBox.fromText('1.1,1.2,,1.4,2.1,2.2,,2.4'), box3);
-      expect(GeoBox.fromText(box3.toString()), box3);
+      expect(
+        GeoBox.fromText('1.1,1.2,1.4,2.1,2.2,2.4', type: Coords.xym),
+        box3,
+      );
+      expect(GeoBox.fromText(box3.toString(), type: Coords.xym), box3);
 
       expect(GeoBox.fromCoords(const [1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.3, 2.4]),
           box4);
@@ -366,4 +372,107 @@ void main() {
       );
     });
   });
+
+  group('Other tests', () {
+    test('Coordinate order', () {
+      // XY
+      _testCoordinateOrder('1.0,2.0,11.0,12.0', [1.0, 2.0, 11.0, 12.0]);
+      _testCoordinateOrder(
+          '1.0,2.0,11.0,12.0', [1.0, 2.0, 11.0, 12.0], Coords.xy);
+
+      // XYZ
+      _testCoordinateOrder(
+          '1.0,2.0,3.0,11.0,12.0,13.0', [1.0, 2.0, 3.0, 11.0, 12.0, 13.0]);
+      _testCoordinateOrder('1.0,2.0,3.0,11.0,12.0,13.0',
+          [1.0, 2.0, 3.0, 11.0, 12.0, 13.0], Coords.xyz);
+
+      // XYM
+      _testCoordinateOrder('1.0,2.0,4.0,11.0,12.0,14.0',
+          [1.0, 2.0, 4.0, 11.0, 12.0, 14.0], Coords.xym);
+
+      // XYZM
+      _testCoordinateOrder('1.0,2.0,3.0,4.0,11.0,12.0,13.0,14.0',
+          [1.0, 2.0, 3.0, 4.0, 11.0, 12.0, 13.0, 14.0]);
+      _testCoordinateOrder('1.0,2.0,3.0,4.0,11.0,12.0,13.0,14.0',
+          [1.0, 2.0, 3.0, 4.0, 11.0, 12.0, 13.0, 14.0], Coords.xyzm);
+    });
+
+    test('createFromObject', () {
+      final li4 = [1, 2, 3, 4, 11, 12, 13, 14];
+      const p4 = ProjBox(
+        minX: 1,
+        minY: 2,
+        minZ: 3,
+        minM: 4,
+        maxX: 11,
+        maxY: 12,
+        maxZ: 13,
+        maxM: 14,
+      );
+
+      expect(
+        Box.createFromObject(p4, to: ProjBox.create),
+        p4,
+      );
+      expect(
+        Box.createFromObject(p4, to: ProjBox.create, type: Coords.xy),
+        ProjBox.fromCoords(const [1, 2, 11, 12]),
+      );
+      expect(
+        Box.createFromObject(p4, to: ProjBox.create, type: Coords.xyz),
+        ProjBox.fromCoords(const [1, 2, 3, 11, 12, 13]),
+      );
+      expect(
+        Box.createFromObject(p4, to: ProjBox.create, type: Coords.xym),
+        ProjBox.fromCoords(const [1, 2, 4, 11, 12, 14], type: Coords.xym),
+      );
+      expect(
+        Box.createFromObject(p4, to: ProjBox.create, type: Coords.xyzm),
+        ProjBox.fromCoords(const [1, 2, 3, 4, 11, 12, 13, 14]),
+      );
+
+      expect(
+        Box.createFromObject(li4, to: ProjBox.create),
+        p4,
+      );
+      expect(
+        Box.createFromObject(const [1, 2, 11, 12],
+            to: ProjBox.create, type: Coords.xy),
+        ProjBox.fromCoords(const [1, 2, 11, 12]),
+      );
+      expect(
+        Box.createFromObject(const [1, 2, 3, 11, 12, 13],
+            to: ProjBox.create, type: Coords.xyz),
+        ProjBox.fromCoords(const [1, 2, 3, 11, 12, 13]),
+      );
+      expect(
+        Box.createFromObject(const [1, 2, 4, 11, 12, 14],
+            to: ProjBox.create, type: Coords.xym),
+        ProjBox.fromCoords(const [1, 2, 4, 11, 12, 14], type: Coords.xym),
+      );
+      expect(
+        Box.createFromObject(li4, to: ProjBox.create, type: Coords.xyzm),
+        ProjBox.fromCoords(const [1, 2, 3, 4, 11, 12, 13, 14]),
+      );
+    });
+  });
+}
+
+void _testCoordinateOrder(String text, Iterable<num> coords, [Coords? type]) {
+  final factories = [ProjBox.create, GeoBox.create];
+
+  for (final factory in factories) {
+    final fromCoords = Box.createFromCoords(coords, to: factory, type: type);
+    final fromText = Box.createFromText(text, to: factory, type: type);
+    expect(fromCoords, fromText);
+    expect(fromCoords.toString(), text);
+    /*
+    expect(fromText.values, coords);
+    for (var i = 0; i < coords.length; i++) {
+      expect(fromText[i], coords.elementAt(i));
+    }
+    */
+
+    expect(Box.createFromObject(coords, to: factory, type: type), fromCoords);
+  }
 }

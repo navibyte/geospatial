@@ -26,6 +26,23 @@ import '/src/coordinates/base.dart';
 /// [m] represents a measurement or a value on a linear referencing system (like
 /// time). It could be associated with a 2D position (x, y, m) or a 3D position
 /// (x, y, z, m).
+///
+/// For 2D coordinates the coordinate axis indexes are:
+///
+/// Index | Projected
+/// ----- | ---------
+/// 0     | x        
+/// 1     | y        
+/// 2     | m        
+///
+/// For 3D coordinates the coordinate axis indexes are:
+///
+/// Index | Projected
+/// ----- | ---------
+/// 0     | x        
+/// 1     | y        
+/// 2     | z        
+/// 3     | m        
 @immutable
 class Projected extends Position {
   final num _x;
@@ -47,33 +64,48 @@ class Projected extends Position {
         _z = z,
         _m = m;
 
-  /// Creates a position from [coords] given in order: x, y, z, m.
+  /// Creates a projected position from [coords] starting from [offset].
   ///
-  /// The [coords] must contain at least two coordinate values (x and y)
-  /// starting from [offset]. If [coords] contains three values, then 3rd item
-  /// is z. If [coords] contains four values, then 4th item is m.
-  factory Projected.fromCoords(Iterable<num> coords, {int offset = 0}) =>
+  /// Supported coordinate value combinations for [coords] are:
+  /// (x, y), (x, y, z), (x, y, m) and (x, y, z, m).
+  ///
+  /// Use an optional [type] to explicitely set the coordinate type. If not
+  /// provided and [coords] has 3 items, then xyz coordinates are assumed.
+  ///
+  /// Throws FormatException if coordinates are invalid.
+  factory Projected.fromCoords(
+    Iterable<num> coords, {
+    int offset = 0,
+    Coords? type,
+  }) =>
       Position.createFromCoords(
         coords,
         to: Projected.create,
         offset: offset,
+        type: type,
       );
 
-  /// Creates a position from [text] given in order: x, y, z, m.
+  /// Creates a projected position from [text].
   ///
   /// Coordinate values in [text] are separated by [delimiter].
   ///
-  /// The [text] must contain at least two coordinate values (x and y). If
-  /// [text] contains three values, then 3rd item is z. If [text] contains four
-  /// values, then 4th item is m.
+  /// Supported coordinate value combinations for [text] are:
+  /// (x, y), (x, y, z), (x, y, m) and (x, y, z, m).
+  ///
+  /// Use an optional [type] to explicitely set the coordinate type. If not
+  /// provided and [text] has 3 items, then xyz coordinates are assumed.
+  ///
+  /// Throws FormatException if coordinates are invalid.
   factory Projected.fromText(
     String text, {
     Pattern? delimiter = ',',
+    Coords? type,
   }) =>
       Position.createFromText(
         text,
         to: Projected.create,
         delimiter: delimiter,
+        type: type,
       );
 
   @override
@@ -159,7 +191,7 @@ class Projected extends Position {
       case Coords.xyz:
         return '$_x,$_y,$_z';
       case Coords.xym:
-        return '$_x,$_y,,$_m';
+        return '$_x,$_y,$_m';
       case Coords.xyzm:
         return '$_x,$_y,$_z,$_m';
     }

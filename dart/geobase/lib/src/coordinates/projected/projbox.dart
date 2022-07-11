@@ -15,6 +15,15 @@ import 'projected.dart';
 ///
 /// Optional [minZ] and [maxZ] for 3D boxes, and [minM] and [maxM] for
 /// measured boxes can be provided too.
+/// 
+/// Supported coordinate value combinations by coordinate type:
+///
+/// Type | Bounding box values
+/// ---- | ---------------
+/// xy   | minX, minY, maxX, maxY
+/// xyz  | minX, minY, minZ, maxX, maxY, maxZ
+/// xym  | minX, minY, minM, maxX, maxY, maxM
+/// xyzm | minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
 @immutable
 class ProjBox extends Box {
   final num _minX;
@@ -73,31 +82,61 @@ class ProjBox extends Box {
   factory ProjBox.from(Iterable<Projected> positions) =>
       Box.createBoxFrom(positions, ProjBox.create);
 
-  /// Creates a bounding box from [coords] starting from [offset].
+  /// Creates a projected bounding box from [coords] starting from [offset].
   ///
-  /// A valid [coords] contains coordinate values for one of these combinations:
-  /// - minX, minY, maxX, maxY
-  /// - minX, minY, minZ, maxX, maxY, maxZ
-  /// - minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  /// Supported coordinate value combinations by coordinate type:
+  ///
+  /// Type | Expected values
+  /// ---- | ---------------
+  /// xy   | minX, minY, maxX, maxY
+  /// xyz  | minX, minY, minZ, maxX, maxY, maxZ
+  /// xym  | minX, minY, minM, maxX, maxY, maxM
+  /// xyzm | minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  ///
+  /// Use an optional [type] to explicitely set the coordinate type. If not
+  /// provided and [coords] has 6 items, then xyz coordinates are assumed.
+  ///
+  /// Throws FormatException if coordinates are invalid.
   factory ProjBox.fromCoords(
     Iterable<num> coords, {
     int offset = 0,
+    Coords? type,
   }) =>
-      Box.createFromCoords(coords, to: ProjBox.create, offset: offset);
+      Box.createFromCoords(
+        coords,
+        to: ProjBox.create,
+        offset: offset,
+        type: type,
+      );
 
-  /// Creates a bounding box from [text].
-  ///
-  /// A valid [text] contains coordinate values for one of these combinations:
-  /// - minX, minY, maxX, maxY
-  /// - minX, minY, minZ, maxX, maxY, maxZ
-  /// - minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  /// Creates a projected bounding box from [text].
   ///
   /// Coordinate values in [text] are separated by [delimiter].
+  ///
+  /// Supported coordinate value combinations by coordinate type:
+  ///
+  /// Type | Expected values
+  /// ---- | ---------------
+  /// xy   | minX, minY, maxX, maxY
+  /// xyz  | minX, minY, minZ, maxX, maxY, maxZ
+  /// xym  | minX, minY, minM, maxX, maxY, maxM
+  /// xyzm | minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  ///
+  /// Use an optional [type] to explicitely set the coordinate type. If not
+  /// provided and [text] has 6 items, then xyz coordinates are assumed.
+  ///
+  /// Throws FormatException if coordinates are invalid.
   factory ProjBox.fromText(
     String text, {
     Pattern? delimiter = ',',
+    Coords? type,
   }) =>
-      Box.createFromText(text, to: ProjBox.create, delimiter: delimiter);
+      Box.createFromText(
+        text,
+        to: ProjBox.create,
+        delimiter: delimiter,
+        type: type,
+      );
 
   @override
   num get minX => _minX;
@@ -174,7 +213,7 @@ class ProjBox extends Box {
       case Coords.xyz:
         return '$_minX,$_minY,$_minZ,$_maxX,$_maxY,$_maxZ';
       case Coords.xym:
-        return '$_minX,$_minY,,$_minM,$_maxX,$_maxY,,$_maxM';
+        return '$_minX,$_minY,$_minM,$_maxX,$_maxY,$_maxM';
       case Coords.xyzm:
         return '$_minX,$_minY,$_minZ,$_minM,$_maxX,$_maxY,$_maxZ,$_maxM';
     }

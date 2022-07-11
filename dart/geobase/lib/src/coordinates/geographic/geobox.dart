@@ -26,6 +26,15 @@ import 'geographic.dart';
 ///
 /// Optional [minElev] and [maxElev] for 3D boxes, and [minM] and [maxM] for
 /// measured boxes can be provided too.
+///
+/// Supported coordinate value combinations by coordinate type:
+///
+/// Type | Bounding box values
+/// ---- | ---------------
+/// xy   | west, south, east, north
+/// xyz  | west, south, minElev, east, north, maxElev
+/// xym  | west, south, minM, east, north, maxM
+/// xyzm | west, south, minElev, minM, east, north, maxElev, maxM
 @immutable
 class GeoBox extends Box {
   final double _west;
@@ -95,31 +104,61 @@ class GeoBox extends Box {
   factory GeoBox.from(Iterable<Geographic> positions) =>
       Box.createBoxFrom(positions, GeoBox.create);
 
-  /// Creates a bounding box from [coords] starting from [offset].
+  /// Creates a geographic bounding box from [coords] starting from [offset].
   ///
-  /// A valid [coords] contains coordinate values for one of these combinations:
-  /// - west, south, east, north
-  /// - west, south, minElev, east, north, maxElev
-  /// - west, south, minElev, minM, east, north, maxElev, maxM
+  /// Supported coordinate value combinations by coordinate type:
+  ///
+  /// Type | Expected values
+  /// ---- | ---------------
+  /// xy   | west, south, east, north
+  /// xyz  | west, south, minElev, east, north, maxElev
+  /// xym  | west, south, minM, east, north, maxM
+  /// xyzm | west, south, minElev, minM, east, north, maxElev, maxM
+  ///
+  /// Use an optional [type] to explicitely set the coordinate type. If not
+  /// provided and [coords] has 6 items, then xyz coordinates are assumed.
+  ///
+  /// Throws FormatException if coordinates are invalid.
   factory GeoBox.fromCoords(
     Iterable<num> coords, {
     int offset = 0,
+    Coords? type,
   }) =>
-      Box.createFromCoords(coords, to: GeoBox.create, offset: offset);
+      Box.createFromCoords(
+        coords,
+        to: GeoBox.create,
+        offset: offset,
+        type: type,
+      );
 
-  /// Creates a bounding box from [text].
-  ///
-  /// A valid [text] contains coordinate values for one of these combinations:
-  /// - west, south, east, north
-  /// - west, south, minElev, east, north, maxElev
-  /// - west, south, minElev, minM, east, north, maxElev, maxM
+  /// Creates a geographic bounding box from [text].
   ///
   /// Coordinate values in [text] are separated by [delimiter].
+  ///
+  /// Supported coordinate value combinations by coordinate type:
+  ///
+  /// Type | Expected values
+  /// ---- | ---------------
+  /// xy   | minX, minY, maxX, maxY
+  /// xyz  | minX, minY, minZ, maxX, maxY, maxZ
+  /// xym  | minX, minY, minM, maxX, maxY, maxM
+  /// xyzm | minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  ///
+  /// Use an optional [type] to explicitely set the coordinate type. If not
+  /// provided and [text] has 6 items, then xyz coordinates are assumed.
+  ///
+  /// Throws FormatException if coordinates are invalid.
   factory GeoBox.fromText(
     String text, {
     Pattern? delimiter = ',',
+    Coords? type,
   }) =>
-      Box.createFromText(text, to: GeoBox.create, delimiter: delimiter);
+      Box.createFromText(
+        text,
+        to: GeoBox.create,
+        delimiter: delimiter,
+        type: type,
+      );
 
   /// The west coordinate as geographic longitude.
   double get west => _west;
@@ -233,7 +272,7 @@ class GeoBox extends Box {
       case Coords.xyz:
         return '$_west,$_south,$_minElev,$_east,$_north,$_maxElev';
       case Coords.xym:
-        return '$_west,$_south,,$_minM,$_east,$_north,,$_maxM';
+        return '$_west,$_south,$_minM,$_east,$_north,$_maxM';
       case Coords.xyzm:
         return '$_west,$_south,$_minElev,$_minM,'
             '$_east,$_north,$_maxElev,$_maxM';

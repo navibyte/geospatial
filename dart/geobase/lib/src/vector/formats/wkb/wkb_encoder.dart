@@ -293,66 +293,69 @@ class _WkbGeometryEncoder
   }
 
   void _writePoint(Object point, Coords coordType) {
-    num x = 0;
-    num y = 0;
-    num z = 0;
-    num m = 0;
     if (point is Position) {
-      x = point.x;
-      y = point.y;
-      z = point.z;
-      m = point.m;
-    } else if (point is Iterable<num>) {
-      var ok = false;
-      final iter = point.iterator;
-      if (iter.moveNext()) {
-        x = iter.current;
-        if (iter.moveNext()) {
-          y = iter.current;
-          z = iter.moveNext() ? iter.current : 0;
-          m = iter.moveNext() ? iter.current : 0;
-          ok = true;
-        }
+      switch (coordType) {
+        case Coords.xy:
+          _buffer
+            ..writeFloat64(point.x.toDouble())
+            ..writeFloat64(point.y.toDouble());
+          break;
+        case Coords.xyz:
+          _buffer
+            ..writeFloat64(point.x.toDouble())
+            ..writeFloat64(point.y.toDouble())
+            ..writeFloat64(point.z.toDouble());
+          break;
+        case Coords.xym:
+          _buffer
+            ..writeFloat64(point.x.toDouble())
+            ..writeFloat64(point.y.toDouble())
+            ..writeFloat64(point.m.toDouble());
+          break;
+        case Coords.xyzm:
+          _buffer
+            ..writeFloat64(point.x.toDouble())
+            ..writeFloat64(point.y.toDouble())
+            ..writeFloat64(point.z.toDouble())
+            ..writeFloat64(point.m.toDouble());
+          break;
       }
-      if (!ok) {
-        throw invalidCoordinates;
+    } else if (point is Iterable<num>) {
+      final iter = point.iterator;
+      final x = iter.moveNext() ? iter.current : throw invalidCoordinates;
+      final y = iter.moveNext() ? iter.current : throw invalidCoordinates;
+      switch (coordType) {
+        case Coords.xy:
+          _buffer
+            ..writeFloat64(x.toDouble())
+            ..writeFloat64(y.toDouble());
+          break;
+        case Coords.xyz:
+          final z = iter.moveNext() ? iter.current : 0;
+          _buffer
+            ..writeFloat64(x.toDouble())
+            ..writeFloat64(y.toDouble())
+            ..writeFloat64(z.toDouble());
+          break;
+        case Coords.xym:
+          final m = iter.moveNext() ? iter.current : 0;
+          _buffer
+            ..writeFloat64(x.toDouble())
+            ..writeFloat64(y.toDouble())
+            ..writeFloat64(m.toDouble());
+          break;
+        case Coords.xyzm:
+          final z = iter.moveNext() ? iter.current : 0;
+          final m = iter.moveNext() ? iter.current : 0;
+          _buffer
+            ..writeFloat64(x.toDouble())
+            ..writeFloat64(y.toDouble())
+            ..writeFloat64(z.toDouble())
+            ..writeFloat64(m.toDouble());
+          break;
       }
     } else {
       throw invalidCoordinates;
-    }
-
-    switch (coordType) {
-      // 2D point
-      case Coords.xy:
-        _buffer
-          ..writeFloat64(x.toDouble())
-          ..writeFloat64(y.toDouble());
-        break;
-
-      // Z point
-      case Coords.xyz:
-        _buffer
-          ..writeFloat64(x.toDouble())
-          ..writeFloat64(y.toDouble())
-          ..writeFloat64(z.toDouble());
-        break;
-
-      // M point
-      case Coords.xym:
-        _buffer
-          ..writeFloat64(x.toDouble())
-          ..writeFloat64(y.toDouble())
-          ..writeFloat64(m.toDouble());
-        break;
-
-      // ZM point
-      case Coords.xyzm:
-        _buffer
-          ..writeFloat64(x.toDouble())
-          ..writeFloat64(y.toDouble())
-          ..writeFloat64(z.toDouble())
-          ..writeFloat64(m.toDouble());
-        break;
     }
   }
 }

@@ -39,39 +39,44 @@ abstract class SimpleGeometryContent {
   /// coordinates) and [Geographic] (geographic coordinates). Other sub classes
   /// are supported too.
   ///
-  /// Allowed [coordinates] value combinations for `Iterable<num>` are:
-  /// (x, y), (x, y, z) and (x, y, z, m).
+  /// Supported coordinate value combinations for `Iterable<num>` are:
+  /// (x, y), (x, y, z), (x, y, m) and (x, y, z, m). Use an optional [type] to
+  /// explicitely set the coordinate type. If not provided and an iterable has
+  /// 3 items, then xyz coordinates are assumed.
   ///
   /// Examples to write a point geometry with 2D coordinates:
   /// ```dart
   ///    // using coordinate value list (x, y)
   ///    content.point([10, 20]);
-  /// 
+  ///
   ///    // using the type for positions with projected coordinates
   ///    // (same coordinates with the previous example)
   ///    content.point(const Projected(x: 10, y: 20));
   /// ```
-  /// 
+  ///
   /// Examples to write a point geometry with 3D coordinates:
   /// ```dart
   ///    // using coordinate value list (x, y, z)
   ///    content.point([10, 20, 30]);
-  /// 
+  ///
   ///    // using the type for positions with geographic coordinates
   ///    content.point(const Geographic(lon: 10, lat: 20, elev: 30));
   /// ```
-  /// 
+  ///
   /// An example to write a point geometry with 2D coordinates with measurement:
   /// ```dart
+  ///    // using coordinate value list (x, y, m), need to specify type
+  ///    content.position([10, 20, 40], type: Coords.xym);
+  ///
   ///    // using the type for positions with projected coordinates
   ///    content.point(const Projected(x: 10, y: 20, m: 40));
   /// ```
-  /// 
+  ///
   /// Examples to write a point geometry with 3D coordinates with measurement:
   /// ```dart
   ///    // using coordinate value list (x, y, z, m)
   ///    content.point([10, 20, 30, 40]);
-  /// 
+  ///
   ///    // using the type for positions with projected coordinates
   ///    content.point(const Projected(x: 10, y: 20, z: 30, m: 40));
   /// ```
@@ -100,13 +105,8 @@ abstract class SimpleGeometryContent {
   /// classes are [ProjBox] (projected or cartesian coordinates) and [GeoBox]
   /// (geographic coordinates). Other sub classes are supported too.
   ///
-  /// Allowed [coordinates] value combinations for `Iterable<num>` are:
-  /// (x, y), (x, y, z) and (x, y, z, m).
-  ///
-  /// Allowed [bbox] coordinate value combinations for `Iterable<num>` are:
-  /// - minX, minY, maxX, maxY
-  /// - minX, minY, minZ, maxX, maxY, maxZ
-  /// - minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  /// See `Position.createFromCoords` and `Box.createFromCoords` for supported
+  /// coordinate combinations for `Iterable<num>` data. 
   ///
   /// An example to write a line string with 3 points and a bounding box:
   /// ```dart
@@ -147,12 +147,9 @@ abstract class SimpleGeometryContent {
   /// (geographic coordinates). Other sub classes are supported too.
   ///
   /// Allowed [coordinates] value combinations for `Iterable<num>` are:
-  /// (x, y), (x, y, z) and (x, y, z, m).
   ///
-  /// Allowed [bbox] coordinate value combinations for `Iterable<num>` are:
-  /// - minX, minY, maxX, maxY
-  /// - minX, minY, minZ, maxX, maxY, maxZ
-  /// - minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  /// See `Position.createFromCoords` and `Box.createFromCoords` for supported
+  /// coordinate combinations for `Iterable<num>` data. 
   ///
   /// An example to write a polygon geometry with one linear ring containing
   /// 4 points:
@@ -194,13 +191,8 @@ abstract class SimpleGeometryContent {
   /// classes are [ProjBox] (projected or cartesian coordinates) and [GeoBox]
   /// (geographic coordinates). Other sub classes are supported too.
   ///
-  /// Allowed [coordinates] value combinations for `Iterable<num>` are:
-  /// (x, y), (x, y, z) and (x, y, z, m).
-  ///
-  /// Allowed [bbox] coordinate value combinations for `Iterable<num>` are:
-  /// - minX, minY, maxX, maxY
-  /// - minX, minY, minZ, maxX, maxY, maxZ
-  /// - minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  /// See `Position.createFromCoords` and `Box.createFromCoords` for supported
+  /// coordinate combinations for `Iterable<num>` data. 
   ///
   /// An example to write a multi point geometry with 3 points:
   /// ```dart
@@ -239,13 +231,8 @@ abstract class SimpleGeometryContent {
   /// classes are [ProjBox] (projected or cartesian coordinates) and [GeoBox]
   /// (geographic coordinates). Other sub classes are supported too.
   ///
-  /// Allowed [coordinates] value combinations for `Iterable<num>` are:
-  /// (x, y), (x, y, z) and (x, y, z, m).
-  ///
-  /// Allowed [bbox] coordinate value combinations for `Iterable<num>` are:
-  /// - minX, minY, maxX, maxY
-  /// - minX, minY, minZ, maxX, maxY, maxZ
-  /// - minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  /// See `Position.createFromCoords` and `Box.createFromCoords` for supported
+  /// coordinate combinations for `Iterable<num>` data. 
   ///
   /// An example to write a multi line string with two line strings:
   /// ```dart
@@ -292,13 +279,8 @@ abstract class SimpleGeometryContent {
   /// classes are [ProjBox] (projected or cartesian coordinates) and [GeoBox]
   /// (geographic coordinates). Other sub classes are supported too.
   ///
-  /// Allowed [coordinates] value combinations for `Iterable<num>` are:
-  /// (x, y), (x, y, z) and (x, y, z, m).
-  ///
-  /// Allowed [bbox] coordinate value combinations for `Iterable<num>` are:
-  /// - minX, minY, maxX, maxY
-  /// - minX, minY, minZ, maxX, maxY, maxZ
-  /// - minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  /// See `Position.createFromCoords` and `Box.createFromCoords` for supported
+  /// coordinate combinations for `Iterable<num>` data. 
   ///
   /// An example to write a multi polygon geometry with two polygons:
   /// ```dart
@@ -347,10 +329,8 @@ abstract class SimpleGeometryContent {
   /// and [GeoBox] (geographic coordinates). Other sub classes are supported
   /// too.
   ///
-  /// Allowed [bbox] coordinate value combinations for `Iterable<num>` are:
-  /// - minX, minY, maxX, maxY
-  /// - minX, minY, minZ, maxX, maxY, maxZ
-  /// - minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  /// See `Box.createFromCoords` for supported coordinate combinations for 
+  /// `Iterable<num>` data. 
   ///
   /// An example to write a geometry collection with two child geometries:
   /// ```dart
@@ -384,7 +364,7 @@ abstract class SimpleGeometryContent {
   ///
   /// Note: normally it might be a good idea to avoid "empty geometries" as
   /// those are encoded and decoded with different ways in different formats.
-  /// 
+  ///
   /// An example to write an "empty" point:
   /// ```dart
   ///   content.emptyGeometry(Geom.point);

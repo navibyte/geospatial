@@ -79,7 +79,7 @@ void main() {
           endian,
           'POINT M(2.1 -3.4 0.2)',
           [
-            (writer) => writer.point([2.1, -3.4, 0, 0.2], type: Coords.xym)
+            (writer) => writer.point([2.1, -3.4, 0.2], type: Coords.xym)
           ],
         );
 

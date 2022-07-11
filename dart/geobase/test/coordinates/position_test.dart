@@ -39,12 +39,12 @@ void main() {
 
       expect(Projected.fromText('1.0,2.0'), p1);
       expect(Projected.fromText('1.0,2.0,3.0'), p2);
-      expect(Projected.fromText('1.0,2.0,,4.0'), p3);
+      expect(Projected.fromText('1.0,2.0,4.0', type: Coords.xym), p3);
       expect(Projected.fromText('1.0,2.0,3.0,4.0'), p4);
 
       expect(Projected.fromText(p1.toString()), p1);
       expect(Projected.fromText(p2.toString()), p2);
-      expect(Projected.fromText(p3.toString()), p3);
+      expect(Projected.fromText(p3.toString(), type: Coords.xym), p3);
       expect(Projected.fromText(p4.toString()), p4);
       expect(Projected.fromText('1.0 2.0 3.0 4.0', delimiter: ' '), p4);
 
@@ -169,7 +169,7 @@ void main() {
 
       expect(Geographic.fromText('1.0,2.0'), p1);
       expect(Geographic.fromText('1.0,2.0,3.0'), p2);
-      expect(Geographic.fromText('1.0,2.0,,4.0'), p3);
+      expect(Geographic.fromText('1.0,2.0,4.0', type: Coords.xym), p3);
       expect(Geographic.fromText('1.0,2.0,3.0,4.0'), p4);
     });
 
@@ -243,6 +243,99 @@ void main() {
       );
     });
   });
+
+  group('Other tests', () {
+    test('Coordinate order', () {
+      // XY
+      _testCoordinateOrder('1.0,2.0', [1.0, 2.0]);
+      _testCoordinateOrder('1.0,2.0', [1.0, 2.0], Coords.xy);
+
+      // XYZ
+      _testCoordinateOrder('1.0,2.0,3.0', [1.0, 2.0, 3.0]);
+      _testCoordinateOrder('1.0,2.0,3.0', [1.0, 2.0, 3.0], Coords.xyz);
+
+      // XYM
+      _testCoordinateOrder('1.0,2.0,4.0', [1.0, 2.0, 4.0], Coords.xym);
+
+      // XYZM
+      _testCoordinateOrder('1.0,2.0,3.0,4.0', [1.0, 2.0, 3.0, 4.0]);
+      _testCoordinateOrder(
+        '1.0,2.0,3.0,4.0',
+        [1.0, 2.0, 3.0, 4.0],
+        Coords.xyzm,
+      );
+    });
+
+    test('createFromObject', () {
+      final li4 = [1, 2, 3, 4];
+      const p4 = Projected(x: 1, y: 2, z: 3, m: 4);
+
+      expect(
+        Position.createFromObject(p4, to: Projected.create),
+        p4,
+      );
+      expect(
+        Position.createFromObject(p4, to: Projected.create, type: Coords.xy),
+        Projected.fromCoords(const [1, 2]),
+      );
+      expect(
+        Position.createFromObject(p4, to: Projected.create, type: Coords.xyz),
+        Projected.fromCoords(const [1, 2, 3]),
+      );
+      expect(
+        Position.createFromObject(p4, to: Projected.create, type: Coords.xym),
+        Projected.fromCoords(const [1, 2, 4], type: Coords.xym),
+      );
+      expect(
+        Position.createFromObject(p4, to: Projected.create, type: Coords.xyzm),
+        Projected.fromCoords(const [1, 2, 3, 4]),
+      );
+
+      expect(
+        Position.createFromObject(li4, to: Projected.create),
+        p4,
+      );
+      expect(
+        Position.createFromObject(li4, to: Projected.create, type: Coords.xy),
+        Projected.fromCoords(const [1, 2]),
+      );
+      expect(
+        Position.createFromObject(li4, to: Projected.create, type: Coords.xyz),
+        Projected.fromCoords(const [1, 2, 3]),
+      );
+      expect(
+        Position.createFromObject(
+          const [1, 2, 4],
+          to: Projected.create,
+          type: Coords.xym,
+        ),
+        Projected.fromCoords(const [1, 2, 4], type: Coords.xym),
+      );
+      expect(
+        Position.createFromObject(li4, to: Projected.create, type: Coords.xyzm),
+        Projected.fromCoords(const [1, 2, 3, 4]),
+      );
+    });
+  });
+}
+
+void _testCoordinateOrder(String text, Iterable<num> coords, [Coords? type]) {
+  final factories = [Projected.create, Geographic.create];
+
+  for (final factory in factories) {
+    final fromCoords =
+        Position.createFromCoords(coords, to: factory, type: type);
+    final fromText = Position.createFromText(text, to: factory, type: type);
+    expect(fromCoords, fromText);
+    expect(fromCoords.toString(), text);
+    expect(fromText.values, coords);
+    for (var i = 0; i < coords.length; i++) {
+      expect(fromText[i], coords.elementAt(i));
+    }
+
+    expect(
+        Position.createFromObject(coords, to: factory, type: type), fromCoords);
+  }
 }
 
 @immutable

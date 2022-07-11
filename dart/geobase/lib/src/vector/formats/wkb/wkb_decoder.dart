@@ -199,7 +199,7 @@ class _WkbGeometryBufferDecoder {
       case Coords.xyz:
         return [x, y, buffer.readFloat64(endian)];
       case Coords.xym:
-        return [x, y, 0, buffer.readFloat64(endian)];
+        return [x, y, buffer.readFloat64(endian)];
       case Coords.xyzm:
         return [x, y, buffer.readFloat64(endian), buffer.readFloat64(endian)];
     }

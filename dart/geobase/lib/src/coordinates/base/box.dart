@@ -6,6 +6,7 @@
 
 import 'dart:math' as math;
 
+import '/src/codes/coords.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 import '/src/utils/tolerance.dart';
@@ -44,7 +45,25 @@ typedef CreateBox<T extends Box> = T Function({
 ///
 /// The known sub classes are `ProjBox` (with minX, minY, minZ, minM, maxX,
 /// maxY, maxZ and maxM coordinates) and `GeoBox` (with west, south, minElev,
-/// minM, east, north, maxElev and maxM coordinates)
+/// minM, east, north, maxElev and maxM coordinates).
+///
+/// Supported coordinate value combinations by coordinate type:
+///
+/// Type | Bounding box values
+/// ---- | ---------------
+/// xy   | minX, minY, maxX, maxY
+/// xyz  | minX, minY, minZ, maxX, maxY, maxZ
+/// xym  | minX, minY, minM, maxX, maxY, maxM
+/// xyzm | minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+///
+/// For geographic bounding boxes:
+///
+/// Type | Bounding box values
+/// ---- | ---------------
+/// xy   | west, south, east, north
+/// xyz  | west, south, minElev, east, north, maxElev
+/// xym  | west, south, minM, east, north, maxM
+/// xyzm | west, south, minElev, minM, east, north, maxElev, maxM
 abstract class Box extends Positionable {
   /// Default `const` constructor to allow extending this abstract class.
   const Box();
@@ -173,39 +192,88 @@ abstract class Box extends Positionable {
 
   /// Creates a bounding box of [R] from [box] (of [R] or `Iterable<num>`).
   ///
-  /// If [box] is [R] already, then it's returned.
+  /// If [box] is [R] and with compatible coordinate type already, then it's
+  /// returned.  Other `Box` instances are copied as [R].
   ///
   /// If [box] is `Iterable<num>`, then a bounding box instance is created using
-  /// the factory function [to]. Allowed coordinate value combinations:
-  /// - minX, minY, maxX, maxY
-  /// - minX, minY, minZ, maxX, maxY, maxZ
-  /// - minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  /// the factory function [to]. Supported coordinate value combinations by
+  /// coordinate type:
+  ///
+  /// Type | Expected values
+  /// ---- | ---------------
+  /// xy   | minX, minY, maxX, maxY
+  /// xyz  | minX, minY, minZ, maxX, maxY, maxZ
+  /// xym  | minX, minY, minM, maxX, maxY, maxM
+  /// xyzm | minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  ///
+  /// Use an optional [type] to explicitely set the coordinate type. If not
+  /// provided and an iterable has 6 items, then xyz coordinates are assumed.
   ///
   /// Otherwise throws `FormatException`.
   static R createFromObject<R extends Box>(
     Object box, {
     required CreateBox<R> to,
+    Coords? type,
   }) {
-    if (box is R) {
-      return box;
+    if (box is Box) {
+      if (box is R && (type == null || type == box.typeCoords)) {
+        // box is of R and with compatiable coord type
+        return box;
+      } else {
+        if (type == null) {
+          // create a copy with same coordinate values
+          return to.call(
+            minX: box.minX,
+            minY: box.minY,
+            minZ: box.minZ,
+            minM: box.minM,
+            maxX: box.maxX,
+            maxY: box.maxY,
+            maxZ: box.maxZ,
+            maxM: box.maxM,
+          );
+        } else {
+          // create a copy with z and m selected if coord type suggests so
+          return to.call(
+            minX: box.minX,
+            minY: box.minY,
+            minZ: type.is3D ? box.minZ ?? 0 : null,
+            minM: type.isMeasured ? box.minM ?? 0 : null,
+            maxX: box.maxX,
+            maxY: box.maxY,
+            maxZ: type.is3D ? box.maxZ ?? 0 : null,
+            maxM: type.isMeasured ? box.maxM ?? 0 : null,
+          );
+        }
+      }
     } else if (box is Iterable<num>) {
-      return createFromCoords(box, to: to);
+      return createFromCoords(box, to: to, type: type);
     }
     throw invalidCoordinates;
   }
 
   /// Creates a bounding box of [R] from [coords] starting from [offset].
   ///
-  /// A valid [coords] contains coordinate values for one of these combinations:
-  /// - minX, minY, maxX, maxY
-  /// - minX, minY, minZ, maxX, maxY, maxZ
-  /// - minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
-  ///
   /// A bounding box instance is created using the factory function [to].
+  ///
+  /// Supported coordinate value combinations by coordinate type:
+  ///
+  /// Type | Expected values
+  /// ---- | ---------------
+  /// xy   | minX, minY, maxX, maxY
+  /// xyz  | minX, minY, minZ, maxX, maxY, maxZ
+  /// xym  | minX, minY, minM, maxX, maxY, maxM
+  /// xyzm | minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  ///
+  /// Use an optional [type] to explicitely set the coordinate type. If not
+  /// provided and [coords] has 6 items, then xyz coordinates are assumed.
+  ///
+  /// Throws FormatException if coordinates are invalid.
   static R createFromCoords<R extends Box>(
     Iterable<num> coords, {
     required CreateBox<R> to,
     int offset = 0,
+    Coords? type,
   }) {
     // resolve iterator for source coordinates
     final Iterator<num> iter;
@@ -227,132 +295,109 @@ abstract class Box extends Positionable {
     if (!iter.moveNext()) throw invalidCoordinates;
     final c3 = iter.current;
 
-    // rest 4 are optional
+    // rest 4 are optional, get first of them
     final c4 = iter.moveNext() ? iter.current : null;
+
+    // if xy coordinates (4 items), then return already now
+    if (type == Coords.xy || (c4 == null && type == null)) {
+      return to.call(minX: c0, minY: c1, maxX: c2, maxY: c3);
+    }
+
+    // then get also last 3 of the optional
     final c5 = iter.moveNext() ? iter.current : null;
     final c6 = iter.moveNext() ? iter.current : null;
     final c7 = iter.moveNext() ? iter.current : null;
 
-    // create bounding box
-    if (c4 != null && c5 != null) {
-      if (c6 != null && c7 != null) {
-        return to.call(
-          minX: c0,
-          minY: c1,
-          minZ: c2,
-          minM: c3,
-          maxX: c4,
-          maxY: c5,
-          maxZ: c6,
-          maxM: c7,
-        );
-      } else {
-        return to.call(
-          minX: c0,
-          minY: c1,
-          minZ: c2,
-          maxX: c3,
-          maxY: c4,
-          maxZ: c5,
-        );
-      }
+    // resolve coordinate type
+    final Coords coordType;
+    if (type != null) {
+      // explicitely
+      coordType = type;
     } else {
-      return to.call(
-        minX: c0,
-        minY: c1,
-        maxX: c2,
-        maxY: c3,
-      );
+      // implicitely
+      if (c4 != null && c5 != null) {
+        coordType = c6 != null && c7 != null ? Coords.xyzm : Coords.xyz;
+      } else {
+        coordType = Coords.xy;
+      }
     }
+
+    // create bounding box depending on coordinate type
+    switch (coordType) {
+      case Coords.xy:
+        if (c4 == null) {
+          return to.call(minX: c0, minY: c1, maxX: c2, maxY: c3);
+        }
+        break;
+      case Coords.xyz:
+        if (c4 != null && c5 != null && c6 == null) {
+          return to.call(
+            minX: c0,
+            minY: c1,
+            minZ: c2,
+            maxX: c3,
+            maxY: c4,
+            maxZ: c5,
+          );
+        }
+        break;
+      case Coords.xym:
+        if (c4 != null && c5 != null && c6 == null) {
+          return to.call(
+            minX: c0,
+            minY: c1,
+            minM: c2,
+            maxX: c3,
+            maxY: c4,
+            maxM: c5,
+          );
+        }
+        break;
+      case Coords.xyzm:
+        if (c4 != null && c5 != null && c6 != null && c7 != null) {
+          return to.call(
+            minX: c0,
+            minY: c1,
+            minZ: c2,
+            minM: c3,
+            maxX: c4,
+            maxY: c5,
+            maxZ: c6,
+            maxM: c7,
+          );
+        }
+        break;
+    }
+    throw invalidCoordinates;
   }
 
   /// Creates a bounding box of [R] from [text].
   ///
-  /// A valid [text] contains coordinate values for one of these combinations:
-  /// - minX, minY, maxX, maxY
-  /// - minX, minY, minZ, maxX, maxY, maxZ
-  /// - minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
-  ///
   /// Coordinate values in [text] are separated by [delimiter].
   ///
   /// A bounding box instance is created using the factory function [to].
+  ///
+  /// Supported coordinate value combinations by coordinate type:
+  ///
+  /// Type | Expected values
+  /// ---- | ---------------
+  /// xy   | minX, minY, maxX, maxY
+  /// xyz  | minX, minY, minZ, maxX, maxY, maxZ
+  /// xym  | minX, minY, minM, maxX, maxY, maxM
+  /// xyzm | minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  ///
+  /// Use an optional [type] to explicitely set the coordinate type. If not
+  /// provided and [text] has 6 items, then xyz coordinates are assumed.
+  ///
+  /// Throws FormatException if coordinates are invalid.
   static R createFromText<R extends Box>(
     String text, {
     required CreateBox<R> to,
     Pattern? delimiter = ',',
+    Coords? type,
   }) {
-    final coords = parseNullableNumValuesFromText(text, delimiter: delimiter);
-    final iter = coords.iterator;
-
-    // must contain at least four numbers
-    if (!iter.moveNext()) throw invalidCoordinates;
-    final c0 = iter.current;
-    if (!iter.moveNext()) throw invalidCoordinates;
-    final c1 = iter.current;
-    if (!iter.moveNext()) throw invalidCoordinates;
-    final c2 = iter.current;
-    if (!iter.moveNext()) throw invalidCoordinates;
-    final c3 = iter.current;
-
-    // rest 4 are optional
-    var len = 4;
-    num? c4;
-    num? c5;
-    num? c6;
-    num? c7;
-    if (iter.moveNext()) {
-      c4 = iter.current;
-      len++;
-      if (iter.moveNext()) {
-        c5 = iter.current;
-        len++;
-        if (iter.moveNext()) {
-          c6 = iter.current;
-          len++;
-          if (iter.moveNext()) {
-            c7 = iter.current;
-            len++;
-          }
-        }
-      }
-    }
-
-    // create bounding box
-    if (len >= 8) {
-      if (c0 != null && c1 != null && c4 != null && c5 != null) {
-        return to.call(
-          minX: c0,
-          minY: c1,
-          minZ: c2,
-          minM: c3,
-          maxX: c4,
-          maxY: c5,
-          maxZ: c6,
-          maxM: c7,
-        );
-      }
-    } else if (len >= 6) {
-      if (c0 != null && c1 != null && c3 != null && c4 != null) {
-        return to.call(
-          minX: c0,
-          minY: c1,
-          minZ: c2,
-          maxX: c3,
-          maxY: c4,
-          maxZ: c5,
-        );
-      }
-    } else if (len >= 4) {
-      if (c0 != null && c1 != null && c2 != null && c3 != null) {
-        return to.call(
-          minX: c0,
-          minY: c1,
-          maxX: c2,
-          maxY: c3,
-        );
-      }
-    }
-    throw invalidCoordinates;
+    final coords = parseNumValuesFromText(text, delimiter: delimiter);
+    return createFromCoords(coords, to: to, type: type);
   }
 
   /// Returns all distinct (in 2D) corners for this axis aligned bounding box.

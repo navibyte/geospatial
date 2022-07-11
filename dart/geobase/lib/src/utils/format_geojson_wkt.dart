@@ -11,7 +11,6 @@ import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/coordinates/base.dart';
 import '/src/coordinates/projected.dart';
-import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 import '/src/vector/content.dart';
 import '/src/vector/encoding.dart';
@@ -273,28 +272,13 @@ abstract class _BaseTextWriter<T extends Object>
   void _coordArrayEnd();
 
   void _coordPosition(Object coordinates) {
-    if (coordinates is Position) {
-      _coordPoint(
-        x: coordinates.x,
-        y: coordinates.y,
-        z: coordinates.optZ,
-        m: coordinates.optM,
-      );
-      return;
-    } else if (coordinates is Iterable<num>) {
-      final iter = coordinates.iterator;
-      if (iter.moveNext()) {
-        final x = iter.current;
-        if (iter.moveNext()) {
-          final y = iter.current;
-          final optZ = iter.moveNext() ? iter.current : null;
-          final optM = iter.moveNext() ? iter.current : null;
-          _coordPoint(x: x, y: y, z: optZ, m: optM);
-          return;
-        }
-      }
-    }
-    throw invalidCoordinates;
+    final type = _coordTypes.isNotEmpty ? _coordTypes.last : null;
+    final pos = Position.createFromObject<Position>(
+      coordinates,
+      to: Projected.create,
+      type: type,
+    );
+    _coordPoint(x: pos.x, y: pos.y, z: pos.optZ, m: pos.optM);
   }
 
   void _coordPoint({
@@ -305,15 +289,29 @@ abstract class _BaseTextWriter<T extends Object>
   });
 
   @override
-  void position(Object coordinates) => _coordPosition(coordinates);
+  void position(Object coordinates, {Coords? type}) {
+    if (type != null) {
+      _startCoordType(type);
+    }
+    _coordPosition(coordinates);
+    if (type != null) {
+      _endCoordType();
+    }
+  }
 
   @override
-  void positions(Iterable<Object> coordinates) {
+  void positions(Iterable<Object> coordinates, {Coords? type}) {
+    if (type != null) {
+      _startCoordType(type);
+    }
     _coordArray(count: coordinates.length);
     for (final pos in coordinates) {
       position(pos);
     }
     _coordArrayEnd();
+    if (type != null) {
+      _endCoordType();
+    }
   }
 
   @override
@@ -379,7 +377,11 @@ class DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
   }
 
   @override
-  void box(Object bbox) {
+  void box(Object bbox, {Coords? type}) {
+    if (type != null) {
+      _startCoordType(type);
+    }
+
     if (_markItem()) {
       _buffer.write(',');
     }
@@ -390,15 +392,21 @@ class DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
 
     // Argument [bbox] should be either Box or Iterable<num> (it latter one,
     // then a Box instance is created).
-    final box = Box.createFromObject<Box>(bbox, to: ProjBox.create);
+    final box = Box.createFromObject<Box>(bbox, to: ProjBox.create, type: type);
 
     // print bounding box min and max coordinates
-    _printPosition(box.min);
+    final min = box.min;
+    _printPoint(min.x, min.y, min.optZ, min.optM);
     _buffer.write(',');
-    _printPosition(box.max);
+    final max = box.max;
+    _printPoint(max.x, max.y, max.optZ, max.optM);
 
     if (notAtRoot) {
       _buffer.write(']');
+    }
+
+    if (type != null) {
+      _endCoordType();
     }
   }
 
@@ -420,26 +428,6 @@ class DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
     if (notAtRoot) {
       _buffer.write(']');
     }
-  }
-
-  void _printPosition(Object position) {
-    if (position is Position) {
-      _printPoint(position.x, position.y, position.optZ, position.optM);
-      return;
-    } else if (position is Iterable<num>) {
-      final iter = position.iterator;
-      if (iter.moveNext()) {
-        final x = iter.current;
-        if (iter.moveNext()) {
-          final y = iter.current;
-          final optZ = iter.moveNext() ? iter.current : null;
-          final optM = iter.moveNext() ? iter.current : null;
-          _printPoint(x, y, optZ, optM);
-          return;
-        }
-      }
-    }
-    throw invalidCoordinates;
   }
 
   void _printPoint(
@@ -539,9 +527,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
       ..write('"');
     if (bbox != null) {
       _buffer.write(',"bbox":[');
-      _subWriter()
-        .._startCoordType(coordType)
-        ..box(bbox);
+      _subWriter().box(bbox, type: coordType);
       _buffer.write(']');
     }
     _buffer.write(',"coordinates":');
@@ -579,7 +565,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     _buffer.write('{"type":"GeometryCollection"');
     if (bbox != null) {
       _buffer.write(',"bbox":[');
-      _subWriter().box(bbox);
+      _subWriter().box(bbox, type: type);
       _buffer.write(']');
     }
     _buffer.write(',"geometries":');
@@ -818,7 +804,11 @@ class WktLikeTextWriter<T extends Object> extends _BaseTextWriter<T> {
   }
 
   @override
-  void box(Object bbox) {
+  void box(Object bbox, {Coords? type}) {
+    if (type != null) {
+      _startCoordType(type);
+    }
+
     if (_markItem()) {
       _buffer.write(',');
     }
@@ -829,15 +819,21 @@ class WktLikeTextWriter<T extends Object> extends _BaseTextWriter<T> {
 
     // Argument [bbox] should be either Box or Iterable<num> (it latter one,
     // then a Box instance is created).
-    final box = Box.createFromObject<Box>(bbox, to: ProjBox.create);
+    final box = Box.createFromObject<Box>(bbox, to: ProjBox.create, type: type);
 
     // print bounding box min and max coordinates
-    _printPosition(box.min);
+    final min = box.min;
+    _printPoint(min.x, min.y, min.optZ, min.optM);
     _buffer.write(',');
-    _printPosition(box.max);
+    final max = box.max;
+    _printPoint(max.x, max.y, max.optZ, max.optM);
 
     if (notAtRoot) {
       _buffer.write(')');
+    }
+
+    if (type != null) {
+      _endCoordType();
     }
   }
 
@@ -859,26 +855,6 @@ class WktLikeTextWriter<T extends Object> extends _BaseTextWriter<T> {
     if (notAtRootOrAtCoordArray) {
       _buffer.write(')');
     }
-  }
-
-  void _printPosition(Object position) {
-    if (position is Position) {
-      _printPoint(position.x, position.y, position.optZ, position.optM);
-      return;
-    } else if (position is Iterable<num>) {
-      final iter = position.iterator;
-      if (iter.moveNext()) {
-        final x = iter.current;
-        if (iter.moveNext()) {
-          final y = iter.current;
-          final optZ = iter.moveNext() ? iter.current : null;
-          final optM = iter.moveNext() ? iter.current : null;
-          _printPoint(x, y, optZ, optM);
-          return;
-        }
-      }
-    }
-    throw invalidCoordinates;
   }
 
   void _printPoint(
@@ -1016,10 +992,10 @@ class WktTextWriter<T extends Object> extends WktLikeTextWriter<T> {
   }
 
   @override
-  void box(Object bbox) {
+  void box(Object bbox, {Coords? type}) {
     // Argument [bbox] should be either Box or Iterable<num> (it latter one,
     // then a Box instance is created).
-    final box = Box.createFromObject<Box>(bbox, to: ProjBox.create);
+    final box = Box.createFromObject<Box>(bbox, to: ProjBox.create, type: type);
 
     // WKT does not recognize bounding box, so convert to POLYGON
     final hasZ = box.is3D;
@@ -1028,12 +1004,14 @@ class WktTextWriter<T extends Object> extends WktLikeTextWriter<T> {
     final midM = hasM ? 0.5 * box.minM! + 0.5 * box.maxM! : null;
 
     // check optional expected coordinate type
-    final coordType = _coordTypes.isNotEmpty
-        ? _coordTypes.last
-        : Coords.select(
-            is3D: hasZ,
-            isMeasured: hasM,
-          );
+    final coordType = type ??
+        (_coordTypes.isNotEmpty
+            ? _coordTypes.last
+            : Coords.select(
+                is3D: hasZ,
+                isMeasured: hasM,
+              ));
+
     // print polygon geometry
     if (_markItem()) {
       _buffer.write(',');

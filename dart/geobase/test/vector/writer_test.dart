@@ -38,13 +38,17 @@ void main() {
       _testAllWriters<CoordinateContent>(
         [
           (output) =>
-              output.position(const Projected(x: 10.123, y: 20.25, m: -1.999)),
+              output.position([10.123, 20.25, -1.999], type: Coords.xym),
+          (output) => output.position(
+                const Projected(x: 10.123, y: 20.25, m: -1.999),
+                type: Coords.xym,
+              ),
         ],
         def: '10.123,20.25,0,-1.999',
         geoJson: '10.123,20.25,0,-1.999',
         geoJsonStrict: '10.123,20.25',
-        wktLike: '10.123 20.25 0 -1.999',
-        wkt: '10.123 20.25 0 -1.999',
+        wktLike: '10.123 20.25 -1.999',
+        wkt: '10.123 20.25 -1.999',
       );
       _testAllWriters<CoordinateContent>(
         [
@@ -110,6 +114,10 @@ void main() {
       _testAllWriters<CoordinateContent>(
         [
           (output) => output.box(
+                [10.123, 20.25, -2.9, 12.485, 25.195, -0.9],
+                type: Coords.xym,
+              ),
+          (output) => output.box(
                 const ProjBox(
                   minX: 10.123,
                   minY: 20.25,
@@ -118,12 +126,13 @@ void main() {
                   maxY: 25.195,
                   maxM: -0.9,
                 ),
+                type: Coords.xym,
               ),
         ],
         def: '10.12,20.25,0,-2.90,12.48,25.20,0,-0.90',
         geoJson: '10.12,20.25,0,-2.90,12.48,25.20,0,-0.90',
         geoJsonStrict: '10.12,20.25,12.48,25.20',
-        wktLike: '10 20 0 -3,12 25 0 -1',
+        wktLike: '10 20 -3,12 25 -1',
         wkt: 'POLYGON M((10.1 20.3 -2.9,12.5 20.3 -1.9,12.5 25.2'
             ' -0.9,10.1 25.2 -1.9,10.1 20.3 -2.9))',
         defDecimals: 2,
@@ -302,15 +311,17 @@ void main() {
       );
       _testAllWriters<GeometryContent>(
         [
+          (output) => output.point([10.123, 20.25, -1.999], type: Coords.xym),
           (output) => output.point(
                 const Projected(x: 10.123, y: 20.25, m: -1.999),
+                type: Coords.xym,
               ),
         ],
         def: '10.123,20.25,0,-1.999',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,0,-1.999]}',
         geoJsonStrict: '{"type":"Point","coordinates":[10.123,20.25]}',
-        wktLike: '10.123 20.25 0 -1.999',
-        wkt: 'POINT(10.123 20.25 0 -1.999)',
+        wktLike: '10.123 20.25 -1.999',
+        wkt: 'POINT M(10.123 20.25 -1.999)',
       );
       _testAllWriters<GeometryContent>(
         [
@@ -392,7 +403,7 @@ void main() {
       _testAllWriters<GeometryContent>(
         [
           (output) => output.point(
-                [10.123, 20.25, -30.95, -1.999],
+                [10.123, 20.25, -1.999],
                 type: Coords.xym,
               ),
           (output) => output.point(
@@ -493,11 +504,11 @@ void main() {
           (output) => output.lineString(
                 [
                   [-1.1, -1.1],
-                  [2.1, -2.5, 0, 4.99],
-                  [3.5, -3.49, -0.5],
+                  [2.1, -2.5, 4.99],
+                  [3.5, -3.49],
                 ],
                 type: Coords.xym,
-                bbox: [-1.1, -3.49, 0, 0, 3.5, -1.1, 0, 4.99],
+                bbox: [-1.1, -3.49, 0, 3.5, -1.1, 4.99],
               ),
           (output) => output.lineString(
                 [

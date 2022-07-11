@@ -20,10 +20,27 @@ import '/src/coordinates/base.dart';
 /// *Geographic* coordinates are based on a spherical or ellipsoidal coordinate
 /// system representing positions on the Earth as longitude ([lon]) and latitude
 /// ([lat]).
-/// 
+///
 /// [m] represents a measurement or a value on a linear referencing system (like
 /// time). It could be associated with a 2D position (lon, lat, m) or a 3D
 /// position (lon, lat, elev, m).
+///
+/// For 2D coordinates the coordinate axis indexes are:
+///
+/// Index | Geographic
+/// ----- | ----------
+/// 0     | lon
+/// 1     | lat
+/// 2     | m
+///
+/// For 3D coordinates the coordinate axis indexes are:
+///
+/// Index | Geographic
+/// ----- | ----------
+/// 0     | lon
+/// 1     | lat
+/// 2     | elev
+/// 3     | m
 @immutable
 class Geographic extends Position {
   final double _lon;
@@ -59,33 +76,50 @@ class Geographic extends Position {
           m: m?.toDouble(),
         );
 
-  /// Creates a position from [coords] given in order: lon, lat, elev, m.
+  /// Creates a geographic position from [coords] starting from [offset].
   ///
-  /// The [coords] must contain at least two coordinate values (lon and lat)
-  /// starting from [offset]. If [coords] contains three values, then 3rd item
-  /// is elev. If [coords] contains four values, then 4th item is m.
-  factory Geographic.fromCoords(Iterable<num> coords, {int offset = 0}) =>
+  /// Supported coordinate value combinations for [coords] are:
+  /// (lon, lat), (lon, lat, elev), (lon, lat, m) or (lon, lat, elev, m)
+  ///
+  /// Use an optional [type] to explicitely set the coordinate type. If not
+  /// provided and [coords] has 3 items, then (lon, lat, elev) coordinates are
+  /// assumed.
+  ///
+  /// Throws FormatException if coordinates are invalid.
+  factory Geographic.fromCoords(
+    Iterable<num> coords, {
+    int offset = 0,
+    Coords? type,
+  }) =>
       Position.createFromCoords(
         coords,
         to: Geographic.create,
         offset: offset,
+        type: type,
       );
 
-  /// Creates a position from [text] given in order: lon, lat, elev, m.
+  /// Creates a geographic position from [text].
   ///
   /// Coordinate values in [text] are separated by [delimiter].
   ///
-  /// The [text] must contain at least two coordinate values (lon and lat). If
-  /// [text] contains three values, then 3rd item is elev. If [text] contains
-  /// four values, then 4th item is m.
+  /// Supported coordinate value combinations for [text] are:
+  /// (lon, lat), (lon, lat, elev), (lon, lat, m) or (lon, lat, elev, m)
+  ///
+  /// Use an optional [type] to explicitely set the coordinate type. If not
+  /// provided and [text] has 3 items, then (lon, lat, elev) coordinates are
+  /// assumed.
+  ///
+  /// Throws FormatException if coordinates are invalid.
   factory Geographic.fromText(
     String text, {
     Pattern? delimiter = ',',
+    Coords? type,
   }) =>
       Position.createFromText(
         text,
         to: Geographic.create,
         delimiter: delimiter,
+        type: type,
       );
 
   /// The longitude coordinate.
@@ -127,19 +161,9 @@ class Geographic extends Position {
   @override
   num? get optZ => _elev;
 
-  /// A coordinate value by the coordinate axis index [i].
-  ///
-  /// Returns zero when a coordinate axis is not available.
-  ///
-  /// For geographic coordinates, the coordinate ordering is:
-  /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
   @override
   double operator [](int i) => Geographic.getValue(this, i);
 
-  /// Coordinate values of this position as an iterable of 2, 3 or 4 items.
-  ///
-  /// For geographic coordinates, the coordinate ordering is:
-  /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
   @override
   Iterable<double> get values => Geographic.getValues(this);
 
@@ -147,10 +171,6 @@ class Geographic extends Position {
   R copyTo<R extends Position>(CreatePosition<R> factory) =>
       factory.call(x: _lon, y: _lat, z: _elev, m: _m);
 
-  /// Copies the position with optional [x], [y], [z] and [m] overriding values.
-  ///
-  /// Coordinate values from parameters are copied as:
-  /// `x` => `lon`, `y` => `lat`, `z` => `elev`, `m` => `m
   @override
   Geographic copyWith({num? x, num? y, num? z, num? m}) => Geographic.create(
         x: x ?? _lon,
@@ -191,7 +211,7 @@ class Geographic extends Position {
       case Coords.xyz:
         return '$_lon,$_lat,$_elev';
       case Coords.xym:
-        return '$_lon,$_lat,,$_m';
+        return '$_lon,$_lat,$_m';
       case Coords.xyzm:
         return '$_lon,$_lat,$_elev,$_m';
     }
@@ -205,14 +225,28 @@ class Geographic extends Position {
   int get hashCode => Position.hash(this);
 
   // ---------------------------------------------------------------------------
-  // Static methods with default logic, used by GeoPosition itself too.
+  // Static methods with default logic, used by Geographic itself too.
 
   /// A coordinate value of [position] by the coordinate axis index [i].
   ///
   /// Returns zero when a coordinate axis is not available.
   ///
-  /// For geographic coordinates, the coordinate ordering is:
-  /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
+  /// For 2D coordinates the coordinate axis indexes are:
+  ///
+  /// Index | Geographic
+  /// ----- | ----------
+  /// 0     | lon
+  /// 1     | lat
+  /// 2     | m
+  ///
+  /// For 3D coordinates the coordinate axis indexes are:
+  ///
+  /// Index | Geographic
+  /// ----- | ----------
+  /// 0     | lon
+  /// 1     | lat
+  /// 2     | elev
+  /// 3     | m
   static double getValue(Geographic position, int i) {
     if (position.is3D) {
       switch (i) {
@@ -244,7 +278,7 @@ class Geographic extends Position {
   /// Coordinate values of [position] as an iterable of 2, 3 or 4 items.
   ///
   /// For geographic coordinates, the coordinate ordering is:
-  /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
+  /// (lon, lat), (lon, lat, elev), (lon, lat, m) or (lon, lat, elev, m).
   static Iterable<double> getValues(Geographic position) sync* {
     yield position.lon;
     yield position.lat;

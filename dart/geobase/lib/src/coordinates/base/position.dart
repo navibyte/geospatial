@@ -4,6 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import '/src/codes/coords.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 import '/src/utils/tolerance.dart';
@@ -51,6 +52,23 @@ typedef TransformPosition = T Function<T extends Position>(T source);
 /// [m] represents a measurement or a value on a linear referencing system (like
 /// time). It could be associated with a 2D position (x, y, m) or a 3D position
 /// (x, y, z, m).
+///
+/// For 2D coordinates the coordinate axis indexes are:
+///
+/// Index | Projected | Geographic
+/// ----- | --------- | ----------
+/// 0     | x         | lon
+/// 1     | y         | lat
+/// 2     | m         | m
+///
+/// For 3D coordinates the coordinate axis indexes are:
+///
+/// Index | Projected | Geographic
+/// ----- | --------- | ----------
+/// 0     | x         | lon
+/// 1     | y         | lat
+/// 2     | z         | elev
+/// 3     | m         | m
 abstract class Position extends Positionable {
   /// Default `const` constructor to allow extending this abstract class.
   const Position();
@@ -101,20 +119,31 @@ abstract class Position extends Positionable {
   ///
   /// Returns zero when a coordinate axis is not available.
   ///
-  /// For projected or cartesian coordinates, the coordinate ordering is:
-  /// (x, y), (x, y, m), (x, y, z) or (x, y, z, m).
+  /// For 2D coordinates the coordinate axis indexes are:
   ///
-  /// For geographic coordinates, the coordinate ordering is:
-  /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
+  /// Index | Projected | Geographic
+  /// ----- | --------- | ----------
+  /// 0     | x         | lon
+  /// 1     | y         | lat
+  /// 2     | m         | m
+  ///
+  /// For 3D coordinates the coordinate axis indexes are:
+  ///
+  /// Index | Projected | Geographic
+  /// ----- | --------- | ----------
+  /// 0     | x         | lon
+  /// 1     | y         | lat
+  /// 2     | z         | elev
+  /// 3     | m         | m
   num operator [](int i);
 
   /// Coordinate values of this position as an iterable of 2, 3 or 4 items.
   ///
   /// For projected or cartesian coordinates, the coordinate ordering is:
-  /// (x, y), (x, y, m), (x, y, z) or (x, y, z, m).
+  /// (x, y), (x, y, z), (x, y, m) or (x, y, z, m).
   ///
   /// For geographic coordinates, the coordinate ordering is:
-  /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
+  /// (lon, lat), (lon, lat, elev), (lon, lat, m) or (lon, lat, elev, m).
   Iterable<num> get values;
 
   /// Copies this position to a new position created by the [factory].
@@ -169,36 +198,63 @@ abstract class Position extends Positionable {
 
   /// Creates a position of [R] from [position] (of [R] or `Iterable<num>`).
   ///
-  /// If [position] is [R] already, then it's returned.
+  /// If [position] is [R] and with compatible coordinate type already, then
+  /// it's returned.  Other `Position` instances are copied as [R].
   ///
   /// If [position] is `Iterable<num>`, then a position instance is created
-  /// using the factory function [to]. Allowed coordinate value combinations:
-  /// (x, y), (x, y, z) and (x, y, z, m).
+  /// using the factory function [to]. Supported coordinate value combinations:
+  /// (x, y), (x, y, z), (x, y, m) and (x, y, z, m).
+  ///
+  /// Use an optional [type] to explicitely set the coordinate type. If not
+  /// provided and an iterable has 3 items, then xyz coordinates are assumed.
   ///
   /// Otherwise throws `FormatException`.
   static R createFromObject<R extends Position>(
     Object position, {
     required CreatePosition<R> to,
+    Coords? type,
   }) {
-    if (position is R) {
-      return position;
+    if (position is Position) {
+      if (position is R && (type == null || type == position.typeCoords)) {
+        // position is of R and with compatiable coord type
+        return position;
+      } else {
+        if (type == null) {
+          // create a copy with same coordinate values
+          return position.copyTo(to);
+        } else {
+          // create a copy with z and m selected if coord type suggests so
+          return to.call(
+            x: position.x,
+            y: position.y,
+            z: type.is3D ? position.z : null,
+            m: type.isMeasured ? position.m : null,
+          );
+        }
+      }
     } else if (position is Iterable<num>) {
-      return createFromCoords(position, to: to);
+      // create position from iterable of num values
+      return createFromCoords(position, to: to, type: type);
     }
     throw invalidCoordinates;
   }
 
-  /// Creates a position of [R] from [coords] given in order: x, y, z, m.
-  ///
-  /// The [coords] must contain at least two coordinate values (x and y)
-  /// starting from [offset]. If [coords] contains three values, then 3rd item
-  /// is z. If [coords] contains four values, then 4th item is m.
+  /// Creates a position of [R] from [coords] starting from [offset].
   ///
   /// A position instance is created using the factory function [to].
+  ///
+  /// Supported coordinate value combinations for [coords] are:
+  /// (x, y), (x, y, z), (x, y, m) and (x, y, z, m).
+  ///
+  /// Use an optional [type] to explicitely set the coordinate type. If not
+  /// provided and [coords] has 3 items, then xyz coordinates are assumed.
+  ///
+  /// Throws FormatException if coordinates are invalid.
   static R createFromCoords<R extends Position>(
     Iterable<num> coords, {
     required CreatePosition<R> to,
     int offset = 0,
+    Coords? type,
   }) {
     // resolve iterator for source coordinates
     final Iterator<num> iter;
@@ -210,58 +266,84 @@ abstract class Position extends Positionable {
       throw invalidCoordinates;
     }
 
-    // iterate at least to x and y + optionally z + m => then create position
-    if (iter.moveNext()) {
-      final x = iter.current;
-      if (iter.moveNext()) {
-        final y = iter.current;
-        final optZ = iter.moveNext() ? iter.current : null;
-        final optM = iter.moveNext() ? iter.current : null;
-        return to.call(x: x, y: y, z: optZ, m: optM);
-      }
+    // iterate at least to x and y
+    final x = iter.moveNext() ? iter.current : throw invalidCoordinates;
+    final y = iter.moveNext() ? iter.current : throw invalidCoordinates;
+
+    // XY was asked
+    if (type == Coords.xy) {
+      return to.call(x: x, y: y);
     }
-    throw invalidCoordinates;
+
+    // iterate optional z and m
+    final num? optZ;
+    if (type == null || type.is3D) {
+      if (iter.moveNext()) {
+        optZ = iter.current;
+      } else {
+        optZ = type?.is3D ?? false ? 0 : null;
+      }
+    } else {
+      optZ = null;
+    }
+    final num? optM;
+    if (type == null || type.isMeasured) {
+      if (iter.moveNext()) {
+        optM = iter.current;
+      } else {
+        optM = type?.isMeasured ?? false ? 0 : null;
+      }
+    } else {
+      optM = null;
+    }
+
+    // finally create a position object
+    return to.call(x: x, y: y, z: optZ, m: optM);
   }
 
-  /// Creates a position of [R] from [text] given in order: x, y, z, m.
+  /// Creates a position of [R] from [text].
   ///
   /// Coordinate values in [text] are separated by [delimiter].
   ///
-  /// The [text] must contain at least two coordinate values (x and y). If
-  /// [text] contains three values, then 3rd item is z. If [text] contains four
-  /// values, then 4th item is m.
-  ///
   /// A position instance is created using the factory function [to].
+  ///
+  /// Supported coordinate value combinations for [text] are:
+  /// (x, y), (x, y, z), (x, y, m) and (x, y, z, m).
+  ///
+  /// Use an optional [type] to explicitely set the coordinate type. If not
+  /// provided and [text] has 3 items, then xyz coordinates are assumed.
+  ///
+  /// Throws FormatException if coordinates are invalid.
   static R createFromText<R extends Position>(
     String text, {
     required CreatePosition<R> to,
     Pattern? delimiter = ',',
+    Coords? type,
   }) {
-    final coords = parseNullableNumValuesFromText(text, delimiter: delimiter);
-    final iter = coords.iterator;
-    if (iter.moveNext()) {
-      final x = iter.current;
-      if (iter.moveNext()) {
-        final y = iter.current;
-        if (x != null && y != null) {
-          final optZ = iter.moveNext() ? iter.current : null;
-          final optM = iter.moveNext() ? iter.current : null;
-          return to.call(x: x, y: y, z: optZ, m: optM);
-        }
-      }
-    }
-    throw invalidCoordinates;
+    final coords = parseNumValuesFromText(text, delimiter: delimiter);
+    return createFromCoords(coords, to: to, type: type);
   }
 
   /// A coordinate value of [position] by the coordinate axis index [i].
   ///
   /// Returns zero when a coordinate axis is not available.
   ///
-  /// For projected or cartesian coordinates, the coordinate ordering is:
-  /// (x, y), (x, y, m), (x, y, z) or (x, y, z, m).
+  /// For 2D coordinates the supported indexes are:
   ///
-  /// For geographic coordinates, the coordinate ordering is:
-  /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
+  /// Index | Projected | Geographic
+  /// ----- | --------- | ----------
+  /// 0     | x         | lon
+  /// 1     | y         | lat
+  /// 2     | m         | m
+  ///
+  /// For 3D coordinates the supported indexes are:
+  ///
+  /// Index | Projected | Geographic
+  /// ----- | --------- | ----------
+  /// 0     | x         | lon
+  /// 1     | y         | lat
+  /// 2     | z         | elev
+  /// 3     | m         | m
   static num getValue(Position position, int i) {
     if (position.is3D) {
       switch (i) {
@@ -293,10 +375,10 @@ abstract class Position extends Positionable {
   /// Coordinate values of [position] as an iterable of 2, 3 or 4 items.
   ///
   /// For projected or cartesian coordinates, the coordinate ordering is:
-  /// (x, y), (x, y, m), (x, y, z) or (x, y, z, m).
+  /// (x, y), (x, y, z), (x, y, m) or (x, y, z, m).
   ///
   /// For geographic coordinates, the coordinate ordering is:
-  /// (lon, lat), (lon, lat, m), (lon, lat, elev) or (lon, lat, elev, m).
+  /// (lon, lat), (lon, lat, elev), (lon, lat, m) or (lon, lat, elev, m).
   static Iterable<num> getValues(Position position) sync* {
     yield position.x;
     yield position.y;
