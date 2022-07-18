@@ -35,6 +35,7 @@ void main() {
       expect(Projected.fromCoords(const [1.0, 2.0]), p1);
       expect(Projected.fromCoords(const [1.0, 2.0, 3.0]), p2);
       expect(Projected.fromCoords(const [1.0, 2.0, 4.0]), isNot(p3));
+      expect(Projected.fromCoords(const [1.0, 2.0, 4.0], type: Coords.xym), p3);
       expect(Projected.fromCoords(const [1.0, 2.0, 3.0, 4.0]), p4);
 
       expect(Projected.fromText('1.0,2.0'), p1);
@@ -334,7 +335,9 @@ void _testCoordinateOrder(String text, Iterable<num> coords, [Coords? type]) {
     }
 
     expect(
-        Position.createFromObject(coords, to: factory, type: type), fromCoords);
+      Position.createFromObject(coords, to: factory, type: type),
+      fromCoords,
+    );
   }
 }
 
@@ -355,7 +358,7 @@ class _TestXYZM implements Projected {
       factory.call(x: x, y: y, z: z, m: m);
 
   @override
-  Projected copyWith({num? x, num? y, num? z, num? m}) => Projected(
+  Projected copyWith({num? x, num? y, num? z, num? m}) => _TestXYZM(
         x: x ?? this.x,
         y: y ?? this.y,
         z: z ?? this.z,

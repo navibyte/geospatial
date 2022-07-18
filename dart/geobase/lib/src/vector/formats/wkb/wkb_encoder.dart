@@ -478,13 +478,7 @@ Coords _coordTypeFromPosition(
     if (coordinates is Position) {
       return coordinates.typeCoords;
     } else if (coordinates is Iterable<num>) {
-      if (coordinates.length >= 4) {
-        return Coords.xyzm;
-      } else if (coordinates.length >= 3) {
-        return Coords.xyz;
-      } else if (coordinates.length >= 2) {
-        return Coords.xy;
-      }
+      return Coords.fromDimension(coordinates.length);
     }
     // no valid type (Position or Iterable<num>) for coordinates => throw
     throw invalidCoordinates;

@@ -97,6 +97,34 @@ enum Coords {
     }
   }
 
+  /// Resolves the coordinate type from [coordinateDimension].
+  ///
+  /// If [coordinateDimension] is 3, then [xyzForDim3] is used to select
+  /// between `xyz` and `xym`.
+  /// 
+  /// Coordinate types resolved:
+  ///
+  /// Dimension | Coordinate type
+  /// --------- | ---------------
+  /// 2         | `Coords.xy`
+  /// 3         | `Coords.xyz` (if [xyzForDim3] is true)
+  /// 3         | `Coords.xym` (if [xyzForDim3] is false)
+  /// 4         | `Coords.xyzm`
+  /// any other | Throws FormatException
+  static Coords fromDimension(
+    int coordinateDimension, {
+    bool xyzForDim3 = true,
+  }) {
+    if (coordinateDimension == 4) {
+      return Coords.xyzm;
+    } else if (coordinateDimension == 3) {
+      return xyzForDim3 ? Coords.xyz : Coords.xym;
+    } else if (coordinateDimension == 2) {
+      return Coords.xy;
+    }
+    throw const FormatException('invalid coordinate dimension');
+  }
+
   /// Selects a [Coords] enum based on the WKB type [id].
   ///
   /// Expected values are:

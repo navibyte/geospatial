@@ -115,7 +115,7 @@ abstract class Position extends Positionable {
   /// (like time).
   num? get optM;
 
-  /// A coordinate value by the coordinate axis index [i].
+  /// A coordinate value by the coordinate axis [index].
   ///
   /// Returns zero when a coordinate axis is not available.
   ///
@@ -135,7 +135,7 @@ abstract class Position extends Positionable {
   /// 1     | y         | lat
   /// 2     | z         | elev
   /// 3     | m         | m
-  num operator [](int i);
+  num operator [](int index);
 
   /// Coordinate values of this position as an iterable of 2, 3 or 4 items.
   ///
@@ -147,12 +147,17 @@ abstract class Position extends Positionable {
   Iterable<num> get values;
 
   /// Copies this position to a new position created by the [factory].
-  R copyTo<R extends Position>(CreatePosition<R> factory);
+  R copyTo<R extends Position>(CreatePosition<R> factory) =>
+      factory.call(x: x, y: y, z: optZ, m: optM);
 
   /// Copies the position with optional [x], [y], [z] and [m] overriding values.
   ///
   /// When copying `Geographic` then coordinates has correspondence:
   /// `x` => `lon`, `y` => `lat`, `z` => `elev`, `m` => `m`
+  ///
+  /// Some sub classes may ignore a non-null z parameter value if a position is
+  /// not a 3D position, and a non-null m parameter if a position is not a
+  /// measured position.
   Position copyWith({num? x, num? y, num? z, num? m});
 
   /// Returns a position with all points transformed using [transform].
@@ -324,7 +329,7 @@ abstract class Position extends Positionable {
     return createFromCoords(coords, to: to, type: type);
   }
 
-  /// A coordinate value of [position] by the coordinate axis index [i].
+  /// A coordinate value of [position] by the coordinate axis [index].
   ///
   /// Returns zero when a coordinate axis is not available.
   ///
@@ -344,9 +349,9 @@ abstract class Position extends Positionable {
   /// 1     | y         | lat
   /// 2     | z         | elev
   /// 3     | m         | m
-  static num getValue(Position position, int i) {
+  static num getValue(Position position, int index) {
     if (position.is3D) {
-      switch (i) {
+      switch (index) {
         case 0:
           return position.x;
         case 1:
@@ -359,7 +364,7 @@ abstract class Position extends Positionable {
           return 0;
       }
     } else {
-      switch (i) {
+      switch (index) {
         case 0:
           return position.x;
         case 1:

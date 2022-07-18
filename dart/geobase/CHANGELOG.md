@@ -18,6 +18,7 @@ binary data formats, encodings and content interfaces also redesigned.
 - [Text and Binary outputs on writers #126](https://github.com/navibyte/geospatial/issues/126)
 - [Text and Binary outputs on decoders #132](https://github.com/navibyte/geospatial/issues/132)
 - [Coordinate order on box and position consistently #134](https://github.com/navibyte/geospatial/issues/134)
+- [Positions as iterable of coordinate values on geobase #136](https://github.com/navibyte/geospatial/issues/136)
 
 🛠 Refactoring:
 - [Optimize reading from iterable of coordinate values #131](https://github.com/navibyte/geospatial/issues/131)

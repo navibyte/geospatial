@@ -31,18 +31,18 @@ import '/src/coordinates/base.dart';
 ///
 /// Index | Projected
 /// ----- | ---------
-/// 0     | x        
-/// 1     | y        
-/// 2     | m        
+/// 0     | x
+/// 1     | y
+/// 2     | m
 ///
 /// For 3D coordinates the coordinate axis indexes are:
 ///
 /// Index | Projected
 /// ----- | ---------
-/// 0     | x        
-/// 1     | y        
-/// 2     | z        
-/// 3     | m        
+/// 0     | x
+/// 1     | y
+/// 2     | z
+/// 3     | m
 @immutable
 class Projected extends Position {
   final num _x;
@@ -126,14 +126,14 @@ class Projected extends Position {
   @override
   num? get optM => _m;
 
-  /// A coordinate value by the coordinate axis index [i].
+  /// A coordinate value by the coordinate axis [index].
   ///
   /// Returns zero when a coordinate axis is not available.
   ///
   /// For projected or cartesian coordinates, the coordinate ordering is:
   /// (x, y), (x, y, m), (x, y, z) or (x, y, z, m).
   @override
-  num operator [](int i) => Position.getValue(this, i);
+  num operator [](int index) => Position.getValue(this, index);
 
   /// Coordinate values of this position as an iterable of 2, 3 or 4 items.
   ///
@@ -142,15 +142,16 @@ class Projected extends Position {
   @override
   Iterable<num> get values => Position.getValues(this);
 
-  @override
-  R copyTo<R extends Position>(CreatePosition<R> factory) =>
-      factory.call(x: _x, y: _y, z: _z, m: _m);
-
   /// Copies the position with optional [x], [y], [z] and [m] overriding values.
   ///
   /// For example:
   /// `Projected(x: 1, y: 1).copyWith(y: 2) == Projected(x: 1, y: 2)`
   /// `Projected(x: 1, y: 1).copyWith(z: 2) == Projected(x: 1, y: 1, z: 2)`
+  /// 
+  /// Some sub classes may ignore a non-null z parameter value if a position is
+  /// not a 3D position, and a non-null m parameter if a position is not a
+  /// measured position. However [Projected] itself supports changing the 
+  /// coordinate type.
   @override
   Projected copyWith({num? x, num? y, num? z, num? m}) => Projected(
         x: x ?? _x,
@@ -163,12 +164,6 @@ class Projected extends Position {
   Projected transform(TransformPosition transform) => transform.call(this);
 
   @override
-  int get spatialDimension => typeCoords.spatialDimension;
-
-  @override
-  int get coordinateDimension => typeCoords.coordinateDimension;
-
-  @override
   bool get isGeographic => false;
 
   @override
@@ -176,12 +171,6 @@ class Projected extends Position {
 
   @override
   bool get isMeasured => _m != null;
-
-  @override
-  Coords get typeCoords => Coords.select(
-        is3D: is3D,
-        isMeasured: isMeasured,
-      );
 
   @override
   String toString() {

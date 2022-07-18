@@ -162,31 +162,33 @@ class Geographic extends Position {
   num? get optZ => _elev;
 
   @override
-  double operator [](int i) => Geographic.getValue(this, i);
+  double operator [](int index) => Geographic.getValue(this, index);
 
   @override
   Iterable<double> get values => Geographic.getValues(this);
 
+  /// Copies the position with optional [x], [y], [z] and [m] overriding values.
+  ///
+  /// When copying `Geographic` then coordinates has correspondence:
+  /// `x` => `lon`, `y` => `lat`, `z` => `elev`, `m` => `m`
+  ///
+  /// For example:
+  /// `Geographic(lon: 1, lat: 1).copyWith(y: 2) == Geographic(lon: 1, lat: 2)`
+  ///
+  /// Some sub classes may ignore a non-null z parameter value if a position is
+  /// not a 3D position, and a non-null m parameter if a position is not a
+  /// measured position. However [Geographic] itself supports changing the
+  /// coordinate type.
   @override
-  R copyTo<R extends Position>(CreatePosition<R> factory) =>
-      factory.call(x: _lon, y: _lat, z: _elev, m: _m);
-
-  @override
-  Geographic copyWith({num? x, num? y, num? z, num? m}) => Geographic.create(
-        x: x ?? _lon,
-        y: y ?? _lat,
-        z: z ?? _elev,
-        m: m ?? _m,
+  Geographic copyWith({num? x, num? y, num? z, num? m}) => Geographic(
+        lon: (x ?? _lon).toDouble(),
+        lat: (y ?? _lat).toDouble(),
+        elev: (z ?? _elev)?.toDouble(),
+        m: (m ?? _m)?.toDouble(),
       );
 
   @override
   Geographic transform(TransformPosition transform) => transform.call(this);
-
-  @override
-  int get spatialDimension => typeCoords.spatialDimension;
-
-  @override
-  int get coordinateDimension => typeCoords.coordinateDimension;
 
   @override
   bool get isGeographic => true;
@@ -196,12 +198,6 @@ class Geographic extends Position {
 
   @override
   bool get isMeasured => _m != null;
-
-  @override
-  Coords get typeCoords => Coords.select(
-        is3D: is3D,
-        isMeasured: isMeasured,
-      );
 
   @override
   String toString() {
@@ -227,7 +223,7 @@ class Geographic extends Position {
   // ---------------------------------------------------------------------------
   // Static methods with default logic, used by Geographic itself too.
 
-  /// A coordinate value of [position] by the coordinate axis index [i].
+  /// A coordinate value of [position] by the coordinate axis [index].
   ///
   /// Returns zero when a coordinate axis is not available.
   ///
@@ -247,9 +243,9 @@ class Geographic extends Position {
   /// 1     | lat
   /// 2     | elev
   /// 3     | m
-  static double getValue(Geographic position, int i) {
+  static double getValue(Geographic position, int index) {
     if (position.is3D) {
-      switch (i) {
+      switch (index) {
         case 0:
           return position.lon;
         case 1:
@@ -262,7 +258,7 @@ class Geographic extends Position {
           return 0.0;
       }
     } else {
-      switch (i) {
+      switch (index) {
         case 0:
           return position.lon;
         case 1:

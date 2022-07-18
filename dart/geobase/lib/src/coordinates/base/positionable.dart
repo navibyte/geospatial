@@ -23,10 +23,16 @@ abstract class Positionable extends Measurable {
   /// If value is 4, the position has 3D coordinates with m coordinate.
   ///
   /// Must be >= [spatialDimension].
-  int get coordinateDimension;
+  int get coordinateDimension {
+    if (is3D) {
+      return isMeasured ? 4 : 3;
+    } else {
+      return isMeasured ? 3 : 2;
+    }
+  }
 
   /// The number of spatial coordinate values (2 for 2D or 3 for 3D).
-  int get spatialDimension;
+  int get spatialDimension => is3D ? 3 : 2;
 
   /// True for 3D positions (with z or elevation coordinate).
   bool get is3D;
@@ -38,5 +44,8 @@ abstract class Positionable extends Measurable {
   bool get isGeographic;
 
   /// Returns the type for coordinates of this position.
-  Coords get typeCoords;
+  Coords get typeCoords => Coords.select(
+        is3D: is3D,
+        isMeasured: isMeasured,
+      );
 }

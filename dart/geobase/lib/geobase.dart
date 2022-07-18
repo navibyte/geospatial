@@ -40,3 +40,4 @@ export 'src/transforms/basic.dart';
 export 'src/vector/content.dart';
 export 'src/vector/encoding.dart';
 export 'src/vector/formats.dart';
+export 'src/vector_data/coords.dart';
