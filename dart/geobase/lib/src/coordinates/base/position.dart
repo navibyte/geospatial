@@ -199,6 +199,25 @@ abstract class Position extends Positionable {
         toleranceVert: toleranceVert,
       );
 
+  @override
+  String toString() {
+    final buf = StringBuffer()
+      ..write(x)
+      ..write(',')
+      ..write(y);
+    if (is3D) {
+      buf
+        ..write(',')
+        ..write(z);
+    }
+    if (isMeasured) {
+      buf
+        ..write(',')
+        ..write(m);
+    }
+    return buf.toString();
+  }
+
   // ---------------------------------------------------------------------------
   // Static methods with default logic, used by Position, Projected and
   // Geographic.

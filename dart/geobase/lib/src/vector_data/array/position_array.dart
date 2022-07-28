@@ -16,10 +16,16 @@ part of 'coordinates.dart';
 /// [data] to map coordinate values to custom position types.
 ///
 /// See [Position] for description about supported coordinate values.
-class PositionArray extends Coordinates {
-  /// Positions with coordinate values as a view backed by `source`.
+class PositionArray with _CoordinatesMixin {
+  @override
+  final Iterable<double> _data;
+
+  @override
+  final Coords _type;
+
+  /// Positions with coordinate values as a view backed by [source].
   ///
-  /// The `source` collection contains coordinate values of positions as a flat
+  /// The [source] collection contains coordinate values of positions as a flat
   /// structure. For example for `Coords.xyz` the first three coordinate values
   /// are x, y and z of the first position, the next three coordinate values are
   /// x, y and z of the second position, and so on.
@@ -31,14 +37,15 @@ class PositionArray extends Coordinates {
   /// less coordinate values than `type.coordinateDimension`, then the view is
   /// considered empty.
   ///
-  /// An iterable collection of `source` may be represented by a [List] or any
+  /// An iterable collection of [source] may be represented by a [List] or any
   /// [Iterable] with efficient `length` and `elementAt` implementations. A lazy
   /// iterable with a lot of coordinate values may produce very poor
   /// performance.
   ///
   /// See [Position] for description about supported coordinate values.
-  const PositionArray.view(super.source, {super.type = Coords.xy})
-      : super.view();
+  const PositionArray.view(Iterable<double> source, {Coords type = Coords.xy})
+      : _data = source,
+        _type = type;
 
   /// Positions with coordinate values parsed from [text].
   ///

@@ -13,10 +13,18 @@ part of 'coordinates.dart';
 /// 3, or 4 items).
 ///
 /// See [Position] for description about supported coordinate values.
-abstract class PositionCoords extends Coordinates implements Position {
-  const PositionCoords._(super.source, {super.type = Coords.xy}) : super.view();
+abstract class PositionCoords extends Position with _CoordinatesMixin {
+  @override
+  final Iterable<double> _data;
 
-  /// A geospatial position with coordinate values as a view backed by `source`.
+  @override
+  final Coords _type;
+
+  const PositionCoords._(Iterable<double> source, {Coords type = Coords.xy})
+      : _data = source,
+        _type = type;
+
+  /// A geospatial position with coordinate values as a view backed by [source].
   factory PositionCoords.view(Iterable<double> source, {Coords type}) =
       _PositionCoordsImpl.view;
 
@@ -47,46 +55,6 @@ abstract class PositionCoords extends Coordinates implements Position {
   @override
   double operator [](int index) =>
       index >= 0 && index < coordinateDimension ? _data.elementAt(index) : 0.0;
-
-  @override
-  R copyTo<R extends Position>(CreatePosition<R> factory) =>
-      factory.call(x: x, y: y, z: optZ, m: optM);
-
-  @override
-  bool equals2D(Position other, {num? toleranceHoriz}) =>
-      Position.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
-
-  @override
-  bool equals3D(
-    Position other, {
-    num? toleranceHoriz,
-    num? toleranceVert,
-  }) =>
-      Position.testEquals3D(
-        this,
-        other,
-        toleranceHoriz: toleranceHoriz,
-        toleranceVert: toleranceVert,
-      );
-
-  @override
-  String toString() {
-    final buf = StringBuffer()
-      ..write(x)
-      ..write(',')
-      ..write(y);
-    if (is3D) {
-      buf
-        ..write(',')
-        ..write(z);
-    }
-    if (isMeasured) {
-      buf
-        ..write(',')
-        ..write(m);
-    }
-    return buf.toString();
-  }
 
   // ---------------------------------------------------------------------------
   // Iterable<double> documentation overrides
