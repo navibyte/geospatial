@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'dart:math' as math;
+
 import '/src/codes/coords.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
@@ -86,7 +88,7 @@ abstract class Position extends Positionable {
   /// The z coordinate value. Returns zero if not available.
   ///
   /// You can also use [is3D] to check whether z coordinate is available, or
-  /// [optZ] returns z coordinate as nullable value.
+  /// [optZ] returns z coordinate as a nullable value.
   ///
   /// For geographic coordinates z represents *elevation* or *altitude*.
   num get z;
@@ -101,7 +103,7 @@ abstract class Position extends Positionable {
   /// The m ("measure") coordinate value. Returns zero if not available.
   ///
   /// You can also use [isMeasured] to check whether m coordinate is available,
-  /// [optM] returns m coordinate as nullable value.
+  /// [optM] returns m coordinate as a nullable value.
   ///
   /// [m] represents a measurement or a value on a linear referencing system
   /// (like time).
@@ -220,7 +222,7 @@ abstract class Position extends Positionable {
     Coords? type,
   }) {
     if (position is Position) {
-      if (position is R && (type == null || type == position.typeCoords)) {
+      if (position is R && (type == null || type == position.type)) {
         // position is of R and with compatiable coord type
         return position;
       } else {
@@ -261,49 +263,64 @@ abstract class Position extends Positionable {
     int offset = 0,
     Coords? type,
   }) {
-    // resolve iterator for source coordinates
-    final Iterator<num> iter;
-    if (offset == 0) {
-      iter = coords.iterator;
-    } else if (coords.length >= offset + 2) {
-      iter = coords.skip(offset).iterator;
-    } else {
-      throw invalidCoordinates;
-    }
-
-    // iterate at least to x and y
-    final x = iter.moveNext() ? iter.current : throw invalidCoordinates;
-    final y = iter.moveNext() ? iter.current : throw invalidCoordinates;
-
-    // XY was asked
-    if (type == Coords.xy) {
-      return to.call(x: x, y: y);
-    }
-
-    // iterate optional z and m
-    final num? optZ;
-    if (type == null || type.is3D) {
-      if (iter.moveNext()) {
-        optZ = iter.current;
-      } else {
-        optZ = type?.is3D ?? false ? 0 : null;
+    if (coords is List<num>) {
+      final len = coords.length - offset;
+      final coordsType = type ?? Coords.fromDimension(math.min(4, len));
+      final mIndex = coordsType.indexForM;
+      if (len < 2) {
+        throw invalidCoordinates;
       }
+      return to.call(
+        x: coords[offset],
+        y: coords[offset + 1],
+        z: coordsType.is3D ? (len > 2 ? coords[offset + 2] : 0) : null,
+        m: mIndex != null ? (len > mIndex ? coords[offset + mIndex] : 0) : null,
+      );
     } else {
-      optZ = null;
-    }
-    final num? optM;
-    if (type == null || type.isMeasured) {
-      if (iter.moveNext()) {
-        optM = iter.current;
+      // resolve iterator for source coordinates
+      final Iterator<num> iter;
+      if (offset == 0) {
+        iter = coords.iterator;
+      } else if (coords.length >= offset + 2) {
+        iter = coords.skip(offset).iterator;
       } else {
-        optM = type?.isMeasured ?? false ? 0 : null;
+        throw invalidCoordinates;
       }
-    } else {
-      optM = null;
-    }
 
-    // finally create a position object
-    return to.call(x: x, y: y, z: optZ, m: optM);
+      // iterate at least to x and y
+      final x = iter.moveNext() ? iter.current : throw invalidCoordinates;
+      final y = iter.moveNext() ? iter.current : throw invalidCoordinates;
+
+      // XY was asked
+      if (type == Coords.xy) {
+        return to.call(x: x, y: y);
+      }
+
+      // iterate optional z and m
+      final num? optZ;
+      if (type == null || type.is3D) {
+        if (iter.moveNext()) {
+          optZ = iter.current;
+        } else {
+          optZ = type?.is3D ?? false ? 0 : null;
+        }
+      } else {
+        optZ = null;
+      }
+      final num? optM;
+      if (type == null || type.isMeasured) {
+        if (iter.moveNext()) {
+          optM = iter.current;
+        } else {
+          optM = type?.isMeasured ?? false ? 0 : null;
+        }
+      } else {
+        optM = null;
+      }
+
+      // finally create a position object
+      return to.call(x: x, y: y, z: optZ, m: optM);
+    }
   }
 
   /// Creates a position of [R] from [text].

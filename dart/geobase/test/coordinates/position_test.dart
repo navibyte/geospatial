@@ -390,13 +390,15 @@ class _TestXYZM implements Projected {
   num? get optM => m;
 
   @override
-  int get spatialDimension => typeCoords.spatialDimension;
+  int get spatialDimension => type.spatialDimension;
 
   @override
-  int get coordinateDimension => typeCoords.coordinateDimension;
+  int get coordinateDimension => type.coordinateDimension;
 
+/*
   @override
   bool get isGeographic => false;
+*/
 
   @override
   bool get is3D => true;
@@ -405,7 +407,7 @@ class _TestXYZM implements Projected {
   bool get isMeasured => true;
 
   @override
-  Coords get typeCoords => Coords.select(
+  Coords get type => Coords.select(
         is3D: is3D,
         isMeasured: isMeasured,
       );

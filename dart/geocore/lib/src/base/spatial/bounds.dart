@@ -111,7 +111,10 @@ abstract class Bounds<T extends Point> extends Bounded
   @override
   int get spatialDimension => min.spatialDimension;
 
-  @override
+  /// True for geographic coordinates (with longitude and latitude).
+  ///
+  /// If false is returned, then coordinates are projected or cartesian (with
+  /// x and y).
   bool get isGeographic => min.isGeographic;
 
   @override
@@ -121,7 +124,7 @@ abstract class Bounds<T extends Point> extends Bounded
   bool get isMeasured => min.isMeasured;
 
   @override
-  Coords get typeCoords => min.typeCoords;
+  Coords get type => min.type;
 
   /// Writes coordinate values to [buffer] separated by [delimiter].
   ///

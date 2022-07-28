@@ -47,7 +47,7 @@ class WKB {
       _WkbGeometryBinaryFormat();
 
   /// The Well-known binary (WKB) format for geometries with optional [conf].
-  /// 
+  ///
   /// See [geometry] for more information about supported geometry types.
   static BinaryFormat<GeometryContent> geometryFormat([WkbConf? conf]) =>
       _WkbGeometryBinaryFormat(conf);

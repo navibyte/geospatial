@@ -149,7 +149,7 @@ enum Geom {
       case 7:
         return Geom.geometryCollection;
       default:
-        throw  FormatException('Invalid WKB id $id');
+        throw FormatException('Invalid WKB id $id');
     }
   }
 }

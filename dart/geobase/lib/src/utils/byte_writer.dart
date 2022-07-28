@@ -24,7 +24,7 @@ class ByteWriter {
   final int bufferSize;
 
   /// Whether to encode `double.nan` as `-double.nan` on byte data.
-  /// 
+  ///
   /// This is applied only by [writeFloat32] and [writeFloat64] methods.
   final bool nanEncodedAsNegative;
 
@@ -76,7 +76,7 @@ class ByteWriter {
   /// Uses the parameter [endian] if non-null, otherwise uses `this.endian`.
   ///
   /// See `ByteData.setFloat32` from `dart:typed_data` for reference.
-  /// 
+  ///
   /// See also configuration parameter [nanEncodedAsNegative].
   void writeFloat32(double value, [Endian? endian]) {
     _reserve(4);
@@ -93,7 +93,7 @@ class ByteWriter {
   /// Uses the parameter [endian] if non-null, otherwise uses `this.endian`.
   ///
   /// See `ByteData.setFloat64` from `dart:typed_data` for reference.
-  /// 
+  ///
   /// See also configuration parameter [nanEncodedAsNegative].
   void writeFloat64(double value, [Endian? endian]) {
     _reserve(8);

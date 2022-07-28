@@ -104,7 +104,7 @@ class Point2 extends ProjectedPoint<num> {
   bool get isMeasured => false;
 
   @override
-  Coords get typeCoords => Coords.xy;
+  Coords get type => Coords.xy;
 
   @override
   num operator [](int i) {
@@ -225,7 +225,7 @@ class Point2m extends Point2 {
   bool get isMeasured => true;
 
   @override
-  Coords get typeCoords => Coords.xym;
+  Coords get type => Coords.xym;
 
   @override
   num operator [](int i) {
@@ -352,7 +352,7 @@ class Point3 extends Point2 {
   bool get is3D => true;
 
   @override
-  Coords get typeCoords => Coords.xyz;
+  Coords get type => Coords.xyz;
 
   @override
   num operator [](int i) {
@@ -476,7 +476,7 @@ class Point3m extends Point3 {
   bool get isMeasured => true;
 
   @override
-  Coords get typeCoords => Coords.xyzm;
+  Coords get type => Coords.xyzm;
 
   @override
   num operator [](int i) {
@@ -607,7 +607,7 @@ class Point2i extends ProjectedPoint<int> {
   bool get isMeasured => false;
 
   @override
-  Coords get typeCoords => Coords.xy;
+  Coords get type => Coords.xy;
 
   @override
   int operator [](int i) {
@@ -743,7 +743,7 @@ class Point3i extends Point2i {
   bool get is3D => true;
 
   @override
-  Coords get typeCoords => Coords.xyz;
+  Coords get type => Coords.xyz;
 
   @override
   int operator [](int i) {

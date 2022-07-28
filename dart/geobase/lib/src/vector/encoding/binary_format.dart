@@ -16,7 +16,7 @@ mixin BinaryFormat<Content extends Object> {
   /// [endian] specifies endianness for byte sequences written.
   ///
   /// [bufferSize] suggests the buffer size for writing bytes.
-  /// 
+  ///
   /// After writing content objects into an encoder, the binary representation
   /// can be accessed using `toBytes()` of the encoder.
   ContentEncoder<Content> encoder({
@@ -25,7 +25,7 @@ mixin BinaryFormat<Content extends Object> {
   });
 
   /// Returns a binary format decoder that decodes [Content] to [builder].
-  /// 
+  ///
   /// Content decoded by a decoder is sent to a content stream interface
   /// represented by an object [builder].
   ///

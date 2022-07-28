@@ -15,8 +15,8 @@ void main() {
   group('Projected coords as iterable', () {
     test('Coordinate values as iterable', () {
       // xyz and xym coordinates
-      const xyzData = [15, 30, 45];
-      const xymData = [15, 30, 60];
+      const xyzData = [15.0, 30.1, 45.2];
+      const xymData = [15.0, 30.1, 60.3];
 
       // positions from data
       final xyzPos = XYZ.view(xyzData);
@@ -112,11 +112,11 @@ void main() {
         [null, null, null, null],
       );
 
-      expect(ProjectedCoords.view(const [1.0, 2.0]), p1);
-      expect(ProjectedCoords.view(const [1.0, 2.0, 3.0]), p2);
-      expect(ProjectedCoords.view(const [1.0, 2.0, 4.0]) == p3, false);
-      expect(ProjectedCoords.view(const [1.0, 2.0, 4.0], type: Coords.xym), p3);
-      expect(ProjectedCoords.view(const [1.0, 2.0, 3.0, 4.0]), p4);
+      expect(const ProjectedCoords.view([1.0, 2.0]), p1);
+      expect(const ProjectedCoords.view([1.0, 2.0, 3.0]), p2);
+      expect(const ProjectedCoords.view([1.0, 2.0, 4.0]) == p3, false);
+      expect(const ProjectedCoords.view([1.0, 2.0, 4.0], type: Coords.xym), p3);
+      expect(const ProjectedCoords.view([1.0, 2.0, 3.0, 4.0]), p4);
 
       expect(ProjectedCoords.fromText('1.0,2.0'), p1);
       expect(ProjectedCoords.fromText('1.0,2.0,3.0'), p2);
@@ -129,7 +129,7 @@ void main() {
       expect(XYZM.fromText(p4.toString()), p4);
       expect(XYZM.fromText('1.0 2.0 3.0 4.0', delimiter: ' '), p4);
 
-      expect(() => ProjectedCoords.view(const [1.0]), throwsFormatException);
+      expect(() => const ProjectedCoords.view([1.0]).y, throwsRangeError);
       expect(() => ProjectedCoords.fromText('1.0'), throwsFormatException);
       expect(
         () => ProjectedCoords.fromText('1.0,2.0,x'),
@@ -226,14 +226,14 @@ void main() {
         [null, null, null, null],
       );
 
-      expect(GeographicCoords.view(const [1.0, 2.0]), p1);
-      expect(GeographicCoords.view(const [1.0, 2.0, 3.0]), p2);
-      expect(GeographicCoords.view(const [1.0, 2.0, 4.0]) == p3, false);
+      expect(const GeographicCoords.view([1.0, 2.0]), p1);
+      expect(const GeographicCoords.view([1.0, 2.0, 3.0]), p2);
+      expect(const GeographicCoords.view([1.0, 2.0, 4.0]) == p3, false);
       expect(
-        GeographicCoords.view(const [1.0, 2.0, 4.0], type: Coords.xym),
+        const GeographicCoords.view([1.0, 2.0, 4.0], type: Coords.xym),
         p3,
       );
-      expect(GeographicCoords.view(const [1.0, 2.0, 3.0, 4.0]), p4);
+      expect(const GeographicCoords.view([1.0, 2.0, 3.0, 4.0]), p4);
 
       expect(GeographicCoords.fromText('1.0,2.0'), p1);
       expect(GeographicCoords.fromText('1.0,2.0,3.0'), p2);
@@ -246,7 +246,7 @@ void main() {
       expect(LonLatElevM.fromText(p4.toString()), p4);
       expect(LonLatElevM.fromText('1.0 2.0 3.0 4.0', delimiter: ' '), p4);
 
-      expect(() => GeographicCoords.view(const [1.0]), throwsFormatException);
+      expect(() => const GeographicCoords.view([1.0]).lat, throwsRangeError);
       expect(() => GeographicCoords.fromText('1.0'), throwsFormatException);
       expect(
         () => GeographicCoords.fromText('1.0,2.0,x'),
@@ -348,7 +348,11 @@ void main() {
   });
 }
 
-void _testCoordinateOrder(String text, Iterable<num> coords, [Coords? type]) {
+void _testCoordinateOrder(
+  String text,
+  Iterable<double> coords, [
+  Coords? type,
+]) {
   final factories = [ProjectedCoords.create, GeographicCoords.create];
 
   for (final factory in factories) {
@@ -368,12 +372,18 @@ void _testCoordinateOrder(String text, Iterable<num> coords, [Coords? type]) {
     );
 
     expect(
-      ProjectedCoords.view(coords, type: type),
+      ProjectedCoords.view(
+        coords,
+        type: type ?? Coords.fromDimension(coords.length),
+      ),
       fromCoords,
     );
 
     expect(
-      GeographicCoords.fromCoords(coords, type: type),
+      GeographicCoords.view(
+        coords,
+        type: type ?? Coords.fromDimension(coords.length),
+      ),
       fromCoords,
     );
   }

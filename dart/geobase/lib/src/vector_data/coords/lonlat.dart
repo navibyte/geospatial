@@ -4,285 +4,12 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:meta/meta.dart';
-
 import '/src/codes/coords.dart';
 import '/src/coordinates/base.dart';
 import '/src/coordinates/geographic.dart';
-
-import 'position_coords.dart';
-
-/// A geographic position as an iterable collection of coordinate values.
-///
-/// Such position is a valid [Geographic] implementation and represents
-/// coordinate values also as a collection of `Iterable<double>` (containing 2,
-/// 3, or 4 items).
-/// 
-/// This abstract class has four sub classes with different sets of coordinate
-/// values available:
-///
-/// Class         | 2D/3D | Coords | Type     | lon (x) | lat (y) | elev (z) | m 
-/// ------------- | ----- | ------ | -------- | ------- | ------- | -------- | -
-/// [LonLat]      | 2D    | 2      | `double` |    +    |    +    |          |  
-/// [LonLatElev]  | 3D    | 3      | `double` |    +    |    +    |    +     |  
-/// [LonLatM]     | 2D    | 3      | `double` |    +    |    +    |          | +
-/// [LonLatElevM] | 3D    | 4      | `double` |    +    |    +    |    +     | +
-///
-/// See [Geographic] for description about supported coordinate values.
-@immutable
-abstract class GeographicCoords extends PositionCoords<double>
-    implements Geographic {
-  const GeographicCoords._(Iterable<double> source) : _data = source;
-
-  /// A geographic position as an iterable collection of [lon], [lat], and
-  /// optional [elev] and [m] values.
-  ///
-  /// Returns an instance of [LonLat], [LonLatElev], [LonLatM] or
-  /// [LonLatElevM].
-  ///
-  /// This factory is compatible with `CreatePosition` function type.
-  factory GeographicCoords.create({
-    required num x,
-    required num y,
-    num? z,
-    num? m,
-  }) {
-    // x => lon, y => lat, z => elev, m => m
-    if (z != null) {
-      // 3D coordinates
-      if (m != null) {
-        // 3D and measured coordinates
-        return LonLatElevM.create(x: x, y: y, z: z, m: m);
-      } else {
-        return LonLatElev.create(x: x, y: y, z: z);
-      }
-    } else {
-      // 2D coordinates
-      if (m != null) {
-        // 2D and measured coordinates
-        return LonLatM.create(x: x, y: y, m: m);
-      } else {
-        return LonLat.create(x: x, y: y);
-      }
-    }
-  }
-
-  /// A geographic position with coordinate values as a view backed by [source].
-  ///
-  /// Returns an instance of [LonLat], [LonLatElev], [LonLatM] or [LonLatElevM].
-  /// When [type] is given, then it's used to select the appropriate class.
-  /// Otherwise the coordinate dimension of [source] values resolves the class
-  /// (2 => LonLat, 3 => LonLatElev, 4 => LonLatElevM).
-  ///
-  /// An iterable collection of [source] may be represented by a [List] or any
-  /// [Iterable] with efficient `length` and `elementAt` implementations.
-  ///
-  /// Throws FormatException is the coordinate dimension of [source] is not 2,
-  /// 3 or 4.
-  factory GeographicCoords.view(Iterable<double> source, {Coords? type}) {
-    switch (type ?? Coords.fromDimension(source.length)) {
-      case Coords.xy:
-        return LonLat.view(source);
-      case Coords.xyz:
-        return LonLatElev.view(source);
-      case Coords.xym:
-        return LonLatM.view(source);
-      case Coords.xyzm:
-        return LonLatElevM.view(source);
-    }
-  }
-
-  /// A geographic position with coordinate values copied from [source].
-  ///
-  /// Returns an instance of [LonLat], [LonLatElev], [LonLatM] or [LonLatElevM].
-  /// When [type] is given, then it's used to select the appropriate class.
-  /// Otherwise the coordinate dimension of [source] values resolves the class
-  /// (2 => LonLat, 3 => LonLatElev, 4 => LonLatElevM).
-  ///
-  /// Throws FormatException is the coordinate dimension of [source] is not 2,
-  /// 3 or 4.
-  factory GeographicCoords.fromCoords(Iterable<num> source, {Coords? type}) {
-    // copy from Iterable<num> to fixed size List<double> that is used as data
-    final data = source is Iterable<double>
-        ? source.toList(growable: false)
-        : source.map<double>((e) => e.toDouble()).toList(growable: false);
-
-    // create a geographic position with copied list as data
-    return GeographicCoords.view(data, type: type);
-  }
-
-  /// A geographic position as an iterable collection parsed from [text].
-  ///
-  /// Coordinate values in [text] are separated by [delimiter].
-  ///
-  /// Supported coordinate value combinations for [text] are:
-  /// (lon, lat), (lon, lat, elev), (lon, lat, m) or (lon, lat, elev, m)
-  ///
-  /// Use an optional [type] to explicitely set the coordinate type. If not
-  /// provided and [text] has 3 items, then (lon, lat, elev) coordinates are
-  /// assumed.
-  ///
-  /// Returns an instance of [LonLat], [LonLatElev], [LonLatM] or [LonLatElevM].
-  ///
-  /// Throws FormatException if coordinates are invalid.
-  factory GeographicCoords.fromText(
-    String text, {
-    Pattern? delimiter = ',',
-    Coords? type,
-  }) =>
-      Position.createFromText(
-        text,
-        to: GeographicCoords.create,
-        delimiter: delimiter,
-        type: type,
-      );
-
-  final Iterable<double> _data;
-
-  @override
-  Iterable<double> get values => _data;
-
-  @override
-  double operator [](int index) => elementAt(index);
-
-  @override
-  bool get isGeographic => true;
-
-  @override
-  num get x => lon;
-
-  @override
-  num get y => lat;
-
-  @override
-  num get z => elev;
-
-  @override
-  num? get optZ => optElev;
-
-  @override
-  bool operator ==(Object other) =>
-      other is Geographic && Position.testEquals(this, other);
-
-  @override
-  int get hashCode => Position.hash(this);
-
-  // .......... Iterable<double> implementation below
-
-  @override
-  double elementAt(int index) =>
-      index >= 0 && index < coordinateDimension ? _data.elementAt(index) : 0.0;
-
-  @override
-  int get length => coordinateDimension;
-
-  @override
-  bool get isEmpty => false;
-
-  @override
-  bool get isNotEmpty => true;
-
-  @override
-  double get single => throw StateError('Position has at least 2 items');
-
-  @override
-  Iterator<double> get iterator => _data.iterator;
-
-  @override
-  bool any(bool Function(double element) test) => _data.any(test);
-
-  @override
-  Iterable<R> cast<R>() => _data.cast<R>();
-
-  @override
-  bool contains(Object? element) => _data.contains(element);
-
-  @override
-  bool every(bool Function(double element) test) => _data.every(test);
-
-  @override
-  Iterable<T> expand<T>(Iterable<T> Function(double element) toElements) =>
-      _data.expand<T>(toElements);
-
-  @override
-  double get first => _data.first;
-
-  @override
-  double firstWhere(
-    bool Function(double element) test, {
-    double Function()? orElse,
-  }) =>
-      _data.firstWhere(test, orElse: orElse);
-
-  @override
-  T fold<T>(
-    T initialValue,
-    T Function(T previousValue, double element) combine,
-  ) =>
-      _data.fold<T>(initialValue, combine);
-
-  @override
-  Iterable<double> followedBy(Iterable<double> other) =>
-      _data.followedBy(other);
-
-  @override
-  void forEach(void Function(double element) action) => _data.forEach(action);
-
-  @override
-  String join([String separator = '']) => _data.join(separator);
-
-  @override
-  double get last => _data.last;
-
-  @override
-  double lastWhere(
-    bool Function(double element) test, {
-    double Function()? orElse,
-  }) =>
-      _data.lastWhere(test, orElse: orElse);
-
-  @override
-  Iterable<T> map<T>(T Function(double e) toElement) => _data.map<T>(toElement);
-
-  @override
-  double reduce(double Function(double value, double element) combine) =>
-      _data.reduce(combine);
-
-  @override
-  double singleWhere(
-    bool Function(double element) test, {
-    double Function()? orElse,
-  }) =>
-      _data.singleWhere(test, orElse: orElse);
-
-  @override
-  Iterable<double> skip(int count) => _data.skip(count);
-
-  @override
-  Iterable<double> skipWhile(bool Function(double value) test) =>
-      _data.skipWhile(test);
-
-  @override
-  Iterable<double> take(int count) => _data.take(count);
-
-  @override
-  Iterable<double> takeWhile(bool Function(double value) test) =>
-      _data.takeWhile(test);
-
-  @override
-  List<double> toList({bool growable = true}) =>
-      _data.toList(growable: growable);
-
-  @override
-  Set<double> toSet() => _data.toSet();
-
-  @override
-  Iterable<double> where(bool Function(double element) test) =>
-      _data.where(test);
-
-  @override
-  Iterable<T> whereType<T>() => _data.whereType();
-}
+import '/src/utils/format_validation.dart';
+import '/src/utils/num.dart';
+import '/src/vector_data/array.dart';
 
 /// A geographic position as an iterable collection of lon and lat values.
 ///
@@ -323,9 +50,9 @@ class LonLat extends GeographicCoords {
   /// `elementAt` implementations.
   const LonLat.view(super.source)
       : assert(source.length == 2, 'LonLat must have exactly 2 values'),
-        super._();
+        super.view();
 
-  const LonLat._(super.source) : super._();
+  const LonLat._(super.source) : super.view();
 
   /// A geographic position as an iterable collection parsed from [text].
   ///
@@ -335,13 +62,14 @@ class LonLat extends GeographicCoords {
   factory LonLat.fromText(
     String text, {
     Pattern? delimiter = ',',
-  }) =>
-      Position.createFromText(
-        text,
-        to: LonLat.create,
-        delimiter: delimiter,
-        type: Coords.xy,
-      );
+  }) {
+    final coords = parseDoubleValuesFromText(text, delimiter: delimiter)
+        .toList(growable: false);
+    if (coords.length != 2) {
+      throw invalidCoordinates;
+    }
+    return LonLat.view(coords);
+  }
 
   @override
   LonLat copyWith({num? x, num? y, num? z, num? m}) => LonLat(
@@ -365,22 +93,22 @@ class LonLat extends GeographicCoords {
   bool get isMeasured => false;
 
   @override
-  Coords get typeCoords => Coords.xy;
+  Coords get type => Coords.xy;
 
   @override
-  double get lon => _data.elementAt(0);
+  double get lon => elementAt(0);
 
   @override
-  double get lat => _data.elementAt(1);
+  double get lat => elementAt(1);
 
   @override
-  double get elev => 0;
+  double get elev => 0.0;
 
   @override
   double? get optElev => null;
 
   @override
-  double get m => 0;
+  double get m => 0.0;
 
   @override
   double? get optM => null;
@@ -447,13 +175,14 @@ class LonLatElev extends LonLat {
   factory LonLatElev.fromText(
     String text, {
     Pattern? delimiter = ',',
-  }) =>
-      Position.createFromText(
-        text,
-        to: LonLatElev.create,
-        delimiter: delimiter,
-        type: Coords.xyz,
-      );
+  }) {
+    final coords = parseDoubleValuesFromText(text, delimiter: delimiter)
+        .toList(growable: false);
+    if (coords.length != 3) {
+      throw invalidCoordinates;
+    }
+    return LonLatElev.view(coords);
+  }
 
   @override
   LonLatElev copyWith({num? x, num? y, num? z, num? m}) => LonLatElev(
@@ -475,10 +204,10 @@ class LonLatElev extends LonLat {
   bool get is3D => true;
 
   @override
-  Coords get typeCoords => Coords.xyz;
+  Coords get type => Coords.xyz;
 
   @override
-  double get elev => _data.elementAt(2);
+  double get elev => elementAt(2);
 
   @override
   double? get optElev => elev;
@@ -541,13 +270,14 @@ class LonLatM extends LonLat {
   factory LonLatM.fromText(
     String text, {
     Pattern? delimiter = ',',
-  }) =>
-      Position.createFromText(
-        text,
-        to: LonLatM.create,
-        delimiter: delimiter,
-        type: Coords.xym,
-      );
+  }) {
+    final coords = parseDoubleValuesFromText(text, delimiter: delimiter)
+        .toList(growable: false);
+    if (coords.length != 3) {
+      throw invalidCoordinates;
+    }
+    return LonLatM.view(coords);
+  }
 
   @override
   LonLatM copyWith({num? x, num? y, num? z, num? m}) => LonLatM(
@@ -566,13 +296,13 @@ class LonLatM extends LonLat {
   bool get isMeasured => true;
 
   @override
-  Coords get typeCoords => Coords.xym;
+  Coords get type => Coords.xym;
 
   @override
-  double get m => _data.elementAt(2);
+  double get m => elementAt(2);
 
   @override
-  double? get optM => elev;
+  double? get optM => m;
 
   @override
   String toString() => '$lon,$lat,$m';
@@ -640,13 +370,14 @@ class LonLatElevM extends LonLatElev {
   factory LonLatElevM.fromText(
     String text, {
     Pattern? delimiter = ',',
-  }) =>
-      Position.createFromText(
-        text,
-        to: LonLatElevM.create,
-        delimiter: delimiter,
-        type: Coords.xyzm,
-      );
+  }) {
+    final coords = parseDoubleValuesFromText(text, delimiter: delimiter)
+        .toList(growable: false);
+    if (coords.length != 4) {
+      throw invalidCoordinates;
+    }
+    return LonLatElevM.view(coords);
+  }
 
   @override
   LonLatElevM copyWith({num? x, num? y, num? z, num? m}) => LonLatElevM(
@@ -666,10 +397,10 @@ class LonLatElevM extends LonLatElev {
   bool get isMeasured => true;
 
   @override
-  Coords get typeCoords => Coords.xyzm;
+  Coords get type => Coords.xyzm;
 
   @override
-  double get m => _data.elementAt(3);
+  double get m => elementAt(3);
 
   @override
   double? get optM => m;

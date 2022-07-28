@@ -95,7 +95,7 @@ GeoJsonFactory<T> geoJson<T extends Point>(
     );
 
 /// A GeoJSON factory using [point] factory to create geographic points of [T].
-/// 
+///
 /// Use [bounds] to specify a factory for `Bounds` objects.
 ///
 /// Use [feature] to define a factory for `Feature` objects.

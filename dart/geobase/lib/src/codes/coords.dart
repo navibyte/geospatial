@@ -14,6 +14,8 @@ enum Coords {
     isMeasured: false,
     wkbId: 0,
     wktSpecifier: null,
+    indexForZ: null,
+    indexForM: null,
   ),
 
   /// 3D coordinates as projected (x, y, z) or geographic (lon, lat, elev).
@@ -24,6 +26,8 @@ enum Coords {
     isMeasured: false,
     wkbId: 1000,
     wktSpecifier: 'Z',
+    indexForZ: 2,
+    indexForM: null,
   ),
 
   /// 2D measured coordinates as projected (x, y, m) or geographic (lon, lat,
@@ -35,6 +39,8 @@ enum Coords {
     isMeasured: true,
     wkbId: 2000,
     wktSpecifier: 'M',
+    indexForZ: null,
+    indexForM: 2,
   ),
 
   /// 3D measured coordinates as projected (x, y, z, m) or geographic (lon, lat,
@@ -46,6 +52,8 @@ enum Coords {
     isMeasured: true,
     wkbId: 3000,
     wktSpecifier: 'ZM',
+    indexForZ: 2,
+    indexForM: 3,
   );
 
   /// Create an enum for a coordinate type.
@@ -56,6 +64,8 @@ enum Coords {
     required this.isMeasured,
     required this.wkbId,
     required this.wktSpecifier,
+    required this.indexForZ,
+    required this.indexForM,
   });
 
   /// The number of coordinate values (2, 3 or 4).
@@ -85,6 +95,17 @@ enum Coords {
   /// An optional WKT specifier for coordinates, ie. `Z`, `M` or `ZM`.
   final String? wktSpecifier;
 
+  /// The index for an optional Z coordinate in a sequence of coordinates.
+  ///
+  /// The value is 2 for 3D coordinates, and null for 2D coordinates.
+  final int? indexForZ;
+
+  /// The index for an optional M coordinate in a sequence of coordinates.
+  ///
+  /// The value is 2 (for 2D coordinates) and 3 (for 3D coordinates) if this
+  /// coordinate type is measured. Otherwise the value is null.
+  final int? indexForM;
+
   /// Selects a [Coords] enum based on [is3D] and [isMeasured].
   static Coords select({
     required bool is3D,
@@ -101,7 +122,7 @@ enum Coords {
   ///
   /// If [coordinateDimension] is 3, then [xyzForDim3] is used to select
   /// between `xyz` and `xym`.
-  /// 
+  ///
   /// Coordinate types resolved:
   ///
   /// Dimension | Coordinate type

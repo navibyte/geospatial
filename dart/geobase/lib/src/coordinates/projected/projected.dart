@@ -147,10 +147,10 @@ class Projected extends Position {
   /// For example:
   /// `Projected(x: 1, y: 1).copyWith(y: 2) == Projected(x: 1, y: 2)`
   /// `Projected(x: 1, y: 1).copyWith(z: 2) == Projected(x: 1, y: 1, z: 2)`
-  /// 
+  ///
   /// Some sub classes may ignore a non-null z parameter value if a position is
   /// not a 3D position, and a non-null m parameter if a position is not a
-  /// measured position. However [Projected] itself supports changing the 
+  /// measured position. However [Projected] itself supports changing the
   /// coordinate type.
   @override
   Projected copyWith({num? x, num? y, num? z, num? m}) => Projected(
@@ -163,8 +163,10 @@ class Projected extends Position {
   @override
   Projected transform(TransformPosition transform) => transform.call(this);
 
+/*
   @override
   bool get isGeographic => false;
+*/
 
   @override
   bool get is3D => _z != null;
@@ -174,7 +176,7 @@ class Projected extends Position {
 
   @override
   String toString() {
-    switch (typeCoords) {
+    switch (type) {
       case Coords.xy:
         return '$_x,$_y';
       case Coords.xyz:

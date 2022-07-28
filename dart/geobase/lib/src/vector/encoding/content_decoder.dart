@@ -13,13 +13,13 @@ abstract class ContentDecoder {
   /// The [source] text is expected to be a valid string representation of
   /// content for a text format decoder and and a base64 string representation
   /// of content for a binary format decoder.
-  /// 
+  ///
   /// The target of objects decoded from text is not defined by this interface.
   /// A decoder could produce content stream sent to a content interface or
   /// build structured data objects with compatible model. Also some decoders
   /// might allow multiple calls to this method to build a larger target object
   /// structure.
-  /// 
+  ///
   /// Throws `FormatException` if decoding fails.
   void decodeText(String source);
 
@@ -28,13 +28,13 @@ abstract class ContentDecoder {
   /// The [source] as a sequence of bytes is expected to be a valid binary
   /// representation of content for a binary format decoder, and an UTF8 encoded
   /// binary representation of textual content for a text format decoder.
-  /// 
+  ///
   /// The target of objects decoded from bytes is not defined by this interface.
   /// A decoder could produce content stream sent to a content interface or
   /// build structured data objects with compatible model. Also some decoders
   /// might allow multiple calls to this method to build a larger target object
   /// structure.
-  /// 
+  ///
   /// Throws `FormatException` if decoding fails.
   void decodeBytes(ByteBuffer source);
 }

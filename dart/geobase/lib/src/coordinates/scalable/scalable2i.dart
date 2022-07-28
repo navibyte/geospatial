@@ -193,8 +193,10 @@ class Scalable2i implements Scalable, Projected {
   @override
   int get coordinateDimension => 2;
 
+/*
   @override
   bool get isGeographic => false;
+*/
 
   @override
   bool get is3D => false;
@@ -203,7 +205,7 @@ class Scalable2i implements Scalable, Projected {
   bool get isMeasured => false;
 
   @override
-  Coords get typeCoords => Coords.xy; // Note: "zoom" is not coordinate but LOD
+  Coords get type => Coords.xy; // Note: "zoom" is not coordinate but LOD
 
   @override
   bool equals2D(Position other, {num? toleranceHoriz}) =>

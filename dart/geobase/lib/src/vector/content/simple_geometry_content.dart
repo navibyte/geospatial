@@ -106,7 +106,7 @@ abstract class SimpleGeometryContent {
   /// (geographic coordinates). Other sub classes are supported too.
   ///
   /// See `Position.createFromCoords` and `Box.createFromCoords` for supported
-  /// coordinate combinations for `Iterable<num>` data. 
+  /// coordinate combinations for `Iterable<num>` data.
   ///
   /// An example to write a line string with 3 points and a bounding box:
   /// ```dart
@@ -149,7 +149,7 @@ abstract class SimpleGeometryContent {
   /// Allowed [coordinates] value combinations for `Iterable<num>` are:
   ///
   /// See `Position.createFromCoords` and `Box.createFromCoords` for supported
-  /// coordinate combinations for `Iterable<num>` data. 
+  /// coordinate combinations for `Iterable<num>` data.
   ///
   /// An example to write a polygon geometry with one linear ring containing
   /// 4 points:
@@ -192,7 +192,7 @@ abstract class SimpleGeometryContent {
   /// (geographic coordinates). Other sub classes are supported too.
   ///
   /// See `Position.createFromCoords` and `Box.createFromCoords` for supported
-  /// coordinate combinations for `Iterable<num>` data. 
+  /// coordinate combinations for `Iterable<num>` data.
   ///
   /// An example to write a multi point geometry with 3 points:
   /// ```dart
@@ -232,7 +232,7 @@ abstract class SimpleGeometryContent {
   /// (geographic coordinates). Other sub classes are supported too.
   ///
   /// See `Position.createFromCoords` and `Box.createFromCoords` for supported
-  /// coordinate combinations for `Iterable<num>` data. 
+  /// coordinate combinations for `Iterable<num>` data.
   ///
   /// An example to write a multi line string with two line strings:
   /// ```dart
@@ -280,7 +280,7 @@ abstract class SimpleGeometryContent {
   /// (geographic coordinates). Other sub classes are supported too.
   ///
   /// See `Position.createFromCoords` and `Box.createFromCoords` for supported
-  /// coordinate combinations for `Iterable<num>` data. 
+  /// coordinate combinations for `Iterable<num>` data.
   ///
   /// An example to write a multi polygon geometry with two polygons:
   /// ```dart
@@ -329,8 +329,8 @@ abstract class SimpleGeometryContent {
   /// and [GeoBox] (geographic coordinates). Other sub classes are supported
   /// too.
   ///
-  /// See `Box.createFromCoords` for supported coordinate combinations for 
-  /// `Iterable<num>` data. 
+  /// See `Box.createFromCoords` for supported coordinate combinations for
+  /// `Iterable<num>` data.
   ///
   /// An example to write a geometry collection with two child geometries:
   /// ```dart

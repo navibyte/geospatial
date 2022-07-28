@@ -11,4 +11,5 @@
 /// Usage: import `package:geobase/vector_data.dart`
 library vector;
 
+export 'src/vector_data/array.dart';
 export 'src/vector_data/coords.dart';

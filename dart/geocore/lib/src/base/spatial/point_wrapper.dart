@@ -40,7 +40,7 @@ class PointWrapper<T extends Point<C>, C extends num> extends Point<C> {
   bool get isMeasured => point.isMeasured;
 
   @override
-  Coords get typeCoords => point.typeCoords;
+  Coords get type => point.type;
 
   @override
   C operator [](int i) => point[i];

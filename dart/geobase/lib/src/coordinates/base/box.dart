@@ -216,7 +216,7 @@ abstract class Box extends Positionable {
     Coords? type,
   }) {
     if (box is Box) {
-      if (box is R && (type == null || type == box.typeCoords)) {
+      if (box is R && (type == null || type == box.type)) {
         // box is of R and with compatiable coord type
         return box;
       } else {
@@ -275,100 +275,120 @@ abstract class Box extends Positionable {
     int offset = 0,
     Coords? type,
   }) {
-    // resolve iterator for source coordinates
-    final Iterator<num> iter;
-    if (offset == 0) {
-      iter = coords.iterator;
-    } else if (coords.length >= offset + 4) {
-      iter = coords.skip(offset).iterator;
+    if (coords is List<num>) {
+      final len = coords.length - offset;
+      final coordsType = type ?? Coords.fromDimension(math.min(4, len ~/ 2));
+      final dim = coordsType.coordinateDimension;
+      if (len < 2 * dim) {
+        throw invalidCoordinates;
+      }
+      final mIndex = coordsType.indexForM;
+      return to.call(
+        minX: coords[offset],
+        minY: coords[offset + 1],
+        minZ: coordsType.is3D ? coords[offset + 2] : null,
+        minM: mIndex != null ? coords[offset + mIndex] : null,
+        maxX: coords[offset + dim],
+        maxY: coords[offset + dim + 1],
+        maxZ: coordsType.is3D ? coords[offset + dim + 2] : null,
+        maxM: mIndex != null ? coords[offset + dim + mIndex] : null,
+      );
     } else {
+      // resolve iterator for source coordinates
+      final Iterator<num> iter;
+      if (offset == 0) {
+        iter = coords.iterator;
+      } else if (coords.length >= offset + 4) {
+        iter = coords.skip(offset).iterator;
+      } else {
+        throw invalidCoordinates;
+      }
+
+      // must contain at least four numbers
+      if (!iter.moveNext()) throw invalidCoordinates;
+      final c0 = iter.current;
+      if (!iter.moveNext()) throw invalidCoordinates;
+      final c1 = iter.current;
+      if (!iter.moveNext()) throw invalidCoordinates;
+      final c2 = iter.current;
+      if (!iter.moveNext()) throw invalidCoordinates;
+      final c3 = iter.current;
+
+      // rest 4 are optional, get first of them
+      final c4 = iter.moveNext() ? iter.current : null;
+
+      // if xy coordinates (4 items), then return already now
+      if (type == Coords.xy || (c4 == null && type == null)) {
+        return to.call(minX: c0, minY: c1, maxX: c2, maxY: c3);
+      }
+
+      // then get also last 3 of the optional
+      final c5 = iter.moveNext() ? iter.current : null;
+      final c6 = iter.moveNext() ? iter.current : null;
+      final c7 = iter.moveNext() ? iter.current : null;
+
+      // resolve coordinate type
+      final Coords coordType;
+      if (type != null) {
+        // explicitely
+        coordType = type;
+      } else {
+        // implicitely
+        if (c4 != null && c5 != null) {
+          coordType = c6 != null && c7 != null ? Coords.xyzm : Coords.xyz;
+        } else {
+          coordType = Coords.xy;
+        }
+      }
+
+      // create bounding box depending on coordinate type
+      switch (coordType) {
+        case Coords.xy:
+          if (c4 == null) {
+            return to.call(minX: c0, minY: c1, maxX: c2, maxY: c3);
+          }
+          break;
+        case Coords.xyz:
+          if (c4 != null && c5 != null && c6 == null) {
+            return to.call(
+              minX: c0,
+              minY: c1,
+              minZ: c2,
+              maxX: c3,
+              maxY: c4,
+              maxZ: c5,
+            );
+          }
+          break;
+        case Coords.xym:
+          if (c4 != null && c5 != null && c6 == null) {
+            return to.call(
+              minX: c0,
+              minY: c1,
+              minM: c2,
+              maxX: c3,
+              maxY: c4,
+              maxM: c5,
+            );
+          }
+          break;
+        case Coords.xyzm:
+          if (c4 != null && c5 != null && c6 != null && c7 != null) {
+            return to.call(
+              minX: c0,
+              minY: c1,
+              minZ: c2,
+              minM: c3,
+              maxX: c4,
+              maxY: c5,
+              maxZ: c6,
+              maxM: c7,
+            );
+          }
+          break;
+      }
       throw invalidCoordinates;
     }
-
-    // must contain at least four numbers
-    if (!iter.moveNext()) throw invalidCoordinates;
-    final c0 = iter.current;
-    if (!iter.moveNext()) throw invalidCoordinates;
-    final c1 = iter.current;
-    if (!iter.moveNext()) throw invalidCoordinates;
-    final c2 = iter.current;
-    if (!iter.moveNext()) throw invalidCoordinates;
-    final c3 = iter.current;
-
-    // rest 4 are optional, get first of them
-    final c4 = iter.moveNext() ? iter.current : null;
-
-    // if xy coordinates (4 items), then return already now
-    if (type == Coords.xy || (c4 == null && type == null)) {
-      return to.call(minX: c0, minY: c1, maxX: c2, maxY: c3);
-    }
-
-    // then get also last 3 of the optional
-    final c5 = iter.moveNext() ? iter.current : null;
-    final c6 = iter.moveNext() ? iter.current : null;
-    final c7 = iter.moveNext() ? iter.current : null;
-
-    // resolve coordinate type
-    final Coords coordType;
-    if (type != null) {
-      // explicitely
-      coordType = type;
-    } else {
-      // implicitely
-      if (c4 != null && c5 != null) {
-        coordType = c6 != null && c7 != null ? Coords.xyzm : Coords.xyz;
-      } else {
-        coordType = Coords.xy;
-      }
-    }
-
-    // create bounding box depending on coordinate type
-    switch (coordType) {
-      case Coords.xy:
-        if (c4 == null) {
-          return to.call(minX: c0, minY: c1, maxX: c2, maxY: c3);
-        }
-        break;
-      case Coords.xyz:
-        if (c4 != null && c5 != null && c6 == null) {
-          return to.call(
-            minX: c0,
-            minY: c1,
-            minZ: c2,
-            maxX: c3,
-            maxY: c4,
-            maxZ: c5,
-          );
-        }
-        break;
-      case Coords.xym:
-        if (c4 != null && c5 != null && c6 == null) {
-          return to.call(
-            minX: c0,
-            minY: c1,
-            minM: c2,
-            maxX: c3,
-            maxY: c4,
-            maxM: c5,
-          );
-        }
-        break;
-      case Coords.xyzm:
-        if (c4 != null && c5 != null && c6 != null && c7 != null) {
-          return to.call(
-            minX: c0,
-            minY: c1,
-            minZ: c2,
-            minM: c3,
-            maxX: c4,
-            maxY: c5,
-            maxZ: c6,
-            maxM: c7,
-          );
-        }
-        break;
-    }
-    throw invalidCoordinates;
   }
 
   /// Creates a bounding box of [R] from [text].

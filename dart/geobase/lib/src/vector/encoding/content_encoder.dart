@@ -33,7 +33,7 @@ abstract class ContentEncoder<Content extends Object> {
   String toText();
 
   /// The text representation of content already written to this encoder.
-  /// 
+  ///
   /// Equals to calling [toText].
   ///
   /// Returns a valid string representation of content for a text format encoder

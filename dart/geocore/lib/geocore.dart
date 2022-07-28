@@ -11,7 +11,7 @@
 ///
 /// Exports also `Geom`, `CoordinateContent`, `SimpleGeometryContent`,
 /// `GeometryContent`, `GeometryBinaryFormat`, `FeatureContent`,
-/// `PropertyContent`, `ContentDecoder`, `ContentEncoder`, `BinaryFormat`, 
+/// `PropertyContent`, `ContentDecoder`, `ContentEncoder`, `BinaryFormat`,
 /// `TextFormat`, `DefaultFormat`, `WktLikeFormat`, `GeoJSON`, `WKT` and `WKB`
 /// from `package:geobase/vector.dart`.
 ///

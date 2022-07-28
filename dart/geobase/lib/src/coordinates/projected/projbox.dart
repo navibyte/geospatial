@@ -15,7 +15,7 @@ import 'projected.dart';
 ///
 /// Optional [minZ] and [maxZ] for 3D boxes, and [minM] and [maxM] for
 /// measured boxes can be provided too.
-/// 
+///
 /// Supported coordinate value combinations by coordinate type:
 ///
 /// Type | Bounding box values
@@ -185,13 +185,15 @@ class ProjBox extends Box {
       Box.createCorners2D(this, Projected.create);
 
   @override
-  int get spatialDimension => typeCoords.spatialDimension;
+  int get spatialDimension => type.spatialDimension;
 
   @override
-  int get coordinateDimension => typeCoords.coordinateDimension;
+  int get coordinateDimension => type.coordinateDimension;
 
+/*
   @override
   bool get isGeographic => false;
+*/
 
   @override
   bool get is3D => _minZ != null;
@@ -200,14 +202,14 @@ class ProjBox extends Box {
   bool get isMeasured => _minM != null;
 
   @override
-  Coords get typeCoords => Coords.select(
+  Coords get type => Coords.select(
         is3D: is3D,
         isMeasured: isMeasured,
       );
 
   @override
   String toString() {
-    switch (typeCoords) {
+    switch (type) {
       case Coords.xy:
         return '$_minX,$_minY,$_maxX,$_maxY';
       case Coords.xyz:

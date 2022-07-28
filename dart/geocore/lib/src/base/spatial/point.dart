@@ -114,6 +114,12 @@ abstract class Point<C extends num> extends Geometry
     }
   }
 
+  /// True for geographic coordinates (with longitude and latitude).
+  ///
+  /// If false is returned, then coordinates are projected or cartesian (with
+  /// x and y).
+  bool get isGeographic;
+
   /// Writes coordinate values to [buffer] separated by [delimiter].
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
@@ -163,7 +169,7 @@ abstract class Point<C extends num> extends Geometry
   @override
   void writeTo(SimpleGeometryContent writer) => writer.point(
         this,
-        type: typeCoords,
+        type: type,
       );
 
   @override

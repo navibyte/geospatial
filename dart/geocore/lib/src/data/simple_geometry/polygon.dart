@@ -140,7 +140,7 @@ class Polygon<T extends Point> extends Geometry with EquatableMixin {
     final point = onePoint;
     writer.polygon(
       coordinates,
-      type: point?.typeCoords,
+      type: point?.type,
       bbox: boundsExplicit,
     );
   }

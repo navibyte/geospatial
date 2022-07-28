@@ -9,18 +9,22 @@ import '/src/codes/coords.dart';
 import 'measurable.dart';
 
 /// A positionable object has (geospatial) coordinate values available.
+///
+/// This interface is extended at least by `Position` (representing a single
+/// position), `PositionData` (representing a series of positions) and `Box`
+/// (representing a single bounding box with minimum and maximum coordinates).
 abstract class Positionable extends Measurable {
   /// Default `const` constructor to allow extending this abstract class.
   const Positionable();
 
-  /// The number of coordinate values (2, 3 or 4) for this position.
+  /// The number of coordinate values (2, 3 or 4).
   ///
-  /// If value is 2, the position has 2D coordinates without m coordinate.
+  /// If value is 2, a position has 2D coordinates without m coordinate.
   ///
-  /// If value is 3, the position has 2D coordinates with m coordinate or
+  /// If value is 3, a position has 2D coordinates with m coordinate or
   /// 3D coordinates without m coordinate.
   ///
-  /// If value is 4, the position has 3D coordinates with m coordinate.
+  /// If value is 4, a position has 3D coordinates with m coordinate.
   ///
   /// Must be >= [spatialDimension].
   int get coordinateDimension {
@@ -37,14 +41,18 @@ abstract class Positionable extends Measurable {
   /// True for 3D positions (with z or elevation coordinate).
   bool get is3D;
 
-  /// True for geographic positions (with longitude and latitude coordinates).
+/*
+  // Note: removed at version 0.3.0 to make code consistent. Later remove fully.
+
+  /// True for geographic coordinates (with longitude and latitude).
   ///
   /// If false is returned, then coordinates are projected or cartesian (with
-  /// x and y coordinates).
+  /// x and y).
   bool get isGeographic;
+*/
 
-  /// Returns the type for coordinates of this position.
-  Coords get typeCoords => Coords.select(
+  /// The coordinate type.
+  Coords get type => Coords.select(
         is3D: is3D,
         isMeasured: isMeasured,
       );

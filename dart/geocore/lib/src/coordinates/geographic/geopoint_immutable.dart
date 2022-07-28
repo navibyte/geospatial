@@ -106,7 +106,7 @@ class GeoPoint2 extends GeoPoint {
   bool get isMeasured => false;
 
   @override
-  Coords get typeCoords => Coords.xy;
+  Coords get type => Coords.xy;
 
   @override
   double operator [](int i) {
@@ -247,7 +247,7 @@ class GeoPoint2m extends GeoPoint2 {
   bool get isMeasured => true;
 
   @override
-  Coords get typeCoords => Coords.xym;
+  Coords get type => Coords.xym;
 
   @override
   double operator [](int i) {
@@ -382,7 +382,7 @@ class GeoPoint3 extends GeoPoint2 {
   bool get is3D => true;
 
   @override
-  Coords get typeCoords => Coords.xyz;
+  Coords get type => Coords.xyz;
 
   @override
   double operator [](int i) {
@@ -534,7 +534,7 @@ class GeoPoint3m extends GeoPoint3 {
   bool get isMeasured => true;
 
   @override
-  Coords get typeCoords => Coords.xyzm;
+  Coords get type => Coords.xyzm;
 
   @override
   double operator [](int i) {

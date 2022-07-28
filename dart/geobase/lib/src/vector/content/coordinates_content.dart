@@ -22,7 +22,7 @@ mixin CoordinateContent {
   /// and [GeoBox] (geographic coordinates). Other sub classes are supported
   /// too.
   ///
-  /// Supported coordinate value combinations by coordinate type for 
+  /// Supported coordinate value combinations by coordinate type for
   /// `Iterable<num>` are:
   ///
   /// Type | Expected values
@@ -60,7 +60,7 @@ mixin CoordinateContent {
   /// are supported too.
   ///
   /// Supported coordinate value combinations for `Iterable<num>` are:
-  /// (x, y), (x, y, z), (x, y, m) and (x, y, z, m). Use an optional [type] to 
+  /// (x, y), (x, y, z), (x, y, m) and (x, y, z, m). Use an optional [type] to
   /// explicitely set the coordinate type. If not provided and an iterable has
   /// 3 items, then xyz coordinates are assumed.
   ///
@@ -87,7 +87,7 @@ mixin CoordinateContent {
   /// ```dart
   ///    // using coordinate value list (x, y, m), need to specify type
   ///    content.position([10, 20, 40], type: Coords.xym);
-  /// 
+  ///
   ///    // using the type for positions with projected coordinates
   ///    content.position(const Projected(x: 10, y: 20, m: 40));
   /// ```
@@ -112,7 +112,7 @@ mixin CoordinateContent {
   /// are supported too.
   ///
   /// Supported coordinate value combinations for `Iterable<num>` are:
-  /// (x, y), (x, y, z), (x, y, m) and (x, y, z, m). Use an optional [type] to 
+  /// (x, y), (x, y, z), (x, y, m) and (x, y, z, m). Use an optional [type] to
   /// explicitely set the coordinate type. If not provided and an iterable has
   /// 3 items, then xyz coordinates are assumed.
   ///

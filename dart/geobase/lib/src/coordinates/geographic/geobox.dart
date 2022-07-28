@@ -244,13 +244,15 @@ class GeoBox extends Box {
       Box.createCorners2D(this, Geographic.create);
 
   @override
-  int get spatialDimension => typeCoords.spatialDimension;
+  int get spatialDimension => type.spatialDimension;
 
   @override
-  int get coordinateDimension => typeCoords.coordinateDimension;
+  int get coordinateDimension => type.coordinateDimension;
 
+/*
   @override
   bool get isGeographic => true;
+*/
 
   @override
   bool get is3D => _minElev != null;
@@ -259,14 +261,14 @@ class GeoBox extends Box {
   bool get isMeasured => _minM != null;
 
   @override
-  Coords get typeCoords => Coords.select(
+  Coords get type => Coords.select(
         is3D: is3D,
         isMeasured: isMeasured,
       );
 
   @override
   String toString() {
-    switch (typeCoords) {
+    switch (type) {
       case Coords.xy:
         return '$_west,$_south,$_east,$_north';
       case Coords.xyz:

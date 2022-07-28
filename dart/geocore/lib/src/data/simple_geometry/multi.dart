@@ -163,7 +163,7 @@ class MultiPoint<E extends Point> extends Geometry with EquatableMixin {
     final point = onePoint;
     writer.multiPoint(
       coordinates,
-      type: point?.typeCoords,
+      type: point?.type,
       bbox: boundsExplicit,
     );
   }
@@ -263,7 +263,7 @@ class MultiLineString<T extends Point> extends Geometry with EquatableMixin {
     final point = onePoint;
     writer.multiLineString(
       coordinates,
-      type: point?.typeCoords,
+      type: point?.type,
       bbox: boundsExplicit,
     );
   }
@@ -368,7 +368,7 @@ class MultiPolygon<T extends Point> extends Geometry with EquatableMixin {
     final point = onePoint;
     writer.multiPolygon(
       coordinates,
-      type: point?.typeCoords,
+      type: point?.type,
       bbox: boundsExplicit,
     );
   }

@@ -476,7 +476,7 @@ Coords _coordTypeFromPosition(
     return coordType;
   } else {
     if (coordinates is Position) {
-      return coordinates.typeCoords;
+      return coordinates.type;
     } else if (coordinates is Iterable<num>) {
       return Coords.fromDimension(coordinates.length);
     }
