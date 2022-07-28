@@ -226,6 +226,18 @@ class BoundsBase<T extends Point> extends Bounds<T> {
   }
 
   @override
+  R copyTo<R extends Box>(CreateBox<R> factory) => factory.call(
+        minX: minX,
+        minY: minY,
+        minZ: minZ,
+        minM: minM,
+        maxX: maxX,
+        maxY: maxY,
+        maxZ: maxZ,
+        maxM: maxM,
+      );
+
+  @override
   Bounds<T> transform(TransformPosition transform) => BoundsBase(
         min: min.transform(transform) as T,
         max: max.transform(transform) as T,

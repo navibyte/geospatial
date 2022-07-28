@@ -118,6 +118,18 @@ abstract class Box extends Positionable {
   /// The maximum position (or east-north) of this bounding box.
   Position get max;
 
+  /// Copies this box to a new box created by the [factory].
+  R copyTo<R extends Box>(CreateBox<R> factory) => factory.call(
+        minX: minX,
+        minY: minY,
+        minZ: minZ,
+        minM: minM,
+        maxX: maxX,
+        maxY: maxY,
+        maxZ: maxZ,
+        maxM: maxM,
+      );
+
   /// Returns all distinct (in 2D) corners for this axis aligned bounding box.
   ///
   /// May return 1 (when `min == max`), 2 (when either or both 2D coordinates
@@ -186,6 +198,20 @@ abstract class Box extends Positionable {
   /// elev) is further compared when both has z coordinates, and m is compared
   /// when both has m coordinates.
   bool intersectsPoint(Position point) => Box.testIntersectsPoint(this, point);
+
+  @override
+  String toString() {
+    switch (type) {
+      case Coords.xy:
+        return '$minX,$minY,$maxX,$maxY';
+      case Coords.xyz:
+        return '$minX,$minY,$minZ,$maxX,$maxY,$maxZ';
+      case Coords.xym:
+        return '$minX,$minY,$minM,$maxX,$maxY,$maxM';
+      case Coords.xyzm:
+        return '$minX,$minY,$minZ,$minM,$maxX,$maxY,$maxZ,$maxM';
+    }
+  }
 
   // ---------------------------------------------------------------------------
   // Static methods with default logic, used by Box, ProjBox and GeoBox.

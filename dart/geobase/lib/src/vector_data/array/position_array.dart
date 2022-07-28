@@ -105,23 +105,16 @@ class _PositionArrayData<E extends Position> with PositionData<E, double> {
 
   @override
   E operator [](int index) {
-    final c = data;
     final dim = coordinateDimension;
     final start = index * dim;
     final end = start + dim;
-    if (c is List<double>) {
-      // the source coordinates is a List, get range
-      return factory.call(
-        c.getRange(start, end),
-        type: type,
-      );
-    } else {
-      // the source is not a List, generate a new
-      return factory.call(
-        c.skip(start).take(end - start).toList(growable: false),
-        type: type,
-      );
-    }
+    return _doCreateRange(
+      data,
+      to: factory,
+      type: type,
+      start: start,
+      end: end,
+    );
   }
 
   @override

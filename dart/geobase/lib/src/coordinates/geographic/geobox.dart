@@ -267,21 +267,6 @@ class GeoBox extends Box {
       );
 
   @override
-  String toString() {
-    switch (type) {
-      case Coords.xy:
-        return '$_west,$_south,$_east,$_north';
-      case Coords.xyz:
-        return '$_west,$_south,$_minElev,$_east,$_north,$_maxElev';
-      case Coords.xym:
-        return '$_west,$_south,$_minM,$_east,$_north,$_maxM';
-      case Coords.xyzm:
-        return '$_west,$_south,$_minElev,$_minM,'
-            '$_east,$_north,$_maxElev,$_maxM';
-    }
-  }
-
-  @override
   bool operator ==(Object other) =>
       other is GeoBox && Box.testEquals(this, other);
 

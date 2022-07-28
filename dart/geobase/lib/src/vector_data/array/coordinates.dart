@@ -14,6 +14,7 @@ import '/src/coordinates/projected.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 
+part 'box_coords.dart';
 part 'coordinates_mixin.dart';
 part 'geographic_coords.dart';
 part 'position_array.dart';
@@ -31,3 +32,25 @@ typedef _CreateAt<T> = T Function(
   Iterable<double> coordinates, {
   required Coords type,
 });
+
+T _doCreateRange<T>(
+  Iterable<double> coordinates, {
+  required _CreateAt<T> to,
+  required Coords type,
+  required int start,
+  required int end,
+}) {
+  if (coordinates is List<double>) {
+    // the source coordinates is a List, get range
+    return to.call(
+      coordinates.getRange(start, end),
+      type: type,
+    );
+  } else {
+    // the source is not a List, generate a new
+    return to.call(
+      coordinates.skip(start).take(end - start).toList(growable: false),
+      type: type,
+    );
+  }
+}

@@ -208,20 +208,6 @@ class ProjBox extends Box {
       );
 
   @override
-  String toString() {
-    switch (type) {
-      case Coords.xy:
-        return '$_minX,$_minY,$_maxX,$_maxY';
-      case Coords.xyz:
-        return '$_minX,$_minY,$_minZ,$_maxX,$_maxY,$_maxZ';
-      case Coords.xym:
-        return '$_minX,$_minY,$_minM,$_maxX,$_maxY,$_maxM';
-      case Coords.xyzm:
-        return '$_minX,$_minY,$_minZ,$_minM,$_maxX,$_maxY,$_maxZ,$_maxM';
-    }
-  }
-
-  @override
   bool operator ==(Object other) =>
       other is ProjBox && Box.testEquals(this, other);
 
