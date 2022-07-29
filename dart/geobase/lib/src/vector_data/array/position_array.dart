@@ -11,9 +11,8 @@ part of 'coordinates.dart';
 /// The collection implements `Iterable<double>` with coordinate values of
 /// positions as a flat structure (each position containing  2, 3, or 4 values).
 ///
-/// Position data is also accessible as projected coordinates via [projected]
-/// and as geographic coordinates via [geographic] properties. You can use
-/// [data] to map coordinate values to custom position types.
+/// Position data is also accessible as position coordinates via [data]. You can
+/// also use [dataTo] to map coordinate values to custom position types.
 ///
 /// See [Position] for description about supported coordinate values.
 class PositionArray with _CoordinatesMixin {
@@ -63,22 +62,16 @@ class PositionArray with _CoordinatesMixin {
         type: type,
       );
 
-  /// Access positions as projected coordinates.
+  /// Access coordinate values of positions.
   ///
-  /// See [Projected] for description about supported coordinate values.
-  PositionData<ProjectedCoords, double> get projected =>
-      _PositionArrayData<ProjectedCoords>(_data, _type, ProjectedCoords.view);
-
-  /// Access positions as geographic coordinates.
-  ///
-  /// See [Geographic] for description about supported coordinate values.
-  PositionData<GeographicCoords, double> get geographic =>
-      _PositionArrayData<GeographicCoords>(_data, _type, GeographicCoords.view);
+  /// See [Position] for description about supported coordinate values.
+  PositionData<PositionCoords, double> get data =>
+      _PositionArrayData<PositionCoords>(_data, _type, PositionCoords.view);
 
   /// Access positions as custom type of [T].
   ///
   /// The [factory] is used to create instances of [T] as needed.
-  PositionData<T, double> data<T extends Position>(
+  PositionData<T, double> dataTo<T extends Position>(
     CreatePosition<T> factory,
   ) =>
       _PositionArrayData<T>(_data, _type, _adapt(factory));
@@ -167,4 +160,23 @@ class _PositionArrayData<E extends Position> with PositionData<E, double> {
 
   @override
   bool get isMeasured => type.isMeasured;
+
+  @override
+  Iterable<E> get all sync* {
+    final dim = coordinateDimension;
+    final len = data.length;
+    var start = 0;
+    var end = dim;
+    while (end <= len) {
+      yield _doCreateRange(
+        data,
+        to: factory,
+        type: type,
+        start: start,
+        end: end,
+      );
+      start += dim;
+      end += dim;
+    }
+  }
 }

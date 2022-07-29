@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'package:meta/meta.dart';
+
 import '/src/codes/coords.dart';
 import '/src/coordinates/base.dart';
 import '/src/coordinates/geographic.dart';
@@ -18,7 +20,8 @@ import '/src/vector_data/array.dart';
 /// `Iterable<double>` with exactly 2 items.
 ///
 /// See [Geographic] for description about supported coordinate values.
-class LonLat extends GeographicCoords {
+@immutable
+class LonLat extends BasePositionCoords implements Geographic {
   /// A geographic position as an iterable collection of [lon] and [lat] values.
   factory LonLat(double lon, double lat) {
     // create a fixed list of 2 items
@@ -50,9 +53,9 @@ class LonLat extends GeographicCoords {
   /// `elementAt` implementations.
   const LonLat.view(super.source)
       : assert(source.length == 2, 'LonLat must have exactly 2 values'),
-        super.view();
+        super();
 
-  const LonLat._(super.source) : super.view();
+  const LonLat._(super.source) : super();
 
   /// A geographic position as an iterable collection parsed from [text].
   ///
@@ -96,6 +99,18 @@ class LonLat extends GeographicCoords {
   Coords get type => Coords.xy;
 
   @override
+  double get x => lon;
+
+  @override
+  double get y => lat;
+
+  @override
+  double get z => elev;
+
+  @override
+  double? get optZ => optElev;
+
+  @override
   double get lon => elementAt(0);
 
   @override
@@ -112,6 +127,16 @@ class LonLat extends GeographicCoords {
 
   @override
   double? get optM => null;
+
+  @override
+  Iterable<double> get values => this;
+
+  @override
+  bool operator ==(Object other) =>
+      other is Position && Position.testEquals(this, other);
+
+  @override
+  int get hashCode => Position.hash(this);
 
   @override
   String toString() => '$lon,$lat';

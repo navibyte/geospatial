@@ -217,7 +217,7 @@ class Geographic extends Position {
 
   @override
   bool operator ==(Object other) =>
-      other is Geographic && Position.testEquals(this, other);
+      other is Position && Position.testEquals(this, other);
 
   @override
   int get hashCode => Position.hash(this);

@@ -29,10 +29,10 @@ void main() {
         expect(array3.type, type);
       });
 
-      test('Access projected positions', () {
-        final projected = array3.projected;
-        expect(projected.length, 3);
-        expect(projected.type, type);
+      test('Access positions as PositionData', () {
+        final positions = array3.data;
+        expect(positions.length, 3);
+        expect(positions.type, type);
 
         final tests = type == Coords.xyz
             ? [
@@ -61,26 +61,28 @@ void main() {
               ];
 
         for (final test in tests) {
-          expect(projected.all, test);
+          expect(positions.all, test);
           for (var index = 0; index < 3; index++) {
-            expect(projected[index], test[index]);
-            expect(projected.get(index, to: Projected.create), tests[1][index]);
+            expect(positions[index], test[index]);
+            expect(positions[index].asProjected, test[index]);
+            expect(positions[index].asGeographic, test[index]);
+            expect(positions.get(index, to: Projected.create), tests[1][index]);
             expect(
-              projected.get(index, to: Geographic.create),
-              isNot(tests[1][index]),
+              positions.get(index, to: Geographic.create),
+              tests[1][index],
             );
-            expect(projected[index].x, test[index].x);
-            expect(projected[index].y, test[index].y);
-            expect(projected[index].z, test[index].z);
-            expect(projected[index].optZ, test[index].optZ);
-            expect(projected[index].m, test[index].m);
-            expect(projected[index].optM, test[index].optM);
+            expect(positions[index].x, test[index].x);
+            expect(positions[index].y, test[index].y);
+            expect(positions[index].z, test[index].z);
+            expect(positions[index].optZ, test[index].optZ);
+            expect(positions[index].m, test[index].m);
+            expect(positions[index].optM, test[index].optM);
           }
         }
       });
 
-      test('Access geographic positions', () {
-        final geographic = array3.geographic;
+      test('Access as geographic positions', () {
+        final geographic = array3.dataTo(Geographic.create);
         expect(geographic.length, 3);
         expect(geographic.type, type);
 
@@ -120,7 +122,7 @@ void main() {
             );
             expect(
               geographic.get(index, to: Projected.create),
-              isNot(tests[1][index]),
+              tests[1][index],
             );
             expect(geographic[index].lon, test[index].lon);
             expect(geographic[index].lat, test[index].lat);
@@ -146,8 +148,8 @@ void main() {
       expect(xyArray3.type, Coords.xy);
     });
 
-    test('Access projected positions', () {
-      final projected = xyArray3.projected;
+    test('Access as projected positions', () {
+      final projected = xyArray3.dataTo(Projected.create);
       expect(projected.length, 3);
       expect(projected.type, Coords.xy);
 
@@ -171,7 +173,7 @@ void main() {
           expect(projected.get(index, to: Projected.create), tests[1][index]);
           expect(
             projected.get(index, to: Geographic.create),
-            isNot(tests[1][index]),
+            tests[1][index],
           );
           expect(projected[index].x, test[index].x);
           expect(projected[index].y, test[index].y);
@@ -213,7 +215,7 @@ void main() {
     });
 
     test('Access projected positions', () {
-      final projected = xyzmArray3.data(Projected.create);
+      final projected = xyzmArray3.dataTo(Projected.create);
       expect(projected.length, 3);
       expect(projected.type, Coords.xyzm);
 
@@ -237,7 +239,7 @@ void main() {
           expect(projected.get(index, to: Projected.create), tests[1][index]);
           expect(
             projected.get(index, to: Geographic.create),
-            isNot(tests[1][index]),
+            tests[1][index],
           );
           expect(projected[index].x, test[index].x);
           expect(projected[index].y, test[index].y);

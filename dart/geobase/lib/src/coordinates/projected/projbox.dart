@@ -209,7 +209,7 @@ class ProjBox extends Box {
 
   @override
   bool operator ==(Object other) =>
-      other is ProjBox && Box.testEquals(this, other);
+      other is Box && Box.testEquals(this, other);
 
   @override
   int get hashCode => Box.hash(this);

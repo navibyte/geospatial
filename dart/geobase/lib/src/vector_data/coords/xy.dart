@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'package:meta/meta.dart';
+
 import '/src/codes/coords.dart';
 import '/src/coordinates/base.dart';
 import '/src/coordinates/projected.dart';
@@ -18,7 +20,8 @@ import '/src/vector_data/array.dart';
 /// `Iterable<double>` with exactly 2 items.
 ///
 /// See [Projected] for description about supported coordinate values.
-class XY extends ProjectedCoords {
+@immutable
+class XY extends BasePositionCoords implements Projected {
   /// A projected position as an iterable collection of [x] and [y] values.
   factory XY(double x, double y) {
     // create a fixed list of 2 items
@@ -44,9 +47,9 @@ class XY extends ProjectedCoords {
   /// `elementAt` implementations.
   const XY.view(super.source)
       : assert(source.length == 2, 'XY must have exactly 2 values'),
-        super.view();
+        super();
 
-  const XY._(super.source) : super.view();
+  const XY._(super.source) : super();
 
   /// A projected position as an iterable collection parsed from [text].
   ///
@@ -108,7 +111,17 @@ class XY extends ProjectedCoords {
   double? get optM => null;
 
   @override
+  Iterable<double> get values => this;
+
+  @override
   String toString() => '$x,$y';
+
+  @override
+  bool operator ==(Object other) =>
+      other is Position && Position.testEquals(this, other);
+
+  @override
+  int get hashCode => Position.hash(this);
 }
 
 /// A projected position as an iterable collection of x, y and z values.

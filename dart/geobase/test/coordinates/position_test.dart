@@ -81,7 +81,7 @@ void main() {
 
       // copy to
       expect(p1, p1.copyTo(Projected.create));
-      expect(p1, isNot(p1.copyTo(Geographic.create)));
+      expect(p1, p1.copyTo(Geographic.create));
       expect(p1, p1.copyTo(_TestXYZM.create));
       expect(t1, t1.copyTo(Projected.create));
       expect(t1, t1.copyTo(_TestXYZM.create));
@@ -100,8 +100,8 @@ void main() {
       const p7 = Geographic(lon: 1.0, lat: 2.0, elev: 3.0, m: 4.0);
       expect(p1, isNot(p5));
       expect(p1, isNot(p6));
-      expect(p1, isNot(p7));
-      expect(p5, isNot(p6));
+      expect(p1, p7);
+      expect(p5, p6);
       expect(p6, isNot(p7));
 
       final p8 = const Projected(x: 1.0, y: 2.0);
@@ -191,7 +191,7 @@ void main() {
 
       // copy to
       expect(p1, p1.copyTo(Geographic.create));
-      expect(p1, isNot(p1.copyTo(Projected.create)));
+      expect(p1, p1.copyTo(Projected.create));
     });
 
     test('Equals with tolerance', () {
@@ -434,7 +434,7 @@ class _TestXYZM implements Projected {
 
   @override
   bool operator ==(Object other) =>
-      other is Projected && Position.testEquals(this, other);
+      other is Position && Position.testEquals(this, other);
 
   @override
   int get hashCode => Position.hash(this);

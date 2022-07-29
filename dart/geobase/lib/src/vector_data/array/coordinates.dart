@@ -16,16 +16,15 @@ import '/src/utils/num.dart';
 
 part 'box_coords.dart';
 part 'coordinates_mixin.dart';
-part 'geographic_coords.dart';
 part 'position_array.dart';
 part 'position_coords.dart';
-part 'projected_coords.dart';
 
-/// Geospatial coordinate values as an iterable collection.
+/// Geospatial coordinate values as an iterable collection of double values.
 ///
-/// There are two known sub classes; [PositionCoords] containing coordinate
-/// values of a single position and [PositionArray] containing coordinate values
-/// of 0 to N positions.
+/// See also sub classes:
+/// * [PositionArray]: coordinate values of 0 to N positions in a flat structure
+/// * [PositionCoords]: coordinate values of a single position
+/// * [BoxCoords]: coordinate values of a single bounding box
 abstract class Coordinates extends Iterable<double> implements Positionable {}
 
 typedef _CreateAt<T> = T Function(

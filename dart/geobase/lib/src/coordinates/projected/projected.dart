@@ -190,7 +190,7 @@ class Projected extends Position {
 
   @override
   bool operator ==(Object other) =>
-      other is Projected && Position.testEquals(this, other);
+      other is Position && Position.testEquals(this, other);
 
   @override
   int get hashCode => Position.hash(this);
