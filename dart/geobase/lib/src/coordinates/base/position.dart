@@ -71,15 +71,15 @@ typedef TransformPosition = T Function<T extends Position>(T source);
 /// 1     | y         | lat
 /// 2     | z         | elev
 /// 3     | m         | m
-/// 
-/// Sub classes containing coordinate values mentioned above, should implement 
+///
+/// Sub classes containing coordinate values mentioned above, should implement
 /// equality and hashCode methods as:
-/// 
+///
 /// ```dart
 /// @override
 /// bool operator ==(Object other) =>
 ///      other is Position && Position.testEquals(this, other);
-/// 
+///
 /// @override
 /// int get hashCode => Position.hash(this);
 /// ```
@@ -441,6 +441,31 @@ abstract class Position extends Positionable {
     if (position.isMeasured) {
       yield position.m;
     }
+  }
+
+  /// Coordinate values of [position] as a double list of 2, 3 or 4 items.
+  ///
+  /// For projected or cartesian coordinates, the coordinate ordering is:
+  /// (x, y), (x, y, z), (x, y, m) or (x, y, z, m).
+  ///
+  /// For geographic coordinates, the coordinate ordering is:
+  /// (lon, lat), (lon, lat, elev), (lon, lat, m) or (lon, lat, elev, m).
+  static List<double> getDoubleList(Position position) {
+    final type = position.type;
+    final list = List<double>.filled(type.coordinateDimension, 0);
+    list[0] = position.x.toDouble();
+    list[1] = position.y.toDouble();
+    if (type.is3D) {
+      list[2] = position.z.toDouble();
+      if (type.isMeasured) {
+        list[3] = position.m.toDouble();
+      }
+    } else {
+      if (type.isMeasured) {
+        list[2] = position.m.toDouble();
+      }
+    }
+    return list;
   }
 
   /// True if positions [p1] and [p2] equals by testing all coordinate values.

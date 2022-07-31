@@ -12,6 +12,7 @@ import 'dart:typed_data';
 import 'package:geobase/coordinates.dart';
 import 'package:geobase/src/utils/byte_writer.dart';
 import 'package:geobase/vector.dart';
+import 'package:geobase/vector_data.dart';
 
 import 'package:test/test.dart';
 
@@ -30,8 +31,8 @@ void main() {
             ..writeFloat64(4.0, endian), // y
           [
             // three different ways to write POINT(2.0 4.0)
-            (writer) => writer.point(const Projected(x: 2.0, y: 4.0)),
-            (writer) => writer.point(const Geographic(lon: 2.0, lat: 4.0)),
+            (writer) => writer.point(XY(2.0, 4.0)),
+            (writer) => writer.point(LonLat(2.0, 4.0)),
             (writer) => writer.point([2.0, 4.0])
           ],
         );
@@ -45,10 +46,8 @@ void main() {
             ..writeFloat64(-double.nan, endian), // y
           [
             // four different ways to write empty point
-            (writer) =>
-                writer.point(const Projected(x: double.nan, y: double.nan)),
-            (writer) => writer
-                .point(const Geographic(lon: double.nan, lat: double.nan)),
+            (writer) => writer.point(XY(double.nan, double.nan)),
+            (writer) => writer.point(LonLat(double.nan, double.nan)),
             (writer) => writer.point([double.nan, double.nan]),
             (writer) => writer.emptyGeometry(Geom.point),
           ],
@@ -61,8 +60,8 @@ void main() {
           'POINT(2.1 -3.4)',
           [
             // three different ways to write POINT(2.1 -3.4)
-            (writer) => writer.point(const Projected(x: 2.1, y: -3.4)),
-            (writer) => writer.point(const Geographic(lon: 2.1, lat: -3.4)),
+            (writer) => writer.point(XY(2.1, -3.4)),
+            (writer) => writer.point(LonLat(2.1, -3.4)),
             (writer) => writer.point([2.1, -3.4])
           ],
         );
@@ -105,13 +104,14 @@ void main() {
           [1.0, 1.0],
           [2.0, 2.0]
         ];
+        final pointsFlat = [1.0, 1.0, 2.0, 2.0];
         _testEncodeAndDecodeToWKT(
           endian,
           'LINESTRING(1.0 1.0,2.0 2.0),MULTIPOINT(1.0 1.0,2.0 2.0)',
           [
             (writer) => writer
-              ..lineString(points)
-              ..multiPoint(points)
+              ..lineString(pointsFlat, type: Coords.xy)
+              ..multiPoint(points, type: Coords.xy)
           ],
         );
 
@@ -119,7 +119,7 @@ void main() {
           endian,
           'LINESTRING()',
           [
-            (writer) => writer.lineString([]),
+            (writer) => writer.lineString([], type: Coords.xy),
             (writer) => writer.emptyGeometry(Geom.lineString),
           ],
         );
@@ -127,37 +127,34 @@ void main() {
           endian,
           'LINESTRING EMPTY',
           [
-            (writer) => writer.lineString([]),
+            (writer) => writer.lineString([], type: Coords.xy),
             (writer) => writer.emptyGeometry(Geom.lineString),
           ],
           const WkbConf(buildEmptyGeometries: true),
         );
 
-        final linestrings = [
-          [
-            [10.1, 10.1],
-            [5, 9],
-            [12, 4],
-            [10.1, 10.1]
-          ],
+        final linestringsFlat = [
+          [10.1, 10.1, 5.0, 9.0, 12.0, 4.0, 10.1, 10.1],
         ];
         _testEncodeAndDecodeToWKT(
           endian,
           'POLYGON((10.1 10.1,5.0 9.0,12.0 4.0,10.1 10.1))',
-          [(writer) => writer.polygon(linestrings)],
+          [(writer) => writer.polygon(linestringsFlat, type: Coords.xy)],
         );
         _testEncodeAndDecodeToWKT(
           endian,
           'MULTILINESTRING((10.1 10.1,5.0 9.0,12.0 4.0,10.1 10.1))',
-          [(writer) => writer.multiLineString(linestrings)],
+          [
+            (writer) => writer.multiLineString(linestringsFlat, type: Coords.xy)
+          ],
         );
 
-        final multiPolygons = [linestrings, linestrings];
+        final multiPolygons = [linestringsFlat, linestringsFlat];
         _testEncodeAndDecodeToWKT(
           endian,
           'MULTIPOLYGON(((10.1 10.1,5.0 9.0,12.0 4.0,10.1 '
           '10.1)),((10.1 10.1,5.0 9.0,12.0 4.0,10.1 10.1)))',
-          [(writer) => writer.multiPolygon(multiPolygons)],
+          [(writer) => writer.multiPolygon(multiPolygons, type: Coords.xy)],
         );
 
         _testEncodeAndDecodeToWKT(
@@ -167,8 +164,8 @@ void main() {
           [
             (writer) => writer.geometryCollection(
                   (geom) => geom
-                    ..lineString(points)
-                    ..multiPoint(points)
+                    ..lineString(pointsFlat, type: Coords.xy)
+                    ..multiPoint(points, type: Coords.xy)
                     ..point([2.1, -3.4]),
                 )
           ],
@@ -203,20 +200,9 @@ void main() {
         // hex: 0103000000020000000500000000000000008041400000000000002440000000000080464000000000008046400000000000002E40000000000000444000000000000024400000000000003440000000000080414000000000000024400400000000000000000034400000000000003E40000000000080414000000000008041400000000000003E40000000000000344000000000000034400000000000003E40
         'POLYGON((35 10,45 45,15 40,10 20,35 10),(20 30,35 35,30 20,20 30))',
         [
-          (writer) => writer.polygon([
-                [
-                  [35, 10],
-                  [45, 45],
-                  [15, 40],
-                  [10, 20],
-                  [35, 10]
-                ],
-                [
-                  [20, 30],
-                  [35, 35],
-                  [30, 20],
-                  [20, 30]
-                ],
+          (writer) => writer.polygon(type: Coords.xy, [
+                [35, 10, 45, 45, 15, 40, 10, 20, 35, 10],
+                [20, 30, 35, 35, 30, 20, 20, 30],
               ]),
         ],
       );
@@ -230,15 +216,15 @@ void main() {
           (writer) => writer
             ..geometryCollection(
               (geom) => geom
-                ..multiPoint([
-                  [0, 0],
-                  [1, 1]
-                ])
+                ..multiPoint(
+                  [
+                    [0, 0],
+                    [1, 1]
+                  ],
+                  type: Coords.xy,
+                )
                 ..point([3, 4])
-                ..lineString([
-                  [2, 3],
-                  [3, 4]
-                ]),
+                ..lineString([2, 3, 3, 4], type: Coords.xy),
             ),
         ],
       );

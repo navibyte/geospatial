@@ -4,8 +4,12 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+// todo: this code has grown quite complex, separate geojson + wkt writers
+
 import 'dart:convert';
 import 'dart:typed_data';
+
+import 'package:geobase/src/utils/format_validation.dart';
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
@@ -107,7 +111,7 @@ abstract class _BaseTextWriter<T extends Object>
     required Geom geomType,
     String? name,
     Coords? coordType,
-    Object? bbox,
+    Box? bbox,
   }) {
     _startCoordType(coordType);
     return true;
@@ -119,26 +123,30 @@ abstract class _BaseTextWriter<T extends Object>
 
   @override
   void point(
-    Object coordinates, {
-    String? name,
+    Iterable<double> position, {
     Coords? type,
+    String? name,
   }) {
+    final coordType = type ?? Coords.fromDimension(position.length);
     if (_geometryBeforeCoordinates(
       geomType: Geom.point,
       name: name,
-      coordType: type,
+      coordType: coordType,
     )) {
-      _coordPosition(coordinates);
+      _coordPointFromIterator(
+        position.iterator,
+        coordType,
+      );
       _geometryAfterCoordinates();
     }
   }
 
   @override
   void lineString(
-    Iterable<Object> coordinates, {
+    Iterable<double> chain, {
+    required Coords type,
     String? name,
-    Coords? type,
-    Object? bbox,
+    Box? bbox,
   }) {
     if (_geometryBeforeCoordinates(
       geomType: Geom.lineString,
@@ -146,21 +154,17 @@ abstract class _BaseTextWriter<T extends Object>
       coordType: type,
       bbox: bbox,
     )) {
-      _coordArray(count: coordinates.length);
-      for (final pos in coordinates) {
-        _coordPosition(pos);
-      }
-      _coordArrayEnd();
+      _coordPointsFromFlatArray(chain, type);
       _geometryAfterCoordinates();
     }
   }
 
   @override
   void polygon(
-    Iterable<Iterable<Object>> coordinates, {
+    Iterable<Iterable<double>> rings, {
+    required Coords type,
     String? name,
-    Coords? type,
-    Object? bbox,
+    Box? bbox,
   }) {
     if (_geometryBeforeCoordinates(
       geomType: Geom.polygon,
@@ -168,9 +172,9 @@ abstract class _BaseTextWriter<T extends Object>
       coordType: type,
       bbox: bbox,
     )) {
-      _coordArray(count: coordinates.length);
-      for (final item in coordinates) {
-        positions(item);
+      _coordArray(count: rings.length);
+      for (final ring in rings) {
+        _coordPointsFromFlatArray(ring, type);
       }
       _coordArrayEnd();
       _geometryAfterCoordinates();
@@ -179,10 +183,10 @@ abstract class _BaseTextWriter<T extends Object>
 
   @override
   void multiPoint(
-    Iterable<Object> coordinates, {
+    Iterable<Iterable<double>> points, {
+    required Coords type,
     String? name,
-    Coords? type,
-    Object? bbox,
+    Box? bbox,
   }) {
     if (_geometryBeforeCoordinates(
       geomType: Geom.multiPoint,
@@ -190,9 +194,9 @@ abstract class _BaseTextWriter<T extends Object>
       coordType: type,
       bbox: bbox,
     )) {
-      _coordArray(count: coordinates.length);
-      for (final pos in coordinates) {
-        _coordPosition(pos);
+      _coordArray(count: points.length);
+      for (final pos in points) {
+        _coordPointFromIterator(pos.iterator, type);
       }
       _coordArrayEnd();
       _geometryAfterCoordinates();
@@ -201,10 +205,10 @@ abstract class _BaseTextWriter<T extends Object>
 
   @override
   void multiLineString(
-    Iterable<Iterable<Object>> coordinates, {
+    Iterable<Iterable<double>> chains, {
+    required Coords type,
     String? name,
-    Coords? type,
-    Object? bbox,
+    Box? bbox,
   }) {
     if (_geometryBeforeCoordinates(
       geomType: Geom.multiLineString,
@@ -212,9 +216,9 @@ abstract class _BaseTextWriter<T extends Object>
       coordType: type,
       bbox: bbox,
     )) {
-      _coordArray(count: coordinates.length);
-      for (final item in coordinates) {
-        positions(item);
+      _coordArray(count: chains.length);
+      for (final chain in chains) {
+        _coordPointsFromFlatArray(chain, type);
       }
       _coordArrayEnd();
       _geometryAfterCoordinates();
@@ -223,10 +227,10 @@ abstract class _BaseTextWriter<T extends Object>
 
   @override
   void multiPolygon(
-    Iterable<Iterable<Iterable<Object>>> coordinates, {
+    Iterable<Iterable<Iterable<double>>> ringsArray, {
+    required Coords type,
     String? name,
-    Coords? type,
-    Object? bbox,
+    Box? bbox,
   }) {
     if (_geometryBeforeCoordinates(
       geomType: Geom.multiPolygon,
@@ -234,11 +238,11 @@ abstract class _BaseTextWriter<T extends Object>
       coordType: type,
       bbox: bbox,
     )) {
-      _coordArray(count: coordinates.length);
-      for (final item in coordinates) {
-        _coordArray(count: item.length);
-        for (final subItem in item) {
-          positions(subItem);
+      _coordArray(count: ringsArray.length);
+      for (final rings in ringsArray) {
+        _coordArray(count: rings.length);
+        for (final ring in rings) {
+          _coordPointsFromFlatArray(ring, type);
         }
         _coordArrayEnd();
       }
@@ -250,10 +254,10 @@ abstract class _BaseTextWriter<T extends Object>
   @override
   void geometryCollection(
     WriteGeometries geometries, {
+    Coords? type,
     int? count,
     String? name,
-    Coords? type,
-    Object? bbox,
+    Box? bbox,
   }) {
     _startCoordType(type);
     _startObjectArray(count: count);
@@ -271,14 +275,40 @@ abstract class _BaseTextWriter<T extends Object>
 
   void _coordArrayEnd();
 
-  void _coordPosition(Object coordinates) {
-    final type = _coordTypes.isNotEmpty ? _coordTypes.last : null;
-    final pos = Position.createFromObject<Position>(
-      coordinates,
-      to: Projected.create,
-      type: type,
+  void _coordPosition(Position coordinates) {
+    _coordPoint(
+      x: coordinates.x,
+      y: coordinates.y,
+      z: coordinates.optZ,
+      m: coordinates.optM,
     );
-    _coordPoint(x: pos.x, y: pos.y, z: pos.optZ, m: pos.optM);
+  }
+
+  void _coordPointsFromFlatArray(Iterable<double> pointsFlat, Coords type) {
+    final dim = type.coordinateDimension;
+    final numPoints = pointsFlat.length ~/ dim;
+    _coordArray(count: numPoints);
+    final iter = pointsFlat.iterator;
+    for (var i = 0; i < numPoints; i++) {
+      _coordPointFromIterator(iter, type);
+    }
+    _coordArrayEnd();
+  }
+
+  void _coordPointFromIterator(Iterator<double> coords, Coords type) {
+    final x = coords.moveNext() ? coords.current : throw invalidCoordinates;
+    final y = coords.moveNext() ? coords.current : throw invalidCoordinates;
+    final optZ = type.is3D ? (coords.moveNext() ? coords.current : 0.0) : null;
+    final optM =
+        type.isMeasured ? (coords.moveNext() ? coords.current : 0.0) : null;
+
+    final outType = (_coordTypes.isNotEmpty ? _coordTypes.last : null) ?? type;
+    _coordPoint(
+      x: x,
+      y: y,
+      z: outType.is3D ? optZ : null,
+      m: outType.isMeasured ? optM : null,
+    );
   }
 
   void _coordPoint({
@@ -289,29 +319,22 @@ abstract class _BaseTextWriter<T extends Object>
   });
 
   @override
-  void position(Object coordinates, {Coords? type}) {
-    if (type != null) {
-      _startCoordType(type);
-    }
+  void position(Position coordinates) {
+    final type = coordinates.type;
+    _startCoordType(type);
+
     _coordPosition(coordinates);
-    if (type != null) {
-      _endCoordType();
-    }
+
+    _endCoordType();
   }
 
   @override
-  void positions(Iterable<Object> coordinates, {Coords? type}) {
-    if (type != null) {
-      _startCoordType(type);
-    }
+  void positions(Iterable<Position> coordinates) {
     _coordArray(count: coordinates.length);
     for (final pos in coordinates) {
-      position(pos);
+      _coordPosition(pos);
     }
     _coordArrayEnd();
-    if (type != null) {
-      _endCoordType();
-    }
   }
 
   @override
@@ -377,10 +400,9 @@ class DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
   }
 
   @override
-  void box(Object bbox, {Coords? type}) {
-    if (type != null) {
-      _startCoordType(type);
-    }
+  void box(Box bbox) {
+    final type = bbox.type;
+    _startCoordType(type);
 
     if (_markItem()) {
       _buffer.write(',');
@@ -405,9 +427,7 @@ class DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
       _buffer.write(']');
     }
 
-    if (type != null) {
-      _endCoordType();
-    }
+    _endCoordType();
   }
 
   @override
@@ -506,7 +526,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     required Geom geomType,
     String? name,
     Coords? coordType,
-    Object? bbox,
+    Box? bbox,
   }) {
     if (conf.ignoreForeignMembers &&
         _atFeature &&
@@ -527,7 +547,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
       ..write('"');
     if (bbox != null) {
       _buffer.write(',"bbox":[');
-      _subWriter().box(bbox, type: coordType);
+      _subWriter().box(bbox);
       _buffer.write(']');
     }
     _buffer.write(',"coordinates":');
@@ -544,10 +564,10 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
   @override
   void geometryCollection(
     WriteGeometries geometries, {
+    Coords? type,
     int? count,
     String? name,
-    Coords? type,
-    Object? bbox,
+    Box? bbox,
   }) {
     if (conf.ignoreForeignMembers &&
         _atFeature &&
@@ -565,7 +585,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     _buffer.write('{"type":"GeometryCollection"');
     if (bbox != null) {
       _buffer.write(',"bbox":[');
-      _subWriter().box(bbox, type: type);
+      _subWriter().box(bbox);
       _buffer.write(']');
     }
     _buffer.write(',"geometries":');
@@ -804,10 +824,9 @@ class WktLikeTextWriter<T extends Object> extends _BaseTextWriter<T> {
   }
 
   @override
-  void box(Object bbox, {Coords? type}) {
-    if (type != null) {
-      _startCoordType(type);
-    }
+  void box(Box bbox) {
+    final type = bbox.type;
+    _startCoordType(type);
 
     if (_markItem()) {
       _buffer.write(',');
@@ -832,9 +851,7 @@ class WktLikeTextWriter<T extends Object> extends _BaseTextWriter<T> {
       _buffer.write(')');
     }
 
-    if (type != null) {
-      _endCoordType();
-    }
+    _endCoordType();
   }
 
   @override
@@ -937,7 +954,7 @@ class WktTextWriter<T extends Object> extends WktLikeTextWriter<T> {
     required Geom geomType,
     String? name,
     Coords? coordType,
-    Object? bbox,
+    Box? bbox,
   }) {
     if (_markItem()) {
       _buffer.write(',');
@@ -963,10 +980,10 @@ class WktTextWriter<T extends Object> extends WktLikeTextWriter<T> {
   @override
   void geometryCollection(
     WriteGeometries geometries, {
+    Coords? type,
     int? count,
     String? name,
-    Coords? type,
-    Object? bbox,
+    Box? bbox,
   }) {
     if (_markItem()) {
       _buffer.write(',');
@@ -992,25 +1009,15 @@ class WktTextWriter<T extends Object> extends WktLikeTextWriter<T> {
   }
 
   @override
-  void box(Object bbox, {Coords? type}) {
-    // Argument [bbox] should be either Box or Iterable<num> (it latter one,
-    // then a Box instance is created).
-    final box = Box.createFromObject<Box>(bbox, to: ProjBox.create, type: type);
-
+  void box(Box bbox) {
     // WKT does not recognize bounding box, so convert to POLYGON
-    final hasZ = box.is3D;
-    final midZ = hasZ ? 0.5 * box.minZ! + 0.5 * box.maxZ! : null;
-    final hasM = box.isMeasured;
-    final midM = hasM ? 0.5 * box.minM! + 0.5 * box.maxM! : null;
+    final hasZ = bbox.is3D;
+    final midZ = hasZ ? 0.5 * bbox.minZ! + 0.5 * bbox.maxZ! : null;
+    final hasM = bbox.isMeasured;
+    final midM = hasM ? 0.5 * bbox.minM! + 0.5 * bbox.maxM! : null;
 
-    // check optional expected coordinate type
-    final coordType = type ??
-        (_coordTypes.isNotEmpty
-            ? _coordTypes.last
-            : Coords.select(
-                is3D: hasZ,
-                isMeasured: hasM,
-              ));
+    // coordinate type
+    final coordType = bbox.type;
 
     // print polygon geometry
     if (_markItem()) {
@@ -1019,7 +1026,7 @@ class WktTextWriter<T extends Object> extends WktLikeTextWriter<T> {
     _startContainer(_Container.geometry);
     _startCoordType(coordType);
     _buffer.write(Geom.polygon.wktName);
-    final specifier = coordType?.wktSpecifier;
+    final specifier = coordType.wktSpecifier;
     if (specifier != null) {
       _buffer
         ..write(' ')
@@ -1027,11 +1034,11 @@ class WktTextWriter<T extends Object> extends WktLikeTextWriter<T> {
     }
     _coordArray();
     _coordArray();
-    _coordPoint(x: box.minX, y: box.minY, z: box.minZ, m: box.minM);
-    _coordPoint(x: box.maxX, y: box.minY, z: midZ, m: midM);
-    _coordPoint(x: box.maxX, y: box.maxY, z: box.maxZ, m: box.maxM);
-    _coordPoint(x: box.minX, y: box.maxY, z: midZ, m: midM);
-    _coordPoint(x: box.minX, y: box.minY, z: box.minZ, m: box.minM);
+    _coordPoint(x: bbox.minX, y: bbox.minY, z: bbox.minZ, m: bbox.minM);
+    _coordPoint(x: bbox.maxX, y: bbox.minY, z: midZ, m: midM);
+    _coordPoint(x: bbox.maxX, y: bbox.maxY, z: bbox.maxZ, m: bbox.maxM);
+    _coordPoint(x: bbox.minX, y: bbox.maxY, z: midZ, m: midM);
+    _coordPoint(x: bbox.minX, y: bbox.minY, z: bbox.minZ, m: bbox.minM);
     _coordArrayEnd();
     _coordArrayEnd();
     _endCoordType();

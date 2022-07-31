@@ -31,7 +31,24 @@ abstract class BoxCoords extends Box with _CoordinatesMixin {
   /// An iterable collection of [source] may be represented by a [List] or any
   /// [Iterable] with efficient `length` and `elementAt` implementations.
   ///
-  /// The [source] must contain 4, 6 or 8 coordinate values.
+  /// The [source] must contain 4, 6 or 8 coordinate values. Supported
+  /// coordinate value combinations by coordinate [type] are:
+  ///
+  /// Type | Expected values
+  /// ---- | ---------------
+  /// xy   | minX, minY, maxX, maxY
+  /// xyz  | minX, minY, minZ, maxX, maxY, maxZ
+  /// xym  | minX, minY, minM, maxX, maxY, maxM
+  /// xyzm | minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  ///
+  /// Or when data is geographic:
+  ///
+  /// Type | Expected values
+  /// ---- | ---------------
+  /// xy   | west, south, east, north
+  /// xyz  | west, south, minElev, east, north, maxElev
+  /// xym  | west, south, minM, east, north, maxM
+  /// xyzm | west, south, minElev, minM, east, north, maxElev, maxM
   factory BoxCoords.view(Iterable<double> source, {Coords type = Coords.xy}) {
     if (source.length != 2 * type.coordinateDimension) {
       throw invalidCoordinates;
@@ -79,6 +96,9 @@ abstract class BoxCoords extends Box with _CoordinatesMixin {
   /// A bounding box with coordinate values parsed from [text].
   ///
   /// Coordinate values in [text] are separated by [delimiter].
+  /// 
+  /// See [BoxCoords.view] for supported coordinate value combinations for
+  /// coordinate [type].
   ///
   /// Throws FormatException if coordinates are invalid.
   factory BoxCoords.fromText(

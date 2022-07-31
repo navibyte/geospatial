@@ -98,16 +98,15 @@ Tiling schemes, a sample with Web Mercator:
   quad.positionToTile(Geographic(lon: -0.0014, lat: 51.4778), zoom: 2)); 
 ```
 
-A sample to encode a `Point` geometry with a geographic position to
-[GeoJSON](https://geojson.org/):
+A sample to encode a `Point` geometry to [GeoJSON](https://geojson.org/):
 
 ```dart
-  // geometry text format encoder for GeoJSON
-  final encoder = GeoJSON.geometry.encoder();
+  // geometry encoder for GeoJSON, with number of decimals for text output set
+  final encoder = GeoJSON.geometry.encoder(decimals: 1);
 
   // prints:
-  //    {"type":"Point","coordinates":[10.123,20.25]}
-  encoder.content.point(const Geographic(lon: 10.123, lat: 20.25));
+  //    {"type":"Point","coordinates":[10.1,20.3]}
+  encoder.writer.point([10.123, 20.25]);
   print(encoder.toText());
 ```
 
@@ -518,37 +517,12 @@ A sample to encode a `LineString` geometry to GeoJSON:
   //     "bbox":[-1.1,-3.49,3.5,-1.1],
   //     "coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]}
   encoder.writer.lineString(
-    [
-      const Geographic(lon: -1.1, lat: -1.1),
-      const Geographic(lon: 2.1, lat: -2.5),
-      const Geographic(lon: 3.5, lat: -3.49),
-    ],
+    [-1.1, -1.1, 2.1, -2.5, 3.5, -3.49],
+    type: Coords.xy,
     bbox: const GeoBox(west: -1.1, south: -3.49, east: 3.5, north: -1.1),
   );
   print(encoder.toText());
 ```
-
-The sample above can be shortened (instead of `Geographic` and `GeoBox` objects
-coordinates are represented as `Iterable<num>` like `[-1.1, -1.1]` or
-`[-1.1, -3.49, 3.5, -1.1]`):
-
-```dart
-  final encoder = GeoJSON.geometry.encoder();
-  encoder.writer.lineString(
-    [
-      [-1.1, -1.1],
-      [2.1, -2.5],
-      [3.5, -3.49],
-    ],
-    bbox: [-1.1, -3.49, 3.5, -1.1],
-  );
-  print(encoder.toText());
-```
-
-Shortened syntax for writing coordinates as `Iterable<num>` is available for all
-content methods for writing positions, bounding boxes and other geometries, and 
-accepting `Position` (that is `Projected` or `Geographic`) or `Box` (that is
-`ProjBox` or `GeoBox`) objects.
 
 A sample to encode a `Feature` geometry to GeoJSON:
 
@@ -565,7 +539,7 @@ A sample to encode a `Feature` geometry to GeoJSON:
   //        {"foo":100,"bar":"this is property value","baz":true}}
   encoder.writer.feature(
     id: 'fid-1',
-    geometry: (geom) => geom.point(const Geographic(lon: 10.123, lat: 20.25)),
+    geometry: (geom) => geom.point([10.123, 20.25]),
     properties: {
       'foo': 100,
       'bar': 'this is property value',
@@ -592,17 +566,9 @@ A sample to encode a `Point` geometry to WKT (with z and m coordinates too):
   // prints:
   //    POINT ZM(10.123 20.25 -30.95 -1.999)
   encoder.writer.point(
-    const Geographic(lon: 10.123, lat: 20.25, elev: -30.95, m: -1.999),
+    [10.123, 20.25, -30.95, -1.999],
     type: Coords.xyzm,
   );
-  print(encoder.toText());
-```
-
-Or shortened:
-
-```dart
-  final encoder = WKT.geometry.encoder();
-  encoder.writer.point([10.123, 20.25, -30.95, -1.999], type: Coords.xyzm);
   print(encoder.toText());
 ```
 
@@ -654,59 +620,50 @@ parameter. It implements `GeometryContent` interface and inherits following
 methods from `SimpleGeometryContent`:
 
 ```dart
-  /// Writes a point geometry with a position from [coordinates].
-  ///
-  /// The [coordinates] represents a single position of [Position] or
-  /// `Iterable<num>`.
-  ///
-  /// Use an optional [name] to specify a name for a geometry (when applicable).
+  /// Writes a point geometry with [position].
   ///
   /// Use an optional [type] to explicitely specify the type of coordinates.
   ///
-  /// Known [Position] sub classes are [Projected] (projected or cartesian
-  /// coordinates) and [Geographic] (geographic coordinates). Other sub classes
-  /// are supported too.
+  /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
-  /// Allowed [coordinates] value combinations for `Iterable<num>` are:
-  /// (x, y), (x, y, z) and (x, y, z, m).
+  /// Supported coordinate value combinations for `Iterable<double>` are:
+  /// (x, y), (x, y, z), (x, y, m) and (x, y, z, m). Use an optional [type] to
+  /// explicitely set the coordinate type. If not provided and an iterable has
+  /// 3 items, then xyz coordinates are assumed.
   ///
-  /// Examples to write a point geometry with 2D coordinates:
+  /// An example to write a point geometry with 2D coordinates:
   /// ```dart
-  ///    // using coordinate value list (x, y)
+  ///    // using a coordinate value list (x, y)
   ///    content.point([10, 20]);
-  /// 
-  ///    // using the type for positions with projected coordinates
-  ///    // (same coordinates with the previous example)
-  ///    content.point(const Projected(x: 10, y: 20));
   /// ```
   void point(
-    Object coordinates, {
-    String? name,
+    Iterable<double> position, {
     Coords? type,
+    String? name,
   });
 
-  /// Writes a line string geometry with a position array from [coordinates].
-   void lineString(
-    Iterable<Object> coordinates, {
+  /// Writes a line string geometry with a position array from [chain].
+  void lineString(
+    Iterable<double> chain, {
+    required Coords type,
     String? name,
-    Coords? type,
-    Object? bbox,
+    Box? bbox,
   });
 
-  /// Writes a polygon geometry with a position array from [coordinates].
-   void polygon(
-    Iterable<Iterable<Object>> coordinates, {
+  /// Writes a polygon geometry with a position array from [rings].
+  void polygon(
+    Iterable<Iterable<double>> rings, {
+    required Coords type,
     String? name,
-    Coords? type,
-    Object? bbox,
+    Box? bbox,
   });
 
-  /// Writes a multi point geometry with a position array from [coordinates].
-   void multiPoint(
-    Iterable<Object> coordinates, {
+  /// Writes a multi point geometry with a position array from [positions].
+  void multiPoint(
+    Iterable<Iterable<double>> positions, {
+    required Coords type,
     String? name,
-    Coords? type,
-    Object? bbox,
+    Box? bbox,
   });
 
   // Omitted: multiLineString, multiPolygon, geometryCollection, emptyGeometry

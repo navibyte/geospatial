@@ -160,10 +160,10 @@ class MultiPoint<E extends Point> extends Geometry with EquatableMixin {
 
   @override
   void writeTo(SimpleGeometryContent writer) {
-    final point = onePoint;
+    final type = onePoint?.type ?? Coords.xy;
     writer.multiPoint(
-      coordinates,
-      type: point?.type,
+      points.map<Iterable<double>>(Position.getDoubleList),
+      type: type,
       bbox: boundsExplicit,
     );
   }
@@ -260,10 +260,10 @@ class MultiLineString<T extends Point> extends Geometry with EquatableMixin {
 
   @override
   void writeTo(SimpleGeometryContent writer) {
-    final point = onePoint;
+    final type = onePoint?.type ?? Coords.xy;
     writer.multiLineString(
-      coordinates,
-      type: point?.type,
+      lineStrings.map<Iterable<double>>((e) => e.chain.valuesFlat(type)),
+      type: type,
       bbox: boundsExplicit,
     );
   }
@@ -365,10 +365,12 @@ class MultiPolygon<T extends Point> extends Geometry with EquatableMixin {
 
   @override
   void writeTo(SimpleGeometryContent writer) {
-    final point = onePoint;
+    final type = onePoint?.type ?? Coords.xy;
     writer.multiPolygon(
-      coordinates,
-      type: point?.type,
+      polygons.map<Iterable<Iterable<double>>>(
+        (e) => e.rings.map<Iterable<double>>((e) => e.chain.valuesFlat(type)),
+      ),
+      type: type,
       bbox: boundsExplicit,
     );
   }

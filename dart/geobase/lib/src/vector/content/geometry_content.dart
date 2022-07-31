@@ -17,7 +17,6 @@ typedef WriteGeometries = void Function(GeometryContent output);
 /// [SimpleGeometryContent]. It's possible that in future other geometry types
 /// are added to be supported.
 ///
-/// Coordinate positions are represented either as [Position] or
-/// `Iterable<num>`. Bounding boxes are represented either as [Box] or
-/// `Iterable<num>`.
+/// Coordinate positions and position arrays are represented as coordinate value
+/// arrays of `Iterable<double>`. Bounding boxes are represented as [Box].
 mixin GeometryContent implements SimpleGeometryContent {}

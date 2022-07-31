@@ -105,6 +105,11 @@ abstract class PointSeries<E extends Point>
 
   /// Writes this point series object to [writer].
   void writeTo(CoordinateContent writer);
+
+  /// Coordinate (double) values of points (of [type]) as a flat structure.
+  /// 
+  /// If [type] is not given, then `Coords.xy` coordinates are returned.
+  Iterable<double> valuesFlat([Coords? type]);
 }
 
 /// A partial implementation of [PointSeries] as a mixin.
@@ -130,6 +135,22 @@ mixin PointSeriesMixin<E extends Point> implements PointSeries<E> {
 
   @override
   void writeTo(CoordinateContent writer) => writer.positions(this);
+
+  @override
+  Iterable<double> valuesFlat([Coords? type]) sync* {
+    for (final point in this) {
+      yield point.x.toDouble();
+      yield point.y.toDouble();
+      if (type != null) {
+        if (type.is3D) {
+          yield point.z.toDouble();
+        }
+        if (type.isMeasured) {
+          yield point.m.toDouble();
+        }
+      }
+    }
+  }
 
   @override
   String toString() {

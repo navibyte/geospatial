@@ -22,177 +22,140 @@ typedef WriteSimpleGeometries = void Function(SimpleGeometryContent output);
 /// `lineString`, `polygon`, `multiPoint`, `multiLineString`, `multiPolygon`,
 /// `geometryCollection`.
 ///
-/// Coordinate positions are represented either as [Position] or
-/// `Iterable<num>`. Bounding boxes are represented either as [Box] or
-/// `Iterable<num>`.
+/// Coordinate positions and position arrays are represented as coordinate value
+/// arrays of `Iterable<double>`. Bounding boxes are represented as [Box].
 abstract class SimpleGeometryContent {
-  /// Writes a point geometry with a position from [coordinates].
-  ///
-  /// The [coordinates] represents a single position of [Position] or
-  /// `Iterable<num>`.
-  ///
-  /// Use an optional [name] to specify a name for a geometry (when applicable).
+  /// Writes a point geometry with [position].
   ///
   /// Use an optional [type] to explicitely specify the type of coordinates.
   ///
-  /// Known [Position] sub classes are [Projected] (projected or cartesian
-  /// coordinates) and [Geographic] (geographic coordinates). Other sub classes
-  /// are supported too.
+  /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
-  /// Supported coordinate value combinations for `Iterable<num>` are:
+  /// Supported coordinate value combinations for `Iterable<double>` are:
   /// (x, y), (x, y, z), (x, y, m) and (x, y, z, m). Use an optional [type] to
   /// explicitely set the coordinate type. If not provided and an iterable has
   /// 3 items, then xyz coordinates are assumed.
   ///
-  /// Examples to write a point geometry with 2D coordinates:
+  /// An example to write a point geometry with 2D coordinates:
   /// ```dart
-  ///    // using coordinate value list (x, y)
+  ///    // using a coordinate value list (x, y)
   ///    content.point([10, 20]);
-  ///
-  ///    // using the type for positions with projected coordinates
-  ///    // (same coordinates with the previous example)
-  ///    content.point(const Projected(x: 10, y: 20));
   /// ```
   ///
-  /// Examples to write a point geometry with 3D coordinates:
+  /// An example to write a point geometry with 3D coordinates:
   /// ```dart
-  ///    // using coordinate value list (x, y, z)
+  ///    // using a coordinate value list (x, y, z)
   ///    content.point([10, 20, 30]);
-  ///
-  ///    // using the type for positions with geographic coordinates
-  ///    content.point(const Geographic(lon: 10, lat: 20, elev: 30));
   /// ```
   ///
   /// An example to write a point geometry with 2D coordinates with measurement:
   /// ```dart
-  ///    // using coordinate value list (x, y, m), need to specify type
+  ///    // using a coordinate value list (x, y, m), need to specify type
   ///    content.position([10, 20, 40], type: Coords.xym);
-  ///
-  ///    // using the type for positions with projected coordinates
-  ///    content.point(const Projected(x: 10, y: 20, m: 40));
   /// ```
   ///
-  /// Examples to write a point geometry with 3D coordinates with measurement:
+  /// An example to write a point geometry with 3D coordinates with measurement:
   /// ```dart
-  ///    // using coordinate value list (x, y, z, m)
+  ///    // using a coordinate value list (x, y, z, m)
   ///    content.point([10, 20, 30, 40]);
-  ///
-  ///    // using the type for positions with projected coordinates
-  ///    content.point(const Projected(x: 10, y: 20, z: 30, m: 40));
   /// ```
   void point(
-    Object coordinates, {
-    String? name,
+    Iterable<double> position, {
     Coords? type,
+    String? name,
   });
 
-  /// Writes a line string geometry with a position array from [coordinates].
+  /// Writes a line string geometry with a position array from [chain].
   ///
-  /// The [coordinates] iterable is an array containing `Object` items
-  /// representing positions of points in a line string. Supported sub classes
-  /// for items are [Position] and `Iterable<num>`.
+  /// Use the required [type] to explicitely specify the type of coordinates.
   ///
+  /// The [chain] array contains coordinate values of chain positions as a flat
+  /// structure. For example for `Coords.xyz` the first three coordinate values
+  /// are x, y and z of the first position, the next three coordinate values are
+  /// x, y and z of the second position, and so on.
+  /// 
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
-  /// Use an optional [type] to explicitely specify the type of coordinates.
-  ///
-  /// An optional [bbox] of [Box] or `Iterable<num>` can used set a minimum
-  /// bounding box for a geometry written. A writer implementation may use it or
-  /// ignore it.
-  ///
-  /// Known [Position] sub classes are [Projected] (projected or cartesian
-  /// coordinates) and [Geographic] (geographic coordinates). Known [Box] sub
-  /// classes are [ProjBox] (projected or cartesian coordinates) and [GeoBox]
-  /// (geographic coordinates). Other sub classes are supported too.
-  ///
-  /// See `Position.createFromCoords` and `Box.createFromCoords` for supported
-  /// coordinate combinations for `Iterable<num>` data.
+  /// An optional [bbox] of [Box] can used set a minimum bounding box for a
+  /// geometry written. A writer implementation may use it or ignore it. Known
+  /// [Box] sub classes are [ProjBox] (projected or cartesian coordinates) and
+  /// [GeoBox] (geographic coordinates). Other sub classes are supported too.
   ///
   /// An example to write a line string with 3 points and a bounding box:
   /// ```dart
   ///   content.lineString(
+  ///       // points as a flat structure with three (x, y) points
   ///       [
-  ///            [-1.1, -1.1],
-  ///            [2.1, -2.5],
-  ///            [3.5, -3.49],
+  ///            -1.1, -1.1,
+  ///            2.1, -2.5,
+  ///            3.5, -3.49,
   ///       ],
-  ///       bbox: [-1.1, -3.49, 3.5, -1.1],
+  ///       type: Coords.xy,
+  ///       bbox: Box(minX: -1.1, minY: -3.49, maxX: 3.5, maxY: -1.1),
   ///   );
   /// ```
   void lineString(
-    Iterable<Object> coordinates, {
+    Iterable<double> chain, {
+    required Coords type,
     String? name,
-    Coords? type,
-    Object? bbox,
+    Box? bbox,
   });
 
-  /// Writes a polygon geometry with a position array from [coordinates].
+  /// Writes a polygon geometry with a position array from [rings].
   ///
-  /// The [coordinates] iterable is an array of arrays containing `Object` items
-  /// representing positions of points in linear rings (outer and inner) of a
-  /// polygon. Supported sub classes for items are [Position] and
-  /// `Iterable<num>`.
+  /// Use the required [type] to explicitely specify the type of coordinates.
   ///
+  /// The [rings] iterable is an array of arrays containing coordinate values of
+  /// linear rings (outer and inner) of a polygon as a flat structure. For
+  /// example for `Coords.xyz` the first three coordinate values are x, y and z
+  /// of the first position, the next three coordinate values are x, y and z of
+  /// the second position, and so on.
+  /// 
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
-  /// Use an optional [type] to explicitely specify the type of coordinates.
-  ///
-  /// An optional [bbox] of [Box] or `Iterable<num>` can used set a minimum
-  /// bounding box for a geometry written. A writer implementation may use it or
-  /// ignore it.
-  ///
-  /// Known [Position] sub classes are [Projected] (projected or cartesian
-  /// coordinates) and [Geographic] (geographic coordinates). Known [Box] sub
-  /// classes are [ProjBox] (projected or cartesian coordinates) and [GeoBox]
-  /// (geographic coordinates). Other sub classes are supported too.
-  ///
-  /// Allowed [coordinates] value combinations for `Iterable<num>` are:
-  ///
-  /// See `Position.createFromCoords` and `Box.createFromCoords` for supported
-  /// coordinate combinations for `Iterable<num>` data.
+  /// An optional [bbox] of [Box] can used set a minimum bounding box for a
+  /// geometry written. A writer implementation may use it or ignore it. Known
+  /// [Box] sub classes are [ProjBox] (projected or cartesian coordinates) and
+  /// [GeoBox] (geographic coordinates). Other sub classes are supported too.
   ///
   /// An example to write a polygon geometry with one linear ring containing
   /// 4 points:
   /// ```dart
   ///  content.polygon(
+  ///      // an array of linear rings
   ///      [
+  ///        // a linear ring as a flat structure with four (x, y) points
   ///        [
-  ///          [10.1, 10.1],
-  ///          [5, 9],
-  ///          [12, 4],
-  ///          [10.1, 10.1],
+  ///          10.1, 10.1,
+  ///          5.0, 9.0,
+  ///          12.0, 4.0,
+  ///          10.1, 10.1,
   ///        ],
   ///      ],
+  ///      type: Coords.xy,
   ///  );
   /// ```
   void polygon(
-    Iterable<Iterable<Object>> coordinates, {
+    Iterable<Iterable<double>> rings, {
+    required Coords type,
     String? name,
-    Coords? type,
-    Object? bbox,
+    Box? bbox,
   });
 
-  /// Writes a multi point geometry with a position array from [coordinates].
+  /// Writes a multi point geometry with a position array from [positions].
   ///
-  /// The [coordinates] iterable is an array containing `Object` items
-  /// representing positions of points in a multi point collection. Supported
-  /// sub classes for items are [Position] and `Iterable<num>`.
+  /// Use the required [type] to explicitely set the coordinate type. 
+  /// 
+  /// The [positions] iterable is an array containing `Iterable<double>` items
+  /// each representing a position. Supported coordinate value combinations for
+  /// positions are: (x, y), (x, y, z), (x, y, m) and (x, y, z, m). 
   ///
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
-  /// Use an optional [type] to explicitely specify the type of coordinates.
-  ///
-  /// An optional [bbox] of [Box] or `Iterable<num>` can used set a minimum
-  /// bounding box for a geometry written. A writer implementation may use it or
-  /// ignore it.
-  ///
-  /// Known [Position] sub classes are [Projected] (projected or cartesian
-  /// coordinates) and [Geographic] (geographic coordinates). Known [Box] sub
-  /// classes are [ProjBox] (projected or cartesian coordinates) and [GeoBox]
-  /// (geographic coordinates). Other sub classes are supported too.
-  ///
-  /// See `Position.createFromCoords` and `Box.createFromCoords` for supported
-  /// coordinate combinations for `Iterable<num>` data.
+  /// An optional [bbox] of [Box] can used set a minimum bounding box for a
+  /// geometry written. A writer implementation may use it or ignore it. Known
+  /// [Box] sub classes are [ProjBox] (projected or cartesian coordinates) and
+  /// [GeoBox] (geographic coordinates). Other sub classes are supported too.
   ///
   /// An example to write a multi point geometry with 3 points:
   /// ```dart
@@ -202,160 +165,154 @@ abstract class SimpleGeometryContent {
   ///            [2.1, -2.5],
   ///            [3.5, -3.49],
   ///       ],
+  ///       type: Coords.xy,
   ///   );
   /// ```
   void multiPoint(
-    Iterable<Object> coordinates, {
+    Iterable<Iterable<double>> positions, {
+    required Coords type,
     String? name,
-    Coords? type,
-    Object? bbox,
+    Box? bbox,
   });
 
-  /// Writes a multi line string with a position array from [coordinates].
+  /// Writes a multi line string with a position array from [chains].
   ///
-  /// The [coordinates] iterable is an array of arrays containing `Object` items
-  /// representing positions of points in line strings of a multi line string
-  /// collection. Supported sub classes for items are [Position] and
-  /// `Iterable<num>`.
+  /// Use the required [type] to explicitely specify the type of coordinates.
   ///
+  /// The [chains] iterable is an array of arrays containing coordinate values
+  /// of chains in a multi line string as a flat structure. For example for
+  /// `Coords.xyz` the first three coordinate values are x, y and z of the first
+  /// position, the next three coordinate values are x, y and z of the second
+  /// position, and so on.
+  /// 
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
-  /// Use an optional [type] to explicitely specify the type of coordinates.
-  ///
-  /// An optional [bbox] of [Box] or `Iterable<num>` can used set a minimum
-  /// bounding box for a geometry written. A writer implementation may use it or
-  /// ignore it.
-  ///
-  /// Known [Position] sub classes are [Projected] (projected or cartesian
-  /// coordinates) and [Geographic] (geographic coordinates). Known [Box] sub
-  /// classes are [ProjBox] (projected or cartesian coordinates) and [GeoBox]
-  /// (geographic coordinates). Other sub classes are supported too.
-  ///
-  /// See `Position.createFromCoords` and `Box.createFromCoords` for supported
-  /// coordinate combinations for `Iterable<num>` data.
+  /// An optional [bbox] of [Box] can used set a minimum bounding box for a
+  /// geometry written. A writer implementation may use it or ignore it. Known
+  /// [Box] sub classes are [ProjBox] (projected or cartesian coordinates) and
+  /// [GeoBox] (geographic coordinates). Other sub classes are supported too.
   ///
   /// An example to write a multi line string with two line strings:
   /// ```dart
   ///  content.multiLineString(
+  ///      // an array of chains (one chain for each line string)
   ///      [
+  ///        // a chain as a flat structure with four (x, y) points
   ///        [
-  ///          [10.1, 10.1],
-  ///          [5, 9],
-  ///          [12, 4],
-  ///          [10.1, 10.1],
+  ///          10.1, 10.1,
+  ///          5.0, 9.0,
+  ///          12.0, 4.0,
+  ///          10.1, 10.1,
   ///        ],
+  ///        // a chain as a flat structure with three (x, y) points
   ///        [
-  ///          [-1.1, -1.1],
-  ///          [2.1, -2.5],
-  ///          [3.5, -3.49],
+  ///          -1.1, -1.1,
+  ///          2.1, -2.5,
+  ///          3.5, -3.49,
   ///        ],
   ///      ],
+  ///      type: Coords.xy,
   ///  );
   /// ```
   void multiLineString(
-    Iterable<Iterable<Object>> coordinates, {
+    Iterable<Iterable<double>> chains, {
+    required Coords type,
     String? name,
-    Coords? type,
-    Object? bbox,
+    Box? bbox,
   });
 
-  /// Writes a multi polygon geometry with a position array from [coordinates].
+  /// Writes a multi polygon geometry with a position array from [ringsArray].
   ///
-  /// The [coordinates] iterable is an array of arrays of arrays containing
-  /// `Object` items representing positions of points in linear rings (outer and
-  /// inner) of polygons in a multi polygon collection. Supported sub classes
-  /// for items are [Position] and `Iterable<num>`.
+  /// Use the required [type] to explicitely specify the type of coordinates.
   ///
+  /// The [ringsArray] iterable is an array of arrays of arrays containing
+  /// coordinate values of linear rings (outer and inner) of a polygon as a
+  /// flat structure. For example for `Coords.xyz` the first three coordinate
+  /// values are x, y and z of the first position, the next three coordinate
+  /// values are x, y and z of the second position, and so on.
+  /// 
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
-  /// Use an optional [type] to explicitely specify the type of coordinates.
-  ///
-  /// An optional [bbox] of [Box] or `Iterable<num>` can used set a minimum
-  /// bounding box for a geometry written. A writer implementation may use it or
-  /// ignore it.
-  ///
-  /// Known [Position] sub classes are [Projected] (projected or cartesian
-  /// coordinates) and [Geographic] (geographic coordinates). Known [Box] sub
-  /// classes are [ProjBox] (projected or cartesian coordinates) and [GeoBox]
-  /// (geographic coordinates). Other sub classes are supported too.
-  ///
-  /// See `Position.createFromCoords` and `Box.createFromCoords` for supported
-  /// coordinate combinations for `Iterable<num>` data.
+  /// An optional [bbox] of [Box] can used set a minimum bounding box for a
+  /// geometry written. A writer implementation may use it or ignore it. Known
+  /// [Box] sub classes are [ProjBox] (projected or cartesian coordinates) and
+  /// [GeoBox] (geographic coordinates). Other sub classes are supported too.
   ///
   /// An example to write a multi polygon geometry with two polygons:
   /// ```dart
   ///  content.multiPolygon(
+  ///      // an array of polygons
   ///      [
+  ///        // an array of linear rings of the first polygon
   ///        [
+  ///          // a linear ring as a flat structure with four (x, y) points
   ///          [
-  ///            [10.1, 10.1],
-  ///            [5, 9],
-  ///            [12, 4],
-  ///            [10.1, 10.1],
+  ///            10.1, 10.1,
+  ///            5.0, 9.0,
+  ///            12.0, 4.0,
+  ///            10.1, 10.1,
   ///          ],
   ///        ],
+  ///        // an array of linear rings of the second polygon
   ///        [
+  ///          // a linear ring as a flat structure with four (x, y) points
   ///          [
-  ///            [110.1, 110.1],
-  ///            [15, 19],
-  ///            [112, 14],
-  ///            [110.1, 110.1],
+  ///            110.1, 110.1,
+  ///            15.0, 19.0,
+  ///            112.0, 14.0,
+  ///            110.1, 110.1,
   ///          ],
   ///        ],
   ///      ],
   ///  );
   /// ```
   void multiPolygon(
-    Iterable<Iterable<Iterable<Object>>> coordinates, {
+    Iterable<Iterable<Iterable<double>>> ringsArray, {
+    required Coords type,
     String? name,
-    Coords? type,
-    Object? bbox,
+    Box? bbox,
   });
 
   /// Writes a geometry collection of [geometries].
+  ///
+  /// Use an optional [type] to explicitely specify the type of coordinates.
   ///
   /// An optional expected [count], when given, specifies the number of geometry
   /// objects in a collection. Note that when given a count MUST be exact.
   ///
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
-  /// Use an optional [type] to explicitely specify the type of coordinates.
-  ///
-  /// An optional [bbox] of [Box] or `Iterable<num>` can used set a minimum
-  /// bounding box for a geometry written. A writer implementation may use it or
-  /// ignore it.
-  ///
-  /// Known [Box] sub classes are [ProjBox] (projected or cartesian coordinates)
-  /// and [GeoBox] (geographic coordinates). Other sub classes are supported
-  /// too.
-  ///
-  /// See `Box.createFromCoords` for supported coordinate combinations for
-  /// `Iterable<num>` data.
+  /// An optional [bbox] of [Box] can used set a minimum bounding box for a
+  /// geometry written. A writer implementation may use it or ignore it. Known
+  /// [Box] sub classes are [ProjBox] (projected or cartesian coordinates) and
+  /// [GeoBox] (geographic coordinates). Other sub classes are supported too.
   ///
   /// An example to write a geometry collection with two child geometries:
   /// ```dart
   ///   content.geometryCollection(
+  ///       type: Coords.xy
   ///       count: 2,
   ///       (geom) => geom
-  ///         ..point([10.123, 20.25, -30.95], type: Coords.xyz)
+  ///         ..point([10.123, 20.25])
   ///         ..polygon(
   ///           [
-  ///             [
-  ///               const Geographic(lon: 10.1, lat: 10.1),
-  ///               const Geographic(lon: 5, lat: 9),
-  ///               const Geographic(lon: 12, lat: 4),
-  ///               const Geographic(lon: 10.1, lat: 10.1)
-  ///             ],
+  ///              [
+  ///                 10.1, 10.1,
+  ///                 5.0, 9.0,
+  ///                 12.0, 4.0,
+  ///                 10.1, 10.1,
+  ///              ],
   ///           ],
+  ///           type: Coords.xy,
   ///         ),
   ///     );
   /// ```
   void geometryCollection(
     WriteSimpleGeometries geometries, {
+    Coords? type,
     int? count,
     String? name,
-    Coords? type,
-    Object? bbox,
+    Box? bbox,
   });
 
   /// Writes an empty geometry of [type].

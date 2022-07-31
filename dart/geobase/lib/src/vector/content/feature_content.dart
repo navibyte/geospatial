@@ -22,12 +22,11 @@ mixin FeatureContent {
   /// objects in a collection. Note that when given a count MUST be exact.
   ///
   /// An optional [bbox] can used set a minimum bounding box for a feature
-  /// collection written. A writer implementation may use it or ignore it.
+  /// collection written. A writer implementation may use it or ignore it. Known
+  /// [Box] sub classes are [ProjBox] (projected or cartesian coordinates) and
+  /// [GeoBox] (geographic coordinates). Other sub classes are supported too.
   ///
   /// Use [extra] to write any extra or "foreign member" properties.
-  ///
-  /// Known [Box] sub classes are [ProjBox] (projected or cartesian coordinates)
-  /// and [GeoBox] (geographic coordinates).
   ///
   /// An example:
   /// ```dart
@@ -65,13 +64,12 @@ mixin FeatureContent {
   /// recommended to use the `name` argument when writing those other.
   ///
   /// An optional [bbox] can used set a minimum bounding box for a feature
-  /// written. A writer implementation may use it or ignore it.
+  /// written. A writer implementation may use it or ignore it. Known [Box] sub
+  /// classes are [ProjBox] (projected or cartesian coordinates) and [GeoBox]
+  /// (geographic coordinates). Other sub classes are supported too.
   ///
   /// Use [extra] to write any extra or "foreign member" properties along with
   /// those set by [properties].
-  ///
-  /// Known [Box] sub classes are [ProjBox] (projected or cartesian coordinates)
-  /// and [GeoBox] (geographic coordinates).
   ///
   /// An example:
   /// ```dart

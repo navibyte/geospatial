@@ -263,15 +263,18 @@ void main() {
       ring1,
     ]);
     test('MultiLineString', () {
-      expect(multiLine1.toStringAs(format: WktLikeFormat.geometry),
-          '(-1.1 -1.1,2.1 -2.5,3.5 -3.49),(10.1 10.1,5 9,12 4,10.1 10.1)');
+      expect(
+          multiLine1.toStringAs(format: WktLikeFormat.geometry),
+          '(-1.1 -1.1,2.1 -2.5,3.5 -3.49),(10.1 10.1,5.0 9.0,12.0'
+          ' 4.0,10.1 10.1)');
     });
 
     final polygon1 = Polygon([ring1]);
     test('Polygon', () {
-      expect(polygon1.toString(), '[[10.1,10.1],[5,9],[12,4],[10.1,10.1]]');
+      expect(polygon1.toString(),
+          '[[10.1,10.1],[5.0,9.0],[12.0,4.0],[10.1,10.1]]');
       expect(polygon1.toStringAs(format: WktLikeFormat.geometry),
-          '(10.1 10.1,5 9,12 4,10.1 10.1)');
+          '(10.1 10.1,5.0 9.0,12.0 4.0,10.1 10.1)');
     });
 
     final multiPolygon1 = MultiPolygon([

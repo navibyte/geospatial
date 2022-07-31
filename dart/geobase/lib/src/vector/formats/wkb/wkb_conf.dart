@@ -17,21 +17,13 @@ class WkbConf with EquatableMixin {
   /// points) via `lineString` method.
   final bool buildEmptyGeometries;
 
-  /// When true, child geometries are encoded with same coordinate type as their
-  /// geometry collection.
-  ///
-  /// This is applied only when encoding WKB binary data.
-  final bool forceCoordTypeOfItemsOnGeometryCollection;
-
   /// Optional configuration parameters for encoding and decoding WKB.
   const WkbConf({
     this.buildEmptyGeometries = false,
-    this.forceCoordTypeOfItemsOnGeometryCollection = false,
   });
 
   @override
   List<Object?> get props => [
         buildEmptyGeometries,
-        forceCoordTypeOfItemsOnGeometryCollection,
       ];
 }

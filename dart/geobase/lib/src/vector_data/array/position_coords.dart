@@ -126,6 +126,25 @@ class PositionCoords extends BasePositionCoords {
   ///
   /// An iterable collection of `source` may be represented by a [List] or any
   /// [Iterable] with efficient `length` and `elementAt` implementations.
+  ///
+  /// The `source` must contain 2, 3 or 4 coordinate values. Supported
+  /// coordinate value combinations by coordinate [type] are:
+  ///
+  /// Type | Expected values
+  /// ---- | ---------------
+  /// xy   | x, y
+  /// xyz  | x, y, z
+  /// xym  | x, y, m
+  /// xyzm | x, y, z, m
+  ///
+  /// Or when data is geographic:
+  ///
+  /// Type | Expected values
+  /// ---- | ---------------
+  /// xy   | lon, lat
+  /// xyz  | lon, lat, elev
+  /// xym  | lon, lat, m
+  /// xyzm | lon, lat, elev, m
   const PositionCoords.view(super.source, {super.type = Coords.xy}) : super();
 
   /// A geospatial position as an iterable collection of [x], [y], and optional
@@ -150,11 +169,8 @@ class PositionCoords extends BasePositionCoords {
   ///
   /// Coordinate values in [text] are separated by [delimiter].
   ///
-  /// Supported coordinate value combinations for [text] are:
-  /// (x, y), (x, y, z), (x, y, m) and (x, y, z, m).
-  ///
-  /// Or for geographic coordinates values combinations are:
-  /// (lon, lat), (lon, lat, elev), (lon, lat, m) or (lon, lat, elev, m)
+  /// See [PositionCoords.view] for supported coordinate value combinations for
+  /// coordinate [type].
   ///
   /// Use an optional [type] to explicitely set the coordinate type. If not
   /// provided and [text] has 3 items, then xyz coordinates are assumed.

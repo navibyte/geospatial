@@ -167,10 +167,8 @@ abstract class Point<C extends num> extends Geometry
   }
 
   @override
-  void writeTo(SimpleGeometryContent writer) => writer.point(
-        this,
-        type: type,
-      );
+  void writeTo(SimpleGeometryContent writer) =>
+      writer.point(Position.getDoubleList(this), type: type);
 
   @override
   R copyTo<R extends Position>(CreatePosition<R> factory) =>

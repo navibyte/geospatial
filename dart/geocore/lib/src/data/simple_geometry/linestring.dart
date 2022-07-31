@@ -121,10 +121,10 @@ class LineString<T extends Point> extends Geometry with EquatableMixin {
 
   @override
   void writeTo(SimpleGeometryContent writer) {
-    final point = onePoint;
+    final type = onePoint?.type ?? Coords.xy;
     writer.lineString(
-      coordinates,
-      type: point?.type,
+      chain.valuesFlat(type),
+      type: type,
       bbox: boundsExplicit,
     );
   }

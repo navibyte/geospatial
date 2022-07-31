@@ -94,7 +94,7 @@ class _WkbGeometryBufferDecoder {
   }
 
   void _buildPoint(Coords coordType, Endian endian) {
-    final point = _readPoint(coordType, endian);
+    final point = _readPosition(coordType, endian);
     if (conf.buildEmptyGeometries &&
         point[0] == double.nan &&
         point[1] == double.nan) {
@@ -102,15 +102,12 @@ class _WkbGeometryBufferDecoder {
       //                             https://trac.osgeo.org/postgis/ticket/3181
       builder.emptyGeometry(Geom.point);
     } else {
-      builder.point(
-        point,
-        type: coordType,
-      );
+      builder.point(point, type: coordType);
     }
   }
 
   void _buildLineString(Coords coordType, Endian endian) {
-    final array = _readPointArray(coordType, endian);
+    final array = _readFlatPositionArray(coordType, endian);
     if (conf.buildEmptyGeometries && array.isEmpty) {
       builder.emptyGeometry(Geom.lineString);
     } else {
@@ -119,7 +116,7 @@ class _WkbGeometryBufferDecoder {
   }
 
   void _buildPolygon(Coords coordType, Endian endian) {
-    final array = _readLineStringArray(coordType, endian);
+    final array = _readFlatLineStringArray(coordType, endian);
     if (conf.buildEmptyGeometries && array.isEmpty) {
       builder.emptyGeometry(Geom.polygon);
     } else {
@@ -129,7 +126,7 @@ class _WkbGeometryBufferDecoder {
 
   void _buildMultiPoint(Coords coordType, Endian endian) {
     final array =
-        _readPointArray(coordType, endian, requireHeaderForItems: true);
+        _readPositionArray(coordType, endian, requireHeaderForItems: true);
     if (conf.buildEmptyGeometries && array.isEmpty) {
       builder.emptyGeometry(Geom.multiPoint);
     } else {
@@ -138,8 +135,11 @@ class _WkbGeometryBufferDecoder {
   }
 
   void _buildMultiLineString(Coords coordType, Endian endian) {
-    final array =
-        _readLineStringArray(coordType, endian, requireHeaderForItems: true);
+    final array = _readFlatLineStringArray(
+      coordType,
+      endian,
+      requireHeaderForItems: true,
+    );
     if (conf.buildEmptyGeometries && array.isEmpty) {
       builder.emptyGeometry(Geom.multiLineString);
     } else {
@@ -149,7 +149,7 @@ class _WkbGeometryBufferDecoder {
 
   void _buildMultiPolygon(Coords coordType, Endian endian) {
     final array =
-        _readPolygonArray(coordType, endian, requireHeaderForItems: true);
+        _readFlatPolygonArray(coordType, endian, requireHeaderForItems: true);
     if (conf.buildEmptyGeometries && array.isEmpty) {
       builder.emptyGeometry(Geom.multiPolygon);
     } else {
@@ -187,25 +187,39 @@ class _WkbGeometryBufferDecoder {
     return Coords.fromWkbId(typeId);
   }
 
-  List<double> _readPoint(Coords coordType, Endian endian) {
+  List<double> _readPosition(
+    Coords coordType,
+    Endian endian, {
+    Coords? outputType,
+  }) {
     // all points has at least x and y values
     final x = buffer.readFloat64(endian);
     final y = buffer.readFloat64(endian);
 
-    // by coordinate type create and return position as iterable of coordinates
-    switch (coordType) {
-      case Coords.xy:
-        return [x, y];
-      case Coords.xyz:
-        return [x, y, buffer.readFloat64(endian)];
-      case Coords.xym:
-        return [x, y, buffer.readFloat64(endian)];
-      case Coords.xyzm:
-        return [x, y, buffer.readFloat64(endian), buffer.readFloat64(endian)];
+    // read also z and m if input data has them
+    final optZ = coordType.is3D ? buffer.readFloat64(endian) : null;
+    final optM = coordType.isMeasured ? buffer.readFloat64(endian) : null;
+
+    // coordinate type for returned List<double> list
+    final type = outputType ?? coordType;
+
+    // create fixed size list for point coordinates
+    final list = List<double>.filled(type.coordinateDimension, 0);
+    list[0] = x;
+    list[1] = y;
+
+    // write z and m if output needs them
+    if (type.is3D) {
+      list[2] = optZ ?? 0.0;
     }
+    if (type.isMeasured) {
+      list[type.indexForM!] = optM ?? 0.0;
+    }
+
+    return list;
   }
 
-  List<Iterable<double>> _readPointArray(
+  List<List<double>> _readPositionArray(
     Coords coordType,
     Endian endian, {
     bool requireHeaderForItems = false,
@@ -215,7 +229,7 @@ class _WkbGeometryBufferDecoder {
 
     // return a generated list of points
     if (requireHeaderForItems) {
-      return List<Iterable<double>>.generate(
+      return List<List<double>>.generate(
         numPoints,
         (_) {
           // read byte order + type, expect point geom, and return coord type
@@ -225,33 +239,75 @@ class _WkbGeometryBufferDecoder {
             pointEndian,
           );
           // read point and add it to a list to be generated
-          return _readPoint(pointCoordType, pointEndian);
+          return _readPosition(
+            pointCoordType,
+            pointEndian,
+            outputType: coordType,
+          );
         },
         growable: false,
       );
     } else {
-      return List<Iterable<double>>.generate(
+      return List<List<double>>.generate(
         numPoints,
         (_) {
           // read point and add it to a list to be generated
-          return _readPoint(coordType, endian);
+          return _readPosition(coordType, endian);
         },
         growable: false,
       );
     }
   }
 
-  List<Iterable<Iterable<double>>> _readLineStringArray(
+  List<double> _readFlatPositionArray(
+    Coords coordType,
+    Endian endian, {
+    Coords? outputType,
+  }) {
+    // read number of points
+    final numPoints = buffer.readUint32(endian);
+
+    // output: coordinate type for returned List<double> list
+    final type = outputType ?? coordType;
+    final dim = type.coordinateDimension;
+    final numOutputValues = dim * numPoints;
+
+    // create fixed size list for coordinates of all points as flat structure
+    final list = List<double>.filled(numOutputValues, 0);
+
+    for (var start = 0; start < numOutputValues; start += dim) {
+      // all points has at least x and y values
+      list[start + 0] = buffer.readFloat64(endian);
+      list[start + 1] = buffer.readFloat64(endian);
+
+      // read also z and m if input data has them (read even if not outputted)
+      final optZ = coordType.is3D ? buffer.readFloat64(endian) : null;
+      final optM = coordType.isMeasured ? buffer.readFloat64(endian) : null;
+
+      // write z and m if output needs them
+      if (type.is3D) {
+        list[start + 2] = optZ ?? 0.0;
+      }
+      if (type.isMeasured) {
+        list[start + type.indexForM!] = optM ?? 0.0;
+      }
+    }
+
+    return list;
+  }
+
+  List<List<double>> _readFlatLineStringArray(
     Coords coordType,
     Endian endian, {
     bool requireHeaderForItems = false,
+    Coords? outputType,
   }) {
     // read number of line string (or liner rings)
     final numLineStrings = buffer.readUint32(endian);
 
     // return a generated list of line strings (or linear rings)
     if (requireHeaderForItems) {
-      return List<Iterable<Iterable<double>>>.generate(
+      return List<List<double>>.generate(
         numLineStrings,
         (_) {
           // read byte order + type, expect line string, and return coord type
@@ -262,23 +318,31 @@ class _WkbGeometryBufferDecoder {
           );
 
           // read points of line string and add it to a list to be generated
-          return _readPointArray(lineStringCoordType, lineStringEndian);
+          return _readFlatPositionArray(
+            lineStringCoordType,
+            lineStringEndian,
+            outputType: outputType ?? coordType,
+          );
         },
         growable: false,
       );
     } else {
-      return List<Iterable<Iterable<double>>>.generate(
+      return List<List<double>>.generate(
         numLineStrings,
         (_) {
           // read points of line string and add it to a list to be generated
-          return _readPointArray(coordType, endian);
+          return _readFlatPositionArray(
+            coordType,
+            endian,
+            outputType: outputType ?? coordType,
+          );
         },
         growable: false,
       );
     }
   }
 
-  List<Iterable<Iterable<Iterable<double>>>> _readPolygonArray(
+  List<List<List<double>>> _readFlatPolygonArray(
     Coords coordType,
     Endian endian, {
     bool requireHeaderForItems = false,
@@ -288,7 +352,7 @@ class _WkbGeometryBufferDecoder {
 
     // return a generated list of polygons
     if (requireHeaderForItems) {
-      return List<Iterable<Iterable<Iterable<double>>>>.generate(
+      return List<List<List<double>>>.generate(
         numPolygons,
         (_) {
           // read byte order + type, expect polygon, and return coord type
@@ -299,16 +363,20 @@ class _WkbGeometryBufferDecoder {
           );
 
           // read linear rings of polygon + add it to a list to be generated
-          return _readLineStringArray(polygonCoordType, polygonEndian);
+          return _readFlatLineStringArray(
+            polygonCoordType,
+            polygonEndian,
+            outputType: coordType,
+          );
         },
         growable: false,
       );
     } else {
-      return List<Iterable<Iterable<Iterable<double>>>>.generate(
+      return List<List<List<double>>>.generate(
         numPolygons,
         (_) {
           // read linear rings of polygon + add it to a list to be generated
-          return _readLineStringArray(coordType, endian);
+          return _readFlatLineStringArray(coordType, endian);
         },
         growable: false,
       );
