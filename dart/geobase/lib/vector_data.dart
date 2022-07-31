@@ -9,7 +9,7 @@
 /// This libary exports a subset of `package:geobase/geobase.dart`.
 ///
 /// Usage: import `package:geobase/vector_data.dart`
-library vector;
+library vector_data;
 
 export 'src/vector_data/array.dart';
 export 'src/vector_data/coords.dart';
