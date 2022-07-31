@@ -107,7 +107,7 @@ abstract class PointSeries<E extends Point>
   void writeTo(CoordinateContent writer);
 
   /// Coordinate (double) values of points (of [type]) as a flat structure.
-  /// 
+  ///
   /// If [type] is not given, then `Coords.xy` coordinates are returned.
   Iterable<double> valuesFlat([Coords? type]);
 }

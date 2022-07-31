@@ -7,10 +7,6 @@ Geospatial data structures (points, geometry, features, meta) and parsers
 
 ## Features
 
-✨ New: Updated with latest [geobase](https://pub.dev/packages/geobase) version
-0.2.1 (also re-exports some portions of it) based on [Dart](https://dart.dev/)
-SDK 2.17.
-
 Key features:
 * 🚀 geospatial data structures (geometry, features and metadata)
 * 🌐 *geographic* coordinates (longitude-latitude)
