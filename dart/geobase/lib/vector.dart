@@ -4,16 +4,18 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// Data writers for geospatial vector data (features, geometries, coordinates).
+/// Geospatial vector data support (features, geometries, coordinates).
 ///
 /// This libary exports a subset of `package:geobase/geobase.dart`.
 ///
 /// Key features:
-/// * geospatial data writers for features, geometries, coordinates, properties:
+/// * text format encoders for features, geometries, coordinates, properties:
 ///   * supported formats: [GeoJSON](https://geojson.org/)
-/// * geospatial data writers for geometries and coordinates:
+/// * text format encoders for geometries and coordinates:
 ///   * supported formats: [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)
-///
+/// * binary format encoders and decoders for geometries:
+///   * supported formats: [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary)
+//
 /// Usage: import `package:geobase/vector.dart`
 library vector;
 
