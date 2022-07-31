@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// Geospatial coordinates, projections and data writers (GeoJSON, WKT).
+/// Geospatial coordinates, projections and vector data (GeoJSON, WKT, WKB).
 ///
 /// Key features:
 /// * *geographic* positions and bounding boxes (longitude-latitude-elevation)
@@ -12,10 +12,12 @@
 /// * coordinate transformations and projections (initial support)
 /// * tiling schemes and tile matrix sets (web mercator, global geodetic)
 /// * temporal data structures (instant, interval) and spatial extents
-/// * geospatial data writers for features, geometries, coordinates, properties:
+/// * text format encoders for features, geometries, coordinates, properties:
 ///   * supported formats: [GeoJSON](https://geojson.org/)
-/// * geospatial data writers for geometries and coordinates:
+/// * text format encoders for geometries and coordinates:
 ///   * supported formats: [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)
+/// * binary format encoders and decoders for geometries:
+///   * supported formats: [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary)
 ///
 /// Usage: import `package:geobase/geobase.dart`
 library geobase;

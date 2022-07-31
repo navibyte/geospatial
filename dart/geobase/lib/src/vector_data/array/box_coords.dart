@@ -96,7 +96,7 @@ abstract class BoxCoords extends Box with _CoordinatesMixin {
   /// A bounding box with coordinate values parsed from [text].
   ///
   /// Coordinate values in [text] are separated by [delimiter].
-  /// 
+  ///
   /// See [BoxCoords.view] for supported coordinate value combinations for
   /// coordinate [type].
   ///

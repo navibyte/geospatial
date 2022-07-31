@@ -267,8 +267,7 @@ class GeoBox extends Box {
       );
 
   @override
-  bool operator ==(Object other) =>
-      other is Box && Box.testEquals(this, other);
+  bool operator ==(Object other) => other is Box && Box.testEquals(this, other);
 
   @override
   int get hashCode => Box.hash(this);

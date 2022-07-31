@@ -56,12 +56,11 @@ Library                | Description
 **projections_proj4d** | Projections provided by the external [proj4dart](https://pub.dev/packages/proj4dart) package.
 **tiling**             | Tiling schemes and tile matrix sets (web mercator, global geodetic).
 **vector**             | Data writers for geospatial vector data (features, geometries, coordinates).
+**vector_data**        | Positions and position arrays as iterable collections of coordinate values.
 
-See also the [geocore](https://pub.dev/packages/geocore) package for geometry
-and feature data structures, data parsers and other utilities. The 
-[geodata](https://pub.dev/packages/geodata) package provdies a geospatial API
-client to read [GeoJSON](https://geojson.org/) and other geospatial data
-sources.  
+See also the [geodata](https://pub.dev/packages/geodata) package provding a
+geospatial API client to read [GeoJSON](https://geojson.org/) and other
+geospatial data sources.  
 
 ## Introduction
 
@@ -786,11 +785,6 @@ Type                 | Description
 `multiPoint`         | The type for the `MULTIPOINT` geometry.
 `multiLineString`    | The type for the `MULTILINESTRING` geometry.
 `multiPolygon`       | The type for the `MULTIPOLYGON` geometry.
-
-The *geobase* package does not however provide data structure classes for these
-geometry types, but types are used by geospatial data writers. Please see the
-[geocore](https://pub.dev/packages/geocore) package also for geometry data
-structures.
 
 ## Other features
 

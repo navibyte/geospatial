@@ -64,15 +64,15 @@ typedef CreateBox<T extends Box> = T Function({
 /// xyz  | west, south, minElev, east, north, maxElev
 /// xym  | west, south, minM, east, north, maxM
 /// xyzm | west, south, minElev, minM, east, north, maxElev, maxM
-/// 
-/// Sub classes containing coordinate values mentioned above, should implement 
+///
+/// Sub classes containing coordinate values mentioned above, should implement
 /// equality and hashCode methods as:
-/// 
+///
 /// ```dart
 /// @override
 /// bool operator ==(Object other) =>
 ///      other is Box && Box.testEquals(this, other);
-/// 
+///
 /// @override
 /// int get hashCode => Box.hash(this);
 /// ```

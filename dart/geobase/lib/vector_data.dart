@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// Positions as iterable collections of coordinate values.
+/// Positions and position arrays as iterable collections of coordinate values.
 ///
 /// This libary exports a subset of `package:geobase/geobase.dart`.
 ///

@@ -73,7 +73,7 @@ abstract class SimpleGeometryContent {
   /// structure. For example for `Coords.xyz` the first three coordinate values
   /// are x, y and z of the first position, the next three coordinate values are
   /// x, y and z of the second position, and so on.
-  /// 
+  ///
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
   /// An optional [bbox] of [Box] can used set a minimum bounding box for a
@@ -110,7 +110,7 @@ abstract class SimpleGeometryContent {
   /// example for `Coords.xyz` the first three coordinate values are x, y and z
   /// of the first position, the next three coordinate values are x, y and z of
   /// the second position, and so on.
-  /// 
+  ///
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
   /// An optional [bbox] of [Box] can used set a minimum bounding box for a
@@ -144,11 +144,11 @@ abstract class SimpleGeometryContent {
 
   /// Writes a multi point geometry with a position array from [positions].
   ///
-  /// Use the required [type] to explicitely set the coordinate type. 
-  /// 
+  /// Use the required [type] to explicitely set the coordinate type.
+  ///
   /// The [positions] iterable is an array containing `Iterable<double>` items
   /// each representing a position. Supported coordinate value combinations for
-  /// positions are: (x, y), (x, y, z), (x, y, m) and (x, y, z, m). 
+  /// positions are: (x, y), (x, y, z), (x, y, m) and (x, y, z, m).
   ///
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
@@ -184,7 +184,7 @@ abstract class SimpleGeometryContent {
   /// `Coords.xyz` the first three coordinate values are x, y and z of the first
   /// position, the next three coordinate values are x, y and z of the second
   /// position, and so on.
-  /// 
+  ///
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
   /// An optional [bbox] of [Box] can used set a minimum bounding box for a
@@ -230,7 +230,7 @@ abstract class SimpleGeometryContent {
   /// flat structure. For example for `Coords.xyz` the first three coordinate
   /// values are x, y and z of the first position, the next three coordinate
   /// values are x, y and z of the second position, and so on.
-  /// 
+  ///
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
   /// An optional [bbox] of [Box] can used set a minimum bounding box for a
