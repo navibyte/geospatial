@@ -21,7 +21,7 @@ import '/src/vector_data/array.dart';
 ///
 /// See [Geographic] for description about supported coordinate values.
 @immutable
-class LonLat extends BasePositionCoords implements Geographic {
+class LonLat extends PositionCoords implements Geographic {
   /// A geographic position as an iterable collection of [lon] and [lat] values.
   factory LonLat(double lon, double lat) {
     // create a fixed list of 2 items
@@ -82,6 +82,9 @@ class LonLat extends BasePositionCoords implements Geographic {
 
   @override
   LonLat transform(TransformPosition transform) => transform.call(this);
+
+  @override
+  Geographic get asGeographic => this;
 
   @override
   int get spatialDimension => 2;

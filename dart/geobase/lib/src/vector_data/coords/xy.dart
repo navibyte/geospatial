@@ -21,7 +21,7 @@ import '/src/vector_data/array.dart';
 ///
 /// See [Projected] for description about supported coordinate values.
 @immutable
-class XY extends BasePositionCoords implements Projected {
+class XY extends PositionCoords implements Projected {
   /// A projected position as an iterable collection of [x] and [y] values.
   factory XY(double x, double y) {
     // create a fixed list of 2 items
@@ -76,6 +76,9 @@ class XY extends BasePositionCoords implements Projected {
 
   @override
   XY transform(TransformPosition transform) => transform.call(this);
+
+  @override
+  Projected get asProjected => this;
 
   @override
   int get spatialDimension => 2;

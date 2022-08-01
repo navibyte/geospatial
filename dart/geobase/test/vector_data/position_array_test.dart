@@ -82,7 +82,7 @@ void main() {
       });
 
       test('Access as geographic positions', () {
-        final geographic = array3.dataTo(Geographic.create);
+        final geographic = array3.toGeographic;
         expect(geographic.length, 3);
         expect(geographic.type, type);
 
@@ -149,7 +149,7 @@ void main() {
     });
 
     test('Access as projected positions', () {
-      final projected = xyArray3.dataTo(Projected.create);
+      final projected = xyArray3.toProjected;
       expect(projected.length, 3);
       expect(projected.type, Coords.xy);
 

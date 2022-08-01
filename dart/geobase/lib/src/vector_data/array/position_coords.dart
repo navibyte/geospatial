@@ -6,9 +6,16 @@
 
 part of 'coordinates.dart';
 
-/// A base class for positions as an iterable collection of coordinate values.
+/// A geospatial position as an iterable collection of coordinate values.
 ///
-/// See [PositionCoords] for a concrete implementation.
+/// Such position is a valid [Position] implementation and represents
+/// coordinate values also as a collection of `Iterable<double>` (containing 2,
+/// 3, or 4 items).
+/// 
+/// The position can be typed as a projected position using [asProjected], and
+/// as a geographic position using [asGeographic].
+///
+/// See [Position] for description about supported coordinate values.
 ///
 /// See also specialized sub classes for projected coordinates:
 ///
@@ -27,7 +34,7 @@ part of 'coordinates.dart';
 /// `LonLatElev`  | 3D    | 3      | `double` |    +    |    +    |    +     |
 /// `LonLatM`     | 2D    | 3      | `double` |    +    |    +    |          | +
 /// `LonLatElevM` | 3D    | 4      | `double` |    +    |    +    |    +     | +
-abstract class BasePositionCoords extends Position with _CoordinatesMixin {
+abstract class PositionCoords extends Position with _CoordinatesMixin {
   @override
   final Iterable<double> _data;
 
@@ -35,9 +42,76 @@ abstract class BasePositionCoords extends Position with _CoordinatesMixin {
   final Coords _type;
 
   /// Default `const` constructor to allow extending this abstract class.
-  const BasePositionCoords(Iterable<double> source, {Coords type = Coords.xy})
+  const PositionCoords(Iterable<double> source, {Coords type = Coords.xy})
       : _data = source,
         _type = type;
+
+  /// A geospatial position with coordinate values as a view backed by [source].
+  ///
+  /// An iterable collection of [source] may be represented by a [List] or any
+  /// [Iterable] with efficient `length` and `elementAt` implementations.
+  ///
+  /// The [source] must contain 2, 3 or 4 coordinate values. Supported
+  /// coordinate value combinations by coordinate [type] are:
+  ///
+  /// Type | Expected values
+  /// ---- | ---------------
+  /// xy   | x, y
+  /// xyz  | x, y, z
+  /// xym  | x, y, m
+  /// xyzm | x, y, z, m
+  ///
+  /// Or when data is geographic:
+  ///
+  /// Type | Expected values
+  /// ---- | ---------------
+  /// xy   | lon, lat
+  /// xyz  | lon, lat, elev
+  /// xym  | lon, lat, m
+  /// xyzm | lon, lat, elev, m
+  factory PositionCoords.view(Iterable<double> source, {Coords type}) =
+      _PositionCoordsImpl.view;
+
+  /// A geospatial position as an iterable collection of [x], [y], and optional
+  /// [z] and [m] values.
+  ///
+  /// This factory is compatible with `CreatePosition` function type.
+  factory PositionCoords.create({
+    required num x,
+    required num y,
+    num? z,
+    num? m,
+  }) =>
+      _doCreate(
+        to: _PositionCoordsImpl.view,
+        x: x,
+        y: y,
+        z: z,
+        m: m,
+      );
+
+  /// A geospatial position as an iterable collection parsed from [text].
+  ///
+  /// Coordinate values in [text] are separated by [delimiter].
+  ///
+  /// See [PositionCoords.view] for supported coordinate value combinations for
+  /// coordinate [type].
+  ///
+  /// Use an optional [type] to explicitely set the coordinate type. If not
+  /// provided and [text] has 3 items, then xyz coordinates are assumed.
+  ///
+  /// Throws FormatException if coordinates are invalid.
+  factory PositionCoords.fromText(
+    String text, {
+    Pattern? delimiter = ',',
+    Coords? type,
+  }) =>
+      _doCreateFromText(
+        text,
+        to: _PositionCoordsImpl.view,
+        delimiter: delimiter,
+        type: type,
+      );
 
   @override
   double get x => _data.elementAt(0);
@@ -66,6 +140,18 @@ abstract class BasePositionCoords extends Position with _CoordinatesMixin {
   @override
   double operator [](int index) =>
       index >= 0 && index < coordinateDimension ? _data.elementAt(index) : 0.0;
+
+  /// Returns this position typed as a projected position.
+  /// 
+  /// If this position implements [Projected], then this may be returned.
+  /// Otherwise a new instance with copied coordinate values is created.
+  Projected get asProjected => copyTo(Projected.create);
+
+  /// Returns this position typed as a geographic position.
+  /// 
+  /// If this position implements [Geographic], then this may be returned.
+  /// Otherwise a new instance with copied coordinate values is created.
+  Geographic get asGeographic => copyTo(Geographic.create);
 
   // ---------------------------------------------------------------------------
   // Iterable<double> documentation overrides
@@ -114,87 +200,20 @@ abstract class BasePositionCoords extends Position with _CoordinatesMixin {
 }
 
 /// A geospatial position as an iterable collection of coordinate values.
-///
-/// Such position is a valid [Position] implementation and represents
-/// coordinate values also as a collection of `Iterable<double>` (containing 2,
-/// 3, or 4 items).
-///
-/// See [Position] for description about supported coordinate values.
 @immutable
-class PositionCoords extends BasePositionCoords {
+class _PositionCoordsImpl extends PositionCoords {
   /// A geospatial position with coordinate values as a view backed by `source`.
-  ///
-  /// An iterable collection of `source` may be represented by a [List] or any
-  /// [Iterable] with efficient `length` and `elementAt` implementations.
-  ///
-  /// The `source` must contain 2, 3 or 4 coordinate values. Supported
-  /// coordinate value combinations by coordinate [type] are:
-  ///
-  /// Type | Expected values
-  /// ---- | ---------------
-  /// xy   | x, y
-  /// xyz  | x, y, z
-  /// xym  | x, y, m
-  /// xyzm | x, y, z, m
-  ///
-  /// Or when data is geographic:
-  ///
-  /// Type | Expected values
-  /// ---- | ---------------
-  /// xy   | lon, lat
-  /// xyz  | lon, lat, elev
-  /// xym  | lon, lat, m
-  /// xyzm | lon, lat, elev, m
-  const PositionCoords.view(super.source, {super.type = Coords.xy}) : super();
-
-  /// A geospatial position as an iterable collection of [x], [y], and optional
-  /// [z] and [m] values.
-  ///
-  /// This factory is compatible with `CreatePosition` function type.
-  factory PositionCoords.create({
-    required num x,
-    required num y,
-    num? z,
-    num? m,
-  }) =>
-      _doCreate(
-        to: PositionCoords.view,
-        x: x,
-        y: y,
-        z: z,
-        m: m,
-      );
-
-  /// A geospatial position as an iterable collection parsed from [text].
-  ///
-  /// Coordinate values in [text] are separated by [delimiter].
-  ///
-  /// See [PositionCoords.view] for supported coordinate value combinations for
-  /// coordinate [type].
-  ///
-  /// Use an optional [type] to explicitely set the coordinate type. If not
-  /// provided and [text] has 3 items, then xyz coordinates are assumed.
-  ///
-  /// Throws FormatException if coordinates are invalid.
-  factory PositionCoords.fromText(
-    String text, {
-    Pattern? delimiter = ',',
-    Coords? type,
-  }) =>
-      _doCreateFromText(
-        text,
-        to: PositionCoords.view,
-        delimiter: delimiter,
-        type: type,
-      );
+  const _PositionCoordsImpl.view(super.source, {super.type = Coords.xy})
+      : super();
 
   @override
   Iterable<double> get values => _data;
 
   @override
-  PositionCoords copyWith({num? x, num? y, num? z, num? m}) => _doCopyWith(
+  _PositionCoordsImpl copyWith({num? x, num? y, num? z, num? m}) =>
+      _doCopyWith(
         from: this,
-        to: PositionCoords.view,
+        to: _PositionCoordsImpl.view,
         x: x,
         y: y,
         z: z,
@@ -202,14 +221,8 @@ class PositionCoords extends BasePositionCoords {
       );
 
   @override
-  BasePositionCoords transform(TransformPosition transform) =>
+  _PositionCoordsImpl transform(TransformPosition transform) =>
       transform.call(this);
-
-  /// Copies this position to as a new projected position.
-  Projected get asProjected => copyTo(Projected.create);
-
-  /// Copies this position to as a new geographic position.
-  Geographic get asGeographic => copyTo(Geographic.create);
 
   @override
   bool operator ==(Object other) =>
@@ -219,7 +232,7 @@ class PositionCoords extends BasePositionCoords {
   int get hashCode => Position.hash(this);
 }
 
-T _doCreate<T extends BasePositionCoords>({
+T _doCreate<T extends PositionCoords>({
   required _CreateAt<T> to,
   required num x,
   required num y,
@@ -263,7 +276,7 @@ T _doCreate<T extends BasePositionCoords>({
   }
 }
 
-T _doCreateFromText<T extends BasePositionCoords>(
+T _doCreateFromText<T extends PositionCoords>(
   String text, {
   required _CreateAt<T> to,
   Pattern? delimiter = ',',
@@ -282,7 +295,7 @@ T _doCreateFromText<T extends BasePositionCoords>(
   );
 }
 
-T _doCopyWith<T extends BasePositionCoords>({
+T _doCopyWith<T extends PositionCoords>({
   required T from,
   required _CreateAt<T> to,
   num? x,

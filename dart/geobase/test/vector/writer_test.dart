@@ -39,7 +39,7 @@ void main() {
       _testAllWriters<CoordinateContent>(
         [
           (output) => output.position(
-                const PositionCoords.view(
+                PositionCoords.view(
                   [10.123, 20.25, -1.999],
                   type: Coords.xym,
                 ),

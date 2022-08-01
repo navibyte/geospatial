@@ -81,6 +81,14 @@ class PositionArray with _CoordinatesMixin {
       return Position.createFromCoords(coordinates, to: factory, type: type);
     };
   }
+
+  /// Access position array as projected positions.
+  PositionData<Projected, double> get toProjected =>
+      _PositionArrayData<Projected>(_data, _type, Projected.fromCoords);
+
+  /// Access position array as geographic positions.
+  PositionData<Geographic, double> get toGeographic =>
+      _PositionArrayData<Geographic>(_data, _type, Geographic.fromCoords);
 }
 
 class _PositionArrayData<E extends Position> with PositionData<E, double> {

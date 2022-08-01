@@ -112,11 +112,11 @@ void main() {
         [null, null, null, null],
       );
 
-      expect(const PositionCoords.view([1.0, 2.0]), p1);
-      expect(const PositionCoords.view([1.0, 2.0, 3.0]), p2);
-      expect(const PositionCoords.view([1.0, 2.0, 4.0]) == p3, false);
-      expect(const PositionCoords.view([1.0, 2.0, 4.0], type: Coords.xym), p3);
-      expect(const PositionCoords.view([1.0, 2.0, 3.0, 4.0]), p4);
+      expect(PositionCoords.view([1.0, 2.0]), p1);
+      expect(PositionCoords.view([1.0, 2.0, 3.0]), p2);
+      expect(PositionCoords.view([1.0, 2.0, 4.0]) == p3, false);
+      expect(PositionCoords.view([1.0, 2.0, 4.0], type: Coords.xym), p3);
+      expect(PositionCoords.view([1.0, 2.0, 3.0, 4.0]), p4);
 
       expect(PositionCoords.fromText('1.0,2.0'), p1);
       expect(PositionCoords.fromText('1.0,2.0,3.0'), p2);
@@ -129,7 +129,7 @@ void main() {
       expect(XYZM.fromText(p4.toString()), p4);
       expect(XYZM.fromText('1.0 2.0 3.0 4.0', delimiter: ' '), p4);
 
-      expect(() => const PositionCoords.view([1.0]).y, throwsRangeError);
+      expect(() => PositionCoords.view([1.0]).y, throwsRangeError);
       expect(() => PositionCoords.fromText('1.0'), throwsFormatException);
       expect(
         () => PositionCoords.fromText('1.0,2.0,x'),
