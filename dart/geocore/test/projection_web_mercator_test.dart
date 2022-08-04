@@ -7,7 +7,7 @@
 // ignore_for_file: prefer_const_constructors, avoid_print
 
 import 'package:equatable/equatable.dart';
-import 'package:geobase/geobase.dart';
+import 'package:geobase/projections.dart';
 import 'package:geocore/geocore.dart';
 import 'package:test/test.dart';
 
