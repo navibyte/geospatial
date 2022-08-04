@@ -205,7 +205,7 @@ abstract class _BaseTextWriter<T extends Object>
 
   @override
   void multiLineString(
-    Iterable<Iterable<double>> chains, {
+    Iterable<Iterable<double>> lineStrings, {
     required Coords type,
     String? name,
     Box? bbox,
@@ -216,8 +216,8 @@ abstract class _BaseTextWriter<T extends Object>
       coordType: type,
       bbox: bbox,
     )) {
-      _coordArray(count: chains.length);
-      for (final chain in chains) {
+      _coordArray(count: lineStrings.length);
+      for (final chain in lineStrings) {
         _coordPointsFromFlatArray(chain, type);
       }
       _coordArrayEnd();
@@ -227,7 +227,7 @@ abstract class _BaseTextWriter<T extends Object>
 
   @override
   void multiPolygon(
-    Iterable<Iterable<Iterable<double>>> ringsArray, {
+    Iterable<Iterable<Iterable<double>>> polygons, {
     required Coords type,
     String? name,
     Box? bbox,
@@ -238,8 +238,8 @@ abstract class _BaseTextWriter<T extends Object>
       coordType: type,
       bbox: bbox,
     )) {
-      _coordArray(count: ringsArray.length);
-      for (final rings in ringsArray) {
+      _coordArray(count: polygons.length);
+      for (final rings in polygons) {
         _coordArray(count: rings.length);
         for (final ring in rings) {
           _coordPointsFromFlatArray(ring, type);

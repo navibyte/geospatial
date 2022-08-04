@@ -27,14 +27,14 @@ typedef WriteSimpleGeometries = void Function(SimpleGeometryContent output);
 abstract class SimpleGeometryContent {
   /// Writes a point geometry with [position].
   ///
-  /// Use an optional [type] to explicitely specify the type of coordinates.
+  /// Use an optional [type] to explicitely specify the type of coordinates. If
+  /// not provided and an iterable has 3 items, then xyz coordinates are
+  /// assumed.
   ///
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
   /// Supported coordinate value combinations for `Iterable<double>` are:
-  /// (x, y), (x, y, z), (x, y, m) and (x, y, z, m). Use an optional [type] to
-  /// explicitely set the coordinate type. If not provided and an iterable has
-  /// 3 items, then xyz coordinates are assumed.
+  /// (x, y), (x, y, z), (x, y, m) and (x, y, z, m).
   ///
   /// An example to write a point geometry with 2D coordinates:
   /// ```dart
@@ -65,7 +65,7 @@ abstract class SimpleGeometryContent {
     String? name,
   });
 
-  /// Writes a line string geometry with a position array from [chain].
+  /// Writes a line string geometry with a [chain] of positions.
   ///
   /// Use the required [type] to explicitely specify the type of coordinates.
   ///
@@ -101,15 +101,21 @@ abstract class SimpleGeometryContent {
     Box? bbox,
   });
 
-  /// Writes a polygon geometry with a position array from [rings].
+  /// Writes a polygon geometry with one exterior and 0 to N interior [rings].
   ///
   /// Use the required [type] to explicitely specify the type of coordinates.
   ///
-  /// The [rings] iterable is an array of arrays containing coordinate values of
-  /// linear rings (outer and inner) of a polygon as a flat structure. For
-  /// example for `Coords.xyz` the first three coordinate values are x, y and z
-  /// of the first position, the next three coordinate values are x, y and z of
-  /// the second position, and so on.
+  /// Each ring in the polygon is represented by `Iterable<double>` arrays. Such
+  /// arrays contain coordinate values as a flat structure. For example for
+  /// `Coords.xyz` the first three coordinate values are x, y and z of the first
+  /// position, the next three coordinate values are x, y and z of the second
+  /// position, and so on.
+  ///
+  /// The [rings] iterable must be non-empty. The first element is the exterior
+  /// ring, and any other rings are interior rings (or holes). All rings must be
+  /// closed linear rings. As specified by GeoJSON, they should "follow the
+  /// right-hand rule with respect to the area it bounds, i.e., exterior rings
+  /// are counterclockwise, and holes are clockwise".
   ///
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
@@ -142,13 +148,14 @@ abstract class SimpleGeometryContent {
     Box? bbox,
   });
 
-  /// Writes a multi point geometry with a position array from [positions].
+  /// Writes a multi point geometry with a series of [points] (each with a
+  /// position).
   ///
   /// Use the required [type] to explicitely set the coordinate type.
   ///
-  /// The [positions] iterable is an array containing `Iterable<double>` items
-  /// each representing a position. Supported coordinate value combinations for
-  /// positions are: (x, y), (x, y, z), (x, y, m) and (x, y, z, m).
+  /// Each point is represented by `Iterable<double>` instances. Supported
+  /// coordinate value combinations for positions are: (x, y), (x, y, z),
+  /// (x, y, m) and (x, y, z, m).
   ///
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
@@ -169,21 +176,22 @@ abstract class SimpleGeometryContent {
   ///   );
   /// ```
   void multiPoint(
-    Iterable<Iterable<double>> positions, {
+    Iterable<Iterable<double>> points, {
     required Coords type,
     String? name,
     Box? bbox,
   });
 
-  /// Writes a multi line string with a position array from [chains].
+  /// Writes a multi line string with a series of [lineStrings] (each with a
+  /// chain of positions).
   ///
   /// Use the required [type] to explicitely specify the type of coordinates.
   ///
-  /// The [chains] iterable is an array of arrays containing coordinate values
-  /// of chains in a multi line string as a flat structure. For example for
-  /// `Coords.xyz` the first three coordinate values are x, y and z of the first
-  /// position, the next three coordinate values are x, y and z of the second
-  /// position, and so on.
+  /// Each line string or a chain of positions is represented by
+  /// `Iterable<double>` instances. They contain coordinate values as a flat
+  /// structure. For example for `Coords.xyz` the first three coordinate values
+  /// are x, y and z of the first position, the next three coordinate values are
+  /// x, y and z of the second position, and so on.
   ///
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
@@ -215,21 +223,29 @@ abstract class SimpleGeometryContent {
   ///  );
   /// ```
   void multiLineString(
-    Iterable<Iterable<double>> chains, {
+    Iterable<Iterable<double>> lineStrings, {
     required Coords type,
     String? name,
     Box? bbox,
   });
 
-  /// Writes a multi polygon geometry with a position array from [ringsArray].
+  /// Writes a multi polygon with a series of [polygons] (each with a series of
+  /// rings).
   ///
   /// Use the required [type] to explicitely specify the type of coordinates.
   ///
-  /// The [ringsArray] iterable is an array of arrays of arrays containing
-  /// coordinate values of linear rings (outer and inner) of a polygon as a
-  /// flat structure. For example for `Coords.xyz` the first three coordinate
-  /// values are x, y and z of the first position, the next three coordinate
-  /// values are x, y and z of the second position, and so on.
+  /// Each polygon is represented by `Iterable<Iterable<double>>` instances
+  /// containing one exterior and 0 to N interior rings. The first element is
+  /// the exterior ring, and any other rings are interior rings (or holes). All
+  /// rings must be closed linear rings. As specified by GeoJSON, they should
+  /// "follow the right-hand rule with respect to the area it bounds, i.e.,
+  /// exterior rings are counterclockwise, and holes are clockwise".
+  ///
+  /// Each ring in the polygon is represented by `Iterable<double>` arrays. Such
+  /// arrays contain coordinate values as a flat structure. For example for
+  /// `Coords.xyz` the first three coordinate values are x, y and z of the first
+  /// position, the next three coordinate values are x, y and z of the second
+  /// position, and so on.
   ///
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
@@ -267,18 +283,21 @@ abstract class SimpleGeometryContent {
   ///  );
   /// ```
   void multiPolygon(
-    Iterable<Iterable<Iterable<double>>> ringsArray, {
+    Iterable<Iterable<Iterable<double>>> polygons, {
     required Coords type,
     String? name,
     Box? bbox,
   });
 
-  /// Writes a geometry collection of [geometries].
+  /// Writes a geometry collection from the content stream provided by
+  /// [geometries].
   ///
-  /// Use an optional [type] to explicitely specify the type of coordinates.
+  /// Use an optional [type] to give a hint of type of coordinates in
+  /// geometries. However, sub geometries provided by [geometries] may set
+  /// another types too.
   ///
   /// An optional expected [count], when given, specifies the number of geometry
-  /// objects in a collection. Note that when given a count MUST be exact.
+  /// objects in a collection. Note that when given the count MUST be exact.
   ///
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///

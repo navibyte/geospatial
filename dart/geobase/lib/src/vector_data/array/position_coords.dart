@@ -11,7 +11,7 @@ part of 'coordinates.dart';
 /// Such position is a valid [Position] implementation and represents
 /// coordinate values also as a collection of `Iterable<double>` (containing 2,
 /// 3, or 4 items).
-/// 
+///
 /// The position can be typed as a projected position using [asProjected], and
 /// as a geographic position using [asGeographic].
 ///
@@ -142,13 +142,13 @@ abstract class PositionCoords extends Position with _CoordinatesMixin {
       index >= 0 && index < coordinateDimension ? _data.elementAt(index) : 0.0;
 
   /// Returns this position typed as a projected position.
-  /// 
+  ///
   /// If this position implements [Projected], then this may be returned.
   /// Otherwise a new instance with copied coordinate values is created.
   Projected get asProjected => copyTo(Projected.create);
 
   /// Returns this position typed as a geographic position.
-  /// 
+  ///
   /// If this position implements [Geographic], then this may be returned.
   /// Otherwise a new instance with copied coordinate values is created.
   Geographic get asGeographic => copyTo(Geographic.create);
@@ -210,8 +210,7 @@ class _PositionCoordsImpl extends PositionCoords {
   Iterable<double> get values => _data;
 
   @override
-  _PositionCoordsImpl copyWith({num? x, num? y, num? z, num? m}) =>
-      _doCopyWith(
+  _PositionCoordsImpl copyWith({num? x, num? y, num? z, num? m}) => _doCopyWith(
         from: this,
         to: _PositionCoordsImpl.view,
         x: x,

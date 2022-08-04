@@ -85,7 +85,7 @@ class _WkbGeometryEncoder
 
   @override
   void multiPoint(
-    Iterable<Iterable<double>> positions, {
+    Iterable<Iterable<double>> points, {
     required Coords type,
     String? name,
     Box? bbox,
@@ -94,10 +94,10 @@ class _WkbGeometryEncoder
     _writeGeometryHeader(Geom.multiPoint, type);
 
     // write numPoints
-    _buffer.writeUint32(positions.length);
+    _buffer.writeUint32(points.length);
 
     // write all points
-    for (final point in positions) {
+    for (final point in points) {
       _writeGeometryHeader(Geom.point, type);
       _writePosition(point, type);
     }
@@ -105,7 +105,7 @@ class _WkbGeometryEncoder
 
   @override
   void multiLineString(
-    Iterable<Iterable<double>> chains, {
+    Iterable<Iterable<double>> lineStrings, {
     required Coords type,
     String? name,
     Box? bbox,
@@ -114,10 +114,10 @@ class _WkbGeometryEncoder
     _writeGeometryHeader(Geom.multiLineString, type);
 
     // write numLineStrings
-    _buffer.writeUint32(chains.length);
+    _buffer.writeUint32(lineStrings.length);
 
     // write chains of all line strings
-    for (final chain in chains) {
+    for (final chain in lineStrings) {
       _writeGeometryHeader(Geom.lineString, type);
       _writeFlatPositionArray(chain, type);
     }
@@ -125,7 +125,7 @@ class _WkbGeometryEncoder
 
   @override
   void multiPolygon(
-    Iterable<Iterable<Iterable<double>>> ringsArray, {
+    Iterable<Iterable<Iterable<double>>> polygons, {
     required Coords type,
     String? name,
     Box? bbox,
@@ -134,10 +134,10 @@ class _WkbGeometryEncoder
     _writeGeometryHeader(Geom.multiPolygon, type);
 
     // write numPolygons
-    _buffer.writeUint32(ringsArray.length);
+    _buffer.writeUint32(polygons.length);
 
     // write all rings of polygons
-    for (final rings in ringsArray) {
+    for (final rings in polygons) {
       _writeGeometryHeader(Geom.polygon, type);
 
       // write numRings
@@ -299,7 +299,7 @@ class _GeometryCollector with GeometryContent {
 
   @override
   void lineString(
-    Iterable<double> coordinates, {
+    Iterable<double> chain, {
     required Coords type,
     String? name,
     Box? bbox,
@@ -311,7 +311,7 @@ class _GeometryCollector with GeometryContent {
 
   @override
   void polygon(
-    Iterable<Iterable<double>> coordinates, {
+    Iterable<Iterable<double>> rings, {
     required Coords type,
     String? name,
     Box? bbox,
@@ -323,7 +323,7 @@ class _GeometryCollector with GeometryContent {
 
   @override
   void multiPoint(
-    Iterable<Iterable<double>> positions, {
+    Iterable<Iterable<double>> points, {
     required Coords type,
     String? name,
     Box? bbox,
@@ -335,7 +335,7 @@ class _GeometryCollector with GeometryContent {
 
   @override
   void multiLineString(
-    Iterable<Iterable<double>> coordinates, {
+    Iterable<Iterable<double>> lineStrings, {
     required Coords type,
     String? name,
     Box? bbox,
@@ -347,7 +347,7 @@ class _GeometryCollector with GeometryContent {
 
   @override
   void multiPolygon(
-    Iterable<Iterable<Iterable<double>>> positions, {
+    Iterable<Iterable<Iterable<double>>> polygons, {
     required Coords type,
     String? name,
     Box? bbox,

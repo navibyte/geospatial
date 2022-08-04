@@ -145,13 +145,13 @@ abstract class BoxCoords extends Box with _CoordinatesMixin {
   }
 
   /// Returns this box typed as a projected bounding box.
-  /// 
+  ///
   /// If this position implements [ProjBox], then this may be returned.
   /// Otherwise a new instance with copied coordinate values is created.
   ProjBox get asProjected => copyTo(ProjBox.create);
 
   /// Returns this box typed as a geographic bounding box.
-  /// 
+  ///
   /// If this position implements [GeoBox], then this may be returned.
   /// Otherwise a new instance with copied coordinate values is created.
   GeoBox get asGeographic => copyTo(GeoBox.create);

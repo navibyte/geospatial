@@ -19,7 +19,7 @@ mixin FeatureContent {
   /// Writes a feature collection represented by [features].
   ///
   /// An optional expected [count], when given, specifies the number of feature
-  /// objects in a collection. Note that when given a count MUST be exact.
+  /// objects in a collection. Note that when given the count MUST be exact.
   ///
   /// An optional [bbox] can used set a minimum bounding box for a feature
   /// collection written. A writer implementation may use it or ignore it. Known
