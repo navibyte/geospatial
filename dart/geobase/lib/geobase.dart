@@ -45,3 +45,4 @@ export 'src/vector/encoding.dart';
 export 'src/vector/formats.dart';
 export 'src/vector_data/array.dart';
 export 'src/vector_data/coords.dart';
+export 'src/vector_data/model.dart';

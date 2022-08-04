@@ -4,8 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// Positions and position arrays as iterable collections of coordinate values.
-///
+/// Data structures for positions, position arrays and geometries.
+/// 
 /// This libary exports a subset of `package:geobase/geobase.dart`.
 ///
 /// Usage: import `package:geobase/vector_data.dart`
@@ -13,3 +13,4 @@ library vector_data;
 
 export 'src/vector_data/array.dart';
 export 'src/vector_data/coords.dart';
+export 'src/vector_data/model.dart';
