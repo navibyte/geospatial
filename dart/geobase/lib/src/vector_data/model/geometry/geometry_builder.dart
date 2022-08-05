@@ -18,17 +18,37 @@ import 'multi_polygon.dart';
 import 'point.dart';
 import 'polygon.dart';
 
-/// A builder to create geometry instances from [GeometryContent] stream.
-class GeometryBuilder with GeometryContent {
-  final void Function(Geometry geom, {required int index, String? name})
-      _addGeometry;
+/// A function to add [geometry] to some collection an optional [name].
+typedef AddGeometry<T extends Geometry> = void Function(
+  T geometry, {
+  String? name,
+});
 
-  int _index = 0;
+/// A builder to create geometry instances from [GeometryContent] stream.
+///
+/// This builder ignore "empty geometry" types.
+class GeometryBuilder<T extends Geometry> with GeometryContent {
+  final AddGeometry<T> _addGeometry;
 
   GeometryBuilder._(this._addGeometry);
 
-  void _add(Geometry geom, {String? name}) {
-    _addGeometry.call(geom, index: _index++, name: name);
+  void _add(Geometry geometry, {String? name}) {
+    if (geometry is T) {
+      _addGeometry.call(geometry, name: name);
+    }
+  }
+
+  /// Builds geometries from the content stream provided by [geometries].
+  ///
+  /// Built geometry object are sent into [to] callback function.
+  ///
+  /// Only geometry objects of [T] are built, any other geometries are ignored.
+  static void build<T extends Geometry>(
+    WriteGeometries geometries, {
+    required AddGeometry<T> to,
+  }) {
+    final builder = GeometryBuilder<T>._(to);
+    geometries.call(builder);
   }
 
   /// Builds a geometry list from the content stream provided by [geometries].
@@ -42,11 +62,8 @@ class GeometryBuilder with GeometryContent {
     int? count,
   }) {
     final list = <T>[];
-    final builder =
-        GeometryBuilder._((Geometry geom, {required int index, String? name}) {
-      if (geom is T) {
-        list.add(geom);
-      }
+    final builder = GeometryBuilder<T>._((T geometry, {String? name}) {
+      list.add(geometry);
     });
     geometries.call(builder);
     return list;
@@ -67,11 +84,10 @@ class GeometryBuilder with GeometryContent {
     int? count,
   }) {
     final map = <String, T>{};
-    final builder =
-        GeometryBuilder._((Geometry geom, {required int index, String? name}) {
-      if (geom is T) {
-        map[name ?? index.toString()] = geom;
-      }
+    var index = 0;
+    final builder = GeometryBuilder<T>._((T geometry, {String? name}) {
+      map[name ?? index.toString()] = geometry;
+      index++;
     });
     geometries.call(builder);
     return map;
