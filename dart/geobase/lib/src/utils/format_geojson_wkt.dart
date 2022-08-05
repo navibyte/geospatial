@@ -628,7 +628,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     WriteFeatures features, {
     int? count,
     Box? bbox,
-    WriteProperties? extra,
+    WriteProperties? custom,
   }) {
     if (_atFeatureCollection) {
       return;
@@ -647,9 +647,9 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     _startObjectArray(count: count);
     features.call(this);
     _endObjectArray();
-    if (!conf.ignoreForeignMembers && extra != null) {
+    if (!conf.ignoreForeignMembers && custom != null) {
       _markItem();
-      extra.call(this);
+      custom.call(this);
     }
     _buffer.write('}');
     _endContainer();
@@ -661,7 +661,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     WriteGeometries? geometry,
     Map<String, Object?>? properties,
     Box? bbox,
-    WriteProperties? extra,
+    WriteProperties? custom,
   }) {
     if (_markItem()) {
       _buffer.write(',');
@@ -693,8 +693,8 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
       'properties',
       properties ?? const <String, Object?>{},
     );
-    if (!conf.ignoreForeignMembers && extra != null) {
-      extra.call(this);
+    if (!conf.ignoreForeignMembers && custom != null) {
+      custom.call(this);
     }
     _buffer.write('}');
     _endContainer();

@@ -718,7 +718,7 @@ void main() {
           geometry: (geom) => geom
             ..point(XY(10.123, 20.25))
             ..point(XYZM(1, 2, 3, 4), name: 'geom1'),
-          extra: (props) => props.properties('extra', {
+          custom: (props) => props.properties('extra', {
             'foo': {
               'bar': 'this is property value',
               'baz': [true, false],
@@ -784,7 +784,7 @@ void main() {
       _testGeoJsonWriters<FeatureContent>(
         (output) => output.featureCollection(
           (features) {},
-          extra: (props) => props.property('prop1', 'value1'),
+          custom: (props) => props.property('prop1', 'value1'),
         ),
         geoJson: '{"type":"FeatureCollection","features":[],"prop1":"value1"}',
         geoJsonStrict: '{"type":"FeatureCollection","features":[]}',
@@ -792,7 +792,7 @@ void main() {
       _testGeoJsonWriters<FeatureContent>(
         (output) => output.featureCollection(
           (features) {},
-          extra: (props) => props.properties('map1', {'prop1': 'value1'}),
+          custom: (props) => props.properties('map1', {'prop1': 'value1'}),
         ),
         geoJson: '{"type":"FeatureCollection",'
             '"features":[],"map1":{"prop1":"value1"}}',
@@ -824,9 +824,9 @@ void main() {
       _testGeoJsonWriters<FeatureContent>(
         (output) => output.featureCollection(
           (features) => features
-            ..feature(extra: (props) => props.property('prop1', 'value1'))
+            ..feature(custom: (props) => props.property('prop1', 'value1'))
             ..feature(
-              extra: (props) => props.properties('map1', {'prop1': 'value1'}),
+              custom: (props) => props.properties('map1', {'prop1': 'value1'}),
             ),
         ),
         geoJson: '{"type":"FeatureCollection","features":'
@@ -843,12 +843,12 @@ void main() {
             ..feature(
               id: 1,
               properties: {'test1': 3},
-              extra: (props) => props.property('p1', BigInt.one),
+              custom: (props) => props.property('p1', BigInt.one),
             )
             ..feature(
               id: '2',
               properties: {},
-              extra: (props) => props.properties('map1', {'p2': 2}),
+              custom: (props) => props.properties('map1', {'p2': 2}),
             ),
         ),
         geoJson: '{"type":"FeatureCollection","features":'
