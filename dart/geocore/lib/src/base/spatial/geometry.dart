@@ -75,7 +75,7 @@ abstract class Geometry extends Bounded {
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
   String toStringAs({
-    TextFormat<GeometryContent> format = DefaultFormat.geometry,
+    TextWriterFormat<GeometryContent> format = DefaultFormat.geometry,
     int? decimals,
   }) {
     final encoder = format.encoder(decimals: decimals);

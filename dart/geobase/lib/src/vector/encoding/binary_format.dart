@@ -24,10 +24,11 @@ mixin BinaryFormat<Content extends Object> {
     int bufferSize = 128,
   });
 
-  /// Returns a binary format decoder that decodes [Content] to [builder].
+  /// Returns a binary format decoder that decodes bytes as [Content] to
+  /// [builder].
   ///
-  /// Content decoded by a decoder is sent to a content stream interface
-  /// represented by an object [builder].
+  /// Content decoded by a decoder is sent to a content interface represented
+  /// by an object [builder].
   ///
   /// [endian] specifies endianness for byte sequences read.
   ContentDecoder decoder(

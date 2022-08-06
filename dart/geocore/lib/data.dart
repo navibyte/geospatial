@@ -15,8 +15,8 @@
 /// Exports also `Geom`, `CoordinateContent`, `SimpleGeometryContent`,
 /// `GeometryContent`, `GeometryBinaryFormat`, `FeatureContent`,
 /// `PropertyContent`, `ContentDecoder`, `ContentEncoder`, `BinaryFormat`,
-/// `TextFormat`, `DefaultFormat`, `WktLikeFormat`, `GeoJSON`, `WKT` and `WKB`
-/// from `package:geobase/vector.dart`.
+/// `TextWriterFormat`, `DefaultFormat`, `WktLikeFormat`, `GeoJSON`, `WKT` and
+/// `WKB` from `package:geobase/vector.dart`.
 ///
 /// Usage: import `package:geocore/data.dart`
 library data;
@@ -32,7 +32,7 @@ export 'package:geobase/vector.dart'
         ContentDecoder,
         ContentEncoder,
         BinaryFormat,
-        TextFormat,
+        TextWriterFormat,
         DefaultFormat,
         WktLikeFormat,
         GeoJSON,

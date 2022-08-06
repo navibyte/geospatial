@@ -968,8 +968,8 @@ void _testGeoJsonWriters<T>(
 }
 
 void _testWriterOfGeometryFormat<T>(
-  TextFormat<CoordinateContent> coordinateFormat,
-  TextFormat<GeometryContent> geometryFormat,
+  TextWriterFormat<CoordinateContent> coordinateFormat,
+  TextWriterFormat<GeometryContent> geometryFormat,
   void Function(T output) content, {
   required String expected,
   int? decimals,
@@ -987,7 +987,7 @@ void _testWriterOfGeometryFormat<T>(
 }
 
 void _testWriterOfFeatureFormat<T>(
-  TextFormat<FeatureContent> format,
+  TextWriterFormat<FeatureContent> format,
   void Function(T output) content, {
   required String expected,
   int? decimals,

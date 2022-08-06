@@ -4,10 +4,12 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'content_decoder.dart';
 import 'content_encoder.dart';
 
 /// A mixin to access text format encoders for [Content].
-mixin TextFormat<Content extends Object> {
+// ignore: one_member_abstracts
+abstract class TextWriterFormat<Content extends Object> {
   /// Returns a text format encoder for [Content].
   ///
   /// When an optional [buffer] is given, then representations are written into
@@ -22,4 +24,13 @@ mixin TextFormat<Content extends Object> {
     StringSink? buffer,
     int? decimals,
   });
+}
+
+/// A mixin to access text format encoders and decoders for [Content].
+mixin TextFormat<Content extends Object> implements TextWriterFormat<Content> {
+  /// Returns a text format decoder that decodes text as [Content] to [builder].
+  ///
+  /// Content decoded by a decoder is sent to a content interface represented
+  /// by an object [builder].
+  ContentDecoder decoder(Content builder);
 }

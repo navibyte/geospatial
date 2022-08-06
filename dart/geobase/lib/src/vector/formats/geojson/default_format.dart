@@ -30,10 +30,10 @@ import '/src/vector/encoding.dart';
 /// * coordinates for other geometries with similar principles
 class DefaultFormat {
   /// The (default) text format for coordinate objects.
-  static const TextFormat<CoordinateContent> coordinate =
-      TextFormatImpl(DefaultTextWriter.new);
+  static const TextWriterFormat<CoordinateContent> coordinate =
+      TextWriterFormatImpl(DefaultTextWriter.new);
 
   /// The (default) text format for geometry objects.
-  static const TextFormat<GeometryContent> geometry =
-      TextFormatImpl(DefaultTextWriter.new);
+  static const TextWriterFormat<GeometryContent> geometry =
+      TextWriterFormatImpl(DefaultTextWriter.new);
 }

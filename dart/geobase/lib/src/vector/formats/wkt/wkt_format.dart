@@ -40,10 +40,10 @@ import '/src/vector/encoding.dart';
 /// point series of two points (min, max).
 class WKT {
   /// The WKT format text format for coordinate objects.
-  static const TextFormat<CoordinateContent> coordinate =
-      TextFormatImpl(WktTextWriter.new);
+  static const TextWriterFormat<CoordinateContent> coordinate =
+      TextWriterFormatImpl(WktTextWriter.new);
 
   /// The WKT format text format for geometry objects.
-  static const TextFormat<GeometryContent> geometry =
-      TextFormatImpl(WktTextWriter.new);
+  static const TextWriterFormat<GeometryContent> geometry =
+      TextWriterFormatImpl(WktTextWriter.new);
 }

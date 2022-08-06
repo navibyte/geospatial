@@ -13,10 +13,11 @@ typedef CreateTextEncoder<Content extends Object> = ContentEncoder<Content>
   int? decimals,
 });
 
-/// A helper implementation of [TextFormat] for [Content].
-class TextFormatImpl<Content extends Object> with TextFormat<Content> {
-  /// A helper implementation of [TextFormat] for [Content].
-  const TextFormatImpl(this.factory);
+/// A helper implementation of [TextWriterFormat] for [Content].
+class TextWriterFormatImpl<Content extends Object>
+    with TextWriterFormat<Content> {
+  /// A helper implementation of [TextWriterFormat] for [Content].
+  const TextWriterFormatImpl(this.factory);
 
   /// A factory function to create [ContentEncoder] for [Content].
   final CreateTextEncoder<Content> factory;
@@ -37,11 +38,11 @@ typedef CreateTextEncoderConf<Content extends Object, Conf extends Object>
   Conf? conf,
 });
 
-/// A helper implementation of [TextFormat] for [Content] with [Conf].
-class TextFormatImplConf<Content extends Object, Conf extends Object>
-    with TextFormat<Content> {
-  /// A helper implementation of [TextFormat] for [Content] with [Conf].
-  const TextFormatImplConf(this.factory, {this.conf});
+/// A helper implementation of [TextWriterFormat] for [Content] with [Conf].
+class TextWriterFormatImplConf<Content extends Object, Conf extends Object>
+    with TextWriterFormat<Content> {
+  /// A helper implementation of [TextWriterFormat] for [Content] with [Conf].
+  const TextWriterFormatImplConf(this.factory, {this.conf});
 
   /// A factory function to create [ContentEncoder] for [Content] with [Conf].
   final CreateTextEncoderConf<Content, Conf> factory;

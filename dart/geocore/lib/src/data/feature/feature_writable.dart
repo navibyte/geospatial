@@ -20,7 +20,7 @@ abstract class FeatureWritable {
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
   String toStringAs({
-    TextFormat<FeatureContent> format = GeoJSON.feature,
+    TextWriterFormat<FeatureContent> format = GeoJSON.feature,
     int? decimals,
   }) {
     final encoder = format.encoder(decimals: decimals);

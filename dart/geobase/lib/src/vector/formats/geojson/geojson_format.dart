@@ -99,34 +99,38 @@ class GeoJsonConf with EquatableMixin {
 ///   * `{"type":"Point","coordinates":[10.1,20.2,30.3,40.4]}`
 class GeoJSON {
   /// The GeoJSON text format for coordinate objects.
-  static const TextFormat<CoordinateContent> coordinate =
-      TextFormatImplConf(GeoJsonTextWriter.new);
+  static const TextWriterFormat<CoordinateContent> coordinate =
+      TextWriterFormatImplConf(GeoJsonTextWriter.new);
 
   /// The GeoJSON text format for geometry objects.
-  static const TextFormat<GeometryContent> geometry =
-      TextFormatImplConf(GeoJsonTextWriter.new);
+  static const TextWriterFormat<GeometryContent> geometry =
+      TextWriterFormatImplConf(GeoJsonTextWriter.new);
 
   /// The GeoJSON text format for feature objects.
-  static const TextFormat<FeatureContent> feature =
-      TextFormatImplConf(GeoJsonTextWriter.new);
+  static const TextWriterFormat<FeatureContent> feature =
+      TextWriterFormatImplConf(GeoJsonTextWriter.new);
 
   /// The GeoJSON text format for coordinate objects with optional [conf].
-  static TextFormat<CoordinateContent> coordinateFormat([GeoJsonConf? conf]) =>
-      TextFormatImplConf(
+  static TextWriterFormat<CoordinateContent> coordinateFormat([
+    GeoJsonConf? conf,
+  ]) =>
+      TextWriterFormatImplConf(
         GeoJsonTextWriter.new,
         conf: conf,
       );
 
   /// The GeoJSON text format for geometry objects with optional [conf].
-  static TextFormat<GeometryContent> geometryFormat([GeoJsonConf? conf]) =>
-      TextFormatImplConf(
+  static TextWriterFormat<GeometryContent> geometryFormat([
+    GeoJsonConf? conf,
+  ]) =>
+      TextWriterFormatImplConf(
         GeoJsonTextWriter.new,
         conf: conf,
       );
 
   /// The GeoJSON text format for feature objects with optional [conf].
-  static TextFormat<FeatureContent> featureFormat([GeoJsonConf? conf]) =>
-      TextFormatImplConf(
+  static TextWriterFormat<FeatureContent> featureFormat([GeoJsonConf? conf]) =>
+      TextWriterFormatImplConf(
         GeoJsonTextWriter.new,
         conf: conf,
       );

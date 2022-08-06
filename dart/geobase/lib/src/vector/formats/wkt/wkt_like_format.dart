@@ -35,10 +35,10 @@ import '/src/vector/encoding.dart';
 /// `wktFormat` that formats them as polygons.
 class WktLikeFormat {
   /// The WKT (like) format text format for coordinate objects.
-  static const TextFormat<CoordinateContent> coordinate =
-      TextFormatImpl(WktLikeTextWriter.new);
+  static const TextWriterFormat<CoordinateContent> coordinate =
+      TextWriterFormatImpl(WktLikeTextWriter.new);
 
   /// The WKT (like) format text format for geometry objects.
-  static const TextFormat<GeometryContent> geometry =
-      TextFormatImpl(WktLikeTextWriter.new);
+  static const TextWriterFormat<GeometryContent> geometry =
+      TextWriterFormatImpl(WktLikeTextWriter.new);
 }
