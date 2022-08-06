@@ -22,6 +22,7 @@ binary data formats, encodings and content interfaces also redesigned.
 - [PositionData access (on lists or buffers) #137](https://github.com/navibyte/geospatial/issues/137)
 - new mini library "transforms" and "projections"
 - [Simple geometry data structures on geobase #133](https://github.com/navibyte/geospatial/issues/133)
+- [Feature data structures on geobase #138](https://github.com/navibyte/geospatial/issues/138)
 
 🛠 Refactoring:
 - [Optimize reading from iterable of coordinate values #131](https://github.com/navibyte/geospatial/issues/131)

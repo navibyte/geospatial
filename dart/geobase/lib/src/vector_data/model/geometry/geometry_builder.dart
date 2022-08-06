@@ -24,7 +24,7 @@ typedef AddGeometry<T extends Geometry> = void Function(
   String? name,
 });
 
-/// A builder to create geometry instances from [GeometryContent] stream.
+/// A builder to create geometry instances from [GeometryContent].
 ///
 /// This builder ignore "empty geometry" types.
 class GeometryBuilder<T extends Geometry> with GeometryContent {
@@ -38,7 +38,7 @@ class GeometryBuilder<T extends Geometry> with GeometryContent {
     }
   }
 
-  /// Builds geometries from the content stream provided by [geometries].
+  /// Builds geometries from the content provided by [geometries].
   ///
   /// Built geometry object are sent into [to] callback function.
   ///
@@ -51,7 +51,7 @@ class GeometryBuilder<T extends Geometry> with GeometryContent {
     geometries.call(builder);
   }
 
-  /// Builds a geometry list from the content stream provided by [geometries].
+  /// Builds a geometry list from the content provided by [geometries].
   ///
   /// Only geometry objects of [T] are built, any other geometries are ignored.
   ///
@@ -69,7 +69,7 @@ class GeometryBuilder<T extends Geometry> with GeometryContent {
     return list;
   }
 
-  /// Builds a geometry map from the content stream provided by [geometries].
+  /// Builds a geometry map from the content provided by [geometries].
   ///
   /// Only geometry objects of [T] are built, any other geometries are ignored.
   ///

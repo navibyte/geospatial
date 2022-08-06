@@ -16,7 +16,7 @@ typedef WriteFeatures = void Function(FeatureContent output);
 
 /// An interface to write feature data to format encoders and object builders.
 mixin FeatureContent {
-  /// Writes a feature collection represented by [features].
+  /// Writes a feature collection with a series of [features].
   ///
   /// An optional expected [count], when given, specifies the number of feature
   /// objects in a collection. Note that when given the count MUST be exact.
@@ -26,7 +26,7 @@ mixin FeatureContent {
   /// [Box] sub classes are [ProjBox] (projected or cartesian coordinates) and
   /// [GeoBox] (geographic coordinates). Other sub classes are supported too.
   ///
-  /// Use [extra] to write any custom or "foreign member" properties.
+  /// Use [custom] to write any custom or "foreign member" properties.
   ///
   /// An example:
   /// ```dart
@@ -52,10 +52,10 @@ mixin FeatureContent {
     WriteFeatures features, {
     int? count,
     Box? bbox,
-    WriteProperties? extra,
+    WriteProperties? custom,
   });
 
-  /// Writes a feature represented by [id], [geometry] and [properties].
+  /// Writes a feature with [id], [geometry] and [properties].
   ///
   /// The [id], when non-null, should be either a string or an integer number.
   ///
@@ -68,7 +68,7 @@ mixin FeatureContent {
   /// classes are [ProjBox] (projected or cartesian coordinates) and [GeoBox]
   /// (geographic coordinates). Other sub classes are supported too.
   ///
-  /// Use [extra] to write any custom or "foreign member" properties along with
+  /// Use [custom] to write any custom or "foreign member" properties along with
   /// those set by [properties].
   ///
   /// An example:
@@ -88,6 +88,6 @@ mixin FeatureContent {
     WriteGeometries? geometry,
     Map<String, Object?>? properties,
     Box? bbox,
-    WriteProperties? extra,
+    WriteProperties? custom,
   });
 }

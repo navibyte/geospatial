@@ -17,7 +17,7 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   /// A geometry collection with [geometries].
   const GeometryCollection(List<E> geometries) : _geometries = geometries;
 
-  /// A geometry collection from the content stream provided by [geometries].
+  /// A geometry collection from the content provided by [geometries].
   ///
   /// Only geometry objects of [E] are built, any other geometries are ignored.
   ///
@@ -66,7 +66,7 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   Geom get type => Geom.geometryCollection;
 
   /// All geometry items in this geometry collection.
-  List<E> get items => _geometries;
+  List<E> get geometries => _geometries;
 
   // todo: ==, hashCode, toString
 }
