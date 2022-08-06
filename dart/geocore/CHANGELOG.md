@@ -1,6 +1,6 @@
 ## 0.10.0
 
-Development version `0.10.0-dev.0`.
+Development version `0.10.0-dev.1`.
 
 ⚠️ Breaking changes:
 - Content interfaces, content encoders and text formats redesigned
