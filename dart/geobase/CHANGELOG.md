@@ -1,7 +1,8 @@
 ## 0.3.0
 
-Development version `0.3.0-dev.1`.
+Development version `0.3.0-dev.2`.
 
+✨ New: Data structures for simple geometries, features and feature collections.
 ✨ New: Support for [Well-know binary](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary) (WKB). Text and
 binary data formats, encodings and content interfaces also redesigned.
 

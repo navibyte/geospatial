@@ -4,8 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// Geospatial projection (currently only between WGS84 and Web Mercator).
-/// 
+/// Geospatial projections (currently only between WGS84 and Web Mercator).
+///
 /// See also `package:geobase/projections_proj4d.dart` that provides a
 /// projection adapter using the external `proj4dart` package.
 ///

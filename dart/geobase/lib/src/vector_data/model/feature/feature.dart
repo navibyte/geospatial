@@ -55,10 +55,10 @@ class Feature<T extends Geometry> extends Bounded {
   ///
   /// Use an optional [custom] parameter to set any custom or "foreign member"
   /// properties.
-  /// 
+  ///
   /// An example to create a feature containing a point geometry, the returned
   /// type is `Feature<Point>`:
-  /// 
+  ///
   /// ```dart
   ///   Feature<Point>.build(
   ///       id: '1',

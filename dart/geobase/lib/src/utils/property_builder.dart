@@ -13,7 +13,7 @@ class PropertyBuilder with PropertyContent {
   const PropertyBuilder._(this._map);
 
   /// Builds a property map from the content stream provided by [properties].
-  /// 
+  ///
   /// Built property objects are sent into the [to] map (that is also returned).
   static Map<String, Object?> buildTo(
     WriteProperties properties, {

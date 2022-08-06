@@ -18,6 +18,8 @@ Key features:
 * 🏗️ coordinate transformations and projections (initial support)
 * 🔢 tiling schemes and tile matrix sets (web mercator, global geodetic)
 * 📅 temporal data structures (instant, interval) and spatial extents
+* 🧩 simple geometries (point, line string, polygon, multi point, multi line string, multi polygon, geometry collection)
+* 🔷 feature objects (with id, properties and geometry) and feature collections
 * 📃 text format encoders for features, geometries, coordinates, properties:
   * 🌎 supported formats: [GeoJSON](https://geojson.org/) 
 * 📃 text format encoders for geometries and coordinates:
@@ -35,7 +37,7 @@ Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geobase: ^0.3.0-dev.1
+  geobase: ^0.3.0-dev.2
 ```
 
 Import it:
@@ -53,10 +55,12 @@ Library                | Description
 **constants**          | Geodetic and screen related constants.
 **coordinates**        | Geographic and projected positions and bounding boxes.
 **meta**               | Temporal data structures (instant, interval) and spatial extents.
+**projections**        | Geospatial projections (currently only between WGS84 and Web Mercator).
 **projections_proj4d** | Projections provided by the external [proj4dart](https://pub.dev/packages/proj4dart) package.
 **tiling**             | Tiling schemes and tile matrix sets (web mercator, global geodetic).
+**transforms**         | Basic coordinate transformations (initial support).
 **vector**             | Data writers for geospatial vector data (features, geometries, coordinates).
-**vector_data**        | Positions and position arrays as iterable collections of coordinate values.
+**vector_data**        | Data structures for positions, geometries, features and feature collections.
 
 See also the [geodata](https://pub.dev/packages/geodata) package provding a
 geospatial API client to read [GeoJSON](https://geojson.org/) and other

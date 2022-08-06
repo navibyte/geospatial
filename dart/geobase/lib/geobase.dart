@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+// ignore_for_file: lines_longer_than_80_chars
+
 /// Geospatial coordinates, projections and vector data (GeoJSON, WKT, WKB).
 ///
 /// Key features:
@@ -12,6 +14,8 @@
 /// * coordinate transformations and projections (initial support)
 /// * tiling schemes and tile matrix sets (web mercator, global geodetic)
 /// * temporal data structures (instant, interval) and spatial extents
+/// * simple geometries (point, line string, polygon, multi point, multi line string, multi polygon, geometry collection)
+/// * feature objects (with id, properties and geometry) and feature collections
 /// * text format encoders for features, geometries, coordinates, properties:
 ///   * supported formats: [GeoJSON](https://geojson.org/)
 /// * text format encoders for geometries and coordinates:

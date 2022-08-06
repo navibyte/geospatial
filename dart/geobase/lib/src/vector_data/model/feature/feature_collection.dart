@@ -42,10 +42,10 @@ class FeatureCollection<E extends Feature> extends Bounded {
   ///
   /// Use an optional [custom] parameter to set any custom or "foreign member"
   /// properties.
-  /// 
+  ///
   /// An example to create a feature collection with feature containing point
   /// geometries, the returned type is `FeatureCollection<Feature<Point>>`:
-  /// 
+  ///
   /// ```dart
   ///   FeatureCollection.build<Point>(
   ///       count: 2,

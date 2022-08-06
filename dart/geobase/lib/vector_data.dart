@@ -4,8 +4,15 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// Data structures for positions, position arrays and geometries.
-/// 
+// ignore_for_file: lines_longer_than_80_chars
+
+/// Data structures for positions, geometries, features and feature collections.
+///
+/// Key features
+/// * positions and position arrays based on coordinate arrays
+/// * simple geometries (point, line string, polygon, multi point, multi line string, multi polygon, geometry collection)
+/// * feature objects (with id, properties and geometry) and feature collections
+///
 /// This libary exports a subset of `package:geobase/geobase.dart`.
 ///
 /// Usage: import `package:geobase/vector_data.dart`
