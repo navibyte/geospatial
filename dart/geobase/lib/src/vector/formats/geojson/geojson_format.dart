@@ -4,12 +4,18 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:equatable/equatable.dart';
 
+import '/src/codes/coords.dart';
 import '/src/utils/format_geojson_wkt.dart';
 import '/src/utils/format_impl.dart';
 import '/src/vector/content.dart';
 import '/src/vector/encoding.dart';
+
+part 'geojson_decoder.dart';
 
 /// Optional configuration parameters for formatting GeoJSON.
 class GeoJsonConf with EquatableMixin {
@@ -98,19 +104,19 @@ class GeoJsonConf with EquatableMixin {
 /// * point (x, y, z, m), with z = 30.3 and m = 40.4:
 ///   * `{"type":"Point","coordinates":[10.1,20.2,30.3,40.4]}`
 class GeoJSON {
-  /// The GeoJSON text format for coordinate objects.
+  /// The GeoJSON text format (encoding only) for coordinate objects.
   static const TextWriterFormat<CoordinateContent> coordinate =
       TextWriterFormatImplConf(GeoJsonTextWriter.new);
 
-  /// The GeoJSON text format for geometry objects.
-  static const TextWriterFormat<GeometryContent> geometry =
-      TextWriterFormatImplConf(GeoJsonTextWriter.new);
+  /// The GeoJSON text format (encoding and decoding) for geometry objects.
+  static const TextFormat<GeometryContent> geometry =
+      _GeoJsonGeometryTextFormat();
 
-  /// The GeoJSON text format for feature objects.
-  static const TextWriterFormat<FeatureContent> feature =
-      TextWriterFormatImplConf(GeoJsonTextWriter.new);
+  /// The GeoJSON text format (encoding and decoding) for feature objects.
+  static const TextFormat<FeatureContent> feature = _GeoJsonFeatureTextFormat();
 
-  /// The GeoJSON text format for coordinate objects with optional [conf].
+  /// The GeoJSON text format (encoding only) for coordinate objects with
+  /// optional [conf].
   static TextWriterFormat<CoordinateContent> coordinateFormat([
     GeoJsonConf? conf,
   ]) =>
@@ -119,19 +125,48 @@ class GeoJSON {
         conf: conf,
       );
 
-  /// The GeoJSON text format for geometry objects with optional [conf].
-  static TextWriterFormat<GeometryContent> geometryFormat([
+  /// The GeoJSON text format (encoding and decoding) for geometry objects with
+  /// optional [conf].
+  static TextFormat<GeometryContent> geometryFormat([
     GeoJsonConf? conf,
   ]) =>
-      TextWriterFormatImplConf(
-        GeoJsonTextWriter.new,
-        conf: conf,
-      );
+      _GeoJsonGeometryTextFormat(conf);
 
-  /// The GeoJSON text format for feature objects with optional [conf].
-  static TextWriterFormat<FeatureContent> featureFormat([GeoJsonConf? conf]) =>
-      TextWriterFormatImplConf(
-        GeoJsonTextWriter.new,
-        conf: conf,
-      );
+  /// The GeoJSON text format (encoding and decoding) for feature objects with
+  /// optional [conf].
+  static TextFormat<FeatureContent> featureFormat([GeoJsonConf? conf]) =>
+      _GeoJsonFeatureTextFormat(conf);
+}
+
+class _GeoJsonGeometryTextFormat with TextFormat<GeometryContent> {
+  const _GeoJsonGeometryTextFormat([this.conf]);
+
+  final GeoJsonConf? conf;
+
+  @override
+  ContentDecoder decoder(GeometryContent builder) {
+    return _GeoJsonGeometryTextDecoder(builder);
+  }
+
+  @override
+  ContentEncoder<GeometryContent> encoder({
+    StringSink? buffer,
+    int? decimals,
+  }) =>
+      GeoJsonTextWriter(buffer: buffer, decimals: decimals, conf: conf);
+}
+
+class _GeoJsonFeatureTextFormat with TextFormat<FeatureContent> {
+  const _GeoJsonFeatureTextFormat([this.conf]);
+
+  final GeoJsonConf? conf;
+
+  @override
+  ContentDecoder decoder(FeatureContent builder) {
+    return _GeoJsonFeatureTextDecoder(builder);
+  }
+
+  @override
+  ContentEncoder<FeatureContent> encoder({StringSink? buffer, int? decimals}) =>
+      GeoJsonTextWriter(buffer: buffer, decimals: decimals, conf: conf);
 }
