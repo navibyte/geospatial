@@ -139,7 +139,7 @@ void main() {
   group('Position array (XY positions) as flat coordinate values', () {
     // array of 3 positions with xy coordinates
     const xyData3 = [1.1, 1.2, 2.1, 2.2, 3.1, 3.2];
-    const xyArray3 = PositionArray.view(xyData3);
+    final xyArray3 = PositionArray.view(xyData3);
     final xyArray3FromText = PositionArray.fromText('1.1,1.2,2.1,2.2,3.1,3.2');
 
     test('Creating position arrays', () {
@@ -202,7 +202,7 @@ void main() {
       3.3,
       3.4,
     ];
-    const xyzmArray3 = PositionArray.view(xyzmData3, type: Coords.xyzm);
+    final xyzmArray3 = PositionArray.view(xyzmData3, type: Coords.xyzm);
     final xyzmArray3FromText = PositionArray.fromText(
       '1.1,1.2,1.3,1.4,2.1,2.2,2.3,2.4,3.1,3.2,3.3,3.4',
       type: Coords.xyzm,

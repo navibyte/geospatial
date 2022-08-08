@@ -22,7 +22,8 @@ abstract class BoxCoords extends Box with _CoordinatesMixin {
   @override
   final Coords _type;
 
-  const BoxCoords._(Iterable<double> source, {Coords type = Coords.xy})
+  /// A bounding box with coordinate values of [type] from [source].
+  const BoxCoords(Iterable<double> source, {Coords type = Coords.xy})
       : _data = source,
         _type = type;
 
@@ -159,7 +160,7 @@ abstract class BoxCoords extends Box with _CoordinatesMixin {
 
 @immutable
 class _BoxCoordsImpl extends BoxCoords {
-  const _BoxCoordsImpl.view(super.source, {super.type = Coords.xy}) : super._();
+  const _BoxCoordsImpl.view(super.source, {super.type = Coords.xy}) : super();
 
   @override
   Iterable<Position> get corners2D =>

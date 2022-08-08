@@ -15,12 +15,17 @@ part of 'coordinates.dart';
 /// also use [dataTo] to map coordinate values to custom position types.
 ///
 /// See [Position] for description about supported coordinate values.
-class PositionArray with _CoordinatesMixin {
+abstract class PositionArray with _CoordinatesMixin {
   @override
   final Iterable<double> _data;
 
   @override
   final Coords _type;
+
+  /// Positions with coordinate values of [type] from [source].
+  const PositionArray(Iterable<double> source, {Coords type = Coords.xy})
+      : _data = source,
+        _type = type;
 
   /// Positions with coordinate values as a view backed by [source].
   ///
@@ -42,9 +47,8 @@ class PositionArray with _CoordinatesMixin {
   /// performance.
   ///
   /// See [Position] for description about supported coordinate values.
-  const PositionArray.view(Iterable<double> source, {Coords type = Coords.xy})
-      : _data = source,
-        _type = type;
+  factory PositionArray.view(Iterable<double> source, {Coords type}) =
+      _PositionArrayImpl.view;
 
   /// Positions with coordinate values parsed from [text].
   ///
@@ -89,6 +93,12 @@ class PositionArray with _CoordinatesMixin {
   /// Access position array as geographic positions.
   PositionData<Geographic, double> get toGeographic =>
       _PositionArrayData<Geographic>(_data, _type, Geographic.fromCoords);
+}
+
+@immutable
+class _PositionArrayImpl extends PositionArray {
+  const _PositionArrayImpl.view(super.source, {super.type = Coords.xy})
+      : super();
 }
 
 class _PositionArrayData<E extends Position> with PositionData<E, double> {

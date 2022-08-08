@@ -41,7 +41,7 @@ abstract class PositionCoords extends Position with _CoordinatesMixin {
   @override
   final Coords _type;
 
-  /// Default `const` constructor to allow extending this abstract class.
+  /// A geospatial position with coordinate values of [type] from [source].
   const PositionCoords(Iterable<double> source, {Coords type = Coords.xy})
       : _data = source,
         _type = type;
