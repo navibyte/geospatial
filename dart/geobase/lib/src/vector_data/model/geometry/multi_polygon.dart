@@ -107,5 +107,12 @@ class MultiPolygon extends Geometry {
   /// All polygons as a lazy iterable of [Polygon] geometries.
   Iterable<Polygon> get polygons => ringArrays.map<Polygon>(Polygon.new);
 
-  // todo: coordinates as raw data, ==, hashCode, toString
+  // todo: coordinates as raw data, toString
+
+  @override
+  bool operator ==(Object other) =>
+      other is MultiPolygon && ringArrays == other.ringArrays;
+
+  @override
+  int get hashCode => ringArrays.hashCode;
 }

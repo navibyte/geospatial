@@ -110,5 +110,12 @@ class Polygon extends Geometry {
   /// polygon. It's required that `0 <= index < interiorLength`.
   PositionArray interior(int index) => _rings[1 + index];
 
-  // todo: coordinates as raw data, ==, hashCode, toString
+  // todo: coordinates as raw data, toString
+
+  @override
+  bool operator ==(Object other) =>
+      other is Polygon && rings == other.rings;
+
+  @override
+  int get hashCode => rings.hashCode;
 }

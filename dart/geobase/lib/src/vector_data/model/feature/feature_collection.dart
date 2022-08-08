@@ -4,8 +4,9 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:geobase/src/coordinates/base/box.dart';
+import 'package:meta/meta.dart';
 
+import '/src/coordinates/base.dart';
 import '/src/utils/property_builder.dart';
 import '/src/vector/content.dart';
 import '/src/vector_data/model/bounded.dart';
@@ -19,6 +20,7 @@ import 'feature.dart';
 /// containing property objects.
 ///
 /// Supports representing data from GeoJSON (https://geojson.org/) features.
+@immutable
 class FeatureCollection<E extends Feature> extends Bounded {
   final List<E> _features;
   final Map<String, Object?>? _custom;
@@ -93,7 +95,16 @@ class FeatureCollection<E extends Feature> extends Bounded {
   /// property data outside it is stored in this member.
   Map<String, Object?>? get custom => _custom;
 
-  // todo: ==, hashCode, toString
+  // todo: toString
+
+  @override
+  bool operator ==(Object other) =>
+      other is FeatureCollection &&
+      features == other.features &&
+      custom == other.custom;
+
+  @override
+  int get hashCode => Object.hash(features, custom);
 }
 
 class _FeatureBuilder<T extends Geometry> implements FeatureContent {

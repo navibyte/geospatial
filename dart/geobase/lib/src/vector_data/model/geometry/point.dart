@@ -73,5 +73,12 @@ class Point extends Geometry {
   /// The position in this point geometry.
   PositionCoords get position => _position;
 
-  // todo: coordinates as raw data, ==, hashCode, toString
+  // todo: coordinates as raw data, toString
+
+  @override
+  bool operator ==(Object other) =>
+      other is Point && position == other.position;
+
+  @override
+  int get hashCode => position.hashCode;
 }

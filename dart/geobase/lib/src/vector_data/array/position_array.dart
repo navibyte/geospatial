@@ -99,6 +99,32 @@ abstract class PositionArray with _CoordinatesMixin {
 class _PositionArrayImpl extends PositionArray {
   const _PositionArrayImpl.view(super.source, {super.type = Coords.xy})
       : super();
+
+  @override
+  bool operator ==(Object other) =>
+      other is _PositionArrayImpl &&
+      _type == other._type &&
+      _data == other._data;
+
+  @override
+  int get hashCode => Object.hash(_type, _data);
+
+  // Note: calculating equality and hashCode of Iterable<double> arrays is
+  // delegated to viewed source iterable (most often lists).
+  //
+  // The default List: "Lists are, by default, only equal to themselves. Even if
+  // other is also a list, the equality comparison does not compare the elements
+  // of the two lists."
+  //
+  // So when two position arrays view on two different List<double> lists with
+  // exactly same value in same order, this implementation returns false on
+  // equality.
+  //
+  // Some other Iterable<double> or List<double> implementations might use
+  // something like IterableEquality.equals / hash from "collection" package.
+  //
+  // Anyway, a position array might be really large, so calculating equality and
+  // hash might then have performance issues too.
 }
 
 class _PositionArrayData<E extends Position> with PositionData<E, double> {

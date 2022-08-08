@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'package:meta/meta.dart';
+
 import '/src/utils/property_builder.dart';
 import '/src/vector/content.dart';
 import '/src/vector_data/model/bounded.dart';
@@ -17,6 +19,7 @@ import '/src/vector_data/model/geometry.dart';
 /// Feature objects have an optional primary [geometry] of [T].
 ///
 /// Supports representing data from GeoJSON (https://geojson.org/) features.
+@immutable
 class Feature<T extends Geometry> extends Bounded {
   final Object? _id;
   final T? _geometry;
@@ -145,7 +148,18 @@ class Feature<T extends Geometry> extends Bounded {
   /// stored in this member.
   Map<String, Object?>? get custom => null;
 
-  // todo: ==, hashCode, toString
+  // todo: toString
+
+  @override
+  bool operator ==(Object other) =>
+      other is Feature &&
+      id == other.id &&
+      geometry == other.geometry &&
+      properties == other.properties &&
+      custom == other.custom;
+
+  @override
+  int get hashCode => Object.hash(id, properties, geometry, custom);
 }
 
 class _CustomFeature<T extends Geometry> extends Feature<T> {

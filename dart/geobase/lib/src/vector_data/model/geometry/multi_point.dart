@@ -70,5 +70,12 @@ class MultiPoint extends Geometry {
   /// All points as a lazy iterable of [Point] geometries.
   Iterable<Point> get points => positions.map<Point>(Point.new);
 
-  // todo: coordinates as raw data, ==, hashCode, toString
+  // todo: coordinates as raw data, toString
+
+  @override
+  bool operator ==(Object other) =>
+      other is MultiPoint && positions == other.positions;
+
+  @override
+  int get hashCode => positions.hashCode;
 }

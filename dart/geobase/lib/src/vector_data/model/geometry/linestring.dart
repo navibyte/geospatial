@@ -72,5 +72,12 @@ class LineString extends Geometry {
   /// The chain of positions in this line string geometry.
   PositionArray get chain => _chain;
 
-  // todo: coordinates as raw data, ==, hashCode, toString
+  // todo: coordinates as raw data, toString
+
+  @override
+  bool operator ==(Object other) =>
+      other is LineString && chain == other.chain;
+
+  @override
+  int get hashCode => chain.hashCode;
 }

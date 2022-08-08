@@ -68,5 +68,12 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   /// All geometry items in this geometry collection.
   List<E> get geometries => _geometries;
 
-  // todo: ==, hashCode, toString
+  // todo: toString
+
+  @override
+  bool operator ==(Object other) =>
+      other is GeometryCollection && geometries == other.geometries;
+
+  @override
+  int get hashCode => geometries.hashCode;
 }

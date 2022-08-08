@@ -89,5 +89,12 @@ class MultiLineString extends Geometry {
   Iterable<LineString> get lineStrings =>
       chains.map<LineString>(LineString.new);
 
-  // todo: coordinates as raw data, ==, hashCode, toString
+  // todo: coordinates as raw data, toString
+
+  @override
+  bool operator ==(Object other) =>
+      other is MultiLineString && chains == other.chains;
+
+  @override
+  int get hashCode => chains.hashCode;
 }
