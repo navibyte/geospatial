@@ -8,7 +8,11 @@
 
 import 'package:meta/meta.dart';
 
+import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/vector/content.dart';
+import '/src/vector/encoding.dart';
+import '/src/vector/formats.dart';
 import '/src/vector_data/model/bounded.dart';
 
 /// A base interface for geometry classes.
@@ -18,5 +22,51 @@ abstract class Geometry extends Bounded {
   const Geometry();
 
   /// The geometry type.
-  Geom get type;
+  Geom get geomType;
+
+  /// Writes this geometry object to [writer].
+  ///
+  /// Use an optional [name] to specify a name for a geometry (when applicable).
+  void writeTo(GeometryContent writer, {String? name});
+
+  /// The string representation of this geometry object, with [format] applied.
+  ///
+  /// When [format] is not given, then [GeoJSON] is used as a default.
+  ///
+  /// Use [decimals] to set a number of decimals (not applied if no decimals).
+  String toStringAs({
+    TextWriterFormat<GeometryContent> format = GeoJSON.geometry,
+    int? decimals,
+  }) {
+    final encoder = format.encoder(decimals: decimals);
+    writeTo(encoder.writer);
+    return encoder.toText();
+  }
+
+  /// The string representation of this geometry object as specified by
+  /// [GeoJSON].
+  @override
+  String toString() => toStringAs();
+}
+
+/// A base interface for "simple" geometry classes.
+abstract class SimpleGeometry extends Geometry {
+  /// Default `const` constructor to allow extending this abstract class.
+  const SimpleGeometry();
+
+  /// The coordinate type for this geometry.
+  Coords get coordType;
+
+  @override
+  void writeTo(SimpleGeometryContent writer, {String? name});
+
+  @override
+  String toStringAs({
+    TextWriterFormat<SimpleGeometryContent> format = GeoJSON.geometry,
+    int? decimals,
+  }) {
+    final encoder = format.encoder(decimals: decimals);
+    writeTo(encoder.writer);
+    return encoder.toText();
+  }
 }

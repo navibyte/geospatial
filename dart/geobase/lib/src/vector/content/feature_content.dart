@@ -5,8 +5,6 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import '/src/coordinates/base.dart';
-import '/src/coordinates/geographic.dart';
-import '/src/coordinates/projected.dart';
 
 import 'geometry_content.dart';
 import 'property_content.dart';
@@ -23,8 +21,8 @@ mixin FeatureContent {
   ///
   /// An optional [bbox] can used set a minimum bounding box for a feature
   /// collection written. A writer implementation may use it or ignore it. Known
-  /// [Box] sub classes are [ProjBox] (projected or cartesian coordinates) and
-  /// [GeoBox] (geographic coordinates). Other sub classes are supported too.
+  /// [Box] sub classes are `ProjBox` (projected or cartesian coordinates) and
+  /// `GeoBox` (geographic coordinates). Other sub classes are supported too.
   ///
   /// Use [custom] to write any custom or "foreign member" properties.
   ///
@@ -65,7 +63,7 @@ mixin FeatureContent {
   ///
   /// An optional [bbox] can used set a minimum bounding box for a feature
   /// written. A writer implementation may use it or ignore it. Known [Box] sub
-  /// classes are [ProjBox] (projected or cartesian coordinates) and [GeoBox]
+  /// classes are `ProjBox` (projected or cartesian coordinates) and `GeoBox`
   /// (geographic coordinates). Other sub classes are supported too.
   ///
   /// Use [custom] to write any custom or "foreign member" properties along with

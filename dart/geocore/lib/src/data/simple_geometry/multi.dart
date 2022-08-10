@@ -62,7 +62,7 @@ class GeometryCollection<E extends Geometry> extends Geometry
   List<Object?> get props => [geometries];
 
   @override
-  void writeTo(SimpleGeometryContent writer) {
+  void writeTo(GeometryContent writer) {
     // note: no need to inform is3D/hasM of the first point, as sub items on
     // a collection are geometries, and each of them should inform those
     writer.geometryCollection(

@@ -6,6 +6,7 @@
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/vector/content.dart';
 import '/src/vector_data/array.dart';
 
 import 'geometry.dart';
@@ -13,16 +14,18 @@ import 'linestring.dart';
 
 /// A multi line string with a series of line strings (each with a chain of
 /// positions).
-class MultiLineString extends Geometry {
+class MultiLineString extends SimpleGeometry {
   final List<PositionArray> _lineStrings;
+  final Coords? _type;
 
   /// A multi line string with a series of [lineStrings] (each with a chain of
   /// positions).
   ///
   /// Each line string or a chain of positions is represented by [PositionArray]
   /// instances.
-  const MultiLineString(List<PositionArray> lineStrings)
-      : _lineStrings = lineStrings;
+  const MultiLineString(List<PositionArray> lineStrings) : this._(lineStrings);
+
+  const MultiLineString._(this._lineStrings, [this._type]);
 
   /// A multi line string from a series of [lineStrings] (each with a chain of
   /// positions).
@@ -62,11 +65,11 @@ class MultiLineString extends Geometry {
     required Coords type,
   }) {
     if (lineStrings is List<PositionArray>) {
-      return MultiLineString(lineStrings);
+      return MultiLineString._(lineStrings, type);
     } else if (lineStrings is Iterable<PositionArray>) {
-      return MultiLineString(lineStrings.toList(growable: false));
+      return MultiLineString._(lineStrings.toList(growable: false), type);
     } else {
-      return MultiLineString(
+      return MultiLineString._(
         lineStrings
             .map<PositionArray>(
               (chain) => PositionArray.view(
@@ -75,12 +78,17 @@ class MultiLineString extends Geometry {
               ),
             )
             .toList(growable: false),
+        type,
       );
     }
   }
 
   @override
-  Geom get type => Geom.multiLineString;
+  Geom get geomType => Geom.multiLineString;
+
+  @override
+  Coords get coordType =>
+      _type ?? (_lineStrings.isNotEmpty ? _lineStrings.first.type : Coords.xy);
 
   /// The chains of all line strings.
   List<PositionArray> get chains => _lineStrings;
@@ -89,7 +97,11 @@ class MultiLineString extends Geometry {
   Iterable<LineString> get lineStrings =>
       chains.map<LineString>(LineString.new);
 
-  // todo: coordinates as raw data, toString
+  @override
+  void writeTo(SimpleGeometryContent writer, {String? name}) =>
+      writer.multiLineString(_lineStrings, type: coordType, name: name);
+
+  // todo: coordinates as raw data
 
   @override
   bool operator ==(Object other) =>

@@ -63,12 +63,22 @@ class GeometryCollection<E extends Geometry> extends Geometry {
       );
 
   @override
-  Geom get type => Geom.geometryCollection;
+  Geom get geomType => Geom.geometryCollection;
 
   /// All geometry items in this geometry collection.
   List<E> get geometries => _geometries;
 
-  // todo: toString
+  @override
+  void writeTo(GeometryContent writer, {String? name}) =>
+      writer.geometryCollection(
+        count: _geometries.length,
+        name: name,
+        (output) {
+          for (final geom in _geometries) {
+            geom.writeTo(output);
+          }
+        },
+      );
 
   @override
   bool operator ==(Object other) =>

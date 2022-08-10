@@ -7,8 +7,6 @@
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/coordinates/base.dart';
-import '/src/coordinates/geographic.dart';
-import '/src/coordinates/projected.dart';
 
 /// A function to write simple geometry data to [output].
 typedef WriteSimpleGeometries = void Function(SimpleGeometryContent output);
@@ -19,8 +17,10 @@ typedef WriteSimpleGeometries = void Function(SimpleGeometryContent output);
 /// This interface supports following "simple" geometry types introduced in the
 /// [Simple Feature Access - Part 1: Common Architecture](https://www.ogc.org/standards/sfa)
 /// standard by [The Open Geospatial Consortium](https://www.ogc.org/): `point`,
-/// `lineString`, `polygon`, `multiPoint`, `multiLineString`, `multiPolygon`,
-/// `geometryCollection`.
+/// `lineString`, `polygon`, `multiPoint`, `multiLineString` and `multiPolygon`.
+/// It the context of this package the type `geometryCollection` is not consider
+/// "simple", see `GeometryContent` for it's implementation. It's possible that
+/// in future versions other geometry types are added.
 ///
 /// Coordinate positions and position arrays are represented as coordinate value
 /// arrays of `Iterable<double>`. Bounding boxes are represented as [Box].
@@ -78,8 +78,8 @@ abstract class SimpleGeometryContent {
   ///
   /// An optional [bbox] of [Box] can used set a minimum bounding box for a
   /// geometry written. A writer implementation may use it or ignore it. Known
-  /// [Box] sub classes are [ProjBox] (projected or cartesian coordinates) and
-  /// [GeoBox] (geographic coordinates). Other sub classes are supported too.
+  /// [Box] sub classes are `ProjBox` (projected or cartesian coordinates) and
+  /// `GeoBox` (geographic coordinates). Other sub classes are supported too.
   ///
   /// An example to write a line string with 3 points and a bounding box:
   /// ```dart
@@ -121,8 +121,8 @@ abstract class SimpleGeometryContent {
   ///
   /// An optional [bbox] of [Box] can used set a minimum bounding box for a
   /// geometry written. A writer implementation may use it or ignore it. Known
-  /// [Box] sub classes are [ProjBox] (projected or cartesian coordinates) and
-  /// [GeoBox] (geographic coordinates). Other sub classes are supported too.
+  /// [Box] sub classes are `ProjBox` (projected or cartesian coordinates) and
+  /// `GeoBox` (geographic coordinates). Other sub classes are supported too.
   ///
   /// An example to write a polygon geometry with one linear ring containing
   /// 4 points:
@@ -161,8 +161,8 @@ abstract class SimpleGeometryContent {
   ///
   /// An optional [bbox] of [Box] can used set a minimum bounding box for a
   /// geometry written. A writer implementation may use it or ignore it. Known
-  /// [Box] sub classes are [ProjBox] (projected or cartesian coordinates) and
-  /// [GeoBox] (geographic coordinates). Other sub classes are supported too.
+  /// [Box] sub classes are `ProjBox` (projected or cartesian coordinates) and
+  /// `GeoBox` (geographic coordinates). Other sub classes are supported too.
   ///
   /// An example to write a multi point geometry with 3 points:
   /// ```dart
@@ -197,8 +197,8 @@ abstract class SimpleGeometryContent {
   ///
   /// An optional [bbox] of [Box] can used set a minimum bounding box for a
   /// geometry written. A writer implementation may use it or ignore it. Known
-  /// [Box] sub classes are [ProjBox] (projected or cartesian coordinates) and
-  /// [GeoBox] (geographic coordinates). Other sub classes are supported too.
+  /// [Box] sub classes are `ProjBox` (projected or cartesian coordinates) and
+  /// `GeoBox` (geographic coordinates). Other sub classes are supported too.
   ///
   /// An example to write a multi line string with two line strings:
   /// ```dart
@@ -251,8 +251,8 @@ abstract class SimpleGeometryContent {
   ///
   /// An optional [bbox] of [Box] can used set a minimum bounding box for a
   /// geometry written. A writer implementation may use it or ignore it. Known
-  /// [Box] sub classes are [ProjBox] (projected or cartesian coordinates) and
-  /// [GeoBox] (geographic coordinates). Other sub classes are supported too.
+  /// [Box] sub classes are `ProjBox` (projected or cartesian coordinates) and
+  /// `GeoBox` (geographic coordinates). Other sub classes are supported too.
   ///
   /// An example to write a multi polygon geometry with two polygons:
   /// ```dart
@@ -285,51 +285,6 @@ abstract class SimpleGeometryContent {
   void multiPolygon(
     Iterable<Iterable<Iterable<double>>> polygons, {
     required Coords type,
-    String? name,
-    Box? bbox,
-  });
-
-  /// Writes a geometry collection from the content stream provided by
-  /// [geometries].
-  ///
-  /// Use an optional [type] to give a hint of type of coordinates in
-  /// geometries. However, sub geometries provided by [geometries] may set
-  /// another types too.
-  ///
-  /// An optional expected [count], when given, specifies the number of geometry
-  /// objects in a collection. Note that when given the count MUST be exact.
-  ///
-  /// Use an optional [name] to specify a name for a geometry (when applicable).
-  ///
-  /// An optional [bbox] of [Box] can used set a minimum bounding box for a
-  /// geometry written. A writer implementation may use it or ignore it. Known
-  /// [Box] sub classes are [ProjBox] (projected or cartesian coordinates) and
-  /// [GeoBox] (geographic coordinates). Other sub classes are supported too.
-  ///
-  /// An example to write a geometry collection with two child geometries:
-  /// ```dart
-  ///   content.geometryCollection(
-  ///       type: Coords.xy
-  ///       count: 2,
-  ///       (geom) => geom
-  ///         ..point([10.123, 20.25])
-  ///         ..polygon(
-  ///           [
-  ///              [
-  ///                 10.1, 10.1,
-  ///                 5.0, 9.0,
-  ///                 12.0, 4.0,
-  ///                 10.1, 10.1,
-  ///              ],
-  ///           ],
-  ///           type: Coords.xy,
-  ///         ),
-  ///     );
-  /// ```
-  void geometryCollection(
-    WriteSimpleGeometries geometries, {
-    Coords? type,
-    int? count,
     String? name,
     Box? bbox,
   });

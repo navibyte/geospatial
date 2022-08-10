@@ -73,7 +73,7 @@ class _GeoJsonFeatureTextDecoder implements ContentDecoder {
 
 void _decodeGeometry(
   Map<String, dynamic> geometry,
-  SimpleGeometryContent builder,
+  GeometryContent builder,
 ) {
   // todo : coord type from conf
 

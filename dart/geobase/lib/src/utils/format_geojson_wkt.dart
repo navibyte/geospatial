@@ -254,16 +254,16 @@ abstract class _BaseTextWriter<T extends Object>
   @override
   void geometryCollection(
     WriteGeometries geometries, {
-    Coords? type,
+    //Coords? type,
     int? count,
     String? name,
     Box? bbox,
   }) {
-    _startCoordType(type);
+    //_startCoordType(type);
     _startObjectArray(count: count);
     geometries.call(this);
     _endObjectArray();
-    _endCoordType();
+    //_endCoordType();
   }
 
   @override
@@ -564,7 +564,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
   @override
   void geometryCollection(
     WriteGeometries geometries, {
-    Coords? type,
+    //Coords? type,
     int? count,
     String? name,
     Box? bbox,
@@ -581,7 +581,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
       _buffer.write(name == null ? '"geometry":' : '"$name":');
     }
     _startContainer(_Container.geometry);
-    _startCoordType(type);
+    //_startCoordType(type);
     _buffer.write('{"type":"GeometryCollection"');
     if (bbox != null) {
       _buffer.write(',"bbox":[');
@@ -593,7 +593,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     geometries.call(this);
     _endObjectArray();
     _buffer.write('}');
-    _endCoordType();
+    //_endCoordType();
     _endContainer();
   }
 
@@ -980,7 +980,7 @@ class WktTextWriter<T extends Object> extends WktLikeTextWriter<T> {
   @override
   void geometryCollection(
     WriteGeometries geometries, {
-    Coords? type,
+    //Coords? type,
     int? count,
     String? name,
     Box? bbox,
@@ -989,12 +989,12 @@ class WktTextWriter<T extends Object> extends WktLikeTextWriter<T> {
       _buffer.write(',');
     }
     _startContainer(_Container.geometry);
-    _startCoordType(type);
+    //_startCoordType(type);
     _buffer.write('GEOMETRYCOLLECTION');
     _startObjectArray(count: count);
     geometries.call(this);
     _endObjectArray();
-    _endCoordType();
+    //_endCoordType();
     _endContainer();
   }
 

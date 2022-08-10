@@ -69,7 +69,7 @@ abstract class Geometry extends Bounded {
   });
 
   /// Writes this geometry object to [writer].
-  void writeTo(SimpleGeometryContent writer);
+  void writeTo(GeometryContent writer);
 
   /// A string representation of this geometry, with [format] applied.
   ///

@@ -6,12 +6,13 @@
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/vector/content.dart';
 import '/src/vector_data/array.dart';
 
 import 'geometry.dart';
 
 /// A line string geometry with a chain of positions.
-class LineString extends Geometry {
+class LineString extends SimpleGeometry {
   final PositionArray _chain;
 
   /// A line string geometry with a [chain] of positions.
@@ -67,16 +68,22 @@ class LineString extends Geometry {
   }
 
   @override
-  Geom get type => Geom.lineString;
+  Geom get geomType => Geom.lineString;
+
+  @override
+  Coords get coordType => _chain.type;
 
   /// The chain of positions in this line string geometry.
   PositionArray get chain => _chain;
 
-  // todo: coordinates as raw data, toString
+  @override
+  void writeTo(SimpleGeometryContent writer, {String? name}) =>
+      writer.lineString(_chain, type: coordType, name: name);
+
+  // todo: coordinates as raw data
 
   @override
-  bool operator ==(Object other) =>
-      other is LineString && chain == other.chain;
+  bool operator ==(Object other) => other is LineString && chain == other.chain;
 
   @override
   int get hashCode => chain.hashCode;

@@ -178,8 +178,7 @@ class GeometryBuilder<T extends Geometry> with GeometryContent {
 
   @override
   void geometryCollection(
-    WriteSimpleGeometries geometries, {
-    Coords? type,
+    WriteGeometries geometries, {
     int? count,
     String? name,
     Box? bbox,

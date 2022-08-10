@@ -9,7 +9,7 @@ import '/src/utils/format_impl.dart';
 import '/src/vector/content.dart';
 import '/src/vector/encoding.dart';
 
-/// The default text format for [coordinate] and [geometry] objects.
+/// The "default" text format for [coordinate] and [geometry] objects.
 ///
 /// Rules applied by the format are aligned with GeoJSON.
 ///

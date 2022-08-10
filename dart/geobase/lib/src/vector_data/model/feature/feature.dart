@@ -8,6 +8,8 @@ import 'package:meta/meta.dart';
 
 import '/src/utils/property_builder.dart';
 import '/src/vector/content.dart';
+import '/src/vector/encoding.dart';
+import '/src/vector/formats.dart';
 import '/src/vector_data/model/bounded.dart';
 import '/src/vector_data/model/geometry.dart';
 
@@ -51,7 +53,7 @@ class Feature<T extends Geometry> extends Bounded {
   /// An optional [geometry] is a callback function providing the content of
   /// geometry objects. The geometry of [T] named "geometry" or the first
   /// geometry of [T] without name is stored as the primary geometry. Any other
-  /// geometries are stored as custom or "foreign members".
+  /// geometries are stored as "foreign members" in `customGeometries`.
   ///
   /// An optional [properties] defines feature properties as a map with data
   /// similar to a JSON Object.
@@ -82,6 +84,7 @@ class Feature<T extends Geometry> extends Bounded {
     // optional data to be built as necessary
     T? primaryGeometry;
     Map<String, Object?>? builtCustom;
+    Map<String, Geometry>? builtCustomGeom;
 
     // use geometry builder to build any geometry (primary + foreign) objects
     if (geometry != null) {
@@ -92,7 +95,7 @@ class Feature<T extends Geometry> extends Bounded {
           if (name == 'geometry' && geometry is T) {
             // there was already one geometry as "primary", move it to custom
             if (primaryGeometry != null) {
-              (builtCustom ??= {})['#geometry$index'] = primaryGeometry;
+              (builtCustomGeom ??= {})['#geometry$index'] = primaryGeometry!;
               index++;
             }
 
@@ -103,7 +106,7 @@ class Feature<T extends Geometry> extends Bounded {
             primaryGeometry = geometry;
           } else {
             // a geometry with name, add to the custom map
-            (builtCustom ??= {})[name ?? '#geometry$index'] = geometry;
+            (builtCustomGeom ??= {})[name ?? '#geometry$index'] = geometry;
             index++;
           }
         },
@@ -113,16 +116,17 @@ class Feature<T extends Geometry> extends Bounded {
     // use property builder to build any foreign property objects
     if (custom != null) {
       builtCustom ??= {};
-      PropertyBuilder.buildTo(custom, to: builtCustom!);
+      PropertyBuilder.buildTo(custom, to: builtCustom);
     }
 
     // create a custom feature with "foreign members" OR a standard feature
-    return builtCustom != null
+    return builtCustom != null || builtCustomGeom != null
         ? _CustomFeature(
             id: id,
             geometry: primaryGeometry,
             properties: properties,
-            custom: builtCustom!,
+            custom: builtCustom,
+            customGeometries: builtCustomGeom,
           )
         : Feature(
             id: id,
@@ -140,15 +144,45 @@ class Feature<T extends Geometry> extends Bounded {
   /// Required properties for this feature (allowed to be empty).
   Map<String, Object?> get properties => _properties;
 
-  /// Optional custom or "foreign member" properties and geometries as a map.
+  /// Optional custom or "foreign member" properties as a map.
   ///
-  /// The primary geometry and properties data (like `geometry` and `properties`
-  /// objects in GeoJSON features) are accessed via [geometry] and [properties].
-  /// However any custom property and geometry data outside those members is
-  /// stored in this member.
+  /// Main properties are accessed via [properties]. However any custom property
+  /// data outside main properties is stored in this member.
   Map<String, Object?>? get custom => null;
 
-  // todo: toString
+  /// Optional custom or "foreign member" geometries as a map.
+  ///
+  /// The primary geometry is via [geometry]. However any custom geometry data
+  /// outside the primary geometry is stored in this member.
+  Map<String, Geometry>? get customGeometries => null;
+
+  /// Writes this feature to [writer].
+  void writeTo(FeatureContent writer) {
+    final geom = _geometry;
+    writer.feature(
+      id: _id,
+      geometry: geom?.writeTo,
+      properties: _properties,
+    );
+  }
+
+  /// The string representation of this feature, with [format] applied.
+  ///
+  /// When [format] is not given, then [GeoJSON] is used as a default.
+  ///
+  /// Use [decimals] to set a number of decimals (not applied if no decimals).
+  String toStringAs({
+    TextWriterFormat<FeatureContent> format = GeoJSON.feature,
+    int? decimals,
+  }) {
+    final encoder = format.encoder(decimals: decimals);
+    writeTo(encoder.writer);
+    return encoder.toText();
+  }
+
+  /// The string representation of this feature as specified by [GeoJSON].
+  @override
+  String toString() => toStringAs();
 
   @override
   bool operator ==(Object other) =>
@@ -163,9 +197,11 @@ class Feature<T extends Geometry> extends Bounded {
 }
 
 class _CustomFeature<T extends Geometry> extends Feature<T> {
-  final Map<String, Object?> _custom;
+  final Map<String, Object?>? _custom;
+  final Map<String, Geometry>? _customGeometries;
 
-  /// A feature of optional [id], [geometry], [properties] and [custom] data.
+  /// A feature of optional [id], [geometry], [properties], [custom] and
+  /// [customGeometries].
   ///
   /// An optional [id], when given, should be either a string or an integer
   /// number.
@@ -177,14 +213,52 @@ class _CustomFeature<T extends Geometry> extends Feature<T> {
   /// similar to a JSON Object.
   ///
   /// Use an optional [custom] parameter to set any "foreign member" properties
-  /// and geometries as a map.
+  /// as a map.
+  ///
+  /// Use an optional [customGeometries] parameter to set any "foreign member"
+  /// geometries as a map.
   const _CustomFeature({
     super.id,
     super.geometry,
     super.properties,
-    required Map<String, Object?> custom,
-  }) : _custom = custom;
+    Map<String, Object?>? custom,
+    Map<String, Geometry>? customGeometries,
+  })  : _custom = custom,
+        _customGeometries = customGeometries;
 
   @override
-  Map<String, Object?> get custom => _custom;
+  Map<String, Object?>? get custom => _custom;
+
+  @override
+  Map<String, Geometry>? get customGeometries => _customGeometries;
+
+  @override
+  void writeTo(FeatureContent writer) {
+    final geom = _geometry;
+    final custGeom = customGeometries;
+    final cust = custom;
+    writer.feature(
+      id: _id,
+      geometry: geom != null || custGeom != null
+          ? (output) {
+              if (geom != null) {
+                geom.writeTo(output);
+              }
+              if (custGeom != null) {
+                custGeom.forEach((name, value) {
+                  value.writeTo(output, name: name);
+                });
+              }
+            }
+          : null,
+      properties: _properties,
+      custom: cust != null
+          ? (props) {
+              cust.forEach((name, value) {
+                props.property(name, value);
+              });
+            }
+          : null,
+    );
+  }
 }

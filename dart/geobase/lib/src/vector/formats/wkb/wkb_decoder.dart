@@ -28,7 +28,7 @@ class _WkbGeometryDecoder implements ContentDecoder {
 }
 
 class _WkbGeometryBufferDecoder {
-  final SimpleGeometryContent builder;
+  final GeometryContent builder;
   final ByteReader buffer;
   final WkbConf conf;
 
@@ -85,6 +85,7 @@ class _WkbGeometryBufferDecoder {
 
         // build geometry collection
         builder.geometryCollection(
+          count: numGeometries,
           // use callback content interface to build "numGeometries" to buffer
           (geom) => _WkbGeometryBufferDecoder(geom, buffer, conf)
               .buildCounted(numGeometries),

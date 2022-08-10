@@ -6,13 +6,15 @@
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/vector/content.dart';
 import '/src/vector_data/array.dart';
 
 import 'geometry.dart';
 
 /// A polygon geometry with exactly one exterior and 0 to N interior rings.
-class Polygon extends Geometry {
+class Polygon extends SimpleGeometry {
   final List<PositionArray> _rings;
+  final Coords? _type;
 
   /// A polygon geometry with exactly one exterior and 0 to N interior [rings].
   ///
@@ -23,10 +25,11 @@ class Polygon extends Geometry {
   /// closed linear rings. As specified by GeoJSON, they should "follow the
   /// right-hand rule with respect to the area it bounds, i.e., exterior rings
   /// are counterclockwise, and holes are clockwise".
-  const Polygon(List<PositionArray> rings)
-      : _rings = rings,
-        assert(
-          rings.length > 0,
+  const Polygon(List<PositionArray> rings) : this._(rings);
+
+  const Polygon._(this._rings, [this._type])
+      : assert(
+          _rings.length > 0,
           'Polygon must contain at least the exterior ring',
         );
 
@@ -72,11 +75,11 @@ class Polygon extends Geometry {
       'Polygon must contain at least the exterior ring',
     );
     if (rings is List<PositionArray>) {
-      return Polygon(rings);
+      return Polygon._(rings, type);
     } else if (rings is Iterable<PositionArray>) {
-      return Polygon(rings.toList(growable: false));
+      return Polygon._(rings.toList(growable: false), type);
     } else {
-      return Polygon(
+      return Polygon._(
         rings
             .map<PositionArray>(
               (chain) => PositionArray.view(
@@ -85,22 +88,31 @@ class Polygon extends Geometry {
               ),
             )
             .toList(growable: false),
+        type,
       );
     }
   }
 
   @override
-  Geom get type => Geom.polygon;
+  Geom get geomType => Geom.polygon;
+
+  @override
+  Coords get coordType => _type ?? exterior.type;
 
   /// The rings (exterior + interior) of this polygon.
+  /// 
+  /// The returned list is non-empty. The first element is the exterior ring,
+  /// and any other rings are interior rings (or holes). All rings must be
+  /// closed linear rings.
   List<PositionArray> get rings => _rings;
 
-  /// The exterior ring of this polygon.
+  /// The (required) exterior ring of this polygon.
   PositionArray get exterior => _rings[0];
 
-  /// The interior rings of this polygon.
-  Iterable<PositionArray> get interiorRings => rings.skip(1);
+  /// The interior rings (or holes) of this polygon, allowed to be empty.
+  Iterable<PositionArray> get interior => rings.skip(1);
 
+/*
   /// The count of interior rings in this polygon.
   int get interiorLength => _rings.length - 1;
 
@@ -109,12 +121,16 @@ class Polygon extends Geometry {
   /// The index refers to the index of interior rings, not all rings in the
   /// polygon. It's required that `0 <= index < interiorLength`.
   PositionArray interior(int index) => _rings[1 + index];
-
-  // todo: coordinates as raw data, toString
+*/
 
   @override
-  bool operator ==(Object other) =>
-      other is Polygon && rings == other.rings;
+  void writeTo(SimpleGeometryContent writer, {String? name}) =>
+      writer.polygon(_rings, type: coordType, name: name);
+
+  // todo: coordinates as raw data
+
+  @override
+  bool operator ==(Object other) => other is Polygon && rings == other.rings;
 
   @override
   int get hashCode => rings.hashCode;

@@ -153,7 +153,6 @@ class _WkbGeometryEncoder
   @override
   void geometryCollection(
     WriteGeometries geometries, {
-    Coords? type,
     int? count,
     String? name,
     Box? bbox,
@@ -161,21 +160,14 @@ class _WkbGeometryEncoder
     final int numGeom;
     final Coords coordType;
 
-    final suggestedType = type;
-    if (count == null || suggestedType == null) {
-      // calculate number of geometries and analyze coordinate types
-      final collector = _GeometryCollector();
-      geometries.call(collector);
-      numGeom = count ?? collector.numGeometries;
-      coordType = suggestedType ??
-          Coords.select(
-            is3D: collector.hasZ,
-            isMeasured: collector.hasM,
-          );
-    } else {
-      numGeom = count;
-      coordType = suggestedType;
-    }
+    // calculate number of geometries and analyze coordinate types
+    final collector = _GeometryCollector();
+    geometries.call(collector);
+    numGeom = count ?? collector.numGeometries;
+    coordType = Coords.select(
+      is3D: collector.hasZ,
+      isMeasured: collector.hasM,
+    );
 
     // write header for geometry collection
     _writeGeometryHeader(Geom.geometryCollection, coordType);

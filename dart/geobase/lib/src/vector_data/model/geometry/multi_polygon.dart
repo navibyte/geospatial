@@ -6,14 +6,16 @@
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/vector/content.dart';
 import '/src/vector_data/array.dart';
 
 import 'geometry.dart';
 import 'polygon.dart';
 
 /// A multi polygon with a series of polygons (each with a series of rings).
-class MultiPolygon extends Geometry {
+class MultiPolygon extends SimpleGeometry {
   final List<List<PositionArray>> _polygons;
+  final Coords? _type;
 
   /// A multi polygon with a series of [polygons] (each with a series of rings).
   ///
@@ -23,7 +25,9 @@ class MultiPolygon extends Geometry {
   /// closed linear rings. As specified by GeoJSON, they should "follow the
   /// right-hand rule with respect to the area it bounds, i.e., exterior rings
   /// are counterclockwise, and holes are clockwise".
-  const MultiPolygon(List<List<PositionArray>> polygons) : _polygons = polygons;
+  const MultiPolygon(List<List<PositionArray>> polygons) : this._(polygons);
+
+  const MultiPolygon._(this._polygons, [this._type]);
 
   /// A multi polygon from a series of [polygons] (each with a series of rings).
   ///
@@ -75,11 +79,11 @@ class MultiPolygon extends Geometry {
     required Coords type,
   }) {
     if (polygons is List<List<PositionArray>>) {
-      return MultiPolygon(polygons);
+      return MultiPolygon._(polygons, type);
     } else if (polygons is Iterable<List<PositionArray>>) {
-      return MultiPolygon(polygons.toList(growable: false));
+      return MultiPolygon._(polygons.toList(growable: false), type);
     } else {
-      return MultiPolygon(
+      return MultiPolygon._(
         polygons
             .map<List<PositionArray>>(
               (rings) => rings
@@ -94,12 +98,20 @@ class MultiPolygon extends Geometry {
                   .toList(growable: false),
             )
             .toList(growable: false),
+        type,
       );
     }
   }
 
   @override
-  Geom get type => Geom.multiPolygon;
+  Geom get geomType => Geom.multiPolygon;
+
+  @override
+  Coords get coordType =>
+      _type ??
+      (_polygons.isNotEmpty && _polygons.first.isNotEmpty
+          ? _polygons.first.first.type
+          : Coords.xy);
 
   /// The ring arrays of all polygons.
   List<List<PositionArray>> get ringArrays => _polygons;
@@ -107,7 +119,11 @@ class MultiPolygon extends Geometry {
   /// All polygons as a lazy iterable of [Polygon] geometries.
   Iterable<Polygon> get polygons => ringArrays.map<Polygon>(Polygon.new);
 
-  // todo: coordinates as raw data, toString
+  @override
+  void writeTo(SimpleGeometryContent writer, {String? name}) =>
+      writer.multiPolygon(_polygons, type: coordType, name: name);
+
+  // todo: coordinates as raw data
 
   @override
   bool operator ==(Object other) =>

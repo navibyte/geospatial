@@ -5,8 +5,6 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import '/src/coordinates/base.dart';
-import '/src/coordinates/geographic.dart';
-import '/src/coordinates/projected.dart';
 
 /// An interface to write coordinate data to format encoders and object
 /// builders.
@@ -16,8 +14,8 @@ import '/src/coordinates/projected.dart';
 mixin CoordinateContent {
   /// Writes a bounding box represented by [bbox] of [Box].
   ///
-  /// Known [Box] sub classes are [ProjBox] (projected or cartesian coordinates)
-  /// and [GeoBox] (geographic coordinates). Other sub classes are supported
+  /// Known [Box] sub classes are `ProjBox` (projected or cartesian coordinates)
+  /// and `GeoBox` (geographic coordinates). Other sub classes are supported
   /// too.
   ///
   /// An example with 2D coordinates:
@@ -35,8 +33,8 @@ mixin CoordinateContent {
 
   /// Writes a single position represented by [coordinates] of [Position].
   ///
-  /// Known [Position] sub classes are [Projected] (projected or cartesian
-  /// coordinates) and [Geographic] (geographic coordinates). Other sub classes
+  /// Known [Position] sub classes are `Projected` (projected or cartesian
+  /// coordinates) and `Geographic` (geographic coordinates). Other sub classes
   /// are supported too.
   ///
   /// An example with 2D coordinates:
@@ -66,8 +64,8 @@ mixin CoordinateContent {
 
   /// Writes a series of [Position] items represented by [coordinates].
   ///
-  /// Known [Position] sub classes are [Projected] (projected or cartesian
-  /// coordinates) and [Geographic] (geographic coordinates). Other sub classes
+  /// Known [Position] sub classes are `Projected` (projected or cartesian
+  /// coordinates) and `Geographic` (geographic coordinates). Other sub classes
   /// are supported too.
   ///
   /// An example:

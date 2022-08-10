@@ -6,19 +6,23 @@
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/vector/content.dart';
 import '/src/vector_data/array.dart';
 
 import 'geometry.dart';
 import 'point.dart';
 
 /// A multi point geometry with a series of points (each with a position).
-class MultiPoint extends Geometry {
+class MultiPoint extends SimpleGeometry {
   final List<PositionCoords> _points;
+  final Coords? _type;
 
   /// A multi point geometry with a series of [points] (each with a position).
   ///
   /// Each point is represented by [PositionCoords] instances.
-  const MultiPoint(List<PositionCoords> points) : _points = points;
+  const MultiPoint(List<PositionCoords> points) : this._(points);
+
+  const MultiPoint._(this._points, [this._type]);
 
   /// A multi point geometry from a series of [points] (each with a position).
   ///
@@ -44,11 +48,11 @@ class MultiPoint extends Geometry {
     required Coords type,
   }) {
     if (points is List<PositionCoords>) {
-      return MultiPoint(points);
+      return MultiPoint._(points, type);
     } else if (points is Iterable<PositionCoords>) {
-      return MultiPoint(points.toList(growable: false));
+      return MultiPoint._(points.toList(growable: false), type);
     } else {
-      return MultiPoint(
+      return MultiPoint._(
         points
             .map<PositionCoords>(
               (pos) => PositionCoords.view(
@@ -57,12 +61,17 @@ class MultiPoint extends Geometry {
               ),
             )
             .toList(growable: false),
+        type,
       );
     }
   }
 
   @override
-  Geom get type => Geom.multiPoint;
+  Geom get geomType => Geom.multiPoint;
+
+  @override
+  Coords get coordType =>
+      _type ?? (_points.isNotEmpty ? _points.first.type : Coords.xy);
 
   /// The positions of all points.
   List<PositionCoords> get positions => _points;
@@ -70,7 +79,11 @@ class MultiPoint extends Geometry {
   /// All points as a lazy iterable of [Point] geometries.
   Iterable<Point> get points => positions.map<Point>(Point.new);
 
-  // todo: coordinates as raw data, toString
+  @override
+  void writeTo(SimpleGeometryContent writer, {String? name}) =>
+      writer.multiPoint(_points, type: coordType, name: name);
+
+  // todo: coordinates as raw data
 
   @override
   bool operator ==(Object other) =>

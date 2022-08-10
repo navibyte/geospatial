@@ -6,12 +6,13 @@
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/vector/content.dart';
 import '/src/vector_data/array.dart';
 
 import 'geometry.dart';
 
 /// A point geometry with a position.
-class Point extends Geometry {
+class Point extends SimpleGeometry {
   final PositionCoords _position;
 
   /// A point geometry with [position].
@@ -68,12 +69,19 @@ class Point extends Geometry {
   }
 
   @override
-  Geom get type => Geom.point;
+  Geom get geomType => Geom.point;
+
+  @override
+  Coords get coordType => _position.type;
 
   /// The position in this point geometry.
   PositionCoords get position => _position;
 
-  // todo: coordinates as raw data, toString
+  @override
+  void writeTo(SimpleGeometryContent writer, {String? name}) =>
+      writer.point(_position, type: coordType, name: name);
+
+  // todo: coordinates as raw data
 
   @override
   bool operator ==(Object other) =>
