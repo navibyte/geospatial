@@ -18,13 +18,13 @@ import 'multi_polygon.dart';
 import 'point.dart';
 import 'polygon.dart';
 
-/// A function to add [geometry] to some collection an optional [name].
+/// A function to add [geometry] to some collection with an optional [name].
 typedef AddGeometry<T extends Geometry> = void Function(
   T geometry, {
   String? name,
 });
 
-/// A builder to create geometry instances from [GeometryContent].
+/// A builder to create geometry instances of [T] from [GeometryContent].
 ///
 /// This builder ignore "empty geometry" types.
 class GeometryBuilder<T extends Geometry> with GeometryContent {
@@ -56,7 +56,7 @@ class GeometryBuilder<T extends Geometry> with GeometryContent {
   /// Only geometry objects of [T] are built, any other geometries are ignored.
   ///
   /// An optional expected [count], when given, specifies the number of geometry
-  /// objects in a content stream. Note that when given the count MUST be exact.
+  /// objects in the content. Note that when given the count MUST be exact.
   static List<T> buildList<T extends Geometry>(
     WriteGeometries geometries, {
     int? count,
@@ -73,12 +73,12 @@ class GeometryBuilder<T extends Geometry> with GeometryContent {
   ///
   /// Only geometry objects of [T] are built, any other geometries are ignored.
   ///
-  /// A content stream on [GeometryContent] should provide also the `name`
+  /// The content provided by [GeometryContent] should provide also the `name`
   /// attribute for each geometry object. When `name` is not available, then
   /// an index as String is used a key.
   ///
   /// An optional expected [count], when given, specifies the number of geometry
-  /// objects in a content stream. Note that when given the count MUST be exact.
+  /// objects in the content. Note that when given the count MUST be exact.
   static Map<String, T> buildMap<T extends Geometry>(
     WriteGeometries geometries, {
     int? count,

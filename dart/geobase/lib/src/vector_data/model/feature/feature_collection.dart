@@ -9,11 +9,9 @@ import 'package:meta/meta.dart';
 import '/src/coordinates/base.dart';
 import '/src/utils/property_builder.dart';
 import '/src/vector/content.dart';
-import '/src/vector/encoding.dart';
-import '/src/vector/formats.dart';
-import '/src/vector_data/model/bounded.dart';
 import '/src/vector_data/model/geometry.dart';
 
+import 'entity.dart';
 import 'feature.dart';
 
 /// A feature collection with a series of features.
@@ -23,7 +21,7 @@ import 'feature.dart';
 ///
 /// Supports representing data from GeoJSON (https://geojson.org/) features.
 @immutable
-class FeatureCollection<E extends Feature> extends Bounded {
+class FeatureCollection<E extends Feature> extends Entity {
   final List<E> _features;
   final Map<String, Object?>? _custom;
 
@@ -97,7 +95,7 @@ class FeatureCollection<E extends Feature> extends Bounded {
   /// property data outside it is stored in this member.
   Map<String, Object?>? get custom => _custom;
 
-  /// Writes this feature collection to [writer].
+  @override
   void writeTo(FeatureContent writer) {
     final cust = custom;
     writer.featureCollection(
@@ -116,26 +114,6 @@ class FeatureCollection<E extends Feature> extends Bounded {
           : null,
     );
   }
-
-  /// The string representation of this feature collection, with [format]
-  /// applied.
-  ///
-  /// When [format] is not given, then [GeoJSON] is used as a default.
-  ///
-  /// Use [decimals] to set a number of decimals (not applied if no decimals).
-  String toStringAs({
-    TextWriterFormat<FeatureContent> format = GeoJSON.feature,
-    int? decimals,
-  }) {
-    final encoder = format.encoder(decimals: decimals);
-    writeTo(encoder.writer);
-    return encoder.toText();
-  }
-
-  /// The string representation of this feature collection as specified by
-  /// [GeoJSON].
-  @override
-  String toString() => toStringAs();
 
   @override
   bool operator ==(Object other) =>

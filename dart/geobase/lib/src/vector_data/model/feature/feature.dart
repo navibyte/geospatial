@@ -8,10 +8,9 @@ import 'package:meta/meta.dart';
 
 import '/src/utils/property_builder.dart';
 import '/src/vector/content.dart';
-import '/src/vector/encoding.dart';
-import '/src/vector/formats.dart';
-import '/src/vector_data/model/bounded.dart';
 import '/src/vector_data/model/geometry.dart';
+
+import 'entity.dart';
 
 /// A feature is a geospatial entity with [id], [properties] and [geometry].
 ///
@@ -22,7 +21,7 @@ import '/src/vector_data/model/geometry.dart';
 ///
 /// Supports representing data from GeoJSON (https://geojson.org/) features.
 @immutable
-class Feature<T extends Geometry> extends Bounded {
+class Feature<T extends Geometry> extends Entity {
   final Object? _id;
   final T? _geometry;
   final Map<String, Object?> _properties;
@@ -156,7 +155,7 @@ class Feature<T extends Geometry> extends Bounded {
   /// outside the primary geometry is stored in this member.
   Map<String, Geometry>? get customGeometries => null;
 
-  /// Writes this feature to [writer].
+  @override
   void writeTo(FeatureContent writer) {
     final geom = _geometry;
     writer.feature(
@@ -165,24 +164,6 @@ class Feature<T extends Geometry> extends Bounded {
       properties: _properties,
     );
   }
-
-  /// The string representation of this feature, with [format] applied.
-  ///
-  /// When [format] is not given, then [GeoJSON] is used as a default.
-  ///
-  /// Use [decimals] to set a number of decimals (not applied if no decimals).
-  String toStringAs({
-    TextWriterFormat<FeatureContent> format = GeoJSON.feature,
-    int? decimals,
-  }) {
-    final encoder = format.encoder(decimals: decimals);
-    writeTo(encoder.writer);
-    return encoder.toText();
-  }
-
-  /// The string representation of this feature as specified by [GeoJSON].
-  @override
-  String toString() => toStringAs();
 
   @override
   bool operator ==(Object other) =>

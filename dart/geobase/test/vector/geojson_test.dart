@@ -17,19 +17,27 @@ void main() {
     test('Test geometry samples', () {
       for (final sample in geoJsonGeometries) {
         //print(sample);
-        _testEncodeAndDecodeToGeoJSON(GeoJSON.geometry, sample);
+        _testDecodeAndEncodeToGeoJSON(GeoJSON.geometry, sample);
       }
     });
+
     test('Test feature samples', () {
       for (final sample in geoJsonFeatures) {
         //print(sample);
-        _testEncodeAndDecodeToGeoJSON(GeoJSON.feature, sample);
+        _testDecodeAndEncodeToGeoJSON(GeoJSON.feature, sample);
+      }
+    });
+
+    test('Test feature collection samples', () {
+      for (final sample in geoJsonFeatureCollections) {
+        //print(sample);
+        _testDecodeAndEncodeToGeoJSON(GeoJSON.feature, sample);
       }
     });
   });
 }
 
-void _testEncodeAndDecodeToGeoJSON<Content extends Object>(
+void _testDecodeAndEncodeToGeoJSON<Content extends Object>(
   TextFormat<Content> format,
   String geoJsonText,
 ) {
