@@ -27,6 +27,7 @@ binary data formats, encodings and content interfaces also redesigned.
 - [GeoJSON text decoder building new geometry and feature data structures on geobase #139]()(https://github.com/navibyte/geospatial/issues/139)
 - [Equals, hashCode and toString for geometries and features on geobase #143](https://github.com/navibyte/geospatial/issues/143)
 - [Encode / write methods directly from geometry and feature classes on geobase #144](https://github.com/navibyte/geospatial/issues/144)
+- [Decode GeoJSON and build data structures using new data structures by geobase #140](https://github.com/navibyte/geospatial/issues/140)
 
 🛠 Refactoring:
 - [Optimize reading from iterable of coordinate values #131](https://github.com/navibyte/geospatial/issues/131)
