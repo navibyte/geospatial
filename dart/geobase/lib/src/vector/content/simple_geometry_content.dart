@@ -148,7 +148,7 @@ abstract class SimpleGeometryContent {
     Box? bbox,
   });
 
-  /// Writes a multi point geometry with a series of [points] (each with a
+  /// Writes a multi point geometry with an array of [points] (each with a
   /// position).
   ///
   /// Use the required [type] to explicitely set the coordinate type.
@@ -182,7 +182,7 @@ abstract class SimpleGeometryContent {
     Box? bbox,
   });
 
-  /// Writes a multi line string with a series of [lineStrings] (each with a
+  /// Writes a multi line string with an array of [lineStrings] (each with a
   /// chain of positions).
   ///
   /// Use the required [type] to explicitely specify the type of coordinates.
@@ -229,7 +229,7 @@ abstract class SimpleGeometryContent {
     Box? bbox,
   });
 
-  /// Writes a multi polygon with a series of [polygons] (each with a series of
+  /// Writes a multi polygon with an array of [polygons] (each with an array of
   /// rings).
   ///
   /// Use the required [type] to explicitely specify the type of coordinates.

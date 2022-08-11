@@ -75,7 +75,7 @@ void _testDecodeEntityAndEncodeToGeoJSON(
   String geoJsonText,
 ) {
   // builder entities from content decoded from GeoJSON text
-  final entities = EntityBuilder.buildList(
+  final entities = FeatureBuilder.buildList(
     (builder) {
       // GeoJSON decoder from text to entity content (writing to builder)
       final decoder = format.decoder(builder);

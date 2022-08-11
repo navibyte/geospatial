@@ -12,19 +12,19 @@ import '/src/vector_data/array.dart';
 import 'geometry.dart';
 import 'point.dart';
 
-/// A multi point geometry with a series of points (each with a position).
+/// A multi point geometry with an array of points (each with a position).
 class MultiPoint extends SimpleGeometry {
   final List<PositionCoords> _points;
   final Coords? _type;
 
-  /// A multi point geometry with a series of [points] (each with a position).
+  /// A multi point geometry with an array of [points] (each with a position).
   ///
   /// Each point is represented by [PositionCoords] instances.
   const MultiPoint(List<PositionCoords> points) : this._(points);
 
   const MultiPoint._(this._points, [this._type]);
 
-  /// A multi point geometry from a series of [points] (each with a position).
+  /// A multi point geometry from an array of [points] (each with a position).
   ///
   /// Use the required [type] to explicitely set the coordinate type.
   ///

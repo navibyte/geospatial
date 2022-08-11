@@ -24,7 +24,13 @@ typedef AddGeometry<T extends Geometry> = void Function(
   String? name,
 });
 
-/// A builder to create geometry instances of [T] from [GeometryContent].
+/// A builder to create geometry objects of [T] from [GeometryContent].
+///
+/// This builder supports creating [Point], [LineString], [Polygon],
+/// [MultiPoint], [MultiLineString], [MultiPolygon] and [GeometryCollection]
+/// objects.
+/// 
+/// See [GeometryContent] for more information about these objects.
 ///
 /// This builder ignore "empty geometry" types.
 class GeometryBuilder<T extends Geometry> with GeometryContent {

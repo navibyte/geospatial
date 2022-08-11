@@ -12,12 +12,12 @@ import '/src/vector_data/array.dart';
 import 'geometry.dart';
 import 'polygon.dart';
 
-/// A multi polygon with a series of polygons (each with a series of rings).
+/// A multi polygon with an array of polygons (each with an array of rings).
 class MultiPolygon extends SimpleGeometry {
   final List<List<PositionArray>> _polygons;
   final Coords? _type;
 
-  /// A multi polygon with a series of [polygons] (each with a series of rings).
+  /// A multi polygon with an array of [polygons] (each with an array of rings).
   ///
   /// Each polygon is represented by `List<PositionArray>` instances containing
   /// one exterior and 0 to N interior rings. The first element is the exterior
@@ -29,7 +29,7 @@ class MultiPolygon extends SimpleGeometry {
 
   const MultiPolygon._(this._polygons, [this._type]);
 
-  /// A multi polygon from a series of [polygons] (each with a series of rings).
+  /// A multi polygon from an array of [polygons] (each with an array of rings).
   ///
   /// Use the required [type] to explicitely specify the type of coordinates.
   ///

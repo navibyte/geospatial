@@ -11,16 +11,17 @@ import '/src/vector/encoding.dart';
 import '/src/vector/formats.dart';
 import '/src/vector_data/model/bounded.dart';
 
-/// A geospatial entity (known sub types are `Feature` and `FeatureCollection`).
+/// A common base interface for geospatial feature objects (`Feature` and
+/// `FeatureCollection`).
 @immutable
-abstract class Entity extends Bounded {
+abstract class FeatureObject extends Bounded {
   /// Default `const` constructor to allow extending this abstract class.
-  const Entity();
+  const FeatureObject();
 
-  /// Writes this entity to [writer].
+  /// Writes this feature object to [writer].
   void writeTo(FeatureContent writer);
 
-  /// The string representation of this entity, with [format] applied.
+  /// The string representation of this feature object, with [format] applied.
   ///
   /// When [format] is not given, then [GeoJSON] is used as a default.
   ///
@@ -34,7 +35,7 @@ abstract class Entity extends Bounded {
     return encoder.toText();
   }
 
-  /// The string representation of this entity as specified by
+  /// The string representation of this feature object as specified by
   /// [GeoJSON].
   @override
   String toString() => toStringAs();

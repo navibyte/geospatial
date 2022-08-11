@@ -9,15 +9,37 @@ import '/src/coordinates/base.dart';
 import 'geometry_content.dart';
 import 'property_content.dart';
 
-/// A function to write feature data to [output].
+/// A function to write geospatial feature objects to [output].
+/// 
+/// Supported feature object types: `Feature` and `FeatureCollection`
 typedef WriteFeatures = void Function(FeatureContent output);
 
-/// An interface to write feature data to format encoders and object builders.
+/// An interface to write geospatial feature obejcts to format encoders and
+/// object builders.
+/// 
+/// Supported feature object types: `Feature` and `FeatureCollection`
+/// 
+/// According to the [OGC Glossary](https://www.ogc.org/ogc/glossary/f) a
+/// feature is "a digital representation of a real world entity. It has a
+/// spatial domain, a temporal domain, or a spatial/temporal domain as one of
+/// its attributes. Examples of features include almost anything that can be
+/// placed in time and space, including desks, buildings, cities, trees, forest
+/// stands, ecosystems, delivery vehicles, snow removal routes, oil wells, oil
+/// pipelines, oil spill, and so on".
+/// 
+/// And a feature collection is "a set of related features managed as a group".
+/// 
+/// According to the [GeoJSON](https://geojson.org/) specifiction Feature
+/// objects contain a Geometry object and additional members (like "id" and
+/// "properties"). A FeatureCollection object contains an array of Feature
+/// objects. Both may also contain "bbox". Any other members on Feature and
+/// FeatureCollection objects are *foreign members*, allowed property values or
+/// geometry objects, but not known by the GeoJSON model.
 mixin FeatureContent {
-  /// Writes a feature collection with a series of [features].
+  /// Writes a feature collection with an array of [features].
   ///
-  /// An optional expected [count], when given, specifies the number of feature
-  /// objects in a collection. Note that when given the count MUST be exact.
+  /// An optional expected [count], when given, specifies the number of features
+  /// in a collection. Note that when given the count MUST be exact.
   ///
   /// An optional [bbox] can used set a minimum bounding box for a feature
   /// collection written. A writer implementation may use it or ignore it. Known

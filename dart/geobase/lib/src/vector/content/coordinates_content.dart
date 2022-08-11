@@ -62,7 +62,7 @@ mixin CoordinateContent {
   /// ```
   void position(Position coordinates);
 
-  /// Writes a series of [Position] items represented by [coordinates].
+  /// Writes an array of [Position] items represented by [coordinates].
   ///
   /// Known [Position] sub classes are `Projected` (projected or cartesian
   /// coordinates) and `Geographic` (geographic coordinates). Other sub classes

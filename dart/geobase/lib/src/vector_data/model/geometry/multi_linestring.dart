@@ -12,13 +12,13 @@ import '/src/vector_data/array.dart';
 import 'geometry.dart';
 import 'linestring.dart';
 
-/// A multi line string with a series of line strings (each with a chain of
+/// A multi line string with an array of line strings (each with a chain of
 /// positions).
 class MultiLineString extends SimpleGeometry {
   final List<PositionArray> _lineStrings;
   final Coords? _type;
 
-  /// A multi line string with a series of [lineStrings] (each with a chain of
+  /// A multi line string with an array of [lineStrings] (each with a chain of
   /// positions).
   ///
   /// Each line string or a chain of positions is represented by [PositionArray]
@@ -27,7 +27,7 @@ class MultiLineString extends SimpleGeometry {
 
   const MultiLineString._(this._lineStrings, [this._type]);
 
-  /// A multi line string from a series of [lineStrings] (each with a chain of
+  /// A multi line string from an array of [lineStrings] (each with a chain of
   /// positions).
   ///
   /// Use the required [type] to explicitely specify the type of coordinates.

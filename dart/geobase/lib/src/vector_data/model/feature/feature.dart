@@ -10,18 +10,27 @@ import '/src/utils/property_builder.dart';
 import '/src/vector/content.dart';
 import '/src/vector_data/model/geometry.dart';
 
-import 'entity.dart';
+import 'feature_object.dart';
 
 /// A feature is a geospatial entity with [id], [properties] and [geometry].
 ///
-/// Some implementations may contain also [custom] data or "foreign members"
-/// containing property and geometry objects.
+/// Some implementations may also contain "foreign members", like [custom] data 
+/// containing property objects and [customGeometries] containing geometry
+/// objects.
 ///
 /// Feature objects have an optional primary [geometry] of [T].
 ///
+/// According to the [OGC Glossary](https://www.ogc.org/ogc/glossary/f) a
+/// feature is "a digital representation of a real world entity. It has a
+/// spatial domain, a temporal domain, or a spatial/temporal domain as one of
+/// its attributes. Examples of features include almost anything that can be
+/// placed in time and space, including desks, buildings, cities, trees, forest
+/// stands, ecosystems, delivery vehicles, snow removal routes, oil wells, oil
+/// pipelines, oil spill, and so on".
+///
 /// Supports representing data from GeoJSON (https://geojson.org/) features.
 @immutable
-class Feature<T extends Geometry> extends Entity {
+class Feature<T extends Geometry> extends FeatureObject {
   final Object? _id;
   final T? _geometry;
   final Map<String, Object?> _properties;
