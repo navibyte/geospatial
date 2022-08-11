@@ -15,10 +15,10 @@ import 'geometry.dart';
 class LineString extends SimpleGeometry {
   final PositionArray _chain;
 
-  /// A line string geometry with a [chain] of positions.
+  /// A line string geometry with a [chain] of positions and optional [bounds].
   ///
   /// The [chain] array must contain at least two positions.
-  const LineString(PositionArray chain)
+  const LineString(PositionArray chain, {super.bounds})
       : _chain = chain,
         assert(
           chain.length >= 2,
@@ -78,13 +78,14 @@ class LineString extends SimpleGeometry {
 
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
-      writer.lineString(_chain, type: coordType, name: name);
+      writer.lineString(_chain, type: coordType, name: name, bbox: bounds);
 
   // todo: coordinates as raw data
 
   @override
-  bool operator ==(Object other) => other is LineString && chain == other.chain;
+  bool operator ==(Object other) =>
+      other is LineString && bounds == other.bounds && chain == other.chain;
 
   @override
-  int get hashCode => chain.hashCode;
+  int get hashCode => Object.hash(bounds, chain);
 }

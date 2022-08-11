@@ -28,12 +28,12 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   final List<E> _features;
   final Map<String, Object?>? _custom;
 
-  /// A feature collection with an array of [features].
-  const FeatureCollection(List<E> features)
+  /// A feature collection with an array of [features] and optional [bounds].
+  const FeatureCollection(List<E> features, {super.bounds})
       : _features = features,
         _custom = null;
 
-  const FeatureCollection._(this._features, this._custom);
+  const FeatureCollection._(this._features, this._custom, {super.bounds});
 
   /// A feature collection from the content provided by [features].
   ///
@@ -107,6 +107,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
         }
       },
       count: features.length,
+      bbox: bounds,
       custom: cust != null
           ? (props) {
               cust.forEach((name, value) {
@@ -120,9 +121,10 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   @override
   bool operator ==(Object other) =>
       other is FeatureCollection &&
+      bounds == other.bounds &&
       features == other.features &&
       custom == other.custom;
 
   @override
-  int get hashCode => Object.hash(features, custom);
+  int get hashCode => Object.hash(bounds, features, custom);
 }

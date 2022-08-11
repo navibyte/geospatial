@@ -15,8 +15,8 @@ import 'geometry.dart';
 class Point extends SimpleGeometry {
   final PositionCoords _position;
 
-  /// A point geometry with [position].
-  const Point(PositionCoords position) : _position = position;
+  /// A point geometry with [position] and optional [bounds].
+  const Point(PositionCoords position, {super.bounds}) : _position = position;
 
   /// A point geometry from a [position].
   ///
@@ -85,8 +85,8 @@ class Point extends SimpleGeometry {
 
   @override
   bool operator ==(Object other) =>
-      other is Point && position == other.position;
+      other is Point && bounds == other.bounds && position == other.position;
 
   @override
-  int get hashCode => position.hashCode;
+  int get hashCode => Object.hash(bounds, position);
 }

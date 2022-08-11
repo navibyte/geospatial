@@ -21,11 +21,16 @@ class MultiLineString extends SimpleGeometry {
   /// A multi line string with an array of [lineStrings] (each with a chain of
   /// positions).
   ///
+  /// An optional [bounds] can used set a minimum bounding box for a multi
+  /// line string.
+  ///
   /// Each line string or a chain of positions is represented by [PositionArray]
   /// instances.
-  const MultiLineString(List<PositionArray> lineStrings) : this._(lineStrings);
+  const MultiLineString(List<PositionArray> lineStrings, {BoxCoords? bounds})
+      : this._(lineStrings, bounds: bounds);
 
-  const MultiLineString._(this._lineStrings, [this._type]);
+  const MultiLineString._(this._lineStrings, {super.bounds, Coords? type})
+      : _type = type;
 
   /// A multi line string from an array of [lineStrings] (each with a chain of
   /// positions).
@@ -65,9 +70,9 @@ class MultiLineString extends SimpleGeometry {
     required Coords type,
   }) {
     if (lineStrings is List<PositionArray>) {
-      return MultiLineString._(lineStrings, type);
+      return MultiLineString._(lineStrings, type: type);
     } else if (lineStrings is Iterable<PositionArray>) {
-      return MultiLineString._(lineStrings.toList(growable: false), type);
+      return MultiLineString._(lineStrings.toList(growable: false), type: type);
     } else {
       return MultiLineString._(
         lineStrings
@@ -78,7 +83,7 @@ class MultiLineString extends SimpleGeometry {
               ),
             )
             .toList(growable: false),
-        type,
+        type: type,
       );
     }
   }
@@ -99,14 +104,21 @@ class MultiLineString extends SimpleGeometry {
 
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
-      writer.multiLineString(_lineStrings, type: coordType, name: name);
+      writer.multiLineString(
+        _lineStrings,
+        type: coordType,
+        name: name,
+        bbox: bounds,
+      );
 
   // todo: coordinates as raw data
 
   @override
   bool operator ==(Object other) =>
-      other is MultiLineString && chains == other.chains;
+      other is MultiLineString &&
+      bounds == other.bounds &&
+      chains == other.chains;
 
   @override
-  int get hashCode => chains.hashCode;
+  int get hashCode => Object.hash(bounds, chains);
 }

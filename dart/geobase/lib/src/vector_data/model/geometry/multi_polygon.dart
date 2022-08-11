@@ -19,15 +19,20 @@ class MultiPolygon extends SimpleGeometry {
 
   /// A multi polygon with an array of [polygons] (each with an array of rings).
   ///
+  /// An optional [bounds] can used set a minimum bounding box for a multi
+  /// polygon.
+  ///
   /// Each polygon is represented by `List<PositionArray>` instances containing
   /// one exterior and 0 to N interior rings. The first element is the exterior
   /// ring, and any other rings are interior rings (or holes). All rings must be
   /// closed linear rings. As specified by GeoJSON, they should "follow the
   /// right-hand rule with respect to the area it bounds, i.e., exterior rings
   /// are counterclockwise, and holes are clockwise".
-  const MultiPolygon(List<List<PositionArray>> polygons) : this._(polygons);
+  const MultiPolygon(List<List<PositionArray>> polygons, {BoxCoords? bounds})
+      : this._(polygons, bounds: bounds);
 
-  const MultiPolygon._(this._polygons, [this._type]);
+  const MultiPolygon._(this._polygons, {super.bounds, Coords? type})
+      : _type = type;
 
   /// A multi polygon from an array of [polygons] (each with an array of rings).
   ///
@@ -79,9 +84,9 @@ class MultiPolygon extends SimpleGeometry {
     required Coords type,
   }) {
     if (polygons is List<List<PositionArray>>) {
-      return MultiPolygon._(polygons, type);
+      return MultiPolygon._(polygons, type: type);
     } else if (polygons is Iterable<List<PositionArray>>) {
-      return MultiPolygon._(polygons.toList(growable: false), type);
+      return MultiPolygon._(polygons.toList(growable: false), type: type);
     } else {
       return MultiPolygon._(
         polygons
@@ -98,7 +103,7 @@ class MultiPolygon extends SimpleGeometry {
                   .toList(growable: false),
             )
             .toList(growable: false),
-        type,
+        type: type,
       );
     }
   }
@@ -121,14 +126,16 @@ class MultiPolygon extends SimpleGeometry {
 
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
-      writer.multiPolygon(_polygons, type: coordType, name: name);
+      writer.multiPolygon(_polygons, type: coordType, name: name, bbox: bounds);
 
   // todo: coordinates as raw data
 
   @override
   bool operator ==(Object other) =>
-      other is MultiPolygon && ringArrays == other.ringArrays;
+      other is MultiPolygon &&
+      bounds == other.bounds &&
+      ringArrays == other.ringArrays;
 
   @override
-  int get hashCode => ringArrays.hashCode;
+  int get hashCode => Object.hash(bounds, ringArrays);
 }

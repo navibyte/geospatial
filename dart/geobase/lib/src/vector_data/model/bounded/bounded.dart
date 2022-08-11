@@ -4,24 +4,26 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-//import '/src/coordinates/base.dart';
+import '/src/vector_data/array.dart';
 
 /// A base interface for classes that know their bounding boxes.
 abstract class Bounded {
-  /// Default `const` constructor to allow extending this abstract class.
-  const Bounded();
+  final BoxCoords? _bounds;
+
+  /// A bounded object with an optional [bounds].
+  const Bounded({BoxCoords? bounds}) : _bounds = bounds;
+
+  /// The bounding box for this object, if available.
+  ///
+  /// Accessing this should never trigger extensive calculations. That is, if
+  /// bounds is not known, then this returns the null value.
+  BoxCoords? get bounds => _bounds;
 
 /* 
-  /// The [bounds] for this object (could be calculated if not explicitely set).
+  /// The bounding box for this object (calculated if not available).
   ///
   /// Please note that in some cases bounds could be pre-calculated but it's
   /// possible that accessing this property may cause extensive calculations.
-  Box get bounds;
-
-  /// The explicit [bounds] for this object when available.
-  ///
-  /// Accessing this should never trigger extensive calculations. That is, if
-  /// bounds is not known, then returns the null value.
-  Box? get boundsExplicit;
+  BoxCoords get requireBounds;
 */
 }

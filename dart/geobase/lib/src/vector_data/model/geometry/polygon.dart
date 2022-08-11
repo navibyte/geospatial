@@ -18,6 +18,8 @@ class Polygon extends SimpleGeometry {
 
   /// A polygon geometry with exactly one exterior and 0 to N interior [rings].
   ///
+  /// An optional [bounds] can used set a minimum bounding box for a polygon.
+  ///
   /// Each ring in the polygon is represented by `PositionArray` instances.
   ///
   /// The [rings] list must be non-empty. The first element is the exterior
@@ -25,10 +27,12 @@ class Polygon extends SimpleGeometry {
   /// closed linear rings. As specified by GeoJSON, they should "follow the
   /// right-hand rule with respect to the area it bounds, i.e., exterior rings
   /// are counterclockwise, and holes are clockwise".
-  const Polygon(List<PositionArray> rings) : this._(rings);
+  const Polygon(List<PositionArray> rings, {BoxCoords? bounds})
+      : this._(rings, bounds: bounds);
 
-  const Polygon._(this._rings, [this._type])
-      : assert(
+  const Polygon._(this._rings, {super.bounds, Coords? type})
+      : _type = type,
+        assert(
           _rings.length > 0,
           'Polygon must contain at least the exterior ring',
         );
@@ -75,9 +79,9 @@ class Polygon extends SimpleGeometry {
       'Polygon must contain at least the exterior ring',
     );
     if (rings is List<PositionArray>) {
-      return Polygon._(rings, type);
+      return Polygon._(rings, type: type);
     } else if (rings is Iterable<PositionArray>) {
-      return Polygon._(rings.toList(growable: false), type);
+      return Polygon._(rings.toList(growable: false), type: type);
     } else {
       return Polygon._(
         rings
@@ -88,7 +92,7 @@ class Polygon extends SimpleGeometry {
               ),
             )
             .toList(growable: false),
-        type,
+        type: type,
       );
     }
   }
@@ -100,7 +104,7 @@ class Polygon extends SimpleGeometry {
   Coords get coordType => _type ?? exterior.type;
 
   /// The rings (exterior + interior) of this polygon.
-  /// 
+  ///
   /// The returned list is non-empty. The first element is the exterior ring,
   /// and any other rings are interior rings (or holes). All rings must be
   /// closed linear rings.
@@ -125,13 +129,14 @@ class Polygon extends SimpleGeometry {
 
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
-      writer.polygon(_rings, type: coordType, name: name);
+      writer.polygon(_rings, type: coordType, name: name, bbox: bounds);
 
   // todo: coordinates as raw data
 
   @override
-  bool operator ==(Object other) => other is Polygon && rings == other.rings;
+  bool operator ==(Object other) =>
+      other is Polygon && bounds == other.bounds && rings == other.rings;
 
   @override
-  int get hashCode => rings.hashCode;
+  int get hashCode => Object.hash(bounds, rings);
 }

@@ -19,10 +19,14 @@ class MultiPoint extends SimpleGeometry {
 
   /// A multi point geometry with an array of [points] (each with a position).
   ///
+  /// An optional [bounds] can used set a minimum bounding box for a multi
+  /// point.
+  ///
   /// Each point is represented by [PositionCoords] instances.
-  const MultiPoint(List<PositionCoords> points) : this._(points);
+  const MultiPoint(List<PositionCoords> points, {BoxCoords? bounds})
+      : this._(points, bounds: bounds);
 
-  const MultiPoint._(this._points, [this._type]);
+  const MultiPoint._(this._points, {super.bounds, Coords? type}) : _type = type;
 
   /// A multi point geometry from an array of [points] (each with a position).
   ///
@@ -48,9 +52,9 @@ class MultiPoint extends SimpleGeometry {
     required Coords type,
   }) {
     if (points is List<PositionCoords>) {
-      return MultiPoint._(points, type);
+      return MultiPoint._(points, type: type);
     } else if (points is Iterable<PositionCoords>) {
-      return MultiPoint._(points.toList(growable: false), type);
+      return MultiPoint._(points.toList(growable: false), type: type);
     } else {
       return MultiPoint._(
         points
@@ -61,7 +65,7 @@ class MultiPoint extends SimpleGeometry {
               ),
             )
             .toList(growable: false),
-        type,
+        type: type,
       );
     }
   }
@@ -81,14 +85,16 @@ class MultiPoint extends SimpleGeometry {
 
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
-      writer.multiPoint(_points, type: coordType, name: name);
+      writer.multiPoint(_points, type: coordType, name: name, bbox: bounds);
 
   // todo: coordinates as raw data
 
   @override
   bool operator ==(Object other) =>
-      other is MultiPoint && positions == other.positions;
+      other is MultiPoint &&
+      bounds == other.bounds &&
+      positions == other.positions;
 
   @override
-  int get hashCode => positions.hashCode;
+  int get hashCode => Object.hash(bounds, positions);
 }

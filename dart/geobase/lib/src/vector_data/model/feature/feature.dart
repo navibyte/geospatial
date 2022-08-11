@@ -14,7 +14,7 @@ import 'feature_object.dart';
 
 /// A feature is a geospatial entity with [id], [properties] and [geometry].
 ///
-/// Some implementations may also contain "foreign members", like [custom] data 
+/// Some implementations may also contain "foreign members", like [custom] data
 /// containing property objects and [customGeometries] containing geometry
 /// objects.
 ///
@@ -35,7 +35,8 @@ class Feature<T extends Geometry> extends FeatureObject {
   final T? _geometry;
   final Map<String, Object?> _properties;
 
-  /// A feature of optional [id], [geometry] and [properties].
+  /// A feature of optional [id], [geometry] and [properties] and optional
+  /// [bounds].
   ///
   /// An optional [id], when given, should be either a string or an integer
   /// number.
@@ -49,6 +50,7 @@ class Feature<T extends Geometry> extends FeatureObject {
     Object? id,
     T? geometry,
     Map<String, Object?>? properties,
+    super.bounds,
   })  : _id = id,
         _properties = properties ?? const {},
         _geometry = geometry;
@@ -171,6 +173,7 @@ class Feature<T extends Geometry> extends FeatureObject {
       id: _id,
       geometry: geom?.writeTo,
       properties: _properties,
+      bbox: bounds,
     );
   }
 
@@ -178,12 +181,21 @@ class Feature<T extends Geometry> extends FeatureObject {
   bool operator ==(Object other) =>
       other is Feature &&
       id == other.id &&
-      geometry == other.geometry &&
       properties == other.properties &&
-      custom == other.custom;
+      bounds == other.bounds &&
+      geometry == other.geometry &&
+      custom == other.custom &&
+      customGeometries == other.customGeometries;
 
   @override
-  int get hashCode => Object.hash(id, properties, geometry, custom);
+  int get hashCode => Object.hash(
+        id,
+        properties,
+        bounds,
+        geometry,
+        custom,
+        customGeometries,
+      );
 }
 
 class _CustomFeature<T extends Geometry> extends Feature<T> {

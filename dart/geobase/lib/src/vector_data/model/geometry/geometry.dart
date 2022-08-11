@@ -18,8 +18,8 @@ import '/src/vector_data/model/bounded.dart';
 /// A base interface for geometry classes.
 @immutable
 abstract class Geometry extends Bounded {
-  /// Default `const` constructor to allow extending this abstract class.
-  const Geometry();
+  /// A geometry with an optional [bounds].
+  const Geometry({super.bounds});
 
   /// The geometry type.
   Geom get geomType;
@@ -51,8 +51,8 @@ abstract class Geometry extends Bounded {
 
 /// A base interface for "simple" geometry classes.
 abstract class SimpleGeometry extends Geometry {
-  /// Default `const` constructor to allow extending this abstract class.
-  const SimpleGeometry();
+  /// A "simple" geometry with an optional [bounds].
+  const SimpleGeometry({super.bounds});
 
   /// The coordinate type for this geometry.
   Coords get coordType;

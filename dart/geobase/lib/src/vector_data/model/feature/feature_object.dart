@@ -15,8 +15,8 @@ import '/src/vector_data/model/bounded.dart';
 /// `FeatureCollection`).
 @immutable
 abstract class FeatureObject extends Bounded {
-  /// Default `const` constructor to allow extending this abstract class.
-  const FeatureObject();
+  /// A feature object with an optional [bounds].
+  const FeatureObject({super.bounds});
 
   /// Writes this feature object to [writer].
   void writeTo(FeatureContent writer);

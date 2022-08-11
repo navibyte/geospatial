@@ -14,8 +14,9 @@ import 'geometry_builder.dart';
 class GeometryCollection<E extends Geometry> extends Geometry {
   final List<E> _geometries;
 
-  /// A geometry collection with [geometries].
-  const GeometryCollection(List<E> geometries) : _geometries = geometries;
+  /// A geometry collection with [geometries] and optional [bounds].
+  const GeometryCollection(List<E> geometries, {super.bounds})
+      : _geometries = geometries;
 
   /// A geometry collection from the content provided by [geometries].
   ///
@@ -78,12 +79,15 @@ class GeometryCollection<E extends Geometry> extends Geometry {
             geom.writeTo(output);
           }
         },
+        bbox: bounds,
       );
 
   @override
   bool operator ==(Object other) =>
-      other is GeometryCollection && geometries == other.geometries;
+      other is GeometryCollection &&
+      bounds == other.bounds &&
+      geometries == other.geometries;
 
   @override
-  int get hashCode => geometries.hashCode;
+  int get hashCode => Object.hash(bounds, geometries);
 }
