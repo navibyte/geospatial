@@ -32,16 +32,16 @@ typedef WriteFeatures = void Function(FeatureContent output);
 /// According to the [GeoJSON](https://geojson.org/) specifiction Feature
 /// objects contain a Geometry object and additional members (like "id" and
 /// "properties"). A FeatureCollection object contains an array of Feature
-/// objects. Both may also contain "bbox". Any other members on Feature and
-/// FeatureCollection objects are *foreign members*, allowed property values or
-/// geometry objects, but not known by the GeoJSON model.
+/// objects. Both may also contain "bbox" or bounding box. Any other members on
+/// Feature and FeatureCollection objects are *foreign members*, allowed
+/// property values or geometry objects, but not known by the GeoJSON model.
 mixin FeatureContent {
   /// Writes a feature collection with an array of [features].
   ///
   /// An optional expected [count], when given, specifies the number of features
   /// in a collection. Note that when given the count MUST be exact.
   ///
-  /// An optional [bbox] can used set a minimum bounding box for a feature
+  /// An optional [bounds] can used set a minimum bounding box for a feature
   /// collection written. A writer implementation may use it or ignore it. Known
   /// [Box] sub classes are `ProjBox` (projected or cartesian coordinates) and
   /// `GeoBox` (geographic coordinates). Other sub classes are supported too.
@@ -71,7 +71,7 @@ mixin FeatureContent {
   void featureCollection(
     WriteFeatures features, {
     int? count,
-    Box? bbox,
+    Box? bounds,
     WriteProperties? custom,
   });
 
@@ -83,7 +83,7 @@ mixin FeatureContent {
   /// defined by [GeometryContent]. When there are more than one geometry, it's
   /// recommended to use the `name` argument when writing those other.
   ///
-  /// An optional [bbox] can used set a minimum bounding box for a feature
+  /// An optional [bounds] can used set a minimum bounding box for a feature
   /// written. A writer implementation may use it or ignore it. Known [Box] sub
   /// classes are `ProjBox` (projected or cartesian coordinates) and `GeoBox`
   /// (geographic coordinates). Other sub classes are supported too.
@@ -107,7 +107,7 @@ mixin FeatureContent {
     Object? id,
     WriteGeometries? geometry,
     Map<String, Object?>? properties,
-    Box? bbox,
+    Box? bounds,
     WriteProperties? custom,
   });
 }

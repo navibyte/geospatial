@@ -98,7 +98,7 @@ class Feature<T extends Geometry> extends FeatureWritable implements Bounded {
       id: _id,
       geometry: geom?.writeTo,
       properties: _properties,
-      bbox: boundsExplicit,
+      bounds: boundsExplicit,
     );
   }
 

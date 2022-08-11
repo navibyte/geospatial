@@ -116,7 +116,7 @@ class GeometryBuilder<T extends Geometry> with GeometryContent {
     Iterable<double> chain, {
     required Coords type,
     String? name,
-    Box? bbox,
+    Box? bounds,
   }) {
     if (chain.length < 2) {
       // note: ignore empty geometries for this implementation
@@ -132,7 +132,7 @@ class GeometryBuilder<T extends Geometry> with GeometryContent {
     Iterable<Iterable<double>> rings, {
     required Coords type,
     String? name,
-    Box? bbox,
+    Box? bounds,
   }) {
     if (rings.isEmpty) {
       // note: ignore empty geometries for this implementation
@@ -148,7 +148,7 @@ class GeometryBuilder<T extends Geometry> with GeometryContent {
     Iterable<Iterable<double>> points, {
     required Coords type,
     String? name,
-    Box? bbox,
+    Box? bounds,
   }) {
     _add(
       MultiPoint.build(points, type: type),
@@ -161,7 +161,7 @@ class GeometryBuilder<T extends Geometry> with GeometryContent {
     Iterable<Iterable<double>> lineStrings, {
     required Coords type,
     String? name,
-    Box? bbox,
+    Box? bounds,
   }) {
     _add(
       MultiLineString.build(lineStrings, type: type),
@@ -174,7 +174,7 @@ class GeometryBuilder<T extends Geometry> with GeometryContent {
     Iterable<Iterable<Iterable<double>>> polygons, {
     required Coords type,
     String? name,
-    Box? bbox,
+    Box? bounds,
   }) {
     _add(
       MultiPolygon.build(polygons, type: type),
@@ -187,7 +187,7 @@ class GeometryBuilder<T extends Geometry> with GeometryContent {
     WriteGeometries geometries, {
     int? count,
     String? name,
-    Box? bbox,
+    Box? bounds,
   }) {
     _add(
       GeometryCollection.build(geometries, count: count),

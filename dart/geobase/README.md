@@ -522,7 +522,7 @@ A sample to encode a `LineString` geometry to GeoJSON:
   encoder.writer.lineString(
     [-1.1, -1.1, 2.1, -2.5, 3.5, -3.49],
     type: Coords.xy,
-    bbox: const GeoBox(west: -1.1, south: -3.49, east: 3.5, north: -1.1),
+    bounds: const GeoBox(west: -1.1, south: -3.49, east: 3.5, north: -1.1),
   );
   print(encoder.toText());
 ```
@@ -619,20 +619,19 @@ See sample below:
 ```
 
 As descibed above `WKB.geometry.decoder` takes `wktEncoder.writer` as a
-parameter. It implements `GeometryContent` interface and inherits following
-methods from `SimpleGeometryContent`:
+parameter. It implements `GeometryContent` interface with following methods:
 
 ```dart
   /// Writes a point geometry with [position].
   ///
-  /// Use an optional [type] to explicitely specify the type of coordinates.
+  /// Use an optional [type] to explicitely specify the type of coordinates. If
+  /// not provided and an iterable has 3 items, then xyz coordinates are
+  /// assumed.
   ///
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
   /// Supported coordinate value combinations for `Iterable<double>` are:
-  /// (x, y), (x, y, z), (x, y, m) and (x, y, z, m). Use an optional [type] to
-  /// explicitely set the coordinate type. If not provided and an iterable has
-  /// 3 items, then xyz coordinates are assumed.
+  /// (x, y), (x, y, z), (x, y, m) and (x, y, z, m).
   ///
   /// An example to write a point geometry with 2D coordinates:
   /// ```dart
@@ -645,28 +644,29 @@ methods from `SimpleGeometryContent`:
     String? name,
   });
 
-  /// Writes a line string geometry with a position array from [chain].
+  /// Writes a line string geometry with a [chain] of positions.
   void lineString(
     Iterable<double> chain, {
     required Coords type,
     String? name,
-    Box? bbox,
+    Box? bounds,
   });
 
-  /// Writes a polygon geometry with a position array from [rings].
+  /// Writes a polygon geometry with one exterior and 0 to N interior [rings].
   void polygon(
     Iterable<Iterable<double>> rings, {
     required Coords type,
     String? name,
-    Box? bbox,
+    Box? bounds,
   });
 
-  /// Writes a multi point geometry with a position array from [positions].
+  /// Writes a multi point geometry with an array of [points] (each with a
+  /// position).
   void multiPoint(
-    Iterable<Iterable<double>> positions, {
+    Iterable<Iterable<double>> points, {
     required Coords type,
     String? name,
-    Box? bbox,
+    Box? bounds,
   });
 
   // Omitted: multiLineString, multiPolygon, geometryCollection, emptyGeometry

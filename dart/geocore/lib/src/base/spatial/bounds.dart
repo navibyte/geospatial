@@ -165,7 +165,7 @@ abstract class Bounds<T extends Point> extends Bounded
   }
 
   /// Writes this bounds object to [output].
-  void writeTo(CoordinateContent output) => output.box(this);
+  void writeTo(CoordinateContent output) => output.bounds(this);
 
   /// Returns new bounds transformed from this bounds using [transform].
   @override

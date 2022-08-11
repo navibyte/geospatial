@@ -309,7 +309,7 @@ void _geoJsonLineStringGeometryWithBbox() {
   encoder.writer.lineString(
     [-1.1, -1.1, 2.1, -2.5, 3.5, -3.49],
     type: Coords.xy,
-    bbox: const GeoBox(west: -1.1, south: -3.49, east: 3.5, north: -1.1),
+    bounds: const GeoBox(west: -1.1, south: -3.49, east: 3.5, north: -1.1),
   );
   print(encoder.toText());
 }
@@ -319,7 +319,7 @@ void _geoJsonLineStringGeometryWithBboxShortened() {
   encoder.writer.lineString(
     [-1.1, -1.1, 2.1, -2.5, 3.5, -3.49],
     type: Coords.xy,
-    bbox: [-1.1, -3.49, 3.5, -1.1].box,
+    bounds: [-1.1, -3.49, 3.5, -1.1].box,
   );
   print(encoder.toText());
 }
@@ -394,7 +394,7 @@ void _geoJsonFeatureCollection() {
   //                     "coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]},
   //         "properties":{}}]}
   encoder.writer.featureCollection(
-    bbox: const GeoBox(
+    bounds: const GeoBox(
       // bbox covering the whole feature collection
       west: -1.1,
       south: -3.49,
@@ -415,7 +415,8 @@ void _geoJsonFeatureCollection() {
         geometry: (geom) => geom.lineString(
           [-1.1, -1.1, 2.1, -2.5, 3.5, -3.49],
           type: Coords.xy,
-          bbox: const GeoBox(west: -1.1, south: -3.49, east: 3.5, north: -1.1),
+          bounds:
+              const GeoBox(west: -1.1, south: -3.49, east: 3.5, north: -1.1),
         ),
       ),
   );

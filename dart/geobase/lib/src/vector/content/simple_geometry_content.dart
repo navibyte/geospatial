@@ -76,7 +76,7 @@ abstract class SimpleGeometryContent {
   ///
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
-  /// An optional [bbox] of [Box] can used set a minimum bounding box for a
+  /// An optional [bounds] of [Box] can used set a minimum bounding box for a
   /// geometry written. A writer implementation may use it or ignore it. Known
   /// [Box] sub classes are `ProjBox` (projected or cartesian coordinates) and
   /// `GeoBox` (geographic coordinates). Other sub classes are supported too.
@@ -91,14 +91,14 @@ abstract class SimpleGeometryContent {
   ///            3.5, -3.49,
   ///       ],
   ///       type: Coords.xy,
-  ///       bbox: Box(minX: -1.1, minY: -3.49, maxX: 3.5, maxY: -1.1),
+  ///       bounds: Box(minX: -1.1, minY: -3.49, maxX: 3.5, maxY: -1.1),
   ///   );
   /// ```
   void lineString(
     Iterable<double> chain, {
     required Coords type,
     String? name,
-    Box? bbox,
+    Box? bounds,
   });
 
   /// Writes a polygon geometry with one exterior and 0 to N interior [rings].
@@ -119,7 +119,7 @@ abstract class SimpleGeometryContent {
   ///
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
-  /// An optional [bbox] of [Box] can used set a minimum bounding box for a
+  /// An optional [bounds] of [Box] can used set a minimum bounding box for a
   /// geometry written. A writer implementation may use it or ignore it. Known
   /// [Box] sub classes are `ProjBox` (projected or cartesian coordinates) and
   /// `GeoBox` (geographic coordinates). Other sub classes are supported too.
@@ -145,7 +145,7 @@ abstract class SimpleGeometryContent {
     Iterable<Iterable<double>> rings, {
     required Coords type,
     String? name,
-    Box? bbox,
+    Box? bounds,
   });
 
   /// Writes a multi point geometry with an array of [points] (each with a
@@ -159,7 +159,7 @@ abstract class SimpleGeometryContent {
   ///
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
-  /// An optional [bbox] of [Box] can used set a minimum bounding box for a
+  /// An optional [bounds] of [Box] can used set a minimum bounding box for a
   /// geometry written. A writer implementation may use it or ignore it. Known
   /// [Box] sub classes are `ProjBox` (projected or cartesian coordinates) and
   /// `GeoBox` (geographic coordinates). Other sub classes are supported too.
@@ -179,7 +179,7 @@ abstract class SimpleGeometryContent {
     Iterable<Iterable<double>> points, {
     required Coords type,
     String? name,
-    Box? bbox,
+    Box? bounds,
   });
 
   /// Writes a multi line string with an array of [lineStrings] (each with a
@@ -195,7 +195,7 @@ abstract class SimpleGeometryContent {
   ///
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
-  /// An optional [bbox] of [Box] can used set a minimum bounding box for a
+  /// An optional [bounds] of [Box] can used set a minimum bounding box for a
   /// geometry written. A writer implementation may use it or ignore it. Known
   /// [Box] sub classes are `ProjBox` (projected or cartesian coordinates) and
   /// `GeoBox` (geographic coordinates). Other sub classes are supported too.
@@ -226,7 +226,7 @@ abstract class SimpleGeometryContent {
     Iterable<Iterable<double>> lineStrings, {
     required Coords type,
     String? name,
-    Box? bbox,
+    Box? bounds,
   });
 
   /// Writes a multi polygon with an array of [polygons] (each with an array of
@@ -249,7 +249,7 @@ abstract class SimpleGeometryContent {
   ///
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
-  /// An optional [bbox] of [Box] can used set a minimum bounding box for a
+  /// An optional [bounds] of [Box] can used set a minimum bounding box for a
   /// geometry written. A writer implementation may use it or ignore it. Known
   /// [Box] sub classes are `ProjBox` (projected or cartesian coordinates) and
   /// `GeoBox` (geographic coordinates). Other sub classes are supported too.
@@ -286,7 +286,7 @@ abstract class SimpleGeometryContent {
     Iterable<Iterable<Iterable<double>>> polygons, {
     required Coords type,
     String? name,
-    Box? bbox,
+    Box? bounds,
   });
 
   /// Writes an empty geometry of [type].

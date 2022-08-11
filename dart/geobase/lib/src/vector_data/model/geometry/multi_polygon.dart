@@ -125,8 +125,8 @@ class MultiPolygon extends SimpleGeometry {
   Iterable<Polygon> get polygons => ringArrays.map<Polygon>(Polygon.new);
 
   @override
-  void writeTo(SimpleGeometryContent writer, {String? name}) =>
-      writer.multiPolygon(_polygons, type: coordType, name: name, bbox: bounds);
+  void writeTo(SimpleGeometryContent writer, {String? name}) => writer
+      .multiPolygon(_polygons, type: coordType, name: name, bounds: bounds);
 
   // todo: coordinates as raw data
 

@@ -173,7 +173,7 @@ class Feature<T extends Geometry> extends FeatureObject {
       id: _id,
       geometry: geom?.writeTo,
       properties: _properties,
-      bbox: bounds,
+      bounds: bounds,
     );
   }
 

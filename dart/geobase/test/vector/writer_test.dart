@@ -99,8 +99,8 @@ void main() {
     test('Box coordinates', () {
       _testAllWriters<CoordinateContent>(
         [
-          (output) => output.box([10.123, 20.25, 12.485, 25.195].box),
-          (output) => output.box(
+          (output) => output.bounds([10.123, 20.25, 12.485, 25.195].box),
+          (output) => output.bounds(
                 const ProjBox(
                   minX: 10.123,
                   minY: 20.25,
@@ -117,13 +117,13 @@ void main() {
       );
       _testAllWriters<CoordinateContent>(
         [
-          (output) => output.box(
+          (output) => output.bounds(
                 BoxCoords.view(
                   [10.123, 20.25, -2.9, 12.485, 25.195, -0.9],
                   type: Coords.xym,
                 ),
               ),
-          (output) => output.box(
+          (output) => output.bounds(
                 const ProjBox(
                   minX: 10.123,
                   minY: 20.25,
@@ -147,11 +147,11 @@ void main() {
       );
       _testAllWriters<CoordinateContent>(
         [
-          (output) => output.box(
+          (output) => output.bounds(
                 [10.123, 20.25, -15.09, -2.9, 12.485, 25.195, -14.949, -0.9]
                     .box,
               ),
-          (output) => output.box(
+          (output) => output.bounds(
                 const ProjBox(
                   minX: 10.123,
                   minY: 20.25,
@@ -178,8 +178,8 @@ void main() {
       _testAllWriters<CoordinateContent>(
         [
           (output) =>
-              output.box([10.123, 20.25, -15.09, 12.485, 25.195, -14.949].box),
-          (output) => output.box(
+              output.bounds([10.123, 20.25, -15.09, 12.485, 25.195, -14.949].box),
+          (output) => output.bounds(
                 const ProjBox(
                   minX: 10.123,
                   minY: 20.25,
@@ -205,8 +205,8 @@ void main() {
       _testAllWriters<CoordinateContent>(
         [
           (output) =>
-              output.box([10.123, 20.25, -15.09, 12.485, 25.195, -14.949].box),
-          (output) => output.box(
+              output.bounds([10.123, 20.25, -15.09, 12.485, 25.195, -14.949].box),
+          (output) => output.bounds(
                 const GeoBox(
                   west: 10.123,
                   south: 20.25,
@@ -482,7 +482,7 @@ void main() {
                   -3.49,
                 ],
                 type: Coords.xy,
-                bbox: [-1.1, -3.49, 3.5, -1.1].box,
+                bounds: [-1.1, -3.49, 3.5, -1.1].box,
               ),
         ],
         def: '[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]',
@@ -497,7 +497,7 @@ void main() {
           (output) => output.lineString(
                 [-1.1, -1.1, 0.0, 2.1, -2.5, 4.99, 3.5, -3.49, 0.0],
                 type: Coords.xym,
-                bbox: BoxCoords.view(
+                bounds: BoxCoords.view(
                   [-1.1, -3.49, 0.0, 3.5, -1.1, 4.99],
                   type: Coords.xym,
                 ),
@@ -536,7 +536,7 @@ void main() {
                   0.0,
                 ],
                 type: Coords.xyzm,
-                bbox: [-1.1, -3.49, -0.5, 0.0, 3.5, -1.1, 0.0, 4.99].box,
+                bounds: [-1.1, -3.49, -0.5, 0.0, 3.5, -1.1, 0.0, 4.99].box,
               ),
         ],
         def: '[-1.1,-1.1,0.0,0.0],[2.1,-2.5,0.0,4.99],[3.5,-3.49,-0.5,0.0]',
@@ -649,7 +649,7 @@ void main() {
       _testGeoJsonWriters<FeatureContent>(
         (output) => output.feature(
           id: 'fid-1',
-          bbox: const ProjBox(
+          bounds: const ProjBox(
             minX: -1.1,
             minY: -3.49,
             minZ: -0.5,
@@ -758,7 +758,7 @@ void main() {
                   -3.49,
                 ],
                 type: Coords.xy,
-                bbox: const ProjBox(
+                bounds: const ProjBox(
                   minX: -1.1,
                   minY: -3.49,
                   maxX: 3.5,
@@ -767,7 +767,7 @@ void main() {
               ),
             ),
           count: 2,
-          bbox: const ProjBox(
+          bounds: const ProjBox(
             minX: -1.1,
             minY: -3.49,
             maxX: 10.123,

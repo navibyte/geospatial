@@ -73,7 +73,7 @@ class FeatureCollection<E extends Feature> extends FeatureWritable
         }
       },
       count: features.length,
-      bbox: boundsExplicit,
+      bounds: boundsExplicit,
     );
   }
 

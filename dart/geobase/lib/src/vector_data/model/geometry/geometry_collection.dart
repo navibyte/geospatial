@@ -79,7 +79,7 @@ class GeometryCollection<E extends Geometry> extends Geometry {
             geom.writeTo(output);
           }
         },
-        bbox: bounds,
+        bounds: bounds,
       );
 
   @override

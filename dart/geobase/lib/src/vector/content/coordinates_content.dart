@@ -12,7 +12,7 @@ import '/src/coordinates/base.dart';
 /// Coordinate positions are represented either as [Position] and bounding boxes
 /// are represented either as [Box].
 mixin CoordinateContent {
-  /// Writes a bounding box represented by [bbox] of [Box].
+  /// Writes a bounding box represented by [bounds] of [Box].
   ///
   /// Known [Box] sub classes are `ProjBox` (projected or cartesian coordinates)
   /// and `GeoBox` (geographic coordinates). Other sub classes are supported
@@ -29,7 +29,7 @@ mixin CoordinateContent {
   ///    content.box(
   ///       const GeoBox(west: -20, south: 50, east: 20, north: 60));
   /// ```
-  void box(Box bbox);
+  void bounds(Box bounds);
 
   /// Writes a single position represented by [coordinates] of [Position].
   ///

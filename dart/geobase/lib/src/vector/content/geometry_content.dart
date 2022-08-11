@@ -27,7 +27,7 @@ mixin GeometryContent implements SimpleGeometryContent {
   ///
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
-  /// An optional [bbox] of [Box] can used set a minimum bounding box for a
+  /// An optional [bounds] of [Box] can used set a minimum bounding box for a
   /// geometry written. A writer implementation may use it or ignore it. Known
   /// [Box] sub classes are `ProjBox` (projected or cartesian coordinates) and
   /// `GeoBox` (geographic coordinates). Other sub classes are supported too.
@@ -56,6 +56,6 @@ mixin GeometryContent implements SimpleGeometryContent {
     WriteGeometries geometries, {
     int? count,
     String? name,
-    Box? bbox,
+    Box? bounds,
   });
 }

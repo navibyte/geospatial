@@ -72,7 +72,7 @@ class GeometryCollection<E extends Geometry> extends Geometry
         }
       },
       count: geometries.length,
-      bbox: boundsExplicit,
+      bounds: boundsExplicit,
     );
   }
 
@@ -164,7 +164,7 @@ class MultiPoint<E extends Point> extends Geometry with EquatableMixin {
     writer.multiPoint(
       points.map<Iterable<double>>(Position.getDoubleList),
       type: type,
-      bbox: boundsExplicit,
+      bounds: boundsExplicit,
     );
   }
 
@@ -264,7 +264,7 @@ class MultiLineString<T extends Point> extends Geometry with EquatableMixin {
     writer.multiLineString(
       lineStrings.map<Iterable<double>>((e) => e.chain.valuesFlat(type)),
       type: type,
-      bbox: boundsExplicit,
+      bounds: boundsExplicit,
     );
   }
 
@@ -371,7 +371,7 @@ class MultiPolygon<T extends Point> extends Geometry with EquatableMixin {
         (e) => e.rings.map<Iterable<double>>((e) => e.chain.valuesFlat(type)),
       ),
       type: type,
-      bbox: boundsExplicit,
+      bounds: boundsExplicit,
     );
   }
 

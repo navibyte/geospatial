@@ -125,7 +125,7 @@ class LineString<T extends Point> extends Geometry with EquatableMixin {
     writer.lineString(
       chain.valuesFlat(type),
       type: type,
-      bbox: boundsExplicit,
+      bounds: boundsExplicit,
     );
   }
 

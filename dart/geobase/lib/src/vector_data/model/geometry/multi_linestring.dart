@@ -108,7 +108,7 @@ class MultiLineString extends SimpleGeometry {
         _lineStrings,
         type: coordType,
         name: name,
-        bbox: bounds,
+        bounds: bounds,
       );
 
   // todo: coordinates as raw data

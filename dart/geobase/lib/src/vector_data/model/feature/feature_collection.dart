@@ -107,7 +107,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
         }
       },
       count: features.length,
-      bbox: bounds,
+      bounds: bounds,
       custom: cust != null
           ? (props) {
               cust.forEach((name, value) {

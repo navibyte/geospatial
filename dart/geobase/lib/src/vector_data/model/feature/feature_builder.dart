@@ -66,7 +66,7 @@ class FeatureBuilder<T extends FeatureObject> with FeatureContent {
     Object? id,
     WriteGeometries? geometry,
     Map<String, Object?>? properties,
-    Box? bbox,
+    Box? bounds,
     WriteProperties? custom,
   }) {
     _add(
@@ -83,7 +83,7 @@ class FeatureBuilder<T extends FeatureObject> with FeatureContent {
   void featureCollection(
     WriteFeatures features, {
     int? count,
-    Box? bbox,
+    Box? bounds,
     WriteProperties? custom,
   }) {
     _add(

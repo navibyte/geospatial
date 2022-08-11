@@ -78,7 +78,7 @@ class LineString extends SimpleGeometry {
 
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
-      writer.lineString(_chain, type: coordType, name: name, bbox: bounds);
+      writer.lineString(_chain, type: coordType, name: name, bounds: bounds);
 
   // todo: coordinates as raw data
 

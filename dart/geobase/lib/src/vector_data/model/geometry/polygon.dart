@@ -129,7 +129,7 @@ class Polygon extends SimpleGeometry {
 
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
-      writer.polygon(_rings, type: coordType, name: name, bbox: bounds);
+      writer.polygon(_rings, type: coordType, name: name, bounds: bounds);
 
   // todo: coordinates as raw data
 
