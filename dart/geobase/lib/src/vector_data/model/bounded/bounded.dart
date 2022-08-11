@@ -15,8 +15,7 @@ abstract class Bounded {
 
   /// The bounding box for this object, if available.
   ///
-  /// Accessing this should never trigger extensive calculations. That is, if
-  /// bounds is not known, then this returns the null value.
+  /// Accessing this should never trigger extensive calculations. 
   BoxCoords? get bounds => _bounds;
 
 /* 

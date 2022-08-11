@@ -7,16 +7,18 @@
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/vector/content.dart';
+import '/src/vector/encoding.dart';
+import '/src/vector/formats.dart';
 import '/src/vector_data/array.dart';
 
 import 'geometry.dart';
 
 /// A point geometry with a position.
-class Point extends SimpleGeometry {
+class Point implements SimpleGeometry {
   final PositionCoords _position;
 
-  /// A point geometry with [position] and optional [bounds].
-  const Point(PositionCoords position, {super.bounds}) : _position = position;
+  /// A point geometry with [position].
+  const Point(PositionCoords position) : _position = position;
 
   /// A point geometry from a [position].
   ///
@@ -77,6 +79,19 @@ class Point extends SimpleGeometry {
   /// The position in this point geometry.
   PositionCoords get position => _position;
 
+  /// The bounding box for this point, mix and max with the same point position.
+  @override
+  BoxCoords get bounds => BoxCoords.create(
+        minX: position.x,
+        minY: position.y,
+        minZ: position.optZ,
+        minM: position.optM,
+        maxX: position.x,
+        maxY: position.y,
+        maxZ: position.optZ,
+        maxM: position.optM,
+      );
+
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
       writer.point(_position, type: coordType, name: name);
@@ -84,9 +99,22 @@ class Point extends SimpleGeometry {
   // todo: coordinates as raw data
 
   @override
-  bool operator ==(Object other) =>
-      other is Point && bounds == other.bounds && position == other.position;
+  String toStringAs({
+    TextWriterFormat<SimpleGeometryContent> format = GeoJSON.geometry,
+    int? decimals,
+  }) {
+    final encoder = format.encoder(decimals: decimals);
+    writeTo(encoder.writer);
+    return encoder.toText();
+  }
 
   @override
-  int get hashCode => Object.hash(bounds, position);
+  String toString() => toStringAs();
+
+  @override
+  bool operator ==(Object other) =>
+      other is Point && position == other.position;
+
+  @override
+  int get hashCode => position.hashCode;
 }
