@@ -6,8 +6,10 @@
 
 import 'package:meta/meta.dart';
 
+import '/src/coordinates/base.dart';
 import '/src/utils/property_builder.dart';
 import '/src/vector/content.dart';
+import '/src/vector_data/array.dart';
 import '/src/vector_data/model/geometry.dart';
 
 import 'feature.dart';
@@ -45,6 +47,9 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   /// An optional expected [count], when given, specifies the number of feature
   /// objects in the content. Note that when given the count MUST be exact.
   ///
+  /// An optional [bounds] can used set a minimum bounding box for a feature
+  /// collection.
+  ///
   /// Use an optional [custom] parameter to set any custom or "foreign member"
   /// properties.
   ///
@@ -73,6 +78,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   static FeatureCollection<Feature<T>> build<T extends Geometry>(
     WriteFeatures features, {
     int? count,
+    Box? bounds,
     WriteProperties? custom,
   }) {
     // todo: use optional count to create a list in right size at build start
@@ -85,7 +91,11 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
         custom != null ? PropertyBuilder.buildMap(custom) : null;
 
     // create a feature collection with features and optional custom props
-    return FeatureCollection<Feature<T>>._(list, builtCustom);
+    return FeatureCollection<Feature<T>>._(
+      list,
+      builtCustom,
+      bounds: bounds != null ? BoxCoords.fromBox(bounds) : null,
+    );
   }
 
   /// All feature items in this feature collection.

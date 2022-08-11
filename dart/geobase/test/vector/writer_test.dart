@@ -177,8 +177,8 @@ void main() {
       );
       _testAllWriters<CoordinateContent>(
         [
-          (output) =>
-              output.bounds([10.123, 20.25, -15.09, 12.485, 25.195, -14.949].box),
+          (output) => output
+              .bounds([10.123, 20.25, -15.09, 12.485, 25.195, -14.949].box),
           (output) => output.bounds(
                 const ProjBox(
                   minX: 10.123,
@@ -204,8 +204,8 @@ void main() {
     test('GeoBox coordinates', () {
       _testAllWriters<CoordinateContent>(
         [
-          (output) =>
-              output.bounds([10.123, 20.25, -15.09, 12.485, 25.195, -14.949].box),
+          (output) => output
+              .bounds([10.123, 20.25, -15.09, 12.485, 25.195, -14.949].box),
           (output) => output.bounds(
                 const GeoBox(
                   west: 10.123,

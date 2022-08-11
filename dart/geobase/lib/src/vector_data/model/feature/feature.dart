@@ -6,8 +6,10 @@
 
 import 'package:meta/meta.dart';
 
+import '/src/coordinates/base.dart';
 import '/src/utils/property_builder.dart';
 import '/src/vector/content.dart';
+import '/src/vector_data/array.dart';
 import '/src/vector_data/model/geometry.dart';
 
 import 'feature_object.dart';
@@ -55,7 +57,8 @@ class Feature<T extends Geometry> extends FeatureObject {
         _properties = properties ?? const {},
         _geometry = geometry;
 
-  /// A feature from optional [id], [geometry], [properties] and [custom] data.
+  /// A feature from optional [id], [geometry], [properties], [bounds] and
+  /// [custom].
   ///
   /// An optional [id], when given, should be either a string or an integer
   /// number.
@@ -67,6 +70,8 @@ class Feature<T extends Geometry> extends FeatureObject {
   ///
   /// An optional [properties] defines feature properties as a map with data
   /// similar to a JSON Object.
+  ///
+  /// An optional [bounds] can used set a minimum bounding box for a feature.
   ///
   /// Use an optional [custom] parameter to set any custom or "foreign member"
   /// properties.
@@ -89,6 +94,7 @@ class Feature<T extends Geometry> extends FeatureObject {
     Object? id,
     WriteGeometries? geometry,
     Map<String, Object?>? properties,
+    Box? bounds,
     WriteProperties? custom,
   }) {
     // optional data to be built as necessary
@@ -129,12 +135,16 @@ class Feature<T extends Geometry> extends FeatureObject {
       PropertyBuilder.buildTo(custom, to: builtCustom);
     }
 
+    // optional bounds
+    final bbox = bounds != null ? BoxCoords.fromBox(bounds) : null;
+
     // create a custom feature with "foreign members" OR a standard feature
     return builtCustom != null || builtCustomGeom != null
         ? _CustomFeature(
             id: id,
             geometry: primaryGeometry,
             properties: properties,
+            bounds: bbox,
             custom: builtCustom,
             customGeometries: builtCustomGeom,
           )
@@ -142,6 +152,7 @@ class Feature<T extends Geometry> extends FeatureObject {
             id: id,
             geometry: primaryGeometry,
             properties: properties,
+            bounds: bbox,
           );
   }
 
@@ -202,8 +213,8 @@ class _CustomFeature<T extends Geometry> extends Feature<T> {
   final Map<String, Object?>? _custom;
   final Map<String, Geometry>? _customGeometries;
 
-  /// A feature of optional [id], [geometry], [properties], [custom] and
-  /// [customGeometries].
+  /// A feature of optional [id], [geometry], [properties], [bounds], [custom]
+  /// and [customGeometries].
   ///
   /// An optional [id], when given, should be either a string or an integer
   /// number.
@@ -223,6 +234,7 @@ class _CustomFeature<T extends Geometry> extends Feature<T> {
     super.id,
     super.geometry,
     super.properties,
+    super.bounds,
     Map<String, Object?>? custom,
     Map<String, Geometry>? customGeometries,
   })  : _custom = custom,

@@ -6,6 +6,7 @@
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/coordinates/base.dart';
 import '/src/vector/content.dart';
 import '/src/vector_data/array.dart';
 
@@ -29,6 +30,8 @@ class LineString extends SimpleGeometry {
   ///
   /// Use the required [type] to explicitely specify the type of coordinates.
   ///
+  /// An optional [bounds] can used set a minimum bounding box for a geometry.
+  ///
   /// The [chain] array must contain at least two positions. It contains
   /// coordinate values of chain positions as a flat structure. For example for
   /// `Coords.xyz` the first three coordinate values are x, y and z of the first
@@ -50,19 +53,22 @@ class LineString extends SimpleGeometry {
   factory LineString.build(
     Iterable<double> chain, {
     required Coords type,
+    Box? bounds,
   }) {
     assert(
       chain.length >= 2,
       'Chain must contain at least two positions',
     );
+    final bbox = bounds != null ? BoxCoords.fromBox(bounds) : null;
     if (chain is PositionArray) {
-      return LineString(chain);
+      return LineString(chain, bounds: bbox);
     } else {
       return LineString(
         PositionArray.view(
           chain is List<double> ? chain : chain.toList(growable: false),
           type: type,
         ),
+        bounds: bbox,
       );
     }
   }

@@ -6,6 +6,7 @@
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/coordinates/base.dart';
 import '/src/vector/content.dart';
 import '/src/vector_data/array.dart';
 
@@ -19,8 +20,7 @@ class MultiPoint extends SimpleGeometry {
 
   /// A multi point geometry with an array of [points] (each with a position).
   ///
-  /// An optional [bounds] can used set a minimum bounding box for a multi
-  /// point.
+  /// An optional [bounds] can used set a minimum bounding box for a geometry.
   ///
   /// Each point is represented by [PositionCoords] instances.
   const MultiPoint(List<PositionCoords> points, {BoxCoords? bounds})
@@ -31,6 +31,8 @@ class MultiPoint extends SimpleGeometry {
   /// A multi point geometry from an array of [points] (each with a position).
   ///
   /// Use the required [type] to explicitely set the coordinate type.
+  ///
+  /// An optional [bounds] can used set a minimum bounding box for a geometry.
   ///
   /// Each point is represented by `Iterable<double>` instances. Supported
   /// coordinate value combinations for positions are: (x, y), (x, y, z),
@@ -50,11 +52,21 @@ class MultiPoint extends SimpleGeometry {
   factory MultiPoint.build(
     Iterable<Iterable<double>> points, {
     required Coords type,
+    Box? bounds,
   }) {
+    final bbox = bounds != null ? BoxCoords.fromBox(bounds) : null;
     if (points is List<PositionCoords>) {
-      return MultiPoint._(points, type: type);
+      return MultiPoint._(
+        points,
+        type: type,
+        bounds: bbox,
+      );
     } else if (points is Iterable<PositionCoords>) {
-      return MultiPoint._(points.toList(growable: false), type: type);
+      return MultiPoint._(
+        points.toList(growable: false),
+        type: type,
+        bounds: bbox,
+      );
     } else {
       return MultiPoint._(
         points
@@ -66,6 +78,7 @@ class MultiPoint extends SimpleGeometry {
             )
             .toList(growable: false),
         type: type,
+        bounds: bbox,
       );
     }
   }

@@ -6,6 +6,7 @@
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/coordinates/base.dart';
 import '/src/vector/content.dart';
 import '/src/vector_data/array.dart';
 
@@ -18,7 +19,7 @@ class Polygon extends SimpleGeometry {
 
   /// A polygon geometry with exactly one exterior and 0 to N interior [rings].
   ///
-  /// An optional [bounds] can used set a minimum bounding box for a polygon.
+  /// An optional [bounds] can used set a minimum bounding box for a geometry.
   ///
   /// Each ring in the polygon is represented by `PositionArray` instances.
   ///
@@ -40,6 +41,8 @@ class Polygon extends SimpleGeometry {
   /// A polygon geometry from one exterior and 0 to N interior [rings].
   ///
   /// Use the required [type] to explicitely specify the type of coordinates.
+  ///
+  /// An optional [bounds] can used set a minimum bounding box for a geometry.
   ///
   /// Each ring in the polygon is represented by `Iterable<double>` arrays. Such
   /// arrays contain coordinate values as a flat structure. For example for
@@ -73,15 +76,21 @@ class Polygon extends SimpleGeometry {
   factory Polygon.build(
     Iterable<Iterable<double>> rings, {
     required Coords type,
+    Box? bounds,
   }) {
-    assert(
-      rings.isNotEmpty,
-      'Polygon must contain at least the exterior ring',
-    );
+    final bbox = bounds != null ? BoxCoords.fromBox(bounds) : null;
     if (rings is List<PositionArray>) {
-      return Polygon._(rings, type: type);
+      return Polygon._(
+        rings,
+        type: type,
+        bounds: bbox,
+      );
     } else if (rings is Iterable<PositionArray>) {
-      return Polygon._(rings.toList(growable: false), type: type);
+      return Polygon._(
+        rings.toList(growable: false),
+        type: type,
+        bounds: bbox,
+      );
     } else {
       return Polygon._(
         rings
@@ -93,6 +102,7 @@ class Polygon extends SimpleGeometry {
             )
             .toList(growable: false),
         type: type,
+        bounds: bbox,
       );
     }
   }

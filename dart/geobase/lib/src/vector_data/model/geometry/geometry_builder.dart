@@ -29,7 +29,7 @@ typedef AddGeometry<T extends Geometry> = void Function(
 /// This builder supports creating [Point], [LineString], [Polygon],
 /// [MultiPoint], [MultiLineString], [MultiPolygon] and [GeometryCollection]
 /// objects.
-/// 
+///
 /// See [GeometryContent] for more information about these objects.
 ///
 /// This builder ignore "empty geometry" types.
@@ -122,7 +122,7 @@ class GeometryBuilder<T extends Geometry> with GeometryContent {
       // note: ignore empty geometries for this implementation
     }
     _add(
-      LineString.build(chain, type: type),
+      LineString.build(chain, type: type, bounds: bounds),
       name: name,
     );
   }
@@ -138,7 +138,7 @@ class GeometryBuilder<T extends Geometry> with GeometryContent {
       // note: ignore empty geometries for this implementation
     }
     _add(
-      Polygon.build(rings, type: type),
+      Polygon.build(rings, type: type, bounds: bounds),
       name: name,
     );
   }
@@ -151,7 +151,7 @@ class GeometryBuilder<T extends Geometry> with GeometryContent {
     Box? bounds,
   }) {
     _add(
-      MultiPoint.build(points, type: type),
+      MultiPoint.build(points, type: type, bounds: bounds),
       name: name,
     );
   }
@@ -164,7 +164,7 @@ class GeometryBuilder<T extends Geometry> with GeometryContent {
     Box? bounds,
   }) {
     _add(
-      MultiLineString.build(lineStrings, type: type),
+      MultiLineString.build(lineStrings, type: type, bounds: bounds),
       name: name,
     );
   }
@@ -177,7 +177,7 @@ class GeometryBuilder<T extends Geometry> with GeometryContent {
     Box? bounds,
   }) {
     _add(
-      MultiPolygon.build(polygons, type: type),
+      MultiPolygon.build(polygons, type: type, bounds: bounds),
       name: name,
     );
   }
@@ -190,7 +190,7 @@ class GeometryBuilder<T extends Geometry> with GeometryContent {
     Box? bounds,
   }) {
     _add(
-      GeometryCollection.build(geometries, count: count),
+      GeometryCollection.build(geometries, count: count, bounds: bounds),
       name: name,
     );
   }

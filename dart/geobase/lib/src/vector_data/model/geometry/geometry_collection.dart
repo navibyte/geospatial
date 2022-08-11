@@ -5,7 +5,9 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import '/src/codes/geom.dart';
+import '/src/coordinates/base.dart';
 import '/src/vector/content.dart';
+import '/src/vector_data/array.dart';
 
 import 'geometry.dart';
 import 'geometry_builder.dart';
@@ -24,6 +26,9 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   ///
   /// An optional expected [count], when given, specifies the number of geometry
   /// objects in a content stream. Note that when given the count MUST be exact.
+  ///
+  /// An optional [bounds] can used set a minimum bounding box for a geometry
+  /// collection.
   ///
   /// An example to build a geometry collection with two child geometries:
   /// ```dart
@@ -58,9 +63,11 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   factory GeometryCollection.build(
     WriteGeometries geometries, {
     int? count,
+    Box? bounds,
   }) =>
       GeometryCollection<E>(
         GeometryBuilder.buildList<E>(geometries, count: count),
+        bounds: bounds != null ? BoxCoords.fromBox(bounds) : null,
       );
 
   @override

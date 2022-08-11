@@ -6,6 +6,7 @@
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/coordinates/base.dart';
 import '/src/vector/content.dart';
 import '/src/vector_data/array.dart';
 
@@ -21,8 +22,7 @@ class MultiLineString extends SimpleGeometry {
   /// A multi line string with an array of [lineStrings] (each with a chain of
   /// positions).
   ///
-  /// An optional [bounds] can used set a minimum bounding box for a multi
-  /// line string.
+  /// An optional [bounds] can used set a minimum bounding box for a geometry.
   ///
   /// Each line string or a chain of positions is represented by [PositionArray]
   /// instances.
@@ -36,6 +36,8 @@ class MultiLineString extends SimpleGeometry {
   /// positions).
   ///
   /// Use the required [type] to explicitely specify the type of coordinates.
+  ///
+  /// An optional [bounds] can used set a minimum bounding box for a geometry.
   ///
   /// Each line string or a chain of positions is represented by `
   /// Iterable<double>` instances. They contain coordinate values as a flat
@@ -68,11 +70,21 @@ class MultiLineString extends SimpleGeometry {
   factory MultiLineString.build(
     Iterable<Iterable<double>> lineStrings, {
     required Coords type,
+    Box? bounds,
   }) {
+    final bbox = bounds != null ? BoxCoords.fromBox(bounds) : null;
     if (lineStrings is List<PositionArray>) {
-      return MultiLineString._(lineStrings, type: type);
+      return MultiLineString._(
+        lineStrings,
+        type: type,
+        bounds: bbox,
+      );
     } else if (lineStrings is Iterable<PositionArray>) {
-      return MultiLineString._(lineStrings.toList(growable: false), type: type);
+      return MultiLineString._(
+        lineStrings.toList(growable: false),
+        type: type,
+        bounds: bbox,
+      );
     } else {
       return MultiLineString._(
         lineStrings
@@ -84,6 +96,7 @@ class MultiLineString extends SimpleGeometry {
             )
             .toList(growable: false),
         type: type,
+        bounds: bbox,
       );
     }
   }

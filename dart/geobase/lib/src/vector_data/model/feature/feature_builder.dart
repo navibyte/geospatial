@@ -74,6 +74,7 @@ class FeatureBuilder<T extends FeatureObject> with FeatureContent {
         id: id,
         geometry: geometry,
         properties: properties,
+        bounds: bounds,
         custom: custom,
       ),
     );
@@ -90,6 +91,7 @@ class FeatureBuilder<T extends FeatureObject> with FeatureContent {
       FeatureCollection.build(
         features,
         count: count,
+        bounds: bounds,
         custom: custom,
       ),
     );

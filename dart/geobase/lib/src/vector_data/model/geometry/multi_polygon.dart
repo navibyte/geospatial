@@ -6,6 +6,7 @@
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/coordinates/base.dart';
 import '/src/vector/content.dart';
 import '/src/vector_data/array.dart';
 
@@ -19,8 +20,7 @@ class MultiPolygon extends SimpleGeometry {
 
   /// A multi polygon with an array of [polygons] (each with an array of rings).
   ///
-  /// An optional [bounds] can used set a minimum bounding box for a multi
-  /// polygon.
+  /// An optional [bounds] can used set a minimum bounding box for a geometry.
   ///
   /// Each polygon is represented by `List<PositionArray>` instances containing
   /// one exterior and 0 to N interior rings. The first element is the exterior
@@ -37,6 +37,8 @@ class MultiPolygon extends SimpleGeometry {
   /// A multi polygon from an array of [polygons] (each with an array of rings).
   ///
   /// Use the required [type] to explicitely specify the type of coordinates.
+  ///
+  /// An optional [bounds] can used set a minimum bounding box for a geometry.
   ///
   /// Each polygon is represented by `Iterable<Iterable<double>>` instances
   /// containing one exterior and 0 to N interior rings. The first element is
@@ -82,11 +84,21 @@ class MultiPolygon extends SimpleGeometry {
   factory MultiPolygon.build(
     Iterable<Iterable<Iterable<double>>> polygons, {
     required Coords type,
+    Box? bounds,
   }) {
+    final bbox = bounds != null ? BoxCoords.fromBox(bounds) : null;
     if (polygons is List<List<PositionArray>>) {
-      return MultiPolygon._(polygons, type: type);
+      return MultiPolygon._(
+        polygons,
+        type: type,
+        bounds: bbox,
+      );
     } else if (polygons is Iterable<List<PositionArray>>) {
-      return MultiPolygon._(polygons.toList(growable: false), type: type);
+      return MultiPolygon._(
+        polygons.toList(growable: false),
+        type: type,
+        bounds: bbox,
+      );
     } else {
       return MultiPolygon._(
         polygons
@@ -104,6 +116,7 @@ class MultiPolygon extends SimpleGeometry {
             )
             .toList(growable: false),
         type: type,
+        bounds: bbox,
       );
     }
   }
