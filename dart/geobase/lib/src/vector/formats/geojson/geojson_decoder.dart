@@ -76,6 +76,7 @@ void _decodeGeometry(
   GeometryContent builder,
 ) {
   // todo : coord type from conf
+  // todo: read custom or foreign members
 
   // check for GeoJSON types and decode as supported types found
   switch (geometry['type']) {
@@ -91,6 +92,7 @@ void _decodeGeometry(
       builder.lineString(
         _createFlatPositionArrayDouble(array, coordType),
         type: coordType,
+        bounds: _getBboxOpt(geometry),
       );
       break;
     case 'Polygon':
@@ -100,12 +102,17 @@ void _decodeGeometry(
       builder.polygon(
         _createFlatPositionArrayArrayDouble(array, coordType),
         type: coordType,
+        bounds: _getBboxOpt(geometry),
       );
       break;
     case 'MultiPoint':
       final array = _requirePositionArrayDouble(geometry['coordinates']);
       final coordType = _resolveCoordType(array, positionLevel: 1);
-      builder.multiPoint(array, type: coordType);
+      builder.multiPoint(
+        array,
+        type: coordType,
+        bounds: _getBboxOpt(geometry),
+      );
       break;
     case 'MultiLineString':
       final array = geometry['coordinates'] as List<dynamic>;
@@ -113,6 +120,7 @@ void _decodeGeometry(
       builder.multiLineString(
         _createFlatPositionArrayArrayDouble(array, coordType),
         type: coordType,
+        bounds: _getBboxOpt(geometry),
       );
       break;
     case 'MultiPolygon':
@@ -121,6 +129,7 @@ void _decodeGeometry(
       builder.multiPolygon(
         _createFlatPositionArrayArrayArrayDouble(array, coordType),
         type: coordType,
+        bounds: _getBboxOpt(geometry),
       );
       break;
     case 'GeometryCollection':
@@ -132,6 +141,7 @@ void _decodeGeometry(
           }
         },
         count: geometries.length,
+        bounds: _getBboxOpt(geometry),
       );
       break;
     default:
@@ -144,7 +154,6 @@ void _decodeFeature(Map<String, dynamic> feature, FeatureContent builder) {
   final geom = feature['geometry'] as Map<String, dynamic>?;
 
   // todo: check if feature has other geometry objects as childs, and hanlde em'
-  // todo: read bounding box
   // todo: read custom or foreign members
 
   // build feature
@@ -154,6 +163,7 @@ void _decodeFeature(Map<String, dynamic> feature, FeatureContent builder) {
     geometry: geom != null
         ? (geometryBuilder) => _decodeGeometry(geom, geometryBuilder)
         : null,
+    bounds: _getBboxOpt(feature),
   );
 }
 
@@ -162,6 +172,9 @@ void _decodeFeatureCollection(
   FeatureContent builder,
 ) {
   final features = collection['features'] as List<dynamic>;
+
+  // todo: read custom or foreign members
+
   builder.featureCollection(
     (featureBuilder) {
       for (final feature in features) {
@@ -169,7 +182,18 @@ void _decodeFeatureCollection(
       }
     },
     count: features.length,
+    bounds: _getBboxOpt(collection),
   );
+}
+
+List<double>? _getBboxOpt(Map<String, dynamic> object) {
+  final data = object['bbox'];
+  return data != null
+      ? (data as List<dynamic>)
+          .cast<num>()
+          .map<double>((e) => e.toDouble())
+          .toList(growable: false)
+      : null;
 }
 
 Object? _optStringOrNumber(dynamic data) {
