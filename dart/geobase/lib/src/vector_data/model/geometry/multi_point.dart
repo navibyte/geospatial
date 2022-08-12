@@ -6,7 +6,7 @@
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
-import '/src/coordinates/base.dart';
+import '/src/utils/coord_arrays.dart';
 import '/src/vector/content.dart';
 import '/src/vector_data/array.dart';
 
@@ -52,36 +52,13 @@ class MultiPoint extends SimpleGeometry {
   factory MultiPoint.build(
     Iterable<Iterable<double>> points, {
     required Coords type,
-    Box? bounds,
-  }) {
-    final bbox = bounds != null ? BoxCoords.fromBox(bounds) : null;
-    if (points is List<PositionCoords>) {
-      return MultiPoint._(
-        points,
+    Iterable<double>? bounds,
+  }) =>
+      MultiPoint._(
+        listOfPositionsFromCoords(points, type: type),
         type: type,
-        bounds: bbox,
+        bounds: boxFromCoordsOpt(bounds, type: type),
       );
-    } else if (points is Iterable<PositionCoords>) {
-      return MultiPoint._(
-        points.toList(growable: false),
-        type: type,
-        bounds: bbox,
-      );
-    } else {
-      return MultiPoint._(
-        points
-            .map<PositionCoords>(
-              (pos) => PositionCoords.view(
-                pos is List<double> ? pos : pos.toList(growable: false),
-                type: type,
-              ),
-            )
-            .toList(growable: false),
-        type: type,
-        bounds: bbox,
-      );
-    }
-  }
 
   @override
   Geom get geomType => Geom.multiPoint;

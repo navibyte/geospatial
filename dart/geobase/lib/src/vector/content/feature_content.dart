@@ -4,8 +4,6 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/coordinates/base.dart';
-
 import 'geometry_content.dart';
 import 'property_content.dart';
 
@@ -41,10 +39,16 @@ mixin FeatureContent {
   /// An optional expected [count], when given, specifies the number of features
   /// in a collection. Note that when given the count MUST be exact.
   ///
-  /// An optional [bounds] can used set a minimum bounding box for a feature
-  /// collection written. A writer implementation may use it or ignore it. Known
-  /// [Box] sub classes are `ProjBox` (projected or cartesian coordinates) and
-  /// `GeoBox` (geographic coordinates). Other sub classes are supported too.
+  /// An optional [bounds] can used set a minimum bounding box for a geometry
+  /// written. A writer implementation may use it or ignore it. Supported 
+  /// coordinate value combinations by coordinate type:
+  ///
+  /// Type | Expected values
+  /// ---- | ---------------
+  /// xy   | minX, minY, maxX, maxY
+  /// xyz  | minX, minY, minZ, maxX, maxY, maxZ
+  /// xym  | minX, minY, minM, maxX, maxY, maxM
+  /// xyzm | minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
   ///
   /// Use [custom] to write any custom or "foreign member" properties.
   ///
@@ -71,7 +75,7 @@ mixin FeatureContent {
   void featureCollection(
     WriteFeatures features, {
     int? count,
-    Box? bounds,
+    Iterable<double>? bounds,
     WriteProperties? custom,
   });
 
@@ -83,10 +87,16 @@ mixin FeatureContent {
   /// defined by [GeometryContent]. When there are more than one geometry, it's
   /// recommended to use the `name` argument when writing those other.
   ///
-  /// An optional [bounds] can used set a minimum bounding box for a feature
-  /// written. A writer implementation may use it or ignore it. Known [Box] sub
-  /// classes are `ProjBox` (projected or cartesian coordinates) and `GeoBox`
-  /// (geographic coordinates). Other sub classes are supported too.
+  /// An optional [bounds] can used set a minimum bounding box for a geometry
+  /// written. A writer implementation may use it or ignore it. Supported 
+  /// coordinate value combinations by coordinate type:
+  ///
+  /// Type | Expected values
+  /// ---- | ---------------
+  /// xy   | minX, minY, maxX, maxY
+  /// xyz  | minX, minY, minZ, maxX, maxY, maxZ
+  /// xym  | minX, minY, minM, maxX, maxY, maxM
+  /// xyzm | minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
   ///
   /// Use [custom] to write any custom or "foreign member" properties along with
   /// those set by [properties].
@@ -107,7 +117,7 @@ mixin FeatureContent {
     Object? id,
     WriteGeometries? geometry,
     Map<String, Object?>? properties,
-    Box? bounds,
+    Iterable<double>? bounds,
     WriteProperties? custom,
   });
 }

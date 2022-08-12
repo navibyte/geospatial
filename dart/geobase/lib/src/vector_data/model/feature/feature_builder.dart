@@ -4,7 +4,6 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/coordinates/base.dart';
 import '/src/vector/content.dart';
 
 import 'feature.dart';
@@ -66,7 +65,7 @@ class FeatureBuilder<T extends FeatureObject> with FeatureContent {
     Object? id,
     WriteGeometries? geometry,
     Map<String, Object?>? properties,
-    Box? bounds,
+    Iterable<double>? bounds,
     WriteProperties? custom,
   }) {
     _add(
@@ -84,7 +83,7 @@ class FeatureBuilder<T extends FeatureObject> with FeatureContent {
   void featureCollection(
     WriteFeatures features, {
     int? count,
-    Box? bounds,
+    Iterable<double>? bounds,
     WriteProperties? custom,
   }) {
     _add(

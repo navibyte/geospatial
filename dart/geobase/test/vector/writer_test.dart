@@ -577,16 +577,7 @@ void main() {
         [
           (output) => output.polygon(
                 [
-                  [
-                    10.1,
-                    10.1,
-                    5,
-                    9,
-                    12,
-                    4,
-                    10.1,
-                    10.1,
-                  ],
+                  [10.1, 10.1, 5, 9, 12, 4, 10.1, 10.1],
                 ],
                 type: Coords.xy,
               ),
@@ -649,31 +640,9 @@ void main() {
       _testGeoJsonWriters<FeatureContent>(
         (output) => output.feature(
           id: 'fid-1',
-          bounds: const ProjBox(
-            minX: -1.1,
-            minY: -3.49,
-            minZ: -0.5,
-            minM: 0,
-            maxX: 3.5,
-            maxY: -1.1,
-            maxZ: 0,
-            maxM: 4.99,
-          ),
+          bounds: [-1.1, -3.49, -0.5, 0, 3.5, -1.1, 0, 4.99],
           geometry: (geom) => geom.lineString(
-            [
-              -1.1,
-              -1.1,
-              0.0,
-              0.0,
-              2.1,
-              -2.5,
-              0.0,
-              4.99,
-              3.5,
-              -3.49,
-              -0.5,
-              0.0,
-            ],
+            [-1.1, -1.1, 0.0, 0.0, 2.1, -2.5, 0.0, 4.99, 3.5, -3.49, -0.5, 0.0],
             type: Coords.xyzm,
           ),
           properties: {
@@ -681,9 +650,9 @@ void main() {
           },
         ),
         geoJson:
-            '{"type":"Feature","id":"fid-1","bbox":[-1.1,-3.49,-0.5,0,3.5,-1.1,0,4.99],"geometry":{"type":"LineString","coordinates":[[-1.1,-1.1,0.0,0.0],[2.1,-2.5,0.0,4.99],[3.5,-3.49,-0.5,0.0]]},"properties":{"prop":1}}',
+            '{"type":"Feature","id":"fid-1","bbox":[-1.1,-3.49,-0.5,0.0,3.5,-1.1,0.0,4.99],"geometry":{"type":"LineString","coordinates":[[-1.1,-1.1,0.0,0.0],[2.1,-2.5,0.0,4.99],[3.5,-3.49,-0.5,0.0]]},"properties":{"prop":1}}',
         geoJsonStrict:
-            '{"type":"Feature","id":"fid-1","bbox":[-1.1,-3.49,-0.5,3.5,-1.1,0],"geometry":{"type":"LineString","coordinates":[[-1.1,-1.1,0.0],[2.1,-2.5,0.0],[3.5,-3.49,-0.5]]},"properties":{"prop":1}}',
+            '{"type":"Feature","id":"fid-1","bbox":[-1.1,-3.49,-0.5,3.5,-1.1,0.0],"geometry":{"type":"LineString","coordinates":[[-1.1,-1.1,0.0],[2.1,-2.5,0.0],[3.5,-3.49,-0.5]]},"properties":{"prop":1}}',
       );
       _testGeoJsonWriters<FeatureContent>(
         (output) => output.feature(
@@ -749,30 +718,13 @@ void main() {
             )
             ..feature(
               geometry: (geom) => geom.lineString(
-                [
-                  -1.1,
-                  -1.1,
-                  2.1,
-                  -2.5,
-                  3.5,
-                  -3.49,
-                ],
+                [-1.1, -1.1, 2.1, -2.5, 3.5, -3.49],
                 type: Coords.xy,
-                bounds: const ProjBox(
-                  minX: -1.1,
-                  minY: -3.49,
-                  maxX: 3.5,
-                  maxY: -1.1,
-                ),
+                bounds: [-1.1, -3.49, 3.5, -1.1],
               ),
             ),
           count: 2,
-          bounds: const ProjBox(
-            minX: -1.1,
-            minY: -3.49,
-            maxX: 10.123,
-            maxY: 20.25,
-          ),
+          bounds: [-1.1, -3.49, 10.123, 20.25],
         ),
         geoJson:
             '{"type":"FeatureCollection","bbox":[-1.1,-3.49,10.123,20.25],"features":[{"type":"Feature","id":"fid-1","geometry":{"type":"Point","coordinates":[10.123,20.25]},"properties":{"foo":100,"bar":"this is property value"}},{"type":"Feature","geometry":{"type":"LineString","bbox":[-1.1,-3.49,3.5,-1.1],"coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]},"properties":{}}]}',

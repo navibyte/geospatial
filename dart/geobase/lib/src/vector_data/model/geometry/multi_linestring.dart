@@ -6,7 +6,7 @@
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
-import '/src/coordinates/base.dart';
+import '/src/utils/coord_arrays.dart';
 import '/src/vector/content.dart';
 import '/src/vector_data/array.dart';
 
@@ -70,36 +70,13 @@ class MultiLineString extends SimpleGeometry {
   factory MultiLineString.build(
     Iterable<Iterable<double>> lineStrings, {
     required Coords type,
-    Box? bounds,
-  }) {
-    final bbox = bounds != null ? BoxCoords.fromBox(bounds) : null;
-    if (lineStrings is List<PositionArray>) {
-      return MultiLineString._(
-        lineStrings,
+    Iterable<double>? bounds,
+  }) =>
+      MultiLineString._(
+        listOfPositionArraysFromCoords(lineStrings, type: type),
         type: type,
-        bounds: bbox,
+        bounds: boxFromCoordsOpt(bounds, type: type),
       );
-    } else if (lineStrings is Iterable<PositionArray>) {
-      return MultiLineString._(
-        lineStrings.toList(growable: false),
-        type: type,
-        bounds: bbox,
-      );
-    } else {
-      return MultiLineString._(
-        lineStrings
-            .map<PositionArray>(
-              (chain) => PositionArray.view(
-                chain is List<double> ? chain : chain.toList(growable: false),
-                type: type,
-              ),
-            )
-            .toList(growable: false),
-        type: type,
-        bounds: bbox,
-      );
-    }
-  }
 
   @override
   Geom get geomType => Geom.multiLineString;

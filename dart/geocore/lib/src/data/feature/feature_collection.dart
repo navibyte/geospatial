@@ -73,7 +73,8 @@ class FeatureCollection<E extends Feature> extends FeatureWritable
         }
       },
       count: features.length,
-      bounds: boundsExplicit,
+      bounds:
+          boundsExplicit != null ? Box.getDoubleList(boundsExplicit!) : null,
     );
   }
 

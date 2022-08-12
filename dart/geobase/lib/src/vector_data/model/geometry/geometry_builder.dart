@@ -6,7 +6,6 @@
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
-import '/src/coordinates/base.dart';
 import '/src/vector/content.dart';
 
 import 'geometry.dart';
@@ -116,7 +115,7 @@ class GeometryBuilder<T extends Geometry> with GeometryContent {
     Iterable<double> chain, {
     required Coords type,
     String? name,
-    Box? bounds,
+    Iterable<double>? bounds,
   }) {
     if (chain.length < 2) {
       // note: ignore empty geometries for this implementation
@@ -132,7 +131,7 @@ class GeometryBuilder<T extends Geometry> with GeometryContent {
     Iterable<Iterable<double>> rings, {
     required Coords type,
     String? name,
-    Box? bounds,
+    Iterable<double>? bounds,
   }) {
     if (rings.isEmpty) {
       // note: ignore empty geometries for this implementation
@@ -148,7 +147,7 @@ class GeometryBuilder<T extends Geometry> with GeometryContent {
     Iterable<Iterable<double>> points, {
     required Coords type,
     String? name,
-    Box? bounds,
+    Iterable<double>? bounds,
   }) {
     _add(
       MultiPoint.build(points, type: type, bounds: bounds),
@@ -161,7 +160,7 @@ class GeometryBuilder<T extends Geometry> with GeometryContent {
     Iterable<Iterable<double>> lineStrings, {
     required Coords type,
     String? name,
-    Box? bounds,
+    Iterable<double>? bounds,
   }) {
     _add(
       MultiLineString.build(lineStrings, type: type, bounds: bounds),
@@ -174,7 +173,7 @@ class GeometryBuilder<T extends Geometry> with GeometryContent {
     Iterable<Iterable<Iterable<double>>> polygons, {
     required Coords type,
     String? name,
-    Box? bounds,
+    Iterable<double>? bounds,
   }) {
     _add(
       MultiPolygon.build(polygons, type: type, bounds: bounds),
@@ -187,7 +186,7 @@ class GeometryBuilder<T extends Geometry> with GeometryContent {
     WriteGeometries geometries, {
     int? count,
     String? name,
-    Box? bounds,
+    Iterable<double>? bounds,
   }) {
     _add(
       GeometryCollection.build(geometries, count: count, bounds: bounds),

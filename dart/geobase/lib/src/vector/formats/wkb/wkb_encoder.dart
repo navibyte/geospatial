@@ -57,7 +57,7 @@ class _WkbGeometryEncoder
     Iterable<double> chain, {
     required Coords type,
     String? name,
-    Box? bounds,
+    Iterable<double>? bounds,
   }) {
     // write a line string geometry
     _writeGeometryHeader(Geom.lineString, type);
@@ -69,7 +69,7 @@ class _WkbGeometryEncoder
     Iterable<Iterable<double>> rings, {
     required Coords type,
     String? name,
-    Box? bounds,
+    Iterable<double>? bounds,
   }) {
     // write a polygon geometry
     _writeGeometryHeader(Geom.polygon, type);
@@ -88,7 +88,7 @@ class _WkbGeometryEncoder
     Iterable<Iterable<double>> points, {
     required Coords type,
     String? name,
-    Box? bounds,
+    Iterable<double>? bounds,
   }) {
     // write a multi point geometry
     _writeGeometryHeader(Geom.multiPoint, type);
@@ -108,7 +108,7 @@ class _WkbGeometryEncoder
     Iterable<Iterable<double>> lineStrings, {
     required Coords type,
     String? name,
-    Box? bounds,
+    Iterable<double>? bounds,
   }) {
     // write a multi line geometry
     _writeGeometryHeader(Geom.multiLineString, type);
@@ -128,7 +128,7 @@ class _WkbGeometryEncoder
     Iterable<Iterable<Iterable<double>>> polygons, {
     required Coords type,
     String? name,
-    Box? bounds,
+    Iterable<double>? bounds,
   }) {
     // write a multi polygon geometry
     _writeGeometryHeader(Geom.multiPolygon, type);
@@ -155,7 +155,7 @@ class _WkbGeometryEncoder
     WriteGeometries geometries, {
     int? count,
     String? name,
-    Box? bounds,
+    Iterable<double>? bounds,
   }) {
     final int numGeom;
     final Coords coordType;
@@ -294,7 +294,7 @@ class _GeometryCollector with GeometryContent {
     Iterable<double> chain, {
     required Coords type,
     String? name,
-    Box? bounds,
+    Iterable<double>? bounds,
   }) {
     hasZ |= type.is3D;
     hasM |= type.isMeasured;
@@ -306,7 +306,7 @@ class _GeometryCollector with GeometryContent {
     Iterable<Iterable<double>> rings, {
     required Coords type,
     String? name,
-    Box? bounds,
+    Iterable<double>? bounds,
   }) {
     hasZ |= type.is3D;
     hasM |= type.isMeasured;
@@ -318,7 +318,7 @@ class _GeometryCollector with GeometryContent {
     Iterable<Iterable<double>> points, {
     required Coords type,
     String? name,
-    Box? bounds,
+    Iterable<double>? bounds,
   }) {
     hasZ |= type.is3D;
     hasM |= type.isMeasured;
@@ -330,7 +330,7 @@ class _GeometryCollector with GeometryContent {
     Iterable<Iterable<double>> lineStrings, {
     required Coords type,
     String? name,
-    Box? bounds,
+    Iterable<double>? bounds,
   }) {
     hasZ |= type.is3D;
     hasM |= type.isMeasured;
@@ -342,7 +342,7 @@ class _GeometryCollector with GeometryContent {
     Iterable<Iterable<Iterable<double>>> polygons, {
     required Coords type,
     String? name,
-    Box? bounds,
+    Iterable<double>? bounds,
   }) {
     hasZ |= type.is3D;
     hasM |= type.isMeasured;
@@ -355,7 +355,7 @@ class _GeometryCollector with GeometryContent {
     Coords? type,
     int? count,
     String? name,
-    Box? bounds,
+    Iterable<double>? bounds,
   }) {
     if (type != null) {
       hasZ |= type.is3D;

@@ -6,10 +6,9 @@
 
 import 'package:meta/meta.dart';
 
-import '/src/coordinates/base.dart';
+import '/src/utils/coord_arrays.dart';
 import '/src/utils/property_builder.dart';
 import '/src/vector/content.dart';
-import '/src/vector_data/array.dart';
 import '/src/vector_data/model/geometry.dart';
 
 import 'feature_object.dart';
@@ -94,7 +93,7 @@ class Feature<T extends Geometry> extends FeatureObject {
     Object? id,
     WriteGeometries? geometry,
     Map<String, Object?>? properties,
-    Box? bounds,
+    Iterable<double>? bounds,
     WriteProperties? custom,
   }) {
     // optional data to be built as necessary
@@ -135,16 +134,13 @@ class Feature<T extends Geometry> extends FeatureObject {
       PropertyBuilder.buildTo(custom, to: builtCustom);
     }
 
-    // optional bounds
-    final bbox = bounds != null ? BoxCoords.fromBox(bounds) : null;
-
     // create a custom feature with "foreign members" OR a standard feature
     return builtCustom != null || builtCustomGeom != null
         ? _CustomFeature(
             id: id,
             geometry: primaryGeometry,
             properties: properties,
-            bounds: bbox,
+            bounds: boxFromCoordsOpt(bounds),
             custom: builtCustom,
             customGeometries: builtCustomGeom,
           )
@@ -152,7 +148,7 @@ class Feature<T extends Geometry> extends FeatureObject {
             id: id,
             geometry: primaryGeometry,
             properties: properties,
-            bounds: bbox,
+            bounds: boxFromCoordsOpt(bounds),
           );
   }
 

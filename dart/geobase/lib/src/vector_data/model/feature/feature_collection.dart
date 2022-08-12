@@ -6,10 +6,9 @@
 
 import 'package:meta/meta.dart';
 
-import '/src/coordinates/base.dart';
+import '/src/utils/coord_arrays.dart';
 import '/src/utils/property_builder.dart';
 import '/src/vector/content.dart';
-import '/src/vector_data/array.dart';
 import '/src/vector_data/model/geometry.dart';
 
 import 'feature.dart';
@@ -78,7 +77,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   static FeatureCollection<Feature<T>> build<T extends Geometry>(
     WriteFeatures features, {
     int? count,
-    Box? bounds,
+    Iterable<double>? bounds,
     WriteProperties? custom,
   }) {
     // todo: use optional count to create a list in right size at build start
@@ -94,7 +93,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
     return FeatureCollection<Feature<T>>._(
       list,
       builtCustom,
-      bounds: bounds != null ? BoxCoords.fromBox(bounds) : null,
+      bounds: boxFromCoordsOpt(bounds),
     );
   }
 

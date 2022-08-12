@@ -6,7 +6,7 @@
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
-import '/src/coordinates/base.dart';
+import '/src/utils/coord_arrays.dart';
 import '/src/vector/content.dart';
 import '/src/vector_data/array.dart';
 
@@ -76,36 +76,13 @@ class Polygon extends SimpleGeometry {
   factory Polygon.build(
     Iterable<Iterable<double>> rings, {
     required Coords type,
-    Box? bounds,
-  }) {
-    final bbox = bounds != null ? BoxCoords.fromBox(bounds) : null;
-    if (rings is List<PositionArray>) {
-      return Polygon._(
-        rings,
+    Iterable<double>? bounds,
+  }) =>
+      Polygon._(
+        listOfPositionArraysFromCoords(rings, type: type),
         type: type,
-        bounds: bbox,
+        bounds: boxFromCoordsOpt(bounds, type: type),
       );
-    } else if (rings is Iterable<PositionArray>) {
-      return Polygon._(
-        rings.toList(growable: false),
-        type: type,
-        bounds: bbox,
-      );
-    } else {
-      return Polygon._(
-        rings
-            .map<PositionArray>(
-              (chain) => PositionArray.view(
-                chain is List<double> ? chain : chain.toList(growable: false),
-                type: type,
-              ),
-            )
-            .toList(growable: false),
-        type: type,
-        bounds: bbox,
-      );
-    }
-  }
 
   @override
   Geom get geomType => Geom.polygon;

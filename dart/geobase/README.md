@@ -522,7 +522,7 @@ A sample to encode a `LineString` geometry to GeoJSON:
   encoder.writer.lineString(
     [-1.1, -1.1, 2.1, -2.5, 3.5, -3.49],
     type: Coords.xy,
-    bounds: const GeoBox(west: -1.1, south: -3.49, east: 3.5, north: -1.1),
+    bounds: [-1.1, -3.49, 3.5, -1.1],
   );
   print(encoder.toText());
 ```
@@ -649,7 +649,7 @@ parameter. It implements `GeometryContent` interface with following methods:
     Iterable<double> chain, {
     required Coords type,
     String? name,
-    Box? bounds,
+    Iterable<double>? bounds,
   });
 
   /// Writes a polygon geometry with one exterior and 0 to N interior [rings].
@@ -657,7 +657,7 @@ parameter. It implements `GeometryContent` interface with following methods:
     Iterable<Iterable<double>> rings, {
     required Coords type,
     String? name,
-    Box? bounds,
+    Iterable<double>? bounds,
   });
 
   /// Writes a multi point geometry with an array of [points] (each with a
@@ -666,7 +666,7 @@ parameter. It implements `GeometryContent` interface with following methods:
     Iterable<Iterable<double>> points, {
     required Coords type,
     String? name,
-    Box? bounds,
+    Iterable<double>? bounds,
   });
 
   // Omitted: multiLineString, multiPolygon, geometryCollection, emptyGeometry

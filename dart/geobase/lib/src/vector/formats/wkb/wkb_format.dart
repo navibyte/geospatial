@@ -9,7 +9,6 @@ import 'dart:typed_data';
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
-import '/src/coordinates/base.dart';
 import '/src/utils/byte_reader.dart';
 import '/src/utils/byte_writer.dart';
 import '/src/utils/format_validation.dart';

@@ -4,8 +4,6 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/coordinates/base.dart';
-
 import 'simple_geometry_content.dart';
 
 /// A function to write geometry data to [output].
@@ -17,8 +15,8 @@ typedef WriteGeometries = void Function(GeometryContent output);
 /// [SimpleGeometryContent] and geometry collections. It's possible that in
 /// future versions other geometry types are added.
 ///
-/// Coordinate positions and position arrays are represented as coordinate value
-/// arrays of `Iterable<double>`. Bounding boxes are represented as [Box].
+/// Coordinate positions, position arrays and bounding boxes are represented as
+/// coordinate value arrays of `Iterable<double>`.
 mixin GeometryContent implements SimpleGeometryContent {
   /// Writes a geometry collection from the content provided by [geometries].
   ///
@@ -27,10 +25,16 @@ mixin GeometryContent implements SimpleGeometryContent {
   ///
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
-  /// An optional [bounds] of [Box] can used set a minimum bounding box for a
-  /// geometry written. A writer implementation may use it or ignore it. Known
-  /// [Box] sub classes are `ProjBox` (projected or cartesian coordinates) and
-  /// `GeoBox` (geographic coordinates). Other sub classes are supported too.
+  /// An optional [bounds] can used set a minimum bounding box for a geometry
+  /// written. A writer implementation may use it or ignore it. Supported 
+  /// coordinate value combinations by coordinate type:
+  ///
+  /// Type | Expected values
+  /// ---- | ---------------
+  /// xy   | minX, minY, maxX, maxY
+  /// xyz  | minX, minY, minZ, maxX, maxY, maxZ
+  /// xym  | minX, minY, minM, maxX, maxY, maxM
+  /// xyzm | minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
   ///
   /// An example to write a geometry collection with two child geometries:
   /// ```dart
@@ -56,6 +60,6 @@ mixin GeometryContent implements SimpleGeometryContent {
     WriteGeometries geometries, {
     int? count,
     String? name,
-    Box? bounds,
+    Iterable<double>? bounds,
   });
 }

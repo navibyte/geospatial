@@ -141,7 +141,8 @@ class Polygon<T extends Point> extends Geometry with EquatableMixin {
     writer.polygon(
       rings.map<Iterable<double>>((e) => e.chain.valuesFlat(type)),
       type: type,
-      bounds: boundsExplicit,
+      bounds:
+          boundsExplicit != null ? Box.getDoubleList(boundsExplicit!) : null,
     );
   }
 

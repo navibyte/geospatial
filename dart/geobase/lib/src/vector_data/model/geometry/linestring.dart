@@ -6,7 +6,7 @@
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
-import '/src/coordinates/base.dart';
+import '/src/utils/coord_arrays.dart';
 import '/src/vector/content.dart';
 import '/src/vector_data/array.dart';
 
@@ -53,25 +53,12 @@ class LineString extends SimpleGeometry {
   factory LineString.build(
     Iterable<double> chain, {
     required Coords type,
-    Box? bounds,
-  }) {
-    assert(
-      chain.length >= 2,
-      'Chain must contain at least two positions',
-    );
-    final bbox = bounds != null ? BoxCoords.fromBox(bounds) : null;
-    if (chain is PositionArray) {
-      return LineString(chain, bounds: bbox);
-    } else {
-      return LineString(
-        PositionArray.view(
-          chain is List<double> ? chain : chain.toList(growable: false),
-          type: type,
-        ),
-        bounds: bbox,
+    Iterable<double>? bounds,
+  }) =>
+      LineString(
+        positionArrayFromCoords(chain, type: type),
+        bounds: boxFromCoordsOpt(bounds, type: type),
       );
-    }
-  }
 
   @override
   Geom get geomType => Geom.lineString;

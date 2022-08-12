@@ -6,6 +6,7 @@
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/utils/coord_arrays.dart';
 import '/src/vector/content.dart';
 import '/src/vector/encoding.dart';
 import '/src/vector/formats.dart';
@@ -55,20 +56,8 @@ class Point implements SimpleGeometry {
   factory Point.build(
     Iterable<double> position, {
     Coords? type,
-  }) {
-    if (position is PositionCoords) {
-      return Point(position);
-    } else {
-      return Point(
-        PositionCoords.view(
-          position is List<double>
-              ? position
-              : position.toList(growable: false),
-          type: type ?? Coords.fromDimension(position.length),
-        ),
-      );
-    }
-  }
+  }) =>
+      Point(positionFromCoords(position, type: type));
 
   @override
   Geom get geomType => Geom.point;

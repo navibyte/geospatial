@@ -113,13 +113,6 @@ abstract class BoxCoords extends Box with _CoordinatesMixin {
         type: type,
       );
 
-  /// A bounding from from other [box].
-  ///
-  /// If [box] is already an instance of [BoxCoords] then it's returned.
-  /// Otherwise a new instance is created by copying values from [box].
-  static BoxCoords fromBox(Box box) =>
-      box is BoxCoords ? box : box.copyTo(BoxCoords.create);
-
   @override
   double get minX => _data.elementAt(0);
 

@@ -6,7 +6,7 @@
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
-import '/src/coordinates/base.dart';
+import '/src/utils/coord_arrays.dart';
 import '/src/vector/content.dart';
 import '/src/vector_data/array.dart';
 
@@ -84,42 +84,13 @@ class MultiPolygon extends SimpleGeometry {
   factory MultiPolygon.build(
     Iterable<Iterable<Iterable<double>>> polygons, {
     required Coords type,
-    Box? bounds,
-  }) {
-    final bbox = bounds != null ? BoxCoords.fromBox(bounds) : null;
-    if (polygons is List<List<PositionArray>>) {
-      return MultiPolygon._(
-        polygons,
+    Iterable<double>? bounds,
+  })  =>
+      MultiPolygon._(
+        listOfListOfPositionArraysFromCoords(polygons, type: type),
         type: type,
-        bounds: bbox,
+        bounds: boxFromCoordsOpt(bounds, type: type),
       );
-    } else if (polygons is Iterable<List<PositionArray>>) {
-      return MultiPolygon._(
-        polygons.toList(growable: false),
-        type: type,
-        bounds: bbox,
-      );
-    } else {
-      return MultiPolygon._(
-        polygons
-            .map<List<PositionArray>>(
-              (rings) => rings
-                  .map<PositionArray>(
-                    (ring) => PositionArray.view(
-                      ring is List<double>
-                          ? ring
-                          : ring.toList(growable: false),
-                      type: type,
-                    ),
-                  )
-                  .toList(growable: false),
-            )
-            .toList(growable: false),
-        type: type,
-        bounds: bbox,
-      );
-    }
-  }
 
   @override
   Geom get geomType => Geom.multiPolygon;

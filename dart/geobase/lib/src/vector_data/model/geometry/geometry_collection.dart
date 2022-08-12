@@ -5,9 +5,8 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import '/src/codes/geom.dart';
-import '/src/coordinates/base.dart';
+import '/src/utils/coord_arrays.dart';
 import '/src/vector/content.dart';
-import '/src/vector_data/array.dart';
 
 import 'geometry.dart';
 import 'geometry_builder.dart';
@@ -63,11 +62,11 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   factory GeometryCollection.build(
     WriteGeometries geometries, {
     int? count,
-    Box? bounds,
+    Iterable<double>? bounds,
   }) =>
       GeometryCollection<E>(
         GeometryBuilder.buildList<E>(geometries, count: count),
-        bounds: bounds != null ? BoxCoords.fromBox(bounds) : null,
+        bounds: boxFromCoordsOpt(bounds),
       );
 
   @override

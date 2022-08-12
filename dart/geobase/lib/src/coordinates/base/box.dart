@@ -537,6 +537,55 @@ abstract class Box extends Positionable {
     );
   }
 
+  /// Coordinate values of [box] as a double list of 4, 6 or 8 items.
+  static List<double> getDoubleList(Box box) {
+    return getDoubleListFrom(
+      minX: box.minX,
+      minY: box.minY,
+      minZ: box.minZ,
+      minM: box.minM,
+      maxX: box.maxX,
+      maxY: box.maxY,
+      maxZ: box.maxZ,
+      maxM: box.maxM,
+    );
+  }
+
+  /// Coordinate values of Box as a double list of 4, 6 or 8 items.
+  static List<double> getDoubleListFrom({
+    required num minX,
+    required num minY,
+    num? minZ,
+    num? minM,
+    required num maxX,
+    required num maxY,
+    num? maxZ,
+    num? maxM,
+  }) {
+    final is3D = minZ != null && maxZ != null;
+    final isMeasured = minM != null && maxM != null;
+    final type = Coords.select(is3D: is3D, isMeasured: isMeasured);
+    final list = List<double>.filled(2 * type.coordinateDimension, 0);
+    var i = 0;
+    list[i++] = minX.toDouble();
+    list[i++] = minY.toDouble();
+    if (is3D) {
+      list[i++] = minZ.toDouble();
+    }
+    if (isMeasured) {
+      list[i++] = minM.toDouble();
+    }
+    list[i++] = maxX.toDouble();
+    list[i++] = maxY.toDouble();
+    if (is3D) {
+      list[i++] = maxZ.toDouble();
+    }
+    if (isMeasured) {
+      list[i++] = maxM.toDouble();
+    }
+    return list;
+  }
+
   /// True if [box1] and [box2] equals by testing all coordinate values.
   static bool testEquals(Box box1, Box box2) =>
       box1.minX == box2.minX &&
