@@ -7,6 +7,8 @@
 import '/src/codes/geom.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/vector/content.dart';
+import '/src/vector/encoding.dart';
+import '/src/vector/formats.dart';
 
 import 'geometry.dart';
 import 'geometry_builder.dart';
@@ -67,6 +69,19 @@ class GeometryCollection<E extends Geometry> extends Geometry {
       GeometryCollection<E>(
         GeometryBuilder.buildList<E>(geometries, count: count),
         bounds: boxFromCoordsOpt(bounds),
+      );
+
+  /// Decodes a geometry collection with elements of [T] from [text] conforming
+  /// to [format].
+  ///
+  /// When [format] is not given, then [GeoJSON] is used as a default.
+  static GeometryCollection<T> fromText<T extends Geometry>(
+    String text, {
+    TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
+  }) =>
+      GeometryBuilder.decodeCollection<T>(
+        text,
+        format: format,
       );
 
   @override

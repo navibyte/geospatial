@@ -4,7 +4,12 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+// ignore_for_file: cascade_invocations
+
 import '/src/vector/content.dart';
+import '/src/vector/encoding.dart';
+import '/src/vector/formats.dart';
+import '/src/vector_data/model/geometry.dart';
 
 import 'feature.dart';
 import 'feature_collection.dart';
@@ -14,8 +19,11 @@ import 'feature_object.dart';
 ///
 /// This builder supports creating [Feature] and [FeatureCollection] objects.
 ///
+/// Features or feature items on a collection contain a geometry of [E].
+///
 /// See [FeatureContent] for more information about these objects.
-class FeatureBuilder<T extends FeatureObject> with FeatureContent {
+class FeatureBuilder<T extends FeatureObject, E extends Geometry>
+    with FeatureContent {
   final void Function(T object) _addObject;
 
   FeatureBuilder._(this._addObject);
@@ -33,11 +41,13 @@ class FeatureBuilder<T extends FeatureObject> with FeatureContent {
   /// Only feature objects of [T] are built, any other objects are ignored. [T]
   /// should be [FeatureObject] (building both features and feature
   /// collections), [Feature] or [FeatureCollection].
-  static void build<T extends FeatureObject>(
+  ///
+  /// Features or feature items on a collection contain a geometry of [E].
+  static void build<T extends FeatureObject, E extends Geometry>(
     WriteFeatures features, {
     required void Function(T feature) to,
   }) {
-    final builder = FeatureBuilder<T>._(to);
+    final builder = FeatureBuilder<T, E>._(to);
     features.call(builder);
   }
 
@@ -48,16 +58,47 @@ class FeatureBuilder<T extends FeatureObject> with FeatureContent {
   /// should be [FeatureObject] (building both features and feature
   /// collections), [Feature] or [FeatureCollection].
   ///
+  /// Features or feature items on a collection contain a geometry of [E].
+  ///
   /// An optional expected [count], when given, specifies the number of feature
   /// objects in the content. Note that when given the count MUST be exact.
-  static List<T> buildList<T extends FeatureObject>(
+  static List<T> buildList<T extends FeatureObject, E extends Geometry>(
     WriteFeatures features, {
     int? count,
   }) {
     final list = <T>[];
-    final builder = FeatureBuilder<T>._(list.add);
+    final builder = FeatureBuilder<T, E>._(list.add);
     features.call(builder);
     return list;
+  }
+
+  /// Decode a feature object of [R] from [text] conforming to [format].
+  ///
+  /// When [format] is not given, then [GeoJSON] is used as a default.
+  static R decode<R extends FeatureObject, E extends Geometry>(
+    String text, {
+    TextReaderFormat<FeatureContent> format = GeoJSON.feature,
+  }) {
+    R? result;
+
+    // get feature builder to build a feature object of R
+    final builder = FeatureBuilder<R, E>._((object, {name}) {
+      if (result != null) {
+        throw const FormatException('Already decoded one');
+      }
+      result = object;
+    });
+
+    // get decoder with the content decoded sent to builder
+    final decoder = format.decoder(builder);
+
+    // decode and return result if succesful
+    decoder.decodeText(text);
+    if (result != null) {
+      return result!;
+    } else {
+      throw const FormatException('Could not decode text');
+    }
   }
 
   @override
@@ -69,7 +110,7 @@ class FeatureBuilder<T extends FeatureObject> with FeatureContent {
     WriteProperties? custom,
   }) {
     _add(
-      Feature.build(
+      Feature<E>.build(
         id: id,
         geometry: geometry,
         properties: properties,
@@ -87,7 +128,7 @@ class FeatureBuilder<T extends FeatureObject> with FeatureContent {
     WriteProperties? custom,
   }) {
     _add(
-      FeatureCollection.build(
+      FeatureCollection.build<E>(
         features,
         count: count,
         bounds: bounds,

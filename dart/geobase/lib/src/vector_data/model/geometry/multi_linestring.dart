@@ -8,9 +8,12 @@ import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/vector/content.dart';
+import '/src/vector/encoding.dart';
+import '/src/vector/formats.dart';
 import '/src/vector_data/array.dart';
 
 import 'geometry.dart';
+import 'geometry_builder.dart';
 import 'linestring.dart';
 
 /// A multi line string with an array of line strings (each with a chain of
@@ -77,6 +80,15 @@ class MultiLineString extends SimpleGeometry {
         type: type,
         bounds: boxFromCoordsOpt(bounds, type: type),
       );
+
+  /// Decodes a multi line string geometry from [text] conforming to [format].
+  ///
+  /// When [format] is not given, then [GeoJSON] is used as a default.
+  factory MultiLineString.fromText(
+    String text, {
+    TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
+  }) =>
+      GeometryBuilder.decode<MultiLineString>(text, format: format);
 
   @override
   Geom get geomType => Geom.multiLineString;

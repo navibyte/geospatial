@@ -8,9 +8,12 @@ import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/vector/content.dart';
+import '/src/vector/encoding.dart';
+import '/src/vector/formats.dart';
 import '/src/vector_data/array.dart';
 
 import 'geometry.dart';
+import 'geometry_builder.dart';
 import 'polygon.dart';
 
 /// A multi polygon with an array of polygons (each with an array of rings).
@@ -91,6 +94,15 @@ class MultiPolygon extends SimpleGeometry {
         type: type,
         bounds: boxFromCoordsOpt(bounds, type: type),
       );
+
+  /// Decodes a multi polygon geometry from [text] conforming to [format].
+  ///
+  /// When [format] is not given, then [GeoJSON] is used as a default.
+  factory MultiPolygon.fromText(
+    String text, {
+    TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
+  }) =>
+      GeometryBuilder.decode<MultiPolygon>(text, format: format);
 
   @override
   Geom get geomType => Geom.multiPolygon;

@@ -26,7 +26,7 @@ abstract class FeatureObject extends Bounded {
   /// When [format] is not given, then [GeoJSON] is used as a default.
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
-  String toStringAs({
+  String toText({
     TextWriterFormat<FeatureContent> format = GeoJSON.feature,
     int? decimals,
   }) {
@@ -37,6 +37,8 @@ abstract class FeatureObject extends Bounded {
 
   /// The string representation of this feature object as specified by
   /// [GeoJSON].
+  /// 
+  /// See also [toText].
   @override
-  String toString() => toStringAs();
+  String toString() => toText();
 }

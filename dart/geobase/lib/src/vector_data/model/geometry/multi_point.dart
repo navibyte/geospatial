@@ -8,9 +8,12 @@ import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/vector/content.dart';
+import '/src/vector/encoding.dart';
+import '/src/vector/formats.dart';
 import '/src/vector_data/array.dart';
 
 import 'geometry.dart';
+import 'geometry_builder.dart';
 import 'point.dart';
 
 /// A multi point geometry with an array of points (each with a position).
@@ -59,6 +62,15 @@ class MultiPoint extends SimpleGeometry {
         type: type,
         bounds: boxFromCoordsOpt(bounds, type: type),
       );
+
+  /// Decodes a multi point geometry from [text] conforming to [format].
+  ///
+  /// When [format] is not given, then [GeoJSON] is used as a default.
+  factory MultiPoint.fromText(
+    String text, {
+    TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
+  }) =>
+      GeometryBuilder.decode<MultiPoint>(text, format: format);
 
   @override
   Geom get geomType => Geom.multiPoint;

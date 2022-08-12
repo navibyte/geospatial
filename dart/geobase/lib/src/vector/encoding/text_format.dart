@@ -7,7 +7,7 @@
 import 'content_decoder.dart';
 import 'content_encoder.dart';
 
-/// A mixin to access text format encoders for [Content].
+/// An interface to access text format encoders (writers) for [Content].
 // ignore: one_member_abstracts
 abstract class TextWriterFormat<Content extends Object> {
   /// Returns a text format encoder for [Content].
@@ -26,11 +26,16 @@ abstract class TextWriterFormat<Content extends Object> {
   });
 }
 
-/// A mixin to access text format encoders and decoders for [Content].
-mixin TextFormat<Content extends Object> implements TextWriterFormat<Content> {
+/// An interface to access text format decoders (readers) for [Content].
+// ignore: one_member_abstracts
+abstract class TextReaderFormat<Content extends Object> {
   /// Returns a text format decoder that decodes text as [Content] to [builder].
   ///
   /// Content decoded by a decoder is sent to a content interface represented
   /// by an object [builder].
   ContentDecoder decoder(Content builder);
 }
+
+/// A mixin to access text format encoders and decoders for [Content].
+mixin TextFormat<Content extends Object>
+    implements TextWriterFormat<Content>, TextReaderFormat<Content> {}

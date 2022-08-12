@@ -9,6 +9,8 @@ import 'package:meta/meta.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/property_builder.dart';
 import '/src/vector/content.dart';
+import '/src/vector/encoding.dart';
+import '/src/vector/formats.dart';
 import '/src/vector_data/model/geometry.dart';
 
 import 'feature.dart';
@@ -83,7 +85,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
     // todo: use optional count to create a list in right size at build start
 
     // build any feature items on a list
-    final list = FeatureBuilder.buildList<Feature<T>>(features);
+    final list = FeatureBuilder.buildList<Feature<T>, T>(features);
 
     // build any custom properties on a map
     final builtCustom =
@@ -96,6 +98,20 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
       bounds: boxFromCoordsOpt(bounds),
     );
   }
+
+  /// Decodes a feature collection from [text] conforming to [format].
+  /// 
+  /// Feature items on a collection contain a geometry of [T].
+  ///
+  /// When [format] is not given, then [GeoJSON] is used as a default.
+  static FeatureCollection<Feature<T>> fromText<T extends Geometry>(
+    String text, {
+    TextReaderFormat<FeatureContent> format = GeoJSON.feature,
+  }) =>
+      FeatureBuilder.decode<FeatureCollection<Feature<T>>, T>(
+        text,
+        format: format,
+      );
 
   /// All feature items in this feature collection.
   List<E> get features => _features;

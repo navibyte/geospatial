@@ -4,8 +4,6 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-//import '/src/codes/geom.dart';
-
 import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
@@ -34,7 +32,7 @@ abstract class Geometry extends Bounded {
   /// When [format] is not given, then [GeoJSON] is used as a default.
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
-  String toStringAs({
+  String toText({
     TextWriterFormat<GeometryContent> format = GeoJSON.geometry,
     int? decimals,
   }) {
@@ -45,8 +43,10 @@ abstract class Geometry extends Bounded {
 
   /// The string representation of this geometry object as specified by
   /// [GeoJSON].
+  ///
+  /// See also [toText].
   @override
-  String toString() => toStringAs();
+  String toString() => toText();
 }
 
 /// A base interface for "simple" geometry classes.
@@ -61,7 +61,7 @@ abstract class SimpleGeometry extends Geometry {
   void writeTo(SimpleGeometryContent writer, {String? name});
 
   @override
-  String toStringAs({
+  String toText({
     TextWriterFormat<SimpleGeometryContent> format = GeoJSON.geometry,
     int? decimals,
   }) {

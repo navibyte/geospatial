@@ -9,8 +9,11 @@ import 'package:meta/meta.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/property_builder.dart';
 import '/src/vector/content.dart';
+import '/src/vector/encoding.dart';
+import '/src/vector/formats.dart';
 import '/src/vector_data/model/geometry.dart';
 
+import 'feature_builder.dart';
 import 'feature_object.dart';
 
 /// A feature is a geospatial entity with [id], [properties] and [geometry].
@@ -151,6 +154,16 @@ class Feature<T extends Geometry> extends FeatureObject {
             bounds: boxFromCoordsOpt(bounds),
           );
   }
+
+  /// Decodes a feature with the geometry of [T] from [text] conforming to
+  /// [format].
+  ///
+  /// When [format] is not given, then [GeoJSON] is used as a default.
+  static Feature<T> fromText<T extends Geometry>(
+    String text, {
+    TextReaderFormat<FeatureContent> format = GeoJSON.feature,
+  }) =>
+      FeatureBuilder.decode<Feature<T>, T>(text, format: format);
 
   /// An optional identifier (a string or number) for this feature.
   Object? get id => _id;

@@ -4,9 +4,13 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+// ignore_for_file: cascade_invocations
+
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/vector/content.dart';
+import '/src/vector/encoding.dart';
+import '/src/vector/formats.dart';
 
 import 'geometry.dart';
 import 'geometry_collection.dart';
@@ -25,6 +29,8 @@ typedef AddGeometry<T extends Geometry> = void Function(
 
 /// A builder to create geometry objects of [T] from [GeometryContent].
 ///
+/// The type [E] is used for element types on geometry collections.
+///
 /// This builder supports creating [Point], [LineString], [Polygon],
 /// [MultiPoint], [MultiLineString], [MultiPolygon] and [GeometryCollection]
 /// objects.
@@ -32,7 +38,8 @@ typedef AddGeometry<T extends Geometry> = void Function(
 /// See [GeometryContent] for more information about these objects.
 ///
 /// This builder ignore "empty geometry" types.
-class GeometryBuilder<T extends Geometry> with GeometryContent {
+class GeometryBuilder<T extends Geometry, E extends Geometry>
+    with GeometryContent {
   final AddGeometry<T> _addGeometry;
 
   GeometryBuilder._(this._addGeometry);
@@ -52,7 +59,7 @@ class GeometryBuilder<T extends Geometry> with GeometryContent {
     WriteGeometries geometries, {
     required AddGeometry<T> to,
   }) {
-    final builder = GeometryBuilder<T>._(to);
+    final builder = GeometryBuilder<T, Geometry>._(to);
     geometries.call(builder);
   }
 
@@ -67,7 +74,8 @@ class GeometryBuilder<T extends Geometry> with GeometryContent {
     int? count,
   }) {
     final list = <T>[];
-    final builder = GeometryBuilder<T>._((T geometry, {String? name}) {
+    final builder =
+        GeometryBuilder<T, Geometry>._((T geometry, {String? name}) {
       list.add(geometry);
     });
     geometries.call(builder);
@@ -90,12 +98,73 @@ class GeometryBuilder<T extends Geometry> with GeometryContent {
   }) {
     final map = <String, T>{};
     var index = 0;
-    final builder = GeometryBuilder<T>._((T geometry, {String? name}) {
+    final builder =
+        GeometryBuilder<T, Geometry>._((T geometry, {String? name}) {
       map[name ?? index.toString()] = geometry;
       index++;
     });
     geometries.call(builder);
     return map;
+  }
+
+  /// Decodes a geometry of [R] from [text] conforming to [format].
+  ///
+  /// When [format] is not given, then [GeoJSON] is used as a default.
+  static R decode<R extends Geometry>(
+    String text, {
+    TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
+  }) {
+    R? result;
+
+    // get geometry builder to build a geometry of R
+    final builder = GeometryBuilder<R, Geometry>._((geometry, {name}) {
+      if (result != null) {
+        throw const FormatException('Already decoded one');
+      }
+      result = geometry;
+    });
+
+    // get decoder with the content decoded sent to builder
+    final decoder = format.decoder(builder);
+
+    // decode and return result if succesful
+    decoder.decodeText(text);
+    if (result != null) {
+      return result!;
+    } else {
+      throw const FormatException('Could not decode text');
+    }
+  }
+
+  /// Decodes a geometry collection with elements of [T] from [text] conforming
+  /// to [format].
+  ///
+  /// When [format] is not given, then [GeoJSON] is used as a default.
+  static GeometryCollection<T> decodeCollection<T extends Geometry>(
+    String text, {
+    TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
+  }) {
+    GeometryCollection<T>? result;
+
+    // get geometry builder to build a geometry collection containing E
+    final builder =
+        GeometryBuilder<GeometryCollection<T>, T>._((geometry, {name}) {
+      if (result != null) {
+        throw const FormatException('Already decoded one');
+      }
+      result = geometry;
+    });
+
+    // get decoder with the content decoded sent to builder
+    final decoder = format.decoder(builder);
+
+    // decode and return result if succesful
+    decoder.decodeText(text);
+    if (result != null) {
+      return result!;
+    } else {
+      throw const FormatException('Could not decode text');
+    }
   }
 
   @override
@@ -189,7 +258,7 @@ class GeometryBuilder<T extends Geometry> with GeometryContent {
     Iterable<double>? bounds,
   }) {
     _add(
-      GeometryCollection.build(geometries, count: count, bounds: bounds),
+      GeometryCollection<E>.build(geometries, count: count, bounds: bounds),
       name: name,
     );
   }

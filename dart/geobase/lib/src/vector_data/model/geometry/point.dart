@@ -13,6 +13,7 @@ import '/src/vector/formats.dart';
 import '/src/vector_data/array.dart';
 
 import 'geometry.dart';
+import 'geometry_builder.dart';
 
 /// A point geometry with a position.
 class Point implements SimpleGeometry {
@@ -59,6 +60,15 @@ class Point implements SimpleGeometry {
   }) =>
       Point(positionFromCoords(position, type: type));
 
+  /// Decodes a point geometry from [text] conforming to [format].
+  ///
+  /// When [format] is not given, then [GeoJSON] is used as a default.
+  factory Point.fromText(
+    String text, {
+    TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
+  }) =>
+      GeometryBuilder.decode<Point>(text, format: format);
+
   @override
   Geom get geomType => Geom.point;
 
@@ -88,7 +98,7 @@ class Point implements SimpleGeometry {
   // todo: coordinates as raw data
 
   @override
-  String toStringAs({
+  String toText({
     TextWriterFormat<SimpleGeometryContent> format = GeoJSON.geometry,
     int? decimals,
   }) {
@@ -98,7 +108,7 @@ class Point implements SimpleGeometry {
   }
 
   @override
-  String toString() => toStringAs();
+  String toString() => toText();
 
   @override
   bool operator ==(Object other) =>
