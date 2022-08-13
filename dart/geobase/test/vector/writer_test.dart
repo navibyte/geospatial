@@ -862,13 +862,13 @@ void _testAllWriters<T>(
     );
     _testWriterOfGeometryFormat<T>(
       GeoJSON.coordinateFormat(
-        const GeoJsonConf(
+        conf: const GeoJsonConf(
           ignoreMeasured: true,
           ignoreForeignMembers: true,
         ),
       ),
       GeoJSON.geometryFormat(
-        const GeoJsonConf(
+        conf: const GeoJsonConf(
           ignoreMeasured: true,
           ignoreForeignMembers: true,
         ),
@@ -908,7 +908,7 @@ void _testGeoJsonWriters<T>(
   );
   _testWriterOfFeatureFormat<T>(
     GeoJSON.featureFormat(
-      const GeoJsonConf(
+      conf: const GeoJsonConf(
         ignoreMeasured: true,
         ignoreForeignMembers: true,
       ),

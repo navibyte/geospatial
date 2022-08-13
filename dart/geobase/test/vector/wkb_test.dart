@@ -287,7 +287,7 @@ void _testEncodeAndDecodeToWKT(
 ]) {
   for (final writeGeometries in writeGeometriesArray) {
     // wkb format
-    final format = conf != null ? WKB.geometryFormat(conf) : WKB.geometry;
+    final format = conf != null ? WKB.geometryFormat(conf: conf) : WKB.geometry;
 
     // write geometry content using WKB encoder
     final encoder = format.encoder(endian: endian);

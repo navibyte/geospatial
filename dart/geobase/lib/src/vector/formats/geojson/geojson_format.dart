@@ -5,6 +5,7 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import 'dart:convert';
+import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:equatable/equatable.dart';
@@ -117,9 +118,9 @@ class GeoJSON {
 
   /// The GeoJSON text format (encoding only) for coordinate objects with
   /// optional [conf].
-  static TextWriterFormat<CoordinateContent> coordinateFormat([
+  static TextWriterFormat<CoordinateContent> coordinateFormat({
     GeoJsonConf? conf,
-  ]) =>
+  }) =>
       TextWriterFormatImplConf(
         GeoJsonTextWriter.new,
         conf: conf,
@@ -127,19 +128,32 @@ class GeoJSON {
 
   /// The GeoJSON text format (encoding and decoding) for geometry objects with
   /// optional [conf].
-  static TextFormat<GeometryContent> geometryFormat([
+  static TextFormat<GeometryContent> geometryFormat({
     GeoJsonConf? conf,
-  ]) =>
-      _GeoJsonGeometryTextFormat(conf);
+  }) =>
+      _GeoJsonGeometryTextFormat(conf: conf);
 
   /// The GeoJSON text format (encoding and decoding) for feature objects with
   /// optional [conf].
-  static TextFormat<FeatureContent> featureFormat([GeoJsonConf? conf]) =>
-      _GeoJsonFeatureTextFormat(conf);
+  ///
+  /// Optional [itemOffset] and [itemLimit] can be used to get a range of
+  /// feature items on feature collections when decoding GeoJSON data. These
+  /// arguments are not applied when decoding a single feature, only applied on
+  /// feature collections.
+  static TextFormat<FeatureContent> featureFormat({
+    GeoJsonConf? conf,
+    int? itemOffset,
+    int? itemLimit,
+  }) =>
+      _GeoJsonFeatureTextFormat(
+        conf: conf,
+        itemOffset: itemOffset,
+        itemLimit: itemLimit,
+      );
 }
 
 class _GeoJsonGeometryTextFormat with TextFormat<GeometryContent> {
-  const _GeoJsonGeometryTextFormat([this.conf]);
+  const _GeoJsonGeometryTextFormat({this.conf});
 
   final GeoJsonConf? conf;
 
@@ -157,13 +171,19 @@ class _GeoJsonGeometryTextFormat with TextFormat<GeometryContent> {
 }
 
 class _GeoJsonFeatureTextFormat with TextFormat<FeatureContent> {
-  const _GeoJsonFeatureTextFormat([this.conf]);
+  const _GeoJsonFeatureTextFormat({this.conf, this.itemOffset, this.itemLimit});
 
   final GeoJsonConf? conf;
+  final int? itemOffset;
+  final int? itemLimit;
 
   @override
   ContentDecoder decoder(FeatureContent builder) {
-    return _GeoJsonFeatureTextDecoder(builder);
+    return _GeoJsonFeatureTextDecoder(
+      builder,
+      itemOffset: itemOffset,
+      itemLimit: itemLimit,
+    );
   }
 
   @override

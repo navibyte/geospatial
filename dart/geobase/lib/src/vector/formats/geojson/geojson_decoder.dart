@@ -37,8 +37,10 @@ class _GeoJsonGeometryTextDecoder implements ContentDecoder {
 
 class _GeoJsonFeatureTextDecoder implements ContentDecoder {
   final FeatureContent builder;
+  final int? itemOffset;
+  final int? itemLimit;
 
-  _GeoJsonFeatureTextDecoder(this.builder);
+  _GeoJsonFeatureTextDecoder(this.builder, {this.itemOffset, this.itemLimit});
 
   @override
   void decodeBytes(ByteBuffer source) =>
@@ -56,7 +58,12 @@ class _GeoJsonFeatureTextDecoder implements ContentDecoder {
           _decodeFeature(root, builder);
           return;
         case 'FeatureCollection':
-          _decodeFeatureCollection(root, builder);
+          _decodeFeatureCollection(
+            root,
+            builder,
+            itemOffset: itemOffset,
+            itemLimit: itemLimit,
+          );
           return;
       }
     } on FormatException {
@@ -169,21 +176,49 @@ void _decodeFeature(Map<String, dynamic> feature, FeatureContent builder) {
 
 void _decodeFeatureCollection(
   Map<String, dynamic> collection,
-  FeatureContent builder,
-) {
+  FeatureContent builder, {
+  int? itemOffset,
+  int? itemLimit,
+}) {
   final features = collection['features'] as List<dynamic>;
 
   // todo: read custom or foreign members
 
-  builder.featureCollection(
-    (featureBuilder) {
-      for (final feature in features) {
-        _decodeFeature(feature as Map<String, dynamic>, featureBuilder);
-      }
-    },
-    count: features.length,
-    bounds: _getBboxOpt(collection),
-  );
+  if (itemOffset != null || itemLimit != null) {
+    // a range of feature items on a collection is requested
+    final Iterable<dynamic> range;
+    final int count;
+    final len = features.length;
+    final start = itemOffset ?? 0;
+    if (start < len) {
+      final end = itemLimit != null ? math.min(start + itemLimit, len) : len;
+      count = end - start;
+      range = features.getRange(start, end);
+    } else {
+      count = 0;
+      range = const Iterable<dynamic>.empty();
+    }
+    builder.featureCollection(
+      (featureBuilder) {
+        for (final feature in range) {
+          _decodeFeature(feature as Map<String, dynamic>, featureBuilder);
+        }
+      },
+      count: count,
+      bounds: _getBboxOpt(collection),
+    );
+  } else {
+    // all feature items on a collection are requested
+    builder.featureCollection(
+      (featureBuilder) {
+        for (final feature in features) {
+          _decodeFeature(feature as Map<String, dynamic>, featureBuilder);
+        }
+      },
+      count: features.length,
+      bounds: _getBboxOpt(collection),
+    );
+  }
 }
 
 List<double>? _getBboxOpt(Map<String, dynamic> object) {

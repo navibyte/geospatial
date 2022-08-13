@@ -34,13 +34,67 @@ void main() {
         _testDecodeAndEncodeToGeoJSON(GeoJSON.feature, sample);
       }
     });
+
+    test('Test decoding ranges on feature collection', () {
+      final coll123456 = _makeTestCollection([1, 2, 3, 4, 5, 6]);
+      final coll12 = _makeTestCollection([1, 2]);
+      final coll34 = _makeTestCollection([3, 4]);
+      final coll56 = _makeTestCollection([5, 6]);
+      final collEmpty = _makeTestCollection([]);
+
+      // all feature items
+      _testDecodeAndEncodeToGeoJSON(GeoJSON.feature, coll123456);
+
+      // feature items by range
+      _testDecodeAndEncodeToGeoJSON(
+        GeoJSON.featureFormat(itemOffset: 0, itemLimit: 2),
+        coll123456,
+        geoJsonExpected: coll12,
+      );
+      _testDecodeAndEncodeToGeoJSON(
+        GeoJSON.featureFormat(itemLimit: 2),
+        coll123456,
+        geoJsonExpected: coll12,
+      );
+      _testDecodeAndEncodeToGeoJSON(
+        GeoJSON.featureFormat(itemOffset: 2, itemLimit: 2),
+        coll123456,
+        geoJsonExpected: coll34,
+      );
+      _testDecodeAndEncodeToGeoJSON(
+        GeoJSON.featureFormat(itemOffset: 4, itemLimit: 2),
+        coll123456,
+        geoJsonExpected: coll56,
+      );
+      _testDecodeAndEncodeToGeoJSON(
+        GeoJSON.featureFormat(itemOffset: 4, itemLimit: 1000),
+        coll123456,
+        geoJsonExpected: coll56,
+      );
+      _testDecodeAndEncodeToGeoJSON(
+        GeoJSON.featureFormat(itemOffset: 4),
+        coll123456,
+        geoJsonExpected: coll56,
+      );
+      _testDecodeAndEncodeToGeoJSON(
+        GeoJSON.featureFormat(itemOffset: 6, itemLimit: 2),
+        coll123456,
+        geoJsonExpected: collEmpty,
+      );
+      _testDecodeAndEncodeToGeoJSON(
+        GeoJSON.featureFormat(itemOffset: 1, itemLimit: 0),
+        coll123456,
+        geoJsonExpected: collEmpty,
+      );
+    });
   });
 }
 
 void _testDecodeAndEncodeToGeoJSON<Content extends Object>(
   TextFormat<Content> format,
-  String geoJsonText,
-) {
+  String geoJsonText, {
+  String? geoJsonExpected,
+}) {
   // GeoJSON encoder from geometry content to text
   final encoder = format.encoder();
 
@@ -54,5 +108,20 @@ void _testDecodeAndEncodeToGeoJSON<Content extends Object>(
   final geoJsonTextEncoded = encoder.toText();
 
   // test
-  expect(geoJsonTextEncoded, geoJsonText);
+  expect(geoJsonTextEncoded, geoJsonExpected ?? geoJsonText);
+}
+
+String _makeTestCollection(List<int> ids) {
+  final str = StringBuffer('{"type":"FeatureCollection","features":[');
+  var first = true;
+  for (final id in ids) {
+    if (first) {
+      first = false;
+    } else {
+      str.write(',');
+    }
+    str.write('{"type":"Feature","id":$id,"properties":{}}');
+  }
+  str.write(']}');
+  return str.toString();
 }

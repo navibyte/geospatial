@@ -48,12 +48,12 @@ class WKB {
   /// The Well-known binary (WKB) format for geometries with optional [conf].
   ///
   /// See [geometry] for more information about supported geometry types.
-  static BinaryFormat<GeometryContent> geometryFormat([WkbConf? conf]) =>
-      _WkbGeometryBinaryFormat(conf);
+  static BinaryFormat<GeometryContent> geometryFormat({WkbConf? conf}) =>
+      _WkbGeometryBinaryFormat(conf: conf);
 }
 
 class _WkbGeometryBinaryFormat with BinaryFormat<GeometryContent> {
-  const _WkbGeometryBinaryFormat([this.conf]);
+  const _WkbGeometryBinaryFormat({this.conf});
 
   final WkbConf? conf;
 
