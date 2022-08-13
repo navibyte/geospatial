@@ -17,10 +17,6 @@ dependencies:
   geobase: 
     path: ../geobase
 
-  #geocore: ^0.10.0-dev.0
-  geocore: 
-    path: ../geocore
-
 dev_dependencies:
   test: ^1.21.1
   very_good_analysis: ^3.0.0
