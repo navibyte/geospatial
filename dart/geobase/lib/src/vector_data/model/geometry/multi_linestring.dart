@@ -88,7 +88,7 @@ class MultiLineString extends SimpleGeometry {
     String text, {
     TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
   }) =>
-      GeometryBuilder.decode<MultiLineString>(text, format: format);
+      GeometryBuilder.decodeText<MultiLineString>(text, format: format);
 
   @override
   Geom get geomType => Geom.multiLineString;

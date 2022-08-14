@@ -100,17 +100,41 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   }
 
   /// Decodes a feature collection from [text] conforming to [format].
-  /// 
+  ///
   /// Feature items on a collection contain a geometry of [T].
   ///
   /// When [format] is not given, then [GeoJSON] is used as a default.
+  /// 
+  /// Format or decoder implementation specific options can be set by [options].
   static FeatureCollection<Feature<T>> fromText<T extends Geometry>(
     String text, {
     TextReaderFormat<FeatureContent> format = GeoJSON.feature,
+    Map<String, dynamic>? options,
   }) =>
-      FeatureBuilder.decode<FeatureCollection<Feature<T>>, T>(
+      FeatureBuilder.decodeText<FeatureCollection<Feature<T>>, T>(
         text,
         format: format,
+        options: options,
+      );
+
+  /// Decodes a feature collection from [data] conforming to [format].
+  ///
+  /// Data should be a JSON Object as decoded by the standard `json.decode()`.
+  ///
+  /// Feature items on a collection contain a geometry of [T].
+  ///
+  /// When [format] is not given, then [GeoJSON] is used as a default.
+  /// 
+  /// Format or decoder implementation specific options can be set by [options].
+  static FeatureCollection<Feature<T>> fromData<T extends Geometry>(
+    Map<String, dynamic> data, {
+    TextReaderFormat<FeatureContent> format = GeoJSON.feature,
+    Map<String, dynamic>? options,
+  }) =>
+      FeatureBuilder.decodeData<FeatureCollection<Feature<T>>, T>(
+        data,
+        format: format,
+        options: options,
       );
 
   /// All feature items in this feature collection.

@@ -110,7 +110,7 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
   /// Decodes a geometry of [R] from [text] conforming to [format].
   ///
   /// When [format] is not given, then [GeoJSON] is used as a default.
-  static R decode<R extends Geometry>(
+  static R decodeText<R extends Geometry>(
     String text, {
     TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
   }) {
@@ -140,7 +140,7 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
   /// to [format].
   ///
   /// When [format] is not given, then [GeoJSON] is used as a default.
-  static GeometryCollection<T> decodeCollection<T extends Geometry>(
+  static GeometryCollection<T> decodeTextAsCollection<T extends Geometry>(
     String text, {
     TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
   }) {

@@ -6,7 +6,8 @@
 
 import 'package:geobase/coordinates.dart';
 import 'package:geobase/meta.dart';
-import 'package:geocore/geocore.dart';
+import 'package:geobase/vector.dart';
+import 'package:geobase/vector_data.dart';
 import 'package:http/http.dart' as http;
 
 import '/src/common/links.dart';
@@ -16,7 +17,8 @@ import '/src/core/data.dart';
 import '/src/ogcapi_features/model.dart';
 import '/src/utils/features.dart';
 
-/// A client for accessing `OGC API Features` compliant sources via http(s).
+/// A client for accessing `OGC API Features` compliant sources via http(s)
+/// conforming to [format].
 ///
 /// The required [endpoint] should refer to a base url of a feature service.
 ///
@@ -26,18 +28,15 @@ import '/src/utils/features.dart';
 /// When given [headers] are injected to http requests (however some can be
 /// overridden by the feature service implementation).
 ///
-/// An optional [parser] argument specifies a GeoJSON parser. If not given then
-/// `geoJsonGeographic(geographicPoints)` defined by the
-/// `package:geocore/parse.dart` package is used as a default. When excpecting
-/// cartesian or projected coordinates, you might want to use
-/// `geoJsonCartesian(cartesianPoints)` as a parser. Or if expecting specific
-/// type of points, you could also use a factory like
-/// `geoJson(Point3.coordinates)`.
+/// When [format] is not given, then [GeoJSON] with default settings is used as
+/// a default. Note that currently only GeoJSON is supported, but it's possible
+/// to inject another format implementation (or with custom configuration) to
+/// the default one.
 OGCFeatureService ogcApiFeaturesHttpClient({
   required Uri endpoint,
   http.Client? client,
   Map<String, String>? headers,
-  GeoJsonFactory? parser,
+  TextReaderFormat<FeatureContent> format = GeoJSON.feature,
 }) =>
     _OGCFeatureClientHttp(
       endpoint,
@@ -45,7 +44,7 @@ OGCFeatureService ogcApiFeaturesHttpClient({
         client: client,
         headers: headers,
       ),
-      parser: parser ?? GeoJSON().parserGeographic(geographicPoints),
+      format: format,
     );
 
 // -----------------------------------------------------------------------------
@@ -61,12 +60,12 @@ class _OGCFeatureClientHttp implements OGCFeatureService {
   const _OGCFeatureClientHttp(
     this.endpoint, {
     required this.adapter,
-    required this.parser,
+    required this.format,
   });
 
   final Uri endpoint;
   final FeatureHttpAdapter adapter;
-  final GeoJsonFactory parser;
+  final TextReaderFormat<FeatureContent> format;
 
   @override
   Future<OGCFeatureSource> collection(String id) =>
@@ -188,17 +187,20 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
     return service.adapter.getEntityFromJsonObject(
       url,
       toEntity: (data) {
-        // todo : should allow other geojson parsers / point types too
-
-        // parses Feature object from GeoJSON data using the parser of `geocore`
-        final feature = service.parser.feature(data);
+        // parses Feature object from GeoJSON data decoded using format
+        final feature = Feature.fromData(data, format: service.format);
 
         // meta as Map<String, Object?> by removing Feature geometry and props
         final meta = Map.of(data)
+          ..remove('type')
+          ..remove('id')
           ..remove('geometry')
           ..remove('properties');
 
-        return OGCFeatureItem(feature, meta: Map.unmodifiable(meta));
+        return OGCFeatureItem(
+          feature,
+          meta: meta.isNotEmpty ? Map.unmodifiable(meta) : null,
+        );
       },
     );
   }
@@ -278,19 +280,22 @@ class _OGCPagedFeaturesItems with Paged<OGCFeatureItems> {
           prevURL = prev.isNotEmpty ? prev.first.href : null;
         }
 
-        // todo : should allow other geojson parsers / point types too
-
-        // parses FeatureCollection object from GeoJSON data using the
-        // parser of `geocore`
-        final collection = service.parser.featureCollection(data);
+        // parses Feature collection from GeoJSON data decoded using format
+        final collection =
+            FeatureCollection.fromData(data, format: service.format);
 
         // meta as Map<String, Object?> by removing features
-        final meta = Map.of(data)..remove('features');
+        final meta = Map.of(data)
+          ..remove('type')
+          ..remove('features');
 
         // parse feature items (meta + actual features), return a paged result
         return _OGCPagedFeaturesItems(
           service,
-          OGCFeatureItems(collection, meta: Map.unmodifiable(meta)),
+          OGCFeatureItems(
+            collection,
+            meta: meta.isNotEmpty ? Map.unmodifiable(meta) : null,
+          ),
           nextURL: nextURL,
           prevURL: prevURL,
         );

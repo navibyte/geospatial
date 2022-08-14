@@ -79,7 +79,7 @@ class GeometryCollection<E extends Geometry> extends Geometry {
     String text, {
     TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
   }) =>
-      GeometryBuilder.decodeCollection<T>(
+      GeometryBuilder.decodeTextAsCollection<T>(
         text,
         format: format,
       );

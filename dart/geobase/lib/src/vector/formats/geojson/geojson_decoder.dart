@@ -14,14 +14,18 @@ class _GeoJsonGeometryTextDecoder implements ContentDecoder {
   _GeoJsonGeometryTextDecoder(this.builder);
 
   @override
-  void decodeBytes(ByteBuffer source) =>
-      decodeText(utf8.decode(source.asUint8List()));
+  void decodeBytes(ByteBuffer source, {Map<String, dynamic>? options}) =>
+      decodeText(utf8.decode(source.asUint8List()), options: options);
 
   @override
-  void decodeText(String source) {
+  void decodeText(String source, {Map<String, dynamic>? options}) =>
+      decodeData(json.decode(source), options: options);
+
+  @override
+  void decodeData(dynamic source, {Map<String, dynamic>? options}) {
     try {
-      // decode JSON text as an object tree with root expected to be JSON Object
-      final root = json.decode(source) as Map<String, dynamic>;
+      // expect source as an object tree (JSON Object)
+      final root = source as Map<String, dynamic>;
 
       // decode the geometry object at root
       _decodeGeometry(root, builder);
@@ -37,20 +41,22 @@ class _GeoJsonGeometryTextDecoder implements ContentDecoder {
 
 class _GeoJsonFeatureTextDecoder implements ContentDecoder {
   final FeatureContent builder;
-  final int? itemOffset;
-  final int? itemLimit;
 
-  _GeoJsonFeatureTextDecoder(this.builder, {this.itemOffset, this.itemLimit});
+  _GeoJsonFeatureTextDecoder(this.builder);
 
   @override
-  void decodeBytes(ByteBuffer source) =>
-      decodeText(utf8.decode(source.asUint8List()));
+  void decodeBytes(ByteBuffer source, {Map<String, dynamic>? options}) =>
+      decodeText(utf8.decode(source.asUint8List()), options: options);
 
   @override
-  void decodeText(String source) {
+  void decodeText(String source, {Map<String, dynamic>? options}) =>
+      decodeData(json.decode(source), options: options);
+
+  @override
+  void decodeData(dynamic source, {Map<String, dynamic>? options}) {
     try {
-      // decode JSON text as an object tree with root expected to be JSON Object
-      final root = json.decode(source) as Map<String, dynamic>;
+      // expect source as an object tree (JSON Object)
+      final root = source as Map<String, dynamic>;
 
       // check for GeoJSON types and decode as supported types found
       switch (root['type']) {
@@ -58,6 +64,10 @@ class _GeoJsonFeatureTextDecoder implements ContentDecoder {
           _decodeFeature(root, builder);
           return;
         case 'FeatureCollection':
+          final itemOffset =
+              options != null ? options['itemOffset'] as int? : null;
+          final itemLimit =
+              options != null ? options['itemLimit'] as int? : null;
           _decodeFeatureCollection(
             root,
             builder,

@@ -75,9 +75,12 @@ class FeatureBuilder<T extends FeatureObject, E extends Geometry>
   /// Decode a feature object of [R] from [text] conforming to [format].
   ///
   /// When [format] is not given, then [GeoJSON] is used as a default.
-  static R decode<R extends FeatureObject, E extends Geometry>(
+  /// 
+  /// Format or decoder implementation specific options can be set by [options].
+  static R decodeText<R extends FeatureObject, E extends Geometry>(
     String text, {
     TextReaderFormat<FeatureContent> format = GeoJSON.feature,
+    Map<String, dynamic>? options,
   }) {
     R? result;
 
@@ -93,7 +96,41 @@ class FeatureBuilder<T extends FeatureObject, E extends Geometry>
     final decoder = format.decoder(builder);
 
     // decode and return result if succesful
-    decoder.decodeText(text);
+    decoder.decodeText(text, options: options);
+    if (result != null) {
+      return result!;
+    } else {
+      throw const FormatException('Could not decode text');
+    }
+  }
+
+  /// Decode a feature object of [R] from [data] conforming to [format].
+  ///
+  /// Data should be a JSON Object as decoded by the standard `json.decode()`.
+  ///
+  /// When [format] is not given, then [GeoJSON] is used as a default.
+  /// 
+  /// Format or decoder implementation specific options can be set by [options].
+  static R decodeData<R extends FeatureObject, E extends Geometry>(
+    Map<String, dynamic> data, {
+    TextReaderFormat<FeatureContent> format = GeoJSON.feature,
+    Map<String, dynamic>? options,
+  }) {
+    R? result;
+
+    // get feature builder to build a feature object of R
+    final builder = FeatureBuilder<R, E>._((object, {name}) {
+      if (result != null) {
+        throw const FormatException('Already decoded one');
+      }
+      result = object;
+    });
+
+    // get decoder with the content decoded sent to builder
+    final decoder = format.decoder(builder);
+
+    // decode and return result if succesful
+    decoder.decodeData(data, options: options);
     if (result != null) {
       return result!;
     } else {

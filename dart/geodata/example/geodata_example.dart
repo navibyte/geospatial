@@ -8,7 +8,7 @@
 
 import 'package:equatable/equatable.dart';
 import 'package:geobase/coordinates.dart';
-import 'package:geocore/data.dart';
+import 'package:geobase/vector_data.dart';
 
 import 'package:geodata/geojson_client.dart';
 import 'package:geodata/ogcapi_features_client.dart';

@@ -14,14 +14,16 @@ abstract class ContentDecoder {
   /// content for a text format decoder and and a base64 string representation
   /// of content for a binary format decoder.
   ///
+  /// Format or decoder implementation specific options can be set by [options].
+  ///
   /// The target of objects decoded from text is not defined by this interface.
-  /// A decoder could produce content stream sent to a content interface or
+  /// A decoder could produce content objects sent to a content interface or
   /// build structured data objects with compatible model. Also some decoders
   /// might allow multiple calls to this method to build a larger target object
   /// structure.
   ///
   /// Throws `FormatException` if decoding fails.
-  void decodeText(String source);
+  void decodeText(String source, {Map<String, dynamic>? options});
 
   /// Decodes bytes from [source] as content objects.
   ///
@@ -29,12 +31,35 @@ abstract class ContentDecoder {
   /// representation of content for a binary format decoder, and an UTF8 encoded
   /// binary representation of textual content for a text format decoder.
   ///
+  /// Format or decoder implementation specific options can be set by [options].
+  ///
   /// The target of objects decoded from bytes is not defined by this interface.
-  /// A decoder could produce content stream sent to a content interface or
+  /// A decoder could produce content objects sent to a content interface or
   /// build structured data objects with compatible model. Also some decoders
   /// might allow multiple calls to this method to build a larger target object
   /// structure.
   ///
   /// Throws `FormatException` if decoding fails.
-  void decodeBytes(ByteBuffer source);
+  void decodeBytes(ByteBuffer source, {Map<String, dynamic>? options});
+
+  // todo : method to check whether (structured) data is supported
+
+  /// Decodes structured data from [source] as content objects.
+  ///
+  /// The [source] data is expected to be a valid structured data representation
+  /// of content like JSON Object or JSON Array.
+  ///
+  /// Format or decoder implementation specific options can be set by [options].
+  ///
+  /// The target of objects decoded from text is not defined by this interface.
+  /// A decoder could produce content objects sent to a content interface or
+  /// build structured data objects with compatible model. Also some decoders
+  /// might allow multiple calls to this method to build a larger target object
+  /// structure.
+  ///
+  /// Some decoders may fail using this method even if [decodeText] or
+  /// [decodeBytes] are usable.
+  ///
+  /// Throws `FormatException` if decoding fails.
+  void decodeData(dynamic source, {Map<String, dynamic>? options});
 }

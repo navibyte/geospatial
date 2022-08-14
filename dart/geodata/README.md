@@ -9,8 +9,8 @@ Geospatial feature service Web APIs with support for
 ## Features
 
 ✨ New: Updated with latest [geobase](https://pub.dev/packages/geobase) version
-0.2.1 and [geocore](https://pub.dev/packages/geocore) version 0.9.0 based on
-[Dart](https://dart.dev/) SDK 2.17.
+0.3.0 based on [Dart](https://dart.dev/) SDK 2.17, and no long with dependency
+on [geocore](https://pub.dev/packages/geocore).
 
 Key features:
 * Client-side data source abstraction for geospatial feature service Web APIs
@@ -47,8 +47,7 @@ Library            | Exports also | Description
 
 All the mini-libraries have dependencies to the
 [equatable](https://pub.dev/packages/equatable), 
-[geobase](https://pub.dev/packages/geobase) and
-[geocore](https://pub.dev/packages/geocore) packages. 
+[geobase](https://pub.dev/packages/geobase) packages. 
 
 The **geojson_client** and **ogcapi_features_client** libraries depends also on
 the [http](https://pub.dev/packages/http) package.

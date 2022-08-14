@@ -94,7 +94,7 @@ class Polygon extends SimpleGeometry {
     String text, {
     TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
   }) =>
-      GeometryBuilder.decode<Polygon>(text, format: format);
+      GeometryBuilder.decodeText<Polygon>(text, format: format);
 
   @override
   Geom get geomType => Geom.polygon;

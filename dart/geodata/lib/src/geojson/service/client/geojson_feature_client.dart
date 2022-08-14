@@ -4,7 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:geocore/geocore.dart';
+import 'package:geobase/vector.dart';
+import 'package:geobase/vector_data.dart';
 import 'package:http/http.dart' as http;
 
 import '/src/common/paged.dart';
@@ -12,7 +13,8 @@ import '/src/common/service.dart';
 import '/src/core/features.dart';
 import '/src/utils/features.dart';
 
-/// A client for accessing a `GeoJSON` data resource at [location] via http(s).
+/// A client for accessing a `GeoJSON` data resource at [location] via http(s)
+/// conforming to [format].
 ///
 /// The required [location] should refer to a web resource containing GeoJSON
 /// compliant data.
@@ -23,18 +25,15 @@ import '/src/utils/features.dart';
 /// When given [headers] are injected to http requests (however some can be
 /// overridden by the feature source implementation).
 ///
-/// An optional [parser] argument specifies a GeoJSON parser. If not given then
-/// `geoJsonGeographic(geographicPoints)` defined by the
-/// `package:geocore/parse.dart` package is used as a default. When excpecting
-/// cartesian or projected coordinates, you might want to use
-/// `geoJsonCartesian(cartesianPoints)` as a parser. Or if expecting specific
-/// type of points, you could also use a factory like
-/// `geoJson(Point3.coordinates)`.
+/// When [format] is not given, then [GeoJSON] with default settings is used as
+/// a default. Note that currently only GeoJSON is supported, but it's possible
+/// to inject another format implementation (or with custom configuration) to
+/// the default one.
 BasicFeatureSource geoJsonHttpClient({
   required Uri location,
   http.Client? client,
   Map<String, String>? headers,
-  GeoJsonFactory? parser,
+  TextReaderFormat<FeatureContent> format = GeoJSON.feature,
 }) =>
     _GeoJSONFeatureSource(
       location,
@@ -42,7 +41,7 @@ BasicFeatureSource geoJsonHttpClient({
         client: client,
         headers: headers,
       ),
-      parser: parser ?? GeoJSON().parserGeographic(geographicPoints),
+      format: format,
     );
 
 /// A client for accessing a `GeoJSON` feature collection from [source];
@@ -50,20 +49,17 @@ BasicFeatureSource geoJsonHttpClient({
 /// The source function returns a future that fetches data from a file, a web
 /// resource or other sources. Contents must be GeoJSON compliant data.
 ///
-/// An optional [parser] argument specifies a GeoJSON parser. If not given then
-/// `geoJsonGeographic(geographicPoints)` defined by the
-/// `package:geocore/parse.dart` package is used as a default. When excpecting
-/// cartesian or projected coordinates, you might want to use
-/// `geoJsonCartesian(cartesianPoints)` as a parser. Or if expecting specific
-/// type of points, you could also use a factory like
-/// `geoJson(Point3.coordinates)`.
+/// When [format] is not given, then [GeoJSON] with default settings is used as
+/// a default. Note that currently only GeoJSON is supported, but it's possible
+/// to inject another format implementation (or with custom configuration) to
+/// the default one.
 BasicFeatureSource geoJsonFutureClient(
   Future<String> Function() source, {
-  GeoJsonFactory? parser,
+  TextReaderFormat<FeatureContent> format = GeoJSON.feature,
 }) =>
     _GeoJSONFeatureSource(
       source,
-      parser: parser ?? GeoJSON().parserGeographic(geographicPoints),
+      format: format,
     );
 
 // -----------------------------------------------------------------------------
@@ -74,7 +70,7 @@ class _GeoJSONFeatureSource implements BasicFeatureSource {
   const _GeoJSONFeatureSource(
     this.source, {
     this.adapter,
-    required this.parser,
+    required this.format,
   });
 
   // source can be
@@ -85,7 +81,7 @@ class _GeoJSONFeatureSource implements BasicFeatureSource {
   // for a web resource adapter must be set
   final FeatureHttpAdapter? adapter;
 
-  final GeoJsonFactory parser;
+  final TextReaderFormat<FeatureContent> format;
 
   @override
   Future<FeatureItem> itemById(Object id) async {
@@ -127,13 +123,13 @@ class _GeoJSONFeatureSource implements BasicFeatureSource {
       // read web resource and convert to entity
       return adapter!.getEntityFromJsonObject(
         src,
-        toEntity: (data) => _parseFeatureItems(limit, data, parser),
+        toEntity: (data) => _parseFeatureItems(limit, data, format),
       );
     } else if (src is Future<String> Function()) {
       // read a future returned by a function
       return readEntityFromJsonObject(
         src,
-        toEntity: (data) => _parseFeatureItems(limit, data, parser),
+        toEntity: (data) => _parseFeatureItems(limit, data, format),
       );
     }
 
@@ -145,27 +141,29 @@ class _GeoJSONFeatureSource implements BasicFeatureSource {
 _GeoJSONPagedFeaturesItems _parseFeatureItems(
   int? limit,
   Map<String, Object?> data,
-  GeoJsonFactory parser,
+  TextReaderFormat<FeatureContent> format,
 ) {
-  final count = parser.featureCount(data);
+  // todo : get count without actually parsing the whole feature collection
+  final collection = FeatureCollection.fromData(data, format: format);
+  final count = collection.features.length;
 
   // analyze if only a first set or all items should be returned
-  final Range? range;
+  final _Range? range;
   if (limit != null) {
     // first set
-    range = Range(start: 0, limit: limit);
+    range = _Range(start: 0, limit: limit);
   } else {
     // no limit => all features
     range = null;
   }
 
   // return as paged collection (paging through already fetched data)
-  return _GeoJSONPagedFeaturesItems.parse(parser, data, count, range);
+  return _GeoJSONPagedFeaturesItems.parse(format, data, count, range);
 }
 
 class _GeoJSONPagedFeaturesItems with Paged<FeatureItems> {
   _GeoJSONPagedFeaturesItems(
-    this.parser,
+    this.format,
     this.features,
     this.count, [
     this.data,
@@ -173,45 +171,51 @@ class _GeoJSONPagedFeaturesItems with Paged<FeatureItems> {
   ]);
 
   factory _GeoJSONPagedFeaturesItems.parse(
-    GeoJsonFactory parser,
+    TextReaderFormat<FeatureContent> format,
     Map<String, Object?> data,
     int count,
-    Range? range,
+    _Range? range,
   ) {
     // parse feature items for the range and
-    final collection = parser.featureCollection(data, range: range);
+    final collection = FeatureCollection.fromData(
+      data,
+      format: format,
+      options: range != null
+          ? {'itemOffset': range.start, 'itemLimit': range.limit}
+          : null,
+    );
     final items = FeatureItems(
       collection,
     );
 
     // check if there is next range after current one just parsed
-    Range? nextRange;
+    _Range? nextRange;
     if (range != null) {
       final limit = range.limit;
       if (limit != null) {
         final nextStart = range.start + items.collection.features.length;
         if (nextStart < count) {
-          nextRange = Range(start: nextStart, limit: limit);
+          nextRange = _Range(start: nextStart, limit: limit);
         }
       }
     }
 
     // return a paged result either with ref to next range or without
     return nextRange != null
-        ? _GeoJSONPagedFeaturesItems(parser, items, count, data, nextRange)
+        ? _GeoJSONPagedFeaturesItems(format, items, count, data, nextRange)
         : _GeoJSONPagedFeaturesItems(
-            parser,
+            format,
             items,
             count,
           );
   }
 
-  final GeoJsonFactory parser;
+  TextReaderFormat<FeatureContent> format;
   final FeatureItems features;
   final int count;
 
   final Map<String, Object?>? data;
-  final Range? nextRange;
+  final _Range? nextRange;
 
   @override
   FeatureItems get current => features;
@@ -224,6 +228,21 @@ class _GeoJSONPagedFeaturesItems with Paged<FeatureItems> {
     if (nextRange == null || data == null) {
       return null;
     }
-    return _GeoJSONPagedFeaturesItems.parse(parser, data!, count, nextRange);
+    return _GeoJSONPagedFeaturesItems.parse(format, data!, count, nextRange);
   }
+}
+
+class _Range {
+  /// A new range definition with [start] (>= 0) and optional positive [limit].
+  const _Range({required this.start, this.limit})
+      : assert(start >= 0, 'Start index must be >= 0.'),
+        assert(limit == null || limit >= 0, 'Limit must be null or >= 0.');
+
+  /// The index to specify the first item (by index) of the range.
+  final int start;
+
+  /// An optional [limit] setting maximum number of items for the range.
+  ///
+  /// If null, then the range contains all items starting from [start].
+  final int? limit;
 }

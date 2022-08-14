@@ -70,7 +70,7 @@ class LineString extends SimpleGeometry {
     String text, {
     TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
   }) =>
-      GeometryBuilder.decode<LineString>(text, format: format);
+      GeometryBuilder.decodeText<LineString>(text, format: format);
 
   @override
   Geom get geomType => Geom.lineString;

@@ -159,11 +159,37 @@ class Feature<T extends Geometry> extends FeatureObject {
   /// [format].
   ///
   /// When [format] is not given, then [GeoJSON] is used as a default.
+  ///
+  /// Format or decoder implementation specific options can be set by [options].
   static Feature<T> fromText<T extends Geometry>(
     String text, {
     TextReaderFormat<FeatureContent> format = GeoJSON.feature,
+    Map<String, dynamic>? options,
   }) =>
-      FeatureBuilder.decode<Feature<T>, T>(text, format: format);
+      FeatureBuilder.decodeText<Feature<T>, T>(
+        text,
+        format: format,
+        options: options,
+      );
+
+  /// Decodes a feature with the geometry of [T] from [data] conforming to
+  /// [format].
+  ///
+  /// Data should be a JSON Object as decoded by the standard `json.decode()`.
+  ///
+  /// When [format] is not given, then [GeoJSON] is used as a default.
+  ///
+  /// Format or decoder implementation specific options can be set by [options].
+  static Feature<T> fromData<T extends Geometry>(
+    Map<String, dynamic> data, {
+    TextReaderFormat<FeatureContent> format = GeoJSON.feature,
+    Map<String, dynamic>? options,
+  }) =>
+      FeatureBuilder.decodeData<Feature<T>, T>(
+        data,
+        format: format,
+        options: options,
+      );
 
   /// An optional identifier (a string or number) for this feature.
   Object? get id => _id;

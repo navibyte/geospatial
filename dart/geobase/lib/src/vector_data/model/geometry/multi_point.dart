@@ -70,7 +70,7 @@ class MultiPoint extends SimpleGeometry {
     String text, {
     TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
   }) =>
-      GeometryBuilder.decode<MultiPoint>(text, format: format);
+      GeometryBuilder.decodeText<MultiPoint>(text, format: format);
 
   @override
   Geom get geomType => Geom.multiPoint;

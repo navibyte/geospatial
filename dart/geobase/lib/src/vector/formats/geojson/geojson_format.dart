@@ -135,21 +135,8 @@ class GeoJSON {
 
   /// The GeoJSON text format (encoding and decoding) for feature objects with
   /// optional [conf].
-  ///
-  /// Optional [itemOffset] and [itemLimit] can be used to get a range of
-  /// feature items on feature collections when decoding GeoJSON data. These
-  /// arguments are not applied when decoding a single feature, only applied on
-  /// feature collections.
-  static TextFormat<FeatureContent> featureFormat({
-    GeoJsonConf? conf,
-    int? itemOffset,
-    int? itemLimit,
-  }) =>
-      _GeoJsonFeatureTextFormat(
-        conf: conf,
-        itemOffset: itemOffset,
-        itemLimit: itemLimit,
-      );
+  static TextFormat<FeatureContent> featureFormat({GeoJsonConf? conf}) =>
+      _GeoJsonFeatureTextFormat(conf: conf);
 }
 
 class _GeoJsonGeometryTextFormat with TextFormat<GeometryContent> {
@@ -171,19 +158,13 @@ class _GeoJsonGeometryTextFormat with TextFormat<GeometryContent> {
 }
 
 class _GeoJsonFeatureTextFormat with TextFormat<FeatureContent> {
-  const _GeoJsonFeatureTextFormat({this.conf, this.itemOffset, this.itemLimit});
+  const _GeoJsonFeatureTextFormat({this.conf});
 
   final GeoJsonConf? conf;
-  final int? itemOffset;
-  final int? itemLimit;
 
   @override
   ContentDecoder decoder(FeatureContent builder) {
-    return _GeoJsonFeatureTextDecoder(
-      builder,
-      itemOffset: itemOffset,
-      itemLimit: itemLimit,
-    );
+    return _GeoJsonFeatureTextDecoder(builder);
   }
 
   @override

@@ -15,7 +15,7 @@ class _WkbGeometryDecoder implements ContentDecoder {
       : conf = conf ?? const WkbConf();
 
   @override
-  void decodeBytes(ByteBuffer source) {
+  void decodeBytes(ByteBuffer source, {Map<String, dynamic>? options}) {
     _WkbGeometryBufferDecoder(
       builder,
       ByteReader.view(source, endian: endian),
@@ -24,7 +24,12 @@ class _WkbGeometryDecoder implements ContentDecoder {
   }
 
   @override
-  void decodeText(String source) => decodeBytes(base64.decode(source).buffer);
+  void decodeText(String source, {Map<String, dynamic>? options}) =>
+      decodeBytes(base64.decode(source).buffer, options: options);
+
+  @override
+  void decodeData(dynamic source, {Map<String, dynamic>? options}) =>
+      const FormatException('Unsupported input data');
 }
 
 class _WkbGeometryBufferDecoder {

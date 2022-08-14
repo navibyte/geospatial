@@ -102,7 +102,7 @@ class MultiPolygon extends SimpleGeometry {
     String text, {
     TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
   }) =>
-      GeometryBuilder.decode<MultiPolygon>(text, format: format);
+      GeometryBuilder.decodeText<MultiPolygon>(text, format: format);
 
   @override
   Geom get geomType => Geom.multiPolygon;

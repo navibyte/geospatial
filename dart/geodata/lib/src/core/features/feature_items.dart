@@ -5,7 +5,7 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import 'package:equatable/equatable.dart';
-import 'package:geocore/data.dart';
+import 'package:geobase/vector_data.dart';
 import 'package:meta/meta.dart';
 
 import '/src/common/meta.dart';

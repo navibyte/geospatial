@@ -67,7 +67,7 @@ class Point implements SimpleGeometry {
     String text, {
     TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
   }) =>
-      GeometryBuilder.decode<Point>(text, format: format);
+      GeometryBuilder.decodeText<Point>(text, format: format);
 
   @override
   Geom get geomType => Geom.point;

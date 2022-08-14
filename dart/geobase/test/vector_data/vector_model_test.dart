@@ -73,7 +73,7 @@ void main() {
 
     test('Geometry collection with typed geometry', () {
       expect(
-        GeometryBuilder.decodeCollection<Point>(geomCollPoints).toText(),
+        GeometryBuilder.decodeTextAsCollection<Point>(geomCollPoints).toText(),
         geomCollPoints,
       );
       expect(

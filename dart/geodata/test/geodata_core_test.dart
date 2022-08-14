@@ -10,8 +10,8 @@
 
 import 'package:equatable/equatable.dart';
 
+import 'package:geobase/coordinates.dart';
 import 'package:geobase/meta.dart';
-import 'package:geocore/coordinates.dart';
 import 'package:geodata/core.dart';
 
 import 'package:test/test.dart';
@@ -34,8 +34,14 @@ void main() {
         'null': null,
         'instant': Instant.parse('2022-01-15 19:01:22'),
         'interval': Interval.parse('../2022-01-15 19:01:22'),
-        'bounds':
-            GeoBounds.bboxLonLatElev(-10.1, -20.2, -400.0, 10.1, 20.2, 400.0),
+        'bounds': GeoBox(
+          west: -10.1,
+          south: -20.2,
+          minElev: -400.0,
+          east: 10.1,
+          north: 20.2,
+          maxElev: 400.0,
+        ),
       });
       expect(query.crs, 'EPSG:4326');
       expect(query.extraParams, <String, String>{

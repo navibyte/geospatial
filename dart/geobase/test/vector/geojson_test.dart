@@ -47,44 +47,52 @@ void main() {
 
       // feature items by range
       _testDecodeAndEncodeToGeoJSON(
-        GeoJSON.featureFormat(itemOffset: 0, itemLimit: 2),
+        GeoJSON.featureFormat(),
         coll123456,
         geoJsonExpected: coll12,
+        options: {'itemOffset': 0, 'itemLimit': 2},
       );
       _testDecodeAndEncodeToGeoJSON(
-        GeoJSON.featureFormat(itemLimit: 2),
+        GeoJSON.featureFormat(),
         coll123456,
         geoJsonExpected: coll12,
+        options: {'itemLimit': 2},
       );
       _testDecodeAndEncodeToGeoJSON(
-        GeoJSON.featureFormat(itemOffset: 2, itemLimit: 2),
+        GeoJSON.featureFormat(),
         coll123456,
         geoJsonExpected: coll34,
+        options: {'itemOffset': 2, 'itemLimit': 2},
       );
       _testDecodeAndEncodeToGeoJSON(
-        GeoJSON.featureFormat(itemOffset: 4, itemLimit: 2),
+        GeoJSON.featureFormat(),
         coll123456,
         geoJsonExpected: coll56,
+        options: {'itemOffset': 4, 'itemLimit': 2},
       );
       _testDecodeAndEncodeToGeoJSON(
-        GeoJSON.featureFormat(itemOffset: 4, itemLimit: 1000),
+        GeoJSON.featureFormat(),
         coll123456,
         geoJsonExpected: coll56,
+        options: {'itemOffset': 4, 'itemLimit': 1000},
       );
       _testDecodeAndEncodeToGeoJSON(
-        GeoJSON.featureFormat(itemOffset: 4),
+        GeoJSON.featureFormat(),
         coll123456,
         geoJsonExpected: coll56,
+        options: {'itemOffset': 4},
       );
       _testDecodeAndEncodeToGeoJSON(
-        GeoJSON.featureFormat(itemOffset: 6, itemLimit: 2),
+        GeoJSON.featureFormat(),
         coll123456,
         geoJsonExpected: collEmpty,
+        options: {'itemOffset': 6, 'itemLimit': 2},
       );
       _testDecodeAndEncodeToGeoJSON(
-        GeoJSON.featureFormat(itemOffset: 1, itemLimit: 0),
+        GeoJSON.featureFormat(),
         coll123456,
         geoJsonExpected: collEmpty,
+        options: {'itemOffset': 1, 'itemLimit': 0},
       );
     });
   });
@@ -93,6 +101,7 @@ void main() {
 void _testDecodeAndEncodeToGeoJSON<Content extends Object>(
   TextFormat<Content> format,
   String geoJsonText, {
+  Map<String, dynamic>? options,
   String? geoJsonExpected,
 }) {
   // GeoJSON encoder from geometry content to text
@@ -102,7 +111,7 @@ void _testDecodeAndEncodeToGeoJSON<Content extends Object>(
   final decoder = format.decoder(encoder.writer);
 
   // now decode the original sample...
-  decoder.decodeText(geoJsonText);
+  decoder.decodeText(geoJsonText, options: options);
 
   // ... and result encoded back to text should be here
   final geoJsonTextEncoded = encoder.toText();
