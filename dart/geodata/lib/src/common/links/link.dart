@@ -47,7 +47,7 @@ class Link with EquatableMixin {
   /// attributes) or `String` (containing only a `href` part of a link).
   ///
   /// Throws `FormatException` if cannot parse data.
-  factory Link.fromData(dynamic data) {
+  factory Link.fromJson(dynamic data) {
     try {
       if (data is Map<String, dynamic>) {
         return Link(
@@ -73,7 +73,7 @@ class Link with EquatableMixin {
   }
 
   /// Converts this link to a data object.
-  Map<String, dynamic> toData() => {
+  Map<String, dynamic> toJson() => {
         // set required fields
         'href': href,
 

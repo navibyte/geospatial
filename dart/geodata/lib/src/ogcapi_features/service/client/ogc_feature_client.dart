@@ -77,7 +77,7 @@ class _OGCFeatureClientHttp implements OGCFeatureService {
     return adapter.getEntityFromJsonObject(
       endpoint,
       toEntity: (data) {
-        final links = Links.fromData(data['links'] as Iterable<dynamic>);
+        final links = Links.fromJson(data['links'] as Iterable<dynamic>);
         return ResourceMeta(
           title: data['title'] as String? ??
               links.self().first.title ??
@@ -110,7 +110,7 @@ class _OGCFeatureClientHttp implements OGCFeatureService {
         final list = data['collections'] as Iterable<dynamic>;
         return list
             .map<CollectionMeta>(
-              (e) => _collectionFromData(e as Map<String, dynamic>),
+              (e) => _collectionFromJson(e as Map<String, dynamic>),
             )
             .toList(growable: false);
       },
@@ -140,14 +140,14 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
           for (final coll in collections) {
             final collObj = coll as Map<String, dynamic>;
             if (collObj['id'] == collectionId) {
-              return _collectionFromData(collObj);
+              return _collectionFromJson(collObj);
             }
           }
         }
 
         // this is the way the standard suggests
         // (single collection meta as JSON object)
-        return _collectionFromData(data);
+        return _collectionFromJson(data);
       },
     );
   }
@@ -273,7 +273,7 @@ class _OGCPagedFeaturesItems with Paged<OGCFeatureItems> {
         Uri? prevURL;
         final links = data['links'];
         if (links is Iterable<dynamic>) {
-          final parsedLinks = Links.fromData(links);
+          final parsedLinks = Links.fromJson(links);
           final next = parsedLinks.next(type: _nextAndPrevLinkType);
           nextURL = next.isNotEmpty ? next.first.href : null;
           final prev = parsedLinks.prev(type: _nextAndPrevLinkType);
@@ -342,8 +342,8 @@ class _OGCPagedFeaturesItems with Paged<OGCFeatureItems> {
 }
 
 /// Parses a '/collections/{collectionId}' meta data from a OGC API service.
-CollectionMeta _collectionFromData(Map<String, dynamic> data) {
-  final links = Links.fromData(data['links'] as Iterable<dynamic>);
+CollectionMeta _collectionFromJson(Map<String, dynamic> data) {
+  final links = Links.fromJson(data['links'] as Iterable<dynamic>);
   final extent = data['extent'] as Map<String, dynamic>?;
   final id = data['id'] as String? ??
       data['name'] as String; // "name" not really standard, but somewhere used
@@ -352,12 +352,12 @@ CollectionMeta _collectionFromData(Map<String, dynamic> data) {
     title: data['title'] as String? ?? links.self().first.title ?? id,
     description: data['description'] as String?,
     links: links,
-    extent: extent != null ? _extentFromData(extent) : null,
+    extent: extent != null ? _extentFromJson(extent) : null,
   );
 }
 
 /// Parses [GeoExtent] data structure from a json snippet.
-GeoExtent _extentFromData(Map<String, dynamic> data) {
+GeoExtent _extentFromJson(Map<String, dynamic> data) {
   final spatial = data['spatial'];
   final spatialIsMap = spatial is Map<String, dynamic>;
   final crs = (spatialIsMap ? spatial['crs'] as String? : null) ??
@@ -369,14 +369,14 @@ GeoExtent _extentFromData(Map<String, dynamic> data) {
   if (bbox != null) {
     // by standard: "bbox" is a list of bboxes
     spatialExtent = SpatialExtent.multi(
-      bbox.map((e) => _bboxFromData(e! as List<dynamic>)),
+      bbox.map((e) => _bboxFromJson(e! as List<dynamic>)),
       crs: crs,
     );
   } else {
     // not standard: assume "spatial" as one bbox
     try {
       spatialExtent =
-          SpatialExtent.single(_bboxFromData(spatial! as List<dynamic>));
+          SpatialExtent.single(_bboxFromJson(spatial! as List<dynamic>));
     } catch (_) {
       // fallback (world extent)
       spatialExtent = const SpatialExtent.single(
@@ -394,13 +394,13 @@ GeoExtent _extentFromData(Map<String, dynamic> data) {
     if (interval != null && interval is Iterable<dynamic>) {
       // by standard: "interval" is a list of intervals
       temporalExtent = TemporalExtent.multi(
-        interval.map((e) => Interval.fromData(e as Iterable<dynamic>)),
+        interval.map((e) => Interval.fromJson(e as Iterable<dynamic>)),
       );
     } else {
       // not standard: assume "temporal" as one interval
       try {
         temporalExtent = TemporalExtent.single(
-          Interval.fromData(temporal as Iterable<dynamic>),
+          Interval.fromJson(temporal as Iterable<dynamic>),
         );
       } catch (_) {
         // no fallback need, just no temporal interval then
@@ -414,7 +414,7 @@ GeoExtent _extentFromData(Map<String, dynamic> data) {
   );
 }
 
-GeoBox _bboxFromData(List<dynamic> bbox) {
+GeoBox _bboxFromJson(List<dynamic> bbox) {
   if (bbox.length == 4 || bbox.length == 6) {
     final is3D = bbox.length == 6;
     return is3D

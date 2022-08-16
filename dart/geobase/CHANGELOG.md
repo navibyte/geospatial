@@ -33,6 +33,7 @@ binary data formats, encodings and content interfaces also redesigned.
 🛠 Refactoring:
 - [Optimize reading from iterable of coordinate values #131](https://github.com/navibyte/geospatial/issues/131)
 - [Feature properties and data maps as Map<String, dynamic> instead of Map<String, Object?> #147](https://github.com/navibyte/geospatial/issues/147)
+- [Refactor fromJson / toJson methods on model classes #150](https://github.com/navibyte/geospatial/issues/150)
 
 🛠 Maintenance:
 - [Lint rules without old strong mode, but with new "stricter type checks" #148](https://github.com/navibyte/geospatial/issues/148)

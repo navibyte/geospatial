@@ -47,7 +47,7 @@ class Interval extends Temporal {
   /// string, or a string with the value "..".
   ///
   /// Throws FormatException if an interval cannot be parsed.
-  factory Interval.fromData(Iterable<dynamic> data) {
+  factory Interval.fromJson(Iterable<dynamic> data) {
     if (data.length == 2) {
       final start = data.elementAt(0);
       final end = data.elementAt(1);
@@ -80,7 +80,7 @@ class Interval extends Temporal {
   factory Interval.parse(String text) {
     final parts = text.split('/');
     if (parts.length == 2) {
-      return Interval.fromData([parts[0], parts[1]]);
+      return Interval.fromJson([parts[0], parts[1]]);
     }
     throw FormatException('Invalid interval "$text".');
   }

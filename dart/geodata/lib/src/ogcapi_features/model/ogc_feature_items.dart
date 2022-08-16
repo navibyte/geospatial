@@ -37,7 +37,7 @@ class OGCFeatureItems extends FeatureItems with LinksAware {
     final data = meta['links'];
     if (data is Iterable<dynamic>) {
       try {
-        return Links.fromData(data);
+        return Links.fromJson(data);
       } on FormatException {
         // nop, could not parse, but then let empty links to be returned
       }
