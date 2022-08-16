@@ -140,10 +140,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   /// All feature items in this feature collection.
   List<E> get features => _features;
 
-  /// Optional custom or "foreign member" properties as a map.
-  ///
-  /// The primary feature items are accessed via [features]. However any custom
-  /// property data outside it is stored in this member.
+  @override
   Map<String, dynamic>? get custom => _custom;
 
   @override

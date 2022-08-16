@@ -18,6 +18,9 @@ abstract class FeatureObject extends Bounded {
   /// A feature object with an optional [bounds].
   const FeatureObject({super.bounds});
 
+  /// Optional custom or "foreign member" properties as a map.
+  Map<String, dynamic>? get custom => null;
+
   /// Writes this feature object to [writer].
   void writeTo(FeatureContent writer);
 

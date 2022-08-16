@@ -200,16 +200,12 @@ class Feature<T extends Geometry> extends FeatureObject {
   /// Required properties for this feature (allowed to be empty).
   Map<String, dynamic> get properties => _properties;
 
-  /// Optional custom or "foreign member" properties as a map.
-  ///
-  /// Main properties are accessed via [properties]. However any custom property
-  /// data outside main properties is stored in this member.
-  Map<String, dynamic>? get custom => null;
-
   /// Optional custom or "foreign member" geometries as a map.
   ///
   /// The primary geometry is via [geometry]. However any custom geometry data
   /// outside the primary geometry is stored in this member.
+  /// 
+  /// See also [custom] for non-geometry custom or "foreign member" properties.
   Map<String, Geometry>? get customGeometries => null;
 
   @override
