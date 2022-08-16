@@ -33,6 +33,9 @@ binary data formats, encodings and content interfaces also redesigned.
 🛠 Refactoring:
 - [Optimize reading from iterable of coordinate values #131](https://github.com/navibyte/geospatial/issues/131)
 
+🛠 Maintenance:
+- [Lint rules without old strong mode, but with new "stricter type checks" #148](https://github.com/navibyte/geospatial/issues/148)
+
 ## 0.2.1
 
 🐛 Bugs fixed:

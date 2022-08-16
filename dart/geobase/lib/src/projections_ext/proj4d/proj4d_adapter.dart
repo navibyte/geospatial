@@ -46,7 +46,7 @@ class Proj4Adapter with ProjectionAdapter {
   /// ESRI WKT definitions are supported. More info from the Proj4dart package.
   ///
   /// Throws FormatException if projections could not be resolved.
-  static Proj4Adapter resolve(
+  factory Proj4Adapter.resolve(
     String fromCode,
     String toCode, {
     String? fromDef,
