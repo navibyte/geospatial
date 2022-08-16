@@ -16,11 +16,10 @@ import 'link.dart';
 /// [rel](https://www.iana.org/assignments/link-relations/link-relations.xhtml).
 @immutable
 class Links with EquatableMixin {
-  /// All links as an iterable.
-  final Iterable<Link> all;
+  final List<Link> _items;
 
   /// Creates a metadata container for links as a view of [source].
-  const Links(Iterable<Link> source) : all = source;
+  const Links(List<Link> source) : _items = source;
 
   /// Creates an empty metadata container for links.
   const Links.empty() : this(const []);
@@ -36,12 +35,15 @@ class Links with EquatableMixin {
         data.map(Link.fromJson).toList(growable: false),
       );
 
+  /// All links as a list.
+  List<Link> get items => _items;
+
   @override
-  List<Object?> get props => [all];
+  List<Object?> get props => [items];
 
   /// All links matching by the given [rel], and optional [type] and [hreflang].
   Iterable<Link> byRel(String rel, {String? type, String? hreflang}) =>
-      all.where(
+      items.where(
         (e) =>
             e.rel == rel &&
             (type == null || e.type == type) &&
