@@ -7,6 +7,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:meta/meta.dart';
 
 import '/src/common/service.dart';
 import '/src/core/features.dart';
@@ -15,6 +16,7 @@ const _acceptJSON = {'accept': 'application/json'};
 const _expectJSON = ['application/json'];
 
 /// An adapter to fetch HTTP client, used by a feature service.
+@internal
 class FeatureHttpAdapter {
   /// Create an adapter with an optional [client] and [headers].
   const FeatureHttpAdapter({

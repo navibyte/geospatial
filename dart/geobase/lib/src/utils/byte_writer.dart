@@ -5,12 +5,14 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import 'dart:math' as math;
-
 import 'dart:typed_data';
+
+import 'package:meta/meta.dart';
 
 /// A writer (integer and floating point values) writing a sequence of bytes.
 ///
 /// The [ByteWriter] class is (at least currently) an internal utility class.
+@internal
 class ByteWriter {
   final _ChunkedByteBuffer _buffer;
   ByteData _chunk;

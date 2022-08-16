@@ -5,6 +5,7 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import 'package:geobase/vector.dart';
+import 'package:meta/meta.dart';
 
 import '/src/base/spatial.dart';
 import '/src/data/simple_geometry.dart';
@@ -22,6 +23,7 @@ FormatException _invalidWkt(String wkt) => FormatException('Invalid wkt: $wkt');
 /// A line string [type] can be given also.
 ///
 /// Throws FormatException if parsing fails.
+@internal
 LineString<T> parseWktLineString<T extends Point>(
   String lineString,
   PointFactory<T> pointFactory, {
@@ -39,6 +41,7 @@ LineString<T> parseWktLineString<T extends Point>(
 /// A line string [type] can be given also.
 ///
 /// Throws FormatException if parsing fails.
+@internal
 BoundedSeries<LineString<T>> parseWktLineStringSeries<T extends Point>(
   String lineStringSeries,
   PointFactory<T> pointFactory, {
@@ -76,6 +79,7 @@ BoundedSeries<LineString<T>> parseWktLineStringSeries<T extends Point>(
 /// using the [pointFactory].
 ///
 /// Throws FormatException if parsing fails.
+@internal
 Polygon<T> parseWktPolygon<T extends Point>(
   String polygon,
   PointFactory<T> pointFactory,
@@ -99,6 +103,7 @@ Polygon<T> parseWktPolygon<T extends Point>(
 /// using the [pointFactory].
 ///
 /// Throws FormatException if parsing fails.
+@internal
 BoundedSeries<Polygon<T>> parseWktPolygonSeries<T extends Point>(
   String polygonSeries,
   PointFactory<T> pointFactory,
@@ -149,6 +154,7 @@ BoundedSeries<Polygon<T>> parseWktPolygonSeries<T extends Point>(
 /// [pointFactory].
 ///
 /// Throws FormatException if parsing fails.
+@internal
 MultiPoint<T> parseWktMultiPoint<T extends Point>(
   String multiPoint,
   PointFactory<T> pointFactory,
@@ -165,6 +171,7 @@ MultiPoint<T> parseWktMultiPoint<T extends Point>(
 /// A line string [type] can be given also.
 ///
 /// Throws FormatException if parsing fails.
+@internal
 MultiLineString<T> parseWktMultiLineString<T extends Point>(
   String multiLineString,
   PointFactory<T> pointFactory, {
@@ -189,6 +196,7 @@ MultiLineString<T> parseWktMultiLineString<T extends Point>(
 /// using the [pointFactory].
 ///
 /// Throws FormatException if parsing fails.
+@internal
 MultiPolygon<T> parseWktMultiPolygon<T extends Point>(
   String multiPolygon,
   PointFactory<T> pointFactory,
@@ -198,6 +206,7 @@ MultiPolygon<T> parseWktMultiPolygon<T extends Point>(
 /// Parses a single geometry with points of [T] from [text].
 ///
 /// Throws FormatException if parsing fails.
+@internal
 Geometry parseWktGeometry<T extends Point>(
   String text, {
   required PointFactory<T> Function({required bool expectM}) resolve,
@@ -275,6 +284,7 @@ Geometry parseWktGeometry<T extends Point>(
 /// Parses a single next available geometry with points of [T] from [text].
 ///
 /// Throws FormatException if parsing fails.
+@internal
 Geometry parseNextWktGeometry<T extends Point>(
   String text, {
   required PointFactory<T> Function({required bool expectM}) resolve,
@@ -295,6 +305,7 @@ Geometry parseNextWktGeometry<T extends Point>(
 /// specifying a geometry object range to be returned on a collection.
 ///
 /// Throws FormatException if parsing fails.
+@internal
 BoundedSeries<Geometry> parseWktGeometrySeries<T extends Point>(
   String text, {
   required PointFactory<T> Function({required bool expectM}) resolve,
@@ -335,6 +346,7 @@ BoundedSeries<Geometry> parseWktGeometrySeries<T extends Point>(
 /// Parses a geometry collection with points of [T] from [text].
 ///
 /// Throws FormatException if parsing fails.
+@internal
 GeometryCollection<Geometry> parseWktGeometryCollection<T extends Point>(
   String text, {
   required PointFactory<T> Function({required bool expectM}) resolve,

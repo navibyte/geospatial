@@ -6,12 +6,15 @@
 
 import 'dart:math' as math;
 
+import 'package:meta/meta.dart';
+
 import '/src/base/spatial.dart';
 
 /// A helper class to calculate [bounds] for a set of points and other bounds.
 ///
 /// Use [addPoint] and [addBounds] methods to add geometries to be used on
 /// calculation. A value for calculations can be obtained from [bounds].
+@internal
 class BoundsBuilder {
   /// Creates a new builder to calculate [bounds].
   BoundsBuilder();

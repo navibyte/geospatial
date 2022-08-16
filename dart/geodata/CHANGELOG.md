@@ -11,11 +11,12 @@ Note this is a breaking change.
 🧩 Features:
 - [Decode GeoJSON and build data structures using new data structures by geobase #140](https://github.com/navibyte/geospatial/issues/140)
 
-🛠 Maintenance:
-- [Lint rules without old strong mode, but with new "stricter type checks" #148](https://github.com/navibyte/geospatial/issues/148)
-
 🛠 Refactoring:
 - [Feature properties and data maps as Map<String, dynamic> instead of Map<String, Object?> #147](https://github.com/navibyte/geospatial/issues/147)
+
+🛠 Maintenance:
+- [Lint rules without old strong mode, but with new "stricter type checks" #148](https://github.com/navibyte/geospatial/issues/148)
+- - [Mark internal classes with @internal #149](https://github.com/navibyte/geospatial/issues/149)
 
 ## 0.9.0
 

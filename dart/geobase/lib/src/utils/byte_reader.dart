@@ -6,9 +6,12 @@
 
 import 'dart:typed_data';
 
+import 'package:meta/meta.dart';
+
 /// A reader (integer and floating point values) reading a sequence of bytes.
 ///
 /// The [ByteReader] class is (at least currently) an internal utility class.
+@internal
 class ByteReader {
   final ByteData _data;
   int _offset = 0;

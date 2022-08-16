@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'package:meta/meta.dart';
+
 import '/src/base/spatial.dart';
 
 final _splitByWhitespace = RegExp(r'\s+');
@@ -13,6 +15,7 @@ FormatException _invalidCoords(String coords) =>
     FormatException('Invalid coords: $coords');
 
 /// Parses a num iterable from [coords] with values separated by white space.
+@internal
 Iterable<num> parseWktCoords(String coords) {
   final parts = _omitParenthesis(coords.trim()).split(_splitByWhitespace);
   // todo : need to know expected coord dim
@@ -32,6 +35,7 @@ Iterable<num> parseWktCoords(String coords) {
 /// Parses an int iterable from [coords] with values separated by white space.
 ///
 /// Throws FormatException if parsing fails.
+@internal
 Iterable<int> parseWktCoordsInt(String coords) {
   final parts = _omitParenthesis(coords.trim()).split(_splitByWhitespace);
   if (parts.length < 2) {
@@ -44,12 +48,14 @@ Iterable<int> parseWktCoordsInt(String coords) {
 /// Parses a point of [T] with num coords from [point] using the [pointFactory].
 ///
 /// Throws FormatException if parsing fails.
+@internal
 T parseWktPoint<T extends Point>(String point, PointFactory<T> pointFactory) =>
     pointFactory.newFrom(parseWktCoords(point));
 
 /// Parses a point of [T] with int coords from [point] using the [pointFactory].
 ///
 /// Throws FormatException if parsing fails.
+@internal
 T parseWktPointInt<T extends Point>(
   String point,
   PointFactory<T> pointFactory,
@@ -62,6 +68,7 @@ T parseWktPointInt<T extends Point>(
 /// [pointFactory].
 ///
 /// Throws FormatException if parsing fails.
+@internal
 PointSeries<T> parseWktPointSeries<T extends Point>(
   String pointSeries,
   PointFactory<T> pointFactory,

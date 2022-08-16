@@ -6,7 +6,10 @@
 
 import 'dart:typed_data';
 
+import 'package:meta/meta.dart';
+
 /// Utilities on `Uint8List`.
+@internal
 extension Uint8ListUtils on Uint8List {
   /// Encode bytes as Hexadecimal (base 16) string.
   String toHex() => map((e) => e.toRadixString(16).padLeft(2, '0')).join();

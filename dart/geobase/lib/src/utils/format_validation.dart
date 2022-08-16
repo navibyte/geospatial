@@ -4,5 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'package:meta/meta.dart';
+
 /// Invalid coordinate type or values.
+@internal
 const invalidCoordinates = FormatException('Invalid coordinates');

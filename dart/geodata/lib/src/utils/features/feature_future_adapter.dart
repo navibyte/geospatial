@@ -6,6 +6,8 @@
 
 import 'dart:convert';
 
+import 'package:meta/meta.dart';
+
 import '/src/common/service.dart';
 import '/src/core/features.dart';
 
@@ -13,6 +15,7 @@ import '/src/core/features.dart';
 ///
 /// The source function returns a future that fetches data from a file, a web
 /// resource or other sources. Contents must be GeoJSON compliant data.
+@internal
 Future<T> readEntityFromJsonObject<T>(
   Future<String> Function() source, {
   required T Function(Map<String, dynamic> data) toEntity,

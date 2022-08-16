@@ -10,6 +10,7 @@ Development version `0.10.0-dev.1`.
 
 🛠 Maintenance:
 - [Lint rules without old strong mode, but with new "stricter type checks" #148](https://github.com/navibyte/geospatial/issues/148)
+- [Mark internal classes with @internal #149](https://github.com/navibyte/geospatial/issues/149)
 
 ## 0.9.0
 

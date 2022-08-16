@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'package:meta/meta.dart';
+
 final _splitByWhitespace = RegExp(r'\s+');
 
 /// Uses `String.toStringAsFixed()` when [n] contains decimals.
@@ -12,6 +14,7 @@ final _splitByWhitespace = RegExp(r'\s+');
 /// value is 15.50.
 ///
 /// See: https://stackoverflow.com/questions/39958472/dart-numberformat
+@internal
 String toStringAsFixedWhenDecimals(num n, int fractionDigits) =>
     n.toStringAsFixed(n.truncateToDouble() == n ? 0 : fractionDigits);
 
@@ -23,6 +26,7 @@ String toStringAsFixedWhenDecimals(num n, int fractionDigits) =>
 ///
 /// If [text] contains less than [minCount] value items, then `FormatException``
 /// is also thrown.
+@internal
 Iterable<num> parseNumValuesFromText(
   String text, {
   Pattern? delimiter,
@@ -50,6 +54,7 @@ Iterable<num> parseNumValuesFromText(
 ///
 /// If [text] contains less than [minCount] value items, then `FormatException``
 /// is also thrown.
+@internal
 Iterable<num?> parseNullableNumValuesFromText(
   String text, {
   Pattern? delimiter,
@@ -76,6 +81,7 @@ Iterable<num?> parseNullableNumValuesFromText(
 ///
 /// If [text] contains less than [minCount] value items, then `FormatException``
 /// is also thrown.
+@internal
 Iterable<int> parseIntValuesFromText(
   String text, {
   Pattern? delimiter,
@@ -104,6 +110,7 @@ Iterable<int> parseIntValuesFromText(
 ///
 /// If [text] contains less than [minCount] value items, then `FormatException``
 /// is also thrown.
+@internal
 Iterable<double> parseDoubleValuesFromText(
   String text, {
   Pattern? delimiter,

@@ -4,9 +4,12 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'package:meta/meta.dart';
+
 import '/src/vector/encoding.dart';
 
 /// A factory function to create [ContentEncoder] for [Content].
+@internal
 typedef CreateTextEncoder<Content extends Object> = ContentEncoder<Content>
     Function({
   StringSink? buffer,
@@ -14,6 +17,7 @@ typedef CreateTextEncoder<Content extends Object> = ContentEncoder<Content>
 });
 
 /// A helper implementation of [TextWriterFormat] for [Content].
+@internal
 class TextWriterFormatImpl<Content extends Object>
     with TextWriterFormat<Content> {
   /// A helper implementation of [TextWriterFormat] for [Content].
@@ -31,6 +35,7 @@ class TextWriterFormatImpl<Content extends Object>
 }
 
 /// A factory function to create [ContentEncoder] for [Content] with [Conf].
+@internal
 typedef CreateTextEncoderConf<Content extends Object, Conf extends Object>
     = ContentEncoder<Content> Function({
   StringSink? buffer,
@@ -39,6 +44,7 @@ typedef CreateTextEncoderConf<Content extends Object, Conf extends Object>
 });
 
 /// A helper implementation of [TextWriterFormat] for [Content] with [Conf].
+@internal
 class TextWriterFormatImplConf<Content extends Object, Conf extends Object>
     with TextWriterFormat<Content> {
   /// A helper implementation of [TextWriterFormat] for [Content] with [Conf].

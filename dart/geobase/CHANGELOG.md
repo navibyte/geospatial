@@ -36,6 +36,7 @@ binary data formats, encodings and content interfaces also redesigned.
 
 🛠 Maintenance:
 - [Lint rules without old strong mode, but with new "stricter type checks" #148](https://github.com/navibyte/geospatial/issues/148)
+- [Mark internal classes with @internal #149](https://github.com/navibyte/geospatial/issues/149)
 
 ## 0.2.1
 

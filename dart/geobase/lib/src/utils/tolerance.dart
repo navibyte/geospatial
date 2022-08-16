@@ -4,7 +4,10 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'package:meta/meta.dart';
+
 /// Asserts that [tolerance] is null or positive (>= 0).
+@internal
 void assertTolerance(num? tolerance) {
   assert(
     tolerance == null || tolerance >= 0.0,

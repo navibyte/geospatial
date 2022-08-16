@@ -6,12 +6,15 @@
 
 import 'dart:math' as math;
 
+import 'package:meta/meta.dart';
+
 import '/src/constants/geodetic.dart';
 import '/src/tiling/convert/scaled_converter.dart';
 
 const _originShift = earthCircumferenceWgs84 / 2.0; // in meters (~ 20037508.34)
 
 /// A helper class to convert geographic coordinates to Web Mercator projection.
+@internal
 class WebMercatorConverter implements ScaledConverter {
   /// Create a converter from geographic coordinates to mercator projection.
   ///

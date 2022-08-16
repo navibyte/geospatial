@@ -4,9 +4,12 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'package:meta/meta.dart';
+
 import '/src/vector/content.dart';
 
 /// A builder to create property maps from [PropertyContent] stream.
+@internal
 class PropertyBuilder with PropertyContent {
   final Map<String, dynamic> _map;
 

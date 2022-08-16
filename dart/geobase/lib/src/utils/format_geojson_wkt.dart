@@ -9,6 +9,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:meta/meta.dart';
+
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/coordinates/base.dart';
@@ -354,6 +356,7 @@ abstract class _BaseTextWriter<T extends Object>
 // Writer for the "default" format ---------------------------------------------
 
 /// A geometery writer for Default text output.
+@internal
 class DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
   /// A geometery writer for Default text output.
   DefaultTextWriter({
@@ -506,6 +509,7 @@ class DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
 // Writer  for the "GeoJSON" format --------------------------------------------
 
 /// A feature writer for GeoJSON text output.
+@internal
 class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     with FeatureContent, PropertyContent {
   /// A feature writer for GeoJSON text output.
@@ -781,6 +785,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
 // Writer for the "wkt like" format --------------------------------------------
 
 /// A geometry writer for WKT "like" text output.
+@internal
 class WktLikeTextWriter<T extends Object> extends _BaseTextWriter<T> {
   /// A geometry writer for WKT "like" text output.
   WktLikeTextWriter({super.buffer, super.decimals});

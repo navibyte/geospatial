@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'package:meta/meta.dart';
+
 import '/src/codes/coords.dart';
 import '/src/vector_data/array.dart';
 
@@ -12,6 +14,7 @@ import '/src/vector_data/array.dart';
 /// If [coords] is already an instance of [BoxCoords] then it's returned.
 ///
 /// Otherwise a new instance is created from [coords] and [type].
+@internal
 BoxCoords? boxFromCoordsOpt(Iterable<double>? coords, {Coords? type}) {
   if (coords == null) {
     return null;
@@ -32,6 +35,7 @@ BoxCoords? boxFromCoordsOpt(Iterable<double>? coords, {Coords? type}) {
 /// If [coords] is already an instance of [BoxCoords] then it's returned.
 ///
 /// Otherwise a new instance is created from [coords] and [type].
+@internal
 BoxCoords boxFromCoords(Iterable<double> coords, {Coords? type}) {
   if (coords is BoxCoords) {
     return coords;
@@ -50,6 +54,7 @@ BoxCoords boxFromCoords(Iterable<double> coords, {Coords? type}) {
 /// If [coords] is already an instance of [PositionCoords] then it's returned.
 ///
 /// Otherwise a new instance is created from [coords] and [type].
+@internal
 PositionCoords positionFromCoords(
   Iterable<double> coords, {
   Coords? type,
@@ -71,6 +76,7 @@ PositionCoords positionFromCoords(
 /// If [coords] is already a list of [PositionCoords] then it's returned.
 ///
 /// Otherwise a new instance is created from [coords] and [type].
+@internal
 List<PositionCoords> listOfPositionsFromCoords(
   Iterable<Iterable<double>> coords, {
   Coords? type,
@@ -93,6 +99,7 @@ List<PositionCoords> listOfPositionsFromCoords(
 /// If [coords] is already an instance of [PositionArray] then it's returned.
 ///
 /// Otherwise a new instance is created from [coords] and [type].
+@internal
 PositionArray positionArrayFromCoords(
   Iterable<double> coords, {
   required Coords type,
@@ -114,6 +121,7 @@ PositionArray positionArrayFromCoords(
 /// If [coords] is already a list of [PositionArray] then it's returned.
 ///
 /// Otherwise a new instance is created from [coords] and [type].
+@internal
 List<PositionArray> listOfPositionArraysFromCoords(
   Iterable<Iterable<double>> coords, {
   required Coords type,
@@ -137,6 +145,7 @@ List<PositionArray> listOfPositionArraysFromCoords(
 /// returned.
 ///
 /// Otherwise a new instance is created from [coords] and [type].
+@internal
 List<List<PositionArray>> listOfListOfPositionArraysFromCoords(
   Iterable<Iterable<Iterable<double>>> coords, {
   required Coords type,
