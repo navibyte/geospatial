@@ -25,7 +25,7 @@ class OGCFeatureItem extends FeatureItem with LinksAware {
   @override
   Links get links {
     final data = meta['links'];
-    if (data is Iterable<Object?>) {
+    if (data is Iterable<dynamic>) {
       try {
         return Links.fromData(data);
       } on FormatException {

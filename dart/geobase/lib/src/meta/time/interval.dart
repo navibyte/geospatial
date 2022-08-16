@@ -47,7 +47,7 @@ class Interval extends Temporal {
   /// string, or a string with the value "..".
   ///
   /// Throws FormatException if an interval cannot be parsed.
-  factory Interval.fromData(Iterable<Object?> data) {
+  factory Interval.fromData(Iterable<dynamic> data) {
     if (data.length == 2) {
       final start = data.elementAt(0);
       final end = data.elementAt(1);

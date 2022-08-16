@@ -77,7 +77,7 @@ class _OGCFeatureClientHttp implements OGCFeatureService {
     return adapter.getEntityFromJsonObject(
       endpoint,
       toEntity: (data) {
-        final links = Links.fromData(data['links']! as Iterable<Object?>);
+        final links = Links.fromData(data['links'] as Iterable<dynamic>);
         return ResourceMeta(
           title: data['title'] as String? ??
               links.self().first.title ??
@@ -96,7 +96,7 @@ class _OGCFeatureClientHttp implements OGCFeatureService {
     return adapter.getEntityFromJsonObject(
       url,
       toEntity: (data) =>
-          (data['conformsTo'] as Iterable<Object?>?)?.cast<String>() ?? [],
+          (data['conformsTo'] as Iterable<dynamic>?)?.cast<String>() ?? [],
     );
   }
 
@@ -107,10 +107,10 @@ class _OGCFeatureClientHttp implements OGCFeatureService {
     return adapter.getEntityFromJsonObject(
       url,
       toEntity: (data) {
-        final list = data['collections']! as Iterable<Object?>;
+        final list = data['collections'] as Iterable<dynamic>;
         return list
             .map<CollectionMeta>(
-              (e) => _collectionFromData(e! as Map<String, Object?>),
+              (e) => _collectionFromData(e as Map<String, dynamic>),
             )
             .toList(growable: false);
       },
@@ -136,9 +136,9 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
         // data should contain a single collection as JSON Object
         // but some services seem to return this under "collections"...
         final collections = data['collections'];
-        if (collections is Iterable<Object?>) {
+        if (collections is Iterable<dynamic>) {
           for (final coll in collections) {
-            final collObj = coll! as Map<String, Object?>;
+            final collObj = coll as Map<String, dynamic>;
             if (collObj['id'] == collectionId) {
               return _collectionFromData(collObj);
             }
@@ -190,7 +190,7 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
         // parses Feature object from GeoJSON data decoded using format
         final feature = Feature.fromData(data, format: service.format);
 
-        // meta as Map<String, Object?> by removing Feature geometry and props
+        // meta as Map<String, dynamic> by removing Feature geometry and props
         final meta = Map.of(data)
           ..remove('type')
           ..remove('id')
@@ -272,7 +272,7 @@ class _OGCPagedFeaturesItems with Paged<OGCFeatureItems> {
         Uri? nextURL;
         Uri? prevURL;
         final links = data['links'];
-        if (links is Iterable<Object?>) {
+        if (links is Iterable<dynamic>) {
           final parsedLinks = Links.fromData(links);
           final next = parsedLinks.next(type: _nextAndPrevLinkType);
           nextURL = next.isNotEmpty ? next.first.href : null;
@@ -284,7 +284,7 @@ class _OGCPagedFeaturesItems with Paged<OGCFeatureItems> {
         final collection =
             FeatureCollection.fromData(data, format: service.format);
 
-        // meta as Map<String, Object?> by removing features
+        // meta as Map<String, dynamic> by removing features
         final meta = Map.of(data)
           ..remove('type')
           ..remove('features');
@@ -342,11 +342,11 @@ class _OGCPagedFeaturesItems with Paged<OGCFeatureItems> {
 }
 
 /// Parses a '/collections/{collectionId}' meta data from a OGC API service.
-CollectionMeta _collectionFromData(Map<String, Object?> data) {
-  final links = Links.fromData(data['links']! as Iterable<Object?>);
-  final extent = data['extent'] as Map<String, Object?>?;
+CollectionMeta _collectionFromData(Map<String, dynamic> data) {
+  final links = Links.fromData(data['links'] as Iterable<dynamic>);
+  final extent = data['extent'] as Map<String, dynamic>?;
   final id = data['id'] as String? ??
-      data['name']! as String; // "name" not really standard, but somewhere used
+      data['name'] as String; // "name" not really standard, but somewhere used
   return CollectionMeta(
     id: id,
     title: data['title'] as String? ?? links.self().first.title ?? id,
@@ -357,26 +357,26 @@ CollectionMeta _collectionFromData(Map<String, Object?> data) {
 }
 
 /// Parses [GeoExtent] data structure from a json snippet.
-GeoExtent _extentFromData(Map<String, Object?> data) {
+GeoExtent _extentFromData(Map<String, dynamic> data) {
   final spatial = data['spatial'];
-  final spatialIsMap = spatial is Map<String, Object?>;
+  final spatialIsMap = spatial is Map<String, dynamic>;
   final crs = (spatialIsMap ? spatial['crs'] as String? : null) ??
       'http://www.opengis.net/def/crs/OGC/1.3/CRS84';
 
   // try to parse bboxes
   SpatialExtent<GeoBox> spatialExtent;
-  final bbox = spatialIsMap ? spatial['bbox'] as Iterable<Object?>? : null;
+  final bbox = spatialIsMap ? spatial['bbox'] as Iterable<dynamic>? : null;
   if (bbox != null) {
     // by standard: "bbox" is a list of bboxes
     spatialExtent = SpatialExtent.multi(
-      bbox.map((e) => _bboxFromData(e! as List<Object?>)),
+      bbox.map((e) => _bboxFromData(e! as List<dynamic>)),
       crs: crs,
     );
   } else {
     // not standard: assume "spatial" as one bbox
     try {
       spatialExtent =
-          SpatialExtent.single(_bboxFromData(spatial! as List<Object?>));
+          SpatialExtent.single(_bboxFromData(spatial! as List<dynamic>));
     } catch (_) {
       // fallback (world extent)
       spatialExtent = const SpatialExtent.single(
@@ -390,17 +390,17 @@ GeoExtent _extentFromData(Map<String, Object?> data) {
   final temporal = data['temporal'];
   if (temporal != null) {
     final interval =
-        temporal is Map<String, Object?> ? temporal['interval'] : null;
-    if (interval != null && interval is Iterable<Object?>) {
+        temporal is Map<String, dynamic> ? temporal['interval'] : null;
+    if (interval != null && interval is Iterable<dynamic>) {
       // by standard: "interval" is a list of intervals
       temporalExtent = TemporalExtent.multi(
-        interval.map((e) => Interval.fromData(e! as Iterable<Object?>)),
+        interval.map((e) => Interval.fromData(e as Iterable<dynamic>)),
       );
     } else {
       // not standard: assume "temporal" as one interval
       try {
         temporalExtent = TemporalExtent.single(
-          Interval.fromData(temporal as Iterable<Object?>),
+          Interval.fromData(temporal as Iterable<dynamic>),
         );
       } catch (_) {
         // no fallback need, just no temporal interval then
@@ -414,7 +414,7 @@ GeoExtent _extentFromData(Map<String, Object?> data) {
   );
 }
 
-GeoBox _bboxFromData(List<Object?> bbox) {
+GeoBox _bboxFromData(List<dynamic> bbox) {
   if (bbox.length == 4 || bbox.length == 6) {
     final is3D = bbox.length == 6;
     return is3D

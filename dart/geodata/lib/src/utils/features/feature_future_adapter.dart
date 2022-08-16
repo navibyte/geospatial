@@ -15,14 +15,14 @@ import '/src/core/features.dart';
 /// resource or other sources. Contents must be GeoJSON compliant data.
 Future<T> readEntityFromJsonObject<T>(
   Future<String> Function() source, {
-  required T Function(Map<String, Object?> data) toEntity,
+  required T Function(Map<String, dynamic> data) toEntity,
 }) async {
   try {
     // read contents as text
     final text = await source();
 
-    // decode JSON and expect it to contain JSON Object as `Map<String, Object?`
-    final data = json.decode(text) as Map<String, Object?>;
+    // decode JSON and expect a JSON Object as `Map<String, dynamic>`
+    final data = json.decode(text) as Map<String, dynamic>;
 
     // map JSON Object to an entity
     return toEntity(data);

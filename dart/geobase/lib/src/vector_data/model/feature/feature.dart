@@ -37,7 +37,7 @@ import 'feature_object.dart';
 class Feature<T extends Geometry> extends FeatureObject {
   final Object? _id;
   final T? _geometry;
-  final Map<String, Object?> _properties;
+  final Map<String, dynamic> _properties;
 
   /// A feature of optional [id], [geometry] and [properties] and optional
   /// [bounds].
@@ -53,7 +53,7 @@ class Feature<T extends Geometry> extends FeatureObject {
   const Feature({
     Object? id,
     T? geometry,
-    Map<String, Object?>? properties,
+    Map<String, dynamic>? properties,
     super.bounds,
   })  : _id = id,
         _properties = properties ?? const {},
@@ -95,13 +95,13 @@ class Feature<T extends Geometry> extends FeatureObject {
   factory Feature.build({
     Object? id,
     WriteGeometries? geometry,
-    Map<String, Object?>? properties,
+    Map<String, dynamic>? properties,
     Iterable<double>? bounds,
     WriteProperties? custom,
   }) {
     // optional data to be built as necessary
     T? primaryGeometry;
-    Map<String, Object?>? builtCustom;
+    Map<String, dynamic>? builtCustom;
     Map<String, Geometry>? builtCustomGeom;
 
     // use geometry builder to build any geometry (primary + foreign) objects
@@ -198,13 +198,13 @@ class Feature<T extends Geometry> extends FeatureObject {
   T? get geometry => _geometry;
 
   /// Required properties for this feature (allowed to be empty).
-  Map<String, Object?> get properties => _properties;
+  Map<String, dynamic> get properties => _properties;
 
   /// Optional custom or "foreign member" properties as a map.
   ///
   /// Main properties are accessed via [properties]. However any custom property
   /// data outside main properties is stored in this member.
-  Map<String, Object?>? get custom => null;
+  Map<String, dynamic>? get custom => null;
 
   /// Optional custom or "foreign member" geometries as a map.
   ///
@@ -245,7 +245,7 @@ class Feature<T extends Geometry> extends FeatureObject {
 }
 
 class _CustomFeature<T extends Geometry> extends Feature<T> {
-  final Map<String, Object?>? _custom;
+  final Map<String, dynamic>? _custom;
   final Map<String, Geometry>? _customGeometries;
 
   /// A feature of optional [id], [geometry], [properties], [bounds], [custom]
@@ -270,13 +270,13 @@ class _CustomFeature<T extends Geometry> extends Feature<T> {
     super.geometry,
     super.properties,
     super.bounds,
-    Map<String, Object?>? custom,
+    Map<String, dynamic>? custom,
     Map<String, Geometry>? customGeometries,
   })  : _custom = custom,
         _customGeometries = customGeometries;
 
   @override
-  Map<String, Object?>? get custom => _custom;
+  Map<String, dynamic>? get custom => _custom;
 
   @override
   Map<String, Geometry>? get customGeometries => _customGeometries;

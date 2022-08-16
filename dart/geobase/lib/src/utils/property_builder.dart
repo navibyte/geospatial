@@ -8,16 +8,16 @@ import '/src/vector/content.dart';
 
 /// A builder to create property maps from [PropertyContent] stream.
 class PropertyBuilder with PropertyContent {
-  final Map<String, Object?> _map;
+  final Map<String, dynamic> _map;
 
   const PropertyBuilder._(this._map);
 
   /// Builds a property map from the content stream provided by [properties].
   ///
   /// Built property objects are sent into the [to] map (that is also returned).
-  static Map<String, Object?> buildTo(
+  static Map<String, dynamic> buildTo(
     WriteProperties properties, {
-    required Map<String, Object?> to,
+    required Map<String, dynamic> to,
   }) {
     final builder = PropertyBuilder._(to);
     properties.call(builder);
@@ -25,7 +25,7 @@ class PropertyBuilder with PropertyContent {
   }
 
   /// Builds a property map from the content stream provided by [properties].
-  static Map<String, Object?> buildMap(WriteProperties properties) {
+  static Map<String, dynamic> buildMap(WriteProperties properties) {
     final map = <String, Object?>{};
     final builder = PropertyBuilder._(map);
     properties.call(builder);
@@ -33,7 +33,7 @@ class PropertyBuilder with PropertyContent {
   }
 
   @override
-  void properties(String name, Map<String, Object?> map) {
+  void properties(String name, Map<String, dynamic> map) {
     _map[name] = map;
   }
 

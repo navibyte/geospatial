@@ -40,7 +40,7 @@ mixin FeatureContent {
   /// in a collection. Note that when given the count MUST be exact.
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry
-  /// written. A writer implementation may use it or ignore it. Supported 
+  /// written. A writer implementation may use it or ignore it. Supported
   /// coordinate value combinations by coordinate type:
   ///
   /// Type | Expected values
@@ -88,7 +88,7 @@ mixin FeatureContent {
   /// recommended to use the `name` argument when writing those other.
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry
-  /// written. A writer implementation may use it or ignore it. Supported 
+  /// written. A writer implementation may use it or ignore it. Supported
   /// coordinate value combinations by coordinate type:
   ///
   /// Type | Expected values
@@ -116,7 +116,7 @@ mixin FeatureContent {
   void feature({
     Object? id,
     WriteGeometries? geometry,
-    Map<String, Object?>? properties,
+    Map<String, dynamic>? properties,
     Iterable<double>? bounds,
     WriteProperties? custom,
   });

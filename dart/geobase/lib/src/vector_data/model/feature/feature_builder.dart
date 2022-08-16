@@ -75,7 +75,7 @@ class FeatureBuilder<T extends FeatureObject, E extends Geometry>
   /// Decode a feature object of [R] from [text] conforming to [format].
   ///
   /// When [format] is not given, then [GeoJSON] is used as a default.
-  /// 
+  ///
   /// Format or decoder implementation specific options can be set by [options].
   static R decodeText<R extends FeatureObject, E extends Geometry>(
     String text, {
@@ -109,7 +109,7 @@ class FeatureBuilder<T extends FeatureObject, E extends Geometry>
   /// Data should be a JSON Object as decoded by the standard `json.decode()`.
   ///
   /// When [format] is not given, then [GeoJSON] is used as a default.
-  /// 
+  ///
   /// Format or decoder implementation specific options can be set by [options].
   static R decodeData<R extends FeatureObject, E extends Geometry>(
     Map<String, dynamic> data, {
@@ -142,7 +142,7 @@ class FeatureBuilder<T extends FeatureObject, E extends Geometry>
   void feature({
     Object? id,
     WriteGeometries? geometry,
-    Map<String, Object?>? properties,
+    Map<String, dynamic>? properties,
     Iterable<double>? bounds,
     WriteProperties? custom,
   }) {

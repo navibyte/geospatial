@@ -24,7 +24,7 @@ class GeospatialQuery with EquatableMixin {
   /// Note that such parameters that are defined in other members of this class
   /// or it's sub type, override any parameter on [extra], if available. Use
   /// this only for parameters that are not defined by geospatial queries.
-  final Map<String, Object?>? extra;
+  final Map<String, dynamic>? extra;
 
   /// Optional extra parameters for queries with values mapped to `String`.
   ///

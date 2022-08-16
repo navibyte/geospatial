@@ -88,7 +88,7 @@ class MultiPolygon extends SimpleGeometry {
     Iterable<Iterable<Iterable<double>>> polygons, {
     required Coords type,
     Iterable<double>? bounds,
-  })  =>
+  }) =>
       MultiPolygon._(
         listOfListOfPositionArraysFromCoords(polygons, type: type),
         type: type,

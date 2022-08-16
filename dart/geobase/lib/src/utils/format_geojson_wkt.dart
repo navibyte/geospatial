@@ -659,7 +659,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
   void feature({
     Object? id,
     WriteGeometries? geometry,
-    Map<String, Object?>? properties,
+    Map<String, dynamic>? properties,
     Iterable<double>? bounds,
     WriteProperties? custom,
   }) {
@@ -701,7 +701,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
   }
 
   @override
-  void properties(String name, Map<String, Object?> map) {
+  void properties(String name, Map<String, dynamic> map) {
     if (_atFeature && name == 'properties') {
       return;
     }
@@ -724,9 +724,9 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
       ..write('"')
       ..write(name)
       ..write('":');
-    if (value is Map<String, Object?>) {
+    if (value is Map<String, dynamic>) {
       _printMap(value);
-    } else if (value is Iterable<Object?>) {
+    } else if (value is Iterable<dynamic>) {
       _printArray(value);
     } else {
       _printValue(value);
@@ -737,16 +737,16 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     if (_markItem()) {
       _buffer.write(',');
     }
-    if (value is Map<String, Object?>) {
+    if (value is Map<String, dynamic>) {
       _printMap(value);
-    } else if (value is Iterable<Object?>) {
+    } else if (value is Iterable<dynamic>) {
       _printArray(value);
     } else {
       _printValue(value);
     }
   }
 
-  void _printMap(Map<String, Object?> map) {
+  void _printMap(Map<String, dynamic> map) {
     _startContainer(_Container.propertyMap);
     _buffer.write('{');
     for (final entry in map.entries) {
@@ -756,7 +756,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     _endContainer();
   }
 
-  void _printArray(Iterable<Object?> array) {
+  void _printArray(Iterable<dynamic> array) {
     _startContainer(_Container.propertyArray);
     _buffer.write('[');
     for (final item in array) {

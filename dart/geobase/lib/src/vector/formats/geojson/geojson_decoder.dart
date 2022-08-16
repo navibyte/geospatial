@@ -176,7 +176,7 @@ void _decodeFeature(Map<String, dynamic> feature, FeatureContent builder) {
   // build feature
   builder.feature(
     id: _optStringOrNumber(feature['id']),
-    properties: feature['properties'] as Map<String, Object?>?,
+    properties: feature['properties'] as Map<String, dynamic>?,
     geometry: geom != null
         ? (geometryBuilder) => _decodeGeometry(geom, geometryBuilder)
         : null,

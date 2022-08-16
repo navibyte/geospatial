@@ -14,6 +14,9 @@ Note this is a breaking change.
 🛠 Maintenance:
 - [Lint rules without old strong mode, but with new "stricter type checks" #148](https://github.com/navibyte/geospatial/issues/148)
 
+🛠 Refactoring:
+- [Feature properties and data maps as Map<String, dynamic> instead of Map<String, Object?> #147](https://github.com/navibyte/geospatial/issues/147)
+
 ## 0.9.0
 
 ✨ Updated with latest [geobase](https://pub.dev/packages/geobase) version

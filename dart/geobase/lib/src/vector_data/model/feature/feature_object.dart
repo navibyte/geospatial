@@ -37,7 +37,7 @@ abstract class FeatureObject extends Bounded {
 
   /// The string representation of this feature object as specified by
   /// [GeoJSON].
-  /// 
+  ///
   /// See also [toText].
   @override
   String toString() => toText();

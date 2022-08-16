@@ -140,7 +140,7 @@ class _GeoJSONFeatureSource implements BasicFeatureSource {
 
 _GeoJSONPagedFeaturesItems _parseFeatureItems(
   int? limit,
-  Map<String, Object?> data,
+  Map<String, dynamic> data,
   TextReaderFormat<FeatureContent> format,
 ) {
   // todo : get count without actually parsing the whole feature collection
@@ -172,7 +172,7 @@ class _GeoJSONPagedFeaturesItems with Paged<FeatureItems> {
 
   factory _GeoJSONPagedFeaturesItems.parse(
     TextReaderFormat<FeatureContent> format,
-    Map<String, Object?> data,
+    Map<String, dynamic> data,
     int count,
     _Range? range,
   ) {
@@ -214,7 +214,7 @@ class _GeoJSONPagedFeaturesItems with Paged<FeatureItems> {
   final FeatureItems features;
   final int count;
 
-  final Map<String, Object?>? data;
+  final Map<String, dynamic>? data;
   final _Range? nextRange;
 
   @override

@@ -22,7 +22,7 @@ typedef WriteSimpleGeometries = void Function(SimpleGeometryContent output);
 /// in future versions other geometry types are added.
 ///
 /// Coordinate positions, position arrays and bounding boxes are represented as
-/// coordinate value arrays of `Iterable<double>`. 
+/// coordinate value arrays of `Iterable<double>`.
 abstract class SimpleGeometryContent {
   /// Writes a point geometry with [position].
   ///
@@ -76,7 +76,7 @@ abstract class SimpleGeometryContent {
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry
-  /// written. A writer implementation may use it or ignore it. Supported 
+  /// written. A writer implementation may use it or ignore it. Supported
   /// coordinate value combinations by coordinate type:
   ///
   /// Type | Expected values
@@ -125,7 +125,7 @@ abstract class SimpleGeometryContent {
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry
-  /// written. A writer implementation may use it or ignore it. Supported 
+  /// written. A writer implementation may use it or ignore it. Supported
   /// coordinate value combinations by coordinate type:
   ///
   /// Type | Expected values
@@ -171,7 +171,7 @@ abstract class SimpleGeometryContent {
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry
-  /// written. A writer implementation may use it or ignore it. Supported 
+  /// written. A writer implementation may use it or ignore it. Supported
   /// coordinate value combinations by coordinate type:
   ///
   /// Type | Expected values
@@ -213,7 +213,7 @@ abstract class SimpleGeometryContent {
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry
-  /// written. A writer implementation may use it or ignore it. Supported 
+  /// written. A writer implementation may use it or ignore it. Supported
   /// coordinate value combinations by coordinate type:
   ///
   /// Type | Expected values
@@ -273,7 +273,7 @@ abstract class SimpleGeometryContent {
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry
-  /// written. A writer implementation may use it or ignore it. Supported 
+  /// written. A writer implementation may use it or ignore it. Supported
   /// coordinate value combinations by coordinate type:
   ///
   /// Type | Expected values

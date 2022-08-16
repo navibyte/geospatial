@@ -29,7 +29,7 @@ import 'feature_object.dart';
 @immutable
 class FeatureCollection<E extends Feature> extends FeatureObject {
   final List<E> _features;
-  final Map<String, Object?>? _custom;
+  final Map<String, dynamic>? _custom;
 
   /// A feature collection with an array of [features] and optional [bounds].
   const FeatureCollection(List<E> features, {super.bounds})
@@ -104,7 +104,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   /// Feature items on a collection contain a geometry of [T].
   ///
   /// When [format] is not given, then [GeoJSON] is used as a default.
-  /// 
+  ///
   /// Format or decoder implementation specific options can be set by [options].
   static FeatureCollection<Feature<T>> fromText<T extends Geometry>(
     String text, {
@@ -124,7 +124,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   /// Feature items on a collection contain a geometry of [T].
   ///
   /// When [format] is not given, then [GeoJSON] is used as a default.
-  /// 
+  ///
   /// Format or decoder implementation specific options can be set by [options].
   static FeatureCollection<Feature<T>> fromData<T extends Geometry>(
     Map<String, dynamic> data, {
@@ -144,7 +144,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   ///
   /// The primary feature items are accessed via [features]. However any custom
   /// property data outside it is stored in this member.
-  Map<String, Object?>? get custom => _custom;
+  Map<String, dynamic>? get custom => _custom;
 
   @override
   void writeTo(FeatureContent writer) {

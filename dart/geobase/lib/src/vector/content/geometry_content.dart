@@ -26,7 +26,7 @@ mixin GeometryContent implements SimpleGeometryContent {
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry
-  /// written. A writer implementation may use it or ignore it. Supported 
+  /// written. A writer implementation may use it or ignore it. Supported
   /// coordinate value combinations by coordinate type:
   ///
   /// Type | Expected values

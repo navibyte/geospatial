@@ -14,14 +14,14 @@ import '/src/common/meta.dart';
 @immutable
 class FeatureItem with MetaAware, EquatableMixin {
   /// Create a feature item instance with [feature] and optional [meta].
-  const FeatureItem(this.feature, {Map<String, Object?>? meta})
+  const FeatureItem(this.feature, {Map<String, dynamic>? meta})
       : meta = meta ?? const {};
 
   /// The wrapped feature.
   final Feature feature;
 
   @override
-  final Map<String, Object?> meta;
+  final Map<String, dynamic> meta;
 
   @override
   List<Object?> get props => [feature, meta];

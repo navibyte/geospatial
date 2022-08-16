@@ -7,5 +7,5 @@
 /// A mixin aware of metadata for something.
 mixin MetaAware {
   /// Metadata as a data object (ie. data from a JSON Object).
-  Map<String, Object?> get meta => const {};
+  Map<String, dynamic> get meta => const {};
 }

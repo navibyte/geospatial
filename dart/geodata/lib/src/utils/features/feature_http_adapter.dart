@@ -38,7 +38,7 @@ class FeatureHttpAdapter {
   /// Returns an entity mapped from JSON Object using [toEntity].
   Future<T> getEntityFromJsonObject<T>(
     Uri url, {
-    required T Function(Map<String, Object?> data) toEntity,
+    required T Function(Map<String, dynamic> data) toEntity,
     Map<String, String>? headers = _acceptJSON,
     List<String>? expect = _expectJSON,
   }) async {
@@ -71,7 +71,7 @@ class FeatureHttpAdapter {
           }
 
           // decode JSON and expect it to contain JSON Object
-          final data = json.decode(response.body) as Map<String, Object?>;
+          final data = json.decode(response.body) as Map<String, dynamic>;
 
           // map JSON Object to an entity
           return toEntity(data);

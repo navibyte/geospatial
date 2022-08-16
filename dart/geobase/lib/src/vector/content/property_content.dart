@@ -19,7 +19,7 @@ mixin PropertyContent {
   ///             'baz': true,
   ///         });
   /// ```
-  void properties(String name, Map<String, Object?> map);
+  void properties(String name, Map<String, dynamic> map);
 
   /// Writes a property named by [name] and with [value].
   ///
