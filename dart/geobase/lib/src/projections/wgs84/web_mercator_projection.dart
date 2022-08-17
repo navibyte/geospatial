@@ -6,8 +6,10 @@
 
 import 'package:meta/meta.dart';
 
+import '/src/codes/coords.dart';
 import '/src/coordinates/base.dart';
 import '/src/coordinates/projection.dart';
+import '/src/utils/format_validation.dart';
 import '/src/utils/web_mercator_converter.dart';
 
 // More information about WGS 84 and Web Mercator
@@ -61,6 +63,38 @@ class _Wgs84ToWebMercatorProjection with Projection {
       m: source.optM,
     );
   }
+
+  @override
+  List<double> projectCoords({
+    required Iterable<double> source,
+    List<double>? target,
+    required Coords type,
+  }) {
+    final dim = type.coordinateDimension;
+    final result = target ?? List<double>.filled(source.length, 0.0);
+
+    var offset = 0;
+    final iter = source.iterator;
+    while (iter.moveNext()) {
+      // project (lon, lat) to (x, y)
+      result[offset] = _converter.toProjectedX(iter.current);
+      result[offset + 1] = iter.moveNext()
+          ? _converter.toProjectedY(iter.current)
+          : throw invalidCoordinates;
+      // optional z and m coordinates unchanged
+      if (dim >= 3) {
+        result[offset + 2] =
+            iter.moveNext() ? iter.current : throw invalidCoordinates;
+      }
+      if (dim >= 4) {
+        result[offset + 3] =
+            iter.moveNext() ? iter.current : throw invalidCoordinates;
+      }
+      offset += dim;
+    }
+
+    return result;
+  }
 }
 
 class _WebMercatorToWgs84Projection with Projection {
@@ -80,5 +114,37 @@ class _WebMercatorToWgs84Projection with Projection {
       z: source.optZ,
       m: source.optM,
     );
+  }
+
+  @override
+  List<double> projectCoords({
+    required Iterable<double> source,
+    List<double>? target,
+    required Coords type,
+  }) {
+    final dim = type.coordinateDimension;
+    final result = target ?? List<double>.filled(source.length, 0.0);
+
+    var offset = 0;
+    final iter = source.iterator;
+    while (iter.moveNext()) {
+      // unproject (x, y) to (lon, lat)
+      result[offset] = _converter.fromProjectedX(iter.current);
+      result[offset + 1] = iter.moveNext()
+          ? _converter.fromProjectedY(iter.current)
+          : throw invalidCoordinates;
+      // optional z and m coords unchanged
+      if (dim >= 3) {
+        result[offset + 2] =
+            iter.moveNext() ? iter.current : throw invalidCoordinates;
+      }
+      if (dim >= 4) {
+        result[offset + 3] =
+            iter.moveNext() ? iter.current : throw invalidCoordinates;
+      }
+      offset += dim;
+    }
+
+    return result;
   }
 }

@@ -6,8 +6,10 @@
 
 import 'package:proj4dart/proj4dart.dart' as p4d;
 
+import '/src/codes/coords.dart';
 import '/src/coordinates/base.dart';
 import '/src/coordinates/projection.dart';
+import '/src/utils/format_validation.dart';
 
 /// A projection adapter based on the Proj4dart package.
 class Proj4d with ProjectionAdapter {
@@ -137,6 +139,61 @@ class _ProjectionProxy with Projection {
       z: projected.z,
       m: source.optM,
     );
+  }
+
+  @override
+  List<double> projectCoords({
+    required Iterable<double> source,
+    List<double>? target,
+    required Coords type,
+  }) {
+    final dim = type.coordinateDimension;
+    final result = target ?? List<double>.filled(source.length, 0.0);
+
+    var offset = 0;
+    final iter = source.iterator;
+    while (iter.moveNext()) {
+      // source coordinates (as a Point instance of proj4dart)
+      // (if geographical source coords: longitude is at x, latitude is at y)
+      final x = iter.current;
+      final y = iter.moveNext() ? iter.current : throw invalidCoordinates;
+      final hasZ = type.is3D;
+      final z = hasZ
+          ? (iter.moveNext() ? iter.current : throw invalidCoordinates)
+          : null;
+      final hasM = type.isMeasured;
+      final m = hasM
+          ? (iter.moveNext() ? iter.current : throw invalidCoordinates)
+          : null;
+      final point =
+          hasZ ? p4d.Point.withZ(x: x, y: y, z: z) : p4d.Point(x: x, y: y);
+
+      // project using forward or inverse projection of the tuple
+      final p4d.Point projected;
+      try {
+        projected = inverse ? tuple.inverse(point) : tuple.forward(point);
+      } catch (e) {
+        throw FormatException(
+          inverse ? 'Error (un)projecting a point' : 'Error projecting a point',
+          e,
+        );
+      }
+
+      // save a projected (or unprojected) point (with m coordinate unchanged)
+      // to the result coordinate value array
+      result[offset] = projected.x;
+      result[offset + 1] = projected.y;
+      if (hasZ) {
+        result[offset + 2] = projected.z ?? z ?? 0.0;
+      }
+      if (hasM) {
+        result[offset + (hasZ ? 3 : 2)] = m ?? 0.0;
+      }
+
+      offset += dim;
+    }
+
+    return result;
   }
 }
 

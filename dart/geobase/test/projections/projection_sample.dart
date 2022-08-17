@@ -33,6 +33,19 @@ void expectPosition<T1 extends Position, T2 extends Position>(
   expect(actual.m, expected.m);
 }
 
+void expectCoords(List<double> actual, List<double> expected, double tol) {
+  expect(actual.length, expected.length);
+  for (var i = 0; i < actual.length; i++) {
+    final test = (actual[i] - expected[i]).abs() <= tol;
+    if (!test) {
+      print('Failed at $i');
+      print(actual);
+      print(expected);
+    }
+    expect(test, true);
+  }
+}
+
 const wgs84ToWebMercatorData = [
   [0.0, 0.0, 0.0, 0.0],
   [8.8472315, 47.3238447, 984869.31, 5995094.90],
