@@ -94,13 +94,12 @@ abstract class PointSeries<E extends Point>
   /// The projected series is populated by default. If [lazy] is set true then
   /// returns a new lazy series with points of the series projected lazily.
   ///
-  /// When [to] is provided, then target points of [R] are created using
-  /// that as a point factory. Otherwise [projection] uses it's own factory.
+  /// Target points of [R] are created using [to] as a point factory.
   @override
   PointSeries<R> project<R extends Point>(
-    Projection<R> projection, {
+    Projection projection, {
     bool lazy = false,
-    CreatePosition<R>? to,
+    required CreatePosition<R> to,
   });
 
   /// Writes this point series object to [writer].
@@ -216,9 +215,9 @@ class _PointSeriesView<E extends Point>
 
   @override
   PointSeries<R> project<R extends Point>(
-    Projection<R> projection, {
+    Projection projection, {
     bool lazy = false,
-    CreatePosition<R>? to,
+    required CreatePosition<R> to,
   }) {
     final projected = map((point) => projection.project(point, to: to));
     return _PointSeriesView(

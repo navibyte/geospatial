@@ -7,33 +7,12 @@
 import 'package:proj4dart/proj4dart.dart' as p4d;
 
 import '/src/coordinates/base.dart';
-import '/src/coordinates/geographic.dart';
-import '/src/coordinates/projected.dart';
 import '/src/coordinates/projection.dart';
 
-/// Resolves a projection adapter between [fromCrs] and [toCrs].
-///
-/// As based on the Proj4dart package, it has built-in support for following crs
-/// codes: "EPSG:4326" (with alias "WGS84"), "EPSG:4269", "EPSG:3857" (with
-/// aliases "EPSG:3785", "GOOGLE", "EPSG:900913", "EPSG:102113").
-///
-/// For all other crs codes, also a projection definition must be given via
-/// [fromDef] or [toDef]. Proj4 definition strings, OGC WKT definitions and
-/// ESRI WKT definitions are supported. More info from the Proj4dart package.
-///
-/// Throws FormatException if projections could not be resolved.
-Proj4Adapter proj4dart(
-  String fromCrs,
-  String toCrs, {
-  String? fromDef,
-  String? toDef,
-}) =>
-    Proj4Adapter.resolve(fromCrs, toCrs, fromDef: fromDef, toDef: toDef);
-
 /// A projection adapter based on the Proj4dart package.
-class Proj4Adapter with ProjectionAdapter {
+class Proj4d with ProjectionAdapter {
   /// Create an adapter with a projection [tuple] of the Proj4dart package.
-  const Proj4Adapter(this.fromCrs, this.toCrs, this.tuple);
+  const Proj4d(this.fromCrs, this.toCrs, this.tuple);
 
   /// Resolves a projection adapter between [fromCode] and [toCode].
   ///
@@ -46,13 +25,13 @@ class Proj4Adapter with ProjectionAdapter {
   /// ESRI WKT definitions are supported. More info from the Proj4dart package.
   ///
   /// Throws FormatException if projections could not be resolved.
-  factory Proj4Adapter.resolve(
+  factory Proj4d.resolve(
     String fromCode,
     String toCode, {
     String? fromDef,
     String? toDef,
   }) =>
-      Proj4Adapter(
+      Proj4d(
         fromCode,
         toCode,
         p4d.ProjectionTuple(
@@ -72,14 +51,14 @@ class Proj4Adapter with ProjectionAdapter {
   /// ESRI WKT definitions are supported. More info from the Proj4dart package.
   ///
   /// Returns null if projections could not be resolved.
-  static Proj4Adapter? tryResolve(
+  static Proj4d? tryResolve(
     String fromCode,
     String toCode, {
     String? fromDef,
     String? toDef,
   }) {
     try {
-      return Proj4Adapter.resolve(
+      return Proj4d.resolve(
         fromCode,
         toCode,
         fromDef: fromDef,
@@ -100,38 +79,32 @@ class Proj4Adapter with ProjectionAdapter {
   final String toCrs;
 
   @override
-  Projection<Projected> forward() =>
-      _ProjectionProxy(factory: Projected.create, tuple: tuple, inverse: false);
-
-  @override
-  Projection<R> forwardTo<R extends Position>(CreatePosition<R> factory) =>
-      _ProjectionProxy(factory: factory, tuple: tuple, inverse: false);
-
-  @override
-  Projection<Geographic> inverse() => _ProjectionProxy(
-        factory: Geographic.create,
+  Projection get forward => _ProjectionProxy(
         tuple: tuple,
-        inverse: true,
+        inverse: false,
       );
 
   @override
-  Projection<R> inverseTo<R extends Position>(CreatePosition<R> factory) =>
-      _ProjectionProxy(factory: factory, tuple: tuple, inverse: true);
+  Projection get inverse => _ProjectionProxy(
+        tuple: tuple,
+        inverse: true,
+      );
 }
 
-class _ProjectionProxy<R extends Position> with Projection<R> {
+class _ProjectionProxy with Projection {
   const _ProjectionProxy({
-    required this.factory,
     required this.tuple,
     required this.inverse,
   });
 
-  final CreatePosition<R> factory;
   final p4d.ProjectionTuple tuple;
   final bool inverse;
 
   @override
-  R project(Position source, {CreatePosition<R>? to}) {
+  R project<R extends Position>(
+    Position source, {
+    required CreatePosition<R> to,
+  }) {
     // source coordinates (as a Point instance of proj4dart)
     // (if geographical source coords: longitude is at x, latitude is at y)
     final hasZ = source.is3D;
@@ -158,7 +131,7 @@ class _ProjectionProxy<R extends Position> with Projection<R> {
     }
 
     // return a projected (or unprojected) point with m coordinate unchanged
-    return (to ?? factory).call(
+    return to.call(
       x: projected.x,
       y: projected.y,
       z: projected.z,

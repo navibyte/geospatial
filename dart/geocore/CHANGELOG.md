@@ -4,6 +4,7 @@ Development version `0.10.0-dev.1`.
 
 ⚠️ Breaking changes:
 - Content interfaces, content encoders and text formats redesigned
+- [Type changes on projections and adapters #151](https://github.com/navibyte/geospatial/issues/151)
 
 🧩 Features:
 - [Add WKB encoding/decoding support #115](https://github.com/navibyte/geospatial/issues/115)

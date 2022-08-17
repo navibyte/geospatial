@@ -136,8 +136,8 @@ class LineString<T extends Point> extends Geometry with EquatableMixin {
 
   @override
   LineString<R> project<R extends Point>(
-    Projection<R> projection, {
-    CreatePosition<R>? to,
+    Projection projection, {
+    required CreatePosition<R> to,
   }) =>
       LineString(chain.project(projection, lazy: false, to: to), type: type);
 

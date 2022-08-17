@@ -14,18 +14,17 @@ import 'projection_sample.dart';
 void main() {
   group('Test projections between WGS84 and Web Mercator', () {
     test('webMercatorToWgs84(Projected to Geographic)', () {
-      final toWgs84 = wgs84ToWebMercator.inverse();
+      final toWgs84 = WGS84.webMercator.inverse;
       for (final coords in wgs84ToWebMercatorData) {
         final point2 = Projected(x: coords[2], y: coords[3]);
         final geoPoint2 = Geographic(lon: coords[0], lat: coords[1]);
-        expectPosition(toWgs84.project(point2), geoPoint2);
         expectPosition(
-          toWgs84.project(point2),
-          Geographic(lon: coords[0], lat: coords[1]),
+          toWgs84.project(point2, to: Geographic.create),
+          geoPoint2,
         );
         expectPosition(
-          toWgs84.project(Projected(x: coords[2], y: coords[3], z: 30.0)),
-          Geographic(lon: coords[0], lat: coords[1], elev: 30.0),
+          toWgs84.project(point2, to: Geographic.create),
+          Geographic(lon: coords[0], lat: coords[1]),
         );
         expectPosition(
           toWgs84.project(
@@ -38,11 +37,15 @@ void main() {
     });
 
     test('wgs84ToWebMercator(Geographic to Projected)', () {
-      final toWebMercator = wgs84ToWebMercator.forward();
+      final toWebMercator = WGS84.webMercator.forward;
       for (final coords in wgs84ToWebMercatorData) {
         final geoPoint3 = Geographic(lon: coords[0], lat: coords[1]);
         final point3 = Projected(x: coords[2], y: coords[3]);
-        expectPosition(toWebMercator.project(geoPoint3), point3, 0.01);
+        expectPosition(
+          toWebMercator.project(geoPoint3, to: Projected.create),
+          point3,
+          0.01,
+        );
       }
     });
   });

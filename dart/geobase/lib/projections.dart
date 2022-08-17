@@ -12,4 +12,4 @@
 /// Usage: import `package:geobase/projections.dart`
 library projections;
 
-export 'src/projections/mercator.dart';
+export 'src/projections/wgs84.dart';

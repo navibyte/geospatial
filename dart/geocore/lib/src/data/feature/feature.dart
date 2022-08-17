@@ -69,15 +69,14 @@ class Feature<T extends Geometry> extends FeatureWritable implements Bounded {
 
   /// Returns a new feature with geometry projected using [projection].
   ///
-  /// When [to] is provided, then target points of [R] are created using
-  /// that as a point factory. Otherwise [projection] uses it's own factory.
+  /// Target points of [R] are created using [to] as a point factory.
   ///
   /// Transforms only [geometry] of this feature. Other members, [id] and
   /// [properties], are set without modifications to a new feature object.
   @override
   Feature project<R extends Point>(
-    Projection<R> projection, {
-    CreatePosition<R>? to,
+    Projection projection, {
+    required CreatePosition<R> to,
   }) =>
       Feature(
         id: _id,

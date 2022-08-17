@@ -80,8 +80,8 @@ class PointWrapper<T extends Point<C>, C extends num> extends Point<C> {
 
   @override
   R project<R extends Point>(
-    Projection<R> projection, {
-    CreatePosition<R>? to,
+    Projection projection, {
+    required CreatePosition<R> to,
   }) =>
       point.project(projection, to: to);
 

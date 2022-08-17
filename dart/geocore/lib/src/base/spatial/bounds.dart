@@ -173,8 +173,8 @@ abstract class Bounds<T extends Point> extends Bounded
 
   @override
   Bounds<R> project<R extends Point>(
-    Projection<R> projection, {
-    CreatePosition<R>? to,
+    Projection projection, {
+    required CreatePosition<R> to,
   });
 
   @override
@@ -245,8 +245,8 @@ class BoundsBase<T extends Point> extends Bounds<T> {
 
   @override
   Bounds<R> project<R extends Point>(
-    Projection<R> projection, {
-    CreatePosition<R>? to,
+    Projection projection, {
+    required CreatePosition<R> to,
   }) =>
       BoundsBase(
         min: min.project(projection, to: to),

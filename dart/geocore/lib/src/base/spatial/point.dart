@@ -193,12 +193,11 @@ abstract class Point<C extends num> extends Geometry
 
   /// Returns a new point projected from this point using [projection].
   ///
-  /// When [to] is provided, then target points of [R] are created using
-  /// that as a point factory. Otherwise [projection] uses it's own factory.
+  /// Target points of [R] are created using [to] as a point factory.
   @override
   R project<R extends Point>(
-    Projection<R> projection, {
-    CreatePosition<R>? to,
+    Projection projection, {
+    required CreatePosition<R> to,
   }) =>
       projection.project(this, to: to);
 

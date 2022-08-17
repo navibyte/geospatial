@@ -414,14 +414,22 @@ Here projected coordinates are metric coordinates with both x and y values
 having the valid value range of (-20037508.34, 20037508.34).
 
 ```dart
+  // Built-in coordinate projections (currently only between WGS 84 and
+  // Web Mercator)
+
   // Geographic (WGS 84 longitude-latitude) to Projected (WGS 84 Web Mercator)
-  final forward = wgs84ToWebMercator.forward();
-  final projected =
-      forward.project(const Geographic(lon: -0.0014, lat: 51.4778));
+  final forward = WGS84.webMercator.forward;
+  final projected = forward.project(
+    const Geographic(lon: -0.0014, lat: 51.4778),
+    to: Projected.create,
+  );
 
   // Projected (WGS 84 Web Mercator) to Geographic (WGS 84 longitude-latitude)
-  final inverse = wgs84ToWebMercator.inverse();
-  final unprojected = inverse.project(projected);
+  final inverse = WGS84.webMercator.inverse;
+  final unprojected = inverse.project(
+    projected,
+    to: Geographic.create,
+  );
 
   print('$unprojected <=> $projected');
 ```
@@ -429,7 +437,7 @@ having the valid value range of (-20037508.34, 20037508.34).
 ### With proj4dart
 
 Coordinate projections based on the external
-[proj4dart](https://pub.dev/packages/proj4dart) package:
+[proj4dart](https://pub.dev/packages/proj4dart) package requires imports like
 
 ```dart
 // import the default geobase library
@@ -437,20 +445,28 @@ import 'package:geobase/geobase.dart';
 
 // need also an additional import with dependency to `proj4dart` 
 import 'package:geobase/projections_proj4d.dart';
+```
 
-// A projection adapter from WGS84 (EPSG:4326) to EPSG:23700 (with definition)
-// (based on the sample at https://pub.dev/packages/proj4dart).
-final adapter = proj4dart(
-  'EPSG:4326',
-  'EPSG:23700',
-  toDef: '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 '
-      '+k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 '
-      '+towgs84=52.17,-71.82,-14.9,0,0,0,0 +units=m +no_defs',
-);
+Then a sample to use coordinate projections:
 
-// Apply a forward projection to EPSG:23700 with points represented as Point2.
-final forward = adapter.forward();
-print(forward.project(const Geographic(lon: 17.8880, lat: 46.8922)));
+```dart
+  // A projection adapter from WGS84 (EPSG:4326) to EPSG:23700 (with definition)
+  // (based on the sample at https://pub.dev/packages/proj4dart).
+  final adapter = Proj4d.resolve(
+    'EPSG:4326',
+    'EPSG:23700',
+    toDef: '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 '
+        '+k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 '
+        '+towgs84=52.17,-71.82,-14.9,0,0,0,0 +units=m +no_defs',
+  );
+
+  // Apply a forward projection to EPSG:23700 with points represented as Point2.
+  print(
+    adapter.forward.project(
+      const Geographic(lon: 17.8880, lat: 46.8922),
+      to: Projected.create,
+    ),
+  );
 ```
 
 Please see the documentation of [proj4dart](https://pub.dev/packages/proj4dart)

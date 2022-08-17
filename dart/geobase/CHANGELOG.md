@@ -12,6 +12,7 @@ binary data formats, encodings and content interfaces also redesigned.
 - [Geometry content written with more specific methods #128](https://github.com/navibyte/geospatial/issues/128)
 - [Allow coordinate value arrays along with position arrays on content interfaces #129](https://github.com/navibyte/geospatial/issues/129)
 - [Simplify Coords enum #130](https://github.com/navibyte/geospatial/issues/130)
+- [Type changes on projections and adapters #151](https://github.com/navibyte/geospatial/issues/151)
 
 🧩 Features:
 - [Combine writers and parsers for formats (GeoJSON, WKT) consistently #125](https://github.com/navibyte/geospatial/issues/125)

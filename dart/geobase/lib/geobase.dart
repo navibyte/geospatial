@@ -40,7 +40,7 @@ export 'src/coordinates/scalable.dart';
 export 'src/geodesy/spherical.dart';
 export 'src/meta/extent.dart';
 export 'src/meta/time.dart';
-export 'src/projections/mercator.dart';
+export 'src/projections/wgs84.dart';
 export 'src/tiling/convert.dart';
 export 'src/tiling/tilematrix.dart';
 export 'src/transforms/basic.dart';

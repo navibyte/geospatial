@@ -60,12 +60,11 @@ abstract class Geometry extends Bounded {
 
   /// Returns a new geometry with all points projected using [projection].
   ///
-  /// When [to] is provided, then target points of [R] are created using
-  /// that as a point factory. Otherwise [projection] uses it's own factory.
+  /// Target points of [R] are created using [to] as a point factory.
   @override
   Geometry project<R extends Point>(
-    Projection<R> projection, {
-    CreatePosition<R>? to,
+    Projection projection, {
+    required CreatePosition<R> to,
   });
 
   /// Writes this geometry object to [writer].
@@ -119,8 +118,8 @@ class _EmptyGeometry extends Geometry {
 
   @override
   Geometry project<R extends Point>(
-    Projection<R> projection, {
-    CreatePosition<R>? to,
+    Projection projection, {
+    required CreatePosition<R> to,
   }) =>
       throw const FormatException('Cannot project empty geometry.');
 

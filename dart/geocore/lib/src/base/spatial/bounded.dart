@@ -41,10 +41,9 @@ abstract class Bounded extends _BoundedBase {
 
   /// Returns a new object with all points projected using [projection].
   ///
-  /// When [factory] is provided, then target points of [R] are created using
-  /// that as a point factory. Otherwise [projection] uses it's own factory.
+  /// Target points of [R] are created using [to] as a point factory.
   Bounded project<R extends Point>(
-    Projection<R> projection, {
-    CreatePosition<R>? to,
+    Projection projection, {
+    required CreatePosition<R> to,
   });
 }

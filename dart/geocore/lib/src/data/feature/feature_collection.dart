@@ -90,12 +90,11 @@ class FeatureCollection<E extends Feature> extends FeatureWritable
 
   /// Returns a new collection with features projected using [projection].
   ///
-  /// When [to] is provided, then target points of [R] are created using
-  /// that as a point factory. Otherwise [projection] uses it's own factory.
+  /// Target points of [R] are created using [to] as a point factory.
   @override
   FeatureCollection project<R extends Point>(
-    Projection<R> projection, {
-    CreatePosition<R>? to,
+    Projection projection, {
+    required CreatePosition<R> to,
   }) =>
       // Note: returns FeatureCollection, not FeatureCollection<E> as projected
       // feature elements could be other than E as a result of some projections.

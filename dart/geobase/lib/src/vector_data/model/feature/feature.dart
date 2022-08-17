@@ -204,7 +204,7 @@ class Feature<T extends Geometry> extends FeatureObject {
   ///
   /// The primary geometry is via [geometry]. However any custom geometry data
   /// outside the primary geometry is stored in this member.
-  /// 
+  ///
   /// See also [custom] for non-geometry custom or "foreign member" properties.
   Map<String, Geometry>? get customGeometries => null;
 

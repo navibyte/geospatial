@@ -4,10 +4,6 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/coordinates/base.dart';
-import '/src/coordinates/geographic.dart';
-import '/src/coordinates/projected.dart';
-
 import 'projection.dart';
 
 /// A projection adapter bundles forward and inverse projections.
@@ -19,32 +15,8 @@ mixin ProjectionAdapter {
   String get toCrs;
 
   /// Returns a projection that projects from [fromCrs] to [toCrs].
-  ///
-  /// By default, result positions are created using `Projected.create`. This
-  /// can be overridden by giving another factory function when using a
-  /// projection.
-  Projection<Projected> forward();
-
-  /// Returns a projection that projects from [fromCrs] to [toCrs].
-  ///
-  /// By default, result positions of [R] are created using [factory]. This can
-  /// be overridden by giving another factory function when using a projection.
-  Projection<R> forwardTo<R extends Position>(
-    CreatePosition<R> factory,
-  );
+  Projection get forward;
 
   /// Returns a projection that projects from [toCrs] to [fromCrs].
-  ///
-  /// By default, result positions are created using `Geographic.create`. This
-  /// can be overridden by giving another factory function when using a
-  /// projection.
-  Projection<Geographic> inverse();
-
-  /// Returns a projection that unprojects from [toCrs] to [fromCrs].
-  ///
-  /// By default, result positions of [R] are created using [factory]. This can
-  /// be overridden by giving another factory function when using a projection.
-  Projection<R> inverseTo<R extends Position>(
-    CreatePosition<R> factory,
-  );
+  Projection get inverse;
 }

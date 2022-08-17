@@ -449,13 +449,18 @@ void _wgs84Projections() {
   // Web Mercator)
 
   // Geographic (WGS 84 longitude-latitude) to Projected (WGS 84 Web Mercator)
-  final forward = wgs84ToWebMercator.forward();
-  final projected =
-      forward.project(const Geographic(lon: -0.0014, lat: 51.4778));
+  final forward = WGS84.webMercator.forward;
+  final projected = forward.project(
+    const Geographic(lon: -0.0014, lat: 51.4778),
+    to: Projected.create,
+  );
 
   // Projected (WGS 84 Web Mercator) to Geographic (WGS 84 longitude-latitude)
-  final inverse = wgs84ToWebMercator.inverse();
-  final unprojected = inverse.project(projected);
+  final inverse = WGS84.webMercator.inverse;
+  final unprojected = inverse.project(
+    projected,
+    to: Geographic.create,
+  );
 
   print('$unprojected <=> $projected');
 }
