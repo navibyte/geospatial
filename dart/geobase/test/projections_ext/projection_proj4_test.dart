@@ -67,7 +67,7 @@ void main() {
       final inverse = adapter.inverse;
 
       for (var dim = 2; dim <= 4; dim++) {
-        final pointCount = wgs84ToWebMercatorData.length  - 1;
+        final pointCount = wgs84ToWebMercatorData.length - 1;
         final source = List.filled(dim * pointCount, 10.0);
         final target = List.filled(dim * pointCount, 10.0);
         for (var i = 0; i < pointCount; i++) {
@@ -78,18 +78,12 @@ void main() {
           target[i * dim + 1] = sample[3];
         }
         expectCoords(
-          forward.projectCoords(
-            source: source,
-            type: Coords.fromDimension(dim),
-          ),
+          forward.projectCoords(source, type: Coords.fromDimension(dim)),
           target,
           0.01,
         );
         expectCoords(
-          inverse.projectCoords(
-            source: target,
-            type: Coords.fromDimension(dim),
-          ),
+          inverse.projectCoords(target, type: Coords.fromDimension(dim)),
           source,
           0.01,
         );

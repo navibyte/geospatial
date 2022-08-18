@@ -33,12 +33,12 @@ mixin Projection {
   /// x, y and z of the second position, and so on.
   ///
   /// The length of the [target] array, when given, must be exactly same as the
-  /// length of the [source] array, and [target] must be a mutable list. If 
+  /// length of the [source] array, and [target] must be a mutable list. If
   /// [target] is null, then a new list instance is created.
   ///
   /// Throws FormatException if cannot project.
-  List<double> projectCoords({
-    required Iterable<double> source,
+  List<double> projectCoords(
+    Iterable<double> source, {
     List<double>? target,
     required Coords type,
   });

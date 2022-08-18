@@ -142,8 +142,8 @@ class _ProjectionProxy with Projection {
   }
 
   @override
-  List<double> projectCoords({
-    required Iterable<double> source,
+  List<double> projectCoords(
+    Iterable<double> source, {
     List<double>? target,
     required Coords type,
   }) {

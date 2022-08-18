@@ -68,18 +68,12 @@ void main() {
           target[i * dim + 1] = sample[3];
         }
         expectCoords(
-          forward.projectCoords(
-            source: source,
-            type: Coords.fromDimension(dim),
-          ),
+          forward.projectCoords(source, type: Coords.fromDimension(dim)),
           target,
           0.01,
         );
         expectCoords(
-          inverse.projectCoords(
-            source: target,
-            type: Coords.fromDimension(dim),
-          ),
+          inverse.projectCoords(target, type: Coords.fromDimension(dim)),
           source,
           0.01,
         );
