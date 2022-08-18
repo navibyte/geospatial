@@ -23,11 +23,14 @@ import '/src/vector_data/array.dart';
 @immutable
 class LonLat extends PositionCoords implements Geographic {
   /// A geographic position as an iterable collection of [lon] and [lat] values.
+  /// 
+  /// Longitude is normalized using [normalizeLongitude] and latitude is clamped
+  /// using [clampLatitude] before storing values.
   factory LonLat(double lon, double lat) {
     // create a fixed list of 2 items
     final list = List<double>.filled(2, 0);
-    list[0] = lon;
-    list[1] = lat;
+    list[0] = normalizeLongitude(lon);
+    list[1] = clampLatitude(lat);
     return LonLat.view(list);
   }
 
@@ -155,11 +158,14 @@ class LonLat extends PositionCoords implements Geographic {
 class LonLatElev extends LonLat {
   /// A geographic position as an iterable collection of [lon], [lat] and [elev]
   /// values.
+  /// 
+  /// Longitude is normalized using [normalizeLongitude] and latitude is clamped
+  /// using [clampLatitude] before storing values.
   factory LonLatElev(double lon, double lat, double elev) {
     // create a fixed list of 3 items
     final list = List<double>.filled(3, 0);
-    list[0] = lon;
-    list[1] = lat;
+    list[0] = normalizeLongitude(lon);
+    list[1] = clampLatitude(lat);
     list[2] = elev;
     return LonLatElev.view(list);
   }
@@ -254,11 +260,14 @@ class LonLatElev extends LonLat {
 class LonLatM extends LonLat {
   /// A geographic position as an iterable collection of [lon], [lat] and [m]
   /// values.
+  /// 
+  /// Longitude is normalized using [normalizeLongitude] and latitude is clamped
+  /// using [clampLatitude] before storing values.
   factory LonLatM(double lon, double lat, double m) {
     // create a fixed list of 3 items
     final list = List<double>.filled(3, 0);
-    list[0] = lon;
-    list[1] = lat;
+    list[0] = normalizeLongitude(lon);
+    list[1] = clampLatitude(lat);
     list[2] = m;
     return LonLatM.view(list);
   }
@@ -347,11 +356,14 @@ class LonLatM extends LonLat {
 class LonLatElevM extends LonLatElev {
   /// A geographic position as an iterable collection of [lon], [lat], [elev]
   /// and [m] values.
+  /// 
+  /// Longitude is normalized using [normalizeLongitude] and latitude is clamped
+  /// using [clampLatitude] before storing values.
   factory LonLatElevM(double lon, double lat, double elev, double m) {
     // create a fixed list of 4 items
     final list = List<double>.filled(4, 0);
-    list[0] = lon;
-    list[1] = lat;
+    list[0] = normalizeLongitude(lon);
+    list[1] = clampLatitude(lat);
     list[2] = elev;
     list[3] = m;
     return LonLatElevM.view(list);
