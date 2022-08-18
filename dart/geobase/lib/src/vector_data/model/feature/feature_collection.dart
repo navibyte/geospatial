@@ -6,6 +6,7 @@
 
 import 'package:meta/meta.dart';
 
+import '/src/coordinates/projection.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/property_builder.dart';
 import '/src/vector/content.dart';
@@ -142,6 +143,14 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
 
   @override
   Map<String, dynamic>? get custom => _custom;
+
+  @override
+  FeatureCollection<E> project(Projection projection) => FeatureCollection<E>._(
+        _features
+            .map<E>((feature) => feature.project(projection) as E)
+            .toList(growable: false),
+        _custom,
+      );
 
   @override
   void writeTo(FeatureContent writer) {

@@ -6,6 +6,7 @@
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/coordinates/projection.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/vector/content.dart';
 import '/src/vector/encoding.dart';
@@ -103,6 +104,14 @@ class MultiLineString extends SimpleGeometry {
   /// All line strings as a lazy iterable of [LineString] geometries.
   Iterable<LineString> get lineStrings =>
       chains.map<LineString>(LineString.new);
+
+  @override
+  MultiLineString project(Projection projection) => MultiLineString._(
+        _lineStrings
+            .map((chain) => chain.project(projection))
+            .toList(growable: false),
+        type: _type,
+      );
 
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>

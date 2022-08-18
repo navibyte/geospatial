@@ -6,6 +6,7 @@
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/coordinates/projection.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/vector/content.dart';
 import '/src/vector/encoding.dart';
@@ -80,6 +81,10 @@ class LineString extends SimpleGeometry {
 
   /// The chain of positions in this line string geometry.
   PositionArray get chain => _chain;
+
+  @override
+  LineString project(Projection projection) =>
+      LineString(_chain.project(projection));
 
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>

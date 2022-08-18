@@ -8,6 +8,7 @@ import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/coordinates/projection.dart';
 import '/src/vector/content.dart';
 import '/src/vector/encoding.dart';
 import '/src/vector/formats.dart';
@@ -21,6 +22,15 @@ abstract class Geometry extends Bounded {
 
   /// The geometry type.
   Geom get geomType;
+
+  /// Returns a new geometry projected using [projection].
+  ///
+  /// The returned geometry sub type must be the same as the type of this.
+  ///
+  /// Note that any available [bounds] object on this is not projected (that is
+  /// the bounds for a returned geometry is null).
+  @override
+  Geometry project(Projection projection);
 
   /// Writes this geometry object to [writer].
   ///

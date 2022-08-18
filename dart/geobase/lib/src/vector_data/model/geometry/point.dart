@@ -6,6 +6,7 @@
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/coordinates/projection.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/vector/content.dart';
 import '/src/vector/encoding.dart';
@@ -90,6 +91,10 @@ class Point implements SimpleGeometry {
         maxZ: position.optZ,
         maxM: position.optM,
       );
+
+  @override
+  Point project(Projection projection) =>
+      Point(projection.project(_position, to: PositionCoords.create));
 
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>

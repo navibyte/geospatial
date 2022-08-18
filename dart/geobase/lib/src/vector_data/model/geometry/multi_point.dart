@@ -6,6 +6,7 @@
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/coordinates/projection.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/vector/content.dart';
 import '/src/vector/encoding.dart';
@@ -84,6 +85,14 @@ class MultiPoint extends SimpleGeometry {
 
   /// All points as a lazy iterable of [Point] geometries.
   Iterable<Point> get points => positions.map<Point>(Point.new);
+
+  @override
+  MultiPoint project(Projection projection) => MultiPoint._(
+        _points
+            .map((pos) => projection.project(pos, to: PositionCoords.create))
+            .toList(growable: false),
+        type: _type,
+      );
 
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>

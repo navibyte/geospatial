@@ -93,6 +93,13 @@ abstract class PositionArray with _CoordinatesMixin {
   /// Access position array as geographic positions.
   PositionData<Geographic, double> get toGeographic =>
       _PositionArrayData<Geographic>(_data, _type, Geographic.fromCoords);
+
+  /// Returns a new position array with all positions projected using
+  /// [projection].
+  PositionArray project(Projection projection) => PositionArray.view(
+        projection.projectCoords(_data, type: _type),
+        type: _type,
+      );
 }
 
 @immutable

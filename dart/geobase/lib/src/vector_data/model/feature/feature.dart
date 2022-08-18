@@ -6,6 +6,7 @@
 
 import 'package:meta/meta.dart';
 
+import '/src/coordinates/projection.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/property_builder.dart';
 import '/src/vector/content.dart';
@@ -209,6 +210,13 @@ class Feature<T extends Geometry> extends FeatureObject {
   Map<String, Geometry>? get customGeometries => null;
 
   @override
+  Feature<T> project(Projection projection) => Feature<T>(
+        id: _id,
+        geometry: _geometry?.project(projection) as T?,
+        properties: _properties,
+      );
+
+  @override
   void writeTo(FeatureContent writer) {
     final geom = _geometry;
     writer.feature(
@@ -276,6 +284,17 @@ class _CustomFeature<T extends Geometry> extends Feature<T> {
 
   @override
   Map<String, Geometry>? get customGeometries => _customGeometries;
+
+  @override
+  Feature<T> project(Projection projection) => _CustomFeature<T>(
+        id: _id,
+        geometry: _geometry?.project(projection) as T?,
+        properties: _properties,
+        custom: _custom,
+        customGeometries: _customGeometries?.map<String, Geometry>(
+          (key, geom) => MapEntry(key, geom.project(projection)),
+        ),
+      );
 
   @override
   void writeTo(FeatureContent writer) {

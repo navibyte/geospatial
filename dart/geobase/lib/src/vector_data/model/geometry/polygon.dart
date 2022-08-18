@@ -6,6 +6,7 @@
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/coordinates/projection.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/vector/content.dart';
 import '/src/vector/encoding.dart';
@@ -125,6 +126,12 @@ class Polygon extends SimpleGeometry {
   /// polygon. It's required that `0 <= index < interiorLength`.
   PositionArray interior(int index) => _rings[1 + index];
 */
+
+  @override
+  Polygon project(Projection projection) => Polygon._(
+        _rings.map((ring) => ring.project(projection)).toList(growable: false),
+        type: _type,
+      );
 
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>

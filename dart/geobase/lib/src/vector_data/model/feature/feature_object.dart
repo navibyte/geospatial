@@ -6,6 +6,7 @@
 
 import 'package:meta/meta.dart';
 
+import '/src/coordinates/projection.dart';
 import '/src/vector/content.dart';
 import '/src/vector/encoding.dart';
 import '/src/vector/formats.dart';
@@ -17,6 +18,19 @@ import '/src/vector_data/model/bounded.dart';
 abstract class FeatureObject extends Bounded {
   /// A feature object with an optional [bounds].
   const FeatureObject({super.bounds});
+
+  /// Returns a new feature obect with all geometries projected using
+  /// [projection].
+  /// 
+  /// The returned feature object sub type must be the same as the type of this.
+  /// 
+  /// Any custom data or properties (other than geometries) are not projected,
+  /// just copied (by references).
+  /// 
+  /// Note that any available [bounds] object on this is not projected (that is
+  /// the bounds for a returned feature object is null).
+  @override
+  FeatureObject project(Projection projection);
 
   /// Optional custom or "foreign member" properties as a map.
   Map<String, dynamic>? get custom => null;

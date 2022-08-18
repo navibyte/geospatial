@@ -5,6 +5,7 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import '/src/codes/geom.dart';
+import '/src/coordinates/projection.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/vector/content.dart';
 import '/src/vector/encoding.dart';
@@ -89,6 +90,13 @@ class GeometryCollection<E extends Geometry> extends Geometry {
 
   /// All geometry items in this geometry collection.
   List<E> get geometries => _geometries;
+
+  @override
+  GeometryCollection<E> project(Projection projection) => GeometryCollection<E>(
+        _geometries
+            .map<E>((geometry) => geometry.project(projection) as E)
+            .toList(growable: false),
+      );
 
   @override
   void writeTo(GeometryContent writer, {String? name}) =>

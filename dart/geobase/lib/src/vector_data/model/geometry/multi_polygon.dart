@@ -6,6 +6,7 @@
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/coordinates/projection.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/vector/content.dart';
 import '/src/vector/encoding.dart';
@@ -119,6 +120,18 @@ class MultiPolygon extends SimpleGeometry {
 
   /// All polygons as a lazy iterable of [Polygon] geometries.
   Iterable<Polygon> get polygons => ringArrays.map<Polygon>(Polygon.new);
+
+  @override
+  MultiPolygon project(Projection projection) => MultiPolygon._(
+        _polygons
+            .map<List<PositionArray>>(
+              (rings) => rings
+                  .map<PositionArray>((ring) => ring.project(projection))
+                  .toList(growable: false),
+            )
+            .toList(growable: false),
+        type: _type,
+      );
 
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) => writer

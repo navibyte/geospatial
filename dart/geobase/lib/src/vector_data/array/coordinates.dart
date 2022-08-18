@@ -11,6 +11,7 @@ import '/src/coordinates/base.dart';
 import '/src/coordinates/data.dart';
 import '/src/coordinates/geographic.dart';
 import '/src/coordinates/projected.dart';
+import '/src/coordinates/projection.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 

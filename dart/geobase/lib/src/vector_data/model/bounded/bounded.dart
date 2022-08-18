@@ -4,6 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import '/src/coordinates/projection.dart';
 import '/src/vector_data/array.dart';
 
 /// A base interface for classes that know their bounding boxes.
@@ -25,4 +26,15 @@ abstract class Bounded {
   /// possible that accessing this property may cause extensive calculations.
   BoxCoords get requireBounds;
 */
+
+  /// Returns a new bounded object with all geometries projected using
+  /// [projection].
+  /// 
+  /// The returned sub type must be the same as the type of this.
+  /// 
+  /// Note that any available [bounds] object on this is not projected (that is
+  /// the bounds for a returned object is null).
+  Bounded project(Projection projection);
+
+  // todo: add an optional param to "project" to ask calcuting bounds after op
 }

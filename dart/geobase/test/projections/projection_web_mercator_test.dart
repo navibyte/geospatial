@@ -50,14 +50,14 @@ void main() {
     });
   });
 
-  group('Test proj4dart flat coordinate arrays', () {
+  group('Test flat coordinate arrays', () {
     test('Wgs84 <-> WebMercator', () {
       const adapter = WGS84.webMercator;
       final forward = adapter.forward;
       final inverse = adapter.inverse;
 
       for (var dim = 2; dim <= 4; dim++) {
-        final pointCount = wgs84ToWebMercatorData.length - 1;
+        final pointCount = wgs84ToWebMercatorData.length;
         final source = List.filled(dim * pointCount, 10.0);
         final target = List.filled(dim * pointCount, 10.0);
         for (var i = 0; i < pointCount; i++) {
