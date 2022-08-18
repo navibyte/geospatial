@@ -6,7 +6,7 @@
 
 // ignore_for_file: unrelated_type_equality_checks, prefer_const_declarations
 
-import 'package:geobase/coordinates.dart';
+import 'package:geobase/codes.dart';
 import 'package:geobase/vector_data.dart';
 
 import 'package:test/test.dart';

@@ -29,9 +29,9 @@ abstract class Bounded {
 
   /// Returns a new bounded object with all geometries projected using
   /// [projection].
-  /// 
+  ///
   /// The returned sub type must be the same as the type of this.
-  /// 
+  ///
   /// Note that any available [bounds] object on this is not projected (that is
   /// the bounds for a returned object is null).
   Bounded project(Projection projection);

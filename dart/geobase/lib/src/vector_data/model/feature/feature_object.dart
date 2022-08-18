@@ -21,12 +21,12 @@ abstract class FeatureObject extends Bounded {
 
   /// Returns a new feature obect with all geometries projected using
   /// [projection].
-  /// 
+  ///
   /// The returned feature object sub type must be the same as the type of this.
-  /// 
+  ///
   /// Any custom data or properties (other than geometries) are not projected,
   /// just copied (by references).
-  /// 
+  ///
   /// Note that any available [bounds] object on this is not projected (that is
   /// the bounds for a returned feature object is null).
   @override
