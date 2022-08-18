@@ -15,7 +15,7 @@ binary data formats, encodings and content interfaces also redesigned.
 Key features:
 * 🌐 *geographic* positions and bounding boxes (longitude-latitude-elevation)
 * 🗺️ *projected* positions and bounding boxes (cartesian XYZ)
-* 🏗️ coordinate transformations and projections (initial support)
+* 🏗️ coordinate projections (initial support)
 * 🔢 tiling schemes and tile matrix sets (web mercator, global geodetic)
 * 📅 temporal data structures (instant, interval) and spatial extents
 * 🧩 simple geometries (point, line string, polygon, multi point, multi line string, multi polygon, geometry collection)
@@ -58,7 +58,6 @@ Library                | Description
 **projections**        | Geospatial projections (currently only between WGS84 and Web Mercator).
 **projections_proj4d** | Projections provided by the external [proj4dart](https://pub.dev/packages/proj4dart) package.
 **tiling**             | Tiling schemes and tile matrix sets (web mercator, global geodetic).
-**transforms**         | Basic coordinate transformations (initial support).
 **vector**             | Data writers for geospatial vector data (features, geometries, coordinates).
 **vector_data**        | Data structures for positions, geometries, features and feature collections.
 
@@ -823,25 +822,6 @@ Constant                  | Value          | Description
 `earthRadiusWgs84`        | `6378137.0`    | The earth equatorial radius in meters as specified by WGS 84.
 `earthCircumferenceWgs84` | `2 * math.pi * earthRadiusWgs84` |  The earth circumference in meters (from earth equatorial radius by WGS 84).
 `screenPPIbyOGC`          | `0.0254 / 0.00028` | OGC defines a screen pixel of 0.28 mm that approximates to 90.7 ppi.
-
-### Transforms
-
-*Projections* described in previous chaperts project coordinates between
-`Projected` and `Geographic` positions.
-
-Coordinate *transformations* however transform coordinate value without changing
-the type.
-
-This sample uses the built-int `translatePoint` function:
-
-```dart
-  // Create a point and transform it with the built-in translation that returns
-  // `Position(x: 110.0, y: 220.0, z: 50.0, m: 1.25)` after transform.
-  print(
-    const Projected(x: 100.0, y: 200.0, z: 50.0, m: 1.25)
-        .transform(translatePosition(dx: 10.0, dy: 20.0)),
-  );
-```
 
 ### Geodesy algorithms
 

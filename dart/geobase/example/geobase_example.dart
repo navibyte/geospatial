@@ -61,10 +61,6 @@ void main() {
   _webMercatorQuad();
   print('\nGlobal Geodetic Quad');
   _globalGeodeticQuad();
-
-  // transform samples
-  print('\nBasic transforms');
-  _basicTransfroms();
 }
 
 void _geographicPosition() {
@@ -611,23 +607,3 @@ void _globalGeodeticQuad() {
   print(quad.pixelArcResolution(10)); // ~ 0.000686646 (° degrees)
   print(quad.scaleDenominator(10)); // ~ 272989.39
 }
-
-void _basicTransfroms() {
-  // Create a point and transform it with the built-in translation that returns
-  // `Position(x: 110.0, y: 220.0, z: 50.0, m: 1.25)` after transform.
-  print(
-    const Projected(x: 100.0, y: 200.0, z: 50.0, m: 1.25)
-        .transform(translatePosition(dx: 10.0, dy: 20.0)),
-  );
-
-  // Create a point and transform it with a custom translation that returns
-  // `Position(x: 110.0, y: 220.0, z: 50.0, m: 1.25)` after transform.
-  print(
-    const Projected(x: 100.0, y: 200.0, z: 50.0, m: 1.25)
-        .transform(_sampleFixedTranslate),
-  );
-}
-
-/// Translates X by 10.0 and Y by 20.0, other coordinates (Z and M) not changed.
-T _sampleFixedTranslate<T extends Position>(T source) =>
-    source.copyWith(x: source[0] + 10.0, y: source[1] + 20.0) as T;

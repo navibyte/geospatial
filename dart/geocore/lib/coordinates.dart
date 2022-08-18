@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// Projected and geographic coordinates.
+/// Projected and geographic coordinates, and basic transforms.
 ///
 /// This library exports also all classes of `package:geocore/base.dart`.
 ///
@@ -15,3 +15,4 @@ export 'base.dart';
 
 export 'src/coordinates/geographic.dart';
 export 'src/coordinates/projected.dart';
+export 'src/coordinates/transforms.dart';

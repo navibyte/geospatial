@@ -11,7 +11,7 @@
 /// Key features:
 /// * *geographic* positions and bounding boxes (longitude-latitude-elevation)
 /// * *projected* positions and bounding boxes (cartesian XYZ)
-/// * coordinate transformations and projections (initial support)
+/// * coordinate projections (initial support)
 /// * tiling schemes and tile matrix sets (web mercator, global geodetic)
 /// * temporal data structures (instant, interval) and spatial extents
 /// * simple geometries (point, line string, polygon, multi point, multi line string, multi polygon, geometry collection)
@@ -43,7 +43,6 @@ export 'src/meta/time.dart';
 export 'src/projections/wgs84.dart';
 export 'src/tiling/convert.dart';
 export 'src/tiling/tilematrix.dart';
-export 'src/transforms/basic.dart';
 export 'src/vector/content.dart';
 export 'src/vector/encoding.dart';
 export 'src/vector/formats.dart';
