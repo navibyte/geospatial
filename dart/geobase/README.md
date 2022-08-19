@@ -1,33 +1,32 @@
 [![pub package](https://img.shields.io/pub/v/geobase.svg)](https://pub.dev/packages/geobase) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause) [![style: very good analysis](https://img.shields.io/badge/style-very_good_analysis-B22C89.svg)](https://pub.dev/packages/very_good_analysis)
 
-<a title="Ktrinko, CC0, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Eckert4.jpg"><img alt="World map with Natural Earth data, Excert projection" src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/projections/eckert4/320px-Eckert4.jpg" align="right"></a>
-
-Geospatial coordinates (geographic and projected), projections, tiling schemes,
-and vector data support for [GeoJSON](https://geojson.org/),
+Geospatial data structures (coordinates, geometries, features, metadata),
+projections and tiling schemes. Vector data format support for
+[GeoJSON](https://geojson.org/),
 [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)
 and [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary).
 
+ <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_MultiPoint.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_MultiPoint.svg"></a> <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_LineString.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_LineString.svg"></a> <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_Polygon.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_Polygon.svg"></a> <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_Polygon_with_hole.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_Polygon_with_hole.svg"></a> <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_GeometryCollection.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_GeometryCollection.svg"></a>
+
 ## Features
 
-✨ New: Support for [Well-know binary](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary) (WKB). Text and
+✨ New: Data structures for simple geometries, features and feature collections.
+✨ New: Support for [Well-known binary](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary) (WKB). Text and
 binary data formats, encodings and content interfaces also redesigned.
 
-Key features:
-* 🌐 *geographic* positions and bounding boxes (longitude-latitude-elevation)
-* 🗺️ *projected* positions and bounding boxes (cartesian XYZ)
-* 🏗️ coordinate projections (initial support)
-* 🔢 tiling schemes and tile matrix sets (web mercator, global geodetic)
-* 📅 temporal data structures (instant, interval) and spatial extents
-* 🧩 simple geometries (point, line string, polygon, multi point, multi line string, multi polygon, geometry collection)
-* 🔷 feature objects (with id, properties and geometry) and feature collections
-* 📃 text format encoders for features, geometries, coordinates, properties:
-  * 🌎 supported formats: [GeoJSON](https://geojson.org/) 
-* 📃 text format encoders for geometries and coordinates:
-  * 🪧 supported formats: [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)
-* 📃 binary format encoders and decoders for geometries:
-  * 🪧 supported formats: [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary)
+<a title="Ktrinko, CC0, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Eckert4.jpg"><img alt="World map with Natural Earth data, Excert projection" src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/projections/eckert4/320px-Eckert4.jpg" align="right"></a>
 
-## Package
+Key features:
+* 🌐 geographic (longitude-latitude) and projected positions and bounding boxes
+* 🧩 simple geometries (point, line string, polygon, multi point, multi line string, multi polygon, geometry collection)
+* 🔷 features (with id, properties and geometry) and feature collections
+* 📅 temporal data structures (instant, interval) and spatial extents
+* 📃 vector data formats supported ([GeoJSON](https://geojson.org/), [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry), [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary)
+)
+* 🗺️ coordinate projections (web mercator + based on the external [proj4dart](https://pub.dev/packages/proj4dart) library)
+* 🔢 tiling schemes and tile matrix sets (web mercator, global geodetic)
+
+## Usage
 
 The package requires at least [Dart](https://dart.dev/) SDK 2.17, and it
 supports all [Dart](https://dart.dev/) and [Flutter](https://flutter.dev/)
@@ -37,7 +36,7 @@ Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geobase: ^0.3.0-dev.2
+  geobase: ^0.3.0
 ```
 
 Import it:
@@ -46,73 +45,13 @@ Import it:
 import `package:geobase/geobase.dart`
 ```
 
-The package contains also following mini-libraries, that can be used to import
-only a certain subset instead of the whole **geobase** library:
+There are also partial packages containing only a certain subset. See the
+[Packages](#Packages) section below.
 
-Library                | Description 
----------------------- | ----------- 
-**codes**              | Enums (codes) for geospatial coordinate, geometry types and canvas origin.
-**constants**          | Geodetic and screen related constants.
-**coordinates**        | Geographic and projected positions and bounding boxes.
-**meta**               | Temporal data structures (instant, interval) and spatial extents.
-**projections**        | Geospatial projections (currently only between WGS84 and Web Mercator).
-**projections_proj4d** | Projections provided by the external [proj4dart](https://pub.dev/packages/proj4dart) package.
-**tiling**             | Tiling schemes and tile matrix sets (web mercator, global geodetic).
-**vector**             | Data writers for geospatial vector data (features, geometries, coordinates).
-**vector_data**        | Data structures for positions, geometries, features and feature collections.
-
-See also the [geodata](https://pub.dev/packages/geodata) package provding a
-geospatial API client to read [GeoJSON](https://geojson.org/) and other
-geospatial data sources.  
-
-## Introduction
-
-Geographic, projected and scalable coordinates:
-
-```dart
-  // Geographic position with longitude, latitude and elevation.
-  const Geographic(lon: -0.0014, lat: 51.4778, elev: 45.0);
-
-  // Projected position with x, y and z.
-  const Projected(x: 708221.0, y: 5707225.0, z: 45.0);
-
-  // A pixel or a tile with a zoom level (or LOD = level of detail) coordinates.
-  const Scalable2i(zoom: 9, x: 23, y: 10);
-```
-
-Bounding boxes:
-
-```dart
-  // Geographic bbox (-20.0 .. 20.0 in longitude, 50.0 .. 60.0 in latitude).
-  const GeoBox(west: -20.0, south: 50.0, east: 20.0, north: 60.0);
-
-  // Projected bbox with limits on x and y.
-  const ProjBox(minX: 10, minY: 10, maxX: 20, maxY: 20);
-```
-
-Tiling schemes, a sample with Web Mercator:
-
-```dart
-  // "WebMercatorQuad" tile matrix set with 256 x 256 pixel tiles
-  const quad = WebMercatorQuad.epsg3857();
-
-  // converting a geographic position to tile coordinates at zoom level 2
-  quad.positionToTile(Geographic(lon: -0.0014, lat: 51.4778), zoom: 2)); 
-```
-
-A sample to encode a `Point` geometry to [GeoJSON](https://geojson.org/):
-
-```dart
-  // geometry encoder for GeoJSON, with number of decimals for text output set
-  final encoder = GeoJSON.geometry.encoder(decimals: 1);
-
-  // prints:
-  //    {"type":"Point","coordinates":[10.1,20.3]}
-  encoder.writer.point([10.123, 20.25]);
-  print(encoder.toText());
-```
-
-See more examples and instructions how to use the package on chapters below.
+See also the [geodata](https://pub.dev/packages/geodata) package that extends
+capabilities of `geobase` by providing geospatial API clients to read 
+[GeoJSON](https://geojson.org/) data sources and 
+[OGC API Features](https://ogcapi.ogc.org/features/) web services.
 
 ## Coordinates
 
@@ -126,55 +65,36 @@ Elevation (`elev`) in meters and measure (`m`) coordinates are optional.
 
 <a title="Djexplo, CC0, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Latitude_and_Longitude_of_the_Earth.svg"><img alt="Latitude and Longitude of the Earth" src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/coordinates/geographic/Latitude_and_Longitude_of_the_Earth.svg"></a>
 
-Geographic positions:
+Geographic *positions*:
 
 ```dart
-  // Geographic position with longitude and latitude.
-  const Geographic(lon: -0.0014, lat: 51.4778);
+  // A geographic position with longitude and latitude.
+  Geographic(lon: -0.0014, lat: 51.4778);
 
-  // Geographic position with longitude, latitude and elevation.
-  const Geographic(lon: -0.0014, lat: 51.4778, elev: 45.0);
+  // A geographic position with longitude, latitude and elevation.
+  Geographic(lon: -0.0014, lat: 51.4778, elev: 45.0);
 
-  // Geographic position with longitude, latitude, elevation and measure.
-  const Geographic(lon: -0.0014, lat: 51.4778, elev: 45.0, m: 123.0);
+  // A geographic position with longitude, latitude, elevation and measure.
+  Geographic(lon: -0.0014, lat: 51.4778, elev: 45.0, m: 123.0);
 
-  // The last sample also from num iterable or text (order: lon, lat, elev, m).
-  Geographic.fromCoords(const [-0.0014, 51.4778, 45.0, 123.0]);
+  // The last sample also from a double list or text (order: lon, lat, elev, m).
+  Geographic.fromCoords([-0.0014, 51.4778, 45.0, 123.0]);
   Geographic.fromText('-0.0014,51.4778,45.0,123.0');
   Geographic.fromText('-0.0014 51.4778 45.0 123.0', delimiter: ' ');
 ```
 
-Geographic bounding boxes:
+Geographic *bounding boxes*:
 
 ```dart
-  // Geographic bbox (-20.0 .. 20.0 in longitude, 50.0 .. 60.0 in latitude).
-  const GeoBox(west: -20.0, south: 50.0, east: 20.0, north: 60.0);
+  // A geographic bbox (-20 .. 20 in longitude, 50 .. 60 in latitude).
+  GeoBox(west: -20, south: 50, east: 20, north: 60);
 
-  // Geographic bbox with limits on elevation coordinate too.
-  const GeoBox(
-    west: -20.0,
-    south: 50.0,
-    minElev: 100.0,
-    east: 20.0,
-    north: 60.0,
-    maxElev: 200.0,
-  );
+  // A geographic bbox with limits (100 .. 200) on the elevation coordinate too.
+  GeoBox(west: -20, south: 50, minElev: 100, east: 20, north: 60, maxElev: 200);
 
-  // The last sample also from num iterable or text.
-  GeoBox.fromCoords(const [-20.0, 50.0, 100.0, 20.0, 60.0, 200.0]);
-  GeoBox.fromText('-20.0,50.0,100.0,20.0,60.0,200.0');
-
-  // Geographic bbox with limits on elevation and measure coordinates too.
-  const GeoBox(
-    west: -20.0,
-    south: 50.0,
-    minElev: 100.0,
-    minM: 5.0,
-    east: 20.0,
-    north: 60.0,
-    maxElev: 200.0,
-    maxM: 6.0,
-  );
+  // The last sample also from a double list or text.
+  GeoBox.fromCoords([-20, 50, 100, 20, 60, 200]);
+  GeoBox.fromText('-20,50,100,20,60,200');
 ```
 
 ### Projected coordinates
@@ -186,65 +106,54 @@ an optional measure (m) coordinate. For projected map positions `x` often
 represents *easting* (E) and `y` represents *northing* (N), however a coordinate
 reference system might specify something else too. 
 
-The `m` coordinate represents
-a measurement or a value on a linear referencing system (like time). It could be
-associated with a 2D position (x, y, m) or a 3D position (x, y, z, m).
+The `m` (measure) coordinate represents a measurement or a value on a linear
+referencing system (like time). It could be associated with a 2D position
+(x, y, m) or a 3D position (x, y, z, m).
 
-Projected positions:
+Projected *positions*:
 
 ```dart
-  // Projected position with x and y.
-  const Projected(x: 708221.0, y: 5707225.0);
+  // A projected position with x and y.
+  Projected(x: 708221.0, y: 5707225.0);
 
-  // Projected position with x, y and z.
-  const Projected(x: 708221.0, y: 5707225.0, z: 45.0);
+  // A projected position with x, y and z.
+  Projected(x: 708221.0, y: 5707225.0, z: 45.0);
 
-  // Projected position with x, y, z and m.
-  const Projected(x: 708221.0, y: 5707225.0, z: 45.0, m: 123.0);
+  // A projected position with x, y, z and m.
+  Projected(x: 708221.0, y: 5707225.0, z: 45.0, m: 123.0);
 
-  // The last sample also from num iterable or text (order: x, y, z, m).
-  Projected.fromCoords(const [708221.0, 5707225.0, 45.0, 123.0]);
+  // The last sample also from a double list or text (order: x, y, z, m).
+  Projected.fromCoords([708221.0, 5707225.0, 45.0, 123.0]);
   Projected.fromText('708221.0,5707225.0,45.0,123.0');
   Projected.fromText('708221.0 5707225.0 45.0 123.0', delimiter: ' ');
 ```
 
-Projected bounding boxes:
+Projected *bounding boxes*:
 
 ```dart
-  // Projected bbox with limits on x and y.
-  const ProjBox(minX: 10, minY: 10, maxX: 20, maxY: 20);
+  // A projected bbox with limits on x and y.
+  ProjBox(minX: 10, minY: 10, maxX: 20, maxY: 20);
 
-  // Projected bbox with limits on x, y and z.
-  const ProjBox(minX: 10, minY: 10, minZ: 10, maxX: 20, maxY: 20, maxZ: 20);
+  // A projected bbox with limits on x, y and z.
+  ProjBox(minX: 10, minY: 10, minZ: 10, maxX: 20, maxY: 20, maxZ: 20);
 
-  // The last sample also from num iterable or text.
-  ProjBox.fromCoords(const [10, 10, 10, 20, 20, 20]);
+  // The last sample also from a double list or text.
+  ProjBox.fromCoords([10, 10, 10, 20, 20, 20]);
   ProjBox.fromText('10,10,10,20,20,20');
-
-  // Projected bbox with limits on x, y, z and m.
-  const ProjBox(
-    minX: 10,
-    minY: 10,
-    minZ: 10,
-    minM: 10,
-    maxX: 20,
-    maxY: 20,
-    maxZ: 20,
-    maxM: 20,
-  );
 ```
 
 ### Scalable coordinates
 
-*Scalable* coordinates are *projected* coordinates associated with some level of
-detail (LOD) or `zoom` level. They are used for example by tiling schemes to
-represent *pixels* and *tiles* of tile matrices.
+*Scalable* coordinates are *projected* coordinates associated with
+a *level of detail* (LOD) or a `zoom` level. They are used for example by
+[tiling schemes](#tiling-schemes) to represent *pixels* or *tiles* in tile
+matrices.
 
 The `Scalable2i` class represents projected `x`, `y` coordinates at `zoom`
-level, with all value as integers.
+level, with all values as integers.
 
 ```dart
-  // A pixel or a tile with a zoom level (or LOD = level of detail) coordinates.
+  // A pixel with a zoom level (or LOD = level of detail) coordinates.
   const pixel = Scalable2i(zoom: 9, x: 23, y: 10);
 
   // Such coordinates can be scaled to other zoom levels.
@@ -252,6 +161,533 @@ level, with all value as integers.
   pixel.zoomOut(); // => Scalable2i(zoom: 8, x: 11, y: 5);
   pixel.zoomTo(13); // => Scalable2i(zoom: 13, x: 368, y: 160));
 ```
+
+### Summary 
+
+The summary of *projected*, *geographic* and *scalable* coordinate values in the
+basic *position* classes:
+
+Class         | Required coordinates      | Optional coordinates
+------------- | ------------------------- | ------------------------------------
+`Projected`   | x, y                      | z, m
+`Geographic`  | lon, lat                  | elev, m
+`Scalable2i`  | zoom, x, y                |
+
+The summary of basic *bounding box* classes:
+
+Class         | Required coordinates      | Optional coordinates
+------------- | ------------------------- | ------------------------------------
+`ProjBox`     | minX, minY, maxX, maxY    | minZ, minM, maxZ, maxM
+`GeoBox`      | west, south, east, north  | minElev, minM, maxElev, maxM
+
+In some interfaces, for example for positions, coordinate values are referenced
+only by x, y, z and m property names. So in such a case and in the context of
+this package, for geographic coordinates x represents *longitude*, y represents
+*latitude*, and z represents *elevation* (or height or altitude).
+
+The `Position` interface is a super type for `Projected` and `Geographic`, and
+the `Box` interface is a super type for `ProjBox` and `GeoBox`. Please see more
+information about them in the API reference.
+
+## Coordinate arrays
+
+Position and bounding box classes introduced in the previous section are used
+when handling positions or bounding boxes (bounds) individually.
+
+However to handle coordinate data in geometry objects and geospatial data
+formats also, efficient array data structures for coordinate values (as 
+`double` numeric values) are needed:
+
+Class            | Description
+---------------- | -------------------------------------------------------------
+`PositionArray`  | Coordinate values of 0 to N positions as a flat structure.
+`PositionCoords` | Coordinate values of a single position.
+`BoxCoords`      | Coordinate values of a single bounding box.
+
+All these classes implement `Iterable<double>` allowing instances of them to be
+used in places requiring the `Iterable<double>` type. At the same time, for
+example `PositionCoords` is also a valid `Position` and `BoxCoords` is a valid
+`Box`.
+
+There are also specialized sub classes of `PositionCoords` for projected 
+coordinates (enabling more compact code when creating instances):
+
+Class  | 2D/3D | Coords | Values   | x | y | z | m
+------ | ----- | ------ | -------- | - | - | - | -
+`XY`   | 2D    | 2      | `double` | + | + |   |
+`XYZ`  | 3D    | 3      | `double` | + | + | + |
+`XYM`  | 2D    | 3      | `double` | + | + |   | +
+`XYZM` | 3D    | 4      | `double` | + | + | + | +
+
+And similar classes for geographic coordinates:
+
+Class         | 2D/3D | Coords | Values   | lon (x) | lat (y) | elev (z) | m
+------------- | ----- | ------ | -------- | ------- | ------- | -------- | -
+`LonLat`      | 2D    | 2      | `double` |    +    |    +    |          |
+`LonLatElev`  | 3D    | 3      | `double` |    +    |    +    |    +     |
+`LonLatM`     | 2D    | 3      | `double` |    +    |    +    |          | +
+`LonLatElevM` | 3D    | 4      | `double` |    +    |    +    |    +     | +
+
+As described above, `PositionArray` represents coordinate values of 0 to N
+positions as a flat structure. That is, there is no array of positions with 
+each having an array of coordinate values, but a single flat array of coordinate
+values (double). This is best illustrated by code samples below:
+
+```dart
+  // A position array with three positions each with x and y coordinates.
+  PositionArray.view(
+    [
+      10.0, 11.0, // (x, y) for position 0
+      20.0, 21.0, // (x, y) for position 1
+      30.0, 31.0, // (x, y) for position 2
+    ],
+    type: Coords.xy,
+  );
+
+  // A position array with three positions each with x, y and z coordinates.
+  PositionArray.view(
+    [
+      10.0, 11.0, 12.0, // (x, y, z) for position 0
+      20.0, 21.0, 22.0, // (x, y, z) for position 1
+      30.0, 31.0, 32.0, // (x, y, z) for position 2
+    ],
+    type: Coords.xyz,
+  );
+```
+
+The coordinate type (using a `Coords` enum value) must be defined when creating
+position arrays. Expected coordinate values (exactly in this order) for each
+type are described below:
+
+Type          | Projected values | Geographic values
+------------- | ---------------- | -----------------
+`Coords.xy`   | x, y             | lon, lat
+`Coords.xyz`  | x, y, z          | lon, lat, elev
+`Coords.xym`  | x, y, m          | lon, lat, m
+`Coords.xyzm` | x, y, z, m       | lon, lat, elev, m
+
+## Geometries
+
+### Geometry types
+
+Geometry primitive types supported by this package (with samples adapted from
+the samples of the Wikipedia page about
+[WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry),
+and compatible also with [GeoJSON](https://geojson.org/)):
+
+Geometry    | Shape       | Dart code to build objects
+----------- | ----------- | --------------------------
+Point       | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_Point.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_Point.svg"></a> | `Point(XY(30.0, 10.0))`<br>`Point.build([30.0, 10.0])`
+LineString  | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_LineString.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_LineString.svg"></a> | `LineString.build([30, 10, 10, 30, 40, 40], type: Coords.xy)`
+Polygon     | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_Polygon.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_Polygon.svg"></a> | `Polygon.build([[30, 10, 40, 40, 20, 40, 10, 20, 30, 10]], type: Coords.xy)`
+Polygon (with a hole) | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_Polygon_with_hole.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_Polygon_with_hole.svg"></a> | `Polygon.build([[35, 10, 45, 45, 15, 40, 10, 20, 35, 10], [20, 30, 35, 35, 30, 20, 20, 30]], type: Coords.xy)`
+
+Also multipart geometry classes are supported:
+
+Geometry    | Shape       | Dart code to build objects
+----------- | ----------- | --------------------------
+MultiPoint  | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_MultiPoint.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_MultiPoint.svg"></a> | `MultiPoint.build([[10, 40], [40, 30], [20, 20], [30, 10]], type: Coords.xy)`
+MultiLineString  | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_MultiLineString.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_MultiLineString.svg"></a> | `MultiLineString.build([[10, 10, 20, 20, 10, 40], [40, 40, 30, 30, 40, 20, 30, 10]], type: Coords.xy)`
+MultiPolygon | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_MultiPolygon.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_MultiPolygon.svg"></a> | `MultiPolygon.build([[[30, 20, 45, 40, 10, 40, 30, 20]], [[15, 5, 40, 10, 10, 20, 5, 10, 15, 5]]], type: Coords.xy)`
+MultiPolygon (with a hole) | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_MultiPolygon_with_hole.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_MultiPolygon_with_hole.svg"></a> | `MultiPolygon.build([[[40, 40, 20, 45, 45, 30, 40, 40]], [[20, 35, 10, 30, 10, 10, 30, 5, 45, 20, 20, 35], [30, 20, 20, 15, 20, 25, 30, 20]]], type: Coords.xy)`
+GeometryCollection | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_GeometryCollection.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_GeometryCollection.svg"></a> | `GeometryCollection([Point(XY(40, 10)), LineString.build([10, 10, 20, 20, 10, 40], type: Coords.xy), Polygon.build([[40, 40, 20, 45, 45, 30, 40, 40]], type: Coords.xy)])`
+
+## Geospatial features
+
+### Feature objects
+
+According to the [OGC Glossary](https://www.ogc.org/ogc/glossary/f) a geospatial
+**feature** is *a digital representation of a real world entity. It has a spatial domain, a temporal domain, or a spatial/temporal domain as one of its attributes. Examples of features include almost anything that can be placed in time and space, including desks, buildings, cities, trees, forest stands, ecosystems, delivery vehicles, snow removal routes, oil wells, oil pipelines, oil spill, and so on*.
+
+Below is an illustration of features in a simple vector map. *Wells* are features
+with point geometries, *rivers* with line strings (or polyline) geometries, and
+finally *lakes* are features with polygon geometries. Features normally contain
+also an identifier and other attributes (or properties) along with a geometry.  
+
+<a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Simple_vector_map.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/Simple_vector_map.svg"></a>
+
+Sets of features are contained by **feature collections**.
+ 
+As specified also by the [GeoJSON](https://geojson.org/) format a `Feature`
+object contains a geometry object and additional members (like "id" and 
+"properties"). A `FeatureCollection` object contains an array of `Feature`
+objects. Both may also contain "bbox" or bounding box. Any other members on
+`Feature` and  `FeatureCollection` objects are *foreign members*, allowed
+property values or geometry objects, but not specified by the GeoJSON model
+(and so potentially not known by many GeoJSON parsers).
+
+This package models features and feature collections according to these
+definitions.
+
+### Feature
+
+A single `Feature` object: 
+
+```dart
+  // A geospatial feature with id, a point geometry and properties.
+  Feature(
+    id: 'ROG',
+    // a point geometry with a position (lon, lat, elev)
+    geometry: Point.build([-0.0014, 51.4778, 45.0]),
+    properties: {
+      'title': 'Royal Observatory',
+      'place': 'Greenwich',
+      'city': 'London',
+      'isMuseum': true,
+      'measure': 5.79,
+    },
+  );
+```
+
+Naturally, the `geometry` member could also contain any other geometry types
+described earlier, not just points.
+
+An optional `id`, when given, should be either a string or an integer. The 
+`properties` member defines feature properties as a map with the JSON Object
+compatible model (or `Map<String, dynamic>` as such data is typed in Dart).
+
+### FeatureCollection
+
+A `FeatureCollection` object with `Feature` objects:
+
+```dart
+  // A geospatial feature collection (with two features):
+  FeatureCollection([
+    Feature(
+      id: 'ROG',
+      geometry: Point(LonLatElev(-0.0014, 51.4778, 45.0)),
+      properties: {
+        'title': 'Royal Observatory',
+        'place': 'Greenwich',
+        'city': 'London',
+        'isMuseum': true,
+        'measure': 5.79,
+      },
+    ),
+    Feature(
+      id: 'TB',
+      geometry: Point(LonLat(-0.075406, 51.5055)),
+      properties: {
+        'title': 'Tower Bridge',
+        'city': 'London',
+        'built': 1886,
+      },
+    ),
+  ]);
+```
+
+## Vector data formats
+
+### GeoJSON
+
+As already described [GeoJSON](https://geojson.org/) is a format for encoding
+geometry, feature and feature collection objects. The data structures introduced
+on previous [geometries](#geometries) and
+[geospatial features](#geospatial-features) sections are modelled to support
+encoding and decoding GeoJSON data.
+
+As specified by the [RFC 7946](https://tools.ietf.org/html/rfc7946) standard,
+all GeoJSON geometry objects use 
+[WGS 84](https://en.wikipedia.org/wiki/World_Geodetic_System) geographic 
+coordinates. Also alternative coordinate reference systems can be used when 
+*involved parties have a prior arrangement* of using other systems.
+
+This package supports encoding GeoJSON text from geometry and feature objects:
+
+```dart
+  // build a LineString sample geometry
+  final lineString = LineString.build(
+    [-1.1, -1.1, 2.1, -2.5, 3.5, -3.49],
+    type: Coords.xy,
+    bounds: [-1.1, -3.49, 3.5, -1.1],
+  );
+
+  // ... and print it as GeoJSON text
+  print(lineString.toText(format: GeoJSON.geometry));
+
+  // GeoJSON representation for other geometries, features and feature
+  // collections can be produced with `toText` methdod also.
+
+  // in this sample a Feature is printed in GeoJSON (with 3 decimals on doubles)
+  final feature = Feature(
+    id: 'TB',
+    geometry: Point(LonLat(-0.075406, 51.5055)),
+    properties: {
+      'title': 'Tower Bridge',
+      'city': 'London',
+      'built': 1886,
+    },
+  );
+  print(feature.toText(format: GeoJSON.feature, decimals: 3));
+```
+
+Geometry and feature objects can be also decoded (or parsed) from their GeoJSON
+text representations:
+
+```dart
+  // sample GeoJSON text representation (a feature collection with two features)
+  const sample = '''
+    {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "ROG",
+          "geometry": {
+            "type": "Point",
+            "coordinates": [-0.0014, 51.4778, 45.0]  
+          },
+          "properties": {
+            "title": "Royal Observatory",
+            "place": "Greenwich"
+          }
+        }, 
+        {
+          "type": "Feature",
+          "id": "TB",
+          "geometry": {
+            "type": "Point",
+            "coordinates": [-0.075406, 51.5055]  
+          },
+          "properties": {
+            "title": "Tower Bridge",
+            "built": 1886
+          }
+        } 
+      ]
+    }
+  ''';
+
+  // parse a FeatureCollection object using the decoder of the GeoJSON format
+  final collection =
+      FeatureCollection.fromText(sample, format: GeoJSON.feature);
+
+  // loop through features and print id, geometry and properties for each
+  for (final feature in collection.features) {
+    print('Feature with id: ${feature.id}');
+    print('  geometry: ${feature.geometry}');
+    print('  properties:');
+    for (final key in feature.properties.keys) {
+      print('    $key: ${feature.properties[key]}');
+    }
+  }
+```
+
+All geometry, feature and feature collection classes has similar `fromText`
+methods to support decoding from GeoJSON text representations.
+
+### WKT
+
+[Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) (WKT) is 
+*a text markup language for representing vector geometry objects*. It's 
+specified by the [Simple Feature Access - Part 1: Common Architecture](https://www.ogc.org/standards/sfa) standard.
+
+Positions and geometries can be encoded to WKT text representations. However
+feature and feature collections cannot be written to WKT even if those are
+supported by GeoJSON.
+
+A sample to encode a `Point` geometry to WKT (with z and m coordinates too):
+
+```dart
+  // create a Point geometry, format it as WKT text that is printed
+  final point = Point.build([10.123, 20.25, -30.95, -1.999], type: Coords.xyzm);
+  final wkt = point.toText(format: WKT.geometry);
+  print(wkt);
+```
+
+It's possible to encode geometry data as WKT text also without creating geometry 
+objects first. However this requires accessing an encoder instance from the WKT
+format, and then writing content to that encoder. See sample below:
+
+```dart
+  // geometry text format encoder for WKT
+  const format = WKT.geometry;
+  final encoder = format.encoder();
+
+  // prints:
+  //    POINT ZM(10.123 20.25 -30.95 -1.999)
+  encoder.writer.point(
+    [10.123, 20.25, -30.95, -1.999],
+    type: Coords.xyzm,
+  );
+  print(encoder.toText());
+```
+
+Such format encoders (and formatting without geometry objects) are suppported
+also for GeoJSON. However for both WKT and GeoJSON encoding might be easier
+using concrete geometry model objects.
+
+Currently this package does not (yet) support parsing from WKT text.
+
+### WKB
+
+The `WKB` class provides encoders and decoders for
+[Well-known binary](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary)
+binary format supporting simple geometry objects.
+
+See sample below:
+
+```dart
+  // geometry binary format encoder for WKB
+  const format = WKB.geometry;
+  final encoder = format.encoder();
+
+  // write geometries (here only point) to content writer of the encoder
+  encoder.writer.point(
+    [10.123, 20.25, -30.95, -1.999],
+    type: Coords.xyzm,
+  );
+
+  // get encoded bytes (Uint8List) and Base64 encoded text (String)
+  final wkbBytes = encoder.toBytes();
+  final wkbBytesAsBase64 = encoder.toText();
+
+  // prints (point encoded to WKB binary data, formatted as Base64 text):
+  //    AAAAC7lAJD752yLQ5UA0QAAAAAAAwD7zMzMzMzO///vnbItDlg==
+  print(wkbBytesAsBase64);
+
+  // next decode this WKB binary data and use WKT text format encoder as target
+
+  // geometry text format encoder for WKT
+  final wktEncoder = WKT.geometry.encoder();
+
+  // geometry binary format decoder for WKB
+  // (with content writer of the WKT encoder set as a target for decoding)
+  final decoder = WKB.geometry.decoder(wktEncoder.writer);
+
+  // now decode those WKB bytes created already at the start
+  decoder.decodeBytes(wkbBytes.buffer);
+
+  // finally print WKT text:
+  //    POINT ZM(10.123 20.25 -30.95 -1.999)
+  print(wktEncoder.toText());
+```
+
+## Meta
+
+### Temporal data
+
+Temporal data can be represented as *instants* (a time stamp) and *intervals*
+(an open or a closed interval between time stamps).
+
+```dart
+  // Instants can be created from `DateTime` or parsed from text.
+  Instant(DateTime.utc(2020, 10, 31, 09, 30));
+  Instant.parse('2020-10-31 09:30Z');
+
+  // Intervals (open-started, open-ended, closed).
+  Interval.openStart(DateTime.utc(2020, 10, 31));
+  Interval.openEnd(DateTime.utc(2020, 10, 01));
+  Interval.closed(DateTime.utc(2020, 10, 01), DateTime.utc(2020, 10, 31));
+
+  // Same intervals parsed (by the "start/end" format, ".." for open limits).
+  Interval.parse('../2020-10-31');
+  Interval.parse('2020-10-01/..');
+  Interval.parse('2020-10-01/2020-10-31');
+```
+
+### Geospatial extents
+
+Extent objects have both spatial bounds and temporal interval, and they are
+useful in metadata structures for geospatial data sources.
+
+```dart
+  // An extent with spatial (WGS 84 longitude-latitude) and temporal parts.
+  GeoExtent.single(
+    crs: 'EPSG:4326',
+    bbox: GeoBox(west: -20.0, south: 50.0, east: 20.0, north: 60.0),
+    interval: Interval.parse('../2020-10-31'),
+  );
+
+  // An extent with multiple spatial bounds and temporal interval segments.
+  GeoExtent.multi(
+    crs: 'EPSG:4326',
+    boxes: [
+      GeoBox(west: -20.0, south: 50.0, east: 20.0, north: 60.0),
+      GeoBox(west: 40.0, south: 50.0, east: 60.0, north: 60.0),
+    ],
+    intervals: [
+      Interval.parse('2020-10-01/2020-10-05'),
+      Interval.parse('2020-10-27/2020-10-31'),
+    ],
+  );
+```
+
+The `crs` property in extents above refer to a 
+[Coordinate reference system](https://en.wikipedia.org/wiki/Spatial_reference_system) 
+that is *a coordinate-based local, regional or global system used to locate geographical entities*. 
+
+This package does not define any `crs` constants, please refer to registries
+like [The EPSG dataset](https://epsg.org/).
+
+## Projections
+
+### WGS 84 to Web Mercator
+
+Built-in coordinate projections (currently only between WGS84 and Web Mercator). 
+
+Here projected coordinates are metric coordinates with both x and y values 
+having the valid value range of (-20037508.34, 20037508.34).
+
+```dart
+  // Built-in coordinate projections (currently only between WGS 84 and
+  // Web Mercator)
+
+  // Geographic (WGS 84 longitude-latitude) to Projected (WGS 84 Web Mercator)
+  final forward = WGS84.webMercator.forward;
+  final projected = forward.project(
+    const Geographic(lon: -0.0014, lat: 51.4778),
+    to: Projected.create,
+  );
+
+  // Projected (WGS 84 Web Mercator) to Geographic (WGS 84 longitude-latitude)
+  final inverse = WGS84.webMercator.inverse;
+  final unprojected = inverse.project(
+    projected,
+    to: Geographic.create,
+  );
+
+  print('$unprojected <=> $projected');
+```
+
+### With proj4dart
+
+Coordinate projections based on the external
+[proj4dart](https://pub.dev/packages/proj4dart) package requires imports like:
+
+```dart
+// import the default geobase library
+import 'package:geobase/geobase.dart';
+
+// need also an additional import with dependency to `proj4dart` 
+import 'package:geobase/projections_proj4d.dart';
+```
+
+Then a sample to use coordinate projections:
+
+```dart
+  // A projection adapter from WGS84 (EPSG:4326) to EPSG:23700 (with definition)
+  // (based on the sample at https://pub.dev/packages/proj4dart).
+  final adapter = Proj4d.resolve(
+    'EPSG:4326',
+    'EPSG:23700',
+    toDef: '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 '
+        '+k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 '
+        '+towgs84=52.17,-71.82,-14.9,0,0,0,0 +units=m +no_defs',
+  );
+
+  // Apply a forward projection to EPSG:23700.
+  print(
+    adapter.forward.project(
+      const Geographic(lon: 17.8880, lat: 46.8922),
+      to: Projected.create,
+    ),
+  );
+```
+
+Please see the documentation of [proj4dart](https://pub.dev/packages/proj4dart)
+package about it's capabilities, and accuracy of forward and inverse
+projections.
 
 ## Tiling schemes
 
@@ -403,442 +839,29 @@ longitudes and the eastern tile (x=1, y=0) for the positive longitudes.
   print(quad.scaleDenominator(10)); // ~ 272989.39
 ```
 
-## Projections
-
-### WGS 84 to Web Mercator
-
-Built-in coordinate projections (currently only between WGS84 and Web Mercator). 
-
-Here projected coordinates are metric coordinates with both x and y values 
-having the valid value range of (-20037508.34, 20037508.34).
-
-```dart
-  // Built-in coordinate projections (currently only between WGS 84 and
-  // Web Mercator)
-
-  // Geographic (WGS 84 longitude-latitude) to Projected (WGS 84 Web Mercator)
-  final forward = WGS84.webMercator.forward;
-  final projected = forward.project(
-    const Geographic(lon: -0.0014, lat: 51.4778),
-    to: Projected.create,
-  );
-
-  // Projected (WGS 84 Web Mercator) to Geographic (WGS 84 longitude-latitude)
-  final inverse = WGS84.webMercator.inverse;
-  final unprojected = inverse.project(
-    projected,
-    to: Geographic.create,
-  );
-
-  print('$unprojected <=> $projected');
-```
-
-### With proj4dart
-
-Coordinate projections based on the external
-[proj4dart](https://pub.dev/packages/proj4dart) package requires imports like
-
-```dart
-// import the default geobase library
-import 'package:geobase/geobase.dart';
-
-// need also an additional import with dependency to `proj4dart` 
-import 'package:geobase/projections_proj4d.dart';
-```
-
-Then a sample to use coordinate projections:
-
-```dart
-  // A projection adapter from WGS84 (EPSG:4326) to EPSG:23700 (with definition)
-  // (based on the sample at https://pub.dev/packages/proj4dart).
-  final adapter = Proj4d.resolve(
-    'EPSG:4326',
-    'EPSG:23700',
-    toDef: '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 '
-        '+k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 '
-        '+towgs84=52.17,-71.82,-14.9,0,0,0,0 +units=m +no_defs',
-  );
-
-  // Apply a forward projection to EPSG:23700 with points represented as Point2.
-  print(
-    adapter.forward.project(
-      const Geographic(lon: 17.8880, lat: 46.8922),
-      to: Projected.create,
-    ),
-  );
-```
-
-Please see the documentation of [proj4dart](https://pub.dev/packages/proj4dart)
-package about it's capabilities, and accuracy of forward and inverse 
-projections.
-
-## Geospatial vector data
-
-### Content interfaces
-
-Content interfaces are used for two main use cases:
-* *writing geospatial data* (coordinates, geometry and features) to text or binary format encoders 
-* *building objects* in decoders reading geospatial data from text or binary formats
-
-Content interface   | Description
-------------------- | -----------
-`CoordinateContent` | Write coordinate objects (bounding boxes, positions, position arrays).
-`GeometryContent`   | Write geometry objects (supported geometry types: `point`, `lineString`, `polygon`, `multiPoint`, `multiLineString`, `multiPolygon` , `geometryCollection`)
-`FeatureContent`    | Write features (with properties and geometry objects) and feature collections
-
-### Text format encoders
-
-Text formats supported:
-
-Format   | Format class | Content encoders
--------- | ------------ | ---------------------------
-[GeoJSON](https://geojson.org/)  | `GeoJSON` | Coordinates, Geometries, Features
-[WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) | `WKT` | Coordinates, Geometries
-
-There are also formats `DefaultFormat` (a text format aligned with GeoJSON but
-output is somewhat simpler) and `WktLikeFormat` (a text format aligned with
-WKT).
-
-All formats mentioned above have following content specific formats:
-
-```dart
-  /// The text format for coordinate objects.
-  static const TextFormat<CoordinateContent> coordinate;
-
-  /// The text format for geometry objects.
-  static const TextFormat<GeometryContent> geometry;
-```
-
-`GeoJSON` provides also:
-
-```dart
-  /// The text format for feature objects.
-  static const TextFormat<FeatureContent> feature;
-```
-
-See samples below how to use text formats and encoders.
-
-### GeoJSON encoder
-
-The `GeoJSON` class can be used to access text format encoders for coordinates, 
-geometries and features producing [GeoJSON](https://geojson.org/) compatible
-text.
-
-A sample to encode a `LineString` geometry to GeoJSON:
-
-```dart
-  // geometry text format encoder for GeoJSON
-  final encoder = GeoJSON.geometry.encoder();
-
-  // prints (however without line breaks):
-  //    {"type":"LineString",
-  //     "bbox":[-1.1,-3.49,3.5,-1.1],
-  //     "coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]}
-  encoder.writer.lineString(
-    [-1.1, -1.1, 2.1, -2.5, 3.5, -3.49],
-    type: Coords.xy,
-    bounds: [-1.1, -3.49, 3.5, -1.1],
-  );
-  print(encoder.toText());
-```
-
-A sample to encode a `Feature` geometry to GeoJSON:
-
-```dart
-  // feature text format encoder for GeoJSON
-  final encoder = GeoJSON.feature.encoder();
-
-  // prints (however without line breaks):
-  //    {"type":"Feature",
-  //     "id":"fid-1",
-  //     "geometry":
-  //        {"type":"Point","coordinates":[10.123,20.25]},
-  //     "properties":
-  //        {"foo":100,"bar":"this is property value","baz":true}}
-  encoder.writer.feature(
-    id: 'fid-1',
-    geometry: (geom) => geom.point([10.123, 20.25]),
-    properties: {
-      'foo': 100,
-      'bar': 'this is property value',
-      'baz': true,
-    },
-  );
-  print(encoder.toText());
-```
-
-### WKT encoder
-
-The `WKT` class can be used to access text format encoders for coordinates and 
-geometries producing 
-[Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)
-compatible text. However feature objects cannot be written to WKT even if 
-supported by GeoJSON.
-
-A sample to encode a `Point` geometry to WKT (with z and m coordinates too):
-
-```dart
-  // geometry text format encoder for WKT
-  final encoder = WKT.geometry.encoder();
-
-  // prints:
-  //    POINT ZM(10.123 20.25 -30.95 -1.999)
-  encoder.writer.point(
-    [10.123, 20.25, -30.95, -1.999],
-    type: Coords.xyzm,
-  );
-  print(encoder.toText());
-```
-
-### WKB encoder and decoder
-
-The `WKB` class provides encoders and decoders for
-[Well-known binary](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary)
-binary format supporting simple geometry objects.
-
-See sample below:
-
-```dart
-  // geometry binary format encoder for WKB
-  final encoder = WKB.geometry.encoder();
-
-  // write geometries (here only point) to content writer of the encoder
-  encoder.writer.point(
-    [10.123, 20.25, -30.95, -1.999],
-    type: Coords.xyzm,
-  );
-
-  // get encoded bytes (Uint8List) and Base64 encoded text (String)
-  final wkbBytes = encoder.toBytes();
-  final wkbBytesAsBase64 = encoder.toText();
-
-  // prints (point encoded to WKB binary data, formatted as Base64 text):
-  //    AAAAC7lAJD752yLQ5UA0QAAAAAAAwD7zMzMzMzO///vnbItDlg==
-  print(wkbBytesAsBase64);
-
-  // next decode this WKB binary data and use WKT text format encoder as target
-
-  // geometry text format encoder for WKT
-  final wktEncoder = WKT.geometry.encoder();
-
-  // geometry binary format decoder for WKB
-  // (with content writer of the WKT encoder set as a target for decoding)
-  final decoder = WKB.geometry.decoder(wktEncoder.writer);
-
-  // now decode those WKB bytes created already at the start
-  decoder.decodeBytes(wkbBytes.buffer);
-
-  // finally print WKT text:
-  //    POINT ZM(10.123 20.25 -30.95 -1.999)
-  print(wktEncoder.toText());
-```
-
-As descibed above `WKB.geometry.decoder` takes `wktEncoder.writer` as a
-parameter. It implements `GeometryContent` interface with following methods:
-
-```dart
-  /// Writes a point geometry with [position].
-  ///
-  /// Use an optional [type] to explicitely specify the type of coordinates. If
-  /// not provided and an iterable has 3 items, then xyz coordinates are
-  /// assumed.
-  ///
-  /// Use an optional [name] to specify a name for a geometry (when applicable).
-  ///
-  /// Supported coordinate value combinations for `Iterable<double>` are:
-  /// (x, y), (x, y, z), (x, y, m) and (x, y, z, m).
-  ///
-  /// An example to write a point geometry with 2D coordinates:
-  /// ```dart
-  ///    // using a coordinate value list (x, y)
-  ///    content.point([10, 20]);
-  /// ```
-  void point(
-    Iterable<double> position, {
-    Coords? type,
-    String? name,
-  });
-
-  /// Writes a line string geometry with a [chain] of positions.
-  void lineString(
-    Iterable<double> chain, {
-    required Coords type,
-    String? name,
-    Iterable<double>? bounds,
-  });
-
-  /// Writes a polygon geometry with one exterior and 0 to N interior [rings].
-  void polygon(
-    Iterable<Iterable<double>> rings, {
-    required Coords type,
-    String? name,
-    Iterable<double>? bounds,
-  });
-
-  /// Writes a multi point geometry with an array of [points] (each with a
-  /// position).
-  void multiPoint(
-    Iterable<Iterable<double>> points, {
-    required Coords type,
-    String? name,
-    Iterable<double>? bounds,
-  });
-
-  // Omitted: multiLineString, multiPolygon, geometryCollection, emptyGeometry
-```
-
-By implementing this interface, it's possible to implement a custom geometry
-object builder that receives geometry content via method calls to the interface. 
-
-## Meta
-
-### Temporal data
-
-Temporal data can be represented as *instants* (a time stamp) and *intervals*
-(an open or a closed interval between time stamps).
-
-```dart
-  // Instants can be created from `DateTime` or parsed from text.
-  Instant(DateTime.utc(2020, 10, 31, 09, 30));
-  Instant.parse('2020-10-31 09:30Z');
-
-  // Intervals (open-started, open-ended, closed).
-  Interval.openStart(DateTime.utc(2020, 10, 31));
-  Interval.openEnd(DateTime.utc(2020, 10, 01));
-  Interval.closed(DateTime.utc(2020, 10, 01), DateTime.utc(2020, 10, 31));
-
-  // Same intervals parsed (by the "start/end" format, ".." for open limits).
-  Interval.parse('../2020-10-31');
-  Interval.parse('2020-10-01/..');
-  Interval.parse('2020-10-01/2020-10-31');
-```
-
-### Geospatial extents
-
-Extent objects have both spatial bounds and temporal interval, and they are
-useful in metadata structures for geospatial data sources.
-
-```dart
-  // An extent with spatial (WGS 84 longitude-latitude) and temporal parts.
-  GeoExtent.single(
-    crs: 'EPSG:4326',
-    bbox: const GeoBox(west: -20.0, south: 50.0, east: 20.0, north: 60.0),
-    interval: Interval.parse('../2020-10-31'),
-  );
-
-  // An extent with multiple spatial bounds and temporal interval segments.
-  GeoExtent.multi(
-    crs: 'EPSG:4326',
-    boxes: const [
-      GeoBox(west: -20.0, south: 50.0, east: 20.0, north: 60.0),
-      GeoBox(west: 40.0, south: 50.0, east: 60.0, north: 60.0),
-    ],
-    intervals: [
-      Interval.parse('2020-10-01/2020-10-05'),
-      Interval.parse('2020-10-27/2020-10-31'),
-    ],
-  );
-```
-
-The `crs` property in extents above refer to a 
-[Coordinate reference system](https://en.wikipedia.org/wiki/Spatial_reference_system) 
-that is *a coordinate-based local, regional or global system used to locate geographical entities*. 
-
-This library does not define any `crs` constants, please refer to registries
-like [The EPSG dataset](https://epsg.org/).
-
-## Codes
-
-### Coordinate types
-
-Coordinate types supported are defined by the `Coords` enum.
-
-Type          | Description
-------------- | -----------
-`xy`          | Projected (x, y) or geographic (longitude, latitude) coordinates
-`xyz`         | Projected (x, y, z) or geographic (longitude, latitude, elevation) coordinates
-`xym`         | Projected (x, y, m) or geographic (longitude, latitude, m) coordinates
-`xyzm`        | Projected (x, y, z, m) or geographic (longitude, latitude, elevation, m) coordinates
-
-The `m` coordinate represents a measurement or a value on a linear referencing
-system (like time).
-
-There are base interfaces (abstract classes) for positions and bounding boxes.
-
-Interface     | Description
-------------- | -----------
-`Position`    | A base interface for geospatial positions.
-`Box`         | A base interface for axis-aligned bounding boxes with min & max coordinates.
-
-This package provides four classes (extending these interface) for representing
-coordinates for positions and bounding boxes. These classes can act also as
-interfaces (sub implementations allowed) or as concrete classes to represent
-data.
-
-Class         | Description
-------------- | -----------
-`Geographic`  | A geographic position with longitude, latitude and optional elevation and m.
-`Projected`   | A projected position with x, y, and optional z and m coordinates.
-`GeoBox`      | A geographic bounding box with west, south, east and north coordinates.
-`ProjBox`     | A bounding box with minX, minY, maxX and maxY coordinates.
-
-Also `Scalable2i` implements `Projected` providing 2D projected coordinates with
-`x` and `y` scaled at `zoom` (level of detail).
-
-### Geometry types
-
-Geometry types introduced above are based on the
-[Simple Feature Access - Part 1: Common Architecture](https://www.ogc.org/standards/sfa)
-standard by [The Open Geospatial Consortium](https://www.ogc.org/).
-
-The types are also compatible with [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry).
-
-Geometry types supported are defined by the `Geom` enum.
-
-Type                 | Description
--------------------- | -----------
-`point`              | The type for the `POINT` geometry
-`lineString`         | The type for the `LINESTRING` geometry.
-`polygon`            | The type for the `POLYGON` geometry.
-`geometryCollection` | The type for the `GEOMETRYCOLLECTION` geometry.
-`multiPoint`         | The type for the `MULTIPOINT` geometry.
-`multiLineString`    | The type for the `MULTILINESTRING` geometry.
-`multiPolygon`       | The type for the `MULTIPOLYGON` geometry.
-
-## Other features
-
-### Constants
-
-Constants defined by the package:
-
-Constant                  | Value          | Description
-------------------------- | -------------- | -----------
-`minLongitude`            | `-180.0`       | The minimum value for geographic longitude.
-`maxLongitude`            | `180.0`        | The maximum value for geographic longitude.
-`minLatitude`             | `-90.0`        | The minimum value for geographic latitude.
-`maxLatitude `            | `90.0`         | The maximum value for geographic latitude.
-`minLatitudeWebMercator`  | `-85.05112878` | The minimum value for geographic latitude inside Web Mercator coverage
-`maxLatitudeWebMercator`  | `85.05112878`  | The maximum value for geographic latitude inside Web Mercator coverage
-`earthRadiusWgs84`        | `6378137.0`    | The earth equatorial radius in meters as specified by WGS 84.
-`earthCircumferenceWgs84` | `2 * math.pi * earthRadiusWgs84` |  The earth circumference in meters (from earth equatorial radius by WGS 84).
-`screenPPIbyOGC`          | `0.0254 / 0.00028` | OGC defines a screen pixel of 0.28 mm that approximates to 90.7 ppi.
-
-### Geodesy algorithms
-
-Currently supported, a distance between geographic positions using the
-[Haversine formula](https://en.wikipedia.org/wiki/Haversine_formula).
-
-```dart
-/// Returns a distance in meters between [position1] and [position2].
-/// 
-/// Given [earthRadius] is used for calculation with the approximate mean radius
-/// as a default.
-double distanceHaversine(
-  Geographic position1,
-  Geographic position2, {
-  double earthRadius = 6371000.0,
-});
-```
+## Reference
+
+### Packages
+
+The **geobase** library contains also following partial packages, that can be
+used to import only a certain subset instead of the whole **geobase** package:
+
+Package                | Description 
+---------------------- | ----------- 
+**codes**              | Enums (codes) for geospatial coordinate, geometry types and canvas origin.
+**constants**          | Geodetic and screen related constants.
+**coordinates**        | Geographic (longitude-latitude) and projected positions and bounding boxes.
+**meta**               | Temporal data structures (instant, interval) and spatial extents.
+**projections**        | Geospatial projections (currently only between WGS84 and Web Mercator).
+**projections_proj4d** | Projections provided by the external [proj4dart](https://pub.dev/packages/proj4dart) package.
+**tiling**             | Tiling schemes and tile matrix sets (web mercator, global geodetic).
+**vector**             | Text and binary formats for vector data (features, geometries, coordinates).
+**vector_data**        | Data structures for positions, geometries, features and feature collections.
+
+External packages `geobase` is depending on:
+* [equatable](https://pub.dev/packages/equatable) for equality and hash utils
+* [meta](https://pub.dev/packages/meta) for annotations
+* [proj4dart](https://pub.dev/packages/proj4dart) for coordinate projections
 
 ## Authors
 

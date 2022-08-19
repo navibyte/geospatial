@@ -4,8 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-// ignore_for_file: avoid_print, cascade_invocations
-// ignore_for_file: avoid_redundant_argument_values, prefer_asserts_with_message
+// ignore_for_file: avoid_print, prefer_const_constructors, prefer_const_literals_to_create_immutables, cascade_invocations, lines_longer_than_80_chars, avoid_redundant_argument_values
 
 import 'package:geobase/geobase.dart';
 
@@ -16,203 +15,400 @@ dart example/geobase_example.dart
 */
 
 void main() {
-  // Coordinates
-  _geographicPosition();
-  _geographicBbox();
-  _projectedPosition();
-  _projectedBbox();
-  print('\nScalable2i');
-  _scalable2i();
+  // coordinates
+  _geographicCoordinates();
+  _projectedCoordinates();
+  _scalableCoordinates();
 
-  // WKT samples
-  print('\nWKT samples');
-  _wktPointGeometry();
-  _wktPointGeometryWithZ();
-  _wktPointGeometryWithM();
-  _wktPointGeometryWithZM();
-  _wktPointGeometryWithZMShortened();
+  // coordinate arrays
+  _coordinateArrays();
 
-  // WKB samples
-  print('\nWKB samples');
-  _wkbPointGeometryWithZM();
+  // geometries
+  _geometryTypes();
+  _point();
+  _lineString();
+  _polygon();
+  _multiPoint();
+  _multiLineString();
+  _multiPolygon();
+  _geometryCollection();
 
-  // GeoJSON samples
-  print('\nGeoJSON samples');
-  _geoJsonPointGeometry();
-  _geoJsonPointGeometryDecimals();
-  _geoJsonPointGeometryCustomStringBuffer();
-  _geoJsonLineStringGeometryWithBbox();
-  _geoJsonGeometryCollection();
-  _geoJsonFeature();
-  _geoJsonFeatureCollection();
+  // geospatial features
+  _feature();
+  _featureCollection();
 
-  // time objects
-  _intervalAndInstant();
+  // meta
+  _temporalData();
+  _geospatialExtents();
 
-  // extents
-  _geoExtent();
+  // vector data
+  _geoJson();
+  _wkt();
+  _wkb();
 
-  // projection samples
-  print('\nProjection samples');
-  _wgs84Projections();
+  // projections
+  _wgs84ToWebMercator();
+  // see also separate file "geobase_with_proj4d_example.dart"
 
   // tiling schemes
-  print('\nWeb Mercator Quad');
   _webMercatorQuad();
-  print('\nGlobal Geodetic Quad');
   _globalGeodeticQuad();
 }
 
-void _geographicPosition() {
-  // Geographic position with longitude and latitude.
-  const Geographic(lon: -0.0014, lat: 51.4778);
+void _geographicCoordinates() {
+  // A geographic position with longitude and latitude.
+  Geographic(lon: -0.0014, lat: 51.4778);
 
-  // Geographic position with longitude, latitude and elevation.
-  const Geographic(lon: -0.0014, lat: 51.4778, elev: 45.0);
+  // A geographic position with longitude, latitude and elevation.
+  Geographic(lon: -0.0014, lat: 51.4778, elev: 45.0);
 
-  // Geographic position with longitude, latitude, elevation and measure.
-  const Geographic(lon: -0.0014, lat: 51.4778, elev: 45.0, m: 123.0);
+  // A geographic position with longitude, latitude, elevation and measure.
+  Geographic(lon: -0.0014, lat: 51.4778, elev: 45.0, m: 123.0);
 
-  // The last sample also from num iterable or text (order: lon, lat, elev, m).
-  Geographic.fromCoords(const [-0.0014, 51.4778, 45.0, 123.0]);
+  // The last sample also from a double list or text (order: lon, lat, elev, m).
+  Geographic.fromCoords([-0.0014, 51.4778, 45.0, 123.0]);
   Geographic.fromText('-0.0014,51.4778,45.0,123.0');
   Geographic.fromText('-0.0014 51.4778 45.0 123.0', delimiter: ' ');
+
+  // -------
+
+  // A geographic bbox (-20 .. 20 in longitude, 50 .. 60 in latitude).
+  GeoBox(west: -20, south: 50, east: 20, north: 60);
+
+  // A geographic bbox with limits (100 .. 200) on the elevation coordinate too.
+  GeoBox(west: -20, south: 50, minElev: 100, east: 20, north: 60, maxElev: 200);
+
+  // The last sample also from a double list or text.
+  GeoBox.fromCoords([-20, 50, 100, 20, 60, 200]);
+  GeoBox.fromText('-20,50,100,20,60,200');
 }
 
-void _geographicBbox() {
-  // Geographic bbox (-20.0 .. 20.0 in longitude, 50.0 .. 60.0 in latitude).
-  const GeoBox(west: -20.0, south: 50.0, east: 20.0, north: 60.0);
+void _projectedCoordinates() {
+  // A projected position with x and y.
+  Projected(x: 708221.0, y: 5707225.0);
 
-  // Geographic bbox with limits on elevation coordinate too.
-  const GeoBox(
-    west: -20.0,
-    south: 50.0,
-    minElev: 100.0,
-    east: 20.0,
-    north: 60.0,
-    maxElev: 200.0,
-  );
+  // A projected position with x, y and z.
+  Projected(x: 708221.0, y: 5707225.0, z: 45.0);
 
-  // The last sample also from num iterable or text.
-  GeoBox.fromCoords(const [-20.0, 50.0, 100.0, 20.0, 60.0, 200.0]);
-  GeoBox.fromText('-20.0,50.0,100.0,20.0,60.0,200.0');
+  // A projected position with x, y, z and m.
+  Projected(x: 708221.0, y: 5707225.0, z: 45.0, m: 123.0);
 
-  // Geographic bbox with limits on elevation and measure coordinates too.
-  const GeoBox(
-    west: -20.0,
-    south: 50.0,
-    minElev: 100.0,
-    minM: 5.0,
-    east: 20.0,
-    north: 60.0,
-    maxElev: 200.0,
-    maxM: 6.0,
-  );
-}
-
-void _projectedPosition() {
-  // Projected position with x and y.
-  const Projected(x: 708221.0, y: 5707225.0);
-
-  // Projected position with x, y and z.
-  const Projected(x: 708221.0, y: 5707225.0, z: 45.0);
-
-  // Projected position with x, y, z and m.
-  const Projected(x: 708221.0, y: 5707225.0, z: 45.0, m: 123.0);
-
-  // The last sample also from num iterable or text (order: x, y, z, m).
-  Projected.fromCoords(const [708221.0, 5707225.0, 45.0, 123.0]);
+  // The last sample also from a double list or text (order: x, y, z, m).
+  Projected.fromCoords([708221.0, 5707225.0, 45.0, 123.0]);
   Projected.fromText('708221.0,5707225.0,45.0,123.0');
   Projected.fromText('708221.0 5707225.0 45.0 123.0', delimiter: ' ');
-}
 
-void _projectedBbox() {
-  // Projected bbox with limits on x and y.
-  const ProjBox(minX: 10, minY: 10, maxX: 20, maxY: 20);
+  // -------
 
-  // Projected bbox with limits on x, y and z.
-  const ProjBox(minX: 10, minY: 10, minZ: 10, maxX: 20, maxY: 20, maxZ: 20);
+  // A projected bbox with limits on x and y.
+  ProjBox(minX: 10, minY: 10, maxX: 20, maxY: 20);
 
-  // The last sample also from num iterable or text.
-  ProjBox.fromCoords(const [10, 10, 10, 20, 20, 20]);
+  // A projected bbox with limits on x, y and z.
+  ProjBox(minX: 10, minY: 10, minZ: 10, maxX: 20, maxY: 20, maxZ: 20);
+
+  // The last sample also from a double list or text.
+  ProjBox.fromCoords([10, 10, 10, 20, 20, 20]);
   ProjBox.fromText('10,10,10,20,20,20');
-
-  // Projected bbox with limits on x, y, z and m.
-  const ProjBox(
-    minX: 10,
-    minY: 10,
-    minZ: 10,
-    minM: 10,
-    maxX: 20,
-    maxY: 20,
-    maxZ: 20,
-    maxM: 20,
-  );
 }
 
-void _scalable2i() {
-  // A pixel or a tile with a zoom level (or LOD = level of detail) coordinates.
+void _scalableCoordinates() {
+  // A pixel with a zoom level (or LOD = level of detail) coordinates.
   const pixel = Scalable2i(zoom: 9, x: 23, y: 10);
-  print(pixel);
 
   // Such coordinates can be scaled to other zoom levels.
-  print(pixel.zoomIn()); // => Scalable2i(zoom: 10, x: 46, y: 20);
-  print(pixel.zoomOut()); // => Scalable2i(zoom: 8, x: 11, y: 5);
-  print(pixel.zoomTo(13)); // => Scalable2i(zoom: 13, x: 368, y: 160));
+  pixel.zoomIn(); // => Scalable2i(zoom: 10, x: 46, y: 20);
+  pixel.zoomOut(); // => Scalable2i(zoom: 8, x: 11, y: 5);
+  pixel.zoomTo(13); // => Scalable2i(zoom: 13, x: 368, y: 160));
 }
 
-void _wktPointGeometry() {
-  // geometry text format encoder for WKT
-  final encoder = WKT.geometry.encoder();
+void _coordinateArrays() {
+  // A position array with three positions each with x and y coordinates.
+  PositionArray.view(
+    [
+      10.0, 11.0, // (x, y) for position 0
+      20.0, 21.0, // (x, y) for position 1
+      30.0, 31.0, // (x, y) for position 2
+    ],
+    type: Coords.xy,
+  );
 
-  // prints:
-  //    POINT(10.123 20.25)
-  encoder.writer.point([10.123, 20.25]);
-  print(encoder.toText());
-}
-
-void _wktPointGeometryWithZ() {
-  // geometry text format encoder for WKT
-  final encoder = WKT.geometry.encoder();
-
-  // prints:
-  //    POINT Z(10.123 20.25 -30.95)
-  encoder.writer.point(
-    [10.123, 20.25, -30.95],
+  // A position array with three positions each with x, y and z coordinates.
+  PositionArray.view(
+    [
+      10.0, 11.0, 12.0, // (x, y, z) for position 0
+      20.0, 21.0, 22.0, // (x, y, z) for position 1
+      30.0, 31.0, 32.0, // (x, y, z) for position 2
+    ],
     type: Coords.xyz,
   );
-  print(encoder.toText());
 }
 
-void _wktPointGeometryWithM() {
-  // geometry text format encoder for WKT
-  final encoder = WKT.geometry.encoder();
+void _geometryTypes() {
+  // point (with a position)
+  Point(XY(30.0, 10.0));
+  Point.build([30.0, 10.0]);
 
-  // prints:
-  //    POINT M(10.123 20.25 -1.999)
-  encoder.writer.point(
-    [10.123, 20.25, -1.999],
-    type: Coords.xym,
+  // line string (with a chain)
+  LineString.build([30, 10, 10, 30, 40, 40], type: Coords.xy);
+
+  // polygon (with an exterior ring)
+  Polygon.build(
+    [
+      [30, 10, 40, 40, 20, 40, 10, 20, 30, 10],
+    ],
+    type: Coords.xy,
   );
-  print(encoder.toText());
-}
 
-void _wktPointGeometryWithZM() {
-  // geometry text format encoder for WKT
-  final encoder = WKT.geometry.encoder();
-
-  // prints:
-  //    POINT ZM(10.123 20.25 -30.95 -1.999)
-  encoder.writer.point(
-    LonLatElevM(10.123, 20.25, -30.95, -1.999),
-    type: Coords.xyzm,
+  // polygon (with an exterior ring and one interior ring as a hole)
+  Polygon.build(
+    [
+      [35, 10, 45, 45, 15, 40, 10, 20, 35, 10],
+      [20, 30, 35, 35, 30, 20, 20, 30],
+    ],
+    type: Coords.xy,
   );
-  print(encoder.toText());
+
+  // multi point (with four points)
+  MultiPoint.build(
+    [
+      [10, 40],
+      [40, 30],
+      [20, 20],
+      [30, 10],
+    ],
+    type: Coords.xy,
+  );
+
+  // multi line string (with two line strings)
+  MultiLineString.build(
+    [
+      [10, 10, 20, 20, 10, 40],
+      [40, 40, 30, 30, 40, 20, 30, 10],
+    ],
+    type: Coords.xy,
+  );
+
+  // multi polygon (with two polygons)
+  MultiPolygon.build(
+    [
+      [
+        [30, 20, 45, 40, 10, 40, 30, 20],
+      ],
+      [
+        [15, 5, 40, 10, 10, 20, 5, 10, 15, 5],
+      ],
+    ],
+    type: Coords.xy,
+  );
+
+  // multi polygon (with one polygon without a hole, and another with a hole)
+  MultiPolygon.build(
+    [
+      [
+        [40, 40, 20, 45, 45, 30, 40, 40],
+      ],
+      [
+        [20, 35, 10, 30, 10, 10, 30, 5, 45, 20, 20, 35],
+        [30, 20, 20, 15, 20, 25, 30, 20],
+      ],
+    ],
+    type: Coords.xy,
+  );
+
+  // geometry collection (with point, line string and polygon geometries)
+  GeometryCollection([
+    Point(XY(40, 10)),
+    LineString.build([10, 10, 20, 20, 10, 40], type: Coords.xy),
+    Polygon.build(
+      [
+        [40, 40, 20, 45, 45, 30, 40, 40],
+      ],
+      type: Coords.xy,
+    )
+  ]);
 }
 
-void _wktPointGeometryWithZMShortened() {
+/*
+void _geometryTypesOneliners() {
+  // same samples as in "_geometryTypes" but formatted to fit README table
+
+  // point (with a position)
+  Point(XY(30.0, 10.0));
+  Point.build([30.0, 10.0]);
+
+  // line string (with a chain)
+  LineString.build([30, 10, 10, 30, 40, 40], type: Coords.xy);
+
+  // polygon (with an exterior ring)
+  Polygon.build([[30, 10, 40, 40, 20, 40, 10, 20, 30, 10]], type: Coords.xy);
+
+  // polygon (with an exterior ring and one interior ring as a hole)
+  Polygon.build([[35, 10, 45, 45, 15, 40, 10, 20, 35, 10], [20, 30, 35, 35, 30, 20, 20, 30]], type: Coords.xy);
+
+  // multi point (with four points)
+  MultiPoint.build([[10, 40], [40, 30], [20, 20], [30, 10]], type: Coords.xy);
+
+  // multi line string (with two line strings)
+  MultiLineString.build([[10, 10, 20, 20, 10, 40], [40, 40, 30, 30, 40, 20, 30, 10]], type: Coords.xy);
+
+  // multi polygon (with two polygons)
+  MultiPolygon.build([[[30, 20, 45, 40, 10, 40, 30, 20]], [[15, 5, 40, 10, 10, 20, 5, 10, 15, 5]]], type: Coords.xy);
+
+  // multi polygon (with one polygon without a hole, and another with a hole)
+  MultiPolygon.build([[[40, 40, 20, 45, 45, 30, 40, 40]], [[20, 35, 10, 30, 10, 10, 30, 5, 45, 20, 20, 35], [30, 20, 20, 15, 20, 25, 30, 20]]], type: Coords.xy);
+
+  // geometry collection (with point, line string and polygon geometries)
+  GeometryCollection([Point(XY(40, 10)), LineString.build([10, 10, 20, 20, 10, 40], type: Coords.xy), Polygon.build([[40, 40, 20, 45, 45, 30, 40, 40]], type: Coords.xy)]);
+}
+*/
+
+void _point() {}
+
+void _lineString() {}
+
+void _polygon() {}
+
+void _multiPoint() {}
+
+void _multiLineString() {}
+
+void _multiPolygon() {}
+
+void _geometryCollection() {}
+
+void _feature() {
+  // A geospatial feature with id, a point geometry and properties.
+  Feature(
+    id: 'ROG',
+    // a point geometry with a position (lon, lat, elev)
+    geometry: Point.build([-0.0014, 51.4778, 45.0]),
+    properties: {
+      'title': 'Royal Observatory',
+      'place': 'Greenwich',
+      'city': 'London',
+      'isMuseum': true,
+      'measure': 5.79,
+    },
+  );
+}
+
+void _featureCollection() {
+  // A geospatial feature collection (with two features):
+  FeatureCollection([
+    Feature(
+      id: 'ROG',
+      geometry: Point(LonLatElev(-0.0014, 51.4778, 45.0)),
+      properties: {
+        'title': 'Royal Observatory',
+        'place': 'Greenwich',
+        'city': 'London',
+        'isMuseum': true,
+        'measure': 5.79,
+      },
+    ),
+    Feature(
+      id: 'TB',
+      geometry: Point(LonLat(-0.075406, 51.5055)),
+      properties: {
+        'title': 'Tower Bridge',
+        'city': 'London',
+        'built': 1886,
+      },
+    ),
+  ]);
+}
+
+void _geoJson() {
+  // build a LineString sample geometry
+  final lineString = LineString.build(
+    [-1.1, -1.1, 2.1, -2.5, 3.5, -3.49],
+    type: Coords.xy,
+    bounds: [-1.1, -3.49, 3.5, -1.1],
+  );
+
+  // ... and print it as GeoJSON text
+  print(lineString.toText(format: GeoJSON.geometry));
+
+  // GeoJSON representation for other geometries, features and feature
+  // collections can be produced with `toText` methdod also.
+
+  // in this sample a Feature is printed in GeoJSON (with 3 decimals on doubles)
+  final feature = Feature(
+    id: 'TB',
+    geometry: Point(LonLat(-0.075406, 51.5055)),
+    properties: {
+      'title': 'Tower Bridge',
+      'city': 'London',
+      'built': 1886,
+    },
+  );
+  print(feature.toText(format: GeoJSON.feature, decimals: 3));
+
+  // -------
+
+  // sample GeoJSON text representation (a feature collection with two features)
+  const sample = '''
+    {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "ROG",
+          "geometry": {
+            "type": "Point",
+            "coordinates": [-0.0014, 51.4778, 45.0]  
+          },
+          "properties": {
+            "title": "Royal Observatory",
+            "place": "Greenwich"
+          }
+        }, 
+        {
+          "type": "Feature",
+          "id": "TB",
+          "geometry": {
+            "type": "Point",
+            "coordinates": [-0.075406, 51.5055]  
+          },
+          "properties": {
+            "title": "Tower Bridge",
+            "built": 1886
+          }
+        } 
+      ]
+    }
+  ''';
+
+  // parse a FeatureCollection object using the decoder of the GeoJSON format
+  final collection =
+      FeatureCollection.fromText(sample, format: GeoJSON.feature);
+
+  // loop through features and print id, geometry and properties for each
+  for (final feature in collection.features) {
+    print('Feature with id: ${feature.id}');
+    print('  geometry: ${feature.geometry}');
+    print('  properties:');
+    for (final key in feature.properties.keys) {
+      print('    $key: ${feature.properties[key]}');
+    }
+  }
+}
+
+void _wkt() {
+  // create a Point geometry, format it as WKT text that is printed
+  final point = Point.build([10.123, 20.25, -30.95, -1.999], type: Coords.xyzm);
+  final wkt = point.toText(format: WKT.geometry);
+  print(wkt);
+
+  // -------
+
+  // It's possible to encode geometry data as WKT text also without creating
+  // geometry objects first. However this requires accessing an encoder instance
+  // from the WKT format, and then writing content to that encoder.
+
   // geometry text format encoder for WKT
-  final encoder = WKT.geometry.encoder();
+  const format = WKT.geometry;
+  final encoder = format.encoder();
 
   // prints:
   //    POINT ZM(10.123 20.25 -30.95 -1.999)
@@ -223,9 +419,10 @@ void _wktPointGeometryWithZMShortened() {
   print(encoder.toText());
 }
 
-void _wkbPointGeometryWithZM() {
+void _wkb() {
   // geometry binary format encoder for WKB
-  final encoder = WKB.geometry.encoder();
+  const format = WKB.geometry;
+  final encoder = format.encoder();
 
   // write geometries (here only point) to content writer of the encoder
   encoder.writer.point(
@@ -258,151 +455,7 @@ void _wkbPointGeometryWithZM() {
   print(wktEncoder.toText());
 }
 
-void _geoJsonPointGeometry() {
-  // geometry text format encoder for GeoJSON
-  final encoder = GeoJSON.geometry.encoder();
-
-  // prints:
-  //    {"type":"Point","coordinates":[10.123,20.25]}
-  encoder.writer.point([10.123, 20.25]);
-  print(encoder.toText());
-}
-
-void _geoJsonPointGeometryDecimals() {
-  // geometry encoder for GeoJSON, with number of decimals for text output set
-  final encoder = GeoJSON.geometry.encoder(decimals: 1);
-
-  // prints:
-  //    {"type":"Point","coordinates":[10.1,20.3]}
-  encoder.writer.point([10.123, 20.25]);
-  print(encoder.toText());
-}
-
-void _geoJsonPointGeometryCustomStringBuffer() {
-  // geometry text format encoder for GeoJSON with a custom string buffer
-  final buf = StringBuffer();
-  final encoder = GeoJSON.geometry.encoder(buffer: buf);
-
-  // write both directly to buffer and via geometry writer
-  buf.write('{"geometry":');
-  encoder.writer.point([10.123, 20.25]);
-  buf.write('}');
-
-  // prints:
-  //    {"geometry":{"type":"Point","coordinates":[10.123,20.25]}}
-  print(buf);
-}
-
-void _geoJsonLineStringGeometryWithBbox() {
-  // geometry text format encoder for GeoJSON
-  final encoder = GeoJSON.geometry.encoder();
-
-  // prints (however without line breaks):
-  //    {"type":"LineString",
-  //     "bbox":[-1.1,-3.49,3.5,-1.1],
-  //     "coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]}
-  encoder.writer.lineString(
-    [-1.1, -1.1, 2.1, -2.5, 3.5, -3.49],
-    type: Coords.xy,
-    bounds: [-1.1, -3.49, 3.5, -1.1],
-  );
-  print(encoder.toText());
-}
-
-void _geoJsonGeometryCollection() {
-  // geometry text format encoder for GeoJSON
-  final encoder = GeoJSON.geometry.encoder();
-
-  // prints (however without line breaks):
-  //    {"type":"GeometryCollection",
-  //     "geometries":[
-  //        {"type":"Point",
-  //         "coordinates":[10.123,20.25,-30.95]},
-  //        {"type":"Polygon",
-  //         "coordinates":[[[10.1,10.1],[5.0,9.0],[12.0,4.0],[10.1,10.1]]]}]}
-
-  encoder.writer.geometryCollection(
-    // optional `count` argument is used to hint encoder of number of items
-    // (this may allow an encoder to optimize writing optimal array structure)
-    count: 2,
-    // callback function to write geometry items, geom is SimpleGeometryContent
-    (geom) => geom
-      ..point([10.123, 20.25, -30.95], type: Coords.xyz)
-      ..polygon(
-        [
-          [10.1, 10.1, 5, 9, 12, 4, 10.1, 10.1],
-        ],
-        type: Coords.xy,
-      ),
-  );
-  print(encoder.toText());
-}
-
-void _geoJsonFeature() {
-  // feature text format encoder for GeoJSON
-  final encoder = GeoJSON.feature.encoder();
-
-  // prints (however without line breaks):
-  //    {"type":"Feature",
-  //     "id":"fid-1",
-  //     "geometry":
-  //        {"type":"Point","coordinates":[10.123,20.25]},
-  //     "properties":
-  //        {"foo":100,"bar":"this is property value","baz":true}}
-  encoder.writer.feature(
-    id: 'fid-1',
-    geometry: (geom) => geom.point([10.123, 20.25]),
-    properties: {
-      'foo': 100,
-      'bar': 'this is property value',
-      'baz': true,
-    },
-  );
-  print(encoder.toText());
-}
-
-void _geoJsonFeatureCollection() {
-  // feature text format encoder for GeoJSON
-  final encoder = GeoJSON.feature.encoder();
-
-  // prints (however without line breaks):
-  //    {"type":"FeatureCollection",
-  //     "bbox":[-1.1,-3.49,10.123,20.25],
-  //     "features":[
-  //        {"type":"Feature",
-  //         "id":"fid-1",
-  //         "geometry":{"type":"Point","coordinates":[10.123,20.25]},
-  //         "properties":{"foo":100,"bar":"this is property value"}},
-  //        {"type":"Feature",
-  //         "geometry":{"type":"LineString",
-  //                     "bbox":[-1.1,-3.49,3.5,-1.1],
-  //                     "coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]},
-  //         "properties":{}}]}
-  encoder.writer.featureCollection(
-    // bbox covering the whole feature collection
-    bounds: [-1.1, -3.49, 10.123, 20.25],
-    count: 2, // expected feature count
-    (features) => features // writing to FeatureContent
-      ..feature(
-        id: 'fid-1',
-        geometry: (geom) => geom.point([10.123, 20.25]),
-        properties: {
-          'foo': 100,
-          'bar': 'this is property value',
-        },
-      )
-      ..feature(
-        geometry: (geom) => geom.lineString(
-          [-1.1, -1.1, 2.1, -2.5, 3.5, -3.49],
-          type: Coords.xy,
-          bounds: [-1.1, -3.49, 3.5, -1.1],
-        ),
-      ),
-  );
-  print(encoder.toText());
-}
-
-void _intervalAndInstant() {
+void _temporalData() {
   // Instants can be created from `DateTime` or parsed from text.
   Instant(DateTime.utc(2020, 10, 31, 09, 30));
   Instant.parse('2020-10-31 09:30Z');
@@ -418,18 +471,18 @@ void _intervalAndInstant() {
   Interval.parse('2020-10-01/2020-10-31');
 }
 
-void _geoExtent() {
+void _geospatialExtents() {
   // An extent with spatial (WGS 84 longitude-latitude) and temporal parts.
   GeoExtent.single(
     crs: 'EPSG:4326',
-    bbox: const GeoBox(west: -20.0, south: 50.0, east: 20.0, north: 60.0),
+    bbox: GeoBox(west: -20.0, south: 50.0, east: 20.0, north: 60.0),
     interval: Interval.parse('../2020-10-31'),
   );
 
   // An extent with multiple spatial bounds and temporal interval segments.
   GeoExtent.multi(
     crs: 'EPSG:4326',
-    boxes: const [
+    boxes: [
       GeoBox(west: -20.0, south: 50.0, east: 20.0, north: 60.0),
       GeoBox(west: 40.0, south: 50.0, east: 60.0, north: 60.0),
     ],
@@ -440,7 +493,7 @@ void _geoExtent() {
   );
 }
 
-void _wgs84Projections() {
+void _wgs84ToWebMercator() {
   // Built-in coordinate projections (currently only between WGS 84 and
   // Web Mercator)
 

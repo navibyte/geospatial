@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// Geospatial vector data support (features, geometries, coordinates).
+/// Text and binary formats for vector data (features, geometries, coordinates).
 ///
 /// This libary exports a subset of `package:geobase/geobase.dart`.
 ///

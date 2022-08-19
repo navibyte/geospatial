@@ -36,7 +36,7 @@ void _proj4projections() {
         '+towgs84=52.17,-71.82,-14.9,0,0,0,0 +units=m +no_defs',
   );
 
-  // Apply a forward projection to EPSG:23700 with points represented as Point2.
+  // Apply a forward projection to EPSG:23700.
   print(
     adapter.forward.project(
       const Geographic(lon: 17.8880, lat: 46.8922),

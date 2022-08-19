@@ -8,10 +8,10 @@
 
 /// Data structures for positions, geometries, features and feature collections.
 ///
-/// Key features
+/// Key features:
 /// * positions and position arrays based on coordinate arrays
 /// * simple geometries (point, line string, polygon, multi point, multi line string, multi polygon, geometry collection)
-/// * feature objects (with id, properties and geometry) and feature collections
+/// * features (with id, properties and geometry) and feature collections
 ///
 /// This libary exports a subset of `package:geobase/geobase.dart`.
 ///

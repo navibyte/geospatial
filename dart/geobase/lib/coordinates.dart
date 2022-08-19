@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// Geographic and projected positions and bounding boxes.
+/// Geographic (longitude-latitude) and projected positions and bounding boxes.
 ///
 /// This libary exports a subset of `package:geobase/geobase.dart`.
 ///

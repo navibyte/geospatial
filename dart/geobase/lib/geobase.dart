@@ -6,22 +6,16 @@
 
 // ignore_for_file: lines_longer_than_80_chars
 
-/// Geospatial coordinates, projections and vector data (GeoJSON, WKT, WKB).
+/// Geospatial data structures, projections, tiling schemes and vector data.
 ///
 /// Key features:
-/// * *geographic* positions and bounding boxes (longitude-latitude-elevation)
-/// * *projected* positions and bounding boxes (cartesian XYZ)
-/// * coordinate projections (initial support)
-/// * tiling schemes and tile matrix sets (web mercator, global geodetic)
-/// * temporal data structures (instant, interval) and spatial extents
+/// * geographic (longitude-latitude) and projected positions and bounding boxes
 /// * simple geometries (point, line string, polygon, multi point, multi line string, multi polygon, geometry collection)
-/// * feature objects (with id, properties and geometry) and feature collections
-/// * text format encoders for features, geometries, coordinates, properties:
-///   * supported formats: [GeoJSON](https://geojson.org/)
-/// * text format encoders for geometries and coordinates:
-///   * supported formats: [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)
-/// * binary format encoders and decoders for geometries:
-///   * supported formats: [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary)
+/// * features (with id, properties and geometry) and feature collections
+/// * temporal data structures (instant, interval) and spatial extents
+/// * vector data formats supported ([GeoJSON](https://geojson.org/), [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry), [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary))
+/// * coordinate projections (web mercator + based on the external [proj4dart](https://pub.dev/packages/proj4dart) library)
+/// * tiling schemes and tile matrix sets (web mercator, global geodetic)///
 ///
 /// Usage: import `package:geobase/geobase.dart`
 library geobase;

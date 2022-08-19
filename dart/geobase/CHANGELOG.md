@@ -1,9 +1,7 @@
 ## 0.3.0
 
-Development version `0.3.0-dev.2`.
-
 ✨ New: Data structures for simple geometries, features and feature collections.
-✨ New: Support for [Well-know binary](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary) (WKB). Text and
+✨ New: Support for [Well-known binary](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary) (WKB). Text and
 binary data formats, encodings and content interfaces also redesigned.
 
 ⚠️ Breaking changes:
@@ -32,6 +30,7 @@ binary data formats, encodings and content interfaces also redesigned.
 - [Decode GeoJSON and build data structures using new data structures by geobase #140](https://github.com/navibyte/geospatial/issues/140)
 - [Handle explicit and implicit bounds in geometries and features on geobase](https://github.com/navibyte/geospatial/issues/141)
 - [Handle projections and transforms of geometries and features on geobase #142](https://github.com/navibyte/geospatial/issues/142)
+- [Documentation about content builders, geometries and features on geobase #145](https://github.com/navibyte/geospatial/issues/145)
 
 🛠 Refactoring:
 - [Optimize reading from iterable of coordinate values #131](https://github.com/navibyte/geospatial/issues/131)

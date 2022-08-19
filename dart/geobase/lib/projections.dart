@@ -6,6 +6,8 @@
 
 /// Geospatial projections (currently only between WGS84 and Web Mercator).
 ///
+/// This libary exports a subset of `package:geobase/geobase.dart`.
+///
 /// See also `package:geobase/projections_proj4d.dart` that provides a
 /// projection adapter using the external `proj4dart` package.
 ///
