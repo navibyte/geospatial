@@ -72,12 +72,12 @@ class FeatureBuilder<T extends FeatureObject, E extends Geometry>
     return list;
   }
 
-  /// Decode a feature object of [R] from [text] conforming to [format].
+  /// Parses a feature object of [R] from [text] conforming to [format].
   ///
   /// When [format] is not given, then [GeoJSON] is used as a default.
   ///
   /// Format or decoder implementation specific options can be set by [options].
-  static R decodeText<R extends FeatureObject, E extends Geometry>(
+  static R parse<R extends FeatureObject, E extends Geometry>(
     String text, {
     TextReaderFormat<FeatureContent> format = GeoJSON.feature,
     Map<String, dynamic>? options,

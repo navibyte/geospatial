@@ -94,7 +94,7 @@ abstract class BoxCoords extends Box with _CoordinatesMixin {
     return BoxCoords.view(list, type: type);
   }
 
-  /// A bounding box with coordinate values parsed from [text].
+  /// Parses a bounding box with coordinate values parsed from [text].
   ///
   /// Coordinate values in [text] are separated by [delimiter].
   ///
@@ -102,14 +102,13 @@ abstract class BoxCoords extends Box with _CoordinatesMixin {
   /// coordinate [type].
   ///
   /// Throws FormatException if coordinates are invalid.
-  factory BoxCoords.fromText(
+  factory BoxCoords.parse(
     String text, {
     Pattern? delimiter = ',',
     Coords type = Coords.xy,
   }) =>
       BoxCoords.view(
-        parseDoubleValuesFromText(text, delimiter: delimiter)
-            .toList(growable: false),
+        parseDoubleValues(text, delimiter: delimiter).toList(growable: false),
         type: type,
       );
 

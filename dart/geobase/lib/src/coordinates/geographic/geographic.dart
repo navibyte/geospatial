@@ -76,7 +76,7 @@ class Geographic extends Position {
           m: m?.toDouble(),
         );
 
-  /// Creates a geographic position from [coords] starting from [offset].
+  /// Builds a geographic position from [coords] starting from [offset].
   ///
   /// Supported coordinate value combinations for [coords] are:
   /// (lon, lat), (lon, lat, elev), (lon, lat, m) or (lon, lat, elev, m)
@@ -86,19 +86,19 @@ class Geographic extends Position {
   /// assumed.
   ///
   /// Throws FormatException if coordinates are invalid.
-  factory Geographic.fromCoords(
+  factory Geographic.build(
     Iterable<num> coords, {
     int offset = 0,
     Coords? type,
   }) =>
-      Position.createFromCoords(
+      Position.buildPosition(
         coords,
         to: Geographic.create,
         offset: offset,
         type: type,
       );
 
-  /// Creates a geographic position from [text].
+  /// Parses a geographic position from [text].
   ///
   /// Coordinate values in [text] are separated by [delimiter].
   ///
@@ -110,12 +110,12 @@ class Geographic extends Position {
   /// assumed.
   ///
   /// Throws FormatException if coordinates are invalid.
-  factory Geographic.fromText(
+  factory Geographic.parse(
     String text, {
     Pattern? delimiter = ',',
     Coords? type,
   }) =>
-      Position.createFromText(
+      Position.parsePosition(
         text,
         to: Geographic.create,
         delimiter: delimiter,

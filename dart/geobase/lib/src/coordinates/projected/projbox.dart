@@ -82,7 +82,7 @@ class ProjBox extends Box {
   factory ProjBox.from(Iterable<Projected> positions) =>
       Box.createBoxFrom(positions, ProjBox.create);
 
-  /// Creates a projected bounding box from [coords] starting from [offset].
+  /// Builds a projected bounding box from [coords] starting from [offset].
   ///
   /// Supported coordinate value combinations by coordinate type:
   ///
@@ -97,19 +97,19 @@ class ProjBox extends Box {
   /// provided and [coords] has 6 items, then xyz coordinates are assumed.
   ///
   /// Throws FormatException if coordinates are invalid.
-  factory ProjBox.fromCoords(
+  factory ProjBox.build(
     Iterable<num> coords, {
     int offset = 0,
     Coords? type,
   }) =>
-      Box.createFromCoords(
+      Box.buildBox(
         coords,
         to: ProjBox.create,
         offset: offset,
         type: type,
       );
 
-  /// Creates a projected bounding box from [text].
+  /// Parses a projected bounding box from [text].
   ///
   /// Coordinate values in [text] are separated by [delimiter].
   ///
@@ -126,12 +126,12 @@ class ProjBox extends Box {
   /// provided and [text] has 6 items, then xyz coordinates are assumed.
   ///
   /// Throws FormatException if coordinates are invalid.
-  factory ProjBox.fromText(
+  factory ProjBox.parse(
     String text, {
     Pattern? delimiter = ',',
     Coords? type,
   }) =>
-      Box.createFromText(
+      Box.parseBox(
         text,
         to: ProjBox.create,
         delimiter: delimiter,

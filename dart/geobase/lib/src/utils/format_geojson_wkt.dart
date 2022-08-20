@@ -34,11 +34,6 @@ enum _Container {
   propertyArray,
 }
 
-/*
-Box _convertToBox(Iterable<double> bounds, {Coords? type}) =>
-    bounds is Box ? bounds as Box : ProjBox.fromCoords(bounds, type: type);
-*/
-
 abstract class _BaseTextWriter<T extends Object>
     with GeometryContent, CoordinateContent
     implements ContentEncoder<T> {
@@ -551,7 +546,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
       ..write('"');
     if (bounds != null) {
       _buffer.write(',"bbox":[');
-      _subWriter().bounds(boxFromCoords(bounds, type: coordType));
+      _subWriter().bounds(buildBoxCoords(bounds, type: coordType));
       _buffer.write(']');
     }
     _buffer.write(',"coordinates":');
@@ -589,7 +584,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     _buffer.write('{"type":"GeometryCollection"');
     if (bounds != null) {
       _buffer.write(',"bbox":[');
-      _subWriter().bounds(boxFromCoords(bounds));
+      _subWriter().bounds(buildBoxCoords(bounds));
       _buffer.write(']');
     }
     _buffer.write(',"geometries":');
@@ -644,7 +639,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     _buffer.write('{"type":"FeatureCollection"');
     if (bounds != null) {
       _buffer.write(',"bbox":[');
-      _subWriter().bounds(boxFromCoords(bounds));
+      _subWriter().bounds(buildBoxCoords(bounds));
       _buffer.write(']');
     }
     _buffer.write(',"features":');
@@ -687,7 +682,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     _markItem();
     if (bounds != null) {
       _buffer.write(',"bbox":[');
-      _subWriter().bounds(boxFromCoords(bounds));
+      _subWriter().bounds(buildBoxCoords(bounds));
       _buffer.write(']');
     }
     if (geometry != null) {

@@ -64,7 +64,7 @@ class Projected extends Position {
         _z = z,
         _m = m;
 
-  /// Creates a projected position from [coords] starting from [offset].
+  /// Builds a projected position from [coords] starting from [offset].
   ///
   /// Supported coordinate value combinations for [coords] are:
   /// (x, y), (x, y, z), (x, y, m) and (x, y, z, m).
@@ -73,19 +73,19 @@ class Projected extends Position {
   /// provided and [coords] has 3 items, then xyz coordinates are assumed.
   ///
   /// Throws FormatException if coordinates are invalid.
-  factory Projected.fromCoords(
+  factory Projected.build(
     Iterable<num> coords, {
     int offset = 0,
     Coords? type,
   }) =>
-      Position.createFromCoords(
+      Position.buildPosition(
         coords,
         to: Projected.create,
         offset: offset,
         type: type,
       );
 
-  /// Creates a projected position from [text].
+  /// Parses a projected position from [text].
   ///
   /// Coordinate values in [text] are separated by [delimiter].
   ///
@@ -96,12 +96,12 @@ class Projected extends Position {
   /// provided and [text] has 3 items, then xyz coordinates are assumed.
   ///
   /// Throws FormatException if coordinates are invalid.
-  factory Projected.fromText(
+  factory Projected.parse(
     String text, {
     Pattern? delimiter = ',',
     Coords? type,
   }) =>
-      Position.createFromText(
+      Position.parsePosition(
         text,
         to: Projected.create,
         delimiter: delimiter,

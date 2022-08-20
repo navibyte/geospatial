@@ -27,7 +27,7 @@ String toStringAsFixedWhenDecimals(num n, int fractionDigits) =>
 /// If [text] contains less than [minCount] value items, then `FormatException``
 /// is also thrown.
 @internal
-Iterable<num> parseNumValuesFromText(
+Iterable<num> parseNumValues(
   String text, {
   Pattern? delimiter,
   int minCount = 2,
@@ -55,7 +55,7 @@ Iterable<num> parseNumValuesFromText(
 /// If [text] contains less than [minCount] value items, then `FormatException``
 /// is also thrown.
 @internal
-Iterable<num?> parseNullableNumValuesFromText(
+Iterable<num?> parseNullableNumValues(
   String text, {
   Pattern? delimiter,
   int minCount = 2,
@@ -82,7 +82,7 @@ Iterable<num?> parseNullableNumValuesFromText(
 /// If [text] contains less than [minCount] value items, then `FormatException``
 /// is also thrown.
 @internal
-Iterable<int> parseIntValuesFromText(
+Iterable<int> parseIntValues(
   String text, {
   Pattern? delimiter,
   int minCount = 2,
@@ -111,7 +111,7 @@ Iterable<int> parseIntValuesFromText(
 /// If [text] contains less than [minCount] value items, then `FormatException``
 /// is also thrown.
 @internal
-Iterable<double> parseDoubleValuesFromText(
+Iterable<double> parseDoubleValues(
   String text, {
   Pattern? delimiter,
   int minCount = 2,

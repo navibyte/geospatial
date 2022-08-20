@@ -42,7 +42,7 @@ class Polygon extends SimpleGeometry {
           'Polygon must contain at least the exterior ring',
         );
 
-  /// A polygon geometry from one exterior and 0 to N interior [rings].
+  /// Builds a polygon geometry from one exterior and 0 to N interior [rings].
   ///
   /// Use the required [type] to explicitely specify the type of coordinates.
   ///
@@ -83,19 +83,19 @@ class Polygon extends SimpleGeometry {
     Iterable<double>? bounds,
   }) =>
       Polygon._(
-        listOfPositionArraysFromCoords(rings, type: type),
+        buildListOfPositionArrays(rings, type: type),
         type: type,
-        bounds: boxFromCoordsOpt(bounds, type: type),
+        bounds: buildBoxCoordsOpt(bounds, type: type),
       );
 
-  /// Decodes a polygon geometry from [text] conforming to [format].
+  /// Parses a polygon geometry from [text] conforming to [format].
   ///
   /// When [format] is not given, then [GeoJSON] is used as a default.
-  factory Polygon.fromText(
+  factory Polygon.parse(
     String text, {
     TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
   }) =>
-      GeometryBuilder.decodeText<Polygon>(text, format: format);
+      GeometryBuilder.parse<Polygon>(text, format: format);
 
   @override
   Geom get geomType => Geom.polygon;

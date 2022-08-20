@@ -54,8 +54,8 @@ class Scalable2i implements Scalable, Projected {
         Scalable2i(zoom: zoom, x: x.round(), y: y.round());
   }
 
-  /// Creates scalable coordinates from [coords] given in order: zoom, x, y.
-  factory Scalable2i.fromCoords(Iterable<num> coords, {int offset = 0}) {
+  /// Builds scalable coordinates from [coords] given in order: zoom, x, y.
+  factory Scalable2i.build(Iterable<num> coords, {int offset = 0}) {
     // resolve iterator for source coordinates
     final Iterator<num> iter;
     if (offset == 0) {
@@ -84,15 +84,15 @@ class Scalable2i implements Scalable, Projected {
     throw invalidCoordinates;
   }
 
-  /// Creates scalable coordinates from [text] given in order: zoom, x, y.
+  /// Parses scalable coordinates from [text] given in order: zoom, x, y.
   ///
   /// Coordinate values in [text] are separated by [delimiter].
-  factory Scalable2i.fromText(
+  factory Scalable2i.parse(
     String text, {
     Pattern? delimiter = ',',
   }) {
-    final coords = parseNumValuesFromText(text, delimiter: delimiter);
-    return Scalable2i.fromCoords(coords);
+    final coords = parseNumValues(text, delimiter: delimiter);
+    return Scalable2i.build(coords);
   }
 
   @override

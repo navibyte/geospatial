@@ -9,13 +9,13 @@ import 'package:meta/meta.dart';
 import '/src/codes/coords.dart';
 import '/src/vector_data/array.dart';
 
-/// A bounding box from [coords] if it's non-null.
+/// Builds a bounding box from [coords] if it's non-null.
 ///
 /// If [coords] is already an instance of [BoxCoords] then it's returned.
 ///
 /// Otherwise a new instance is created from [coords] and [type].
 @internal
-BoxCoords? boxFromCoordsOpt(Iterable<double>? coords, {Coords? type}) {
+BoxCoords? buildBoxCoordsOpt(Iterable<double>? coords, {Coords? type}) {
   if (coords == null) {
     return null;
   } else if (coords is BoxCoords) {
@@ -30,13 +30,13 @@ BoxCoords? boxFromCoordsOpt(Iterable<double>? coords, {Coords? type}) {
   }
 }
 
-/// A bounding box from [coords].
+/// Build a bounding box from [coords].
 ///
 /// If [coords] is already an instance of [BoxCoords] then it's returned.
 ///
 /// Otherwise a new instance is created from [coords] and [type].
 @internal
-BoxCoords boxFromCoords(Iterable<double> coords, {Coords? type}) {
+BoxCoords buildBoxCoords(Iterable<double> coords, {Coords? type}) {
   if (coords is BoxCoords) {
     return coords;
   } else {
@@ -49,13 +49,13 @@ BoxCoords boxFromCoords(Iterable<double> coords, {Coords? type}) {
   }
 }
 
-/// A position from [coords].
+/// Builds a position from [coords].
 ///
 /// If [coords] is already an instance of [PositionCoords] then it's returned.
 ///
 /// Otherwise a new instance is created from [coords] and [type].
 @internal
-PositionCoords positionFromCoords(
+PositionCoords buildPositionCoords(
   Iterable<double> coords, {
   Coords? type,
 }) {
@@ -71,13 +71,13 @@ PositionCoords positionFromCoords(
   }
 }
 
-/// A list of positions from [coords].
+/// Builds a list of positions from [coords].
 ///
 /// If [coords] is already a list of [PositionCoords] then it's returned.
 ///
 /// Otherwise a new instance is created from [coords] and [type].
 @internal
-List<PositionCoords> listOfPositionsFromCoords(
+List<PositionCoords> buildListOfPositionsCoords(
   Iterable<Iterable<double>> coords, {
   Coords? type,
 }) {
@@ -88,19 +88,19 @@ List<PositionCoords> listOfPositionsFromCoords(
   } else {
     return coords
         .map<PositionCoords>(
-          (pos) => positionFromCoords(pos, type: type),
+          (pos) => buildPositionCoords(pos, type: type),
         )
         .toList(growable: false);
   }
 }
 
-/// A position array from [coords].
+/// Builds a position array from [coords].
 ///
 /// If [coords] is already an instance of [PositionArray] then it's returned.
 ///
 /// Otherwise a new instance is created from [coords] and [type].
 @internal
-PositionArray positionArrayFromCoords(
+PositionArray buildPositionArray(
   Iterable<double> coords, {
   required Coords type,
 }) {
@@ -116,13 +116,13 @@ PositionArray positionArrayFromCoords(
   }
 }
 
-/// A list of position arrays from [coords].
+/// Builds a list of position arrays from [coords].
 ///
 /// If [coords] is already a list of [PositionArray] then it's returned.
 ///
 /// Otherwise a new instance is created from [coords] and [type].
 @internal
-List<PositionArray> listOfPositionArraysFromCoords(
+List<PositionArray> buildListOfPositionArrays(
   Iterable<Iterable<double>> coords, {
   required Coords type,
 }) {
@@ -133,20 +133,20 @@ List<PositionArray> listOfPositionArraysFromCoords(
   } else {
     return coords
         .map<PositionArray>(
-          (array) => positionArrayFromCoords(array, type: type),
+          (array) => buildPositionArray(array, type: type),
         )
         .toList(growable: false);
   }
 }
 
-/// A list of lists of position arrays from [coords].
+/// Builds a list of lists of position arrays from [coords].
 ///
 /// If [coords] is already a list of lists of [PositionArray] then it's
 /// returned.
 ///
 /// Otherwise a new instance is created from [coords] and [type].
 @internal
-List<List<PositionArray>> listOfListOfPositionArraysFromCoords(
+List<List<PositionArray>> buildListOfListOfPositionArrays(
   Iterable<Iterable<Iterable<double>>> coords, {
   required Coords type,
 }) {
@@ -157,7 +157,7 @@ List<List<PositionArray>> listOfListOfPositionArraysFromCoords(
   } else {
     return coords
         .map<List<PositionArray>>(
-          (array) => listOfPositionArraysFromCoords(array, type: type),
+          (array) => buildListOfPositionArrays(array, type: type),
         )
         .toList(growable: false);
   }

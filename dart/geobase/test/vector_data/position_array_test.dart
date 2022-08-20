@@ -18,7 +18,7 @@ void main() {
 
     for (final type in [Coords.xyz, Coords.xym]) {
       final array3 = PositionArray.view(data3, type: type);
-      final array3FromText = PositionArray.fromText(
+      final array3FromText = PositionArray.parse(
         '1.1,1.2,1.3,2.1,2.2,2.3,3.1,3.2,3.3',
         type: type,
       );
@@ -140,7 +140,7 @@ void main() {
     // array of 3 positions with xy coordinates
     const xyData3 = [1.1, 1.2, 2.1, 2.2, 3.1, 3.2];
     final xyArray3 = PositionArray.view(xyData3);
-    final xyArray3FromText = PositionArray.fromText('1.1,1.2,2.1,2.2,3.1,3.2');
+    final xyArray3FromText = PositionArray.parse('1.1,1.2,2.1,2.2,3.1,3.2');
 
     test('Creating position arrays', () {
       expect(xyArray3, xyData3);
@@ -203,7 +203,7 @@ void main() {
       3.4,
     ];
     final xyzmArray3 = PositionArray.view(xyzmData3, type: Coords.xyzm);
-    final xyzmArray3FromText = PositionArray.fromText(
+    final xyzmArray3FromText = PositionArray.parse(
       '1.1,1.2,1.3,1.4,2.1,2.2,2.3,2.4,3.1,3.2,3.3,3.4',
       type: Coords.xyzm,
     );

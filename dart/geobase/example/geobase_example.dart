@@ -66,9 +66,9 @@ void _geographicCoordinates() {
   Geographic(lon: -0.0014, lat: 51.4778, elev: 45.0, m: 123.0);
 
   // The last sample also from a double list or text (order: lon, lat, elev, m).
-  Geographic.fromCoords([-0.0014, 51.4778, 45.0, 123.0]);
-  Geographic.fromText('-0.0014,51.4778,45.0,123.0');
-  Geographic.fromText('-0.0014 51.4778 45.0 123.0', delimiter: ' ');
+  Geographic.build([-0.0014, 51.4778, 45.0, 123.0]);
+  Geographic.parse('-0.0014,51.4778,45.0,123.0');
+  Geographic.parse('-0.0014 51.4778 45.0 123.0', delimiter: ' ');
 
   // -------
 
@@ -79,8 +79,8 @@ void _geographicCoordinates() {
   GeoBox(west: -20, south: 50, minElev: 100, east: 20, north: 60, maxElev: 200);
 
   // The last sample also from a double list or text.
-  GeoBox.fromCoords([-20, 50, 100, 20, 60, 200]);
-  GeoBox.fromText('-20,50,100,20,60,200');
+  GeoBox.build([-20, 50, 100, 20, 60, 200]);
+  GeoBox.parse('-20,50,100,20,60,200');
 }
 
 void _projectedCoordinates() {
@@ -94,9 +94,9 @@ void _projectedCoordinates() {
   Projected(x: 708221.0, y: 5707225.0, z: 45.0, m: 123.0);
 
   // The last sample also from a double list or text (order: x, y, z, m).
-  Projected.fromCoords([708221.0, 5707225.0, 45.0, 123.0]);
-  Projected.fromText('708221.0,5707225.0,45.0,123.0');
-  Projected.fromText('708221.0 5707225.0 45.0 123.0', delimiter: ' ');
+  Projected.build([708221.0, 5707225.0, 45.0, 123.0]);
+  Projected.parse('708221.0,5707225.0,45.0,123.0');
+  Projected.parse('708221.0 5707225.0 45.0 123.0', delimiter: ' ');
 
   // -------
 
@@ -107,8 +107,8 @@ void _projectedCoordinates() {
   ProjBox(minX: 10, minY: 10, minZ: 10, maxX: 20, maxY: 20, maxZ: 20);
 
   // The last sample also from a double list or text.
-  ProjBox.fromCoords([10, 10, 10, 20, 20, 20]);
-  ProjBox.fromText('10,10,10,20,20,20');
+  ProjBox.build([10, 10, 10, 20, 20, 20]);
+  ProjBox.parse('10,10,10,20,20,20');
 }
 
 void _scalableCoordinates() {
@@ -380,8 +380,7 @@ void _geoJson() {
   ''';
 
   // parse a FeatureCollection object using the decoder of the GeoJSON format
-  final collection =
-      FeatureCollection.fromText(sample, format: GeoJSON.feature);
+  final collection = FeatureCollection.parse(sample, format: GeoJSON.feature);
 
   // loop through features and print id, geometry and properties for each
   for (final feature in collection.features) {

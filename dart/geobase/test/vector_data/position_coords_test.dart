@@ -118,21 +118,21 @@ void main() {
       expect(PositionCoords.view([1.0, 2.0, 4.0], type: Coords.xym), p3);
       expect(PositionCoords.view([1.0, 2.0, 3.0, 4.0]), p4);
 
-      expect(PositionCoords.fromText('1.0,2.0'), p1);
-      expect(PositionCoords.fromText('1.0,2.0,3.0'), p2);
-      expect(PositionCoords.fromText('1.0,2.0,4.0', type: Coords.xym), p3);
-      expect(PositionCoords.fromText('1.0,2.0,3.0,4.0'), p4);
+      expect(PositionCoords.parse('1.0,2.0'), p1);
+      expect(PositionCoords.parse('1.0,2.0,3.0'), p2);
+      expect(PositionCoords.parse('1.0,2.0,4.0', type: Coords.xym), p3);
+      expect(PositionCoords.parse('1.0,2.0,3.0,4.0'), p4);
 
-      expect(XY.fromText(p1.toString()), p1);
-      expect(XYZ.fromText(p2.toString()), p2);
-      expect(XYM.fromText(p3.toString()), p3);
-      expect(XYZM.fromText(p4.toString()), p4);
-      expect(XYZM.fromText('1.0 2.0 3.0 4.0', delimiter: ' '), p4);
+      expect(XY.parse(p1.toString()), p1);
+      expect(XYZ.parse(p2.toString()), p2);
+      expect(XYM.parse(p3.toString()), p3);
+      expect(XYZM.parse(p4.toString()), p4);
+      expect(XYZM.parse('1.0 2.0 3.0 4.0', delimiter: ' '), p4);
 
       expect(() => PositionCoords.view([1.0]).y, throwsRangeError);
-      expect(() => PositionCoords.fromText('1.0'), throwsFormatException);
+      expect(() => PositionCoords.parse('1.0'), throwsFormatException);
       expect(
-        () => PositionCoords.fromText('1.0,2.0,x'),
+        () => PositionCoords.parse('1.0,2.0,x'),
         throwsFormatException,
       );
     });
@@ -239,9 +239,8 @@ void _testCoordinateOrder(
   final factories = [PositionCoords.create];
 
   for (final factory in factories) {
-    final fromCoords =
-        Position.createFromCoords(coords, to: factory, type: type);
-    final fromText = Position.createFromText(text, to: factory, type: type);
+    final fromCoords = Position.buildPosition(coords, to: factory, type: type);
+    final fromText = Position.parsePosition(text, to: factory, type: type);
     expect(fromCoords, fromText);
     expect(fromCoords.toString(), text);
     expect(fromText.values, coords);

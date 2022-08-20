@@ -23,7 +23,7 @@ class Point implements SimpleGeometry {
   /// A point geometry with [position].
   const Point(PositionCoords position) : _position = position;
 
-  /// A point geometry from a [position].
+  /// Builds a point geometry from a [position].
   ///
   /// Use an optional [type] to explicitely specify the type of coordinates. If
   /// not provided and an iterable has 3 items, then xyz coordinates are
@@ -59,16 +59,16 @@ class Point implements SimpleGeometry {
     Iterable<double> position, {
     Coords? type,
   }) =>
-      Point(positionFromCoords(position, type: type));
+      Point(buildPositionCoords(position, type: type));
 
-  /// Decodes a point geometry from [text] conforming to [format].
+  /// Parses a point geometry from [text] conforming to [format].
   ///
   /// When [format] is not given, then [GeoJSON] is used as a default.
-  factory Point.fromText(
+  factory Point.parse(
     String text, {
     TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
   }) =>
-      GeometryBuilder.decodeText<Point>(text, format: format);
+      GeometryBuilder.parse<Point>(text, format: format);
 
   @override
   Geom get geomType => Geom.point;

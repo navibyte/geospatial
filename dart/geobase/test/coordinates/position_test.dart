@@ -32,26 +32,26 @@ void main() {
         [null, null, null, null],
       );
 
-      expect(Projected.fromCoords(const [1.0, 2.0]), p1);
-      expect(Projected.fromCoords(const [1.0, 2.0, 3.0]), p2);
-      expect(Projected.fromCoords(const [1.0, 2.0, 4.0]), isNot(p3));
-      expect(Projected.fromCoords(const [1.0, 2.0, 4.0], type: Coords.xym), p3);
-      expect(Projected.fromCoords(const [1.0, 2.0, 3.0, 4.0]), p4);
+      expect(Projected.build(const [1.0, 2.0]), p1);
+      expect(Projected.build(const [1.0, 2.0, 3.0]), p2);
+      expect(Projected.build(const [1.0, 2.0, 4.0]), isNot(p3));
+      expect(Projected.build(const [1.0, 2.0, 4.0], type: Coords.xym), p3);
+      expect(Projected.build(const [1.0, 2.0, 3.0, 4.0]), p4);
 
-      expect(Projected.fromText('1.0,2.0'), p1);
-      expect(Projected.fromText('1.0,2.0,3.0'), p2);
-      expect(Projected.fromText('1.0,2.0,4.0', type: Coords.xym), p3);
-      expect(Projected.fromText('1.0,2.0,3.0,4.0'), p4);
+      expect(Projected.parse('1.0,2.0'), p1);
+      expect(Projected.parse('1.0,2.0,3.0'), p2);
+      expect(Projected.parse('1.0,2.0,4.0', type: Coords.xym), p3);
+      expect(Projected.parse('1.0,2.0,3.0,4.0'), p4);
 
-      expect(Projected.fromText(p1.toString()), p1);
-      expect(Projected.fromText(p2.toString()), p2);
-      expect(Projected.fromText(p3.toString(), type: Coords.xym), p3);
-      expect(Projected.fromText(p4.toString()), p4);
-      expect(Projected.fromText('1.0 2.0 3.0 4.0', delimiter: ' '), p4);
+      expect(Projected.parse(p1.toString()), p1);
+      expect(Projected.parse(p2.toString()), p2);
+      expect(Projected.parse(p3.toString(), type: Coords.xym), p3);
+      expect(Projected.parse(p4.toString()), p4);
+      expect(Projected.parse('1.0 2.0 3.0 4.0', delimiter: ' '), p4);
 
-      expect(() => Projected.fromCoords(const [1.0]), throwsFormatException);
-      expect(() => Projected.fromText('1.0'), throwsFormatException);
-      expect(() => Projected.fromText('1.0,2.0,x'), throwsFormatException);
+      expect(() => Projected.build(const [1.0]), throwsFormatException);
+      expect(() => Projected.parse('1.0'), throwsFormatException);
+      expect(() => Projected.parse('1.0,2.0,x'), throwsFormatException);
     });
 
     test('Equals and hashCode', () {
@@ -163,15 +163,15 @@ void main() {
         [null, null, null, null],
       );
 
-      expect(Geographic.fromCoords(const [1.0, 2.0]), p1);
-      expect(Geographic.fromCoords(const [1.0, 2.0, 3.0]), p2);
-      expect(Geographic.fromCoords(const [1.0, 2.0, 4.0]), isNot(p3));
-      expect(Geographic.fromCoords(const [1.0, 2.0, 3.0, 4.0]), p4);
+      expect(Geographic.build(const [1.0, 2.0]), p1);
+      expect(Geographic.build(const [1.0, 2.0, 3.0]), p2);
+      expect(Geographic.build(const [1.0, 2.0, 4.0]), isNot(p3));
+      expect(Geographic.build(const [1.0, 2.0, 3.0, 4.0]), p4);
 
-      expect(Geographic.fromText('1.0,2.0'), p1);
-      expect(Geographic.fromText('1.0,2.0,3.0'), p2);
-      expect(Geographic.fromText('1.0,2.0,4.0', type: Coords.xym), p3);
-      expect(Geographic.fromText('1.0,2.0,3.0,4.0'), p4);
+      expect(Geographic.parse('1.0,2.0'), p1);
+      expect(Geographic.parse('1.0,2.0,3.0'), p2);
+      expect(Geographic.parse('1.0,2.0,4.0', type: Coords.xym), p3);
+      expect(Geographic.parse('1.0,2.0,3.0,4.0'), p4);
     });
 
     test('Equals and hashCode', () {
@@ -277,19 +277,19 @@ void main() {
       );
       expect(
         Position.createFromObject(p4, to: Projected.create, type: Coords.xy),
-        Projected.fromCoords(const [1, 2]),
+        Projected.build(const [1, 2]),
       );
       expect(
         Position.createFromObject(p4, to: Projected.create, type: Coords.xyz),
-        Projected.fromCoords(const [1, 2, 3]),
+        Projected.build(const [1, 2, 3]),
       );
       expect(
         Position.createFromObject(p4, to: Projected.create, type: Coords.xym),
-        Projected.fromCoords(const [1, 2, 4], type: Coords.xym),
+        Projected.build(const [1, 2, 4], type: Coords.xym),
       );
       expect(
         Position.createFromObject(p4, to: Projected.create, type: Coords.xyzm),
-        Projected.fromCoords(const [1, 2, 3, 4]),
+        Projected.build(const [1, 2, 3, 4]),
       );
 
       expect(
@@ -298,11 +298,11 @@ void main() {
       );
       expect(
         Position.createFromObject(li4, to: Projected.create, type: Coords.xy),
-        Projected.fromCoords(const [1, 2]),
+        Projected.build(const [1, 2]),
       );
       expect(
         Position.createFromObject(li4, to: Projected.create, type: Coords.xyz),
-        Projected.fromCoords(const [1, 2, 3]),
+        Projected.build(const [1, 2, 3]),
       );
       expect(
         Position.createFromObject(
@@ -310,11 +310,11 @@ void main() {
           to: Projected.create,
           type: Coords.xym,
         ),
-        Projected.fromCoords(const [1, 2, 4], type: Coords.xym),
+        Projected.build(const [1, 2, 4], type: Coords.xym),
       );
       expect(
         Position.createFromObject(li4, to: Projected.create, type: Coords.xyzm),
-        Projected.fromCoords(const [1, 2, 3, 4]),
+        Projected.build(const [1, 2, 3, 4]),
       );
     });
   });
@@ -324,9 +324,8 @@ void _testCoordinateOrder(String text, Iterable<num> coords, [Coords? type]) {
   final factories = [Projected.create, Geographic.create];
 
   for (final factory in factories) {
-    final fromCoords =
-        Position.createFromCoords(coords, to: factory, type: type);
-    final fromText = Position.createFromText(text, to: factory, type: type);
+    final fromCoords = Position.buildPosition(coords, to: factory, type: type);
+    final fromText = Position.parsePosition(text, to: factory, type: type);
     expect(fromCoords, fromText);
     expect(fromCoords.toString(), text);
     expect(fromText.values, coords);

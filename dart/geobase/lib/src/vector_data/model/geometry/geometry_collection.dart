@@ -22,7 +22,7 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   const GeometryCollection(List<E> geometries, {super.bounds})
       : _geometries = geometries;
 
-  /// A geometry collection from the content provided by [geometries].
+  /// Builds a geometry collection from the content provided by [geometries].
   ///
   /// Only geometry objects of [E] are built, any other geometries are ignored.
   ///
@@ -69,18 +69,18 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   }) =>
       GeometryCollection<E>(
         GeometryBuilder.buildList<E>(geometries, count: count),
-        bounds: boxFromCoordsOpt(bounds),
+        bounds: buildBoxCoordsOpt(bounds),
       );
 
-  /// Decodes a geometry collection with elements of [T] from [text] conforming
+  /// Parses a geometry collection with elements of [T] from [text] conforming
   /// to [format].
   ///
   /// When [format] is not given, then [GeoJSON] is used as a default.
-  static GeometryCollection<T> fromText<T extends Geometry>(
+  static GeometryCollection<T> parse<T extends Geometry>(
     String text, {
     TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
   }) =>
-      GeometryBuilder.decodeTextAsCollection<T>(
+      GeometryBuilder.parseCollection<T>(
         text,
         format: format,
       );

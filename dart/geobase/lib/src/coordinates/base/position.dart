@@ -272,12 +272,12 @@ abstract class Position extends Positionable {
       }
     } else if (position is Iterable<num>) {
       // create position from iterable of num values
-      return createFromCoords(position, to: to, type: type);
+      return buildPosition(position, to: to, type: type);
     }
     throw invalidCoordinates;
   }
 
-  /// Creates a position of [R] from [coords] starting from [offset].
+  /// Builds a position of [R] from [coords] starting from [offset].
   ///
   /// A position instance is created using the factory function [to].
   ///
@@ -288,7 +288,7 @@ abstract class Position extends Positionable {
   /// provided and [coords] has 3 items, then xyz coordinates are assumed.
   ///
   /// Throws FormatException if coordinates are invalid.
-  static R createFromCoords<R extends Position>(
+  static R buildPosition<R extends Position>(
     Iterable<num> coords, {
     required CreatePosition<R> to,
     int offset = 0,
@@ -354,7 +354,7 @@ abstract class Position extends Positionable {
     }
   }
 
-  /// Creates a position of [R] from [text].
+  /// Parses a position of [R] from [text].
   ///
   /// Coordinate values in [text] are separated by [delimiter].
   ///
@@ -367,14 +367,14 @@ abstract class Position extends Positionable {
   /// provided and [text] has 3 items, then xyz coordinates are assumed.
   ///
   /// Throws FormatException if coordinates are invalid.
-  static R createFromText<R extends Position>(
+  static R parsePosition<R extends Position>(
     String text, {
     required CreatePosition<R> to,
     Pattern? delimiter = ',',
     Coords? type,
   }) {
-    final coords = parseNumValuesFromText(text, delimiter: delimiter);
-    return createFromCoords(coords, to: to, type: type);
+    final coords = parseNumValues(text, delimiter: delimiter);
+    return buildPosition(coords, to: to, type: type);
   }
 
   /// A coordinate value of [position] by the coordinate axis [index].

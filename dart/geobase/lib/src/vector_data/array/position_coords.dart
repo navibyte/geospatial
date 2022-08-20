@@ -90,7 +90,7 @@ abstract class PositionCoords extends Position with _CoordinatesMixin {
         m: m,
       );
 
-  /// A geospatial position as an iterable collection parsed from [text].
+  /// Parses a geospatial position as an iterable collection parsed from [text].
   ///
   /// Coordinate values in [text] are separated by [delimiter].
   ///
@@ -101,12 +101,12 @@ abstract class PositionCoords extends Position with _CoordinatesMixin {
   /// provided and [text] has 3 items, then xyz coordinates are assumed.
   ///
   /// Throws FormatException if coordinates are invalid.
-  factory PositionCoords.fromText(
+  factory PositionCoords.parse(
     String text, {
     Pattern? delimiter = ',',
     Coords? type,
   }) =>
-      _doCreateFromText(
+      _doParse(
         text,
         to: _PositionCoordsImpl.view,
         delimiter: delimiter,
@@ -275,14 +275,14 @@ T _doCreate<T extends PositionCoords>({
   }
 }
 
-T _doCreateFromText<T extends PositionCoords>(
+T _doParse<T extends PositionCoords>(
   String text, {
   required _CreateAt<T> to,
   Pattern? delimiter = ',',
   Coords? type,
 }) {
-  final coords = parseDoubleValuesFromText(text, delimiter: delimiter)
-      .toList(growable: false);
+  final coords =
+      parseDoubleValues(text, delimiter: delimiter).toList(growable: false);
   final len = coords.length;
   final coordType = type ?? Coords.fromDimension(len);
   if (len != coordType.coordinateDimension) {

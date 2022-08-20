@@ -104,7 +104,7 @@ class GeoBox extends Box {
   factory GeoBox.from(Iterable<Geographic> positions) =>
       Box.createBoxFrom(positions, GeoBox.create);
 
-  /// Creates a geographic bounding box from [coords] starting from [offset].
+  /// Builds a geographic bounding box from [coords] starting from [offset].
   ///
   /// Supported coordinate value combinations by coordinate type:
   ///
@@ -119,19 +119,19 @@ class GeoBox extends Box {
   /// provided and [coords] has 6 items, then xyz coordinates are assumed.
   ///
   /// Throws FormatException if coordinates are invalid.
-  factory GeoBox.fromCoords(
+  factory GeoBox.build(
     Iterable<num> coords, {
     int offset = 0,
     Coords? type,
   }) =>
-      Box.createFromCoords(
+      Box.buildBox(
         coords,
         to: GeoBox.create,
         offset: offset,
         type: type,
       );
 
-  /// Creates a geographic bounding box from [text].
+  /// Parses a geographic bounding box from [text].
   ///
   /// Coordinate values in [text] are separated by [delimiter].
   ///
@@ -148,12 +148,12 @@ class GeoBox extends Box {
   /// provided and [text] has 6 items, then xyz coordinates are assumed.
   ///
   /// Throws FormatException if coordinates are invalid.
-  factory GeoBox.fromText(
+  factory GeoBox.parse(
     String text, {
     Pattern? delimiter = ',',
     Coords? type,
   }) =>
-      Box.createFromText(
+      Box.parseBox(
         text,
         to: GeoBox.create,
         delimiter: delimiter,

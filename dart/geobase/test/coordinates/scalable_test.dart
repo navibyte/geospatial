@@ -16,8 +16,8 @@ void main() {
     const ref9 = Scalable2i(zoom: 9, x: 23, y: 10);
     const ref9neg = Scalable2i(zoom: 9, x: -23, y: -10);
     test('Test Scalable2i coordinates', () {
-      expect(Scalable2i.fromCoords(const [9, 23, 10]), ref9);
-      expect(Scalable2i.fromText('9;23;10', delimiter: ';'), ref9);
+      expect(Scalable2i.build(const [9, 23, 10]), ref9);
+      expect(Scalable2i.parse('9;23;10', delimiter: ';'), ref9);
       expect(Scalable2i.factory(zoom: 9).call(x: 23, y: 10), ref9);
     });
 

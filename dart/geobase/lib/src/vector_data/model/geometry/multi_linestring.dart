@@ -36,8 +36,8 @@ class MultiLineString extends SimpleGeometry {
   const MultiLineString._(this._lineStrings, {super.bounds, Coords? type})
       : _type = type;
 
-  /// A multi line string from an array of [lineStrings] (each with a chain of
-  /// positions).
+  /// Builds a multi line string from an array of [lineStrings] (each with a
+  /// chain of positions).
   ///
   /// Use the required [type] to explicitely specify the type of coordinates.
   ///
@@ -77,19 +77,19 @@ class MultiLineString extends SimpleGeometry {
     Iterable<double>? bounds,
   }) =>
       MultiLineString._(
-        listOfPositionArraysFromCoords(lineStrings, type: type),
+        buildListOfPositionArrays(lineStrings, type: type),
         type: type,
-        bounds: boxFromCoordsOpt(bounds, type: type),
+        bounds: buildBoxCoordsOpt(bounds, type: type),
       );
 
-  /// Decodes a multi line string geometry from [text] conforming to [format].
+  /// Parses a multi line string geometry from [text] conforming to [format].
   ///
   /// When [format] is not given, then [GeoJSON] is used as a default.
-  factory MultiLineString.fromText(
+  factory MultiLineString.parse(
     String text, {
     TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
   }) =>
-      GeometryBuilder.decodeText<MultiLineString>(text, format: format);
+      GeometryBuilder.parse<MultiLineString>(text, format: format);
 
   @override
   Geom get geomType => Geom.multiLineString;

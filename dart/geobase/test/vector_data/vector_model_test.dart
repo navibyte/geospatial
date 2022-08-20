@@ -59,49 +59,49 @@ void main() {
         '{"type":"FeatureCollection","features":[$pointFeat,$pointFeat]}';
 
     test('Basic geometries', () {
-      expect(Point.fromText(point).toText(), point);
-      expect(LineString.fromText(lineString).toText(), lineString);
+      expect(Point.parse(point).toText(), point);
+      expect(LineString.parse(lineString).toText(), lineString);
     });
 
     test('Geometry collection with non-typed geometry', () {
-      expect(GeometryCollection.fromText(geomColl).toText(), geomColl);
+      expect(GeometryCollection.parse(geomColl).toText(), geomColl);
       expect(
-        GeometryCollection.fromText(geomCollPoints).toText(),
+        GeometryCollection.parse(geomCollPoints).toText(),
         geomCollPoints,
       );
     });
 
     test('Geometry collection with typed geometry', () {
       expect(
-        GeometryBuilder.decodeTextAsCollection<Point>(geomCollPoints).toText(),
+        GeometryBuilder.parseCollection<Point>(geomCollPoints).toText(),
         geomCollPoints,
       );
       expect(
-        GeometryCollection.fromText<Point>(geomCollPoints).toText(),
+        GeometryCollection.parse<Point>(geomCollPoints).toText(),
         geomCollPoints,
       );
     });
 
     test('Feature with non-typed geometry', () {
-      expect(Feature.fromText(pointFeat).toText(), pointFeat);
-      final feat = Feature.fromText(lineStringFeat);
+      expect(Feature.parse(pointFeat).toText(), pointFeat);
+      final feat = Feature.parse(lineStringFeat);
       expect(feat.toText(), lineStringFeat);
     });
 
     test('Feature with typed geometry', () {
-      expect(Feature.fromText<Point>(pointFeat).toText(), pointFeat);
-      final feat = Feature.fromText<LineString>(lineStringFeat);
+      expect(Feature.parse<Point>(pointFeat).toText(), pointFeat);
+      final feat = Feature.parse<LineString>(lineStringFeat);
       expect(feat.toText(), lineStringFeat);
     });
 
     test('Feature collection with non-typed geometry', () {
-      expect(FeatureCollection.fromText(featColl).toText(), featColl);
-      final coll = FeatureCollection.fromText(featCollPoints);
+      expect(FeatureCollection.parse(featColl).toText(), featColl);
+      final coll = FeatureCollection.parse(featCollPoints);
       expect(coll.toText(), featCollPoints);
     });
 
     test('Feature collection with typed geometry', () {
-      final coll = FeatureCollection.fromText<Point>(featCollPoints);
+      final coll = FeatureCollection.parse<Point>(featCollPoints);
       expect(coll.toText(), featCollPoints);
     });
   });
@@ -139,25 +139,25 @@ void _testDecodeGeometryAndEncodeToGeoJSON(
   // try to create also using factory method and then write back
   switch (geometry.geomType) {
     case Geom.point:
-      expect(Point.fromText(geoJsonText).toText(), geoJsonText);
+      expect(Point.parse(geoJsonText).toText(), geoJsonText);
       break;
     case Geom.lineString:
-      expect(LineString.fromText(geoJsonText).toText(), geoJsonText);
+      expect(LineString.parse(geoJsonText).toText(), geoJsonText);
       break;
     case Geom.polygon:
-      expect(Polygon.fromText(geoJsonText).toText(), geoJsonText);
+      expect(Polygon.parse(geoJsonText).toText(), geoJsonText);
       break;
     case Geom.multiPoint:
-      expect(MultiPoint.fromText(geoJsonText).toText(), geoJsonText);
+      expect(MultiPoint.parse(geoJsonText).toText(), geoJsonText);
       break;
     case Geom.multiLineString:
-      expect(MultiLineString.fromText(geoJsonText).toText(), geoJsonText);
+      expect(MultiLineString.parse(geoJsonText).toText(), geoJsonText);
       break;
     case Geom.multiPolygon:
-      expect(MultiPolygon.fromText(geoJsonText).toText(), geoJsonText);
+      expect(MultiPolygon.parse(geoJsonText).toText(), geoJsonText);
       break;
     case Geom.geometryCollection:
-      expect(GeometryCollection.fromText(geoJsonText).toText(), geoJsonText);
+      expect(GeometryCollection.parse(geoJsonText).toText(), geoJsonText);
       break;
   }
 }
@@ -193,8 +193,8 @@ void _testDecodeFeatureObjectAndEncodeToGeoJSON(
 
   // try to create also using factory method and then write back
   if (object is Feature) {
-    expect(Feature.fromText(geoJsonText).toText(), geoJsonText);
+    expect(Feature.parse(geoJsonText).toText(), geoJsonText);
   } else if (object is FeatureCollection) {
-    expect(FeatureCollection.fromText(geoJsonText).toText(), geoJsonText);
+    expect(FeatureCollection.parse(geoJsonText).toText(), geoJsonText);
   }
 }

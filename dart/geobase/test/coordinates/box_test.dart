@@ -46,26 +46,25 @@ void main() {
         maxM: 2.4,
       );
 
-      expect(ProjBox.fromCoords(const [1.1, 1.2, 2.1, 2.2]), box1);
-      expect(ProjBox.fromText('1.1,1.2,2.1,2.2'), box1);
-      expect(ProjBox.fromText(box1.toString()), box1);
+      expect(ProjBox.build(const [1.1, 1.2, 2.1, 2.2]), box1);
+      expect(ProjBox.parse('1.1,1.2,2.1,2.2'), box1);
+      expect(ProjBox.parse(box1.toString()), box1);
 
-      expect(ProjBox.fromCoords(const [1.1, 1.2, 1.3, 2.1, 2.2, 2.3]), box2);
-      expect(ProjBox.fromText('1.1,1.2,1.3,2.1,2.2,2.3'), box2);
-      expect(ProjBox.fromText(box2.toString()), box2);
+      expect(ProjBox.build(const [1.1, 1.2, 1.3, 2.1, 2.2, 2.3]), box2);
+      expect(ProjBox.parse('1.1,1.2,1.3,2.1,2.2,2.3'), box2);
+      expect(ProjBox.parse(box2.toString()), box2);
 
-      expect(ProjBox.fromCoords(const [1.1, 1.2, 1.4, 2.1, 2.2, 2.4]),
-          isNot(box3));
+      expect(ProjBox.build(const [1.1, 1.2, 1.4, 2.1, 2.2, 2.4]), isNot(box3));
       expect(
-        ProjBox.fromText('1.1,1.2,1.4,2.1,2.2,2.4', type: Coords.xym),
+        ProjBox.parse('1.1,1.2,1.4,2.1,2.2,2.4', type: Coords.xym),
         box3,
       );
-      expect(ProjBox.fromText(box3.toString(), type: Coords.xym), box3);
+      expect(ProjBox.parse(box3.toString(), type: Coords.xym), box3);
 
-      expect(ProjBox.fromCoords(const [1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.3, 2.4]),
-          box4);
-      expect(ProjBox.fromText('1.1,1.2,1.3,1.4,2.1,2.2,2.3,2.4'), box4);
-      expect(ProjBox.fromText(box4.toString()), box4);
+      expect(
+          ProjBox.build(const [1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.3, 2.4]), box4);
+      expect(ProjBox.parse('1.1,1.2,1.3,1.4,2.1,2.2,2.3,2.4'), box4);
+      expect(ProjBox.parse(box4.toString()), box4);
     });
 
     test('Equals with tolerance', () {
@@ -289,26 +288,25 @@ void main() {
         maxM: 2.4,
       );
 
-      expect(GeoBox.fromCoords(const [1.1, 1.2, 2.1, 2.2]), box1);
-      expect(GeoBox.fromText('1.1,1.2,2.1,2.2'), box1);
-      expect(GeoBox.fromText(box1.toString()), box1);
+      expect(GeoBox.build(const [1.1, 1.2, 2.1, 2.2]), box1);
+      expect(GeoBox.parse('1.1,1.2,2.1,2.2'), box1);
+      expect(GeoBox.parse(box1.toString()), box1);
 
-      expect(GeoBox.fromCoords(const [1.1, 1.2, 1.3, 2.1, 2.2, 2.3]), box2);
-      expect(GeoBox.fromText('1.1,1.2,1.3,2.1,2.2,2.3'), box2);
-      expect(GeoBox.fromText(box2.toString()), box2);
+      expect(GeoBox.build(const [1.1, 1.2, 1.3, 2.1, 2.2, 2.3]), box2);
+      expect(GeoBox.parse('1.1,1.2,1.3,2.1,2.2,2.3'), box2);
+      expect(GeoBox.parse(box2.toString()), box2);
 
+      expect(GeoBox.build(const [1.1, 1.2, 1.4, 2.1, 2.2, 2.4]), isNot(box3));
       expect(
-          GeoBox.fromCoords(const [1.1, 1.2, 1.4, 2.1, 2.2, 2.4]), isNot(box3));
-      expect(
-        GeoBox.fromText('1.1,1.2,1.4,2.1,2.2,2.4', type: Coords.xym),
+        GeoBox.parse('1.1,1.2,1.4,2.1,2.2,2.4', type: Coords.xym),
         box3,
       );
-      expect(GeoBox.fromText(box3.toString(), type: Coords.xym), box3);
+      expect(GeoBox.parse(box3.toString(), type: Coords.xym), box3);
 
-      expect(GeoBox.fromCoords(const [1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.3, 2.4]),
-          box4);
-      expect(GeoBox.fromText('1.1,1.2,1.3,1.4,2.1,2.2,2.3,2.4'), box4);
-      expect(GeoBox.fromText(box4.toString()), box4);
+      expect(
+          GeoBox.build(const [1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.3, 2.4]), box4);
+      expect(GeoBox.parse('1.1,1.2,1.3,1.4,2.1,2.2,2.3,2.4'), box4);
+      expect(GeoBox.parse(box4.toString()), box4);
     });
 
     test('Equals with tolerance', () {
@@ -416,19 +414,19 @@ void main() {
       );
       expect(
         Box.createFromObject(p4, to: ProjBox.create, type: Coords.xy),
-        ProjBox.fromCoords(const [1, 2, 11, 12]),
+        ProjBox.build(const [1, 2, 11, 12]),
       );
       expect(
         Box.createFromObject(p4, to: ProjBox.create, type: Coords.xyz),
-        ProjBox.fromCoords(const [1, 2, 3, 11, 12, 13]),
+        ProjBox.build(const [1, 2, 3, 11, 12, 13]),
       );
       expect(
         Box.createFromObject(p4, to: ProjBox.create, type: Coords.xym),
-        ProjBox.fromCoords(const [1, 2, 4, 11, 12, 14], type: Coords.xym),
+        ProjBox.build(const [1, 2, 4, 11, 12, 14], type: Coords.xym),
       );
       expect(
         Box.createFromObject(p4, to: ProjBox.create, type: Coords.xyzm),
-        ProjBox.fromCoords(const [1, 2, 3, 4, 11, 12, 13, 14]),
+        ProjBox.build(const [1, 2, 3, 4, 11, 12, 13, 14]),
       );
 
       expect(
@@ -438,21 +436,21 @@ void main() {
       expect(
         Box.createFromObject(const [1, 2, 11, 12],
             to: ProjBox.create, type: Coords.xy),
-        ProjBox.fromCoords(const [1, 2, 11, 12]),
+        ProjBox.build(const [1, 2, 11, 12]),
       );
       expect(
         Box.createFromObject(const [1, 2, 3, 11, 12, 13],
             to: ProjBox.create, type: Coords.xyz),
-        ProjBox.fromCoords(const [1, 2, 3, 11, 12, 13]),
+        ProjBox.build(const [1, 2, 3, 11, 12, 13]),
       );
       expect(
         Box.createFromObject(const [1, 2, 4, 11, 12, 14],
             to: ProjBox.create, type: Coords.xym),
-        ProjBox.fromCoords(const [1, 2, 4, 11, 12, 14], type: Coords.xym),
+        ProjBox.build(const [1, 2, 4, 11, 12, 14], type: Coords.xym),
       );
       expect(
         Box.createFromObject(li4, to: ProjBox.create, type: Coords.xyzm),
-        ProjBox.fromCoords(const [1, 2, 3, 4, 11, 12, 13, 14]),
+        ProjBox.build(const [1, 2, 3, 4, 11, 12, 13, 14]),
       );
     });
   });
@@ -462,8 +460,8 @@ void _testCoordinateOrder(String text, Iterable<num> coords, [Coords? type]) {
   final factories = [ProjBox.create, GeoBox.create];
 
   for (final factory in factories) {
-    final fromCoords = Box.createFromCoords(coords, to: factory, type: type);
-    final fromText = Box.createFromText(text, to: factory, type: type);
+    final fromCoords = Box.buildBox(coords, to: factory, type: type);
+    final fromText = Box.parseBox(text, to: factory, type: type);
     expect(fromCoords, fromText);
     expect(fromCoords.toString(), text);
     /*

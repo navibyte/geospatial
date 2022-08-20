@@ -285,12 +285,12 @@ abstract class Box extends Positionable {
         }
       }
     } else if (box is Iterable<num>) {
-      return createFromCoords(box, to: to, type: type);
+      return buildBox(box, to: to, type: type);
     }
     throw invalidCoordinates;
   }
 
-  /// Creates a bounding box of [R] from [coords] starting from [offset].
+  /// Builds a bounding box of [R] from [coords] starting from [offset].
   ///
   /// A bounding box instance is created using the factory function [to].
   ///
@@ -307,7 +307,7 @@ abstract class Box extends Positionable {
   /// provided and [coords] has 6 items, then xyz coordinates are assumed.
   ///
   /// Throws FormatException if coordinates are invalid.
-  static R createFromCoords<R extends Box>(
+  static R buildBox<R extends Box>(
     Iterable<num> coords, {
     required CreateBox<R> to,
     int offset = 0,
@@ -448,14 +448,14 @@ abstract class Box extends Positionable {
   /// provided and [text] has 6 items, then xyz coordinates are assumed.
   ///
   /// Throws FormatException if coordinates are invalid.
-  static R createFromText<R extends Box>(
+  static R parseBox<R extends Box>(
     String text, {
     required CreateBox<R> to,
     Pattern? delimiter = ',',
     Coords? type,
   }) {
-    final coords = parseNumValuesFromText(text, delimiter: delimiter);
-    return createFromCoords(coords, to: to, type: type);
+    final coords = parseNumValues(text, delimiter: delimiter);
+    return buildBox(coords, to: to, type: type);
   }
 
   /// Returns all distinct (in 2D) corners for this axis aligned bounding box.

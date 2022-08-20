@@ -50,19 +50,18 @@ abstract class PositionArray with _CoordinatesMixin {
   factory PositionArray.view(Iterable<double> source, {Coords type}) =
       _PositionArrayImpl.view;
 
-  /// Positions with coordinate values parsed from [text].
+  /// Parses positions with coordinate values from [text].
   ///
   /// Coordinate values in [text] are separated by [delimiter].
   ///
   /// Throws FormatException if coordinates are invalid.
-  factory PositionArray.fromText(
+  factory PositionArray.parse(
     String text, {
     Pattern? delimiter = ',',
     Coords type = Coords.xy,
   }) =>
       PositionArray.view(
-        parseDoubleValuesFromText(text, delimiter: delimiter)
-            .toList(growable: false),
+        parseDoubleValues(text, delimiter: delimiter).toList(growable: false),
         type: type,
       );
 
@@ -82,17 +81,17 @@ abstract class PositionArray with _CoordinatesMixin {
 
   _CreateAt<T> _adapt<T extends Position>(CreatePosition<T> factory) {
     return (Iterable<double> coordinates, {required Coords type}) {
-      return Position.createFromCoords(coordinates, to: factory, type: type);
+      return Position.buildPosition(coordinates, to: factory, type: type);
     };
   }
 
   /// Access position array as projected positions.
   PositionData<Projected, double> get toProjected =>
-      _PositionArrayData<Projected>(_data, _type, Projected.fromCoords);
+      _PositionArrayData<Projected>(_data, _type, Projected.build);
 
   /// Access position array as geographic positions.
   PositionData<Geographic, double> get toGeographic =>
-      _PositionArrayData<Geographic>(_data, _type, Geographic.fromCoords);
+      _PositionArrayData<Geographic>(_data, _type, Geographic.build);
 
   /// Returns a new position array with all positions projected using
   /// [projection].
@@ -163,7 +162,7 @@ class _PositionArrayData<E extends Position> with PositionData<E, double> {
 
   @override
   R get<R extends Position>(int index, {required CreatePosition<R> to}) =>
-      Position.createFromCoords(
+      Position.buildPosition(
         data,
         offset: index * coordinateDimension,
         to: to,

@@ -38,7 +38,8 @@ class MultiPolygon extends SimpleGeometry {
   const MultiPolygon._(this._polygons, {super.bounds, Coords? type})
       : _type = type;
 
-  /// A multi polygon from an array of [polygons] (each with an array of rings).
+  /// Builds a multi polygon from an array of [polygons] (each with an array of
+  /// rings).
   ///
   /// Use the required [type] to explicitely specify the type of coordinates.
   ///
@@ -91,19 +92,19 @@ class MultiPolygon extends SimpleGeometry {
     Iterable<double>? bounds,
   }) =>
       MultiPolygon._(
-        listOfListOfPositionArraysFromCoords(polygons, type: type),
+        buildListOfListOfPositionArrays(polygons, type: type),
         type: type,
-        bounds: boxFromCoordsOpt(bounds, type: type),
+        bounds: buildBoxCoordsOpt(bounds, type: type),
       );
 
-  /// Decodes a multi polygon geometry from [text] conforming to [format].
+  /// Parses a multi polygon geometry from [text] conforming to [format].
   ///
   /// When [format] is not given, then [GeoJSON] is used as a default.
-  factory MultiPolygon.fromText(
+  factory MultiPolygon.parse(
     String text, {
     TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
   }) =>
-      GeometryBuilder.decodeText<MultiPolygon>(text, format: format);
+      GeometryBuilder.parse<MultiPolygon>(text, format: format);
 
   @override
   Geom get geomType => Geom.multiPolygon;

@@ -39,7 +39,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
 
   const FeatureCollection._(this._features, this._custom, {super.bounds});
 
-  /// A feature collection from the content provided by [features].
+  /// Builds a feature collection from the content provided by [features].
   ///
   /// Feature items on a collection have an optional primary geometry of [T].
   ///
@@ -96,23 +96,23 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
     return FeatureCollection<Feature<T>>._(
       list,
       builtCustom,
-      bounds: boxFromCoordsOpt(bounds),
+      bounds: buildBoxCoordsOpt(bounds),
     );
   }
 
-  /// Decodes a feature collection from [text] conforming to [format].
+  /// Parses a feature collection from [text] conforming to [format].
   ///
   /// Feature items on a collection contain a geometry of [T].
   ///
   /// When [format] is not given, then [GeoJSON] is used as a default.
   ///
   /// Format or decoder implementation specific options can be set by [options].
-  static FeatureCollection<Feature<T>> fromText<T extends Geometry>(
+  static FeatureCollection<Feature<T>> parse<T extends Geometry>(
     String text, {
     TextReaderFormat<FeatureContent> format = GeoJSON.feature,
     Map<String, dynamic>? options,
   }) =>
-      FeatureBuilder.decodeText<FeatureCollection<Feature<T>>, T>(
+      FeatureBuilder.parse<FeatureCollection<Feature<T>>, T>(
         text,
         format: format,
         options: options,

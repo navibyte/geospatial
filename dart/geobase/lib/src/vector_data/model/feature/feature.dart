@@ -60,8 +60,8 @@ class Feature<T extends Geometry> extends FeatureObject {
         _properties = properties ?? const {},
         _geometry = geometry;
 
-  /// A feature from optional [id], [geometry], [properties], [bounds] and
-  /// [custom].
+  /// Builds a feature from optional [id], [geometry], [properties], [bounds]
+  /// and [custom].
   ///
   /// An optional [id], when given, should be either a string or an integer
   /// number.
@@ -144,7 +144,7 @@ class Feature<T extends Geometry> extends FeatureObject {
             id: id,
             geometry: primaryGeometry,
             properties: properties,
-            bounds: boxFromCoordsOpt(bounds),
+            bounds: buildBoxCoordsOpt(bounds),
             custom: builtCustom,
             customGeometries: builtCustomGeom,
           )
@@ -152,22 +152,22 @@ class Feature<T extends Geometry> extends FeatureObject {
             id: id,
             geometry: primaryGeometry,
             properties: properties,
-            bounds: boxFromCoordsOpt(bounds),
+            bounds: buildBoxCoordsOpt(bounds),
           );
   }
 
-  /// Decodes a feature with the geometry of [T] from [text] conforming to
+  /// Parses a feature with the geometry of [T] from [text] conforming to
   /// [format].
   ///
   /// When [format] is not given, then [GeoJSON] is used as a default.
   ///
   /// Format or decoder implementation specific options can be set by [options].
-  static Feature<T> fromText<T extends Geometry>(
+  static Feature<T> parse<T extends Geometry>(
     String text, {
     TextReaderFormat<FeatureContent> format = GeoJSON.feature,
     Map<String, dynamic>? options,
   }) =>
-      FeatureBuilder.decodeText<Feature<T>, T>(
+      FeatureBuilder.parse<Feature<T>, T>(
         text,
         format: format,
         options: options,

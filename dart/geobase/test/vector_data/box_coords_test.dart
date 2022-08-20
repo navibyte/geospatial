@@ -55,13 +55,13 @@ void main() {
         box,
       );
       expect(
-        BoxCoords.fromText(
+        BoxCoords.parse(
           '11.0, 12.0, 13.0, 14.0, 21.0, 22.0, 23.0, 24.0',
           type: Coords.xyzm,
         ),
         box,
       );
-      expect(BoxCoords.fromText(box.toString(), type: Coords.xyzm), box);
+      expect(BoxCoords.parse(box.toString(), type: Coords.xyzm), box);
     });
   });
 
@@ -106,13 +106,13 @@ void main() {
         box,
       );
       expect(
-        BoxCoords.fromText(
+        BoxCoords.parse(
           '11.0, 12.0, 13.0, 21.0, 22.0, 23.0',
           type: Coords.xyz,
         ),
         box,
       );
-      expect(BoxCoords.fromText(box.toString(), type: Coords.xyz), box);
+      expect(BoxCoords.parse(box.toString(), type: Coords.xyz), box);
     });
   });
 
@@ -157,13 +157,13 @@ void main() {
         box,
       );
       expect(
-        BoxCoords.fromText(
+        BoxCoords.parse(
           '11.0, 12.0, 14.0, 21.0, 22.0, 24.0',
           type: Coords.xym,
         ),
         box,
       );
-      expect(BoxCoords.fromText(box.toString(), type: Coords.xym), box);
+      expect(BoxCoords.parse(box.toString(), type: Coords.xym), box);
     });
   });
 
@@ -200,8 +200,8 @@ void main() {
         BoxCoords.create(minX: 11.0, minY: 12.0, maxX: 21.0, maxY: 22.0),
         box,
       );
-      expect(BoxCoords.fromText('11.0, 12.0, 21.0, 22.0'), box);
-      expect(BoxCoords.fromText(box.toString()), box);
+      expect(BoxCoords.parse('11.0, 12.0, 21.0, 22.0'), box);
+      expect(BoxCoords.parse(box.toString()), box);
     });
   });
 }

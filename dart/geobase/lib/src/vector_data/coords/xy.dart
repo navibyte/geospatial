@@ -51,17 +51,17 @@ class XY extends PositionCoords implements Projected {
 
   const XY._(super.source) : super();
 
-  /// A projected position as an iterable collection parsed from [text].
+  /// Parses a projected position as an iterable collection from [text].
   ///
   /// Coordinate values (x, y) in [text] are separated by [delimiter].
   ///
   /// Throws FormatException if coordinates are invalid.
-  factory XY.fromText(
+  factory XY.parse(
     String text, {
     Pattern? delimiter = ',',
   }) {
-    final coords = parseDoubleValuesFromText(text, delimiter: delimiter)
-        .toList(growable: false);
+    final coords =
+        parseDoubleValues(text, delimiter: delimiter).toList(growable: false);
     if (coords.length != 2) {
       throw invalidCoordinates;
     }
@@ -168,17 +168,17 @@ class XYZ extends XY {
 
   const XYZ._(super.source) : super._();
 
-  /// A projected position as an iterable collection parsed from [text].
+  /// Parses a projected position as an iterable collection from [text].
   ///
   /// Coordinate values (x, y, z) in [text] are separated by [delimiter].
   ///
   /// Throws FormatException if coordinates are invalid.
-  factory XYZ.fromText(
+  factory XYZ.parse(
     String text, {
     Pattern? delimiter = ',',
   }) {
-    final coords = parseDoubleValuesFromText(text, delimiter: delimiter)
-        .toList(growable: false);
+    final coords =
+        parseDoubleValues(text, delimiter: delimiter).toList(growable: false);
     if (coords.length != 3) {
       throw invalidCoordinates;
     }
@@ -256,17 +256,17 @@ class XYM extends XY {
       : assert(source.length == 3, 'XYM must have exactly 3 values'),
         super._();
 
-  /// A projected position as an iterable collection parsed from [text].
+  /// Parses a projected position as an iterable collection from [text].
   ///
   /// Coordinate values (x, y, m) in [text] are separated by [delimiter].
   ///
   /// Throws FormatException if coordinates are invalid.
-  factory XYM.fromText(
+  factory XYM.parse(
     String text, {
     Pattern? delimiter = ',',
   }) {
-    final coords = parseDoubleValuesFromText(text, delimiter: delimiter)
-        .toList(growable: false);
+    final coords =
+        parseDoubleValues(text, delimiter: delimiter).toList(growable: false);
     if (coords.length != 3) {
       throw invalidCoordinates;
     }
@@ -344,17 +344,17 @@ class XYZM extends XYZ {
       : assert(source.length == 4, 'XYZM must have exactly 4 values'),
         super._();
 
-  /// A projected position as an iterable collection parsed from [text].
+  /// Parses a projected position as an iterable collection from [text].
   ///
   /// Coordinate values (x, y, z, m) in [text] are separated by [delimiter].
   ///
   /// Throws FormatException if coordinates are invalid.
-  factory XYZM.fromText(
+  factory XYZM.parse(
     String text, {
     Pattern? delimiter = ',',
   }) {
-    final coords = parseDoubleValuesFromText(text, delimiter: delimiter)
-        .toList(growable: false);
+    final coords =
+        parseDoubleValues(text, delimiter: delimiter).toList(growable: false);
     if (coords.length != 4) {
       throw invalidCoordinates;
     }

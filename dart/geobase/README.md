@@ -78,9 +78,9 @@ Geographic *positions*:
   Geographic(lon: -0.0014, lat: 51.4778, elev: 45.0, m: 123.0);
 
   // The last sample also from a double list or text (order: lon, lat, elev, m).
-  Geographic.fromCoords([-0.0014, 51.4778, 45.0, 123.0]);
-  Geographic.fromText('-0.0014,51.4778,45.0,123.0');
-  Geographic.fromText('-0.0014 51.4778 45.0 123.0', delimiter: ' ');
+  Geographic.build([-0.0014, 51.4778, 45.0, 123.0]);
+  Geographic.parse('-0.0014,51.4778,45.0,123.0');
+  Geographic.parse('-0.0014 51.4778 45.0 123.0', delimiter: ' ');
 ```
 
 Geographic *bounding boxes*:
@@ -93,8 +93,8 @@ Geographic *bounding boxes*:
   GeoBox(west: -20, south: 50, minElev: 100, east: 20, north: 60, maxElev: 200);
 
   // The last sample also from a double list or text.
-  GeoBox.fromCoords([-20, 50, 100, 20, 60, 200]);
-  GeoBox.fromText('-20,50,100,20,60,200');
+  GeoBox.build([-20, 50, 100, 20, 60, 200]);
+  GeoBox.parse('-20,50,100,20,60,200');
 ```
 
 ### Projected coordinates
@@ -123,9 +123,9 @@ Projected *positions*:
   Projected(x: 708221.0, y: 5707225.0, z: 45.0, m: 123.0);
 
   // The last sample also from a double list or text (order: x, y, z, m).
-  Projected.fromCoords([708221.0, 5707225.0, 45.0, 123.0]);
-  Projected.fromText('708221.0,5707225.0,45.0,123.0');
-  Projected.fromText('708221.0 5707225.0 45.0 123.0', delimiter: ' ');
+  Projected.build([708221.0, 5707225.0, 45.0, 123.0]);
+  Projected.parse('708221.0,5707225.0,45.0,123.0');
+  Projected.parse('708221.0 5707225.0 45.0 123.0', delimiter: ' ');
 ```
 
 Projected *bounding boxes*:
@@ -138,8 +138,8 @@ Projected *bounding boxes*:
   ProjBox(minX: 10, minY: 10, minZ: 10, maxX: 20, maxY: 20, maxZ: 20);
 
   // The last sample also from a double list or text.
-  ProjBox.fromCoords([10, 10, 10, 20, 20, 20]);
-  ProjBox.fromText('10,10,10,20,20,20');
+  ProjBox.build([10, 10, 10, 20, 20, 20]);
+  ProjBox.parse('10,10,10,20,20,20');
 ```
 
 ### Scalable coordinates
@@ -421,8 +421,8 @@ This package supports encoding GeoJSON text from geometry and feature objects:
   print(feature.toText(format: GeoJSON.feature, decimals: 3));
 ```
 
-Geometry and feature objects can be also decoded (or parsed) from their GeoJSON
-text representations:
+Geometry and feature objects can be also parsed from their GeoJSON text 
+representations:
 
 ```dart
   // sample GeoJSON text representation (a feature collection with two features)
@@ -459,8 +459,7 @@ text representations:
   ''';
 
   // parse a FeatureCollection object using the decoder of the GeoJSON format
-  final collection =
-      FeatureCollection.fromText(sample, format: GeoJSON.feature);
+  final collection = FeatureCollection.parse(sample, format: GeoJSON.feature);
 
   // loop through features and print id, geometry and properties for each
   for (final feature in collection.features) {
@@ -473,8 +472,8 @@ text representations:
   }
 ```
 
-All geometry, feature and feature collection classes has similar `fromText`
-methods to support decoding from GeoJSON text representations.
+All geometry, feature and feature collection classes has similar `parse` methods
+to support parsing from GeoJSON.
 
 ### WKT
 

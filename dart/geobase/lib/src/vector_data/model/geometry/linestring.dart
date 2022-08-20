@@ -30,7 +30,7 @@ class LineString extends SimpleGeometry {
           'Chain must contain at least two positions',
         );
 
-  /// A line string geometry from a [chain] of positions.
+  /// Builds a line string geometry from a [chain] of positions.
   ///
   /// Use the required [type] to explicitely specify the type of coordinates.
   ///
@@ -60,18 +60,18 @@ class LineString extends SimpleGeometry {
     Iterable<double>? bounds,
   }) =>
       LineString(
-        positionArrayFromCoords(chain, type: type),
-        bounds: boxFromCoordsOpt(bounds, type: type),
+        buildPositionArray(chain, type: type),
+        bounds: buildBoxCoordsOpt(bounds, type: type),
       );
 
-  /// Decodes a line string geometry from [text] conforming to [format].
+  /// Parses a line string geometry from [text] conforming to [format].
   ///
   /// When [format] is not given, then [GeoJSON] is used as a default.
-  factory LineString.fromText(
+  factory LineString.parse(
     String text, {
     TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
   }) =>
-      GeometryBuilder.decodeText<LineString>(text, format: format);
+      GeometryBuilder.parse<LineString>(text, format: format);
 
   @override
   Geom get geomType => Geom.lineString;

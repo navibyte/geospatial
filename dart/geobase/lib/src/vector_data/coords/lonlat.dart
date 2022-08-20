@@ -60,17 +60,17 @@ class LonLat extends PositionCoords implements Geographic {
 
   const LonLat._(super.source) : super();
 
-  /// A geographic position as an iterable collection parsed from [text].
+  /// Parses a geographic position as an iterable collection from [text].
   ///
   /// Coordinate values (lon, lat) in [text] are separated by [delimiter].
   ///
   /// Throws FormatException if coordinates are invalid.
-  factory LonLat.fromText(
+  factory LonLat.parse(
     String text, {
     Pattern? delimiter = ',',
   }) {
-    final coords = parseDoubleValuesFromText(text, delimiter: delimiter)
-        .toList(growable: false);
+    final coords =
+        parseDoubleValues(text, delimiter: delimiter).toList(growable: false);
     if (coords.length != 2) {
       throw invalidCoordinates;
     }
@@ -201,17 +201,17 @@ class LonLatElev extends LonLat {
 
   const LonLatElev._(super.source) : super._();
 
-  /// A geographic position as an iterable collection parsed from [text].
+  /// Parses a geographic position as an iterable collection from [text].
   ///
   /// Coordinate values (lon, lat, elev) in [text] are separated by [delimiter].
   ///
   /// Throws FormatException if coordinates are invalid.
-  factory LonLatElev.fromText(
+  factory LonLatElev.parse(
     String text, {
     Pattern? delimiter = ',',
   }) {
-    final coords = parseDoubleValuesFromText(text, delimiter: delimiter)
-        .toList(growable: false);
+    final coords =
+        parseDoubleValues(text, delimiter: delimiter).toList(growable: false);
     if (coords.length != 3) {
       throw invalidCoordinates;
     }
@@ -299,17 +299,17 @@ class LonLatM extends LonLat {
       : assert(source.length == 3, 'LonLatM must have exactly 3 values'),
         super._();
 
-  /// A geographic position as an iterable collection parsed from [text].
+  /// Parses a geographic position as an iterable collection from [text].
   ///
   /// Coordinate values (lon, lat, m) in [text] are separated by [delimiter].
   ///
   /// Throws FormatException if coordinates are invalid.
-  factory LonLatM.fromText(
+  factory LonLatM.parse(
     String text, {
     Pattern? delimiter = ',',
   }) {
-    final coords = parseDoubleValuesFromText(text, delimiter: delimiter)
-        .toList(growable: false);
+    final coords =
+        parseDoubleValues(text, delimiter: delimiter).toList(growable: false);
     if (coords.length != 3) {
       throw invalidCoordinates;
     }
@@ -401,18 +401,18 @@ class LonLatElevM extends LonLatElev {
       : assert(source.length == 4, 'LonLatElevM must have exactly 4 values'),
         super._();
 
-  /// A geographic position as an iterable collection parsed from [text].
+  /// Parses a geographic position as an iterable collection from [text].
   ///
   /// Coordinate values (lon, lat, elev, m) in [text] are separated by
   /// [delimiter].
   ///
   /// Throws FormatException if coordinates are invalid.
-  factory LonLatElevM.fromText(
+  factory LonLatElevM.parse(
     String text, {
     Pattern? delimiter = ',',
   }) {
-    final coords = parseDoubleValuesFromText(text, delimiter: delimiter)
-        .toList(growable: false);
+    final coords =
+        parseDoubleValues(text, delimiter: delimiter).toList(growable: false);
     if (coords.length != 4) {
       throw invalidCoordinates;
     }

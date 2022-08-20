@@ -32,7 +32,8 @@ class MultiPoint extends SimpleGeometry {
 
   const MultiPoint._(this._points, {super.bounds, Coords? type}) : _type = type;
 
-  /// A multi point geometry from an array of [points] (each with a position).
+  /// Builds a multi point geometry from an array of [points] (each with a
+  /// position).
   ///
   /// Use the required [type] to explicitely set the coordinate type.
   ///
@@ -59,19 +60,19 @@ class MultiPoint extends SimpleGeometry {
     Iterable<double>? bounds,
   }) =>
       MultiPoint._(
-        listOfPositionsFromCoords(points, type: type),
+        buildListOfPositionsCoords(points, type: type),
         type: type,
-        bounds: boxFromCoordsOpt(bounds, type: type),
+        bounds: buildBoxCoordsOpt(bounds, type: type),
       );
 
-  /// Decodes a multi point geometry from [text] conforming to [format].
+  /// Parses a multi point geometry from [text] conforming to [format].
   ///
   /// When [format] is not given, then [GeoJSON] is used as a default.
-  factory MultiPoint.fromText(
+  factory MultiPoint.parse(
     String text, {
     TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
   }) =>
-      GeometryBuilder.decodeText<MultiPoint>(text, format: format);
+      GeometryBuilder.parse<MultiPoint>(text, format: format);
 
   @override
   Geom get geomType => Geom.multiPoint;
