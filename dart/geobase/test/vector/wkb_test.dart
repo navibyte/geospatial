@@ -272,7 +272,7 @@ void _testEncodeToBytesBase64(
 
     // decode bytes, and build WKT string that are tested
     final wktEncoder = WKT.geometry.encoder(decimals: 0);
-    WKB.geometry.decoder(wktEncoder.writer).decodeBytes(wkbBytes.buffer);
+    WKB.geometry.decoder(wktEncoder.writer).decodeBytes(wkbBytes);
 
     // test
     expect(wktEncoder.toText(), wktTextDecimals0);
@@ -292,8 +292,7 @@ void _testEncodeAndDecodeToWKT(
     // write geometry content using WKB encoder
     final encoder = format.encoder(endian: endian);
     writeGeometries.call(encoder.writer);
-    final wkbBytes = encoder.toBytes().buffer;
-    //print(wkbBytes.asUint8List());
+    final wkbBytes = encoder.toBytes();
 
     // decode bytes, and build WKT string that are tested
     final wktEncoder = WKT.geometry.encoder();

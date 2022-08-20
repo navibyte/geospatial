@@ -40,7 +40,7 @@ abstract class ContentDecoder {
   /// structure.
   ///
   /// Throws `FormatException` if decoding fails.
-  void decodeBytes(ByteBuffer source, {Map<String, dynamic>? options});
+  void decodeBytes(Uint8List source, {Map<String, dynamic>? options});
 
   // todo : method to check whether (structured) data is supported
 

@@ -15,7 +15,7 @@ class _WkbGeometryDecoder implements ContentDecoder {
       : conf = conf ?? const WkbConf();
 
   @override
-  void decodeBytes(ByteBuffer source, {Map<String, dynamic>? options}) {
+  void decodeBytes(Uint8List source, {Map<String, dynamic>? options}) {
     _WkbGeometryBufferDecoder(
       builder,
       ByteReader.view(source, endian: endian),
@@ -25,7 +25,7 @@ class _WkbGeometryDecoder implements ContentDecoder {
 
   @override
   void decodeText(String source, {Map<String, dynamic>? options}) =>
-      decodeBytes(base64.decode(source).buffer, options: options);
+      decodeBytes(base64.decode(source), options: options);
 
   @override
   void decodeData(dynamic source, {Map<String, dynamic>? options}) =>

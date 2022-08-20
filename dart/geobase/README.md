@@ -524,7 +524,11 @@ The `WKB` class provides encoders and decoders for
 [Well-known binary](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary)
 binary format supporting simple geometry objects.
 
-See sample below:
+A (not-so-simple) sample below processes data for demo purposes: 
+1. write geometry content as a source
+2. encode content as WKB bytes
+3. decode those WKB bytes
+4. WKT encoder receives input from WKB decoder, and prints WKT text
 
 ```dart
   // geometry binary format encoder for WKB
@@ -554,8 +558,8 @@ See sample below:
   // (with content writer of the WKT encoder set as a target for decoding)
   final decoder = WKB.geometry.decoder(wktEncoder.writer);
 
-  // now decode those WKB bytes created already at the start
-  decoder.decodeBytes(wkbBytes.buffer);
+  // now decode those WKB bytes (Uint8List) created already at the start
+  decoder.decodeBytes(wkbBytes);
 
   // finally print WKT text:
   //    POINT ZM(10.123 20.25 -30.95 -1.999)

@@ -51,7 +51,7 @@ void main() {
           final bytes = writer.toBytes();
 
           // read bytes using ByteReader
-          final reader = ByteReader.view(bytes.buffer, endian: endian);
+          final reader = ByteReader.view(bytes, endian: endian);
           for (final sample in sampleInts) {
             expect(reader.readInt8(), sample);
             expect(reader.readInt16(), sample);

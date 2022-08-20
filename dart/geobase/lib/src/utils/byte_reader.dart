@@ -19,13 +19,13 @@ class ByteReader {
   /// The endianness for byte sequences read.
   final Endian endian;
 
-  /// A reader (integer and floating point values) reading a view of [buffer].
+  /// A reader (integer and floating point values) as a view of [source] bytes.
   ///
   /// [endian] specifies endianness for byte sequences read.
   ByteReader.view(
-    ByteBuffer buffer, {
+    Uint8List source, {
     this.endian = Endian.big,
-  }) : _data = buffer.asByteData();
+  }) : _data = ByteData.sublistView(source);
 
   /// Expect this reader to contain at least [length] bytes left to read.
   ///

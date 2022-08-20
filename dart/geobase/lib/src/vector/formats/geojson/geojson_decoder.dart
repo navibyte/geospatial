@@ -14,8 +14,8 @@ class _GeoJsonGeometryTextDecoder implements ContentDecoder {
   _GeoJsonGeometryTextDecoder(this.builder);
 
   @override
-  void decodeBytes(ByteBuffer source, {Map<String, dynamic>? options}) =>
-      decodeText(utf8.decode(source.asUint8List()), options: options);
+  void decodeBytes(Uint8List source, {Map<String, dynamic>? options}) =>
+      decodeText(utf8.decode(source), options: options);
 
   @override
   void decodeText(String source, {Map<String, dynamic>? options}) =>
@@ -45,8 +45,8 @@ class _GeoJsonFeatureTextDecoder implements ContentDecoder {
   _GeoJsonFeatureTextDecoder(this.builder);
 
   @override
-  void decodeBytes(ByteBuffer source, {Map<String, dynamic>? options}) =>
-      decodeText(utf8.decode(source.asUint8List()), options: options);
+  void decodeBytes(Uint8List source, {Map<String, dynamic>? options}) =>
+      decodeText(utf8.decode(source), options: options);
 
   @override
   void decodeText(String source, {Map<String, dynamic>? options}) =>

@@ -446,8 +446,8 @@ void _wkb() {
   // (with content writer of the WKT encoder set as a target for decoding)
   final decoder = WKB.geometry.decoder(wktEncoder.writer);
 
-  // now decode those WKB bytes created already at the start
-  decoder.decodeBytes(wkbBytes.buffer);
+  // now decode those WKB bytes (Uint8List) created already at the start
+  decoder.decodeBytes(wkbBytes);
 
   // finally print WKT text:
   //    POINT ZM(10.123 20.25 -30.95 -1.999)
