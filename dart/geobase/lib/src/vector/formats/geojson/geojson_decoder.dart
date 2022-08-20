@@ -10,19 +10,18 @@ const _notValidGeoJsonData = FormatException('Not valid GeoJSON data.');
 
 class _GeoJsonGeometryTextDecoder implements ContentDecoder {
   final GeometryContent builder;
+  final Map<String, dynamic>? options;
 
-  _GeoJsonGeometryTextDecoder(this.builder);
-
-  @override
-  void decodeBytes(Uint8List source, {Map<String, dynamic>? options}) =>
-      decodeText(utf8.decode(source), options: options);
+  _GeoJsonGeometryTextDecoder(this.builder, {this.options});
 
   @override
-  void decodeText(String source, {Map<String, dynamic>? options}) =>
-      decodeData(json.decode(source), options: options);
+  void decodeBytes(Uint8List source) => decodeText(utf8.decode(source));
 
   @override
-  void decodeData(dynamic source, {Map<String, dynamic>? options}) {
+  void decodeText(String source) => decodeData(json.decode(source));
+
+  @override
+  void decodeData(dynamic source) {
     try {
       // expect source as an object tree (JSON Object)
       final root = source as Map<String, dynamic>;
@@ -41,19 +40,18 @@ class _GeoJsonGeometryTextDecoder implements ContentDecoder {
 
 class _GeoJsonFeatureTextDecoder implements ContentDecoder {
   final FeatureContent builder;
+  final Map<String, dynamic>? options;
 
-  _GeoJsonFeatureTextDecoder(this.builder);
-
-  @override
-  void decodeBytes(Uint8List source, {Map<String, dynamic>? options}) =>
-      decodeText(utf8.decode(source), options: options);
+  _GeoJsonFeatureTextDecoder(this.builder, {this.options});
 
   @override
-  void decodeText(String source, {Map<String, dynamic>? options}) =>
-      decodeData(json.decode(source), options: options);
+  void decodeBytes(Uint8List source) => decodeText(utf8.decode(source));
 
   @override
-  void decodeData(dynamic source, {Map<String, dynamic>? options}) {
+  void decodeText(String source) => decodeData(json.decode(source));
+
+  @override
+  void decodeData(dynamic source) {
     try {
       // expect source as an object tree (JSON Object)
       final root = source as Map<String, dynamic>;
@@ -64,10 +62,9 @@ class _GeoJsonFeatureTextDecoder implements ContentDecoder {
           _decodeFeature(root, builder);
           return;
         case 'FeatureCollection':
-          final itemOffset =
-              options != null ? options['itemOffset'] as int? : null;
-          final itemLimit =
-              options != null ? options['itemLimit'] as int? : null;
+          final opt = options;
+          final itemOffset = opt != null ? opt['itemOffset'] as int? : null;
+          final itemLimit = opt != null ? opt['itemLimit'] as int? : null;
           _decodeFeatureCollection(
             root,
             builder,

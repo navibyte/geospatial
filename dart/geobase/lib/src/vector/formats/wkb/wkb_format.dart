@@ -59,15 +59,18 @@ class _WkbGeometryBinaryFormat with BinaryFormat<GeometryContent> {
 
   @override
   ContentEncoder<GeometryContent> encoder({
-    Endian endian = Endian.big,
-    int bufferSize = 128,
+    Endian? endian,
+    Map<String, dynamic>? options,
   }) =>
-      _WkbGeometryEncoder(endian: endian, bufferSize: bufferSize, conf: conf);
+      // endian: unless nothing specified, WKB data is encoding as Endian.big
+      _WkbGeometryEncoder(endian: endian ?? Endian.big, conf: conf);
 
   @override
   ContentDecoder decoder(
     GeometryContent builder, {
-    Endian endian = Endian.big,
+    Endian? endian,
+    Map<String, dynamic>? options,
   }) =>
-      _WkbGeometryDecoder(builder, endian: endian, conf: conf);
+      // any endian given is ignored, because WKB data has this info on headers
+      _WkbGeometryDecoder(builder, conf: conf);
 }

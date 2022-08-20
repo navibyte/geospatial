@@ -30,6 +30,7 @@ class TextWriterFormatImpl<Content extends Object>
   ContentEncoder<Content> encoder({
     StringSink? buffer,
     int? decimals,
+    Map<String, dynamic>? options,
   }) =>
       factory.call(buffer: buffer, decimals: decimals);
 }
@@ -60,6 +61,7 @@ class TextWriterFormatImplConf<Content extends Object, Conf extends Object>
   ContentEncoder<Content> encoder({
     StringSink? buffer,
     int? decimals,
+    Map<String, dynamic>? options,
   }) =>
       factory.call(
         buffer: buffer,

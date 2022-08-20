@@ -108,10 +108,10 @@ void _testDecodeAndEncodeToGeoJSON<Content extends Object>(
   final encoder = format.encoder();
 
   // GeoJSON decoder from text to geometry content (writing to encoder)
-  final decoder = format.decoder(encoder.writer);
+  final decoder = format.decoder(encoder.writer, options: options);
 
   // now decode the original sample...
-  decoder.decodeText(geoJsonText, options: options);
+  decoder.decodeText(geoJsonText);
 
   // ... and result encoded back to text should be here
   final geoJsonTextEncoded = encoder.toText();

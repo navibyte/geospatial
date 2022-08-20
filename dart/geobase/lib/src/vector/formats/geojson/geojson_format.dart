@@ -146,14 +146,17 @@ class _GeoJsonGeometryTextFormat with TextFormat<GeometryContent> {
   final GeoJsonConf? conf;
 
   @override
-  ContentDecoder decoder(GeometryContent builder) {
-    return _GeoJsonGeometryTextDecoder(builder);
-  }
+  ContentDecoder decoder(
+    GeometryContent builder, {
+    Map<String, dynamic>? options,
+  }) =>
+      _GeoJsonGeometryTextDecoder(builder, options: options);
 
   @override
   ContentEncoder<GeometryContent> encoder({
     StringSink? buffer,
     int? decimals,
+    Map<String, dynamic>? options,
   }) =>
       GeoJsonTextWriter(buffer: buffer, decimals: decimals, conf: conf);
 }
@@ -164,11 +167,17 @@ class _GeoJsonFeatureTextFormat with TextFormat<FeatureContent> {
   final GeoJsonConf? conf;
 
   @override
-  ContentDecoder decoder(FeatureContent builder) {
-    return _GeoJsonFeatureTextDecoder(builder);
-  }
+  ContentDecoder decoder(
+    FeatureContent builder, {
+    Map<String, dynamic>? options,
+  }) =>
+      _GeoJsonFeatureTextDecoder(builder, options: options);
 
   @override
-  ContentEncoder<FeatureContent> encoder({StringSink? buffer, int? decimals}) =>
+  ContentEncoder<FeatureContent> encoder({
+    StringSink? buffer,
+    int? decimals,
+    Map<String, dynamic>? options,
+  }) =>
       GeoJsonTextWriter(buffer: buffer, decimals: decimals, conf: conf);
 }

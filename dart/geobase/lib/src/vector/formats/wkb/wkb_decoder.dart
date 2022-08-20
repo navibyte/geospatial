@@ -8,17 +8,16 @@ part of 'wkb_format.dart';
 
 class _WkbGeometryDecoder implements ContentDecoder {
   final GeometryContent builder;
-  final Endian endian;
   final WkbConf conf;
 
-  _WkbGeometryDecoder(this.builder, {this.endian = Endian.big, WkbConf? conf})
+  _WkbGeometryDecoder(this.builder, {WkbConf? conf})
       : conf = conf ?? const WkbConf();
 
   @override
   void decodeBytes(Uint8List source, {Map<String, dynamic>? options}) {
     _WkbGeometryBufferDecoder(
       builder,
-      ByteReader.view(source, endian: endian),
+      ByteReader.view(source),
       conf,
     ).buildAll();
   }

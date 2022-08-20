@@ -13,12 +13,10 @@ class _WkbGeometryEncoder
   final WkbConf conf;
 
   _WkbGeometryEncoder({
-    Endian endian = Endian.big,
-    int bufferSize = 128,
+    required Endian endian,
     WkbConf? conf,
   })  : _buffer = ByteWriter.buffered(
           endian: endian,
-          bufferSize: bufferSize,
 
           // Note this is needed because of emptyGeometry special case of
           // POINT(NaN NaN) and how it is encoded in WKB (same way with OSGEO)

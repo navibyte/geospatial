@@ -15,14 +15,18 @@ abstract class TextWriterFormat<Content extends Object> {
   /// When an optional [buffer] is given, then representations are written into
   /// it (without clearing any content it might already contain).
   ///
-  /// Use [decimals] to set a number of decimals (not applied if no decimals).
-  ///
   /// After writing content objects into an encoder, the text representation can
   /// be accessed using `toText()` of the encoder (or via [buffer] when such
   /// is given).
+  ///
+  /// Use [decimals] to set a number of decimals (not applied if no decimals).
+  ///
+  /// Other format or encoder implementation specific options can be set by
+  /// [options].
   ContentEncoder<Content> encoder({
     StringSink? buffer,
     int? decimals,
+    Map<String, dynamic>? options,
   });
 }
 
@@ -33,7 +37,9 @@ abstract class TextReaderFormat<Content extends Object> {
   ///
   /// Content decoded by a decoder is sent to a content interface represented
   /// by an object [builder].
-  ContentDecoder decoder(Content builder);
+  ///
+  /// Format or decoder implementation specific options can be set by [options].
+  ContentDecoder decoder(Content builder, {Map<String, dynamic>? options});
 }
 
 /// A mixin to access text format encoders and decoders for [Content].

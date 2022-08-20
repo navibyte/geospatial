@@ -94,10 +94,10 @@ class FeatureBuilder<T extends FeatureObject, E extends Geometry>
     });
 
     // get decoder with the content decoded sent to builder
-    final decoder = format.decoder(builder);
+    final decoder = format.decoder(builder, options: options);
 
     // decode and return result if succesful
-    decoder.decodeText(text, options: options);
+    decoder.decodeText(text);
     if (result != null) {
       return result!;
     } else {
@@ -129,10 +129,10 @@ class FeatureBuilder<T extends FeatureObject, E extends Geometry>
     });
 
     // get decoder with the content decoded sent to builder
-    final decoder = format.decoder(builder);
+    final decoder = format.decoder(builder, options: options);
 
     // decode and return result if succesful
-    decoder.decodeData(data, options: options);
+    decoder.decodeData(data);
     if (result != null) {
       return result!;
     } else {
