@@ -524,7 +524,11 @@ The `WKB` class provides encoders and decoders for
 [Well-known binary](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary)
 binary format supporting simple geometry objects.
 
-A (not-so-simple) sample below processes data for demo purposes: 
+Two different approaches to use WKB encoders and decoders are presented in this
+section.
+
+First a *not-so-simple* sample below processes data for demo purposes in
+following steps: 
 1. write geometry content as a source
 2. encode content as WKB bytes
 3. decode those WKB bytes
@@ -564,6 +568,44 @@ A (not-so-simple) sample below processes data for demo purposes:
   // finally print WKT text:
   //    POINT ZM(10.123 20.25 -30.95 -1.999)
   print(wktEncoder.toText());
+```
+
+The solution above can be simplied a lot by using geometry model objects:
+
+```dart
+  // create a Point object
+  final point = Point(XYZM(10.123, 20.25, -30.95, -1.999));
+
+  // get encoded bytes (Uint8List)
+  final wkbBytes = point.toBytes(format: WKB.geometry);
+
+  // at this point our WKB bytes could be sent to another system...
+
+  // then create a Point object, but now decoding it from WKB bytes
+  final pointDecoded = Point.decode(wkbBytes, format: WKB.geometry);
+
+  // finally print WKT text:
+  //    POINT ZM(10.123 20.25 -30.95 -1.999)
+  print(pointDecoded.toText(format: WKT.geometry));
+```
+
+This second solution uses same formats, encoders, decoders and builders as the
+first one, but the details of using them is hidden under an easier interface.
+
+As a small bonus let's continue the last sample a bit:
+
+```dart
+  // or as a bonus of this solution it's as easy to print it as GeoJSON text too
+  //    {"type":"Point","coordinates":[10.123,20.25,-30.95,-1.999]}
+  print(pointDecoded.toText(format: GeoJSON.geometry));
+
+  // great, but, we just forgot that GeoJSON should not contain m coordinates...
+  //    {"type":"Point","coordinates":[10.123,20.25,-30.95]}
+  print(
+    pointDecoded.toText(
+      format: GeoJSON.geometryFormat(conf: GeoJsonConf(ignoreMeasured: true)),
+    ),
+  );
 ```
 
 ## Meta

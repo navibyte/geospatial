@@ -5,6 +5,7 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import 'dart:convert';
+import 'dart:typed_data';
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
@@ -89,11 +90,18 @@ class MultiLineString extends SimpleGeometry {
   ///
   /// When [format] is not given, then the geometry format of [GeoJSON] is used
   /// as a default.
+  ///
+  /// Format or decoder implementation specific options can be set by [options].
   factory MultiLineString.parse(
     String text, {
     TextReaderFormat<SimpleGeometryContent> format = GeoJSON.geometry,
+    Map<String, dynamic>? options,
   }) =>
-      GeometryBuilder.parse<MultiLineString>(text, format: format);
+      GeometryBuilder.parse<MultiLineString>(
+        text,
+        format: format,
+        options: options,
+      );
 
   /// Parses a multi line string geometry from [coordinates] conforming to
   /// [DefaultFormat].
@@ -105,6 +113,23 @@ class MultiLineString extends SimpleGeometry {
       type: coordType,
     );
   }
+
+  /// Decodes a multi line string geometry from [bytes] conforming to [format].
+  ///
+  /// When [format] is not given, then the geometry format of [WKB] is used as
+  /// a default.
+  ///
+  /// Format or decoder implementation specific options can be set by [options].
+  factory MultiLineString.decode(
+    Uint8List bytes, {
+    BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
+    Map<String, dynamic>? options,
+  }) =>
+      GeometryBuilder.decode<MultiLineString>(
+        bytes,
+        format: format,
+        options: options,
+      );
 
   @override
   Geom get geomType => Geom.multiLineString;

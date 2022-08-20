@@ -5,6 +5,7 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import 'dart:convert';
+import 'dart:typed_data';
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
@@ -68,11 +69,14 @@ class Point implements SimpleGeometry {
   ///
   /// When [format] is not given, then the geometry format of [GeoJSON] is used
   /// as a default.
+  ///
+  /// Format or decoder implementation specific options can be set by [options].
   factory Point.parse(
     String text, {
     TextReaderFormat<SimpleGeometryContent> format = GeoJSON.geometry,
+    Map<String, dynamic>? options,
   }) =>
-      GeometryBuilder.parse<Point>(text, format: format);
+      GeometryBuilder.parse<Point>(text, format: format, options: options);
 
   /// Parses a point geometry from [coordinates] conforming to [DefaultFormat].
   factory Point.parseCoords(String coordinates) {
@@ -80,6 +84,23 @@ class Point implements SimpleGeometry {
     final coordType = Coords.fromDimension(pos.length);
     return Point.build(pos, type: coordType);
   }
+
+  /// Decodes a point geometry from [bytes] conforming to [format].
+  ///
+  /// When [format] is not given, then the geometry format of [WKB] is used as
+  /// a default.
+  ///
+  /// Format or decoder implementation specific options can be set by [options].
+  factory Point.decode(
+    Uint8List bytes, {
+    BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
+    Map<String, dynamic>? options,
+  }) =>
+      GeometryBuilder.decode<Point>(
+        bytes,
+        format: format,
+        options: options,
+      );
 
   @override
   Geom get geomType => Geom.point;
@@ -117,10 +138,22 @@ class Point implements SimpleGeometry {
   String toText({
     TextWriterFormat<SimpleGeometryContent> format = GeoJSON.geometry,
     int? decimals,
+    Map<String, dynamic>? options,
   }) {
-    final encoder = format.encoder(decimals: decimals);
+    final encoder = format.encoder(decimals: decimals, options: options);
     writeTo(encoder.writer);
     return encoder.toText();
+  }
+
+  @override
+  Uint8List toBytes({
+    BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
+    Endian? endian,
+    Map<String, dynamic>? options,
+  }) {
+    final encoder = format.encoder(endian: endian, options: options);
+    writeTo(encoder.writer);
+    return encoder.toBytes();
   }
 
   @override

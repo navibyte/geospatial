@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'dart:typed_data';
+
 import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
@@ -43,13 +45,37 @@ abstract class Geometry extends Bounded {
   /// used as a default.
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
+  ///
+  /// Other format or encoder implementation specific options can be set by
+  /// [options].
   String toText({
     TextWriterFormat<GeometryContent> format = GeoJSON.geometry,
     int? decimals,
+    Map<String, dynamic>? options,
   }) {
-    final encoder = format.encoder(decimals: decimals);
+    final encoder = format.encoder(decimals: decimals, options: options);
     writeTo(encoder.writer);
     return encoder.toText();
+  }
+
+  /// The binary representation of this geometry object, with [format] applied.
+  ///
+  /// When [format] is not given, then the geometry format of [WKB] is used as
+  /// a default.
+  ///
+  /// An optional [endian] specifies endianness for byte sequences written. Some
+  /// encoders might ignore this, and some has a default value for it.
+  ///
+  /// Other format or encoder implementation specific options can be set by
+  /// [options].
+  Uint8List toBytes({
+    BinaryFormat<GeometryContent> format = WKB.geometry,
+    Endian? endian,
+    Map<String, dynamic>? options,
+  }) {
+    final encoder = format.encoder(endian: endian, options: options);
+    writeTo(encoder.writer);
+    return encoder.toBytes();
   }
 
   /// The string representation of this geometry object as specified by
@@ -75,9 +101,21 @@ abstract class SimpleGeometry extends Geometry {
   String toText({
     TextWriterFormat<SimpleGeometryContent> format = GeoJSON.geometry,
     int? decimals,
+    Map<String, dynamic>? options,
   }) {
-    final encoder = format.encoder(decimals: decimals);
+    final encoder = format.encoder(decimals: decimals, options: options);
     writeTo(encoder.writer);
     return encoder.toText();
+  }
+
+  @override
+  Uint8List toBytes({
+    BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
+    Endian? endian,
+    Map<String, dynamic>? options,
+  }) {
+    final encoder = format.encoder(endian: endian, options: options);
+    writeTo(encoder.writer);
+    return encoder.toBytes();
   }
 }

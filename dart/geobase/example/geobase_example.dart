@@ -44,7 +44,8 @@ void main() {
   // vector data
   _geoJson();
   _wkt();
-  _wkb();
+  _wkbSample1();
+  _wkbSample2();
 
   // projections
   _wgs84ToWebMercator();
@@ -418,7 +419,7 @@ void _wkt() {
   print(encoder.toText());
 }
 
-void _wkb() {
+void _wkbSample1() {
   // geometry binary format encoder for WKB
   const format = WKB.geometry;
   final encoder = format.encoder();
@@ -452,6 +453,38 @@ void _wkb() {
   // finally print WKT text:
   //    POINT ZM(10.123 20.25 -30.95 -1.999)
   print(wktEncoder.toText());
+}
+
+/// The previous sample ("_wkbSample1") using geometry model objects.
+void _wkbSample2() {
+  // create a Point object
+  final point = Point(XYZM(10.123, 20.25, -30.95, -1.999));
+
+  // get encoded bytes (Uint8List)
+  final wkbBytes = point.toBytes(format: WKB.geometry);
+
+  // at this point our WKB bytes could be sent to another system...
+
+  // then create a Point object, but now decoding it from WKB bytes
+  final pointDecoded = Point.decode(wkbBytes, format: WKB.geometry);
+
+  // finally print WKT text:
+  //    POINT ZM(10.123 20.25 -30.95 -1.999)
+  print(pointDecoded.toText(format: WKT.geometry));
+
+  // -------
+
+  // or as a bonus of this solution it's as easy to print it as GeoJSON text too
+  //    {"type":"Point","coordinates":[10.123,20.25,-30.95,-1.999]}
+  print(pointDecoded.toText(format: GeoJSON.geometry));
+
+  // great, but, we just forgot that GeoJSON should not contain m coordinates...
+  //    {"type":"Point","coordinates":[10.123,20.25,-30.95]}
+  print(
+    pointDecoded.toText(
+      format: GeoJSON.geometryFormat(conf: GeoJsonConf(ignoreMeasured: true)),
+    ),
+  );
 }
 
 void _temporalData() {

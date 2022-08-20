@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'dart:typed_data';
+
 import '/src/codes/geom.dart';
 import '/src/coordinates/projection.dart';
 import '/src/utils/coord_arrays.dart';
@@ -77,13 +79,35 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   ///
   /// When [format] is not given, then the geometry format of [GeoJSON] is used
   /// as a default.
+  ///
+  /// Format or decoder implementation specific options can be set by [options].
   static GeometryCollection<T> parse<T extends Geometry>(
     String text, {
     TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
+    Map<String, dynamic>? options,
   }) =>
       GeometryBuilder.parseCollection<T>(
         text,
         format: format,
+        options: options,
+      );
+
+  /// Decodes a geometry collection with elements of [T] from [bytes] conforming
+  /// to [format].
+  ///
+  /// When [format] is not given, then the geometry format of [WKB] is used as
+  /// a default.
+  ///
+  /// Format or decoder implementation specific options can be set by [options].
+  static GeometryCollection<T> decode<T extends Geometry>(
+    Uint8List bytes, {
+    BinaryFormat<GeometryContent> format = WKB.geometry,
+    Map<String, dynamic>? options,
+  }) =>
+      GeometryBuilder.decodeCollection<T>(
+        bytes,
+        format: format,
+        options: options,
       );
 
   @override

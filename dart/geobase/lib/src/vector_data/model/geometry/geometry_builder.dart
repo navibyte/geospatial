@@ -6,6 +6,8 @@
 
 // ignore_for_file: cascade_invocations
 
+import 'dart:typed_data';
+
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/vector/content.dart';
@@ -111,9 +113,12 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
   ///
   /// When [format] is not given, then the geometry format of [GeoJSON] is used
   /// as a default.
+  ///
+  /// Format or decoder implementation specific options can be set by [options].
   static R parse<R extends Geometry>(
     String text, {
     TextReaderFormat<SimpleGeometryContent> format = GeoJSON.geometry,
+    Map<String, dynamic>? options,
   }) {
     R? result;
 
@@ -126,7 +131,7 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
     });
 
     // get decoder with the content decoded sent to builder
-    final decoder = format.decoder(builder);
+    final decoder = format.decoder(builder, options: options);
 
     // decode and return result if succesful
     decoder.decodeText(text);
@@ -142,9 +147,12 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
   ///
   /// When [format] is not given, then the geometry format of [GeoJSON] is used
   /// as a default.
+  ///
+  /// Format or decoder implementation specific options can be set by [options].
   static GeometryCollection<T> parseCollection<T extends Geometry>(
     String text, {
     TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
+    Map<String, dynamic>? options,
   }) {
     GeometryCollection<T>? result;
 
@@ -158,7 +166,7 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
     });
 
     // get decoder with the content decoded sent to builder
-    final decoder = format.decoder(builder);
+    final decoder = format.decoder(builder, options: options);
 
     // decode and return result if succesful
     decoder.decodeText(text);
@@ -166,6 +174,74 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
       return result!;
     } else {
       throw const FormatException('Could not decode text');
+    }
+  }
+
+  /// Decodes a geometry of [R] from [bytes] conforming to [format].
+  ///
+  /// When [format] is not given, then the geometry format of [WKB] is used as
+  /// a default.
+  ///
+  /// Format or decoder implementation specific options can be set by [options].
+  static R decode<R extends Geometry>(
+    Uint8List bytes, {
+    BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
+    Map<String, dynamic>? options,
+  }) {
+    R? result;
+
+    // get geometry builder to build a geometry of R
+    final builder = GeometryBuilder<R, Geometry>._((geometry, {name}) {
+      if (result != null) {
+        throw const FormatException('Already decoded one');
+      }
+      result = geometry;
+    });
+
+    // get decoder with the content decoded sent to builder
+    final decoder = format.decoder(builder, options: options);
+
+    // decode and return result if succesful
+    decoder.decodeBytes(bytes);
+    if (result != null) {
+      return result!;
+    } else {
+      throw const FormatException('Could not decode bytes');
+    }
+  }
+
+  /// Parses a geometry collection with elements of [T] from [bytes] conforming
+  /// to [format].
+  ///
+  /// When [format] is not given, then the geometry format of [WKB] is used as
+  /// a default.
+  ///
+  /// Format or decoder implementation specific options can be set by [options].
+  static GeometryCollection<T> decodeCollection<T extends Geometry>(
+    Uint8List bytes, {
+    BinaryFormat<GeometryContent> format = WKB.geometry,
+    Map<String, dynamic>? options,
+  }) {
+    GeometryCollection<T>? result;
+
+    // get geometry builder to build a geometry collection containing E
+    final builder =
+        GeometryBuilder<GeometryCollection<T>, T>._((geometry, {name}) {
+      if (result != null) {
+        throw const FormatException('Already decoded one');
+      }
+      result = geometry;
+    });
+
+    // get decoder with the content decoded sent to builder
+    final decoder = format.decoder(builder, options: options);
+
+    // decode and return result if succesful
+    decoder.decodeBytes(bytes);
+    if (result != null) {
+      return result!;
+    } else {
+      throw const FormatException('Could not decode bytes');
     }
   }
 

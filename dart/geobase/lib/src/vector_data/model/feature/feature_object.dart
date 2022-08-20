@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'dart:typed_data';
+
 import 'package:meta/meta.dart';
 
 import '/src/coordinates/projection.dart';
@@ -44,13 +46,34 @@ abstract class FeatureObject extends Bounded {
   /// as a default.
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
+  ///
+  /// Other format or encoder implementation specific options can be set by
+  /// [options].
   String toText({
     TextWriterFormat<FeatureContent> format = GeoJSON.feature,
     int? decimals,
+    Map<String, dynamic>? options,
   }) {
-    final encoder = format.encoder(decimals: decimals);
+    final encoder = format.encoder(decimals: decimals, options: options);
     writeTo(encoder.writer);
     return encoder.toText();
+  }
+
+  /// The binary representation of this feature object, with [format] applied.
+  ///
+  /// An optional [endian] specifies endianness for byte sequences written. Some
+  /// encoders might ignore this, and some has a default value for it.
+  ///
+  /// Other format or encoder implementation specific options can be set by
+  /// [options].
+  Uint8List toBytes({
+    required BinaryFormat<FeatureContent> format,
+    Endian? endian,
+    Map<String, dynamic>? options,
+  }) {
+    final encoder = format.encoder(endian: endian, options: options);
+    writeTo(encoder.writer);
+    return encoder.toBytes();
   }
 
   /// The string representation of this feature object as specified by

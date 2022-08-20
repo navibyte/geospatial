@@ -5,6 +5,7 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import 'dart:convert';
+import 'dart:typed_data';
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
@@ -95,11 +96,14 @@ class Polygon extends SimpleGeometry {
   ///
   /// When [format] is not given, then the geometry format of [GeoJSON] is used
   /// as a default.
+  ///
+  /// Format or decoder implementation specific options can be set by [options].
   factory Polygon.parse(
     String text, {
     TextReaderFormat<SimpleGeometryContent> format = GeoJSON.geometry,
+    Map<String, dynamic>? options,
   }) =>
-      GeometryBuilder.parse<Polygon>(text, format: format);
+      GeometryBuilder.parse<Polygon>(text, format: format, options: options);
 
   /// Parses a polygon geometry from [coordinates] conforming to
   /// [DefaultFormat].
@@ -112,6 +116,23 @@ class Polygon extends SimpleGeometry {
       type: coordType,
     );
   }
+
+  /// Decodes a polygon geometry from [bytes] conforming to [format].
+  ///
+  /// When [format] is not given, then the geometry format of [WKB] is used as
+  /// a default.
+  ///
+  /// Format or decoder implementation specific options can be set by [options].
+  factory Polygon.decode(
+    Uint8List bytes, {
+    BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
+    Map<String, dynamic>? options,
+  }) =>
+      GeometryBuilder.decode<Polygon>(
+        bytes,
+        format: format,
+        options: options,
+      );
 
   @override
   Geom get geomType => Geom.polygon;
