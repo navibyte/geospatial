@@ -74,7 +74,8 @@ class FeatureBuilder<T extends FeatureObject, E extends Geometry>
 
   /// Parses a feature object of [R] from [text] conforming to [format].
   ///
-  /// When [format] is not given, then [GeoJSON] is used as a default.
+  /// When [format] is not given, then the feature format of [GeoJSON] is used
+  /// as a default.
   ///
   /// Format or decoder implementation specific options can be set by [options].
   static R parse<R extends FeatureObject, E extends Geometry>(
@@ -108,7 +109,8 @@ class FeatureBuilder<T extends FeatureObject, E extends Geometry>
   ///
   /// Data should be a JSON Object as decoded by the standard `json.decode()`.
   ///
-  /// When [format] is not given, then [GeoJSON] is used as a default.
+  /// When [format] is not given, then the feature format of [GeoJSON] is used
+  /// as a default.
   ///
   /// Format or decoder implementation specific options can be set by [options].
   static R decodeData<R extends FeatureObject, E extends Geometry>(

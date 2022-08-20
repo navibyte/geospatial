@@ -4,10 +4,13 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'dart:convert';
+
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/coordinates/projection.dart';
 import '/src/utils/coord_arrays.dart';
+import '/src/utils/coord_arrays_from_json.dart';
 import '/src/vector/content.dart';
 import '/src/vector/encoding.dart';
 import '/src/vector/formats.dart';
@@ -90,12 +93,25 @@ class Polygon extends SimpleGeometry {
 
   /// Parses a polygon geometry from [text] conforming to [format].
   ///
-  /// When [format] is not given, then [GeoJSON] is used as a default.
+  /// When [format] is not given, then the geometry format of [GeoJSON] is used
+  /// as a default.
   factory Polygon.parse(
     String text, {
-    TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
+    TextReaderFormat<SimpleGeometryContent> format = GeoJSON.geometry,
   }) =>
       GeometryBuilder.parse<Polygon>(text, format: format);
+
+  /// Parses a polygon geometry from [coordinates] conforming to
+  /// [DefaultFormat].
+  factory Polygon.parseCoords(String coordinates) {
+    final array = json.decode('[$coordinates]') as List<dynamic>;
+    final coordType = resolveCoordType(array, positionLevel: 2);
+    // todo: validate polygon (at least one ring)
+    return Polygon.build(
+      createFlatPositionArrayArrayDouble(array, coordType),
+      type: coordType,
+    );
+  }
 
   @override
   Geom get geomType => Geom.polygon;

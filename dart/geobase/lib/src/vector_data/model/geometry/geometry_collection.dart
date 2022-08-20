@@ -75,7 +75,8 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   /// Parses a geometry collection with elements of [T] from [text] conforming
   /// to [format].
   ///
-  /// When [format] is not given, then [GeoJSON] is used as a default.
+  /// When [format] is not given, then the geometry format of [GeoJSON] is used
+  /// as a default.
   static GeometryCollection<T> parse<T extends Geometry>(
     String text, {
     TextReaderFormat<GeometryContent> format = GeoJSON.geometry,

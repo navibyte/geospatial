@@ -104,7 +104,8 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   ///
   /// Feature items on a collection contain a geometry of [T].
   ///
-  /// When [format] is not given, then [GeoJSON] is used as a default.
+  /// When [format] is not given, then the feature format of [GeoJSON] is used
+  /// as a default.
   ///
   /// Format or decoder implementation specific options can be set by [options].
   static FeatureCollection<Feature<T>> parse<T extends Geometry>(
@@ -124,7 +125,8 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   ///
   /// Feature items on a collection contain a geometry of [T].
   ///
-  /// When [format] is not given, then [GeoJSON] is used as a default.
+  /// When [format] is not given, then the feature format of [GeoJSON] is used
+  /// as a default.
   ///
   /// Format or decoder implementation specific options can be set by [options].
   static FeatureCollection<Feature<T>> fromData<T extends Geometry>(

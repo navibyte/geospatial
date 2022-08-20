@@ -34,11 +34,11 @@ import '/src/vector/encoding.dart';
 /// format bounding box as a point series of two points (min, max). See also
 /// `wktFormat` that formats them as polygons.
 class WktLikeFormat {
-  /// The WKT (like) format text format for coordinate objects.
+  /// The WKT (like) text writer format for coordinate objects.
   static const TextWriterFormat<CoordinateContent> coordinate =
       TextWriterFormatImpl(WktLikeTextWriter.new);
 
-  /// The WKT (like) format text format for geometry objects.
+  /// The WKT (like) text writer format for geometry objects.
   static const TextWriterFormat<GeometryContent> geometry =
       TextWriterFormatImpl(WktLikeTextWriter.new);
 }

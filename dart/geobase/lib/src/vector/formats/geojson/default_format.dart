@@ -29,11 +29,11 @@ import '/src/vector/encoding.dart';
 ///   * `[[[35,10],[45,45],[15,40],[10,20],[35,10]]]`
 /// * coordinates for other geometries with similar principles
 class DefaultFormat {
-  /// The (default) text format for coordinate objects.
+  /// The (default) text writer format for coordinate objects.
   static const TextWriterFormat<CoordinateContent> coordinate =
       TextWriterFormatImpl(DefaultTextWriter.new);
 
-  /// The (default) text format for geometry objects.
+  /// The (default) text writer format for geometry objects.
   static const TextWriterFormat<GeometryContent> geometry =
       TextWriterFormatImpl(DefaultTextWriter.new);
 }

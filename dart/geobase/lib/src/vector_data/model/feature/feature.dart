@@ -159,7 +159,8 @@ class Feature<T extends Geometry> extends FeatureObject {
   /// Parses a feature with the geometry of [T] from [text] conforming to
   /// [format].
   ///
-  /// When [format] is not given, then [GeoJSON] is used as a default.
+  /// When [format] is not given, then the feature format of [GeoJSON] is used
+  /// as a default.
   ///
   /// Format or decoder implementation specific options can be set by [options].
   static Feature<T> parse<T extends Geometry>(
@@ -178,7 +179,8 @@ class Feature<T extends Geometry> extends FeatureObject {
   ///
   /// Data should be a JSON Object as decoded by the standard `json.decode()`.
   ///
-  /// When [format] is not given, then [GeoJSON] is used as a default.
+  /// When [format] is not given, then the feature format of [GeoJSON] is used
+  /// as a default.
   ///
   /// Format or decoder implementation specific options can be set by [options].
   static Feature<T> fromData<T extends Geometry>(

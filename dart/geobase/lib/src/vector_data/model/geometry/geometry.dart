@@ -39,7 +39,8 @@ abstract class Geometry extends Bounded {
 
   /// The string representation of this geometry object, with [format] applied.
   ///
-  /// When [format] is not given, then [GeoJSON] is used as a default.
+  /// When [format] is not given, then the geometry format of [GeoJSON] is
+  /// used as a default.
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
   String toText({

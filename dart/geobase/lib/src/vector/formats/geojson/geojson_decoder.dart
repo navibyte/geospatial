@@ -98,33 +98,33 @@ void _decodeGeometry(
   // check for GeoJSON types and decode as supported types found
   switch (geometry['type']) {
     case 'Point':
-      final pos = _requirePositionDouble(geometry['coordinates']);
+      final pos = requirePositionDouble(geometry['coordinates']);
       final coordType = Coords.fromDimension(pos.length);
       builder.point(pos, type: coordType);
       break;
     case 'LineString':
       final array = geometry['coordinates'] as List<dynamic>;
-      final coordType = _resolveCoordType(array, positionLevel: 1);
+      final coordType = resolveCoordType(array, positionLevel: 1);
       // todo: validate line string (at least two points)
       builder.lineString(
-        _createFlatPositionArrayDouble(array, coordType),
+        createFlatPositionArrayDouble(array, coordType),
         type: coordType,
         bounds: _getBboxOpt(geometry),
       );
       break;
     case 'Polygon':
       final array = geometry['coordinates'] as List<dynamic>;
-      final coordType = _resolveCoordType(array, positionLevel: 2);
+      final coordType = resolveCoordType(array, positionLevel: 2);
       // todo: validate polygon (at least one ring)
       builder.polygon(
-        _createFlatPositionArrayArrayDouble(array, coordType),
+        createFlatPositionArrayArrayDouble(array, coordType),
         type: coordType,
         bounds: _getBboxOpt(geometry),
       );
       break;
     case 'MultiPoint':
-      final array = _requirePositionArrayDouble(geometry['coordinates']);
-      final coordType = _resolveCoordType(array, positionLevel: 1);
+      final array = requirePositionArrayDouble(geometry['coordinates']);
+      final coordType = resolveCoordType(array, positionLevel: 1);
       builder.multiPoint(
         array,
         type: coordType,
@@ -133,18 +133,18 @@ void _decodeGeometry(
       break;
     case 'MultiLineString':
       final array = geometry['coordinates'] as List<dynamic>;
-      final coordType = _resolveCoordType(array, positionLevel: 2);
+      final coordType = resolveCoordType(array, positionLevel: 2);
       builder.multiLineString(
-        _createFlatPositionArrayArrayDouble(array, coordType),
+        createFlatPositionArrayArrayDouble(array, coordType),
         type: coordType,
         bounds: _getBboxOpt(geometry),
       );
       break;
     case 'MultiPolygon':
       final array = geometry['coordinates'] as List<dynamic>;
-      final coordType = _resolveCoordType(array, positionLevel: 3);
+      final coordType = resolveCoordType(array, positionLevel: 3);
       builder.multiPolygon(
-        _createFlatPositionArrayArrayArrayDouble(array, coordType),
+        createFlatPositionArrayArrayArrayDouble(array, coordType),
         type: coordType,
         bounds: _getBboxOpt(geometry),
       );
@@ -247,94 +247,3 @@ Object? _optStringOrNumber(dynamic data) {
   }
   throw _notValidGeoJsonData;
 }
-
-List<double> _requirePositionDouble(dynamic data) =>
-    // cast to List<num> and map it to List<double>
-    (data as List<dynamic>)
-        .cast<num>()
-        .map<double>((e) => e.toDouble())
-        .toList(growable: false);
-
-List<List<double>> _requirePositionArrayDouble(dynamic data) =>
-    (data as List<dynamic>)
-        .map<List<double>>(_requirePositionDouble)
-        .toList(growable: false);
-
-Coords _resolveCoordType(List<dynamic> array, {required int positionLevel}) {
-  if (positionLevel == 0) {
-    return Coords.fromDimension(array.length);
-  } else {
-    var arr = array;
-    var index = 0;
-    while (index < positionLevel && array.isNotEmpty) {
-      arr = arr.first as List<dynamic>;
-      index++;
-      if (index == positionLevel) {
-        return Coords.fromDimension(arr.length);
-      }
-    }
-  }
-  return Coords.xy;
-}
-
-List<double> _createFlatPositionArrayDouble(
-  List<dynamic> source,
-  Coords coordType,
-) {
-  if (source.isEmpty) {
-    return List<double>.empty();
-  }
-
-  final dim = coordType.coordinateDimension;
-  final positionCount = source.length;
-  final valueCount = dim * positionCount;
-
-  final array = List<double>.filled(valueCount, 0.0);
-  for (var i = 0; i < positionCount; i++) {
-    final pos = source[i] as List<dynamic>;
-    if (pos.length < 2) {
-      throw _notValidGeoJsonData;
-    }
-    final offset = i * dim;
-    array[offset] = (pos[0] as num).toDouble();
-    array[offset + 1] = (pos[1] as num).toDouble();
-    if (dim >= 3 && pos.length >= 3) {
-      array[offset + 2] = (pos[2] as num).toDouble();
-    }
-    if (dim >= 4 && pos.length >= 4) {
-      array[offset + 3] = (pos[3] as num).toDouble();
-    }
-  }
-
-  return array;
-}
-
-List<List<double>> _createFlatPositionArrayArrayDouble(
-  List<dynamic> source,
-  Coords coordType,
-) =>
-    source.isEmpty
-        ? List<List<double>>.empty()
-        : source
-            .map<List<double>>(
-              (e) => _createFlatPositionArrayDouble(
-                e as List<dynamic>,
-                coordType,
-              ),
-            )
-            .toList(growable: false);
-
-List<List<List<double>>> _createFlatPositionArrayArrayArrayDouble(
-  List<dynamic> source,
-  Coords coordType,
-) =>
-    source.isEmpty
-        ? List<List<List<double>>>.empty()
-        : source
-            .map<List<List<double>>>(
-              (e) => _createFlatPositionArrayArrayDouble(
-                e as List<dynamic>,
-                coordType,
-              ),
-            )
-            .toList(growable: false);

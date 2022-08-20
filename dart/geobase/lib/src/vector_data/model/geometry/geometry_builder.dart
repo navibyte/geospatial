@@ -109,10 +109,11 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
 
   /// Parses a geometry of [R] from [text] conforming to [format].
   ///
-  /// When [format] is not given, then [GeoJSON] is used as a default.
+  /// When [format] is not given, then the geometry format of [GeoJSON] is used
+  /// as a default.
   static R parse<R extends Geometry>(
     String text, {
-    TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
+    TextReaderFormat<SimpleGeometryContent> format = GeoJSON.geometry,
   }) {
     R? result;
 
@@ -139,7 +140,8 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
   /// Parses a geometry collection with elements of [T] from [text] conforming
   /// to [format].
   ///
-  /// When [format] is not given, then [GeoJSON] is used as a default.
+  /// When [format] is not given, then the geometry format of [GeoJSON] is used
+  /// as a default.
   static GeometryCollection<T> parseCollection<T extends Geometry>(
     String text, {
     TextReaderFormat<GeometryContent> format = GeoJSON.geometry,

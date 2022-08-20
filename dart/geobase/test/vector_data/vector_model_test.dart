@@ -39,6 +39,66 @@ void main() {
     });
   });
 
+  /*
+  '{"type":"Polygon","coordinates":[[[10.1,10.1],[5.0,9.0],[12.0,4.0],[10.1,10.1]]]}',
+  '{"type":"Polygon","coordinates":[[[10.1,10.1],[5.0,9.0],[12.0,4.0],[10.1,10.1]],[[11.1,11.1],[6.0,9.9],[13.0,4.9],[11.1,11.1]]]}',
+  '{"type":"Polygon","coordinates":[[[10.1,10.1,10.1],[5.0,9.0,13.0],[12.0,4.0,2.0],[10.1,10.1,10.1]]]}',
+  '{"type":"Polygon","coordinates":[[[10.1,10.1,10.1,3.1],[5.0,9.0,13.0,3.2],[12.0,4.0,2.0,3.3],[10.1,10.1,10.1,3.4]]]}',
+  '{"type":"MultiPoint","coordinates":[]}',
+  '{"type":"MultiPoint","coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]}',
+  '{"type":"MultiPoint","coordinates":[[-1.1,-1.1,-1.1],[2.1,-2.5,2.3],[3.5,-3.49,11.3]]}',
+  '{"type":"MultiPoint","coordinates":[[-1.1,-1.1,-1.1,-1.1],[2.1,-2.5,2.3,0.1],[3.5,-3.49,11.3,0.23]]}',
+  '{"type":"MultiLineString","coordinates":[]}',
+  '{"type":"MultiLineString","coordinates":[[[10.1,10.1],[5.0,9.0],[12.0,4.0],[10.1,10.1]],[[11.1,11.1],[6.0,9.9],[13.0,4.9],[11.1,11.1]]]}',
+  '{"type":"MultiPolygon","coordinates":[]}',
+  '{"type":"MultiPolygon","coordinates":[[[[10.1,10.1],[5.0,9.0],[12.0,4.0],[10.1,10.1]],[[11.1,11.1],[6.0,9.9],[13.0,4.9],[11.1,11.1]]]]}',
+
+  */
+
+  group('Parsing geometries', () {
+    const pointCoords = '1.5,2.5';
+    const point = '{"type":"Point","coordinates":[$pointCoords]}';
+    const lineStringCoords = '[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]';
+    const lineString =
+        '{"type":"LineString","coordinates":[$lineStringCoords]}';
+    const polygonCoords =
+        '[[10.1,10.1],[5.0,9.0],[12.0,4.0],[10.1,10.1]],[[11.1,11.1],[6.0,9.9],[13.0,4.9],[11.1,11.1]]';
+    const polygon = '{"type":"Polygon","coordinates":[$polygonCoords]}';
+    const multiPointCoords =
+        '[-1.1,-1.1,-1.1,-1.1],[2.1,-2.5,2.3,0.1],[3.5,-3.49,11.3,0.23]';
+    const multiPoint =
+        '{"type":"MultiPoint","coordinates":[$multiPointCoords]}';
+    const multiLineStringCoords =
+        '[[10.1,10.1],[5.0,9.0],[12.0,4.0],[10.1,10.1]],[[11.1,11.1],[6.0,9.9],[13.0,4.9],[11.1,11.1]]';
+    const multiLineString =
+        '{"type":"MultiLineString","coordinates":[$multiLineStringCoords]}';
+    const multiPolygonCoords =
+        '[[[10.1,10.1],[5.0,9.0],[12.0,4.0],[10.1,10.1]],[[11.1,11.1],[6.0,9.9],[13.0,4.9],[11.1,11.1]]]';
+    const multiPolygon =
+        '{"type":"MultiPolygon","coordinates":[$multiPolygonCoords]}';
+
+    test('Simple geometries', () {
+      expect(Point.parse(point).toText(), point);
+      expect(Point.parseCoords(pointCoords).toText(), point);
+      expect(LineString.parse(lineString).toText(), lineString);
+      expect(LineString.parseCoords(lineStringCoords).toText(), lineString);
+      expect(Polygon.parse(polygon).toText(), polygon);
+      expect(Polygon.parseCoords(polygonCoords).toText(), polygon);
+      expect(MultiPoint.parse(multiPoint).toText(), multiPoint);
+      expect(MultiPoint.parseCoords(multiPointCoords).toText(), multiPoint);
+      expect(MultiLineString.parse(multiLineString).toText(), multiLineString);
+      expect(
+        MultiLineString.parseCoords(multiLineStringCoords).toText(),
+        multiLineString,
+      );
+      expect(MultiPolygon.parse(multiPolygon).toText(), multiPolygon);
+      expect(
+        MultiPolygon.parseCoords(multiPolygonCoords).toText(),
+        multiPolygon,
+      );
+    });
+  });
+
   group('Typed collections and features', () {
     const props = '"properties":{"foo":1,"bar":"baz"}';
     const point = '{"type":"Point","coordinates":[1.5,2.5]}';
@@ -58,7 +118,7 @@ void main() {
     const featCollPoints =
         '{"type":"FeatureCollection","features":[$pointFeat,$pointFeat]}';
 
-    test('Basic geometries', () {
+    test('Simple geometries', () {
       expect(Point.parse(point).toText(), point);
       expect(LineString.parse(lineString).toText(), lineString);
     });

@@ -4,10 +4,13 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'dart:convert';
+
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/coordinates/projection.dart';
 import '/src/utils/coord_arrays.dart';
+import '/src/utils/coord_arrays_from_json.dart';
 import '/src/vector/content.dart';
 import '/src/vector/encoding.dart';
 import '/src/vector/formats.dart';
@@ -66,12 +69,25 @@ class LineString extends SimpleGeometry {
 
   /// Parses a line string geometry from [text] conforming to [format].
   ///
-  /// When [format] is not given, then [GeoJSON] is used as a default.
+  /// When [format] is not given, then the geometry format of [GeoJSON] is used
+  /// as a default.
   factory LineString.parse(
     String text, {
-    TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
+    TextReaderFormat<SimpleGeometryContent> format = GeoJSON.geometry,
   }) =>
       GeometryBuilder.parse<LineString>(text, format: format);
+
+  /// Parses a line string geometry from [coordinates] conforming to
+  /// [DefaultFormat].
+  factory LineString.parseCoords(String coordinates) {
+    final array = json.decode('[$coordinates]') as List<dynamic>;
+    final coordType = resolveCoordType(array, positionLevel: 1);
+    // todo: validate line string (at least two points)
+    return LineString.build(
+      createFlatPositionArrayDouble(array, coordType),
+      type: coordType,
+    );
+  }
 
   @override
   Geom get geomType => Geom.lineString;

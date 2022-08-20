@@ -11,6 +11,7 @@ import 'dart:typed_data';
 import 'package:equatable/equatable.dart';
 
 import '/src/codes/coords.dart';
+import '/src/utils/coord_arrays_from_json.dart';
 import '/src/utils/format_geojson_wkt.dart';
 import '/src/utils/format_impl.dart';
 import '/src/vector/content.dart';

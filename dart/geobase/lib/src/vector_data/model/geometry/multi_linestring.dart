@@ -4,10 +4,13 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'dart:convert';
+
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/coordinates/projection.dart';
 import '/src/utils/coord_arrays.dart';
+import '/src/utils/coord_arrays_from_json.dart';
 import '/src/vector/content.dart';
 import '/src/vector/encoding.dart';
 import '/src/vector/formats.dart';
@@ -84,12 +87,24 @@ class MultiLineString extends SimpleGeometry {
 
   /// Parses a multi line string geometry from [text] conforming to [format].
   ///
-  /// When [format] is not given, then [GeoJSON] is used as a default.
+  /// When [format] is not given, then the geometry format of [GeoJSON] is used
+  /// as a default.
   factory MultiLineString.parse(
     String text, {
-    TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
+    TextReaderFormat<SimpleGeometryContent> format = GeoJSON.geometry,
   }) =>
       GeometryBuilder.parse<MultiLineString>(text, format: format);
+
+  /// Parses a multi line string geometry from [coordinates] conforming to
+  /// [DefaultFormat].
+  factory MultiLineString.parseCoords(String coordinates) {
+    final array = json.decode('[$coordinates]') as List<dynamic>;
+    final coordType = resolveCoordType(array, positionLevel: 2);
+    return MultiLineString.build(
+      createFlatPositionArrayArrayDouble(array, coordType),
+      type: coordType,
+    );
+  }
 
   @override
   Geom get geomType => Geom.multiLineString;

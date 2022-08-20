@@ -4,10 +4,13 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'dart:convert';
+
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/coordinates/projection.dart';
 import '/src/utils/coord_arrays.dart';
+import '/src/utils/coord_arrays_from_json.dart';
 import '/src/vector/content.dart';
 import '/src/vector/encoding.dart';
 import '/src/vector/formats.dart';
@@ -63,12 +66,20 @@ class Point implements SimpleGeometry {
 
   /// Parses a point geometry from [text] conforming to [format].
   ///
-  /// When [format] is not given, then [GeoJSON] is used as a default.
+  /// When [format] is not given, then the geometry format of [GeoJSON] is used
+  /// as a default.
   factory Point.parse(
     String text, {
-    TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
+    TextReaderFormat<SimpleGeometryContent> format = GeoJSON.geometry,
   }) =>
       GeometryBuilder.parse<Point>(text, format: format);
+
+  /// Parses a point geometry from [coordinates] conforming to [DefaultFormat].
+  factory Point.parseCoords(String coordinates) {
+    final pos = requirePositionDouble(json.decode('[$coordinates]'));
+    final coordType = Coords.fromDimension(pos.length);
+    return Point.build(pos, type: coordType);
+  }
 
   @override
   Geom get geomType => Geom.point;

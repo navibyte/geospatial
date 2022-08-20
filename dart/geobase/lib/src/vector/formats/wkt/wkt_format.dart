@@ -39,11 +39,11 @@ import '/src/vector/encoding.dart';
 /// are formatted as polygons. See also `wktLikeFormat` that formats them as a
 /// point series of two points (min, max).
 class WKT {
-  /// The WKT format text format for coordinate objects.
+  /// The WKT text writer format for coordinate objects.
   static const TextWriterFormat<CoordinateContent> coordinate =
       TextWriterFormatImpl(WktTextWriter.new);
 
-  /// The WKT format text format for geometry objects.
+  /// The WKT text writer format for geometry objects.
   static const TextWriterFormat<GeometryContent> geometry =
       TextWriterFormatImpl(WktTextWriter.new);
 }
