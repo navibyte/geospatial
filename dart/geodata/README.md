@@ -42,9 +42,9 @@ import `package:geodata/geodata.dart`
 ```
 
 There are also partial packages containing only a certain subset. See the
-[Packages](#Packages) section below.
+[Packages](#packages) section below.
 
-See also the [geobase](https://pub.dev/packages/geobase) package, used also by 
+See also the [geobase](https://pub.dev/packages/geobase) package, used by 
 `geodata`, that provides geospatial data structures (coordinates, geometries,
 features, metadata) and vector data format support (encoding and decoding) for
 [GeoJSON](https://geojson.org/).  

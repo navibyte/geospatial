@@ -50,7 +50,7 @@ Future<void> main(List<String> args) async {
       'Args: {service} {baseUrl} {collectionIds} '
       '[limit] [operation] [param] [value]',
     );
-    print('Allowed sources: oapif, geojson');
+    print('Allowed sources: ogcfeat, geojson');
     return;
   }
 
