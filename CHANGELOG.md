@@ -5,7 +5,7 @@
   * ✨ New: Data structures for simple geometries, features and feature collections.
   * ✨ New: Support for [Well-known binary](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary) (WKB). Text and binary data formats, encodings and content interfaces also redesigned.  
 * [geodata](https://pub.dev/packages/geodata/versions/0.10.0) (0.10.0), see [changelog](dart/geodata/CHANGELOG.md#0100) for details
-  ✨ New: Updated with latest [geobase](https://pub.dev/packages/geobase) version 0.3.0, and no longer with dependency on [geocore](https://pub.dev/packages/geocore).
+  * ✨ New: Updated with latest [geobase](https://pub.dev/packages/geobase) version 0.3.0, and no longer with dependency on [geocore](https://pub.dev/packages/geocore).
 * [geocore](https://pub.dev/packages/geocore/versions/0.10.0) (0.10.0), see [changelog](dart/geocore/CHANGELOG.md#0100) for details
 
 ## 2022-06-18

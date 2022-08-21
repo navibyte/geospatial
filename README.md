@@ -46,7 +46,7 @@ Key features of the [geodata](https://pub.dev/packages/geodata) package:
   * ✨ New: Data structures for simple geometries, features and feature collections.
   * ✨ New: Support for [Well-known binary](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary) (WKB). Text and binary data formats, encodings and content interfaces also redesigned.  
 * [geodata](https://pub.dev/packages/geodata/versions/0.10.0) (0.10.0), see [changelog](dart/geodata/CHANGELOG.md#0100) for details
-  ✨ New: Updated with latest [geobase](https://pub.dev/packages/geobase) version 0.3.0, and no longer with dependency on [geocore](https://pub.dev/packages/geocore).
+  * ✨ New: Updated with latest [geobase](https://pub.dev/packages/geobase) version 0.3.0, and no longer with dependency on [geocore](https://pub.dev/packages/geocore).
 * [geocore](https://pub.dev/packages/geocore/versions/0.10.0) (0.10.0), see [changelog](dart/geocore/CHANGELOG.md#0100) for details
 
 See also older news in the [changelog](CHANGELOG.md) of this repository.
@@ -62,7 +62,7 @@ contributions are welcome, of course!
 [geobase](https://pub.dev/packages/geobase) and 
 [geodata](https://pub.dev/packages/geodata) packages. 
 
-However after the `geocore` version 0.10.0 (published at 2022-08-21), no new
+⚠️ However after the `geocore` version 0.10.0 (published at 2022-08-21), no new
 features are currently planned on the
 [geocore](https://pub.dev/packages/geocore) package. Still this package too
 shall be maintained as a part of this repository.
