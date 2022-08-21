@@ -6,7 +6,7 @@
 
 **Geospatial** data structures, tools and utilities for 
 [Dart](https://dart.dev/) and [Flutter](https://flutter.dev/) - coordinates,
-geometries, feature objects, metadata, projections, tilings schemes, vector data
+geometries, feature objects, metadata, projections, tiling schemes, vector data
 models and formats, and gespatial Web APIs.
 
 [![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev/) [![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)](https://flutter.dev/)
@@ -55,7 +55,7 @@ See also older news in the [changelog](CHANGELOG.md) of this repository.
 
 ## :building_construction: Roadmap
 
-🧩 Please see [issues](https://github.com/navibyte/geospatial/issues).
+🧩 See [open issues](https://github.com/navibyte/geospatial/issues) for planned features, requests for change, and observed bugs.
 
 💡 Any comments, questions, suggestions of new features and other other
 contributions are welcome, of course!
