@@ -1,6 +1,7 @@
 ## 0.10.0
 
-Development version `0.10.0-dev.1`.
+> **Note**: After the `geocore` version 0.10.0 (published at 2022-08-21), no new
+> features are currently planned on this package. 
 
 ⚠️ Breaking changes:
 - Content interfaces, content encoders and text formats redesigned

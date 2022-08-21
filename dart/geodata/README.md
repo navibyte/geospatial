@@ -9,7 +9,7 @@ Geospatial feature service Web APIs with support for
 ## Features
 
 ✨ New: Updated with latest [geobase](https://pub.dev/packages/geobase) version
-0.3.0 based on [Dart](https://dart.dev/) SDK 2.17, and no long with dependency
+0.3.0 based on [Dart](https://dart.dev/) SDK 2.17, and no longer with dependency
 on [geocore](https://pub.dev/packages/geocore).
 
 Key features:
@@ -22,40 +22,37 @@ The client-side support for the
 [OGC API Features](https://ogcapi.ogc.org/features/) standard is not complete,
 however key functionality of `Part1` of the standard is supported.
 
-## Package
+## Usage
 
 The package requires at least [Dart](https://dart.dev/) SDK 2.17, and it
 supports all [Dart](https://dart.dev/) and [Flutter](https://flutter.dev/)
 platforms.
 
-To use, add the dependency in your `pubspec.yaml`:
+Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geodata: ^0.10.0-dev.0
+  geodata: ^0.10.0
 ```
 
-The package contains also following mini-libraries, that can be used to import
-only a certain subset instead of the whole **geodata** library:
+Import it:
 
-Library            | Exports also | Description 
------------------- | ----------- | -----------------------------------------------
-**common**         | | Common data structures and helpers (for links, metadata, paged responses).
-**core**           | | Metadata and data source abstractions of geospatial Web APIs (ie. features).
-**geojson_client** | common, core | A client-side data source to read GeoJSON data from web and file resources.
-**ogcapi_features_client** |  common, core | A client-side data source to read features from OGC API Features services.
+```dart
+import `package:geodata/geodata.dart`
+```
 
-All the mini-libraries have dependencies to the
-[equatable](https://pub.dev/packages/equatable), 
-[geobase](https://pub.dev/packages/geobase) packages. 
+There are also partial packages containing only a certain subset. See the
+[Packages](#Packages) section below.
 
-The **geojson_client** and **ogcapi_features_client** libraries depends also on
-the [http](https://pub.dev/packages/http) package.
+See also the [geobase](https://pub.dev/packages/geobase) package, used also by 
+`geodata`, that provides geospatial data structures (coordinates, geometries,
+features, metadata) and vector data format support (encoding and decoding) for
+[GeoJSON](https://geojson.org/).  
 
-## Usage
+## Example
 
 This sample shows to read GeoJSON features from a web resource using a HTTP 
-fetcher, and from a local file using a file fetcher.
+fetcher.
 
 Please see other [examples](example/geodata_example.dart) too.
 
@@ -104,6 +101,26 @@ Future<void> _readFeatures(BasicFeatureSource source) async {
   }
 }
 ```
+
+## Reference
+
+### Packages
+
+The **geodata** library contains also following partial packages, that can be
+used to import only a certain subset instead of the whole **geodata** package:
+
+Package            | Exports also | Description 
+------------------ | ----------- | -----------------------------------------------
+**common**         | | Common data structures and helpers (for links, metadata, paged responses).
+**core**           | | Metadata and data source abstractions of geospatial Web APIs (ie. features).
+**geojson_client** | common, core | A client-side data source to read GeoJSON data from web and file resources.
+**ogcapi_features_client** |  common, core | A client-side data source to read features from OGC API Features services.
+
+External packages `geodata` is depending on:
+* [equatable](https://pub.dev/packages/equatable) for equality and hash utils
+* [geobase](https://pub.dev/packages/geobase) for base geospatial data structures
+* [http](https://pub.dev/packages/http) for a http client
+* [meta](https://pub.dev/packages/meta) for annotations
 
 ## Authors
 

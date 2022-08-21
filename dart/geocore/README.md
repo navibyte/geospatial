@@ -18,40 +18,41 @@ Key features:
 * 🪧 [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) 
 (Well-known text representation of geometry) data parser 
 
-## Package
+## Usage
 
 The package requires at least [Dart](https://dart.dev/) SDK 2.17, and it
 supports all [Dart](https://dart.dev/) and [Flutter](https://flutter.dev/)
 platforms.
 
-To use, add the dependency in your `pubspec.yaml`:
+Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geocore: ^0.10.0-dev.1
+  geocore: ^0.10.0
 ```
 
-And then import it:
+Import it:
 
 ```dart
 import `package:geocore/geocore.dart`
 ```
 
-The package contains also following mini-libraries, that can be used to import
-only a certain subset instead of the whole **geocore** library:
+There are also partial packages containing only a certain subset. See the
+[Packages](#Packages) section below.
 
-Library         | Exports also | Description 
---------------- | ----------- | -----------------------------------------------
-**base**        | | Base classes for geospatial geometry objects.
-**coordinates** | base | Projected and geographic coordinates.
-**data**        | base, coordinates | Geospatial features and geometries (linestring, polygon, multi geometries).
+## Roadmap
 
-All the mini-libraries have dependencies to the 
-[equatable](https://pub.dev/packages/equatable) and
-[geobase](https://pub.dev/packages/geobase) packages.
+> **Note**: After the `geocore` version 0.10.0 (published at 2022-08-21), no new
+> features are currently planned on this package. 
 
-Please note that some of the most often used classes from 
-[geobase](https://pub.dev/packages/geobase) are also re-exported by `geocore`.
+New features shall be actively added and development continues on following
+packages:
+* [geobase](https://pub.dev/packages/geobase) : Geospatial data structures (coordinates, geometries, features, metadata), projections and tiling schemes. Vector data format support for [GeoJSON](https://geojson.org/), [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) and [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary).
+* [geodata](https://pub.dev/packages/geodata) : Geospatial feature service Web APIs with support for [GeoJSON](https://geojson.org/) and [OGC API Features](https://ogcapi.ogc.org/features/) clients.
+
+Also `geocore` package shall be maintained as a part of the
+[geospatial](https://github.com/navibyte/geospatial) repository. See also
+GitHub [issues](https://github.com/navibyte/geospatial/issues).
 
 ## Introduction
 
@@ -756,6 +757,27 @@ feature collection, and finally uses a writer to print it as GeoJSON text.
   //                     "coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]},
   //         "properties":{}}]}
 ```
+
+## Reference
+
+### Packages
+
+The **geocore** library contains also following partial packages, that can be
+used to import only a certain subset instead of the whole **geocore** package:
+
+Package            | Exports also | Description 
+------------------ | ----------- | -----------------------------------------------
+**base**        | | Base classes for geospatial geometry objects.
+**coordinates** | base | Projected and geographic coordinates.
+**data**        | base, coordinates | Geospatial features and geometries (linestring, polygon, multi geometries).
+
+Please note that some of the most often used classes from 
+[geobase](https://pub.dev/packages/geobase) are also re-exported by `geocore`.
+
+External packages `geocore` is depending on:
+* [equatable](https://pub.dev/packages/equatable) for equality and hash utils
+* [geobase](https://pub.dev/packages/geobase) for base geospatial data structures
+* [meta](https://pub.dev/packages/meta) for annotations
 
 ## Authors
 

@@ -30,7 +30,6 @@ binary data formats, encodings and content interfaces also redesigned.
 - [Decode GeoJSON and build data structures using new data structures by geobase #140](https://github.com/navibyte/geospatial/issues/140)
 - [Handle explicit and implicit bounds in geometries and features on geobase](https://github.com/navibyte/geospatial/issues/141)
 - [Handle projections and transforms of geometries and features on geobase #142](https://github.com/navibyte/geospatial/issues/142)
-- [Documentation about content builders, geometries and features on geobase #145](https://github.com/navibyte/geospatial/issues/145)
 
 🛠 Refactoring:
 - [Optimize reading from iterable of coordinate values #131](https://github.com/navibyte/geospatial/issues/131)
@@ -40,6 +39,9 @@ binary data formats, encodings and content interfaces also redesigned.
 🛠 Maintenance:
 - [Lint rules without old strong mode, but with new "stricter type checks" #148](https://github.com/navibyte/geospatial/issues/148)
 - [Mark internal classes with @internal #149](https://github.com/navibyte/geospatial/issues/149)
+
+📚 Documentation
+- [Documentation about content builders, geometries and features on geobase #145](https://github.com/navibyte/geospatial/issues/145)
 
 ## 0.2.1
 

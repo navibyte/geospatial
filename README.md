@@ -16,35 +16,21 @@
 
 Code           | Package | Description 
 -------------- | --------| -----------
-:triangular_ruler: [geobase](dart/geobase) | [![pub package](https://img.shields.io/pub/v/geobase.svg)](https://pub.dev/packages/geobase) | Geospatial coordinates, projections, tiling schemes, and data writers for [GeoJSON](https://geojson.org/) and [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry).
-:globe_with_meridians: [geocore](dart/geocore) | [![pub package](https://img.shields.io/pub/v/geocore.svg)](https://pub.dev/packages/geocore) | Geospatial data (points, geometry, features, meta) structures, and parsers ([GeoJSON](https://geojson.org/), [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)).
-:earth_americas: [geodata](dart/geodata) | [![pub package](https://img.shields.io/pub/v/geodata.svg)](https://pub.dev/packages/geodata) | A geospatial API client to read [GeoJSON](https://geojson.org/) and other geospatial data sources.  
+:globe_with_meridians: [geobase](dart/geobase) | [![pub package](https://img.shields.io/pub/v/geobase.svg)](https://pub.dev/packages/geobase) | Geospatial data structures (coordinates, geometries, features, metadata), projections and tiling schemes. Vector data format support for [GeoJSON](https://geojson.org/), [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) and [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary).
+:earth_americas: [geodata](dart/geodata) | [![pub package](https://img.shields.io/pub/v/geodata.svg)](https://pub.dev/packages/geodata) | Geospatial feature service Web APIs with support for [GeoJSON](https://geojson.org/) and [OGC API Features](https://ogcapi.ogc.org/features/) clients.
 
 ## :sparkles: Features
 
 Key features of the [geobase](https://pub.dev/packages/geobase) package:
 
-* 🌐 *geographic* positions and bounding boxes (longitude-latitude-elevation)
-* 🗺️ *projected* positions and bounding boxes (cartesian XYZ)
-* 🏗️ coordinate transformations and projections (initial support)
-* 🔢 tiling schemes and tile matrix sets (web mercator, global geodetic)
+* 🌐 geographic (longitude-latitude) and projected positions and bounding boxes
+* 🧩 simple geometries (point, line string, polygon, multi point, multi line string, multi polygon, geometry collection)
+* 🔷 features (with id, properties and geometry) and feature collections
 * 📅 temporal data structures (instant, interval) and spatial extents
-* 📃 geospatial data writers for features, geometries, coordinates, properties:
-  * 🌎 supported formats: [GeoJSON](https://geojson.org/) 
-* 📃 geospatial data writers for geometries and coordinates:
-  * 🪧 supported formats: [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)
-
-Key features of the [geocore](https://pub.dev/packages/geocore) package:
-
-* 🚀 geospatial data structures (geometry, features and metadata)
-* 🌐 *geographic* coordinates (longitude-latitude)
-* 🗺️ *projected* coordinates (cartesian XYZ)
-* 🔷 geometry primitives (bounds or bbox, point, line string, polygon)
-* 🧩 multi geometries (multi point, multi line string, multi polygon, geometry collections)
-* ⭐ feature objects (with id, properties and geometry) and feature collections
-* 🌎 [GeoJSON](https://geojson.org/) data parser
-* 🪧 [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) 
-(Well-known text representation of geometry) data parser 
+* 📃 vector data formats supported ([GeoJSON](https://geojson.org/), [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry), [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary)
+)
+* 🗺️ coordinate projections (web mercator + based on the external [proj4dart](https://pub.dev/packages/proj4dart) library)
+* 🔢 tiling schemes and tile matrix sets (web mercator, global geodetic)
 
 Key features of the [geodata](https://pub.dev/packages/geodata) package:
 
@@ -55,111 +41,31 @@ Key features of the [geodata](https://pub.dev/packages/geodata) package:
 
 ## :newspaper_roll: News
 
-2022-06-18
-* [geobase](https://pub.dev/packages/geobase/versions/0.2.0) (0.2.0), see [changelog](dart/geobase/CHANGELOG.md#020) for details
-  * ✨ New: Tiling schemes and tile matrix sets (web mercator, global geodetic). 
-Also other improvements on coordinates, and refactorings on the code structure.  
-* [geocore](https://pub.dev/packages/geocore/versions/0.9.0) (0.9.0), see [changelog](dart/geocore/CHANGELOG.md#090) for details
-* [geodata](https://pub.dev/packages/geodata/versions/0.9.0) (0.9.0), see [changelog](dart/geodata/CHANGELOG.md#090) for details
+2022-08-21
+* [geobase](https://pub.dev/packages/geobase/versions/0.3.0) (0.3.0), see [changelog](dart/geobase/CHANGELOG.md#030) for details
+  * ✨ New: Data structures for simple geometries, features and feature collections.
+  * ✨ New: Support for [Well-known binary](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary) (WKB). Text and binary data formats, encodings and content interfaces also redesigned.  
+* [geodata](https://pub.dev/packages/geodata/versions/0.10.0) (0.10.0), see [changelog](dart/geodata/CHANGELOG.md#0100) for details
+  ✨ New: Updated with latest [geobase](https://pub.dev/packages/geobase) version 0.3.0, and no longer with dependency on [geocore](https://pub.dev/packages/geocore).
+* [geocore](https://pub.dev/packages/geocore/versions/0.10.0) (0.10.0), see [changelog](dart/geocore/CHANGELOG.md#0100) for details
 
-2022-03-09
-* [geobase](https://pub.dev/packages/geobase/versions/0.1.0) (0.1.0), see [changelog](dart/geobase/CHANGELOG.md#010) for details
-* [geocore](https://pub.dev/packages/geocore/versions/0.8.0) (0.8.0), see [changelog](dart/geocore/CHANGELOG.md#080) for details
-* [geodata](https://pub.dev/packages/geodata/versions/0.8.0) (0.8.0), see [changelog](dart/geodata/CHANGELOG.md#080) for details
-
-2022-02-06
-* A new package `geobase` with code originating and generalized from `geocore`:
-   * The pre-release version `0.1.0-a.0` of the upcoming BETA-release 0.1.0
-   * [geobase](https://pub.dev/packages/geobase/versions/0.1.0-a.0)
-* Also the pre-release version `0.8.0-a.9` of the upcoming BETA-release 0.8.0 for:
-   * [geocore](https://pub.dev/packages/geocore/versions/0.8.0-a.9)
-   * [geodata](https://pub.dev/packages/geodata/versions/0.8.0-a.9)
-
-
-2022-01-09
-* The pre-release version `0.8.0-a.7` of the upcoming BETA-release 0.8.0
-   * [geocore](https://pub.dev/packages/geocore/versions/0.8.0-a.7)
-   * [geodata](https://pub.dev/packages/geodata/versions/0.8.0-a.7)
-
-2021-12-04
-* The first pre-release of the upcoming 0.8.0 version of [geocore](https://pub.dev/packages/geocore/versions/0.8.0-a.2)
-  * breaking changes with Feature classes, removed dependency to the [attributes](https://pub.dev/packages/attributes) package
-  * also the preview of coordinate transformation abstractions and other enhancements
-
-2021-10-31
-* BETA version 0.7.2 [geocore](https://pub.dev/packages/geocore): 
-  * Some text serialization enhancements on Point coordinate values: [#37](https://github.com/navibyte/geospatial/issues/37) and [#38](https://github.com/navibyte/geospatial/issues/38)
-* Changes on all packages:
-  * [Apply very_good_analysis 2.4.0+ lint rules #36](https://github.com/navibyte/geospatial/issues/36)
-
-2021-10-09
-* BETA version 0.7.1
-* Changes on [geocore](https://pub.dev/packages/geocore):
-  * [WKT parser - add support for parsing GEOMETRYCOLLECTION #24](https://github.com/navibyte/geospatial/issues/24)
-* Changes on all packages:
-  * [Apply very_good_analysis 2.3.0+ lint rules #33](https://github.com/navibyte/geospatial/issues/33)
-
-2021-08-10
-* BETA version 0.7.0
-* Mostly relatively small changes, but required (breaking) changes due
-  * updated dependency 0.7.1 on [attributes](https://pub.dev/packages/attributes)
-    * required changes visible in Feature class and GeoJSON factories
-* [Official Dart lint rules applied with recommend set](https://github.com/navibyte/geospatial/issues/32)
-
-2021-05-22
-* [geocore](dart/geocore) with new BETA version 0.6.2 (updated documentation)
-
-2021-05-16
-* [geocore](dart/geocore) with new BETA version 0.6.1
-  * initial support for [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) or WKT
-  * Also easier to use factories for points, line strings, polygons, etc.
-    * Make geometries from arrays of num values.
-    * Parse geometries from text with default implementation based on WKT.
-
-2021-04-25
-* BETA version 0.6.0
-* Some code packages were moved out from this repository to the new [dataflow](https://github.com/navibyte/dataflow) repository as they are not *geospatial* at all
-  * [attributes](https://pub.dev/packages/attributes)
-  * [datatools](https://pub.dev/packages/datatools)
-* [Lint rules and analysis options updated](https://github.com/navibyte/geospatial/issues/8)
-* Also `implicit-casts` and `implicit-dynamic` set to false requiring code changes
-
-2021-03-03
-* BETA version 0.5.0 with stable sound null-safety on all packages requiring the stable [Dart 2.12](https://medium.com/dartlang/announcing-dart-2-12-499a6e689c87)
-
-2021-02-28 
-* the first BETA version 0.5.0
-* preparing to stabilize null-safety features as described by the official blog:
-  * [Preparing the Dart and Flutter ecosystem for null safety](https://medium.com/dartlang/preparing-the-dart-and-flutter-ecosystem-for-null-safety-e550ce72c010)
-* [datatools](https://pub.dev/packages/datatools) totally refactored
-  * Fetch API abstraction (content, control data, exceptions, fetch interface).
-  * Fetch API binding to HTTP and HTTPS resources (using [http](https://pub.dev/packages/http)).
-  * Fetch API binding to file resources (based on `dart:io`).
-* [geodata](https://pub.dev/packages/geodata) also refactored, now with data source implementations:
-  * [GeoJSON](https://geojson.org/) features from Web APIs or files
-  * [OGC API Features](https://ogcapi.ogc.org/features/) based services
-* other cleanup on other packages too
-
-2021-01-10 
-* latest alpha version 0.4.1
-* Point classes in [geocore](dart/geocore) refactored to have `num` getters 
-
-2021-01-03 
-* alpha version 0.4.0
-* refactored some code to new packages:
-  * [attributes](https://pub.dev/packages/attributes)
-  * [datatools](https://pub.dev/packages/datatools)
-
-2020-11-29 
-* initial alpha version 0.1.0
-* designed to Dart [null-safety](https://dart.dev/null-safety) from start
-* the first version with following packages
-  * [geocore](https://pub.dev/packages/geocore)
-  * [geodata](https://pub.dev/packages/geodata)
+See also older news in the [changelog](CHANGELOG.md) of this repository.
 
 ## :building_construction: Roadmap
 
-See [issues](https://github.com/navibyte/geospatial/issues).
+Please see [issues](https://github.com/navibyte/geospatial/issues).
+
+💡 Any comments, questions, suggestions of new features and other other
+contributions are welcome, of course!
+
+🪄 New features shall be **actively added and development continues** on 
+[geobase](https://pub.dev/packages/geobase) and 
+[geodata](https://pub.dev/packages/geodata) packages. 
+
+However after the `geocore` version 0.10.0 (published at 2022-08-21), no new
+features are currently planned on the
+[geocore](https://pub.dev/packages/geocore) package. Still this package too
+shall be maintained as a part of this repository.
 
 ## :house_with_garden: Authors
 
@@ -181,8 +87,11 @@ Geospatial:
 * [GeoJSON](https://geojson.org/) based on [RFC 7946](https://tools.ietf.org/html/rfc7946)
 * [Simple Feature Access - Part 1: Common Architecture](https://www.ogc.org/standards/sfa)
 * [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) (Well-known text representation of geometry)  
+* [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary) (Well-known binary)
 * [Coordinate Reference Systems](https://www.w3.org/2015/spatial/wiki/Coordinate_Reference_Systems) by W3C
 * [EPSG](https://epsg.org/home.html) (Geodetic Parameter Dataset)
+* [World Geodetic System](https://en.wikipedia.org/wiki/World_Geodetic_System), see also [EPSG:4326](https://epsg.io/4326) about WGS 84
+* [Web Mercator projection](https://en.wikipedia.org/wiki/Web_Mercator_projection), see also [EPSG:3857](https://epsg.io/3857) and [Bing Maps Tile System](https://docs.microsoft.com/en-us/bingmaps/articles/bing-maps-tile-system)
 
 OGC (The Open Geospatial Consortium) related:
 * [OGC APIs](https://ogcapi.ogc.org/)
@@ -191,6 +100,7 @@ OGC (The Open Geospatial Consortium) related:
   * [OGC API Features - demo services](https://github.com/opengeospatial/ogcapi-features/blob/master/implementations.md)
 * [OGC Web API Guidelines](https://github.com/opengeospatial/OGC-Web-API-Guidelines)
 * [Simple Feature Access - Part 1: Common Architecture](https://www.ogc.org/standards/sfa)
+* [OGC Two Dimensional Tile Matrix Set](https://docs.opengeospatial.org/is/17-083r2/17-083r2.html)
 
 W3C
 * [Spatial Data on the Web Best Practices](https://www.w3.org/TR/sdw-bp/)
@@ -224,6 +134,9 @@ Guidelines
 
 Roadmaps
 * [Flutter roadmap](https://github.com/flutter/flutter/wiki/Roadmap)
+* Waiting for [new features](https://github.com/dart-lang/language/projects/1) on the Dart [language](https://github.com/dart-lang/language) too ...
+  * [Views on an object without a wrapper object #1474](https://github.com/dart-lang/language/issues/1474), see also [working spec](https://github.com/dart-lang/language/blob/master/working/1426-extension-types/feature-specification-views.md)
+  * [Static metaprogramming #1482](https://github.com/dart-lang/language/issues/1482) with data classes
 
 ### Dart and Flutter libraries
 

@@ -1,12 +1,10 @@
 ## 0.10.0
 
-Development version `0.10.0-dev.0`.
-
 ✨ New: Updated with latest [geobase](https://pub.dev/packages/geobase) version
-0.3.0 based on [Dart](https://dart.dev/) SDK 2.17, and no long with dependency
+0.3.0 based on [Dart](https://dart.dev/) SDK 2.17, and no longer with dependency
 on [geocore](https://pub.dev/packages/geocore).
 
-Note this is a breaking change.
+⚠️ Note this (using geobase instead of geocore) is a breaking change.
 
 🧩 Features:
 - [Decode GeoJSON and build data structures using new data structures by geobase #140](https://github.com/navibyte/geospatial/issues/140)
