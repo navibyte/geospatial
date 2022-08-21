@@ -5,7 +5,9 @@
 <a title="Stefan Kühn (Fotograf), CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Azimutalprojektion-schief_kl-cropped.png"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/projections/azimutal/Azimutalprojektion-schief_kl-cropped.png" align="right"></a>
 
 **Geospatial** data structures, tools and utilities for 
-[Dart](https://dart.dev/) and [Flutter](https://flutter.dev/).
+[Dart](https://dart.dev/) and [Flutter](https://flutter.dev/) - coordinates,
+geometries, feature objects, metadata, projections, tilings schemes, vector data
+models and formats, and gespatial Web APIs.
 
 [![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev/) [![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)](https://flutter.dev/)
 
@@ -53,7 +55,7 @@ See also older news in the [changelog](CHANGELOG.md) of this repository.
 
 ## :building_construction: Roadmap
 
-Please see [issues](https://github.com/navibyte/geospatial/issues).
+🧩 Please see [issues](https://github.com/navibyte/geospatial/issues).
 
 💡 Any comments, questions, suggestions of new features and other other
 contributions are welcome, of course!

@@ -87,7 +87,8 @@ Also other improvements on coordinates, and refactorings on the code structure.
 * [Lint rules and analysis options updated](https://github.com/navibyte/geospatial/issues/8)
 * Also `implicit-casts` and `implicit-dynamic` set to false requiring code changes
 
-2021-03-03
+## 2021-03-03
+
 * BETA version 0.5.0 with stable sound null-safety on all packages requiring the stable [Dart 2.12](https://medium.com/dartlang/announcing-dart-2-12-499a6e689c87)
 
 ## 2021-02-28 

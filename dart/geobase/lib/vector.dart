@@ -6,8 +6,6 @@
 
 /// Text and binary formats for vector data (features, geometries, coordinates).
 ///
-/// This libary exports a subset of `package:geobase/geobase.dart`.
-///
 /// Key features:
 /// * text format encoders for features, geometries, coordinates, properties:
 ///   * supported formats: [GeoJSON](https://geojson.org/)
@@ -15,7 +13,9 @@
 ///   * supported formats: [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)
 /// * binary format encoders and decoders for geometries:
 ///   * supported formats: [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary)
-//
+///
+/// This libary exports a subset of `package:geobase/geobase.dart`.
+///
 /// Usage: import `package:geobase/vector.dart`
 library vector;
 

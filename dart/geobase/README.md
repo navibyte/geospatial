@@ -402,13 +402,24 @@ This package supports encoding GeoJSON text from geometry and feature objects:
     bounds: [-1.1, -3.49, 3.5, -1.1],
   );
 
-  // ... and print it as GeoJSON text
+  // ... and print it as GeoJSON text:
+  //   { 
+  //     "type":"LineString",
+  //     "bbox":[-1.1,-3.49,3.5,-1.1],
+  //     "coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]
+  //   }
   print(lineString.toText(format: GeoJSON.geometry));
 
   // GeoJSON representation for other geometries, features and feature
   // collections can be produced with `toText` methdod also.
 
-  // in this sample a Feature is printed in GeoJSON (with 3 decimals on doubles)
+  // here a Feature is printed as GeoJSON text (with 3 decimals on doubles):
+  //   {
+  //     "type":"Feature",
+  //     "id":"TB",
+  //     "geometry":{"type":"Point","coordinates":[-0.075,51.505]},
+  //     "properties":{"title":"Tower Bridge","city":"London","built":1886}
+  //   }
   final feature = Feature(
     id: 'TB',
     geometry: Point(LonLat(-0.075406, 51.5055)),
@@ -488,10 +499,12 @@ supported by GeoJSON.
 A sample to encode a `Point` geometry to WKT (with z and m coordinates too):
 
 ```dart
-  // create a Point geometry, format it as WKT text that is printed
+  // create a Point geometry
   final point = Point.build([10.123, 20.25, -30.95, -1.999], type: Coords.xyzm);
-  final wkt = point.toText(format: WKT.geometry);
-  print(wkt);
+
+  // format it as WKT text that is printed:
+  //    POINT ZM(10.123 20.25 -30.95 -1.999)
+  print(point.toText(format: WKT.geometry));
 ```
 
 It's possible to encode geometry data as WKT text also without creating geometry 
@@ -570,7 +583,7 @@ following steps:
   print(wktEncoder.toText());
 ```
 
-The solution above can be simplied a lot by using geometry model objects:
+The solution above can be simplified a lot by using geometry model objects:
 
 ```dart
   // create a Point object
