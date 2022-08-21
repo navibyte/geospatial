@@ -46,7 +46,7 @@ import `package:geobase/geobase.dart`
 ```
 
 There are also partial packages containing only a certain subset. See the
-[Packages](#Packages) section below.
+[Packages](#packages) section below.
 
 See also the [geodata](https://pub.dev/packages/geodata) package that extends
 capabilities of `geobase` by providing geospatial API clients to read 

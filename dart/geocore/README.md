@@ -38,7 +38,7 @@ import `package:geocore/geocore.dart`
 ```
 
 There are also partial packages containing only a certain subset. See the
-[Packages](#Packages) section below.
+[Packages](#packages) section below.
 
 ## Roadmap
 
