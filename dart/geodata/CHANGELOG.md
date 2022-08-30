@@ -1,3 +1,7 @@
+## 0.10.1
+
+📚 Small documentation updates. Also a link to the [Geospatial demos for Dart](https://github.com/navibyte/geospatial_demos) repository.
+
 ## 0.10.0
 
 ✨ New: Updated with latest [geobase](https://pub.dev/packages/geobase) version

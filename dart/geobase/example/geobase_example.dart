@@ -328,7 +328,7 @@ void _geoJson() {
   );
 
   // ... and print it as GeoJSON text:
-  //   { 
+  //   {
   //     "type":"LineString",
   //     "bbox":[-1.1,-3.49,3.5,-1.1],
   //     "coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]

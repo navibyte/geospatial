@@ -36,10 +36,21 @@ Key features of the [geobase](https://pub.dev/packages/geobase) package:
 
 Key features of the [geodata](https://pub.dev/packages/geodata) package:
 
-* Client-side data source abstraction for geospatial feature service Web APIs
-* Implementations to read geospatial features
-  * [GeoJSON](https://geojson.org/) features from Web APIs or files
-  * [OGC API Features](https://ogcapi.ogc.org/features/) based services (partial support)
+* 🪄 Client-side data source abstraction for geospatial feature service Web APIs
+* 🌐 The [GeoJSON](https://geojson.org/) client to read features from static web resources and local files
+* 🌎 The [OGC API Features](https://ogcapi.ogc.org/features/) client to access metadata and feature items from a compliant geospatial Web API providing GeoJSON data
+
+## :rocket: Demos and samples
+
+✨ See also the
+[Geospatial demos for Dart](https://github.com/navibyte/geospatial_demos) code
+repository for demo and sample apps demonstrating the usage of
+[geobase](https://pub.dev/packages/geobase) and
+[geodata](https://pub.dev/packages/geodata) packages along with other topics.
+
+Code          | Description 
+------------- | -----------
+[earthquake_map](https://github.com/navibyte/geospatial_demos/tree/main/earthquake_map) | Shows earthquakes fetched from the [USGS web service](https://earthquake.usgs.gov/earthquakes/feed/) on a basic map view. The demo uses both [geobase](https://pub.dev/packages/geobase) and [geodata](https://pub.dev/packages/geodata) packages for geospatial data accesss. Discusses also state management based on [Riverpod](https://riverpod.dev/). The map UI is based on the [Google Maps Flutter](https://pub.dev/packages/google_maps_flutter) plugin.
 
 ## :newspaper_roll: News
 

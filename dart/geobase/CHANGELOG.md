@@ -1,3 +1,7 @@
+## 0.3.1
+
+📚 Small documentation updates. Also a link to the [Geospatial demos for Dart](https://github.com/navibyte/geospatial_demos) repository.
+
 ## 0.3.0
 
 ✨ New: Data structures for simple geometries, features and feature collections.

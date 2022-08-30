@@ -13,14 +13,14 @@ Geospatial feature service Web APIs with support for
 on [geocore](https://pub.dev/packages/geocore).
 
 Key features:
-* Client-side data source abstraction for geospatial feature service Web APIs
-* Implementations to read geospatial features
-  * [GeoJSON](https://geojson.org/) features from Web APIs or files
-  * [OGC API Features](https://ogcapi.ogc.org/features/) based services (partial support)
+
+* 🪄 Client-side data source abstraction for geospatial feature service Web APIs
+* 🌐 The [GeoJSON](https://geojson.org/) client to read features from static web resources and local files
+* 🌎 The [OGC API Features](https://ogcapi.ogc.org/features/) client to access metadata and feature items from a compliant geospatial Web API providing GeoJSON data
 
 The client-side support for the
 [OGC API Features](https://ogcapi.ogc.org/features/) standard is not complete,
-however key functionality of `Part1` of the standard is supported.
+however key functionality of `Part1 : Core` of the standard is supported.
 
 ## Usage
 
@@ -44,17 +44,31 @@ import `package:geodata/geodata.dart`
 There are also partial packages containing only a certain subset. See the
 [Packages](#packages) section below.
 
-See also the [geobase](https://pub.dev/packages/geobase) package, used by 
-`geodata`, that provides geospatial data structures (coordinates, geometries,
-features, metadata) and vector data format support (encoding and decoding) for
-[GeoJSON](https://geojson.org/).  
+Other documentation:
 
-## Example
+> 📚 **Concepts**: If coordinates, geometries, features and feature collections
+> are unfamiliar concepts, you might want to read more about
+> [geometries](https://pub.dev/packages/geobase#geometries),
+> [geospatial features](https://pub.dev/packages/geobase#geospatial-features)
+> and [GeoJSON](https://pub.dev/packages/geobase#geojson) in the documentation
+> of the [geobase](https://pub.dev/packages/geobase) package.
+> 
+> 🚀 **Samples**: 
+> The [Geospatial demos for Dart](https://github.com/navibyte/geospatial_demos)
+> repository contains more sample code showing also how to use this package! But
+> read the documentation below first.
 
-This sample shows to read GeoJSON features from a web resource using a HTTP 
-fetcher.
+## GeoJSON client
 
-Please see other [examples](example/geodata_example.dart) too.
+The GeoJSON client allows fetching and reading geospatial feature collections
+with their geometry objects (ie. point, line string, polygon, multi point,
+multi line string, multi polygon and geometry collection) from following
+resource types:
+* a web resource (by URL) containing GeoJSON content - data is fetched using the HTTP client (as provided by the [http](https://pub.dev/packages/http) package)
+* custom resources, ie. a local file or an app bundled containing valid GeoJSON data
+
+The sample below shows to read GeoJSON features from a web resource using the
+HTTP client.
 
 ```dart
 import 'package:geodata/geojson_client.dart';
@@ -101,6 +115,85 @@ Future<void> _readFeatures(BasicFeatureSource source) async {
   }
 }
 ```
+
+## OGC API Features client
+
+The GeoJSON client discussed above allows reading data from a static web
+resource or a local file. However most often geospatial APIs contains huge
+datasets, and data items to be queried must be selected and filtered. 
+
+The [OGC API Features](https://ogcapi.ogc.org/features/) standard by the
+[Open Geospatial Consortium](https://www.ogc.org/) (or OGC) specifies this -
+how data is discovered and accessed, or as described by the standard itself:
+
+> OGC API Features provides API building blocks to create, modify and query 
+> features on the Web. OGC API Features is comprised of multiple parts, each of 
+> them is a separate standard. This part, the "Core" specifies the core 
+> capabilities and is restricted to fetching features where geometries are 
+> represented in the coordinate reference system WGS 84 with axis order
+> longitude/latitude. Additional capabilities that address more advanced needs
+> will be specified in additional parts. 
+
+A compliant (according to `Part 1: Core`) API service should provide at least
+following resources:
+
+Resource | Path | Description
+-------- | ---- | ----------- 
+Landing page | `/` | Metadata about the API.
+Conformance classes | `/conformance` | Conformance classes supported by the API.
+Feature collections | `/collections` | Metadata about all feature collections provided by the API.
+Feature collection | `/collections/{collectionId}` | Metadata about a single feature collection provided by the API.
+Features | `/collections/{collectionId}/items` | Feature items (with geometry and property data) in a specified feature collection provided by the API.
+Feature (by id) | `/collections/{collectionId}/items/{featureId}` | A single feature item (with geometry and property data) in a specified feature collection provided by the API.
+
+This package supports key features of the `Part1 : Core` specification of the
+[OGC API Features](https://ogcapi.ogc.org/features/) standard. 
+
+You can use `ogcApiFeaturesHttpClient` function to access a feature service
+instance by giving at least an endpoint URL for an API service you want to use.
+The class for service instances has following methods:
+
+```dart
+/// A feature service compliant with the OGC API Features standard.
+abstract class OGCFeatureService {
+  /// Get meta data (or "landing page" information) about this service.
+  Future<ResourceMeta> meta();
+
+  /// Conformance classes this service is conforming to.
+  Future<Iterable<String>> conformance();
+
+  /// Get metadata about feature collections provided by this service.
+  Future<Iterable<CollectionMeta>> collections();
+
+  /// Get a feature source for a feature collection identified by [id].
+  Future<OGCFeatureSource> collection(String id);
+}
+```
+
+Actual data, features with geometries and properties in a feature collection, is
+accessed by `collection` method. This returns a future for a feature source
+(`OGCFeatureSource`) that let's you access feature items by following methods:
+
+```dart
+  /// Fetches a single feature by id (set in [query]) from this source.
+  Future<OGCFeatureItem> item(ItemQuery query);
+
+  /// Fetches features matching [query] from this source.
+  ///
+  /// This call accesses only one set of feature items (number of returned items
+  /// can be limited).
+  Future<OGCFeatureItems> items(BoundedItemsQuery query);
+
+  /// Fetches features as paged sets matching [query] from this source.
+  ///
+  /// This call returns a first set of feature items (number of returned items
+  /// can be limited), with a link to an optional next set of feature items.
+  Future<Paged<OGCFeatureItems>> itemsPaged(BoundedItemsQuery query);
+```
+
+See [geodata_example.dart](example/geodata_example.dart) for a sample how to
+read metadata and feature items from an API service conforming to
+[OGC API Features](https://ogcapi.ogc.org/features/).
 
 ## Reference
 

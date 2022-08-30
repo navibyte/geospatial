@@ -11,6 +11,7 @@ and [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geomet
 ## Features
 
 ✨ New: Data structures for simple geometries, features and feature collections.
+
 ✨ New: Support for [Well-known binary](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary) (WKB). Text and
 binary data formats, encodings and content interfaces also redesigned.
 
@@ -48,10 +49,17 @@ import `package:geobase/geobase.dart`
 There are also partial packages containing only a certain subset. See the
 [Packages](#packages) section below.
 
-See also the [geodata](https://pub.dev/packages/geodata) package that extends
-capabilities of `geobase` by providing geospatial API clients to read 
-[GeoJSON](https://geojson.org/) data sources and 
-[OGC API Features](https://ogcapi.ogc.org/features/) web services.
+Other resources:
+
+> 📚 **Web APIs**: See also the [geodata](https://pub.dev/packages/geodata)
+> package that extends capabilities of `geobase` by providing geospatial API
+> clients to read [GeoJSON](https://geojson.org/) data sources and 
+> [OGC API Features](https://ogcapi.ogc.org/features/) web services.
+> 
+> 🚀 **Samples**: 
+> The [Geospatial demos for Dart](https://github.com/navibyte/geospatial_demos)
+> repository contains more sample code showing also how to use this package! But
+> read the documentation below first.
 
 ## Coordinates
 
