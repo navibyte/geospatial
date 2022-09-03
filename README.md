@@ -71,8 +71,6 @@ GeometryCollection | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons
 
 Geospatial feature and feature collections can be instantiated easily too:
 
-A `FeatureCollection` object with `Feature` objects:
-
 ```dart
   // A geospatial feature collection (with two features):
   FeatureCollection([
