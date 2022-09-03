@@ -1,5 +1,7 @@
 ## 0.3.2
 
+📚 Documentation updates.
+
 🛠 Refactoring:
 - [Expect XY data in geometry build methods by default #154](https://github.com/navibyte/geospatial/issues/154)
 
