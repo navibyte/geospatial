@@ -37,7 +37,7 @@ Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geobase: ^0.3.2
+  geobase: ^0.3.0
 ```
 
 Import it:
@@ -197,82 +197,9 @@ The `Position` interface is a super type for `Projected` and `Geographic`, and
 the `Box` interface is a super type for `ProjBox` and `GeoBox`. Please see more
 information about them in the API reference.
 
-## Coordinate arrays
-
-Position and bounding box classes introduced in the previous section are used
-when handling positions or bounding boxes (bounds) individually.
-
-However to handle coordinate data in geometry objects and geospatial data
-formats also, efficient array data structures for coordinate values (as 
-`double` numeric values) are needed:
-
-Class            | Description
----------------- | -------------------------------------------------------------
-`PositionArray`  | Coordinate values of 0 to N positions as a flat structure.
-`PositionCoords` | Coordinate values of a single position.
-`BoxCoords`      | Coordinate values of a single bounding box.
-
-All these classes implement `Iterable<double>` allowing instances of them to be
-used in places requiring the `Iterable<double>` type. At the same time, for
-example `PositionCoords` is also a valid `Position` and `BoxCoords` is a valid
-`Box`.
-
-There are also specialized sub classes of `PositionCoords` for projected 
-coordinates (enabling more compact code when creating instances):
-
-Class  | 2D/3D | Coords | Values   | x | y | z | m
------- | ----- | ------ | -------- | - | - | - | -
-`XY`   | 2D    | 2      | `double` | + | + |   |
-`XYZ`  | 3D    | 3      | `double` | + | + | + |
-`XYM`  | 2D    | 3      | `double` | + | + |   | +
-`XYZM` | 3D    | 4      | `double` | + | + | + | +
-
-And similar classes for geographic coordinates:
-
-Class         | 2D/3D | Coords | Values   | lon (x) | lat (y) | elev (z) | m
-------------- | ----- | ------ | -------- | ------- | ------- | -------- | -
-`LonLat`      | 2D    | 2      | `double` |    +    |    +    |          |
-`LonLatElev`  | 3D    | 3      | `double` |    +    |    +    |    +     |
-`LonLatM`     | 2D    | 3      | `double` |    +    |    +    |          | +
-`LonLatElevM` | 3D    | 4      | `double` |    +    |    +    |    +     | +
-
-As described above, `PositionArray` represents coordinate values of 0 to N
-positions as a flat structure. That is, there is no array of positions with 
-each having an array of coordinate values, but a single flat array of coordinate
-values (double). This is best illustrated by code samples below:
-
-```dart
-  // A position array with three positions each with x and y coordinates.
-  PositionArray.view(
-    [
-      10.0, 11.0, // (x, y) for position 0
-      20.0, 21.0, // (x, y) for position 1
-      30.0, 31.0, // (x, y) for position 2
-    ],
-    type: Coords.xy,
-  );
-
-  // A position array with three positions each with x, y and z coordinates.
-  PositionArray.view(
-    [
-      10.0, 11.0, 12.0, // (x, y, z) for position 0
-      20.0, 21.0, 22.0, // (x, y, z) for position 1
-      30.0, 31.0, 32.0, // (x, y, z) for position 2
-    ],
-    type: Coords.xyz,
-  );
-```
-
-The coordinate type (using a `Coords` enum value) must be defined when creating
-position arrays. Expected coordinate values (exactly in this order) for each
-type are described below:
-
-Type          | Projected values | Geographic values
-------------- | ---------------- | -----------------
-`Coords.xy`   | x, y             | lon, lat
-`Coords.xyz`  | x, y, z          | lon, lat, elev
-`Coords.xym`  | x, y, m          | lon, lat, m
-`Coords.xyzm` | x, y, z, m       | lon, lat, elev, m
+See also an appendix about [Coordinate array](#coordinate-arrays) for more
+advanced topic about handling coordinate value arrays for a single position,
+multiple positions and a single bounding box. 
 
 ## Geometries
 
@@ -330,6 +257,11 @@ LineString.build(
   type: Coords.xyzm,
 );
 ```
+
+In all geometry classes there are also some other ways to create objects:
+* default constructors: creates a geometry object using [coordinate arrays](#coordinate-arrays)
+* `parse`: parses a geometry object from text conforming to some text format like GeoJSON
+* `decode`: decodes a geometry object from bytes conforming to some binary format like WKB
 
 ## Geospatial features
 
@@ -935,6 +867,88 @@ longitudes and the eastern tile (x=1, y=0) for the positive longitudes.
   print(quad.pixelArcResolution(10)); // ~ 0.000686646 (° degrees)
   print(quad.scaleDenominator(10)); // ~ 272989.39
 ```
+
+## Appendices
+
+### Coordinate arrays
+
+Position and bounding box classes introduced in the [Coordinates](#coordinates)
+section are used when handling positions or bounding boxes (bounds)
+individually.
+
+However to handle coordinate data in geometry objects and geospatial data
+formats also, efficient array data structures for coordinate values (as 
+`double` numeric values) are needed. These structures are mostly used when
+building or writing coordinate data of geometry objects described in the
+[Geometries](#geometries) section.
+
+Class            | Description
+---------------- | -------------------------------------------------------------
+`PositionArray`  | Coordinate values of 0 to N positions as a flat structure.
+`PositionCoords` | Coordinate values of a single position.
+`BoxCoords`      | Coordinate values of a single bounding box.
+
+All these classes implement `Iterable<double>` allowing instances of them to be
+used in places requiring the `Iterable<double>` type. At the same time, for
+example `PositionCoords` is also a valid `Position` and `BoxCoords` is a valid
+`Box`.
+
+There are also specialized sub classes of `PositionCoords` for projected 
+coordinates (enabling more compact code when creating instances):
+
+Class  | 2D/3D | Coords | Values   | x | y | z | m
+------ | ----- | ------ | -------- | - | - | - | -
+`XY`   | 2D    | 2      | `double` | + | + |   |
+`XYZ`  | 3D    | 3      | `double` | + | + | + |
+`XYM`  | 2D    | 3      | `double` | + | + |   | +
+`XYZM` | 3D    | 4      | `double` | + | + | + | +
+
+And similar classes for geographic coordinates:
+
+Class         | 2D/3D | Coords | Values   | lon (x) | lat (y) | elev (z) | m
+------------- | ----- | ------ | -------- | ------- | ------- | -------- | -
+`LonLat`      | 2D    | 2      | `double` |    +    |    +    |          |
+`LonLatElev`  | 3D    | 3      | `double` |    +    |    +    |    +     |
+`LonLatM`     | 2D    | 3      | `double` |    +    |    +    |          | +
+`LonLatElevM` | 3D    | 4      | `double` |    +    |    +    |    +     | +
+
+As described above, `PositionArray` represents coordinate values of 0 to N
+positions as a flat structure. That is, there is no array of positions with 
+each having an array of coordinate values, but a single flat array of coordinate
+values (double). This is best illustrated by code samples below:
+
+```dart
+  // A position array with three positions each with x and y coordinates.
+  PositionArray.view(
+    [
+      10.0, 11.0, // (x, y) for position 0
+      20.0, 21.0, // (x, y) for position 1
+      30.0, 31.0, // (x, y) for position 2
+    ],
+    type: Coords.xy,
+  );
+
+  // A position array with three positions each with x, y and z coordinates.
+  PositionArray.view(
+    [
+      10.0, 11.0, 12.0, // (x, y, z) for position 0
+      20.0, 21.0, 22.0, // (x, y, z) for position 1
+      30.0, 31.0, 32.0, // (x, y, z) for position 2
+    ],
+    type: Coords.xyz,
+  );
+```
+
+The coordinate type (using a `Coords` enum value) must be defined when creating
+position arrays. Expected coordinate values (exactly in this order) for each
+type are described below:
+
+Type          | Projected values | Geographic values
+------------- | ---------------- | -----------------
+`Coords.xy`   | x, y             | lon, lat
+`Coords.xyz`  | x, y, z          | lon, lat, elev
+`Coords.xym`  | x, y, m          | lon, lat, m
+`Coords.xyzm` | x, y, z, m       | lon, lat, elev, m
 
 ## Reference
 
