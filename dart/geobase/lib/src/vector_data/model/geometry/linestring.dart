@@ -36,7 +36,8 @@ class LineString extends SimpleGeometry {
 
   /// Builds a line string geometry from a [chain] of positions.
   ///
-  /// Use the required [type] to explicitely specify the type of coordinates.
+  /// Use [type] to specify the type of coordinates, by default `Coords.xy` is
+  /// expected.
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry.
   ///
@@ -60,7 +61,7 @@ class LineString extends SimpleGeometry {
   /// ```
   factory LineString.build(
     Iterable<double> chain, {
-    required Coords type,
+    Coords type = Coords.xy,
     Iterable<double>? bounds,
   }) =>
       LineString(

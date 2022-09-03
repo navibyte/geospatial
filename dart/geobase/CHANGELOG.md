@@ -1,3 +1,8 @@
+## 0.3.2
+
+🛠 Refactoring:
+- [Expect XY data in geometry build methods by default #154](https://github.com/navibyte/geospatial/issues/154)
+
 ## 0.3.1
 
 📚 Small documentation updates. Also a link to the [Geospatial demos for Dart](https://github.com/navibyte/geospatial_demos) repository.

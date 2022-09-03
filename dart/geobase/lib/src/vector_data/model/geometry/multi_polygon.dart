@@ -45,7 +45,8 @@ class MultiPolygon extends SimpleGeometry {
   /// Builds a multi polygon from an array of [polygons] (each with an array of
   /// rings).
   ///
-  /// Use the required [type] to explicitely specify the type of coordinates.
+  /// Use [type] to specify the type of coordinates, by default `Coords.xy` is
+  /// expected.
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry.
   ///
@@ -92,7 +93,7 @@ class MultiPolygon extends SimpleGeometry {
   /// ```
   factory MultiPolygon.build(
     Iterable<Iterable<Iterable<double>>> polygons, {
-    required Coords type,
+    Coords type = Coords.xy,
     Iterable<double>? bounds,
   }) =>
       MultiPolygon._(

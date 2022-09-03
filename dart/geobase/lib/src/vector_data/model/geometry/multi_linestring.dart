@@ -43,7 +43,8 @@ class MultiLineString extends SimpleGeometry {
   /// Builds a multi line string from an array of [lineStrings] (each with a
   /// chain of positions).
   ///
-  /// Use the required [type] to explicitely specify the type of coordinates.
+  /// Use [type] to specify the type of coordinates, by default `Coords.xy` is
+  /// expected.
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry.
   ///
@@ -77,7 +78,7 @@ class MultiLineString extends SimpleGeometry {
   /// ```
   factory MultiLineString.build(
     Iterable<Iterable<double>> lineStrings, {
-    required Coords type,
+    Coords type = Coords.xy,
     Iterable<double>? bounds,
   }) =>
       MultiLineString._(

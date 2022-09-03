@@ -24,7 +24,7 @@ void main() {
   _coordinateArrays();
 
   // geometries
-  _geometryTypes();
+  _geometryTypes2D();
   _point();
   _lineString();
   _polygon();
@@ -144,21 +144,18 @@ void _coordinateArrays() {
   );
 }
 
-void _geometryTypes() {
+void _geometryTypes2D() {
   // point (with a position)
   Point(XY(30.0, 10.0));
   Point.build([30.0, 10.0]);
 
   // line string (with a chain)
-  LineString.build([30, 10, 10, 30, 40, 40], type: Coords.xy);
+  LineString.build([30, 10, 10, 30, 40, 40]);
 
   // polygon (with an exterior ring)
-  Polygon.build(
-    [
-      [30, 10, 40, 40, 20, 40, 10, 20, 30, 10],
-    ],
-    type: Coords.xy,
-  );
+  Polygon.build([
+    [30, 10, 40, 40, 20, 40, 10, 20, 30, 10],
+  ]);
 
   // polygon (with an exterior ring and one interior ring as a hole)
   Polygon.build(
@@ -166,7 +163,6 @@ void _geometryTypes() {
       [35, 10, 45, 45, 15, 40, 10, 20, 35, 10],
       [20, 30, 35, 35, 30, 20, 20, 30],
     ],
-    type: Coords.xy,
   );
 
   // multi point (with four points)
@@ -177,7 +173,6 @@ void _geometryTypes() {
       [20, 20],
       [30, 10],
     ],
-    type: Coords.xy,
   );
 
   // multi line string (with two line strings)
@@ -186,7 +181,6 @@ void _geometryTypes() {
       [10, 10, 20, 20, 10, 40],
       [40, 40, 30, 30, 40, 20, 30, 10],
     ],
-    type: Coords.xy,
   );
 
   // multi polygon (with two polygons)
@@ -199,7 +193,6 @@ void _geometryTypes() {
         [15, 5, 40, 10, 10, 20, 5, 10, 15, 5],
       ],
     ],
-    type: Coords.xy,
   );
 
   // multi polygon (with one polygon without a hole, and another with a hole)
@@ -213,19 +206,15 @@ void _geometryTypes() {
         [30, 20, 20, 15, 20, 25, 30, 20],
       ],
     ],
-    type: Coords.xy,
   );
 
   // geometry collection (with point, line string and polygon geometries)
   GeometryCollection([
     Point(XY(40, 10)),
-    LineString.build([10, 10, 20, 20, 10, 40], type: Coords.xy),
-    Polygon.build(
-      [
-        [40, 40, 20, 45, 45, 30, 40, 40],
-      ],
-      type: Coords.xy,
-    )
+    LineString.build([10, 10, 20, 20, 10, 40]),
+    Polygon.build([
+      [40, 40, 20, 45, 45, 30, 40, 40],
+    ])
   ]);
 }
 
@@ -238,28 +227,28 @@ void _geometryTypesOneliners() {
   Point.build([30.0, 10.0]);
 
   // line string (with a chain)
-  LineString.build([30, 10, 10, 30, 40, 40], type: Coords.xy);
+  LineString.build([30, 10, 10, 30, 40, 40]);
 
   // polygon (with an exterior ring)
-  Polygon.build([[30, 10, 40, 40, 20, 40, 10, 20, 30, 10]], type: Coords.xy);
+  Polygon.build([[30, 10, 40, 40, 20, 40, 10, 20, 30, 10]]);
 
   // polygon (with an exterior ring and one interior ring as a hole)
-  Polygon.build([[35, 10, 45, 45, 15, 40, 10, 20, 35, 10], [20, 30, 35, 35, 30, 20, 20, 30]], type: Coords.xy);
+  Polygon.build([[35, 10, 45, 45, 15, 40, 10, 20, 35, 10], [20, 30, 35, 35, 30, 20, 20, 30]]);
 
   // multi point (with four points)
-  MultiPoint.build([[10, 40], [40, 30], [20, 20], [30, 10]], type: Coords.xy);
+  MultiPoint.build([[10, 40], [40, 30], [20, 20], [30, 10]]);
 
   // multi line string (with two line strings)
-  MultiLineString.build([[10, 10, 20, 20, 10, 40], [40, 40, 30, 30, 40, 20, 30, 10]], type: Coords.xy);
+  MultiLineString.build([[10, 10, 20, 20, 10, 40], [40, 40, 30, 30, 40, 20, 30, 10]]);
 
   // multi polygon (with two polygons)
-  MultiPolygon.build([[[30, 20, 45, 40, 10, 40, 30, 20]], [[15, 5, 40, 10, 10, 20, 5, 10, 15, 5]]], type: Coords.xy);
+  MultiPolygon.build([[[30, 20, 45, 40, 10, 40, 30, 20]], [[15, 5, 40, 10, 10, 20, 5, 10, 15, 5]]]);
 
   // multi polygon (with one polygon without a hole, and another with a hole)
-  MultiPolygon.build([[[40, 40, 20, 45, 45, 30, 40, 40]], [[20, 35, 10, 30, 10, 10, 30, 5, 45, 20, 20, 35], [30, 20, 20, 15, 20, 25, 30, 20]]], type: Coords.xy);
+  MultiPolygon.build([[[40, 40, 20, 45, 45, 30, 40, 40]], [[20, 35, 10, 30, 10, 10, 30, 5, 45, 20, 20, 35], [30, 20, 20, 15, 20, 25, 30, 20]]]);
 
   // geometry collection (with point, line string and polygon geometries)
-  GeometryCollection([Point(XY(40, 10)), LineString.build([10, 10, 20, 20, 10, 40], type: Coords.xy), Polygon.build([[40, 40, 20, 45, 45, 30, 40, 40]], type: Coords.xy)]);
+  GeometryCollection([Point(XY(40, 10)), LineString.build([10, 10, 20, 20, 10, 40], type: Coords.xy), Polygon.build([[40, 40, 20, 45, 45, 30, 40, 40]])]);
 }
 */
 

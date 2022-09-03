@@ -39,7 +39,8 @@ class MultiPoint extends SimpleGeometry {
   /// Builds a multi point geometry from an array of [points] (each with a
   /// position).
   ///
-  /// Use the required [type] to explicitely set the coordinate type.
+  /// Use [type] to specify the type of coordinates, by default `Coords.xy` is
+  /// expected.
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry.
   ///
@@ -60,7 +61,7 @@ class MultiPoint extends SimpleGeometry {
   /// ```
   factory MultiPoint.build(
     Iterable<Iterable<double>> points, {
-    required Coords type,
+    Coords type = Coords.xy,
     Iterable<double>? bounds,
   }) =>
       MultiPoint._(

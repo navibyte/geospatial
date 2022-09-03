@@ -48,7 +48,8 @@ class Polygon extends SimpleGeometry {
 
   /// Builds a polygon geometry from one exterior and 0 to N interior [rings].
   ///
-  /// Use the required [type] to explicitely specify the type of coordinates.
+  /// Use [type] to specify the type of coordinates, by default `Coords.xy` is
+  /// expected.
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry.
   ///
@@ -83,7 +84,7 @@ class Polygon extends SimpleGeometry {
   /// ```
   factory Polygon.build(
     Iterable<Iterable<double>> rings, {
-    required Coords type,
+    Coords type = Coords.xy,
     Iterable<double>? bounds,
   }) =>
       Polygon._(
