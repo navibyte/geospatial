@@ -145,13 +145,15 @@ abstract class PositionCoords extends Position with _CoordinatesMixin {
   ///
   /// If this position implements [Projected], then this may be returned.
   /// Otherwise a new instance with copied coordinate values is created.
-  Projected get asProjected => copyTo(Projected.create);
+  Projected get asProjected =>
+      this is Projected ? this as Projected : copyTo(Projected.create);
 
   /// Returns this position typed as a geographic position.
   ///
   /// If this position implements [Geographic], then this may be returned.
   /// Otherwise a new instance with copied coordinate values is created.
-  Geographic get asGeographic => copyTo(Geographic.create);
+  Geographic get asGeographic =>
+      this is Geographic ? this as Geographic : copyTo(Geographic.create);
 
   // ---------------------------------------------------------------------------
   // Iterable<double> documentation overrides
