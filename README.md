@@ -69,6 +69,33 @@ MultiPolygon | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/l
 MultiPolygon (with a hole) | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_MultiPolygon_with_hole.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_MultiPolygon_with_hole.svg"></a> | `MultiPolygon.build([[[40, 40, 20, 45, 45, 30, 40, 40]], [[20, 35, 10, 30, 10, 10, 30, 5, 45, 20, 20, 35], [30, 20, 20, 15, 20, 25, 30, 20]]])`
 GeometryCollection | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_GeometryCollection.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_GeometryCollection.svg"></a> | `GeometryCollection([Point.build([30.0, 10.0]), LineString.build([10, 10, 20, 20, 10, 40]), Polygon.build([[40, 40, 20, 45, 45, 30, 40, 40]])])`
 
+Geospatial feature and feature collections can be instantiated easily too:
+
+A `FeatureCollection` object with `Feature` objects:
+
+```dart
+  // A geospatial feature collection (with two features):
+  FeatureCollection([
+    Feature(
+      id: 'ROG',
+      geometry: Point(LonLatElev(-0.0014, 51.4778, 45.0)),
+      properties: {
+        'title': 'Royal Observatory',
+        'city': 'London',
+        'isMuseum': true,
+      },
+    ),
+    Feature(
+      id: 'TB',
+      geometry: Point(LonLat(-0.075406, 51.5055)),
+      properties: {
+        'title': 'Tower Bridge',
+        'built': 1886,
+      },
+    ),
+  ]);
+```
+
 ## :newspaper_roll: News
 
 2022-08-21
