@@ -276,18 +276,17 @@ void main() {
         <num>[2, 1, 2, -1.0, -1.0, 64.0, 128.0],
         <num>[2, 1, 2, 0.0, 0.0, 96.0, 160.0],
         <num>[2, 1, 2, 1.0, 1.0, 128.0, 192.0],
- 
+
         // zoom=4, tile(5,14) => top-left, center, bottom-right
         <num>[4, 5, 14, -1.0, -1.0, 80.0, 224.0],
         <num>[4, 5, 14, 0.0, 0.0, 88.0, 232.0],
-        <num>[4, 5, 14, 1.0, 1.0, 96.0, 240.0], 
+        <num>[4, 5, 14, 1.0, 1.0, 96.0, 240.0],
       ];
       for (final s in fromTile) {
         expect(
           webMercator.tileToWorld(
             Scalable2i(zoom: s[0].toInt(), x: s[1].toInt(), y: s[2].toInt()),
-            alignX: s[3].toDouble(),
-            alignY: s[4].toDouble(),
+            align: Aligned(x: s[3].toDouble(), y: s[4].toDouble()),
           ),
           Projected(x: s[5], y: s[6]),
         );

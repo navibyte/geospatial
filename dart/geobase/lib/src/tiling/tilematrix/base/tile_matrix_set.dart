@@ -311,29 +311,21 @@ abstract class TileMatrixSet {
   /// - tile y (int): `0 .. matrixHeight(zoom) - 1`
   Box tileToBounds(Scalable2i tile);
 
-  /// Transforms a position defined by [alignX] and [alignY] inside [tile] to
-  /// world coordinates.
+  /// Transforms a fractional position defined by [align] inside [tile] to world
+  /// coordinates.
   ///
-  /// With default aligment values the world coorinates at the center of a tile
-  /// are returned.
+  /// By default with `Aligned.center` the world coorinates at the center of a
+  /// tile are returned.
   ///
   /// Coordinate value ranges:
   /// - tile x (int): `0 .. matrixWidth(zoom) - 1`
   /// - tile y (int): `0 .. matrixHeight(zoom) - 1`
   /// - world x (double): `0.0 .. mapWidth(0)`
   /// - world y (double): `0.0 .. mapHeight(0)`
-  ///
-  /// Alignment:
-  /// - align x (double): `-1.0 (left), 0.0 (center), 1.0 (right)`
-  /// - align y (double): `-1.0 (top), 0.0 (center), 1.0 (bottom)`
-  Projected tileToWorld(
-    Scalable2i tile, {
-    double alignX = 0.0,
-    double alignY = 0.0,
-  }) {
+  Projected tileToWorld(Scalable2i tile, {Aligned align = Aligned.center}) {
     // floating point tile coordinates in a position defined by align x / y
-    final tx = tile.x + (1.0 + alignX) / 2.0;
-    final ty = tile.y + (1.0 + alignY) / 2.0;
+    final tx = tile.x + (1.0 + align.x) / 2.0;
+    final ty = tile.y + (1.0 + align.y) / 2.0;
 
     // world coordinates size: number of pixels for x and y at the zoom level 0
     final width = mapWidth(0);
