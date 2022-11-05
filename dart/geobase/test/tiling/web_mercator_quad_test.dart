@@ -264,23 +264,26 @@ void main() {
     });
 
     test('Test tile to world', () {
-      const fromTile = [
+      const nw = Aligned.northWest;
+      const c = Aligned.center;
+      const se = Aligned.southEast;
+      final fromTile = [
         // zoom, tile-x, tile-y, align-x, align-y, world-x, world-y
 
-        // zoom=0, tile(0,0) => top-left, center, bottom-right
-        <num>[0, 0, 0, -1.0, -1.0, 0.0, 0.0],
-        <num>[0, 0, 0, 0.0, 0.0, 128.0, 128.0],
-        <num>[0, 0, 0, 1.0, 1.0, 256.0, 256.0],
+        // zoom=0, tile(0,0) => north-west, center, south-east
+        <num>[0, 0, 0, nw.x, nw.y, 0.0, 0.0],
+        <num>[0, 0, 0, c.x, c.y, 128.0, 128.0],
+        <num>[0, 0, 0, se.x, se.y, 256.0, 256.0],
 
-        // zoom=2, tile(1,2) => top-left, center, bottom-right
-        <num>[2, 1, 2, -1.0, -1.0, 64.0, 128.0],
-        <num>[2, 1, 2, 0.0, 0.0, 96.0, 160.0],
-        <num>[2, 1, 2, 1.0, 1.0, 128.0, 192.0],
+        // zoom=2, tile(1,2) => north-west, center, south-east
+        <num>[2, 1, 2, nw.x, nw.y, 64.0, 128.0],
+        <num>[2, 1, 2, c.x, c.y, 96.0, 160.0],
+        <num>[2, 1, 2, se.x, se.y, 128.0, 192.0],
 
-        // zoom=4, tile(5,14) => top-left, center, bottom-right
-        <num>[4, 5, 14, -1.0, -1.0, 80.0, 224.0],
-        <num>[4, 5, 14, 0.0, 0.0, 88.0, 232.0],
-        <num>[4, 5, 14, 1.0, 1.0, 96.0, 240.0],
+        // zoom=4, tile(5,14) => north-west, center, south-east
+        <num>[4, 5, 14, nw.x, nw.y, 80.0, 224.0],
+        <num>[4, 5, 14, c.x, c.y, 88.0, 232.0],
+        <num>[4, 5, 14, se.x, se.y, 96.0, 240.0],
       ];
       for (final s in fromTile) {
         expect(

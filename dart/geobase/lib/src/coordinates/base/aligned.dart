@@ -6,65 +6,63 @@
 
 import 'package:meta/meta.dart';
 
-/// An aligned point within a rectangle or a box.
+/// An aligned point within a geospatial box or tile.
 ///
 /// Inspired by the
 /// [Alignment](https://api.flutter.dev/flutter/painting/Alignment-class.html)
-/// class defined by the Flutter SDK. The defintions of [x] and [y] are the
-/// same, but this class (`Aligned`) can be used on pure Dart apps too without
-/// the dependency on Flutter.
-/// 
+/// and `AlignmentDirectional` classes defined by the Flutter SDK.
+///
 /// This class is named `Aligned` to avoid name collisions with `Alignment` and
 /// `Align` classes defined by the Flutter SDK.
 @immutable
 class Aligned {
   /// The horizontal distance fraction.
   ///
-  /// The value `-1.0` represents the left edge of the rectangle.
+  /// The value `-1.0` represents the west side edge of the box.
   ///
   /// The value `0.0` represents the center horizontally.
   ///
-  /// The value `1.0` represents the right edge of the rectangle.
+  /// The value `1.0` represents the east side edge of the box.
   final double x;
 
   /// The vertical distance fraction.
   ///
-  /// The value `-1.0` represents the top edge of the rectangle.
+  /// The value `-1.0` represents the south side edge of the box.
   ///
   /// The value `0.0` represents the center vertically.
   ///
-  /// The value `1.0` represents the bottom edge of the rectangle.
+  /// The value `1.0` represents the north side edge of the box.
   final double y;
 
-  /// An aligned point within a rectangle or a box.
+  /// An aligned point within a geospatial box or tile.
   const Aligned({required this.x, required this.y});
 
-  /// The top left corner, with `x: -1.0, y: -1.0`.
-  static const topLeft = Aligned(x: -1.0, y: -1.0);
+  /// The south west corner, with `x: -1.0, y: -1.0`.
+  static const southWest = Aligned(x: -1.0, y: -1.0);
 
-  /// The center point along the top edge, with `x: 0.0, y: -1.0`.
-  static const topCenter = Aligned(x: 0.0, y: -1.0);
+  /// The center point along the south side edge, with `x: 0.0, y: -1.0`.
+  static const southCenter = Aligned(x: 0.0, y: -1.0);
 
-  /// The top right corner, with `x: 1.0, y: -1.0`.
-  static const topRight = Aligned(x: 1.0, y: -1.0);
+  /// The south east corner, with `x: 1.0, y: -1.0`.
+  static const southEast = Aligned(x: 1.0, y: -1.0);
 
-  /// The center point along the left edge, with `x: -1.0, y: 0.0`.
-  static const centerLeft = Aligned(x: -1.0, y: 0.0);
+  /// The center point along the west side edge, with `x: -1.0, y: 0.0`.
+  static const centerWest = Aligned(x: -1.0, y: 0.0);
 
   /// The center point, with `x: 0.0, y: 0.0`.
   static const center = Aligned(x: 0.0, y: 0.0);
 
-  /// The center point along the right edge, with `x: 1.0, y: 0.0`.
-  static const centerRight = Aligned(x: 1.0, y: 0.0);
+  /// The center point along the east side edge, with `x: 1.0, y: 0.0`.
+  static const centerEast = Aligned(x: 1.0, y: 0.0);
 
-  /// The bottom left corner, with `x: -1.0, y: 1.0`.
-  static const bottomLeft = Aligned(x: -1.0, y: 1.0);
+  /// The north west corner, with `x: -1.0, y: 1.0`.
+  static const northWest = Aligned(x: -1.0, y: 1.0);
 
-  /// The center point along the bottom edge, with `x: 0.0, y: 1.0`.
-  static const bottomCenter = Aligned(x: 0.0, y: 1.0);
+  /// The center point along the north side edge, with `x: 0.0, y: 1.0`.
+  static const northCenter = Aligned(x: 0.0, y: 1.0);
 
-  /// The bottom right corner, with `x: 1.0, y: 1.0`.
-  static const bottomRight = Aligned(x: 1.0, y: 1.0);
+  /// The north east corner, with `x: 1.0, y: 1.0`.
+  static const northEast = Aligned(x: 1.0, y: 1.0);
 
   @override
   String toString() {

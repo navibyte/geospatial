@@ -325,7 +325,15 @@ abstract class TileMatrixSet {
   Projected tileToWorld(Scalable2i tile, {Aligned align = Aligned.center}) {
     // floating point tile coordinates in a position defined by align x / y
     final tx = tile.x + (1.0 + align.x) / 2.0;
-    final ty = tile.y + (1.0 + align.y) / 2.0;
+    final double ty;
+    switch (origin) {
+      case CanvasOrigin.topLeft:
+        ty = tile.y - (align.y - 1.0) / 2.0;
+        break;
+      case CanvasOrigin.bottomLeft:
+        ty = tile.y + (1.0 + align.y) / 2.0;
+        break;
+    }
 
     // world coordinates size: number of pixels for x and y at the zoom level 0
     final width = mapWidth(0);
