@@ -311,6 +311,45 @@ abstract class TileMatrixSet {
   /// - tile y (int): `0 .. matrixHeight(zoom) - 1`
   Box tileToBounds(Scalable2i tile);
 
+  /// Transforms a position defined by [alignX] and [alignY] inside [tile] to
+  /// world coordinates.
+  ///
+  /// With default aligment values the world coorinates at the center of a tile
+  /// are returned.
+  ///
+  /// Coordinate value ranges:
+  /// - tile x (int): `0 .. matrixWidth(zoom) - 1`
+  /// - tile y (int): `0 .. matrixHeight(zoom) - 1`
+  /// - world x (double): `0.0 .. mapWidth(0)`
+  /// - world y (double): `0.0 .. mapHeight(0)`
+  ///
+  /// Alignment:
+  /// - align x (double): `-1.0 (left), 0.0 (center), 1.0 (right)`
+  /// - align y (double): `-1.0 (top), 0.0 (center), 1.0 (bottom)`
+  Projected tileToWorld(
+    Scalable2i tile, {
+    double alignX = 0.0,
+    double alignY = 0.0,
+  }) {
+    // floating point tile coordinates in a position defined by align x / y
+    final tx = tile.x + (1.0 + alignX) / 2.0;
+    final ty = tile.y + (1.0 + alignY) / 2.0;
+
+    // world coordinates size: number of pixels for x and y at the zoom level 0
+    final width = mapWidth(0);
+    final height = mapHeight(0);
+
+    // map to world coordinates (double values at zoom 0)
+    final x = tx / (1 << tile.zoom) * width;
+    final y = ty / (1 << tile.zoom) * height;
+
+    return Projected(
+      // x and y coordinates projected to world coordinates
+      x: x.clamp(0.0, width),
+      y: y.clamp(0.0, height),
+    );
+  }
+
   /// Returns a bounding box with min and max positions for the whole map.
   Box mapBounds();
 }

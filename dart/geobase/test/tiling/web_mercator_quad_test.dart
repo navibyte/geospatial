@@ -76,10 +76,6 @@ const _quadkeys = [
   [3, 5, 1, '103'],
 ];
 
-/*
-
-*/
-
 void main() {
   group('Test WebMercatorQuad', () {
     const webMercator = WebMercatorQuad.epsg3857();
@@ -264,6 +260,37 @@ void main() {
 
         final tileFromQuadkey = webMercator.quadKeyToTile(quadKey);
         expect(tile, tileFromQuadkey);
+      }
+    });
+
+    test('Test tile to world', () {
+      const fromTile = [
+        // zoom, tile-x, tile-y, align-x, align-y, world-x, world-y
+
+        // zoom=0, tile(0,0) => top-left, center, bottom-right
+        <num>[0, 0, 0, -1.0, -1.0, 0.0, 0.0],
+        <num>[0, 0, 0, 0.0, 0.0, 128.0, 128.0],
+        <num>[0, 0, 0, 1.0, 1.0, 256.0, 256.0],
+
+        // zoom=2, tile(1,2) => top-left, center, bottom-right
+        <num>[2, 1, 2, -1.0, -1.0, 64.0, 128.0],
+        <num>[2, 1, 2, 0.0, 0.0, 96.0, 160.0],
+        <num>[2, 1, 2, 1.0, 1.0, 128.0, 192.0],
+ 
+        // zoom=4, tile(5,14) => top-left, center, bottom-right
+        <num>[4, 5, 14, -1.0, -1.0, 80.0, 224.0],
+        <num>[4, 5, 14, 0.0, 0.0, 88.0, 232.0],
+        <num>[4, 5, 14, 1.0, 1.0, 96.0, 240.0], 
+      ];
+      for (final s in fromTile) {
+        expect(
+          webMercator.tileToWorld(
+            Scalable2i(zoom: s[0].toInt(), x: s[1].toInt(), y: s[2].toInt()),
+            alignX: s[3].toDouble(),
+            alignY: s[4].toDouble(),
+          ),
+          Projected(x: s[5], y: s[6]),
+        );
       }
     });
   });
