@@ -299,8 +299,8 @@ abstract class TileMatrixSet {
     // return result
     return Scalable2i(
       zoom: pixel.zoom,
-      x: tx,
-      y: ty,
+      x: tx.clamp(0, matrixWidth(pixel.zoom) - 1),
+      y: ty.clamp(0, matrixHeight(pixel.zoom) - 1),
     );
   }
 
@@ -311,7 +311,7 @@ abstract class TileMatrixSet {
   /// - tile y (int): `0 .. matrixHeight(zoom) - 1`
   Box tileToBounds(Scalable2i tile);
 
-  /// Transforms a fractional position defined by [align] inside [tile] to world
+  /// Transforms a fractional point defined by [align] inside [tile] to world
   /// coordinates.
   ///
   /// By default with `Aligned.center` the world coorinates at the center of a
@@ -348,6 +348,76 @@ abstract class TileMatrixSet {
       x: x.clamp(0.0, width),
       y: y.clamp(0.0, height),
     );
+  }
+
+  /// Transforms a fractional point defined by [align] inside [tile] to a
+  /// position.
+  ///
+  /// By default with `Aligned.center` the position at the center of a tile is
+  /// returned.
+  ///
+  /// Coordinate value ranges:
+  /// - tile x (int): `0 .. matrixWidth(zoom) - 1`
+  /// - tile y (int): `0 .. matrixHeight(zoom) - 1`
+  Position tileToPosition(Scalable2i tile, {Aligned align = Aligned.center});
+
+  /// Transforms a fractional point defined by [align] inside [tile] to pixel
+  /// coordinates.
+  ///
+  /// By default with `Aligned.center` the pixel at the center of a tile is
+  /// returned.
+  /// 
+  /// When [insideTile] is true, it's guaranteed that the target pixel is inside
+  /// the source tile.
+  ///
+  /// Coordinate value ranges:
+  /// - tile x (int): `0 .. matrixWidth(zoom) - 1`
+  /// - tile y (int): `0 .. matrixHeight(zoom) - 1`
+  /// - pixel x (int): `0 .. mapWidth(zoom) - 1`
+  /// - pixel y (int): `0 .. mapHeight(zoom) - 1`
+  Scalable2i tileToPixel(
+    Scalable2i tile, {
+    Aligned align = Aligned.center,
+    bool insideTile = false,
+  }) {
+    // optionally clamp align values to range [-1.0, 1.0]
+    final alignX = insideTile ? align.x.clamp(-1.0, 1.0) : align.x;
+    final alignY = insideTile ? align.y.clamp(-1.0, 1.0) : align.y;
+
+    // floating point tile coordinates in a position defined by align x / y
+    final tx = tile.x + (1.0 + alignX) / 2.0;
+    final double ty;
+    switch (origin) {
+      case CanvasOrigin.topLeft:
+        ty = tile.y - (alignY - 1.0) / 2.0;
+        break;
+      case CanvasOrigin.bottomLeft:
+        ty = tile.y + (1.0 + alignY) / 2.0;
+        break;
+    }
+
+    // from tile to pixel coordinates
+    final px = (tx * tileSize).floor();
+    final py = (ty * tileSize).floor();
+
+    if (insideTile) {
+      // ensure target pixel is inside source tile
+      final px0 = tile.x * tileSize;
+      final py0 = tile.y * tileSize;
+      return Scalable2i(
+        zoom: tile.zoom,
+        x: px.clamp(px0, px0 + tileSize - 1),
+        y: py.clamp(py0, py0 + tileSize - 1),
+      );
+    } else {
+      // target pixel with align value 1.0 or more could be inside "next" tiles
+      // (clamp returned pixels by map size)
+      return Scalable2i(
+        zoom: tile.zoom,
+        x: px.clamp(0, mapWidth(tile.zoom) - 1),
+        y: py.clamp(0, mapHeight(tile.zoom) - 1),
+      );
+    }
   }
 
   /// Returns a bounding box with min and max positions for the whole map.

@@ -5,6 +5,7 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import '/src/codes/canvas_origin.dart';
+import '/src/coordinates/base.dart';
 import '/src/coordinates/geographic.dart';
 import '/src/coordinates/projected.dart';
 import '/src/coordinates/scalable.dart';
@@ -134,6 +135,12 @@ abstract class GeoTileMatrixSet extends TileMatrixSet {
       east: converter.fromScaledX(pxWest + tileSize, width: width),
       north: converter.fromScaledY(pyNorth, height: height),
     );
+  }
+
+  @override
+  Geographic tileToPosition(Scalable2i tile, {Aligned align = Aligned.center}) {
+    final world = tileToWorld(tile, align: align);
+    return worldToPosition(world);
   }
 
   @override

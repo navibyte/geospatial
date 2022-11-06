@@ -209,13 +209,24 @@ void main() {
         // expected bounds
         final bounds =
             GeoBox(west: west, south: south, east: east, north: north);
-        //print(bounds);
+        final northWest = Geographic(lat: north, lon: west);
+        final southEast = Geographic(lat: south, lon: east);
 
         // calculate tile bounds (top-left tile matrix)
         final tile1 = Scalable2i(zoom: zoom, x: tileX, y: tileY);
         final tileBounds1 = webMercator.tileToBounds(tile1);
         //print(tileBounds1);
         expect(tileBounds1.equals2D(bounds, toleranceHoriz: 0.002), true);
+        expectPosition(
+          webMercator.tileToPosition(tile1, align: Aligned.northWest),
+          northWest,
+          0.002,
+        );
+        expectPosition(
+          webMercator.tileToPosition(tile1, align: Aligned.southEast),
+          southEast,
+          0.002,
+        );
 
         // calculate tile bounds (bottom-left tile matrix)
         final tile2 = Scalable2i(zoom: zoom, x: tileX, y: tmsY);
@@ -268,31 +279,68 @@ void main() {
       const c = Aligned.center;
       const se = Aligned.southEast;
       final fromTile = [
-        // zoom, tile-x, tile-y, align-x, align-y, world-x, world-y
+        // sample data fields:
+        // 0: zoom
+        // 1: tile-x
+        // 2: tile-y
+        // 3: align-x
+        // 4: align-y
+        // 5: world-x
+        // 6: world-y
+        // 7: pixel-x (clamped)
+        // 8: pixel-y (clamped)
+        // 9: pixel-x (not clamped)
+        // 10: pixel-y (not clamped)
 
         // zoom=0, tile(0,0) => north-west, center, south-east
-        <num>[0, 0, 0, nw.x, nw.y, 0.0, 0.0],
-        <num>[0, 0, 0, c.x, c.y, 128.0, 128.0],
-        <num>[0, 0, 0, se.x, se.y, 256.0, 256.0],
+        <num>[0, 0, 0, nw.x, nw.y, 0.0, 0.0, 0, 0, 0, 0],
+        <num>[0, 0, 0, c.x, c.y, 128.0, 128.0, 128, 128, 128, 128],
+        <num>[0, 0, 0, se.x, se.y, 256.0, 256.0, 255, 255, 255, 255],
 
         // zoom=2, tile(1,2) => north-west, center, south-east
-        <num>[2, 1, 2, nw.x, nw.y, 64.0, 128.0],
-        <num>[2, 1, 2, c.x, c.y, 96.0, 160.0],
-        <num>[2, 1, 2, se.x, se.y, 128.0, 192.0],
+        <num>[2, 1, 2, nw.x, nw.y, 64.0, 128.0, 256, 512, 256, 512],
+        <num>[2, 1, 2, c.x, c.y, 96.0, 160.0, 384, 640, 384, 640],
+        <num>[2, 1, 2, se.x, se.y, 128.0, 192.0, 511, 767, 512, 768],
 
         // zoom=4, tile(5,14) => north-west, center, south-east
-        <num>[4, 5, 14, nw.x, nw.y, 80.0, 224.0],
-        <num>[4, 5, 14, c.x, c.y, 88.0, 232.0],
-        <num>[4, 5, 14, se.x, se.y, 96.0, 240.0],
+        <num>[4, 5, 14, nw.x, nw.y, 80.0, 224.0, 1280, 3584, 1280, 3584],
+        <num>[4, 5, 14, c.x, c.y, 88.0, 232.0, 1408, 3712, 1408, 3712],
+        <num>[4, 5, 14, se.x, se.y, 96.0, 240.0, 1535, 3839, 1536, 3840],
       ];
       for (final s in fromTile) {
-        expect(
-          webMercator.tileToWorld(
-            Scalable2i(zoom: s[0].toInt(), x: s[1].toInt(), y: s[2].toInt()),
-            align: Aligned(x: s[3].toDouble(), y: s[4].toDouble()),
-          ),
-          Projected(x: s[5], y: s[6]),
-        );
+        final zoom = s[0].toInt();
+        final tileX = s[1].toInt();
+        final tileY = s[2].toInt();
+        final tile = Scalable2i(zoom: zoom, x: tileX, y: tileY);
+        final pixelClamped =
+            Scalable2i(zoom: zoom, x: s[7].toInt(), y: s[8].toInt());
+        final pixelNotClamped =
+            Scalable2i(zoom: zoom, x: s[9].toInt(), y: s[10].toInt());
+        final world = Projected(x: s[5], y: s[6]);
+        final alignX = s[3].toDouble();
+        final alignY = s[4].toDouble();
+        final align = Aligned(x: alignX, y: alignY);
+        expect(webMercator.tileToWorld(tile, align: align), world);
+        final toPixelClamped =
+            webMercator.tileToPixel(tile, align: align, insideTile: true);
+        expect(toPixelClamped, pixelClamped);
+        expect(webMercator.pixelToTile(toPixelClamped), tile);
+        final toPixelNotClamped =
+            webMercator.tileToPixel(tile, align: align, insideTile: false);
+        expect(toPixelNotClamped, pixelNotClamped);
+        if (align != se) {
+          expect(webMercator.pixelToTile(toPixelNotClamped), tile);
+        } else {
+          //print('$zoom $alignX $alignY');
+          expect(
+            webMercator.pixelToTile(toPixelNotClamped),
+            Scalable2i(
+              zoom: zoom,
+              x: (tileX + 1).clamp(0, (1 << zoom) - 1),
+              y: (tileY + 1).clamp(0, (1 << zoom) - 1),
+            ),
+          );
+        }
       }
     });
   });
