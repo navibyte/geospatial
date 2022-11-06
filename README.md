@@ -97,7 +97,7 @@ Geospatial feature and feature collections can be instantiated easily too:
 ## :newspaper_roll: News
 
 Currently under development:
-* [geobase version 0.4.0](https://github.com/navibyte/geospatial/issues/161), started 2022-10-06
+* [geobase version 0.4.0](https://github.com/navibyte/geospatial/issues/161), started 2022-11-06
 
 2022-08-21
 * [geobase](https://pub.dev/packages/geobase/versions/0.3.0) (0.3.0), see [changelog](dart/geobase/CHANGELOG.md#030) for details
