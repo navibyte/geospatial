@@ -366,7 +366,7 @@ abstract class TileMatrixSet {
   ///
   /// By default with `Aligned.center` the pixel at the center of a tile is
   /// returned.
-  /// 
+  ///
   /// When [insideTile] is true, it's guaranteed that the target pixel is inside
   /// the source tile.
   ///
