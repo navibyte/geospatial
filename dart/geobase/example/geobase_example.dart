@@ -602,6 +602,18 @@ void _webMercatorQuad() {
   // world coordinates returns geographic positions still accurately
   print(quad.worldToPosition(world)); // longitude: -0.00140 latitude: 51.47780
 
+  // aligned points (world, pixel and position coordinates) inside tile or edges
+  print(quad.tileToWorld(tile, align: Aligned.northWest));
+  print(quad.tileToPixel(tile, align: Aligned.center));
+  print(quad.tileToPosition(tile, align: Aligned.center));
+  print(quad.tileToPosition(tile, align: Aligned.southEast));
+
+  // get zoomed tile at the center of a source tile
+  final centerOfTile2 = quad.tileToWorld(tile, align: Aligned.center);
+  final tile7 = quad.worldToTile(centerOfTile2, zoom: 7);
+  print('tile at zoom 2: $tile => center of tile: $centerOfTile2 '
+      '=> tile at zoom 7: $tile7');
+
   // a quad key is a string identifier for tiles
   print(quad.tileToQuadKey(tile)); // "03"
   print(quad.quadKeyToTile('03')); // zoom=2 x=1 y=1
