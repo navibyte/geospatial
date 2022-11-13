@@ -7,6 +7,7 @@
 // ignore_for_file: prefer_const_declarations
 
 import 'package:geobase/coordinates.dart';
+import 'package:geobase/vector.dart';
 
 import 'package:meta/meta.dart';
 
@@ -318,6 +319,46 @@ void main() {
       );
     });
   });
+
+  group('Position values printed as String', () {
+    const p3dec = Projected(x: 10.1, y: 20.217, z: 30.73942);
+    const p3 = Projected(x: 10.001, y: 20.000, z: 30);
+    const p3i = Projected(x: 10, y: 20, z: 30);
+
+    test('toText with default delimiter', () {
+      expect(p3dec.toText(), '10.1,20.217,30.73942');
+      expect(p3dec.toText(decimals: 0), '10,20,31');
+      expect(p3dec.toText(decimals: 3), '10.100,20.217,30.739');
+      expect(p3.toText(decimals: 3), '10.001,20,30');
+      expect(p3.toText(decimals: 2), '10.00,20,30');
+      expect(p3i.toText(decimals: 2), '10,20,30');
+    });
+
+    test('toText with space delimiter', () {
+      expect(p3dec.toText(delimiter: ' '), '10.1 20.217 30.73942');
+      expect(p3dec.toText(decimals: 0, delimiter: ' '), '10 20 31');
+      expect(p3dec.toText(decimals: 3, delimiter: ' '), '10.100 20.217 30.739');
+      expect(p3.toText(decimals: 3, delimiter: ' '), '10.001 20 30');
+      expect(p3.toText(decimals: 2, delimiter: ' '), '10.00 20 30');
+      expect(p3i.toText(decimals: 2, delimiter: ' '), '10 20 30');
+    });
+
+    test('toText with space delimiter (cross test using WKT format)', () {
+      final format = WKT.coordinate;
+      var wkt = format.encoder()..writer.position(p3dec);
+      expect(wkt.toText(), '10.1 20.217 30.73942');
+      wkt = format.encoder(decimals: 0)..writer.position(p3dec);
+      expect(wkt.toText(), '10 20 31');
+      wkt = format.encoder(decimals: 3)..writer.position(p3dec);
+      expect(wkt.toText(), '10.100 20.217 30.739');
+      wkt = format.encoder(decimals: 3)..writer.position(p3);
+      expect(wkt.toText(), '10.001 20 30');
+      wkt = format.encoder(decimals: 2)..writer.position(p3);
+      expect(wkt.toText(), '10.00 20 30');
+      wkt = format.encoder(decimals: 2)..writer.position(p3i);
+      expect(wkt.toText(), '10 20 30');
+    });
+  });
 }
 
 void _testCoordinateOrder(String text, Iterable<num> coords, [Coords? type]) {
@@ -410,6 +451,16 @@ class _TestXYZM implements Projected {
         is3D: is3D,
         isMeasured: isMeasured,
       );
+
+  @override
+  String toText({
+    String delimiter = ',',
+    int? decimals,
+  }) {
+    final buf = StringBuffer();
+    Position.writeValues(this, buf, delimiter: delimiter, decimals: decimals);
+    return buf.toString();
+  }
 
   @override
   String toString() => '$x,$y,$z,$m';

@@ -225,6 +225,16 @@ class Scalable2i implements Scalable, Projected {
       );
 
   @override
+  String toText({
+    String delimiter = ',',
+    int? decimals,
+  }) {
+    final buf = StringBuffer();
+    Position.writeValues(this, buf, delimiter: delimiter, decimals: decimals);
+    return buf.toString();
+  }
+
+  @override
   String toString() {
     return '$zoom,$x,$y';
   }

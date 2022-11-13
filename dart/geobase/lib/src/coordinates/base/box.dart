@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+// ignore_for_file: avoid_multiple_declarations_per_line
+
 import 'dart:math' as math;
 
 import '/src/codes/coords.dart';
@@ -210,6 +212,18 @@ abstract class Box extends Positionable {
   /// elev) is further compared when both has z coordinates, and m is compared
   /// when both has m coordinates.
   bool intersectsPoint(Position point) => Box.testIntersectsPoint(this, point);
+
+  /// Returns coordinate values as a string separated by [delimiter].
+  ///
+  /// Use [decimals] to set a number of decimals (not applied if no decimals).
+  ///
+  /// A sample with default parameters (for a 2D bounding box):
+  /// `10.1,10.1,20.2,20.2`
+  String toText({String delimiter = ',', int? decimals}) {
+    final buf = StringBuffer();
+    Box.writeValues(this, buf, delimiter: delimiter, decimals: decimals);
+    return buf.toString();
+  }
 
   @override
   String toString() {
@@ -584,6 +598,33 @@ abstract class Box extends Positionable {
       list[i++] = maxM.toDouble();
     }
     return list;
+  }
+
+  /// Writes coordinate values of [box] to [buffer] separated by [delimiter].
+  ///
+  /// Use [decimals] to set a number of decimals (not applied if no decimals).
+  ///
+  /// A sample with default parameters (for a 2D bounding box):
+  /// `10.1,10.1,20.2,20.2`
+  static void writeValues(
+    Box box,
+    StringSink buffer, {
+    String delimiter = ',',
+    int? decimals,
+  }) {
+    Position.writeValues(
+      box.min,
+      buffer,
+      delimiter: delimiter,
+      decimals: decimals,
+    );
+    buffer.write(delimiter);
+    Position.writeValues(
+      box.max,
+      buffer,
+      delimiter: delimiter,
+      decimals: decimals,
+    );
   }
 
   /// True if [box1] and [box2] equals by testing all coordinate values.

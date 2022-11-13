@@ -211,6 +211,24 @@ abstract class Position extends Positionable {
         toleranceVert: toleranceVert,
       );
 
+  /// A string representation of coordinate values separated by [delimiter].
+  ///
+  /// Use [decimals] to set a number of decimals (not applied if no decimals).
+  ///
+  /// A sample with default parameters (for a 3D position):
+  /// `10.1,20.3,30.3`
+  ///
+  /// To get WKT compatible text, set `delimiter` to ` `:
+  /// `10.1 20.2 30.3`
+  String toText({
+    String delimiter = ',',
+    int? decimals,
+  }) {
+    final buf = StringBuffer();
+    Position.writeValues(this, buf, delimiter: delimiter, decimals: decimals);
+    return buf.toString();
+  }
+
   @override
   String toString() {
     final buf = StringBuffer()
@@ -466,6 +484,55 @@ abstract class Position extends Positionable {
       }
     }
     return list;
+  }
+
+  /// Writes coordinate values of [position] to [buffer] separated by
+  /// [delimiter].
+  ///
+  /// Use [decimals] to set a number of decimals (not applied if no decimals).
+  ///
+  /// A sample with default parameters (for a 3D point):
+  /// `10.1,20.3,30.3`
+  ///
+  /// To get WKT compatible text, set `delimiter` to ` `:
+  /// `10.1 20.2 30.3`
+  static void writeValues(
+    Position position,
+    StringSink buffer, {
+    String delimiter = ',',
+    int? decimals,
+  }) {
+    if (decimals != null) {
+      buffer
+        ..write(toStringAsFixedWhenDecimals(position.x, decimals))
+        ..write(delimiter)
+        ..write(toStringAsFixedWhenDecimals(position.y, decimals));
+      if (position.is3D) {
+        buffer
+          ..write(delimiter)
+          ..write(toStringAsFixedWhenDecimals(position.z, decimals));
+      }
+      if (position.isMeasured) {
+        buffer
+          ..write(delimiter)
+          ..write(toStringAsFixedWhenDecimals(position.m, decimals));
+      }
+    } else {
+      buffer
+        ..write(position.x)
+        ..write(delimiter)
+        ..write(position.y);
+      if (position.is3D) {
+        buffer
+          ..write(delimiter)
+          ..write(position.z);
+      }
+      if (position.isMeasured) {
+        buffer
+          ..write(delimiter)
+          ..write(position.m);
+      }
+    }
   }
 
   /// True if positions [p1] and [p2] equals by testing all coordinate values.

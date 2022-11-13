@@ -545,7 +545,8 @@ void _wgs84ToWebMercator() {
     to: Geographic.create,
   );
 
-  print('$unprojected <=> $projected');
+  print('${unprojected.toText(decimals: 5)}'
+      ' <=> ${projected.toText(decimals: 5)}');
 }
 
 /// "Web Mercator Quad" tile matrix set.
@@ -573,7 +574,9 @@ void _webMercatorQuad() {
   const position = Geographic(lon: -0.0014, lat: 51.4778);
 
   // get world, tile and pixel coordinates for a geographic position
-  print(quad.positionToWorld(position)); // ~ x=127.999004 y=85.160341
+  print(
+    quad.positionToWorld(position).toText(decimals: 6),
+  ); // ~ x=127.999004 y=85.160341
   print(quad.positionToTile(position, zoom: 2)); // zoom=2 x=1 y=1
   print(quad.positionToPixel(position, zoom: 2)); // zoom=2 x=511 y=340
   print(quad.positionToPixel(position, zoom: 4)); // zoom=4 x=2047 y=1362
@@ -664,7 +667,9 @@ void _globalGeodeticQuad() {
   const position = Geographic(lon: -0.0014, lat: 51.4778);
 
   // get world, tile and pixel coordinates for a geographic position
-  print(quad.positionToWorld(position)); // ~ x=255.998009 y=54.787129
+  print(
+    quad.positionToWorld(position).toText(decimals: 6),
+  ); // ~ x=255.998009 y=54.787129
   print(quad.positionToTile(position, zoom: 2)); // zoom=2 x=3 y=0
   print(quad.positionToPixel(position, zoom: 2)); // zoom=2 x=1023 y=219
   print(quad.positionToPixel(position, zoom: 4)); // zoom=4 x=4095 y=876
