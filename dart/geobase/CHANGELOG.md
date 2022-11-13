@@ -2,10 +2,11 @@
 
 [geobase version 0.4.0 #161](https://github.com/navibyte/geospatial/issues/161)
 
-Under development, current pre-release: 0.4.0-dev.0
+Under development, current pre-release: 0.4.0-dev.1
 
 🧩 Features:
 * [Add methods to calculate a pixel or a position from tile coordinates in tile matrix sets #158](https://github.com/navibyte/geospatial/issues/158)
+* [Add toText and writeValues on Position and Box #153](https://github.com/navibyte/geospatial/issues/153)
 
 ## 0.3.2
 

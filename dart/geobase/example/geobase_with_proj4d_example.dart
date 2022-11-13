@@ -38,9 +38,11 @@ void _proj4projections() {
 
   // Apply a forward projection to EPSG:23700.
   print(
-    adapter.forward.project(
-      const Geographic(lon: 17.8880, lat: 46.8922),
-      to: Projected.create,
-    ).toText(decimals: 5),
+    adapter.forward
+        .project(
+          const Geographic(lon: 17.8880, lat: 46.8922),
+          to: Projected.create,
+        )
+        .toText(decimals: 5),
   );
 }
