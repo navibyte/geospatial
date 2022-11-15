@@ -8,7 +8,7 @@ import 'package:geobase/coordinates.dart';
 import 'package:geobase/meta.dart';
 import 'package:geobase/vector.dart';
 import 'package:geobase/vector_data.dart';
-import 'package:http/http.dart' as _http;
+import 'package:http/http.dart';
 
 import '/src/common/links.dart';
 import '/src/common/paged.dart';
@@ -37,7 +37,7 @@ class OGCAPIFeatures {
   /// configuration) to the default one.
   static OGCFeatureService http({
     required Uri endpoint,
-    _http.Client? client,
+    Client? client,
     Map<String, String>? headers,
     TextReaderFormat<FeatureContent> format = GeoJSON.feature,
   }) =>
@@ -58,7 +58,7 @@ class OGCAPIFeatures {
 @Deprecated('Use GeoJSONFeature.http instead.')
 OGCFeatureService ogcApiFeaturesHttpClient({
   required Uri endpoint,
-  _http.Client? client,
+  Client? client,
   Map<String, String>? headers,
   TextReaderFormat<FeatureContent> format = GeoJSON.feature,
 }) =>

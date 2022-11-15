@@ -32,7 +32,7 @@ Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geodata: ^0.10.0
+  geodata: ^0.11.0-dev.0
 ```
 
 Import it:
@@ -75,9 +75,8 @@ import 'package:geodata/geojson_client.dart';
 
 Future<void> main(List<String> args) async {
   // read GeoJSON for earthquakes from web using HTTP(S)
-  print('GeoJSON features from HTTP');
   await _readFeatures(
-    geoJsonHttpClient(
+    GeoJSONFeatures.http(
       location: Uri.parse(
         'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/'
         '2.5_day.geojson',

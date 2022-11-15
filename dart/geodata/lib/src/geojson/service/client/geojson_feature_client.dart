@@ -6,7 +6,7 @@
 
 import 'package:geobase/vector.dart';
 import 'package:geobase/vector_data.dart';
-import 'package:http/http.dart' as _http;
+import 'package:http/http.dart';
 
 import '/src/common/paged.dart';
 import '/src/common/service.dart';
@@ -34,7 +34,7 @@ class GeoJSONFeatures {
   /// configuration) to the default one.
   static BasicFeatureSource http({
     required Uri location,
-    _http.Client? client,
+    Client? client,
     Map<String, String>? headers,
     TextReaderFormat<FeatureContent> format = GeoJSON.feature,
   }) =>
@@ -73,7 +73,7 @@ class GeoJSONFeatures {
 @Deprecated('Use GeoJSONFeature.http instead.')
 BasicFeatureSource geoJsonHttpClient({
   required Uri location,
-  _http.Client? client,
+  Client? client,
   Map<String, String>? headers,
   TextReaderFormat<FeatureContent> format = GeoJSON.feature,
 }) =>
