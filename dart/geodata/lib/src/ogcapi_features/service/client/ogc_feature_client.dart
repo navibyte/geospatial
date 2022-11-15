@@ -8,7 +8,7 @@ import 'package:geobase/coordinates.dart';
 import 'package:geobase/meta.dart';
 import 'package:geobase/vector.dart';
 import 'package:geobase/vector_data.dart';
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart' as _http;
 
 import '/src/common/links.dart';
 import '/src/common/paged.dart';
@@ -17,24 +17,48 @@ import '/src/core/data.dart';
 import '/src/ogcapi_features/model.dart';
 import '/src/utils/features.dart';
 
+/// A class with static factory methods to create feature sources conforming to
+/// the OGC API Features standard.
+class OGCAPIFeatures {
+  /// A client for accessing `OGC API Features` compliant sources via http(s)
+  /// conforming to [format].
+  ///
+  /// The required [endpoint] should refer to a base url of a feature service.
+  ///
+  /// When given the optional [client] is used for http requests, otherwise the
+  /// default client of the `package:http/http.dart` package is used.
+  ///
+  /// When given [headers] are injected to http requests (however some can be
+  /// overridden by the feature service implementation).
+  ///
+  /// When [format] is not given, then [GeoJSON] with default settings is used
+  /// as a default. Note that currently only GeoJSON is supported, but it's
+  /// possible to inject another format implementation (or with custom
+  /// configuration) to the default one.
+  static OGCFeatureService http({
+    required Uri endpoint,
+    _http.Client? client,
+    Map<String, String>? headers,
+    TextReaderFormat<FeatureContent> format = GeoJSON.feature,
+  }) =>
+      _OGCFeatureClientHttp(
+        endpoint,
+        adapter: FeatureHttpAdapter(
+          client: client,
+          headers: headers,
+        ),
+        format: format,
+      );
+}
+
 /// A client for accessing `OGC API Features` compliant sources via http(s)
 /// conforming to [format].
 ///
-/// The required [endpoint] should refer to a base url of a feature service.
-///
-/// When given the optional [client] is used for http requests, otherwise the
-/// default client of the `package:http/http.dart` package is used.
-///
-/// When given [headers] are injected to http requests (however some can be
-/// overridden by the feature service implementation).
-///
-/// When [format] is not given, then [GeoJSON] with default settings is used as
-/// a default. Note that currently only GeoJSON is supported, but it's possible
-/// to inject another format implementation (or with custom configuration) to
-/// the default one.
+/// See [OGCAPIFeatures.http].
+@Deprecated('Use GeoJSONFeature.http instead.')
 OGCFeatureService ogcApiFeaturesHttpClient({
   required Uri endpoint,
-  http.Client? client,
+  _http.Client? client,
   Map<String, String>? headers,
   TextReaderFormat<FeatureContent> format = GeoJSON.feature,
 }) =>

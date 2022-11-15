@@ -19,7 +19,7 @@ Future<void> main(List<String> args) async {
   // read GeoJSON for earthquakes from web using HTTP(S)
   print('GeoJSON features from HTTP');
   await _readFeatures(
-    geoJsonHttpClient(
+    GeoJSONFeatures.http(
       location: Uri.parse(
         'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/'
         '2.5_day.geojson',
@@ -31,7 +31,7 @@ Future<void> main(List<String> args) async {
   print('');
   print('GeoJSON features from file');
   await _readFeatures(
-    geoJsonFutureClient(
+    GeoJSONFeatures.any(
       () async => File('test/usgs/summary/2.5_day.geojson').readAsString(),
     ),
   );

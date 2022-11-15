@@ -115,7 +115,7 @@ Future<void> main(List<String> args) async {
           print('Reading web resource at: $location');
 
           // GeoJSON client for a data source
-          final source = geoJsonHttpClient(location: location);
+          final source = GeoJSONFeatures.http(location: location);
           switch (operation) {
             case 'items':
               // get actual data, a single feature or features
@@ -135,7 +135,7 @@ Future<void> main(List<String> args) async {
         final endpoint = Uri.parse(baseURL);
 
         // OGC API Features client (the service provides both meta and items)
-        final service = ogcApiFeaturesHttpClient(endpoint: endpoint);
+        final service = OGCAPIFeatures.http(endpoint: endpoint);
 
         switch (operation) {
           case 'meta':

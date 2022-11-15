@@ -6,32 +6,74 @@
 
 import 'package:geobase/vector.dart';
 import 'package:geobase/vector_data.dart';
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart' as _http;
 
 import '/src/common/paged.dart';
 import '/src/common/service.dart';
 import '/src/core/features.dart';
 import '/src/utils/features.dart';
 
+/// A class with static factory methods to create feature sources conforming to
+/// the GeoJSON format.
+class GeoJSONFeatures {
+  /// A client for accessing a `GeoJSON` data resource at [location] via http(s)
+  /// conforming to [format].
+  ///
+  /// The required [location] should refer to a web resource containing GeoJSON
+  /// compliant data.
+  ///
+  /// When given the optional [client] is used for http requests, otherwise the
+  /// default client of the `package:http/http.dart` package is used.
+  ///
+  /// When given [headers] are injected to http requests (however some can be
+  /// overridden by the feature source implementation).
+  ///
+  /// When [format] is not given, then [GeoJSON] with default settings is used
+  /// as a default. Note that currently only GeoJSON is supported, but it's
+  /// possible to inject another format implementation (or with custom
+  /// configuration) to the default one.
+  static BasicFeatureSource http({
+    required Uri location,
+    _http.Client? client,
+    Map<String, String>? headers,
+    TextReaderFormat<FeatureContent> format = GeoJSON.feature,
+  }) =>
+      _GeoJSONFeatureSource(
+        location,
+        adapter: FeatureHttpAdapter(
+          client: client,
+          headers: headers,
+        ),
+        format: format,
+      );
+
+  /// A client for accessing a `GeoJSON` feature collection from any [source];
+  ///
+  /// The source function returns a future that fetches data from a file, a web
+  /// resource or other sources. Contents must be GeoJSON compliant data.
+  ///
+  /// When [format] is not given, then [GeoJSON] with default settings is used
+  /// as a default. Note that currently only GeoJSON is supported, but it's
+  /// possible to inject another format implementation (or with custom
+  /// configuration) to the default one.
+  static BasicFeatureSource any(
+    Future<String> Function() source, {
+    TextReaderFormat<FeatureContent> format = GeoJSON.feature,
+  }) =>
+      _GeoJSONFeatureSource(
+        source,
+        format: format,
+      );
+}
+
 /// A client for accessing a `GeoJSON` data resource at [location] via http(s)
 /// conforming to [format].
 ///
-/// The required [location] should refer to a web resource containing GeoJSON
-/// compliant data.
-///
-/// When given the optional [client] is used for http requests, otherwise the
-/// default client of the `package:http/http.dart` package is used.
-///
-/// When given [headers] are injected to http requests (however some can be
-/// overridden by the feature source implementation).
-///
-/// When [format] is not given, then [GeoJSON] with default settings is used as
-/// a default. Note that currently only GeoJSON is supported, but it's possible
-/// to inject another format implementation (or with custom configuration) to
-/// the default one.
+/// See [GeoJSONFeatures.http].
+@Deprecated('Use GeoJSONFeature.http instead.')
 BasicFeatureSource geoJsonHttpClient({
   required Uri location,
-  http.Client? client,
+  _http.Client? client,
   Map<String, String>? headers,
   TextReaderFormat<FeatureContent> format = GeoJSON.feature,
 }) =>
@@ -46,13 +88,8 @@ BasicFeatureSource geoJsonHttpClient({
 
 /// A client for accessing a `GeoJSON` feature collection from [source];
 ///
-/// The source function returns a future that fetches data from a file, a web
-/// resource or other sources. Contents must be GeoJSON compliant data.
-///
-/// When [format] is not given, then [GeoJSON] with default settings is used as
-/// a default. Note that currently only GeoJSON is supported, but it's possible
-/// to inject another format implementation (or with custom configuration) to
-/// the default one.
+/// See [GeoJSONFeatures.any].
+@Deprecated('Use GeoJSONFeature.any instead.')
 BasicFeatureSource geoJsonFutureClient(
   Future<String> Function() source, {
   TextReaderFormat<FeatureContent> format = GeoJSON.feature,
