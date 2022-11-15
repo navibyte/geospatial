@@ -23,12 +23,10 @@ dart example/geodata_example.dart geojson https://earthquake.usgs.gov/earthquake
 OGC API Features data sources:
 dart example/geodata_example.dart ogcfeat https://demo.pygeoapi.io/master/ lakes 2 items
 dart example/geodata_example.dart ogcfeat https://demo.pygeoapi.io/master/ lakes 2 items id 3
-dart example/geodata_example.dart ogcfeat https://www.ldproxy.nrw.de/kataster/ verwaltungseinheit 2 items bbox 7,50.6,7.2,50.8
 dart example/geodata_example.dart ogcfeat https://weather.obs.fmibeta.com/ fmi_aws_observations 2 items bbox 23,62,24,63
 
 OGC API Features meta queries:
 dart example/geodata_example.dart ogcfeat https://demo.pygeoapi.io/master/ - 1 meta
-dart example/geodata_example.dart ogcfeat https://www.ldproxy.nrw.de/kataster/ - 1 meta
 dart example/geodata_example.dart ogcfeat https://weather.obs.fmibeta.com/ - 1 meta
 
 More demo APIs (however this page seems to be somewhat outdated, be careful!):
