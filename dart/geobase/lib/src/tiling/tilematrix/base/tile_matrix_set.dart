@@ -367,8 +367,8 @@ abstract class TileMatrixSet {
   /// By default with `Aligned.center` the pixel at the center of a tile is
   /// returned.
   ///
-  /// When [insideTile] is true, it's guaranteed that the target pixel is inside
-  /// the source tile.
+  /// When [requireInside] is true, it's guaranteed that the target pixel is
+  /// inside the source tile.
   ///
   /// Coordinate value ranges:
   /// - tile x (int): `0 .. matrixWidth(zoom) - 1`
@@ -378,11 +378,11 @@ abstract class TileMatrixSet {
   Scalable2i tileToPixel(
     Scalable2i tile, {
     Aligned align = Aligned.center,
-    bool insideTile = false,
+    bool requireInside = false,
   }) {
     // optionally clamp align values to range [-1.0, 1.0]
-    final alignX = insideTile ? align.x.clamp(-1.0, 1.0) : align.x;
-    final alignY = insideTile ? align.y.clamp(-1.0, 1.0) : align.y;
+    final alignX = requireInside ? align.x.clamp(-1.0, 1.0) : align.x;
+    final alignY = requireInside ? align.y.clamp(-1.0, 1.0) : align.y;
 
     // floating point tile coordinates in a position defined by align x / y
     final tx = tile.x + (1.0 + alignX) / 2.0;
@@ -400,7 +400,7 @@ abstract class TileMatrixSet {
     final px = (tx * tileSize).floor();
     final py = (ty * tileSize).floor();
 
-    if (insideTile) {
+    if (requireInside) {
       // ensure target pixel is inside source tile
       final px0 = tile.x * tileSize;
       final py0 = tile.y * tileSize;

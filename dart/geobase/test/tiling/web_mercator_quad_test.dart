@@ -322,11 +322,11 @@ void main() {
         final align = Aligned(x: alignX, y: alignY);
         expect(webMercator.tileToWorld(tile, align: align), world);
         final toPixelClamped =
-            webMercator.tileToPixel(tile, align: align, insideTile: true);
+            webMercator.tileToPixel(tile, align: align, requireInside: true);
         expect(toPixelClamped, pixelClamped);
         expect(webMercator.pixelToTile(toPixelClamped), tile);
         final toPixelNotClamped =
-            webMercator.tileToPixel(tile, align: align, insideTile: false);
+            webMercator.tileToPixel(tile, align: align, requireInside: false);
         expect(toPixelNotClamped, pixelNotClamped);
         if (align != se) {
           expect(webMercator.pixelToTile(toPixelNotClamped), tile);
