@@ -68,6 +68,17 @@ void main() {
 
         expect(crs84.scaleDenominator(zoom), closeTo(scale, 0.000001));
         expect(crs84.pixelArcResolution(zoom), closeTo(res, 0.000001));
+        expect(
+          crs84
+              .zoomFromPixelGroundResolution(crs84.pixelGroundResolution(zoom)),
+          closeTo(zoom, 0.000001),
+        );
+        expect(
+          crs84
+              .zoomFromScaleDenominator(crs84.scaleDenominator(zoom)),
+          closeTo(zoom, 0.000001),
+        );
+
         expect(crs84.matrixWidth(zoom), matrixWidth);
         expect(crs84.matrixHeight(zoom), matrixHeight);
         expect(crs84.mapWidth(zoom), matrixWidth * crs84.tileSize);

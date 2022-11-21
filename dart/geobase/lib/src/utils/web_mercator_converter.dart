@@ -42,6 +42,12 @@ class WebMercatorConverter implements ScaledConverter {
     return (math.cos(lat * math.pi / 180) * earthCircumference) / size;
   }
 
+  /// The map size from pixel ground [resolution] in meters at given [latitude].
+  double sizeFromPixelResolutionAt(double latitude, double resolution) {
+    final lat = clampLatitude(latitude);
+    return (math.cos(lat * math.pi / 180) * earthCircumference) / resolution;  
+  }
+
   /// Converts geographic [longitude] to projected map x coordinate (metric).
   ///
   /// X origin at the prime meridian (lon: 0), X axis from west to east.

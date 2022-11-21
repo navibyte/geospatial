@@ -74,29 +74,17 @@ abstract class TileMatrixSet {
     double screenPPI = screenPPIbyOGC,
   });
 
-/* 
-  // analyze need...
+  /// The zoom from pixel ground [resolution] in meters.
+  double zoomFromPixelGroundResolution(double resolution);
 
-  /// The maximum scaledown zoom with the pixel size closest to [resolution].
-  int zoomForPixelResolution(double resolution) {
-    for (var zoom = 0; zoom <= maxZoom; zoom++) {
-      if (resolution > pixelResolution(zoom)) {
-        return zoom == 0 ? 0 : zoom - 1;
-      }
-    }
-    return maxZoom;
-  }
-
-  /// The maximum scaledown zoom with the scale closest to 1 : [denominator].
-  int zoomForScaleDenominator(double denominator) {
-    for (var zoom = 0; zoom <= maxZoom; zoom++) {
-      if (denominator > scaleDenominator(zoom)) {
-        return zoom == 0 ? 0 : zoom - 1;
-      }
-    }
-    return maxZoom;
-  }
-*/
+  /// The zoom from map scale [denominator] at given [screenPPI].
+  ///
+  /// By default [screenPPI] of ~ 90.7 ppi is used (based on a screen pixel of
+  /// 0.28 mm defined by OGC). Another common value is 96 ppi.
+  double zoomFromScaleDenominator(
+    double denominator, {
+    double screenPPI = screenPPIbyOGC,
+  });
 
   /// A map converter between geospatial positions and map coordinates.
   ScaledConverter get converter;

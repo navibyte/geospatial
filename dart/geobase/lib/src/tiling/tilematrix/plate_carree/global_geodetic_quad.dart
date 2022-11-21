@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'dart:math' as math;
+
 import 'package:meta/meta.dart';
 
 import '/src/codes/canvas_origin.dart';
@@ -144,6 +146,19 @@ class GlobalGeodeticQuad extends GeoTileMatrixSet {
     // by https://docs.opengeospatial.org/is/17-083r2/17-083r2.html
     return pixelGroundResolution(zoom) * screenPPI / 0.0254;
   }
+
+  @override
+  double zoomFromPixelGroundResolution(double resolution) {
+    final mapSize = earthCircumferenceWgs84 / resolution;
+    return math.log(mapSize / (2 * tileSize)) / math.ln2;
+  }
+
+  @override
+  double zoomFromScaleDenominator(
+    double denominator, {
+    double screenPPI = screenPPIbyOGC,
+  }) =>
+      zoomFromPixelGroundResolution(denominator / (screenPPI / 0.0254));
 }
 
 const _PlateCarreeConverter _converter = _PlateCarreeConverter();

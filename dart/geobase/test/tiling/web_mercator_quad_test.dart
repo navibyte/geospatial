@@ -154,7 +154,36 @@ void main() {
         expect(webMercator.matrixSize(zoom), matrixSize);
         expect(webMercator.mapSize(zoom), mapSize);
         expect(webMercator.pixelGroundResolution(zoom), closeTo(res, 0.000001));
+        expect(
+          webMercator.zoomFromPixelGroundResolution(res),
+          closeTo(zoom, 0.000001),
+        );
+        expect(
+          webMercator.zoomFromPixelGroundResolutionAt(
+            latitude: 0.0,
+            resolution: res,
+          ),
+          closeTo(zoom, 0.000001),
+        );
+        expect(
+          webMercator.zoomFromPixelGroundResolutionAt(
+            latitude: 0.0,
+            resolution: webMercator.pixelGroundResolution(zoom),
+          ),
+          closeTo(zoom, 0.000001),
+        );
         expect(webMercator.scaleDenominator(zoom), closeTo(scale, 0.000001));
+        expect(
+          webMercator.zoomFromScaleDenominator(scale),
+          closeTo(zoom, 0.000001),
+        );
+        expect(
+          webMercator.zoomFromScaleDenominatorAt(
+            latitude: 0.0,
+            denominator: scale,
+          ),
+          closeTo(zoom, 0.000001),
+        );
         if (!tileLon.isNaN) {
           expect(
             webMercator.tileArcResolution(zoom),
@@ -181,16 +210,76 @@ void main() {
           closeTo(res0, 0.02),
         );
         expect(
+          tile512Mercator.zoomFromPixelGroundResolutionAt(
+            latitude: 0.0,
+            resolution: res0,
+          ),
+          closeTo(zoom, 0.000001),
+        );
+        expect(
+          tile512Mercator.zoomFromScaleDenominatorAt(
+            latitude: 0.0,
+            denominator:
+                tile512Mercator.scaleDenominatorAt(latitude: 0.0, zoom: zoom),
+          ),
+          closeTo(zoom, 0.000001),
+        );
+        expect(
           tile512Mercator.pixelGroundResolutionAt(latitude: 20, zoom: zoom),
           closeTo(res20, 0.02),
+        );
+        expect(
+          tile512Mercator.zoomFromPixelGroundResolutionAt(
+            latitude: 20.0,
+            resolution: res20,
+          ),
+          closeTo(zoom, 0.000001),
+        );
+        expect(
+          tile512Mercator.zoomFromScaleDenominatorAt(
+            latitude: 20.0,
+            denominator:
+                tile512Mercator.scaleDenominatorAt(latitude: 20.0, zoom: zoom),
+          ),
+          closeTo(zoom, 0.000001),
         );
         expect(
           tile512Mercator.pixelGroundResolutionAt(latitude: -40, zoom: zoom),
           closeTo(res40, 0.02),
         );
         expect(
+          tile512Mercator.zoomFromPixelGroundResolutionAt(
+            latitude: -40.0,
+            resolution: res40,
+          ),
+          closeTo(zoom, 0.000001),
+        );
+        expect(
+          tile512Mercator.zoomFromScaleDenominatorAt(
+            latitude: -40.0,
+            denominator:
+                tile512Mercator.scaleDenominatorAt(latitude: -40.0, zoom: zoom),
+          ),
+          closeTo(zoom, 0.000001),
+        );
+        expect(
           tile512Mercator.pixelGroundResolutionAt(latitude: 60, zoom: zoom),
           closeTo(res60, 0.02),
+        );
+        expect(
+          tile512Mercator.zoomFromPixelGroundResolutionAt(
+            latitude: 60.0,
+            resolution: res60,
+          ),
+          closeTo(zoom, 0.000001),
+        );
+        expect(
+          tile512Mercator.zoomFromScaleDenominatorAt(
+            latitude: 60.0,
+            denominator:
+                tile512Mercator.scaleDenominatorAt(latitude: 60.0, zoom: zoom),
+          ),
+          closeTo(zoom, 0.000001),
         );
       }
     });

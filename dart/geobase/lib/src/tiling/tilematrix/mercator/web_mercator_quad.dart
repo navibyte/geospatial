@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'dart:math' as math;
+
 import 'package:meta/meta.dart';
 
 import '/src/codes/canvas_origin.dart';
@@ -181,6 +183,45 @@ class WebMercatorQuad extends GeoTileMatrixSet {
       pixelGroundResolutionAt(latitude: latitude, zoom: zoom) *
       screenPPI /
       0.0254;
+
+  @override
+  double zoomFromPixelGroundResolution(double resolution) =>
+      zoomFromPixelGroundResolutionAt(latitude: 0.0, resolution: resolution);
+
+  /// The zoom from pixel ground [resolution] in meters at given [latitude].
+  double zoomFromPixelGroundResolutionAt({
+    required double latitude,
+    required double resolution,
+  }) {
+    final mapSize =
+        _converterEpsg3857.sizeFromPixelResolutionAt(latitude, resolution);
+    return math.log(mapSize / tileSize) / math.ln2;
+  }
+
+  @override
+  double zoomFromScaleDenominator(
+    double denominator, {
+    double screenPPI = screenPPIbyOGC,
+  }) =>
+      zoomFromScaleDenominatorAt(
+        latitude: 0.0,
+        denominator: denominator,
+        screenPPI: screenPPI,
+      );
+
+  /// The zoom from map scale [denominator] at given [latitude] and [screenPPI].
+  ///
+  /// By default [screenPPI] of ~ 90.7 ppi is used (based on a screen pixel of
+  /// 0.28 mm defined by OGC). Another common value is 96 ppi.
+  double zoomFromScaleDenominatorAt({
+    required double latitude,
+    required double denominator,
+    double screenPPI = screenPPIbyOGC,
+  }) =>
+      zoomFromPixelGroundResolutionAt(
+        latitude: latitude,
+        resolution: denominator / (screenPPI / 0.0254),
+      );
 
   /// Returns a tile identified by [quadKey] (as specified by Microsoft).
   ///
