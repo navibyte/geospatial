@@ -816,9 +816,27 @@ pixel coordinates and tile coordinates:
   print(quad.pixelGroundResolution(10)); // ~ 152.87 (meters)
   print(quad.scaleDenominator(10)); // ~ 545978.77
 
+  // inverse: zoom from ground resolution and scale denominator
+  print(quad.zoomFromPixelGroundResolution(152.87)); // ~ 10.0 (double value)
+  print(quad.zoomFromScaleDenominator(545978.77)); // ~ 10.0 (double value)
+
   // ground resolutions and scale denominator for zoom level 10 at lat 51.4778
   print(quad.pixelGroundResolutionAt(latitude: 51.4778, zoom: 10)); // ~ 95.21
   print(quad.scaleDenominatorAt(latitude: 51.4778, zoom: 10)); // ~ 340045.31
+
+  // inverse: zoom from ground resolution and scale denominator at lat 51.4778
+  print(
+    quad.zoomFromPixelGroundResolutionAt(
+      latitude: 51.4778,
+      resolution: 95.21,
+    ),
+  ); // ~ 10.0 (double value)
+  print(
+    quad.zoomFromScaleDenominatorAt(
+      latitude: 51.4778,
+      denominator: 340045.31,
+    ),
+  ); // ~ 10.0 (double value)
 ```
 
 ### Global Geodetic Quad
@@ -882,6 +900,9 @@ longitudes and the eastern tile (x=1, y=0) for the positive longitudes.
   print(quad.tileArcResolution(10)); // ~ 0.175781 (° degrees)
   print(quad.pixelArcResolution(10)); // ~ 0.000686646 (° degrees)
   print(quad.scaleDenominator(10)); // ~ 272989.39
+
+  // inverse: zoom from scale denominator at the Equator
+  print(quad.zoomFromScaleDenominator(272989.39)); // ~ 10.0 (double value)
 ```
 
 ## Appendices
