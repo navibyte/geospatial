@@ -74,8 +74,7 @@ void main() {
           closeTo(zoom, 0.000001),
         );
         expect(
-          crs84
-              .zoomFromScaleDenominator(crs84.scaleDenominator(zoom)),
+          crs84.zoomFromScaleDenominator(crs84.scaleDenominator(zoom)),
           closeTo(zoom, 0.000001),
         );
 
