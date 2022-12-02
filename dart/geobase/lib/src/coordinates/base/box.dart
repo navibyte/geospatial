@@ -13,6 +13,7 @@ import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 import '/src/utils/tolerance.dart';
 
+import 'aligned.dart';
 import 'position.dart';
 import 'positionable.dart';
 
@@ -143,6 +144,15 @@ abstract class Box extends Positionable {
         maxZ: maxZ,
         maxM: maxM,
       );
+
+  /// The width of the bounding box, equals to `maxX - minX`.
+  num get width;
+
+  /// The height of the bounding box, equals to `maxY - minY`.
+  num get height;
+
+  /// Returns an aligned 2D position relative to this box.
+  Position aligned2D([Aligned align = Aligned.center]);
 
   /// Returns all distinct (in 2D) corners for this axis aligned bounding box.
   ///
@@ -471,6 +481,17 @@ abstract class Box extends Positionable {
     final coords = parseNumValues(text, delimiter: delimiter);
     return buildBox(coords, to: to, type: type);
   }
+
+  /// Returns an aligned 2D position relative to [box].
+  static R createAligned2D<R extends Position>(
+    Box box,
+    CreatePosition<R> factory, {
+    Aligned align = Aligned.center,
+  }) =>
+      factory.call(
+        x: box.minX + box.width * (1.0 + align.x) / 2.0,
+        y: box.minY + box.height * (1.0 + align.y) / 2.0,
+      );
 
   /// Returns all distinct (in 2D) corners for this axis aligned bounding box.
   static Iterable<R> createCorners2D<R extends Position>(

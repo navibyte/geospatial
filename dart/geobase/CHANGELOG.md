@@ -8,6 +8,7 @@ Under development, current pre-release: 0.4.0-dev.2
 * [Add methods to calculate a pixel or a position from tile coordinates in tile matrix sets #158](https://github.com/navibyte/geospatial/issues/158)
 * [Add toText and writeValues on Position and Box #153](https://github.com/navibyte/geospatial/issues/153)
 * [Calculate zoom from pixel resolution or scale denominator #160](https://github.com/navibyte/geospatial/issues/160)
+* [GeoBox.center2D #157](https://github.com/navibyte/geospatial/issues/157) implemented as "aligned2D"
 
 ## 0.3.2
 

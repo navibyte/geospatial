@@ -164,6 +164,16 @@ class _BoxCoordsImpl extends BoxCoords {
   const _BoxCoordsImpl.view(super.source, {super.type = Coords.xy}) : super();
 
   @override
+  num get width => maxX - minX;
+
+  @override
+  num get height => maxY - minY;
+
+  @override
+  Position aligned2D([Aligned align = Aligned.center]) =>
+      Box.createAligned2D(this, Projected.create, align: align);
+
+  @override
   Iterable<Position> get corners2D =>
       Box.createCorners2D(this, Projected.create);
 

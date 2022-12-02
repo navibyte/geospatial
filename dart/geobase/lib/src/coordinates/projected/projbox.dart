@@ -181,6 +181,16 @@ class ProjBox extends Box {
       );
 
   @override
+  num get width => maxX - minX;
+
+  @override
+  num get height => maxY - minY;
+
+  @override
+  Projected aligned2D([Aligned align = Aligned.center]) =>
+      Box.createAligned2D(this, Projected.create, align: align);
+
+  @override
   Iterable<Projected> get corners2D =>
       Box.createCorners2D(this, Projected.create);
 

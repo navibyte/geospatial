@@ -251,6 +251,30 @@ void main() {
       expect(box2e.intersectsPoint(point3), true);
       expect(box2e.intersectsPoint2D(point3), true);
     });
+
+    test('Aligned positions', () {
+      const box = ProjBox(minX: 10.1, minY: 10.1, maxX: 20.1, maxY: 20.1);
+
+      expect(
+          box.aligned2D().equals2D(const Projected(x: 15.1, y: 15.1),
+              toleranceHoriz: 0.00000000001),
+          true);
+      expect(
+          box.aligned2D(Aligned.centerEast).equals2D(
+              const Projected(x: 20.1, y: 15.1),
+              toleranceHoriz: 0.00000000001),
+          true);
+      expect(
+          box.aligned2D(Aligned.southWest).equals2D(
+              const Projected(x: 10.1, y: 10.1),
+              toleranceHoriz: 0.00000000001),
+          true);
+      expect(
+          box.aligned2D(const Aligned(x: 1.5, y: -2.0)).equals2D(
+              const Projected(x: 22.6, y: 5.1),
+              toleranceHoriz: 0.00000000001),
+          true);
+    });
   });
 
   group('GeoBox class', () {

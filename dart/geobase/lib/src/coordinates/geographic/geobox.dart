@@ -240,6 +240,16 @@ class GeoBox extends Box {
       );
 
   @override
+  num get width => east - west;
+
+  @override
+  num get height => north - south;
+
+  @override
+  Geographic aligned2D([Aligned align = Aligned.center]) =>
+      Box.createAligned2D(this, Geographic.create, align: align);
+
+  @override
   Iterable<Geographic> get corners2D =>
       Box.createCorners2D(this, Geographic.create);
 
