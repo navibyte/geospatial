@@ -2,10 +2,11 @@
 
 [geodata version 0.11.0 #162](https://github.com/navibyte/geospatial/issues/162)
 
-Under development, current pre-release: 0.11.0-dev.0
-
 🧩 Features:
 * [Consistent factories for GeoJSON and OGC API Features clients #155](https://github.com/navibyte/geospatial/issues/155)
+
+🛠 Maintenance:
+* Uses the latest `geobase` version 0.4.0
 
 ## 0.10.1
 
