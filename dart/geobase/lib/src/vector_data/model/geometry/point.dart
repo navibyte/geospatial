@@ -132,7 +132,7 @@ class Point implements SimpleGeometry {
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
       writer.point(_position, type: coordType, name: name);
 
-  // todo: coordinates as raw data
+  // NOTE: coordinates as raw data
 
   @override
   String toText({

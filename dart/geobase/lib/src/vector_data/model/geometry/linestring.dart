@@ -87,7 +87,7 @@ class LineString extends SimpleGeometry {
   factory LineString.parseCoords(String coordinates) {
     final array = json.decode('[$coordinates]') as List<dynamic>;
     final coordType = resolveCoordType(array, positionLevel: 1);
-    // todo: validate line string (at least two points)
+    // NOTE: validate line string (at least two points)
     return LineString.build(
       createFlatPositionArrayDouble(array, coordType),
       type: coordType,
@@ -128,7 +128,7 @@ class LineString extends SimpleGeometry {
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
       writer.lineString(_chain, type: coordType, name: name, bounds: bounds);
 
-  // todo: coordinates as raw data
+  // NOTE: coordinates as raw data
 
   @override
   bool operator ==(Object other) =>

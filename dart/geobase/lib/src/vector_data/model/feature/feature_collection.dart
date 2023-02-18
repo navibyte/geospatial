@@ -83,7 +83,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
     Iterable<double>? bounds,
     WriteProperties? custom,
   }) {
-    // todo: use optional count to create a list in right size at build start
+    // NOTE: use optional count to create a list in right size at build start
 
     // build any feature items on a list
     final list = FeatureBuilder.buildList<Feature<T>, T>(features);

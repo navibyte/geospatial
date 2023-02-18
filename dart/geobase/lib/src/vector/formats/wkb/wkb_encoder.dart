@@ -259,7 +259,7 @@ class _WkbGeometryEncoder
     // write numPoints
     _buffer.writeUint32(numPoints);
 
-    // todo: write the whole buffer at once
+    // NOTE: write the whole buffer at once
 
     // write all coordinate values for each point as a flat structure
     for (final value in coordinates) {

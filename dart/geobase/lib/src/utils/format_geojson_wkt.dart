@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-// todo: this code has grown quite complex, separate geojson + wkt writers
+// NOTE: this code has grown quite complex, separate geojson + wkt writers
 
 import 'dart:convert';
 import 'dart:typed_data';

@@ -420,7 +420,7 @@ void _pointToGeoJsonAndWKT() {
   final point = Point3(x: 10.123, y: 20.25, z: -30.95);
 
   // print with default format
-  print('Default format: ${point.toString()}');
+  print('Default format: $point');
   print('Default format (decimals = 0): ${point.toStringAs(decimals: 0)}');
 
   // print with WKT format

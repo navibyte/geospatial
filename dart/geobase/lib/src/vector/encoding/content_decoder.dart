@@ -38,7 +38,7 @@ abstract class ContentDecoder {
   /// Throws `FormatException` if decoding fails.
   void decodeBytes(Uint8List source);
 
-  // todo : method to check whether (structured) data is supported
+  // NOTE : method to check whether (structured) data is supported
 
   /// Decodes structured data from [source] as content objects.
   ///

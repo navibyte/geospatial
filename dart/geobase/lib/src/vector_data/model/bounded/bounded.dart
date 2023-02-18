@@ -36,5 +36,5 @@ abstract class Bounded {
   /// the bounds for a returned object is null).
   Bounded project(Projection projection);
 
-  // todo: add an optional param to "project" to ask calcuting bounds after op
+  // NOTE: add an optional param to "project" to ask calcuting bounds after op
 }

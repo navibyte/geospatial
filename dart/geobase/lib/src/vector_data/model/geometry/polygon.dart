@@ -111,7 +111,7 @@ class Polygon extends SimpleGeometry {
   factory Polygon.parseCoords(String coordinates) {
     final array = json.decode('[$coordinates]') as List<dynamic>;
     final coordType = resolveCoordType(array, positionLevel: 2);
-    // todo: validate polygon (at least one ring)
+    // NOTE: validate polygon (at least one ring)
     return Polygon.build(
       createFlatPositionArrayArrayDouble(array, coordType),
       type: coordType,
@@ -175,7 +175,7 @@ class Polygon extends SimpleGeometry {
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
       writer.polygon(_rings, type: coordType, name: name, bounds: bounds);
 
-  // todo: coordinates as raw data
+  // NOTE: coordinates as raw data
 
   @override
   bool operator ==(Object other) =>

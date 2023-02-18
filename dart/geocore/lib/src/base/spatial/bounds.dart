@@ -199,7 +199,8 @@ class BoundsBase<T extends Point> extends Bounds<T> {
       : _min = min,
         _max = max;
 
-  final T _min, _max;
+  final T _min;
+  final T _max;
 
   @override
   T get min => _min;

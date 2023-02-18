@@ -13,7 +13,7 @@ abstract class OGCFeatureService {
   /// Get meta data (or "landing page" information) about this service.
   Future<ResourceMeta> meta();
 
-  // todo API description: api();
+  // NOTE: API description: api();
 
   /// Conformance classes this service is conforming to.
   Future<Iterable<String>> conformance();

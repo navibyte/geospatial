@@ -8,7 +8,7 @@ import 'package:equatable/equatable.dart';
 
 import 'package:meta/meta.dart';
 
-// todo : range with spatial operations?
+// NOTE: range with spatial operations?
 
 /// A range defining a set of items on a collection.
 @immutable

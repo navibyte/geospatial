@@ -136,7 +136,7 @@ class MultiPoint extends SimpleGeometry {
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
       writer.multiPoint(_points, type: coordType, name: name, bounds: bounds);
 
-  // todo: coordinates as raw data
+  // NOTE: coordinates as raw data
 
   @override
   bool operator ==(Object other) =>

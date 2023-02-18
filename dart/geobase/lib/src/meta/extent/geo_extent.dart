@@ -12,7 +12,7 @@ import '/src/meta/time.dart';
 import 'spatial_extent.dart';
 import 'temporal_extent.dart';
 
-// todo: generalize => GeoExtent extends DataExtent (spatial extents with Box)?
+// NOTE: generalize => GeoExtent extends DataExtent (spatial extents with Box)?
 
 /// A geospatial extent with [spatial] and optional [temporal] parts.
 @immutable

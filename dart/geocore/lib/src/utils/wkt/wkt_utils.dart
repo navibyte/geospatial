@@ -18,7 +18,7 @@ FormatException _invalidCoords(String coords) =>
 @internal
 Iterable<num> parseWktCoords(String coords) {
   final parts = _omitParenthesis(coords.trim()).split(_splitByWhitespace);
-  // todo : need to know expected coord dim
+  // NOTE: need to know expected coord dim
   if (parts.length < 2) {
     throw _invalidCoords(coords);
   }

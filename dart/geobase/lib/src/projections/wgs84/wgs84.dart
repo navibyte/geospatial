@@ -25,5 +25,5 @@ class WGS84 {
   /// changes.
   static const ProjectionAdapter webMercator = Wgs84ToWebMercatorAdapter();
 
-  // todo : UTM projections for WGS84, etc.
+  // NOTE : UTM projections for WGS84, etc.
 }

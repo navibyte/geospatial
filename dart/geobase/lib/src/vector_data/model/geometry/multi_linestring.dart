@@ -163,7 +163,7 @@ class MultiLineString extends SimpleGeometry {
         bounds: bounds,
       );
 
-  // todo: coordinates as raw data
+  // NOTE: coordinates as raw data
 
   @override
   bool operator ==(Object other) =>

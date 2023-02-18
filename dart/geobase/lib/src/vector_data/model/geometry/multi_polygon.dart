@@ -179,7 +179,7 @@ class MultiPolygon extends SimpleGeometry {
   void writeTo(SimpleGeometryContent writer, {String? name}) => writer
       .multiPolygon(_polygons, type: coordType, name: name, bounds: bounds);
 
-  // todo: coordinates as raw data
+  // NOTE: coordinates as raw data
 
   @override
   bool operator ==(Object other) =>

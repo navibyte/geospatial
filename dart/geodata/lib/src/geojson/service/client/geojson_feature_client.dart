@@ -180,7 +180,7 @@ _GeoJSONPagedFeaturesItems _parseFeatureItems(
   Map<String, dynamic> data,
   TextReaderFormat<FeatureContent> format,
 ) {
-  // todo : get count without actually parsing the whole feature collection
+  // NOTE: get count without actually parsing the whole feature collection
   final collection = FeatureCollection.fromData(data, format: format);
   final count = collection.features.length;
 

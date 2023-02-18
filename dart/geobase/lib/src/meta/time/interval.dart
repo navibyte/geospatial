@@ -146,13 +146,13 @@ class Interval extends Temporal {
     final e = end;
     if (s != null) {
       if (e != null) {
-        return '${s.toString()}/${e.toString()}';
+        return '$s/$e';
       } else {
-        return '${s.toString()}/..';
+        return '$s/..';
       }
     } else {
       if (e != null) {
-        return '../${e.toString()}';
+        return '../$e';
       } else {
         return '../..';
       }

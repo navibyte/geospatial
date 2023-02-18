@@ -89,8 +89,8 @@ void _decodeGeometry(
   Map<String, dynamic> geometry,
   GeometryContent builder,
 ) {
-  // todo : coord type from conf
-  // todo: read custom or foreign members
+  // NOTE : coord type from conf
+  // NOTE: read custom or foreign members
 
   // check for GeoJSON types and decode as supported types found
   switch (geometry['type']) {
@@ -102,7 +102,7 @@ void _decodeGeometry(
     case 'LineString':
       final array = geometry['coordinates'] as List<dynamic>;
       final coordType = resolveCoordType(array, positionLevel: 1);
-      // todo: validate line string (at least two points)
+      // NOTE: validate line string (at least two points)
       builder.lineString(
         createFlatPositionArrayDouble(array, coordType),
         type: coordType,
@@ -112,7 +112,7 @@ void _decodeGeometry(
     case 'Polygon':
       final array = geometry['coordinates'] as List<dynamic>;
       final coordType = resolveCoordType(array, positionLevel: 2);
-      // todo: validate polygon (at least one ring)
+      // NOTE: validate polygon (at least one ring)
       builder.polygon(
         createFlatPositionArrayArrayDouble(array, coordType),
         type: coordType,
@@ -167,8 +167,8 @@ void _decodeFeature(Map<String, dynamic> feature, FeatureContent builder) {
   // feature has an optional primary geometry in "geometry" field
   final geom = feature['geometry'] as Map<String, dynamic>?;
 
-  // todo: check if feature has other geometry objects as childs, and hanlde em'
-  // todo: read custom or foreign members
+  // NOTE: check if feature has other geometry objects as childs, and hanlde em'
+  // NOTE: read custom or foreign members
 
   // build feature
   builder.feature(
@@ -189,7 +189,7 @@ void _decodeFeatureCollection(
 }) {
   final features = collection['features'] as List<dynamic>;
 
-  // todo: read custom or foreign members
+  // NOTE: read custom or foreign members
 
   if (itemOffset != null || itemLimit != null) {
     // a range of feature items on a collection is requested

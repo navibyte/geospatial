@@ -128,4 +128,4 @@ TransformPosition rotatePosition2D(num radians, {num? cx, num? cy}) =>
       }
     };
 
-// todo other basic transformations
+// NOTE: other basic transformations
