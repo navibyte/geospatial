@@ -23,21 +23,21 @@ library data;
 
 export 'package:geobase/vector.dart'
     show
-        Geom,
-        CoordinateContent,
-        SimpleGeometryContent,
-        GeometryContent,
-        FeatureContent,
-        PropertyContent,
+        BinaryFormat,
         ContentDecoder,
         ContentEncoder,
-        BinaryFormat,
-        TextWriterFormat,
+        CoordinateContent,
         DefaultFormat,
-        WktLikeFormat,
+        FeatureContent,
         GeoJSON,
+        Geom,
+        GeometryContent,
+        PropertyContent,
+        SimpleGeometryContent,
+        TextWriterFormat,
+        WKB,
         WKT,
-        WKB;
+        WktLikeFormat;
 
 export 'base.dart';
 export 'coordinates.dart';

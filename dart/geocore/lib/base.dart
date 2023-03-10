@@ -16,6 +16,6 @@
 library base;
 
 export 'package:geobase/coordinates.dart'
-    show Coords, Position, TransformPosition, CreatePosition, Box, Projection;
+    show Box, Coords, CreatePosition, Position, Projection, TransformPosition;
 
 export 'src/base/spatial.dart';

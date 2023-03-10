@@ -1,4 +1,4 @@
-# Analysis options / lint rules (2022-08-16 / "packages edition")
+# Analysis options / lint rules (2023-03-10 / "packages edition")
 #
 # Documentation (official for Dart)
 #     https://pub.dev/packages/lints
@@ -21,7 +21,7 @@
 #
 # Applied package
 #     https://pub.dev/packages/very_good_analysis
-#     3.0.0+
+#     4.0.0+
 #
 # See also
 #     https://github.com/VeryGoodOpenSource/very_good_analysis/issues/46
@@ -71,3 +71,8 @@ linter:
     # For example first sorted list of packages from external vendors, then
     # next sorted list of custom packages.
     sort_pub_dependencies: false
+
+    # "DO specify required on named parameter before other named parameters."
+    # Generally a valid rule, but there are use cases when other order is more
+    # logical.
+    always_put_required_named_parameters_first: false

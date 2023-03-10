@@ -101,8 +101,8 @@ class _WkbGeometryBufferDecoder {
   void _buildPoint(Coords coordType, Endian endian) {
     final point = _readPosition(coordType, endian);
     if (conf.buildEmptyGeometries &&
-        point[0] == double.nan &&
-        point[1] == double.nan) {
+        point[0].isNaN &&
+        point[1].isNaN) {
       // this is a special case, see => https://trac.osgeo.org/geos/ticket/1005
       //                             https://trac.osgeo.org/postgis/ticket/3181
       builder.emptyGeometry(Geom.point);
