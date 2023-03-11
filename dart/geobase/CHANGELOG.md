@@ -1,3 +1,11 @@
+## 0.4.1
+
+📚 Documentation updates
+* An introduction chapter for the readme.
+
+🛠 Maintenance:
+* The SDK constraint updated from '>=2.17.0 <3.0.0' to '>=2.17.0 <4.0.0'.
+
 ## 0.4.0
 
 [geobase version 0.4.0 #161](https://github.com/navibyte/geospatial/issues/161)
