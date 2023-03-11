@@ -61,6 +61,201 @@ Other resources:
 > repository contains more sample code showing also how to use this package! But
 > read the documentation below first.
 
+## Introduction
+
+Geographic and projected *positions* and *bounding boxes*:
+
+```dart
+  // A geographic position without and with an elevation.
+  Geographic(lon: -0.0014, lat: 51.4778);
+  Geographic(lon: -0.0014, lat: 51.4778, elev: 45.0);
+
+  // A projected position without and with z.
+  Projected(x: 708221.0, y: 5707225.0);
+  Projected(x: 708221.0, y: 5707225.0, z: 45.0);
+  
+  // Geographic and projected bounding boxes.
+  GeoBox(west: -20, south: 50, east: 20, north: 60);
+  GeoBox(west: -20, south: 50, minElev: 100, east: 20, north: 60, maxElev: 200);
+  ProjBox(minX: 10, minY: 10, maxX: 20, maxY: 20);
+
+  // Positions and bounding boxes can be also built from an array or parsed.
+  GeoBox.build([-20, 50, 100, 20, 60, 200]);
+  GeoBox.parse('-20,50,100,20,60,200');
+  GeoBox.parse('-20 50 100 20 60 200', delimiter: ' ');
+```
+
+Coordinates for *pixels* and *tiles* in tiling schemes:
+
+```dart
+  // Projected coordinates to represent *pixels* or *tiles* in tiling schemes.
+  Scalable2i(zoom: 9, x: 23, y: 10);
+```
+
+Geometry primitive and multi geometry objects:
+
+```dart
+  // A point with a 2D position.
+  Point.build([30.0, 10.0]);
+ 
+  // A line string (polyline) with three 2D positions.
+  LineString.build([30, 10, 10, 30, 40, 40]);
+
+  // A polygon with an exterior ring (and without any holes).
+  Polygon.build([
+    [30, 10, 40, 40, 20, 40, 10, 20, 30, 10]
+  ]);
+
+  // A polygon with an exterior ring and an interior ring as a hole.
+  Polygon.build([
+    [35, 10, 45, 45, 15, 40, 10, 20, 35, 10], 
+    [20, 30, 35, 35, 30, 20, 20, 30]
+  ]);
+
+  // A multi point with four points:
+  MultiPoint.build([
+    [10, 40],
+    [40, 30],
+    [20, 20],
+    [30, 10]
+  ]);
+
+  // A multi line string with two line strings (polylines):
+  MultiLineString.build([
+    [10, 10, 20, 20, 10, 40],
+    [40, 40, 30, 30, 40, 20, 30, 10]
+  ]);
+
+  // A multi polygon with two polygons both with an outer ring (without holes).
+  MultiPolygon.build([
+    [
+      [30, 20, 45, 40, 10, 40, 30, 20]
+    ],
+    [
+      [15, 5, 40, 10, 10, 20, 5, 10, 15, 5]
+    ]
+  ]);
+
+  // A geometry collection with a point, a line string and a polygon.
+  GeometryCollection([
+    Point.build([30.0, 10.0]),
+    LineString.build([10, 10, 20, 20, 10, 40]),
+    Polygon.build([[40, 40, 20, 45, 45, 30, 40, 40]])
+  ]);
+```
+
+Primitive geometries introduced above contain geographic or projected positions:
+* `Point` with a single position
+* `LineString` with a chain of positions (at least two positions)
+* `Polygon` with an array of linear rings (exactly one exterior and 0 to N interior rings with each ring being a closed chain of positions)
+
+Position arrays (chains of positions) are NOT modeled as iterables of position
+objects (`Geographic` or `Projected`), but as a flat structure represented by
+arrays of coordinate values, for example:
+* 2D position arrays: `[x0, y0, x1, y1, x2, y2, ...]`
+* 3D position arrays: `[x0, y0, z0, x1, y1, z1, x2, y2, z2, ...]`
+
+To distinguish between arrays of different spatial dimensions you can use
+`Coords` enum:
+
+```dart
+  LineString.build([30, 10, 10, 30, 40, 40]); // default type == Coords.xy 
+  LineString.build([30, 10, 10, 30, 40, 40], type: Coords.xy); 
+  LineString.build([30, 10, 5.5, 10, 30, 5.5, 40, 40, 5.5], type: Coords.xyz);
+```
+
+Geometries can be parsed also from the text representation of coordinates (in
+this text representation each position is encoded between brackets):
+
+```dart
+  LineString.parseCoords('[30,10],[10,30],[40,40]'); // 2D 
+  LineString.parseCoords('[30,10,5.5],[10,30,5.5],[40,40,5.5]'); // 3D  
+```
+
+GeoJSON and WKB formats are supported as input and output (WKT only output):
+
+```dart
+  // Parse a geometry from GeoJSON text.
+  final geometry = LineString.parse(
+    '{"type": "LineString", "coordinates": [[30,10],[10,30],[40,40]]}',
+    format: GeoJSON.geometry,
+  );
+
+  // Encode a geometry as GeoJSON text.
+  print(geometry.toText(format: GeoJSON.geometry));
+
+  // Encode a geometry as WKT text.
+  print(geometry.toText(format: WKT.geometry));
+
+  // Encode a geometry as WKB bytes.
+  final bytes = geometry.toBytes(format: WKB.geometry);
+
+  // Decode a geometry from WKB bytes.
+  LineString.decode(bytes, format: WKB.geometry);
+```
+
+*Features* represent geospatial entities with properies and geometries: 
+
+```dart
+  Feature(
+    id: 'ROG',
+    // a point geometry with a position (lon, lat, elev)
+    geometry: Point.build([-0.0014, 51.4778, 45.0]),
+    properties: {
+      'title': 'Royal Observatory',
+    },
+  );
+```
+
+The GeoJSON format is supported as text input and output for features:
+
+```dart
+  final feature = Feature.parse(
+    '''
+      { 
+        "type": "Feature", 
+        "id": "ROG", 
+        "geometry": {
+          "type": "Point", 
+          "coordinates": [-0.0014, 51.4778, 45.0]
+        }, 
+        "properties": {
+          "title": "Royal Observatory"
+        }
+      }
+    ''',
+    format: GeoJSON.feature,
+  );
+  print(feature.toText(format: GeoJSON.feature));
+```
+
+Collections of feature objects are modeled as `FeatureCollection` objects. See
+the chapter about [geospatial features](#geospatial-features) for more
+information.
+
+Temporal instants and intervals, and geospatial extents:
+
+```dart
+  // An instant and three intervals (open-started, open-ended, closed).
+  Instant.parse('2020-10-31 09:30Z');
+  Interval.parse('../2020-10-31');
+  Interval.parse('2020-10-01/..');
+  Interval.parse('2020-10-01/2020-10-31');
+
+  // An extent with spatial (WGS 84 longitude-latitude) and temporal parts.
+  GeoExtent.single(
+    crs: 'EPSG:4326',
+    bbox: GeoBox(west: -20.0, south: 50.0, east: 20.0, north: 60.0),
+    interval: Interval.parse('../2020-10-31'),
+  );
+```
+
+Coordinate projections, tiling schemes (web mercator, global geodetic) and
+coordinate array classes are some of the more advanced topics not introduced
+here. Please see separate chapters about [projections](#projections),
+[tiling schemes](#tiling-schemes) and [coordinate arrays](#coordinate-arrays) to
+learn about them.
+
 ## Coordinates
 
 ### Geographic coordinates
@@ -229,7 +424,7 @@ MultiPoint  | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/li
 MultiLineString  | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_MultiLineString.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_MultiLineString.svg"></a> | `MultiLineString.build([[10, 10, 20, 20, 10, 40], [40, 40, 30, 30, 40, 20, 30, 10]])`
 MultiPolygon | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_MultiPolygon.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_MultiPolygon.svg"></a> | `MultiPolygon.build([[[30, 20, 45, 40, 10, 40, 30, 20]], [[15, 5, 40, 10, 10, 20, 5, 10, 15, 5]]])`
 MultiPolygon (with a hole) | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_MultiPolygon_with_hole.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_MultiPolygon_with_hole.svg"></a> | `MultiPolygon.build([[[40, 40, 20, 45, 45, 30, 40, 40]], [[20, 35, 10, 30, 10, 10, 30, 5, 45, 20, 20, 35], [30, 20, 20, 15, 20, 25, 30, 20]]])`
-GeometryCollection | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_GeometryCollection.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_GeometryCollection.svg"></a> | `GeometryCollection(Point.build([30.0, 10.0]), LineString.build([10, 10, 20, 20, 10, 40]), Polygon.build([[40, 40, 20, 45, 45, 30, 40, 40]])])`
+GeometryCollection | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_GeometryCollection.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_GeometryCollection.svg"></a> | `GeometryCollection([Point.build([30.0, 10.0]), LineString.build([10, 10, 20, 20, 10, 40]), Polygon.build([[40, 40, 20, 45, 45, 30, 40, 40]])])`
 
 Samples above expect 2D coordinates (x and y coordinates - or longitude and 
 latitude).

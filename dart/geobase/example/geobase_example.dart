@@ -15,6 +15,9 @@ dart example/geobase_example.dart
 */
 
 void main() {
+  // introduction
+  _intro();
+
   // coordinates
   _geographicCoordinates();
   _projectedCoordinates();
@@ -54,6 +57,71 @@ void main() {
   // tiling schemes
   _webMercatorQuad();
   _globalGeodeticQuad();
+}
+
+void _intro() {
+  // To distinguish between arrays of different spatial dimensions you can use
+  // `Coords` enum.
+  LineString.build([30, 10, 10, 30, 40, 40]); // default type == Coords.xy
+  LineString.build([30, 10, 10, 30, 40, 40], type: Coords.xy);
+  LineString.build([30, 10, 5.5, 10, 30, 5.5, 40, 40, 5.5], type: Coords.xyz);
+
+  // Geometries can be parsed also from the text representation of coordinates.
+  LineString.parseCoords('[30,10],[10,30],[40,40]'); // 2D
+  LineString.parseCoords('[30,10,5.5],[10,30,5.5],[40,40,5.5]'); // 3D
+
+  // -------
+
+  // GeoJSON and WKB formats are supported as input and output (WKT only output)
+
+  // Parse a geometry from GeoJSON text.
+  final geometry = LineString.parse(
+    '{"type": "LineString", "coordinates": [[30,10],[10,30],[40,40]]}',
+    format: GeoJSON.geometry,
+  );
+
+  // Encode a geometry as GeoJSON text.
+  print(geometry.toText(format: GeoJSON.geometry));
+
+  // Encode a geometry as WKT text.
+  print(geometry.toText(format: WKT.geometry));
+
+  // Encode a geometry as WKB bytes.
+  final bytes = geometry.toBytes(format: WKB.geometry);
+
+  // Decode a geometry from WKB bytes.
+  LineString.decode(bytes, format: WKB.geometry);
+
+  // -------
+
+  // Features represent geospatial entities with properies and geometries.
+  Feature(
+    id: 'ROG',
+    // a point geometry with a position (lon, lat, elev)
+    geometry: Point.build([-0.0014, 51.4778, 45.0]),
+    properties: {
+      'title': 'Royal Observatory',
+    },
+  );
+
+  // The GeoJSON format is supported as text input and output for features.
+  final feature = Feature.parse(
+    '''
+      { 
+        "type": "Feature", 
+        "id": "ROG", 
+        "geometry": {
+          "type": "Point", 
+          "coordinates": [-0.0014, 51.4778, 45.0]
+        }, 
+        "properties": {
+          "title": "Royal Observatory"
+        }
+      }
+    ''',
+    format: GeoJSON.feature,
+  );
+  print(feature.toText(format: GeoJSON.feature));
 }
 
 void _geographicCoordinates() {
