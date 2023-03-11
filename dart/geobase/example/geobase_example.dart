@@ -60,6 +60,87 @@ void main() {
 }
 
 void _intro() {
+  // Geographic and projected *positions* and *bounding boxes*.
+
+  // A geographic position without and with an elevation.
+  Geographic(lon: -0.0014, lat: 51.4778);
+  Geographic(lon: -0.0014, lat: 51.4778, elev: 45.0);
+
+  // A projected position without and with z.
+  Projected(x: 708221.0, y: 5707225.0);
+  Projected(x: 708221.0, y: 5707225.0, z: 45.0);
+  
+  // Geographic and projected bounding boxes.
+  GeoBox(west: -20, south: 50, east: 20, north: 60);
+  GeoBox(west: -20, south: 50, minElev: 100, east: 20, north: 60, maxElev: 200);
+  ProjBox(minX: 10, minY: 10, maxX: 20, maxY: 20);
+
+  // Positions and bounding boxes can be also built from an array or parsed.
+  GeoBox.build([-20, 50, 100, 20, 60, 200]);
+  GeoBox.parse('-20,50,100,20,60,200');
+  GeoBox.parse('-20 50 100 20 60 200', delimiter: ' ');
+
+  // -------
+
+  // Coordinates for *pixels* and *tiles* in tiling schemes.
+
+  // Projected coordinates to represent *pixels* or *tiles* in tiling schemes.
+  Scalable2i(zoom: 9, x: 23, y: 10);
+
+  // -------
+
+  // Geometry primitive and multi geometry objects.
+
+  // A point with a 2D position.
+  Point.build([30.0, 10.0]);
+ 
+  // A line string (polyline) with three 2D positions.
+  LineString.build([30, 10, 10, 30, 40, 40]);
+
+  // A polygon with an exterior ring (and without any holes).
+  Polygon.build([
+    [30, 10, 40, 40, 20, 40, 10, 20, 30, 10]
+  ]);
+
+  // A polygon with an exterior ring and an interior ring as a hole.
+  Polygon.build([
+    [35, 10, 45, 45, 15, 40, 10, 20, 35, 10], 
+    [20, 30, 35, 35, 30, 20, 20, 30]
+  ]);
+
+  // A multi point with four points:
+  MultiPoint.build([
+    [10, 40],
+    [40, 30],
+    [20, 20],
+    [30, 10]
+  ]);
+
+  // A multi line string with two line strings (polylines):
+  MultiLineString.build([
+    [10, 10, 20, 20, 10, 40],
+    [40, 40, 30, 30, 40, 20, 30, 10]
+  ]);
+
+  // A multi polygon with two polygons both with an outer ring (without holes).
+  MultiPolygon.build([
+    [
+      [30, 20, 45, 40, 10, 40, 30, 20]
+    ],
+    [
+      [15, 5, 40, 10, 10, 20, 5, 10, 15, 5]
+    ]
+  ]);
+
+  // A geometry collection with a point, a line string and a polygon.
+  GeometryCollection([
+    Point.build([30.0, 10.0]),
+    LineString.build([10, 10, 20, 20, 10, 40]),
+    Polygon.build([[40, 40, 20, 45, 45, 30, 40, 40]])
+  ]);
+
+  // -------
+
   // To distinguish between arrays of different spatial dimensions you can use
   // `Coords` enum.
   LineString.build([30, 10, 10, 30, 40, 40]); // default type == Coords.xy

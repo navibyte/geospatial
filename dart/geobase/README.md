@@ -429,7 +429,7 @@ GeometryCollection | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons
 Samples above expect 2D coordinates (x and y coordinates - or longitude and 
 latitude).
 
-When data contains more coordinates, like also z in 3D data, then the `type``
+When data contains more coordinates, like also z in 3D data, then the `type`
 parameter in build methods (for geometries other than `Point`) must always be
 used explicitely to define the coordinate type.
 
