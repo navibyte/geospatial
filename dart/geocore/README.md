@@ -28,7 +28,7 @@ Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geocore: ^0.10.0
+  geocore: ^0.10.1
 ```
 
 Import it:
@@ -778,6 +778,9 @@ External packages `geocore` is depending on:
 * [equatable](https://pub.dev/packages/equatable) for equality and hash utils
 * [geobase](https://pub.dev/packages/geobase) for base geospatial data structures
 * [meta](https://pub.dev/packages/meta) for annotations
+
+> **Note**: The `geocore` package uses version 0.3.x of the `geobase` package
+> (not compatible with `geobase` 0.4.x and later).
 
 ## Authors
 

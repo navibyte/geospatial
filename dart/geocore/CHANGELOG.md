@@ -1,3 +1,11 @@
+## 0.10.1
+
+🛠 Maintenance:
+* The SDK constraint updated from '>=2.17.0 <3.0.0' to '>=2.17.0 <4.0.0'.
+
+> **Note**: The `geocore` package uses version 0.3.x of the `geobase` package
+> (not compatible with `geobase` 0.4.x and later).
+
 ## 0.10.0
 
 > **Note**: After the `geocore` version 0.10.0 (published at 2022-08-21), no new
