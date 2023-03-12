@@ -256,6 +256,15 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
       params = Map.of(query.extraParams!)..addAll(params);
     }
 
+    /*
+    print(service.endpoint.resolveUri(
+        Uri(
+          path: 'collections/$collectionId/items',
+          queryParameters: params,
+        ),
+      ));
+    */
+
     // read from client and return paged feature collection response
     return _OGCPagedFeaturesItems.parse(
       service,

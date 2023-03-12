@@ -43,7 +43,7 @@ Future<void> _readFeatures(BasicFeatureSource source) async {
     // get items or features from a source, maximum 5 features returned
     final items = await source.itemsAll(limit: 5);
 
-    // do something with features, in this sample just print them out
+    // do something with actual data (features), in this sample just print them
     for (final f in items.collection.features) {
       print('Feature with id: ${f.id}');
       print('  geometry: ${f.geometry}');
@@ -54,14 +54,8 @@ Future<void> _readFeatures(BasicFeatureSource source) async {
     }
   } on ServiceException<FeatureFailure> catch (e) {
     print('Reading GeoJSON resource failed: ${e.failure.name}');
-    if (e.cause != null) {
-      print('Cause: ${e.cause}');
-    }
-    if (e.trace != null) {
-      print(e.trace);
-    }
-  } catch (e, st) {
+    print('Cause: ${e.cause}');
+  } catch (e) {
     print('Reading GeoJSON resource failed: $e');
-    print(st);
   }
 }
