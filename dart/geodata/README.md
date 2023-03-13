@@ -73,7 +73,7 @@ To use the OGC API Features client for a remote Web API:
 2. Access metadata using `client.meta()`, `client.conformance()` and `client.collections()` as needed
 3. Get a feature source for a specific collection with `client.collection('...')` 
 4. Access metadata for a collection with `source.meta()`
-5. Access feature items from a collection using `source.items()` and `source.itemsAll()` or a single feature using `source.itemsById()`
+5. Access feature items from a collection using `source.items()` and `source.itemsAll()` or a single feature using `source.itemById()`
 6. Also paginated access is supported by `source.itemsPaged()` and `source.itemsAllPaged()`
 
 ## GeoJSON client
