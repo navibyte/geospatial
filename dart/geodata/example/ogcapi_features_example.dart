@@ -55,6 +55,15 @@ Future<void> main(List<String> args) async {
   // get a feature source (`OGCFeatureSource`) for this collection
   final source = await client.collection('dutch_windmills');
 
+  // the source for the collection also provides some metadata
+  final collectionMeta = await source.meta();
+  print('');
+  print('Collection: ${collectionMeta.id} / ${collectionMeta.title}');
+  print('Description: ${collectionMeta.description}');
+  print('Spatial extent: ${collectionMeta.extent?.spatial}');
+  print('Temporal extent: ${collectionMeta.extent?.temporal}');
+  _printLinks(collectionMeta.links);
+
   // next read actual data (wind mills) from this collection
 
   // `itemsAll` lets access all features on source (optionally limited by limit)
@@ -62,7 +71,7 @@ Future<void> main(List<String> args) async {
     limit: 2,
   );
   await _readFeatureItems(
-    useCase: 'Fetch max 2 (limit) features from "dutch_windmills" collection',
+    useCase: 'Read max 2 (limit) features from "dutch_windmills" collection',
     items: itemsAll,
     propertyNames: ['gid', 'NAAM', 'PLAATS'],
     printLinks: true,
@@ -74,7 +83,7 @@ Future<void> main(List<String> args) async {
   Paged<OGCFeatureItems>? page = await source.itemsAllPaged(limit: 2);
   while (page != null && pageIndex <= 2) {
     await _readFeatureItems(
-      useCase: 'Page $pageIndex with max 2 features in paginated access',
+      useCase: 'Read page $pageIndex with max 2 features in paginated access',
       items: page.current,
       propertyNames: ['NAAM'],
     );
@@ -89,9 +98,33 @@ Future<void> main(List<String> args) async {
     ),
   );
   await _readFeatureItems(
-    useCase: 'Fetch features from "dutch_windmills" matching the bbox filter',
+    useCase: 'Read features from "dutch_windmills" matching the bbox filter',
     items: items,
     propertyNames: ['NAAM'],
+  );
+
+  // `BoundedItemsQuery` provides also following filters:
+  // - `limit` sets the maximum number of features returned
+  // - `timeFrame` sets a temporal filter
+  // - `bboxCrs` sets the CRS used by the `bbox` filter (*)
+  // - `crs` sets the CRS used by geometry objects of response features (*)
+  // 
+  // (*) supported only by services conforming to OGC API Features - Part 2: CRS
+
+  // `items` allows also setting property filters when supported by a service.
+  // 
+  // In this case check the following queryables resource from the service: 
+  // https://demo.pygeoapi.io/master/collections/dutch_windmills/queryables
+  // (currently the geodata client does not decode queryables yet)
+  final itemsByPlace = await source.items(
+    const BoundedItemsQuery(
+      extra: {'PLAATS': 'Uitgeest'},
+    ),
+  );
+  await _readFeatureItems(
+    useCase: 'Read features from "dutch_windmills" filtered by a place name',
+    items: itemsByPlace,
+    propertyNames: ['NAAM', 'PLAATS'],
   );
 
   // `itemsPaged` is used for paginated access on filtered queries
@@ -101,7 +134,7 @@ Future<void> main(List<String> args) async {
   // it's possible to access also a single specific feature item by ID
   final item = await source.itemById('Molens.5');
   await _readFeatureItem(
-    useCase: 'Fetch a single feature by ID from "dutch_windmills"',
+    useCase: 'Read a single feature by ID from "dutch_windmills"',
     item: item,
     printLinks: true,
   );
@@ -135,10 +168,7 @@ Future<void> _readFeatureItems({
     // responses contain also links to other resources (like alternative
     // encodings, metadata about a source collection, or next set of features)
     if (printLinks) {
-      print('Links');
-      for (final link in items.links.items) {
-        print('  ${link.rel}: ${link.href}');
-      }
+      _printLinks(items.links);
     }
 
     // do something with actual data (features), in this sample just print them
@@ -169,10 +199,7 @@ Future<void> _readFeatureItem({
   try {
     // responses contain also links to other resources
     if (printLinks) {
-      print('Links');
-      for (final link in item.links.items) {
-        print('  ${link.rel}: ${link.href}');
-      }
+      _printLinks(item.links);
     }
 
     // do something with actual data (a feature), in this sample just print it
@@ -202,5 +229,12 @@ void _printFeature(
     for (final key in feature.properties.keys) {
       print('    $key: ${feature.properties[key]}');
     }
+  }
+}
+
+void _printLinks(Links links) {
+  print('Links');
+  for (final link in links.items) {
+    print('  ${link.rel}: ${link.href}');
   }
 }
