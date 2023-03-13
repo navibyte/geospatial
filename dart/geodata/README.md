@@ -28,7 +28,7 @@ Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geodata: ^0.11.0
+  geodata: ^0.11.1
 ```
 
 Import it:

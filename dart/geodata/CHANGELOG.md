@@ -1,3 +1,12 @@
+## 0.11.1
+
+📚 Documentation updates
+* An introduction chapter for the readme.
+* A new sample how to use OGC API Features for the readme and examples
+
+🛠 Maintenance:
+* The SDK constraint updated from '>=2.17.0 <3.0.0' to '>=2.17.0 <4.0.0'.
+
 ## 0.11.0
 
 [geodata version 0.11.0 #162](https://github.com/navibyte/geospatial/issues/162)

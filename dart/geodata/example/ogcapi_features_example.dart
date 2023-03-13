@@ -108,12 +108,12 @@ Future<void> main(List<String> args) async {
   // - `timeFrame` sets a temporal filter
   // - `bboxCrs` sets the CRS used by the `bbox` filter (*)
   // - `crs` sets the CRS used by geometry objects of response features (*)
-  // 
+  //
   // (*) supported only by services conforming to OGC API Features - Part 2: CRS
 
   // `items` allows also setting property filters when supported by a service.
-  // 
-  // In this case check the following queryables resource from the service: 
+  //
+  // In this case check the following queryables resource from the service:
   // https://demo.pygeoapi.io/master/collections/dutch_windmills/queryables
   // (currently the geodata client does not decode queryables yet)
   final itemsByPlace = await source.items(
