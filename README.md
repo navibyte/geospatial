@@ -156,13 +156,20 @@ OGC (The Open Geospatial Consortium) related:
 * [OGC APIs](https://ogcapi.ogc.org/)
   * [OGC API Common](https://ogcapi.ogc.org/common/)
   * [OGC API Features](https://ogcapi.ogc.org/features/)
-  * [OGC API Features - demo services](https://github.com/opengeospatial/ogcapi-features/blob/master/implementations.md)
+  * [OGC API Features - demo services](https://github.com/opengeospatial/ogcapi-features/tree/master/implementations)
+  * [OGC API Features - github resources](https://github.com/opengeospatial/ogcapi-features)
+  * [OGC API Features - schemas](http://schemas.opengis.net/ogcapi/features/)
 * [OGC Web API Guidelines](https://github.com/opengeospatial/OGC-Web-API-Guidelines)
 * [Simple Feature Access - Part 1: Common Architecture](https://www.ogc.org/standards/sfa)
 * [OGC Two Dimensional Tile Matrix Set](https://docs.opengeospatial.org/is/17-083r2/17-083r2.html)
 
 W3C
 * [Spatial Data on the Web Best Practices](https://www.w3.org/TR/sdw-bp/)
+  * [Spatial Things, Features and Geometry](https://www.w3.org/TR/sdw-bp/#spatial-things-features-and-geometry)
+
+The OpenAPI Initiative (OAI) 
+* [OpenAPI home](https://www.openapis.org/)
+* [OpenAPI specification - latest](https://spec.openapis.org/oas/latest.html)
 
 ### Dart and Flutter programming
 
@@ -170,15 +177,21 @@ SDKs:
 * [Dart](https://dart.dev/)
 * [Flutter](https://flutter.dev/) 
 
-Latest on SDKs
+Latest on Dart SDKs
+* [Dart 3 alpha](https://medium.com/dartlang/dart-3-alpha-f1458fb9d232) with records, patterns, access controls, portability advancements and the new Dart 3 type system (100% sound null safety)
+* [Dart 2.18](https://medium.com/dartlang/dart-2-18-f4b3101f146c) with Objective-C & Swift interop, and improved type inference
 * [Dart 2.17](https://medium.com/dartlang/dart-2-17-b216bfc80c5d) with enum member support, parameter forwarding to super classes, flexibility for named parameters, and more
-* [Dart 2.17](https://medium.com/dartlang/dart-2-16-improved-tooling-and-platform-handling-dd87abd6bad1) with improved tooling and platform handling
+* [Dart 2.16](https://medium.com/dartlang/dart-2-16-improved-tooling-and-platform-handling-dd87abd6bad1) with improved tooling and platform handling
 * [Dart 2.15](https://medium.com/dartlang/dart-2-15-7e7a598e508a) with fast concurrency, constructor tear-offs, improved enums, and more
 * [Dart 2.14](https://medium.com/dartlang/announcing-dart-2-14-b48b9bb2fb67) with Apple Silicon support, default lints etc.
 * [Dart 2.13](https://medium.com/dartlang/announcing-dart-2-13-c6d547b57067) with new type aliases and more
 * [Dart 2.12](https://medium.com/dartlang/announcing-dart-2-12-499a6e689c87) with sound null safety
-* [Flutter 2](https://developers.googleblog.com/2021/03/announcing-flutter-2.html)
-* [What’s New in Flutter 2](https://medium.com/flutter/whats-new-in-flutter-2-0-fe8e95ecc65)
+
+Latest on Flutter SDKs
+* [Flutter 3.7](https://medium.com/flutter/whats-new-in-flutter-3-7-38cbea71133c) with Material 3 updates and iOS improvements
+* [Flutter 3.3](https://medium.com/flutter/announcing-flutter-3-3-at-flutter-vikings-6f213e068793)
+  * [What’s New in Flutter 3.3](https://medium.com/flutter/whats-new-in-flutter-3-3-893c7b9af1ff)
+* [Flutter 3](https://medium.com/flutter/introducing-flutter-3-5eb69151622f)
 
 Packages
 * [pub.dev](https://pub.dev/)
@@ -193,8 +206,13 @@ Guidelines
 
 Roadmaps
 * [Flutter roadmap](https://github.com/flutter/flutter/wiki/Roadmap)
+* [The road to Dart 3: A fully sound, null safe language](https://medium.com/dartlang/the-road-to-dart-3-afdd580fbefa)
+* [Dart language evolution](https://dart.dev/guides/language/evolution)
+* [Dart SDK milestones](https://github.com/dart-lang/sdk/milestones)
 * Waiting for [new features](https://github.com/dart-lang/language/projects/1) on the Dart [language](https://github.com/dart-lang/language) too ...
-  * [Views on an object without a wrapper object #1474](https://github.com/dart-lang/language/issues/1474), see also [working spec](https://github.com/dart-lang/language/blob/master/working/1426-extension-types/feature-specification-views.md)
+  * [Patterns and related features #546](https://github.com/dart-lang/language/issues/546)
+  * [Type capability modifiers #2242](https://github.com/dart-lang/language/issues/2242)
+  * [Inline classes #2727](https://github.com/dart-lang/language/issues/2727)
   * [Static metaprogramming #1482](https://github.com/dart-lang/language/issues/1482) with data classes
 
 ### Dart and Flutter libraries
@@ -211,6 +229,7 @@ Package @ pub.dev | Code @ GitHub | Description
 [http](https://pub.dev/packages/http) | [dart-lang/http](https://github.com/dart-lang/http) | A composable API for making HTTP requests in Dart.
 [meta](https://pub.dev/packages/meta) | [dart-lang/sdk](https://github.com/dart-lang/sdk/tree/master/pkg/meta) | This package defines annotations that can be used by the tools that are shipped with the Dart SDK.
 [proj4dart](https://pub.dev/packages/proj4dart) | [maRci002/proj4dart](https://github.com/maRci002/proj4dart) | Proj4dart is a Dart library to transform point coordinates from one coordinate system to another, including datum transformations (Dart version of proj4js/proj4js).
+[very_good_analysis](https://pub.dev/packages/very_good_analysis) | [VeryGoodOpenSource/very_good_analysis](https://github.com/VeryGoodOpenSource/very_good_analysis) | Lint rules for Dart and Flutter.
 
 In some previous releases also following are utilized:
 
