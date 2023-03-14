@@ -1,4 +1,4 @@
-# Analysis options / lint rules (2023-03-10 / "packages edition")
+# Analysis options / lint rules (2023-03-14 / "packages edition")
 #
 # Documentation (official for Dart)
 #     https://pub.dev/packages/lints
@@ -44,13 +44,6 @@ linter:
     # What's wrong with relative imports between source code inside lib.
     # So disable this rule. However "avoid_relative_lib_imports" is enabled.
     always_use_package_imports: false
-
-    # "AVOID returning null from members whose return type is bool, double, int,
-    #  or num."
-    # As dart-lint is commenting, this rule has lost it's meaning after proper
-    # null-safety support on Dart. And there are valid cases for returning nulls
-    # even for primitive types.
-    avoid_returning_null: false
 
     # "DO use int literals rather than the corresponding double literal."
     # It's better to use 0.0 or 342.0 for doubles than 0 and 342.
