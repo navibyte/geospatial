@@ -14,9 +14,58 @@ Key features:
 * 🌐 The [GeoJSON](https://geojson.org/) client to read features from static web resources and local files
 * 🌎 The [OGC API Features](https://ogcapi.ogc.org/features/) client to access metadata and feature items from a compliant geospatial Web API providing GeoJSON data
 
-The client-side support for the
-[OGC API Features](https://ogcapi.ogc.org/features/) standard is not complete,
-however key functionality of `Part1 : Core` of the standard is supported.
+The client-side support for the OGC API Features standard is not complete,
+however key functionality of `Part1 : Core` of this standard is supported. 
+
+## Introduction
+
+As a background you might want first to check a good
+[introduction about OGC API Features](http://opengeospatial.github.io/e-learning/ogcapi-features/text/basic-main.html) or a video about the
+[OGC API standard family](https://www.youtube.com/watch?v=xpw_VvcPjaE),
+both provided by OGC (The Open Geospatial Consortium) itself.
+
+In this package see [geodata_example.dart](example/geodata_example.dart) for
+a simple CLI tool reading metadata and feature items from GeoJSON and OGC API
+Features data sources.
+
+Below you can find few step-by-step instructions how to get started.
+
+**The GeoJSON client for a remote web resource**:
+
+Step | Code
+---- | ---- 
+1. Get a feature source. | `final source = GeoJSONFeatures.http(location: Uri.parse('...'));`
+2. Access feature items. | `final items = await source.itemsAll(limit: 100);`
+3. Get an iterable of feature objects. | `final features = items.collection.features;`
+
+**The GeoJSON client for a local reosurce like a file**:
+
+Step | Code
+---- | ---- 
+1. Get a feature source. | `final source = GeoJSONFeatures.any(() async => File('...').readAsString());`
+2. Access feature items. | `final items = await source.itemsAll(limit: 100);`
+3. Get an iterable of feature objects. | `final features = items.collection.features;`
+
+**The OGC API Features client for a remote Web API**:
+
+Step | Code
+---- | ---- 
+1. Get a client instance. | `final client = OGCAPIFeatures.http(endpoint: Uri.parse('...'));`
+2. Access (and check) metadata (`meta`, `conformance` or `collections`) as needed. | `final conformance = await client.conformance();` 
+3. Get a feature source for a specific collection. | `final source = await client.collection('my_collection');` 
+4. Access (and check) metadata for this collection. | `final meta = await source.meta();`
+5. Access feature items. | `final items = await source.itemsAll(limit: 100);`
+6. Check response metadata. | `print('Timestamp: ${items.timeStamp}');`
+7. Get an iterable of feature objects. | `final features = items.collection.features;`
+
+For the step 5 other alternatives are:
+* Use `source.items()` to get feature items by a filtered query (ie. bbox).
+* Use `source.itemById()` to get a single feature by an identifier.
+* Use `source.itemsAllPaged()` or `source.itemsPaged()` for accessing paged
+feature sets.
+
+In the step 6 it's also possible to get links to related resources, and
+optionally also to get a number of matched or returned features in a response.
 
 ## Usage
 
@@ -51,30 +100,7 @@ Other documentation:
 > 
 > 🚀 **Samples**: 
 > The [Geospatial demos for Dart](https://github.com/navibyte/geospatial_demos)
-> repository contains more sample code showing also how to use this package! But
-> read the documentation below first.
-
-## Introduction
-
-See [geodata_example.dart](example/geodata_example.dart) for a simple CLI tool
-reading metadata and feature items from GeoJSON and OGC API Features data 
-sources.
-
-To use the GeoJSON client for a remote web resource:
-1. Get a feature source with `GeoJSONFeatures.http(location: Uri.parse('...'))`
-2. Access feature items from a source using `source.itemsAll()`
-
-To use the GeoJSON client for a local reosurce like a file:
-1. Get a feature source with `GeoJSONFeatures.any(() async => File('...').readAsString())`
-2. Access feature items from a source using `source.itemsAll()`
-
-To use the OGC API Features client for a remote Web API:
-1. Get a client instance with `OGCAPIFeatures.http(endpoint: Uri.parse('...'))`
-2. Access metadata using `client.meta()`, `client.conformance()` and `client.collections()` as needed
-3. Get a feature source for a specific collection with `client.collection('...')` 
-4. Access metadata for a collection with `source.meta()`
-5. Access feature items from a collection using `source.items()` and `source.itemsAll()` or a single feature using `source.itemById()`
-6. Also paginated access is supported by `source.itemsPaged()` and `source.itemsAllPaged()`
+> repository contains more sample code showing also how to use this package!
 
 ## GeoJSON client
 
@@ -84,6 +110,10 @@ multi line string, multi polygon and geometry collection) from following
 resource types:
 * a web resource (by URL) containing GeoJSON content - data is fetched using the HTTP client (as provided by the [http](https://pub.dev/packages/http) package)
 * custom resources, ie. a local file or an app bundled containing valid GeoJSON data
+
+Please note that this client is not related to OGC API Features or any other API
+protocol either, but you can access any (static) web or local resource with
+GeoJSON data.
 
 The sample below shows to read GeoJSON features from a web resource using the
 HTTP client.
@@ -138,7 +168,7 @@ datasets, and data items to be queried must be selected and filtered.
 
 The [OGC API Features](https://ogcapi.ogc.org/features/) standard by the
 [Open Geospatial Consortium](https://www.ogc.org/) (or OGC) specifies this -
-how data is discovered and accessed, or as described by the standard itself:
+how data is discovered and accessed:
 
 > OGC API Features provides API building blocks to create, modify and query 
 > features on the Web. OGC API Features is comprised of multiple parts, each of 
@@ -160,19 +190,14 @@ Feature collection | `/collections/{collectionId}` | Metadata about a single fea
 Features | `/collections/{collectionId}/items` | Feature items (with geometry and property data) in a specified feature collection provided by the API.
 Feature (by id) | `/collections/{collectionId}/items/{featureId}` | A single feature item (with geometry and property data) in a specified feature collection provided by the API.
 
-This package supports key features of the `Part1 : Core` specification of the
-[OGC API Features](https://ogcapi.ogc.org/features/) standard. 
-
-To access such a service create a client using the `OGCAPIFeatures.http`
-factory, and then get a feature source (`OGCFeatureSource`) for a collection
-using `collection()` method of a client. This collection source provides methods
-to access metadata and actual data (feature items).
+Most services also provide an API definition (ie. an Open API 3.0 document) at
+`/api` describing the capabilities of the API service.
 
 See [ogcapi_features_example.dart](example/ogcapi_features_example.dart) for a
 sample how to read metadata and feature items from an API service conforming to
 [OGC API Features](https://ogcapi.ogc.org/features/).
 
-Some key portions of this sample:
+Some most relevant portions of this sample:
 
 ```dart
 import 'package:geobase/coordinates.dart';
@@ -185,38 +210,11 @@ Future<void> main(List<String> args) async {
     endpoint: Uri.parse('https://demo.pygeoapi.io/master/'),
   );
 
-  // the client provides resource, conformance and collections meta accessors
-  // (those are not needed in all use cases, but let's check them for demo)
-
   // resource meta contains the service title (+ links and optional description)
   final meta = await client.meta();
   print('Service: ${meta.title}');
 
-  // conformance classes (text ids) informs the capabilities of the service
-  final conformance = await client.conformance();
-  print('Conformance classes:');
-  for (final e in conformance) {
-    print('  $e');
-  }
-  // the service should be compliant with OGC API Features - Part 1 and GeoJSON
-  const c1 = 'http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core';
-  const c2 = 'http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson';
-  if (conformance.contains(c1) && conformance.contains(c2)) {
-    print('The service is compliant with OGC API Features, Part 1 and GeoJSON');
-  }
-
-  // get metadata about all feature collections provided by the service
-  final collections = await client.collections();
-  print('Collections:');
-  for (final e in collections) {
-    print('  ${e.id}: ${e.title}');
-    // other collection meta: ie. spatial and temporal extent and resource links
-  }
-
-  // in this sample, the pygeoapi service contains over 10 collections, but in
-  // the following parts we use a collection named 'dutch_windmills'
-
-  // get a feature source (`OGCFeatureSource`) for this collection
+  // get a feature source (`OGCFeatureSource`) for Dutch windmill point features
   final source = await client.collection('dutch_windmills');
 
   // the source for the collection also provides some metadata
@@ -228,25 +226,6 @@ Future<void> main(List<String> args) async {
   print('Temporal extent: ${collectionMeta.extent?.temporal}');
 
   // next read actual data (wind mills) from this collection
-
-  // `itemsAll` lets access all features on source (optionally limited by limit)
-  final itemsAll = await source.itemsAll(
-    limit: 2,
-  );
-  // Read max 2 (limit) features from "dutch_windmills" collection
-  // (... code omitted ...)
-
-  // `itemsAllPaged` helps paginating through a large dataset with many features
-  // (here each page is limited to 2 features, and max 3 pages are looped)
-  var pageIndex = 0;
-  Paged<OGCFeatureItems>? page = await source.itemsAllPaged(limit: 2);
-  while (page != null && pageIndex <= 2) {
-    // Read page $pageIndex with max 2 features in paginated access
-    // (... code omitted ...)
-
-    page = await page.next();
-    pageIndex++;
-  }
 
   // `items` is used for filtered queries, here bounding box, WGS 84 coordinates
   final items = await source.items(
@@ -277,9 +256,6 @@ Future<void> main(List<String> args) async {
   );
   // Read features from "dutch_windmills" filtered by a place name.
   // (... code omitted ...)
-
-  // `itemsPaged` is used for paginated access on filtered queries
-  // (not demostrated here, see `itemsAllPaged` sample above about paggination)
 
   // samples above accessed feature collections (resuls with 0 to N features)
   // it's possible to access also a single specific feature item by ID

@@ -52,7 +52,7 @@ Future<void> main(List<String> args) async {
   // in this sample, the pygeoapi service contains over 10 collections, but in
   // the following parts we use a collection named 'dutch_windmills'
 
-  // get a feature source (`OGCFeatureSource`) for this collection
+  // get a feature source (`OGCFeatureSource`) for Dutch windmill point features
   final source = await client.collection('dutch_windmills');
 
   // the source for the collection also provides some metadata
