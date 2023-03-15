@@ -269,7 +269,11 @@ As mentioned above, see
 [ogcapi_features_example.dart](example/ogcapi_features_example.dart) for the
 full sample.
 
-An OGC API Features client created by `OGCAPIFeatures.http` has the following
+## Reference
+
+### OGC API Features interfaces
+
+An OGC API Features client created by `OGCAPIFeatures.http()` has the following
 signature:
 
 ```dart
@@ -334,7 +338,30 @@ The feature source returned by `collection()` provides following methods:
   Future<Paged<OGCFeatureItems>> itemsPaged(BoundedItemsQuery query);
 ```
 
-## Reference
+Methods accessing multiple feature items return a future of `OGCFeatureItems``
+which provides:
+
+```dart
+  /// The wrapped feature collection.
+  final FeatureCollection<Feature> collection;
+
+  /// Links related to this object.
+  Links get links;
+
+  /// The time stamp
+  DateTime? get timeStamp;
+
+  /// An optional count of items matched.
+  int? get numberMatched;
+
+  /// An optional count of items returned.
+  int? get numberReturned;
+```
+
+Feature objects are available from the `collection` property. See the
+[geospatial features](https://pub.dev/packages/geobase#geospatial-features)
+chapter in the [geobase](https://pub.dev/packages/geobase) package for more
+information about `Feature` and `FeatureCollection` objects.
 
 ### Packages
 
