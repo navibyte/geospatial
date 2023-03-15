@@ -32,31 +32,31 @@ Below you can find few step-by-step instructions how to get started.
 
 **The GeoJSON client for a remote web resource**:
 
-Step | Code
----- | ---- 
-1. Get a feature source. | `final source = GeoJSONFeatures.http(location: Uri.parse('...'));`
-2. Access feature items. | `final items = await source.itemsAll(limit: 100);`
-3. Get an iterable of feature objects. | `final features = items.collection.features;`
+Step                      | Code
+------------------------- | ---- 
+(1) Get a feature source. | `final source = GeoJSONFeatures.http(location: Uri.parse('...'));`
+(2) Access feature items. | `final items = await source.itemsAll(limit: 100);`
+(3) Get an iterable of feature objects. | `final features = items.collection.features;`
 
 **The GeoJSON client for a local reosurce like a file**:
 
-Step | Code
----- | ---- 
-1. Get a feature source. | `final source = GeoJSONFeatures.any(() async => File('...').readAsString());`
-2. Access feature items. | `final items = await source.itemsAll(limit: 100);`
-3. Get an iterable of feature objects. | `final features = items.collection.features;`
+Step                      | Code
+------------------------- | ---- 
+(1) Get a feature source. | `final source = GeoJSONFeatures.any(() async => File('...').readAsString());`
+(2) Access feature items. | `final items = await source.itemsAll(limit: 100);`
+(3) Get an iterable of feature objects. | `final features = items.collection.features;`
 
 **The OGC API Features client for a remote Web API**:
 
-Step | Code
----- | ---- 
-1. Get a client instance. | `final client = OGCAPIFeatures.http(endpoint: Uri.parse('...'));`
-2. Access (and check) metadata (`meta`, `conformance` or `collections`) as needed. | `final conformance = await client.conformance();` 
-3. Get a feature source for a specific collection. | `final source = await client.collection('my_collection');` 
-4. Access (and check) metadata for this collection. | `final meta = await source.meta();`
-5. Access feature items. | `final items = await source.itemsAll(limit: 100);`
-6. Check response metadata. | `print('Timestamp: ${items.timeStamp}');`
-7. Get an iterable of feature objects. | `final features = items.collection.features;`
+Step                       | Code
+-------------------------- | ---- 
+(1) Get a client instance. | `final client = OGCAPIFeatures.http(endpoint: Uri.parse('...'));`
+(2) Access (and check) metadata (`meta`, `conformance` or `collections`) as needed. | `final conformance = await client.conformance();` 
+(3) Get a feature source for a specific collection. | `final source = await client.collection('my_collection');` 
+(4) Access (and check) metadata for this collection. | `final meta = await source.meta();`
+(5) Access feature items. | `final items = await source.itemsAll(limit: 100);`
+(6) Check response metadata. | `print('Timestamp: ${items.timeStamp}');`
+(7) Get an iterable of feature objects. | `final features = items.collection.features;`
 
 For the step 5 other alternatives are:
 * Use `source.items()` to get feature items by a filtered query (ie. bbox).
