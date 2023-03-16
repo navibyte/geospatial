@@ -30,7 +30,7 @@ Features data sources.
 
 Below you can find few step-by-step instructions how to get started.
 
-**The GeoJSON client for a remote web resource**:
+**Static GeoJSON web resources**:
 
 Step                      | Code
 ------------------------- | ---- 
@@ -38,7 +38,7 @@ Step                      | Code
 (2) Access feature items. | `final items = await source.itemsAll(limit: 100);`
 (3) Get an iterable of feature objects. | `final features = items.collection.features;`
 
-**The GeoJSON client for a local reosurce like a file**:
+**Static GeoJSON local resources like files**:
 
 Step                      | Code
 ------------------------- | ---- 
@@ -46,7 +46,7 @@ Step                      | Code
 (2) Access feature items. | `final items = await source.itemsAll(limit: 100);`
 (3) Get an iterable of feature objects. | `final features = items.collection.features;`
 
-**The OGC API Features client for a remote Web API**:
+**API services conforming to OGC API Features**:
 
 Step                       | Code
 -------------------------- | ---- 
@@ -102,7 +102,9 @@ Other documentation:
 > The [Geospatial demos for Dart](https://github.com/navibyte/geospatial_demos)
 > repository contains more sample code showing also how to use this package!
 
-## GeoJSON client
+## Feature data sources
+
+### GeoJSON client
 
 The GeoJSON client allows fetching and reading geospatial feature collections
 with their geometry objects (ie. point, line string, polygon, multi point,
@@ -160,7 +162,7 @@ Future<void> _readFeatures(BasicFeatureSource source) async {
 The full sample for accessing GeoJSON feature sources is available in
 [geojson_example.dart](example/geojson_example.dart).
 
-## OGC API Features client
+### OGC API Features client
 
 The GeoJSON client discussed above allows reading data from a static web
 resource or a local file. However most often geospatial APIs contains huge
@@ -245,10 +247,6 @@ Future<void> main(List<String> args) async {
   // (*) supported only by services conforming to OGC API Features - Part 2: CRS
 
   // `items` allows also setting property filters when supported by a service.
-  // 
-  // In this case check the following queryables resource from the service: 
-  // https://demo.pygeoapi.io/master/collections/dutch_windmills/queryables
-  // (currently the geodata client does not decode queryables yet)
   final itemsByPlace = await source.items(
     const BoundedItemsQuery(
       extra: {'PLAATS': 'Uitgeest'},
@@ -271,7 +269,7 @@ full sample.
 
 ## Reference
 
-### OGC API Features interfaces
+## Feature data interfaces
 
 An OGC API Features client created by `OGCAPIFeatures.http()` has the following
 signature:
