@@ -269,7 +269,7 @@ full sample.
 
 ## Reference
 
-## Feature data interfaces
+### Feature data interfaces
 
 An OGC API Features client created by `OGCAPIFeatures.http()` has the following
 signature:
