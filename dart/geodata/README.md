@@ -271,8 +271,14 @@ full sample.
 
 ### Feature data interfaces
 
-An OGC API Features client created by `OGCAPIFeatures.http()` has the following
-signature:
+A diagram describing the most important interfaces and classes needed when
+interacting with API services compliant with the
+[OGC API Features](https://ogcapi.ogc.org/features/) standard:
+
+<img src="assets/diagrams/feature_data_interfaces.svg" width="100%" title="Feature data interfaces in the geodata package" />
+
+The OGC API Features client created by `OGCAPIFeatures.http()` for some endpoint
+has the following signature:
 
 ```dart
 /// A feature service compliant with the OGC API Features standard.
@@ -309,7 +315,7 @@ The feature source returned by `collection()` provides following methods:
   ///
   /// This call accesses only one set of feature items (number of returned items
   /// can be limited).
-  Future<OGCFeatureItem> itemsAll({int? limit});
+  Future<OGCFeatureItems> itemsAll({int? limit});
 
   /// Fetches all features as paged sets from this source.
   ///
@@ -318,7 +324,7 @@ The feature source returned by `collection()` provides following methods:
   ///
   /// This call returns a first set of feature items (number of returned items
   /// can be limited), with a link to an optional next set of feature items.
-  Future<Paged<OGCFeatureItem>> itemsAllPaged({int? limit});
+  Future<Paged<OGCFeatureItems>> itemsAllPaged({int? limit});
 
   /// Fetches a single feature by id (set in [query]) from this source.
   Future<OGCFeatureItem> item(ItemQuery query);
