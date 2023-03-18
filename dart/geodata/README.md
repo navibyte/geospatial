@@ -20,7 +20,7 @@ however key functionality of `Part1 : Core` of this standard is supported.
 ## Introduction
 
 As a background you might want first to check a good
-[introduction about OGC API Features](http://opengeospatial.github.io/e-learning/ogcapi-features/text/basic-main.html) or a video about the
+[introduction about OGC API Features](https://opengeospatial.github.io/e-learning/ogcapi-features/text/basic-main.html) or a video about the
 [OGC API standard family](https://www.youtube.com/watch?v=xpw_VvcPjaE),
 both provided by OGC (The Open Geospatial Consortium) itself.
 
