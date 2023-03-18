@@ -23,9 +23,6 @@ void main() {
   _projectedCoordinates();
   _scalableCoordinates();
 
-  // coordinate arrays
-  _coordinateArrays();
-
   // geometries
   _geometryTypes2D();
   _point();
@@ -57,6 +54,9 @@ void main() {
   // tiling schemes
   _webMercatorQuad();
   _globalGeodeticQuad();
+
+  // coordinate arrays
+  _coordinateArrays();
 }
 
 void _intro() {
@@ -69,7 +69,7 @@ void _intro() {
   // A projected position without and with z.
   Projected(x: 708221.0, y: 5707225.0);
   Projected(x: 708221.0, y: 5707225.0, z: 45.0);
-  
+
   // Geographic and projected bounding boxes.
   GeoBox(west: -20, south: 50, east: 20, north: 60);
   GeoBox(west: -20, south: 50, minElev: 100, east: 20, north: 60, maxElev: 200);
@@ -93,7 +93,7 @@ void _intro() {
 
   // A point with a 2D position.
   Point.build([30.0, 10.0]);
- 
+
   // A line string (polyline) with three 2D positions.
   LineString.build([30, 10, 10, 30, 40, 40]);
 
@@ -104,8 +104,8 @@ void _intro() {
 
   // A polygon with an exterior ring and an interior ring as a hole.
   Polygon.build([
-    [35, 10, 45, 45, 15, 40, 10, 20, 35, 10], 
-    [20, 30, 35, 35, 30, 20, 20, 30]
+    [35, 10, 45, 45, 15, 40, 10, 20, 35, 10],
+    [20, 30, 35, 35, 30, 20, 20, 30],
   ]);
 
   // A multi point with four points:
@@ -125,18 +125,20 @@ void _intro() {
   // A multi polygon with two polygons both with an outer ring (without holes).
   MultiPolygon.build([
     [
-      [30, 20, 45, 40, 10, 40, 30, 20]
+      [30, 20, 45, 40, 10, 40, 30, 20],
     ],
     [
-      [15, 5, 40, 10, 10, 20, 5, 10, 15, 5]
-    ]
+      [15, 5, 40, 10, 10, 20, 5, 10, 15, 5],
+    ],
   ]);
 
   // A geometry collection with a point, a line string and a polygon.
   GeometryCollection([
     Point.build([30.0, 10.0]),
     LineString.build([10, 10, 20, 20, 10, 40]),
-    Polygon.build([[40, 40, 20, 45, 45, 30, 40, 40]])
+    Polygon.build([
+      [40, 40, 20, 45, 45, 30, 40, 40],
+    ])
   ]);
 
   // -------
@@ -271,32 +273,9 @@ void _scalableCoordinates() {
   pixel.zoomTo(13); // => Scalable2i(zoom: 13, x: 368, y: 160));
 }
 
-void _coordinateArrays() {
-  // A position array with three positions each with x and y coordinates.
-  PositionArray.view(
-    [
-      10.0, 11.0, // (x, y) for position 0
-      20.0, 21.0, // (x, y) for position 1
-      30.0, 31.0, // (x, y) for position 2
-    ],
-    type: Coords.xy,
-  );
-
-  // A position array with three positions each with x, y and z coordinates.
-  PositionArray.view(
-    [
-      10.0, 11.0, 12.0, // (x, y, z) for position 0
-      20.0, 21.0, 22.0, // (x, y, z) for position 1
-      30.0, 31.0, 32.0, // (x, y, z) for position 2
-    ],
-    type: Coords.xyz,
-  );
-}
-
 void _geometryTypes2D() {
   // point (with a position)
   Point.build([30.0, 10.0]);
-  Point(XY(30.0, 10.0));
 
   // line string (with a chain)
   LineString.build([30, 10, 10, 30, 40, 40]);
@@ -373,7 +352,6 @@ void _geometryTypesOneliners() {
 
   // point (with a position)
   Point.build([30.0, 10.0]);
-  Point(XY(30.0, 10.0));
 
   // line string (with a chain)
   LineString.build([30, 10, 10, 30, 40, 40]);
@@ -436,7 +414,8 @@ void _featureCollection() {
   FeatureCollection([
     Feature(
       id: 'ROG',
-      geometry: Point(LonLatElev(-0.0014, 51.4778, 45.0)),
+      // a point geometry with a position (lon, lat, elev)
+      geometry: Point.build([-0.0014, 51.4778, 45.0]),
       properties: {
         'title': 'Royal Observatory',
         'place': 'Greenwich',
@@ -447,7 +426,8 @@ void _featureCollection() {
     ),
     Feature(
       id: 'TB',
-      geometry: Point(LonLat(-0.075406, 51.5055)),
+      // a point geometry with a position (lon, lat)
+      geometry: Point.build([-0.075406, 51.5055]),
       properties: {
         'title': 'Tower Bridge',
         'city': 'London',
@@ -485,7 +465,7 @@ void _geoJson() {
   //   }
   final feature = Feature(
     id: 'TB',
-    geometry: Point(LonLat(-0.075406, 51.5055)),
+    geometry: Point.build([-0.075406, 51.5055]),
     properties: {
       'title': 'Tower Bridge',
       'city': 'London',
@@ -609,7 +589,7 @@ void _wkbSample1() {
 /// The previous sample ("_wkbSample1") using geometry model objects.
 void _wkbSample2() {
   // create a Point object
-  final point = Point(XYZM(10.123, 20.25, -30.95, -1.999));
+  final point = Point.build([10.123, 20.25, -30.95, -1.999]);
 
   // get encoded bytes (Uint8List)
   final wkbBytes = point.toBytes(format: WKB.geometry);
@@ -880,4 +860,26 @@ void _globalGeodeticQuad() {
 
   // inverse: zoom from scale denominator at the Equator
   print(quad.zoomFromScaleDenominator(272989.39)); // ~ 10.0 (double value)
+}
+
+void _coordinateArrays() {
+  // A position array with three positions each with x and y coordinates.
+  PositionArray.view(
+    [
+      10.0, 11.0, // (x, y) for position 0
+      20.0, 21.0, // (x, y) for position 1
+      30.0, 31.0, // (x, y) for position 2
+    ],
+    type: Coords.xy,
+  );
+
+  // A position array with three positions each with x, y and z coordinates.
+  PositionArray.view(
+    [
+      10.0, 11.0, 12.0, // (x, y, z) for position 0
+      20.0, 21.0, 22.0, // (x, y, z) for position 1
+      30.0, 31.0, 32.0, // (x, y, z) for position 2
+    ],
+    type: Coords.xyz,
+  );
 }

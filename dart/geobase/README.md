@@ -71,8 +71,8 @@ Geometry primitive and multi geometry objects:
 
   // A polygon with an exterior ring and an interior ring as a hole.
   Polygon.build([
-    [35, 10, 45, 45, 15, 40, 10, 20, 35, 10], 
-    [20, 30, 35, 35, 30, 20, 20, 30]
+    [35, 10, 45, 45, 15, 40, 10, 20, 35, 10],
+    [20, 30, 35, 35, 30, 20, 20, 30],
   ]);
 
   // A multi point with four points:
@@ -92,18 +92,20 @@ Geometry primitive and multi geometry objects:
   // A multi polygon with two polygons both with an outer ring (without holes).
   MultiPolygon.build([
     [
-      [30, 20, 45, 40, 10, 40, 30, 20]
+      [30, 20, 45, 40, 10, 40, 30, 20],
     ],
     [
-      [15, 5, 40, 10, 10, 20, 5, 10, 15, 5]
-    ]
+      [15, 5, 40, 10, 10, 20, 5, 10, 15, 5],
+    ],
   ]);
 
   // A geometry collection with a point, a line string and a polygon.
   GeometryCollection([
     Point.build([30.0, 10.0]),
     LineString.build([10, 10, 20, 20, 10, 40]),
-    Polygon.build([[40, 40, 20, 45, 45, 30, 40, 40]])
+    Polygon.build([
+      [40, 40, 20, 45, 45, 30, 40, 40],
+    ])
   ]);
 ```
 
@@ -403,14 +405,10 @@ and compatible also with [GeoJSON](https://geojson.org/)):
 
 Geometry    | Shape       | Dart code to build objects
 ----------- | ----------- | --------------------------
-Point       | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_Point.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_Point.svg"></a> | `Point.build([30.0, 10.0])`<br>`Point(XY(30.0, 10.0))`
+Point       | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_Point.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_Point.svg"></a> | `Point.build([30.0, 10.0])`
 LineString  | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_LineString.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_LineString.svg"></a> | `LineString.build([30, 10, 10, 30, 40, 40])`
 Polygon     | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_Polygon.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_Polygon.svg"></a> | `Polygon.build([[30, 10, 40, 40, 20, 40, 10, 20, 30, 10]])`
 Polygon (with a hole) | <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_Polygon_with_hole.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/data/features/SFA_Polygon_with_hole.svg"></a> | `Polygon.build([[35, 10, 45, 45, 15, 40, 10, 20, 35, 10], [20, 30, 35, 35, 30, 20, 20, 30]])`
-
-You may notice that `Point` is created with two different ways:
-* `Point.build([30.0, 10.0])`: this *builds* a point geometry from a position that is represented by a normal double array (or `List<double>`)
-* `Point(XY(30.0, 10.0))` : here `XY` is a special coordinate array class, that is a `Projected` position but also implements `Iterable<double>` - see more in the appendix about [coordinate arrays](#coordinate-arrays)
 
 Also multipart geometry classes are supported:
 
@@ -521,7 +519,8 @@ A `FeatureCollection` object with `Feature` objects:
   FeatureCollection([
     Feature(
       id: 'ROG',
-      geometry: Point(LonLatElev(-0.0014, 51.4778, 45.0)),
+      // a point geometry with a position (lon, lat, elev)
+      geometry: Point.build([-0.0014, 51.4778, 45.0]),
       properties: {
         'title': 'Royal Observatory',
         'place': 'Greenwich',
@@ -532,7 +531,8 @@ A `FeatureCollection` object with `Feature` objects:
     ),
     Feature(
       id: 'TB',
-      geometry: Point(LonLat(-0.075406, 51.5055)),
+      // a point geometry with a position (lon, lat)
+      geometry: Point.build([-0.075406, 51.5055]),
       properties: {
         'title': 'Tower Bridge',
         'city': 'London',
@@ -588,7 +588,7 @@ This package supports encoding GeoJSON text from geometry and feature objects:
   //   }
   final feature = Feature(
     id: 'TB',
-    geometry: Point(LonLat(-0.075406, 51.5055)),
+    geometry: Point.build([-0.075406, 51.5055]),
     properties: {
       'title': 'Tower Bridge',
       'city': 'London',
@@ -753,7 +753,7 @@ The solution above can be simplified a lot by using geometry model objects:
 
 ```dart
   // create a Point object
-  final point = Point(XYZM(10.123, 20.25, -30.95, -1.999));
+  final point = Point.build([10.123, 20.25, -30.95, -1.999]);
 
   // get encoded bytes (Uint8List)
   final wkbBytes = point.toBytes(format: WKB.geometry);
