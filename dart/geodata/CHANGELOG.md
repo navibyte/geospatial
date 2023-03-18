@@ -1,4 +1,4 @@
-## 0.11.2
+## 0.11.2 / 0.11.3
 
 📚 Documentation updates:
 * Readme enhanced with decision flowchart and better feature interface docs.
