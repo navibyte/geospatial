@@ -1,6 +1,11 @@
+## 0.11.2
+
+📚 Documentation updates:
+* Readme enhanced with decision flowchart and better feature interface docs.
+
 ## 0.11.1
 
-📚 Documentation updates
+📚 Documentation updates:
 * An introduction chapter for the readme.
 * A new sample how to use OGC API Features for the readme and examples
 
