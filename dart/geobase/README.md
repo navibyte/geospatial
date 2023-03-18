@@ -10,10 +10,7 @@ and [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geomet
 
 ## Features
 
-✨ New: Data structures for simple geometries, features and feature collections.
-
-✨ New: Support for [Well-known binary](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary) (WKB). Text and
-binary data formats, encodings and content interfaces also redesigned.
+✨ New: Updated docs about positions, geometries, features and vector formats.
 
 <a title="Ktrinko, CC0, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Eckert4.jpg"><img alt="World map with Natural Earth data, Excert projection" src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/projections/eckert4/320px-Eckert4.jpg" align="right"></a>
 
@@ -26,40 +23,6 @@ Key features:
 )
 * 🗺️ coordinate projections (web mercator + based on the external [proj4dart](https://pub.dev/packages/proj4dart) library)
 * 🔢 tiling schemes and tile matrix sets (web mercator, global geodetic)
-
-## Usage
-
-The package requires at least [Dart](https://dart.dev/) SDK 2.17, and it
-supports all [Dart](https://dart.dev/) and [Flutter](https://flutter.dev/)
-platforms.
-
-Add the dependency in your `pubspec.yaml`:
-
-```yaml
-dependencies:
-  geobase: ^0.4.1
-```
-
-Import it:
-
-```dart
-import `package:geobase/geobase.dart`
-```
-
-There are also partial packages containing only a certain subset. See the
-[Packages](#packages) section below.
-
-Other resources:
-
-> 📚 **Web APIs**: See also the [geodata](https://pub.dev/packages/geodata)
-> package that extends capabilities of `geobase` by providing geospatial API
-> clients to read [GeoJSON](https://geojson.org/) data sources and 
-> [OGC API Features](https://ogcapi.ogc.org/features/) web services.
-> 
-> 🚀 **Samples**: 
-> The [Geospatial demos for Dart](https://github.com/navibyte/geospatial_demos)
-> repository contains more sample code showing also how to use this package! But
-> read the documentation below first.
 
 ## Introduction
 
@@ -255,6 +218,39 @@ coordinate array classes are some of the more advanced topics not introduced
 here. Please see separate chapters about [projections](#projections),
 [tiling schemes](#tiling-schemes) and [coordinate arrays](#coordinate-arrays) to
 learn about them.
+
+## Usage
+
+The package requires at least [Dart](https://dart.dev/) SDK 2.17, and it
+supports all [Dart](https://dart.dev/) and [Flutter](https://flutter.dev/)
+platforms.
+
+Add the dependency in your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  geobase: ^0.4.1
+```
+
+Import it:
+
+```dart
+import `package:geobase/geobase.dart`
+```
+
+There are also partial packages containing only a certain subset. See the
+[Packages](#packages) section below.
+
+Other resources:
+
+> 📚 **Web APIs**: See also the [geodata](https://pub.dev/packages/geodata)
+> package that extends capabilities of `geobase` by providing geospatial API
+> clients to read [GeoJSON](https://geojson.org/) data sources and 
+> [OGC API Features](https://ogcapi.ogc.org/features/) web services.
+> 
+> 🚀 **Samples**: 
+> The [Geospatial demos for Dart](https://github.com/navibyte/geospatial_demos)
+> repository contains more sample code showing also how to use this package!
 
 ## Coordinates
 
