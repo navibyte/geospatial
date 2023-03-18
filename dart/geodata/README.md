@@ -28,9 +28,15 @@ In this package see [geodata_example.dart](example/geodata_example.dart) for
 a simple CLI tool reading metadata and feature items from GeoJSON and OGC API
 Features data sources.
 
-Below you can find few step-by-step instructions how to get started.
+The following diagram describes a decision flowchart to select a client class
+and a feature source to access GeoJSON feature collections and feature items:
 
-**Static GeoJSON web resources**:
+<img src="assets/diagrams/decision_flowchart.svg" width="100%" title="Decision flowchart to select a client class to access GeoJSON resources" />
+
+Below you can find few step-by-step instructions how to get started in scenarios
+represented in the decision flowchart.
+
+**Static GeoJSON web resource**:
 
 Step                      | Code
 ------------------------- | ---- 
@@ -38,7 +44,7 @@ Step                      | Code
 (2) Access feature items. | `final items = await source.itemsAll(limit: 100);`
 (3) Get an iterable of feature objects. | `final features = items.collection.features;`
 
-**Static GeoJSON local resources like files**:
+**Static GeoJSON local resource**:
 
 Step                      | Code
 ------------------------- | ---- 
@@ -46,7 +52,7 @@ Step                      | Code
 (2) Access feature items. | `final items = await source.itemsAll(limit: 100);`
 (3) Get an iterable of feature objects. | `final features = items.collection.features;`
 
-**API services conforming to OGC API Features**:
+**Web API service conforming to OGC API Features**:
 
 Step                       | Code
 -------------------------- | ---- 
