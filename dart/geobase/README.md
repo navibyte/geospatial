@@ -820,6 +820,12 @@ As a small bonus let's continue the last sample a bit:
 
 ## Meta
 
+### Metadata classes
+
+The class diagram of temporal data and geospatial extent classes:
+
+<img src="https://raw.githubusercontent.com/navibyte/geospatial/main/dart/geobase/assets/diagrams/meta_temporal_extent.svg" width="100%" title="Temporal data and geospatial extent classes" />
+
 ### Temporal data
 
 Temporal data can be represented as *instants* (a time stamp) and *intervals*
