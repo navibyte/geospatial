@@ -365,8 +365,11 @@ level, with all values as integers.
 
 ### Summary 
 
-The summary of *projected*, *geographic* and *scalable* coordinate values in the
-basic *position* classes:
+Classes representing *projected*, *geographic* and *scalable* coordinates:
+
+<img src="https://raw.githubusercontent.com/navibyte/geospatial/main/dart/geobase/assets/diagrams/position_box_scalable.svg" width="100%" title="Position, Box and Scalable classes" />
+
+The summary of coordinate values in *position* classes:
 
 Class         | Required coordinates      | Optional coordinates
 ------------- | ------------------------- | ------------------------------------
@@ -374,7 +377,7 @@ Class         | Required coordinates      | Optional coordinates
 `Geographic`  | lon, lat                  | elev, m
 `Scalable2i`  | zoom, x, y                |
 
-The summary of basic *bounding box* classes:
+The summary of coordinate values in *bounding box* classes:
 
 Class         | Required coordinates      | Optional coordinates
 ------------- | ------------------------- | ------------------------------------
