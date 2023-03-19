@@ -509,7 +509,7 @@ property values or geometry objects, but not specified by the GeoJSON model
 This package models features and feature collections according to these
 definitions:
 
-<img src="https://raw.githubusercontent.com/navibyte/geospatial/main/dart/geobase/assets/diagrams/feature_objects.svg" style="max-width:600px;width:100%" align="center" title="Feature object classes" />
+<img src="https://raw.githubusercontent.com/navibyte/geospatial/main/dart/geobase/assets/diagrams/feature_objects.svg" width="100%" title="Feature object classes" />
 
 ### Feature
 
