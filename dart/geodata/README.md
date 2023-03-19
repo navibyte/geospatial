@@ -36,33 +36,72 @@ and a feature source to access GeoJSON feature collections and feature items:
 Below you can find few step-by-step instructions how to get started in scenarios
 represented in the decision flowchart.
 
-**Static GeoJSON web resource**:
+### Static GeoJSON web resource
 
-Step                      | Code
-------------------------- | ---- 
-(1) Get a feature source. | `final source = GeoJSONFeatures.http(location: Uri.parse('...'));`
-(2) Access feature items. | `final items = await source.itemsAll(limit: 100);`
-(3) Get an iterable of feature objects. | `final features = items.collection.features;`
+```dart
+// 1. Get a feature source from a web resource using http.
+final source = GeoJSONFeatures.http(location: Uri.parse('...'));
 
-**Static GeoJSON local resource**:
+// 2. Access feature items.
+final items = await source.itemsAll();
 
-Step                      | Code
-------------------------- | ---- 
-(1) Get a feature source. | `final source = GeoJSONFeatures.any(() async => File('...').readAsString());`
-(2) Access feature items. | `final items = await source.itemsAll(limit: 100);`
-(3) Get an iterable of feature objects. | `final features = items.collection.features;`
+// 3. Get an iterable of feature objects.
+final features = items.collection.features;
 
-**Web API service conforming to OGC API Features**:
+// 4. Loop through features (each with id, properties and geometry)
+for (final feat in features) {
+  print('Feature ${feat.id} with geometry: ${feat.geometry}');
+}
+```
 
-Step                       | Code
--------------------------- | ---- 
-(1) Get a client instance. | `final client = OGCAPIFeatures.http(endpoint: Uri.parse('...'));`
-(2) Access (and check) metadata (`meta`, `conformance` or `collections`) as needed. | `final conformance = await client.conformance();` 
-(3) Get a feature source for a specific collection. | `final source = await client.collection('my_collection');` 
-(4) Access (and check) metadata for this collection. | `final meta = await source.meta();`
-(5) Access feature items. | `final items = await source.itemsAll(limit: 100);`
-(6) Check response metadata. | `print('Timestamp: ${items.timeStamp}');`
-(7) Get an iterable of feature objects. | `final features = items.collection.features;`
+### Static GeoJSON local resource
+
+```dart
+// 1. Get a feature source using an accessor to a file.
+final source = GeoJSONFeatures.any(() async => File('...').readAsString());
+
+// 2. Access feature items.
+final items = await source.itemsAll();
+
+// 3. Get an iterable of feature objects.
+final features = items.collection.features;
+
+// 4. Loop through features (each with id, properties and geometry)
+for (final feat in features) {
+  print('Feature ${feat.id} with geometry: ${feat.geometry}');
+}
+```
+
+### Web API service conforming to OGC API Features
+
+```dart
+// 1. Get a client instance for a Web API endpoint.
+final client = OGCAPIFeatures.http(endpoint: Uri.parse('...'));
+
+// 2. Access (and check) metadata (meta, conformance or collections) as needed.
+final conformance = await client.conformance();
+
+// 3. Get a feature source for a specific collection.
+final source = await client.collection('my_collection');
+
+// 4. Access (and check) metadata for this collection.
+final meta = await source.meta();
+print('Collection title: ${meta.title}');
+
+// 5. Access feature items.
+final items = await source.itemsAll(limit: 100);
+
+// 6. Check response metadata.
+print('Timestamp: ${items.timeStamp}');
+
+// 7. Get an iterable of feature objects.
+final features = items.collection.features;
+
+// 8. Loop through features (each with id, properties and geometry)
+for (final feat in features) {
+  print('Feature ${feat.id} with geometry: ${feat.geometry}');
+}
+```
 
 For the step 5 other alternatives are:
 * Use `source.items()` to get feature items by a filtered query (ie. bbox).
