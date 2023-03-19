@@ -456,6 +456,24 @@ In all geometry classes there are also some other ways to create objects:
 * `parse`: parses a geometry object from text conforming to some text format like GeoJSON
 * `decode`: decodes a geometry object from bytes conforming to some binary format like WKB
 
+The following class diagram describes key members of `Point`, `LineString`
+and `Polygon` geometry classes:
+
+<img src="https://raw.githubusercontent.com/navibyte/geospatial/main/dart/geobase/assets/diagrams/point_linestring_polygon.svg" width="100%" title="Point, LineString and Polygon geometry classes" />
+
+Primitive geometry classes described by the diagram:
+* `Point` with a single position represented by `PositionCoords`
+* `LineString` with a chain of positions (at least two positions) represented by `PositionArray`
+* `Polygon` with an array of linear rings 
+  * exactly one `exterior` ring represented by `PositionArray`
+  * 0 to N `interior` rings (holes) with each represented by `PositionArray`
+
+The `PositionCoords` and `PositionArray` classes are described in the appendix
+about [coordinate arrays](#coordinate-arrays) and the `SimpleGeometryContent`
+interface visible in the diagram in [content interfaces](#content-interfaces).
+The usage of `project()` method is described in the chapter about
+[projections](#projections).
+
 ## Geospatial features
 
 ### Feature objects
@@ -1177,6 +1195,22 @@ Type          | Projected values | Geographic values
 `Coords.xyz`  | x, y, z          | lon, lat, elev
 `Coords.xym`  | x, y, m          | lon, lat, m
 `Coords.xyzm` | x, y, z, m       | lon, lat, elev, m
+
+### Content interfaces
+
+Content interfaces allows writing geometry, property and feature data to format
+encoders and object builders. They are used in this package for encoding
+geometries and features to GeoJSON (text), WKT (text) and WKB (binary)
+representations, and decoding geometry and feature objects from GeoJSON and WKB
+representations.
+
+Content interface       | Description
+----------------------- | ----------- 
+`CoordinateContent`     | Write coordinate data to format encoders and object builders.
+`PropertyContent`       | Write properties to format encoders and object builders.
+`SimpleGeometryContent` | Write simple geometry data to format encoders and object builders.
+`GeometryContent`       | Write geometry (both simple and collection geometries) data to format encoders and object builders.
+`FeatureContent`        | Write geospatial feature objects to format encoders and object builders.
 
 ## Reference
 

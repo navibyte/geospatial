@@ -12,7 +12,7 @@ import 'property_content.dart';
 /// Supported feature object types: `Feature` and `FeatureCollection`
 typedef WriteFeatures = void Function(FeatureContent output);
 
-/// An interface to write geospatial feature obejcts to format encoders and
+/// An interface to write geospatial feature objects to format encoders and
 /// object builders.
 ///
 /// Supported feature object types: `Feature` and `FeatureCollection`
