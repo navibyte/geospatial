@@ -1147,6 +1147,11 @@ formats also, efficient array data structures for coordinate values (as
 building or writing coordinate data of geometry objects described in the
 [Geometries](#geometries) section.
 
+The following class diagram describes coordinate array data structures and their
+relationships:
+
+<img src="https://raw.githubusercontent.com/navibyte/geospatial/main/dart/geobase/assets/diagrams/coordinate_arrays.svg" width="100%" title="Coordinate arrays" />
+
 Class            | Description
 ---------------- | -------------------------------------------------------------
 `PositionArray`  | Coordinate values of 0 to N positions as a flat structure.
