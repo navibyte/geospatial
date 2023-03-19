@@ -40,19 +40,9 @@ Key features of the [geodata](https://pub.dev/packages/geodata) package:
 * 🌐 The [GeoJSON](https://geojson.org/) client to read features from static web resources and local files
 * 🌎 The [OGC API Features](https://ogcapi.ogc.org/features/) client to access metadata and feature items from a compliant geospatial Web API providing GeoJSON data
 
-## :rocket: Demos and samples
-
-✨ See also the
-[Geospatial demos for Dart](https://github.com/navibyte/geospatial_demos) code
-repository for demo and sample apps demonstrating the usage of
-[geobase](https://pub.dev/packages/geobase) and
-[geodata](https://pub.dev/packages/geodata) packages along with other topics.
-
-Code          | Description 
-------------- | -----------
-[earthquake_map](https://github.com/navibyte/geospatial_demos/tree/main/earthquake_map) | Shows earthquakes fetched from the [USGS web service](https://earthquake.usgs.gov/earthquakes/feed/) on a basic map view. The demo uses both [geobase](https://pub.dev/packages/geobase) and [geodata](https://pub.dev/packages/geodata) packages for geospatial data accesss. Discusses also state management based on [Riverpod](https://riverpod.dev/). The map UI is based on the [Google Maps Flutter](https://pub.dev/packages/google_maps_flutter) plugin.
-
 ## :keyboard: Sample code
+
+### Geospatial data structures with geobase
 
 As a quick sample, this is how geometry objects with 2D coordinate are created
 using [geobase](https://pub.dev/packages/geobase):
@@ -94,9 +84,87 @@ Geospatial feature and feature collections can be instantiated easily too:
   ]);
 ```
 
+GeoJSON and WKB formats are supported as input and output (WKT only output):
+
+```dart
+  // Parse a geometry from GeoJSON text.
+  final geometry = LineString.parse(
+    '{"type": "LineString", "coordinates": [[30,10],[10,30],[40,40]]}',
+    format: GeoJSON.geometry,
+  );
+
+  // Encode a geometry as GeoJSON text.
+  print(geometry.toText(format: GeoJSON.geometry));
+
+  // Encode a geometry as WKT text.
+  print(geometry.toText(format: WKT.geometry));
+
+  // Encode a geometry as WKB bytes.
+  final bytes = geometry.toBytes(format: WKB.geometry);
+
+  // Decode a geometry from WKB bytes.
+  LineString.decode(bytes, format: WKB.geometry);
+```
+
+### Access GeoJSON resources with geodata
+
+The [geodata](https://pub.dev/packages/geodata) package has the following
+diagram describing a decision flowchart how to select a client class to access
+GeoJSON features:
+
+<img src="https://raw.githubusercontent.com/navibyte/geospatial/main/dart/geodata/assets/diagrams/decision_flowchart.svg" width="100%" title="Decision flowchart to select a client class to access GeoJSON resources" />
+
+Quick start code to access a Web API service conforming to OGC API Features:
+
+```dart
+// 1. Get a client instance for a Web API endpoint.
+final client = OGCAPIFeatures.http(endpoint: Uri.parse('...'));
+
+// 2. Access (and check) metadata (meta, conformance or collections) as needed.
+final conformance = await client.conformance();
+
+// 3. Get a feature source for a specific collection.
+final source = await client.collection('my_collection');
+
+// 4. Access (and check) metadata for this collection.
+final meta = await source.meta();
+print('Collection title: ${meta.title}');
+
+// 5. Access feature items.
+final items = await source.itemsAll(limit: 100);
+
+// 6. Check response metadata.
+print('Timestamp: ${items.timeStamp}');
+
+// 7. Get an iterable of feature objects.
+final features = items.collection.features;
+
+// 8. Loop through features (each with id, properties and geometry)
+for (final feat in features) {
+  print('Feature ${feat.id} with geometry: ${feat.geometry}');
+}
+```
+
+## :rocket: Demos and samples
+
+✨ See also the
+[Geospatial demos for Dart](https://github.com/navibyte/geospatial_demos) code
+repository for demo and sample apps demonstrating the usage of
+[geobase](https://pub.dev/packages/geobase) and
+[geodata](https://pub.dev/packages/geodata) packages along with other topics.
+
+Code          | Description 
+------------- | -----------
+[earthquake_map](https://github.com/navibyte/geospatial_demos/tree/main/earthquake_map) | Shows earthquakes fetched from the [USGS web service](https://earthquake.usgs.gov/earthquakes/feed/) on a basic map view. The demo uses both [geobase](https://pub.dev/packages/geobase) and [geodata](https://pub.dev/packages/geodata) packages for geospatial data accesss. Discusses also state management based on [Riverpod](https://riverpod.dev/). The map UI is based on the [Google Maps Flutter](https://pub.dev/packages/google_maps_flutter) plugin.
+
 ## :newspaper_roll: News
 
-2022-12-02:
+2023-03-19
+* ✨ New: Updated docs with class and flow diagrams:
+  * [geobase](https://pub.dev/packages/geobase/versions/0.4.2) (0.4.2)
+  * [geodata](https://pub.dev/packages/geodata/versions/0.11.4) (0.11.4)
+
+2022-12-02
 * [geobase version 0.4.0](https://github.com/navibyte/geospatial/issues/161)
 * [geodata version 0.11.0](https://github.com/navibyte/geospatial/issues/162)
 
