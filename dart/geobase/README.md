@@ -474,6 +474,14 @@ interface visible in the diagram in [content interfaces](#content-interfaces).
 The usage of `project()` method is described in the chapter about
 [projections](#projections).
 
+See also the class diagram about multi and collection geometries below:
+
+<img src="https://raw.githubusercontent.com/navibyte/geospatial/main/dart/geobase/assets/diagrams/multi_and_collection_geometries.svg" width="100%" title="Multi and collection geometry classes" />
+
+For example `MultiLineString` stores `chains` of positions for all line strings
+as a list of `PositionArray`. It's also possible to get a mapped iterable of
+`LineString` objects using the `lineStrings` getter. 
+
 ## Geospatial features
 
 ### Feature objects
