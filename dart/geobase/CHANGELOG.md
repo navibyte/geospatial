@@ -1,3 +1,8 @@
+## 0.4.2
+
+📚 Documentation updates:
+* Readme enhanced with multiple class diagrams.
+
 ## 0.4.1
 
 📚 Documentation updates
