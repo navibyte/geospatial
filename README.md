@@ -66,7 +66,8 @@ Geospatial feature and feature collections can be instantiated easily too:
   FeatureCollection([
     Feature(
       id: 'ROG',
-      geometry: Point(LonLatElev(-0.0014, 51.4778, 45.0)),
+      // a point geometry with a position (lon, lat, elev)
+      geometry: Point.build([-0.0014, 51.4778, 45.0]),
       properties: {
         'title': 'Royal Observatory',
         'city': 'London',
@@ -75,7 +76,8 @@ Geospatial feature and feature collections can be instantiated easily too:
     ),
     Feature(
       id: 'TB',
-      geometry: Point(LonLat(-0.075406, 51.5055)),
+      // a point geometry with a position (lon, lat)
+      geometry: Point.build([-0.075406, 51.5055]),
       properties: {
         'title': 'Tower Bridge',
         'built': 1886,
