@@ -248,6 +248,7 @@ SDKs:
 * [Flutter](https://flutter.dev/) 
 
 Latest on Dart SDKs
+* [Dart 3](https://medium.com/dartlang/announcing-dart-3-53f065a10635) with 100% sound null safety, new features (records, patterns, and class modifiers),  and a peek into the future.
 * [Dart 3 alpha](https://medium.com/dartlang/dart-3-alpha-f1458fb9d232) with records, patterns, access controls, portability advancements and the new Dart 3 type system (100% sound null safety)
 * [Dart 2.18](https://medium.com/dartlang/dart-2-18-f4b3101f146c) with Objective-C & Swift interop, and improved type inference
 * [Dart 2.17](https://medium.com/dartlang/dart-2-17-b216bfc80c5d) with enum member support, parameter forwarding to super classes, flexibility for named parameters, and more
@@ -258,6 +259,7 @@ Latest on Dart SDKs
 * [Dart 2.12](https://medium.com/dartlang/announcing-dart-2-12-499a6e689c87) with sound null safety
 
 Latest on Flutter SDKs
+* [Flutter 3.10](https://medium.com/flutter/whats-new-in-flutter-3-10-b21db2c38c73) running on Dart 3 and with seamless web and mobile integration, and stable Impleller for iOS.
 * [Flutter 3.7](https://medium.com/flutter/whats-new-in-flutter-3-7-38cbea71133c) with Material 3 updates and iOS improvements
 * [Flutter 3.3](https://medium.com/flutter/announcing-flutter-3-3-at-flutter-vikings-6f213e068793)
   * [What’s New in Flutter 3.3](https://medium.com/flutter/whats-new-in-flutter-3-3-893c7b9af1ff)
@@ -266,7 +268,10 @@ Latest on Flutter SDKs
 Packages
 * [pub.dev](https://pub.dev/)
 
-Null-safety:
+Dart 3 migration
+* [Dart 3 migration guide](https://dart.dev/resources/dart-3-migration)
+
+Null-safety (Dart 2):
 * Dart [null-safety](https://dart.dev/null-safety)
 * The official [null-safety migration guide](https://dart.dev/null-safety/migration-guide)
 * [Preparing the Dart and Flutter ecosystem for null safety](https://medium.com/dartlang/preparing-the-dart-and-flutter-ecosystem-for-null-safety-e550ce72c010)
