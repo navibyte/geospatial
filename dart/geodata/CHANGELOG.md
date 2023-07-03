@@ -1,3 +1,7 @@
+## 0.12.0
+
+NOTE: Version 0.12.0 currently under development (0.12.0-dev.0).
+
 ## 0.11.2 - 0.11.4
 
 📚 Documentation updates:
