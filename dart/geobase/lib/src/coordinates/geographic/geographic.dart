@@ -52,7 +52,10 @@ class Geographic extends Position {
   ///
   /// Longitude is normalized to the range `[-180.0, 180.0[` using the formula
   /// `(lon + 180.0) % 360.0 - 180.0` (if outside the range) and latitude is
-  /// clamped to the range `[-90.0, 90.0]`.
+  /// clipped to the range `[-90.0, 90.0]`.
+  ///
+  /// As a special case if [lon] or [lat] is `double.nan` then that value is
+  /// preserved (not normalized or clipped).
   const Geographic({
     required double lon,
     required double lat,

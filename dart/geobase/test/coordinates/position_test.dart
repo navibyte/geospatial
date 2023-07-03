@@ -6,6 +6,7 @@
 
 // ignore_for_file: prefer_const_declarations
 
+import 'package:geobase/constants.dart';
 import 'package:geobase/coordinates.dart';
 import 'package:geobase/vector.dart';
 
@@ -146,6 +147,38 @@ void main() {
   });
 
   group('Geographic class', () {
+    test('Longitude normalization/clipping & latitude clipping', () {
+      // normal values
+      expect(normalizeLongitude(-185.6), closeTo(174.4, 0.0000000000001));
+      expect(normalizeLongitude(-180.0), -180.0);
+      expect(normalizeLongitude(-179.534343), -179.534343);
+      expect(normalizeLongitude(139.423), 139.423);
+      expect(normalizeLongitude(179.99999999), 179.99999999);
+      expect(normalizeLongitude(180.0), -180.0);
+      expect(normalizeLongitude(185.6), closeTo(-174.4, 0.0000000000001));
+      expect(clipLongitude(-185.6), -180.0);
+      expect(clipLongitude(-180.0), -180.0);
+      expect(clipLongitude(-179.534343), -179.534343);
+      expect(clipLongitude(139.423), 139.423);
+      expect(clipLongitude(179.99999999), 179.99999999);
+      expect(clipLongitude(180.0), 180.0);
+      expect(clipLongitude(185.6), 180.0);
+      expect(clipLatitude(90.0), 90.0);
+      expect(clipLatitude(-90.0), -90.0);
+      expect(clipLatitude(84.345), 84.345);
+      expect(clipLatitude(90.1), 90.0);
+      expect(clipLatitudeWebMercator(90.0), maxLatitudeWebMercator);
+      expect(clipLatitudeWebMercator(-90.0), minLatitudeWebMercator);
+      expect(clipLatitudeWebMercator(84.345), 84.345);
+      expect(clipLatitudeWebMercator(85.064), maxLatitudeWebMercator);
+
+      // NaN values
+      expect(normalizeLongitude(double.nan), isNaN);
+      expect(clipLongitude(double.nan), isNaN);
+      expect(clipLatitude(double.nan), isNaN);
+      expect(clipLatitudeWebMercator(double.nan), isNaN);
+    });
+
     test('Coordinate access and factories', () {
       const p1 = Geographic(lon: 1.0, lat: 2.0);
       const p2 = Geographic(lon: 1.0, lat: 2.0, elev: 3.0);

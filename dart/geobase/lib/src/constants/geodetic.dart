@@ -6,25 +6,41 @@
 
 import 'dart:math' as math;
 
-/// The minimum value for geographic longitude.
+/// The minimum value for the geographic longitude.
+///
+/// The value is `-180.0`.
 const minLongitude = -180.0;
 
-/// The maximum value for geographic longitude.
+/// The maximum value for the geographic longitude.
+///
+/// The value is `180.0`.
 const maxLongitude = 180.0;
 
-/// The minimum value for geographic latitude;
+/// The minimum value for the geographic latitude.
+///
+/// The value is `-90.0`.
 const minLatitude = -90.0;
 
-/// The maximum value for geographic latitude;
+/// The maximum value for the geographic latitude.
+///
+/// The value is `90.0`.
 const maxLatitude = 90.0;
 
-/// The minimum value for geographic latitude inside Web Mercator coverage;
+/// The minimum value for the geographic latitude inside the Web Mercator
+/// projection coverage.
+///
+/// The value is `-85.05112878`.
 const minLatitudeWebMercator = -85.05112878;
 
-/// The maximum value for geographic latitude inside Web Mercator coverage;
+/// The maximum value for the geographic latitude inside the Web Mercator
+/// projection coverage.
+///
+/// The value is `85.05112878`.
 const maxLatitudeWebMercator = 85.05112878;
 
 /// The earth equatorial radius in meters as specified by WGS 84.
+///
+/// The value is `6378137.0`.
 const earthRadiusWgs84 = 6378137.0;
 
 /// The earth circumference in meters (from earth equatorial radius by WGS 84).
