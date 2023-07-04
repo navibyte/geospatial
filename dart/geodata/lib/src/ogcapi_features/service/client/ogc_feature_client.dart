@@ -114,13 +114,14 @@ class _OGCFeatureClientHttp implements OGCFeatureService {
   }
 
   @override
-  Future<Iterable<String>> conformance() async {
+  Future<OGCFeatureConformance> conformance() async {
     // fetch data as JSON Object, and parse conformance classes
     final url = endpoint.resolve('conformance');
     return adapter.getEntityFromJsonObject(
       url,
-      toEntity: (data) =>
-          (data['conformsTo'] as Iterable<dynamic>?)?.cast<String>() ?? [],
+      toEntity: (data) => OGCFeatureConformance(
+        (data['conformsTo'] as Iterable<dynamic>?)?.cast<String>() ?? [],
+      ),
     );
   }
 

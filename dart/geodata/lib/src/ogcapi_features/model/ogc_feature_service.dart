@@ -6,6 +6,7 @@
 
 import '/src/core/base.dart';
 
+import 'ogc_feature_conformance.dart';
 import 'ogc_feature_source.dart';
 
 /// A feature service compliant with the OGC API Features standard.
@@ -16,7 +17,7 @@ abstract class OGCFeatureService {
   // NOTE: API description: api();
 
   /// Conformance classes this service is conforming to.
-  Future<Iterable<String>> conformance();
+  Future<OGCFeatureConformance> conformance();
 
   /// Get metadata about feature collections provided by this service.
   Future<Iterable<CollectionMeta>> collections();

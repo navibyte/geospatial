@@ -80,6 +80,9 @@ final client = OGCAPIFeatures.http(endpoint: Uri.parse('...'));
 
 // 2. Access (and check) metadata (meta, conformance or collections) as needed.
 final conformance = await client.conformance();
+if(!conformance.conformsToCore(geoJSON: true)) {
+  return; // not conforming to core and GeoJSON - so return
+}
 
 // 3. Get a feature source for a specific collection.
 final source = await client.collection('my_collection');
@@ -332,7 +335,7 @@ abstract class OGCFeatureService {
   Future<ResourceMeta> meta();
 
   /// Conformance classes this service is conforming to.
-  Future<Iterable<String>> conformance();
+  Future<OGCFeatureConformance> conformance();
 
   /// Get metadata about feature collections provided by this service.
   Future<Iterable<CollectionMeta>> collections();

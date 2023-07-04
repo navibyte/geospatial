@@ -31,14 +31,15 @@ Future<void> main(List<String> args) async {
   // conformance classes (text ids) informs the capabilities of the service
   final conformance = await client.conformance();
   print('Conformance classes:');
-  for (final e in conformance) {
+  for (final e in conformance.classes) {
     print('  $e');
   }
   // the service should be compliant with OGC API Features - Part 1 and GeoJSON
-  const c1 = 'http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core';
-  const c2 = 'http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson';
-  if (conformance.contains(c1) && conformance.contains(c2)) {
+  if (conformance.conformsToCore(geoJSON: true)) {
     print('The service is compliant with OGC API Features, Part 1 and GeoJSON');
+  } else {
+    print('The service is NOT compliant.');
+    return;
   }
 
   // get metadata about all feature collections provided by the service

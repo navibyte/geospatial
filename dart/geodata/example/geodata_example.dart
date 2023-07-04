@@ -144,7 +144,7 @@ Future<void> main(List<String> args) async {
 
             // read conformance classes
             final conformance = await service.conformance();
-            _printConformance(conformance);
+            _printConformance(conformance.classes);
 
             // read meta about collections
             print('Collections:');
