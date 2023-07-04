@@ -10,9 +10,9 @@ import 'package:meta/meta.dart';
 
 import '/src/codes/canvas_origin.dart';
 import '/src/constants/screen_ppi.dart';
-import '/src/coordinates/scalable.dart';
+import '/src/coordinates/scalable/scalable2i.dart';
 import '/src/tiling/convert/scaled_converter.dart';
-import '/src/tiling/tilematrix/base.dart';
+import '/src/tiling/tilematrix/base/geo_tile_matrix_set.dart';
 import '/src/utils/web_mercator_converter.dart';
 
 const WebMercatorConverter _converterEpsg3857 = WebMercatorConverter.epsg3857();

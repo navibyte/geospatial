@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/coordinates/projection.dart';
+import '/src/coordinates/projection/projection_adapter.dart';
 
 import 'web_mercator_projection.dart';
 

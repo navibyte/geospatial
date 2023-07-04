@@ -18,6 +18,21 @@
 /// Usage: import `package:geobase/vector_data.dart`
 library vector_data;
 
-export 'src/vector_data/array.dart';
-export 'src/vector_data/coords.dart';
-export 'src/vector_data/model.dart';
+export 'src/vector_data/array/coordinates.dart';
+export 'src/vector_data/array/list_coordinate_extension.dart';
+export 'src/vector_data/coords/lonlat.dart';
+export 'src/vector_data/coords/xy.dart';
+export 'src/vector_data/model/bounded/bounded.dart';
+export 'src/vector_data/model/feature/feature.dart';
+export 'src/vector_data/model/feature/feature_builder.dart';
+export 'src/vector_data/model/feature/feature_collection.dart';
+export 'src/vector_data/model/feature/feature_object.dart';
+export 'src/vector_data/model/geometry/geometry.dart';
+export 'src/vector_data/model/geometry/geometry_builder.dart';
+export 'src/vector_data/model/geometry/geometry_collection.dart';
+export 'src/vector_data/model/geometry/linestring.dart';
+export 'src/vector_data/model/geometry/multi_linestring.dart';
+export 'src/vector_data/model/geometry/multi_point.dart';
+export 'src/vector_data/model/geometry/multi_polygon.dart';
+export 'src/vector_data/model/geometry/point.dart';
+export 'src/vector_data/model/geometry/polygon.dart';

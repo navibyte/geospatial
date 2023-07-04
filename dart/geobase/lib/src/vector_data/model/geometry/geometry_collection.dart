@@ -7,11 +7,13 @@
 import 'dart:typed_data';
 
 import '/src/codes/geom.dart';
-import '/src/coordinates/projection.dart';
+import '/src/coordinates/projection/projection.dart';
 import '/src/utils/coord_arrays.dart';
-import '/src/vector/content.dart';
-import '/src/vector/encoding.dart';
-import '/src/vector/formats.dart';
+import '/src/vector/content/geometry_content.dart';
+import '/src/vector/encoding/binary_format.dart';
+import '/src/vector/encoding/text_format.dart';
+import '/src/vector/formats/geojson/geojson_format.dart';
+import '/src/vector/formats/wkb/wkb_format.dart';
 
 import 'geometry.dart';
 import 'geometry_builder.dart';

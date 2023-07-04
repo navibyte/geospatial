@@ -12,8 +12,10 @@ import '/src/codes/geom.dart';
 import '/src/utils/byte_reader.dart';
 import '/src/utils/byte_writer.dart';
 import '/src/utils/format_validation.dart';
-import '/src/vector/content.dart';
-import '/src/vector/encoding.dart';
+import '/src/vector/content/geometry_content.dart';
+import '/src/vector/encoding/binary_format.dart';
+import '/src/vector/encoding/content_decoder.dart';
+import '/src/vector/encoding/content_encoder.dart';
 
 import 'wkb_conf.dart';
 

@@ -6,7 +6,7 @@
 
 import 'package:meta/meta.dart';
 
-import '/src/vector/content.dart';
+import '/src/vector/content/property_content.dart';
 
 /// A builder to create property maps from [PropertyContent] stream.
 @internal

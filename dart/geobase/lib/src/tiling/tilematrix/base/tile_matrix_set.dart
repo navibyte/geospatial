@@ -6,9 +6,11 @@
 
 import '/src/codes/canvas_origin.dart';
 import '/src/constants/screen_ppi.dart';
-import '/src/coordinates/base.dart';
-import '/src/coordinates/projected.dart';
-import '/src/coordinates/scalable.dart';
+import '/src/coordinates/base/aligned.dart';
+import '/src/coordinates/base/box.dart';
+import '/src/coordinates/base/position.dart';
+import '/src/coordinates/projected/projected.dart';
+import '/src/coordinates/scalable/scalable2i.dart';
 import '/src/tiling/convert/scaled_converter.dart';
 
 /// A tiling scheme represented as a set of tile matrices (grids).

@@ -7,7 +7,7 @@
 import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
-import '/src/coordinates/base.dart';
+import '/src/coordinates/base/position.dart';
 
 /// A geographic position with longitude, latitude and optional elevation and m.
 ///

@@ -5,6 +5,9 @@ NOTE: Version 0.5.0 currently under development (0.5.0-dev.0).
 🐛 Bugs fixed:
 * [Clipping when projection WGS 84 to Web Mercator metric coordinates #123](https://github.com/navibyte/geospatial/issues/123)
 
+🛠 Maintenance:
+* Removed extra internal export files and made internal imports more excplicit.
+
 ## 0.4.2
 
 📚 Documentation updates:

@@ -12,7 +12,7 @@ import '/src/codes/canvas_origin.dart';
 import '/src/constants/geodetic.dart';
 import '/src/constants/screen_ppi.dart';
 import '/src/tiling/convert/scaled_converter.dart';
-import '/src/tiling/tilematrix/base.dart';
+import '/src/tiling/tilematrix/base/geo_tile_matrix_set.dart';
 
 /// "Global Geodetic Quad" tile matrix set ("World CRS84 Quad" for WGS 84).
 ///

@@ -6,10 +6,12 @@
 
 // ignore_for_file: cascade_invocations
 
-import '/src/vector/content.dart';
-import '/src/vector/encoding.dart';
-import '/src/vector/formats.dart';
-import '/src/vector_data/model/geometry.dart';
+import '/src/vector/content/feature_content.dart';
+import '/src/vector/content/geometry_content.dart';
+import '/src/vector/content/property_content.dart';
+import '/src/vector/encoding/text_format.dart';
+import '/src/vector/formats/geojson/geojson_format.dart';
+import '/src/vector_data/model/geometry/geometry.dart';
 
 import 'feature.dart';
 import 'feature_collection.dart';

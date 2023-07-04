@@ -6,13 +6,14 @@
 
 import 'package:meta/meta.dart';
 
-import '/src/coordinates/projection.dart';
+import '/src/coordinates/projection/projection.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/property_builder.dart';
-import '/src/vector/content.dart';
-import '/src/vector/encoding.dart';
-import '/src/vector/formats.dart';
-import '/src/vector_data/model/geometry.dart';
+import '/src/vector/content/feature_content.dart';
+import '/src/vector/content/property_content.dart';
+import '/src/vector/encoding/text_format.dart';
+import '/src/vector/formats/geojson/geojson_format.dart';
+import '/src/vector_data/model/geometry/geometry.dart';
 
 import 'feature.dart';
 import 'feature_builder.dart';

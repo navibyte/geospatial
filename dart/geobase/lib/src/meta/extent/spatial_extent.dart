@@ -6,7 +6,7 @@
 
 import 'package:meta/meta.dart';
 
-import '/src/coordinates/base.dart';
+import '/src/coordinates/base/box.dart';
 
 /// An extent with 1 to N bounding boxes in defined coordinate reference system.
 @immutable

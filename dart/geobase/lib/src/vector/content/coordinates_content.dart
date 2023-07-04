@@ -4,7 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/coordinates/base.dart';
+import '/src/coordinates/base/box.dart';
+import '/src/coordinates/base/position.dart';
 
 /// An interface to write coordinate data to format encoders and object
 /// builders.

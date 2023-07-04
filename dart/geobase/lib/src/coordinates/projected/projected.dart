@@ -7,7 +7,7 @@
 import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
-import '/src/coordinates/base.dart';
+import '/src/coordinates/base/position.dart';
 
 /// A projected position with [x], [y], and optional [z] and [m] coordinates.
 ///

@@ -7,8 +7,9 @@
 import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
-import '/src/coordinates/base.dart';
-import '/src/coordinates/projection.dart';
+import '/src/coordinates/base/position.dart';
+import '/src/coordinates/projection/projection.dart';
+import '/src/coordinates/projection/projection_adapter.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/web_mercator_converter.dart';
 

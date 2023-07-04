@@ -14,4 +14,4 @@
 /// Usage: import `package:geobase/projections.dart`
 library projections;
 
-export 'src/projections/wgs84.dart';
+export 'src/projections/wgs84/wgs84.dart';

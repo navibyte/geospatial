@@ -5,10 +5,11 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import '/src/codes/canvas_origin.dart';
-import '/src/coordinates/base.dart';
-import '/src/coordinates/geographic.dart';
-import '/src/coordinates/projected.dart';
-import '/src/coordinates/scalable.dart';
+import '/src/coordinates/base/aligned.dart';
+import '/src/coordinates/geographic/geobox.dart';
+import '/src/coordinates/geographic/geographic.dart';
+import '/src/coordinates/projected/projected.dart';
+import '/src/coordinates/scalable/scalable2i.dart';
 
 import 'tile_matrix_set.dart';
 

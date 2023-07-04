@@ -6,7 +6,8 @@
 
 import 'package:meta/meta.dart';
 
-import '/src/vector/encoding.dart';
+import '/src/vector/encoding/content_encoder.dart';
+import '/src/vector/encoding/text_format.dart';
 
 /// A factory function to create [ContentEncoder] for [Content].
 @internal

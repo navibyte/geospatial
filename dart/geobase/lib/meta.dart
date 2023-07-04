@@ -11,5 +11,9 @@
 /// Usage: import `package:geobase/meta.dart`
 library meta;
 
-export 'src/meta/extent.dart';
-export 'src/meta/time.dart';
+export 'src/meta/extent/geo_extent.dart';
+export 'src/meta/extent/spatial_extent.dart';
+export 'src/meta/extent/temporal_extent.dart';
+export 'src/meta/time/instant.dart';
+export 'src/meta/time/interval.dart';
+export 'src/meta/time/temporal.dart';

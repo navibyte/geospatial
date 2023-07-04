@@ -13,13 +13,17 @@ import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
-import '/src/coordinates/base.dart';
+import '/src/coordinates/base/box.dart';
+import '/src/coordinates/base/position.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
-import '/src/vector/content.dart';
-import '/src/vector/encoding.dart';
-import '/src/vector/formats/geojson.dart';
+import '/src/vector/content/coordinates_content.dart';
+import '/src/vector/content/feature_content.dart';
+import '/src/vector/content/geometry_content.dart';
+import '/src/vector/content/property_content.dart';
+import '/src/vector/encoding/content_encoder.dart';
+import '/src/vector/formats/geojson/geojson_format.dart';
 
 // Base implementation for writers ---------------------------------------------
 

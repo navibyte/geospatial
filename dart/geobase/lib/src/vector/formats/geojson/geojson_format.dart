@@ -14,8 +14,12 @@ import '/src/codes/coords.dart';
 import '/src/utils/coord_arrays_from_json.dart';
 import '/src/utils/format_geojson_wkt.dart';
 import '/src/utils/format_impl.dart';
-import '/src/vector/content.dart';
-import '/src/vector/encoding.dart';
+import '/src/vector/content/coordinates_content.dart';
+import '/src/vector/content/feature_content.dart';
+import '/src/vector/content/geometry_content.dart';
+import '/src/vector/encoding/content_decoder.dart';
+import '/src/vector/encoding/content_encoder.dart';
+import '/src/vector/encoding/text_format.dart';
 
 part 'geojson_decoder.dart';
 

@@ -7,11 +7,12 @@
 import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
-import '/src/coordinates/base.dart';
-import '/src/coordinates/geographic.dart';
+import '/src/coordinates/base/position.dart';
+import '/src/coordinates/geographic/geographic.dart';
+import '/src/coordinates/geographic/geographic_functions.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
-import '/src/vector_data/array.dart';
+import '/src/vector_data/array/coordinates.dart';
 
 /// A geographic position as an iterable collection of lon and lat values.
 ///

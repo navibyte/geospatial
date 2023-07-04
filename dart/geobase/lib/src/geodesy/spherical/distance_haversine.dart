@@ -6,7 +6,7 @@
 
 import 'dart:math';
 
-import '/src/coordinates/geographic.dart';
+import '/src/coordinates/geographic/geographic.dart';
 
 /// Returns a distance in meters between [position1] and [position2].
 ///

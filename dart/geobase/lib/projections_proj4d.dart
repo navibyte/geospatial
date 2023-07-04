@@ -16,4 +16,4 @@
 /// classes.
 library projections_proj4d;
 
-export 'src/projections_ext/proj4d.dart';
+export 'src/projections_ext/proj4d/proj4d_adapter.dart';

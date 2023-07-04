@@ -12,9 +12,18 @@
 library coordinates;
 
 export 'src/codes/coords.dart';
-export 'src/coordinates/base.dart';
-export 'src/coordinates/data.dart';
-export 'src/coordinates/geographic.dart';
-export 'src/coordinates/projected.dart';
-export 'src/coordinates/projection.dart';
-export 'src/coordinates/scalable.dart';
+export 'src/coordinates/base/aligned.dart';
+export 'src/coordinates/base/box.dart';
+export 'src/coordinates/base/measurable.dart';
+export 'src/coordinates/base/position.dart';
+export 'src/coordinates/base/positionable.dart';
+export 'src/coordinates/data/position_data.dart';
+export 'src/coordinates/geographic/geobox.dart';
+export 'src/coordinates/geographic/geographic.dart';
+export 'src/coordinates/geographic/geographic_functions.dart';
+export 'src/coordinates/projected/projbox.dart';
+export 'src/coordinates/projected/projected.dart';
+export 'src/coordinates/projection/projection.dart';
+export 'src/coordinates/projection/projection_adapter.dart';
+export 'src/coordinates/scalable/scalable.dart';
+export 'src/coordinates/scalable/scalable2i.dart';

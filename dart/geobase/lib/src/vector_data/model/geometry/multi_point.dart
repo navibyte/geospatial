@@ -9,13 +9,16 @@ import 'dart:typed_data';
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
-import '/src/coordinates/projection.dart';
+import '/src/coordinates/projection/projection.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/coord_arrays_from_json.dart';
-import '/src/vector/content.dart';
-import '/src/vector/encoding.dart';
-import '/src/vector/formats.dart';
-import '/src/vector_data/array.dart';
+import '/src/vector/content/simple_geometry_content.dart';
+import '/src/vector/encoding/binary_format.dart';
+import '/src/vector/encoding/text_format.dart';
+import '/src/vector/formats/geojson/default_format.dart';
+import '/src/vector/formats/geojson/geojson_format.dart';
+import '/src/vector/formats/wkb/wkb_format.dart';
+import '/src/vector_data/array/coordinates.dart';
 
 import 'geometry.dart';
 import 'geometry_builder.dart';

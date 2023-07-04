@@ -4,8 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/coordinates/projection.dart';
-import '/src/vector_data/array.dart';
+import '/src/coordinates/projection/projection.dart';
+import '/src/vector_data/array/coordinates.dart';
 
 /// A base interface for classes that know their bounding boxes.
 abstract class Bounded {

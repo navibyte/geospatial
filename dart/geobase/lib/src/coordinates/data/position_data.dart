@@ -4,7 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/coordinates/base.dart';
+import '/src/coordinates/base/position.dart';
+import '/src/coordinates/base/positionable.dart';
 
 /// A fixed-length and random-access view to positions with coordinate values.
 ///

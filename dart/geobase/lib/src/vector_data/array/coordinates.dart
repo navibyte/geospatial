@@ -7,11 +7,16 @@
 import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
-import '/src/coordinates/base.dart';
-import '/src/coordinates/data.dart';
-import '/src/coordinates/geographic.dart';
-import '/src/coordinates/projected.dart';
-import '/src/coordinates/projection.dart';
+import '/src/coordinates/base/aligned.dart';
+import '/src/coordinates/base/box.dart';
+import '/src/coordinates/base/position.dart';
+import '/src/coordinates/base/positionable.dart';
+import '/src/coordinates/data/position_data.dart';
+import '/src/coordinates/geographic/geobox.dart';
+import '/src/coordinates/geographic/geographic.dart';
+import '/src/coordinates/projected/projbox.dart';
+import '/src/coordinates/projected/projected.dart';
+import '/src/coordinates/projection/projection.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 
