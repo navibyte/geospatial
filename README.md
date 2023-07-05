@@ -124,6 +124,9 @@ final client = OGCAPIFeatures.http(endpoint: Uri.parse('...'));
 
 // 2. Access (and check) metadata (meta, conformance or collections) as needed.
 final conformance = await client.conformance();
+if(!conformance.conformsToCore(geoJSON: true)) {
+  return; // not conforming to core and GeoJSON - so return
+}
 
 // 3. Get a feature source for a specific collection.
 final source = await client.collection('my_collection');
@@ -202,9 +205,19 @@ This project is authored by [Navibyte](https://navibyte.com).
 
 ## :copyright: License
 
+### Original work
+
 This project is licensed under the "BSD-3-Clause"-style license.
 
 Please see the [LICENSE](LICENSE).
+
+### Derivative work
+
+This project contains derivative work in following locations:
+
+File | License and author of original work | More information
+---- | ----------------------------------- | -----------------------------------
+[spherical_extension.dart](dart/geobase/lib/src/geodesy/spherical/spherical_extension.dart) | MIT License (c) Chris Veness 2002-2021 | Latitude/longitude spherical geodesy tools, see [latlong.html](www.movable-type.co.uk/scripts/latlong.html) and [geodesy-library.html#latlon-spherical](www.movable-type.co.uk/scripts/geodesy-library.html#latlon-spherical).  
 
 ## :star: Links and other resources
 

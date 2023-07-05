@@ -22,7 +22,7 @@ class OGCFeatureConformance extends Equatable {
   /// Creates a wrapper for conformance classes a service is conforming to.
   const OGCFeatureConformance(this.classes);
 
-  /// Check whether a service conforms to `OGC API - Features - Part 1: Core`
+  /// Check whether a service conforms to `OGC API - Features - Part 1: Core`.
   ///
   /// Optionally also check whether it supports [openAPI30Class],
   /// [htmlClass], [geoJSONClass], [gmlSF0] and/or [gmlSF2].
