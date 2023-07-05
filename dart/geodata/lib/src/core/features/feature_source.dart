@@ -4,8 +4,9 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/common/paged.dart';
-import '/src/core/data.dart';
+import '/src/common/paged/paged.dart';
+import '/src/core/data/bounded_items_query.dart';
+import '/src/core/data/item_query.dart';
 
 import 'basic_feature_source.dart';
 import 'feature_item.dart';

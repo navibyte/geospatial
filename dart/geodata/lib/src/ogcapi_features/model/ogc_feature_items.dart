@@ -4,8 +4,9 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/common/links.dart';
-import '/src/core/features.dart';
+import '/src/common/links/links.dart';
+import '/src/common/links/links_aware.dart';
+import '/src/core/features/feature_items.dart';
 
 /// A result from a feature source containing [collection] and [meta] data.
 ///

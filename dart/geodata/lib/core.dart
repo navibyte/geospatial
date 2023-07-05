@@ -9,6 +9,14 @@
 /// Usage: import `package:geodata/core.dart`
 library core;
 
-export 'src/core/base.dart';
-export 'src/core/data.dart';
-export 'src/core/features.dart';
+export 'src/core/base/collection_meta.dart';
+export 'src/core/base/resource_meta.dart';
+export 'src/core/data/bounded_items_query.dart';
+export 'src/core/data/geospatial_query.dart';
+export 'src/core/data/item_query.dart';
+export 'src/core/data/items_query.dart';
+export 'src/core/features/basic_feature_source.dart';
+export 'src/core/features/feature_failure.dart';
+export 'src/core/features/feature_item.dart';
+export 'src/core/features/feature_items.dart';
+export 'src/core/features/feature_source.dart';

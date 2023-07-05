@@ -8,8 +8,8 @@ import 'dart:convert';
 
 import 'package:meta/meta.dart';
 
-import '/src/common/service.dart';
-import '/src/core/features.dart';
+import '/src/common/service/service_exception.dart';
+import '/src/core/features/feature_failure.dart';
 
 /// Maps a JSON Object read from [source] to an entity using [toEntity].
 ///

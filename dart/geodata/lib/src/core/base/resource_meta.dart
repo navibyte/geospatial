@@ -8,7 +8,8 @@ import 'package:equatable/equatable.dart';
 
 import 'package:meta/meta.dart';
 
-import '/src/common/links.dart';
+import '/src/common/links/links.dart';
+import '/src/common/links/links_aware.dart';
 
 /// Basic metadata about some resource.
 @immutable

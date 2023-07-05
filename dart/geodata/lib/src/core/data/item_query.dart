@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/core/data.dart';
+import 'geospatial_query.dart';
 
 /// A query for requesting an item from a geospatial data source.
 class ItemQuery extends GeospatialQuery {

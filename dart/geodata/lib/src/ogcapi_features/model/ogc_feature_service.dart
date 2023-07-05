@@ -4,7 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/core/base.dart';
+import '/src/core/base/collection_meta.dart';
+import '/src/core/base/resource_meta.dart';
 
 import 'ogc_feature_conformance.dart';
 import 'ogc_feature_source.dart';

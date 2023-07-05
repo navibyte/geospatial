@@ -10,12 +10,18 @@ import 'package:geobase/vector.dart';
 import 'package:geobase/vector_data.dart';
 import 'package:http/http.dart';
 
-import '/src/common/links.dart';
-import '/src/common/paged.dart';
-import '/src/core/base.dart';
-import '/src/core/data.dart';
-import '/src/ogcapi_features/model.dart';
-import '/src/utils/features.dart';
+import '/src/common/links/links.dart';
+import '/src/common/paged/paged.dart';
+import '/src/core/base/collection_meta.dart';
+import '/src/core/base/resource_meta.dart';
+import '/src/core/data/bounded_items_query.dart';
+import '/src/core/data/item_query.dart';
+import '/src/ogcapi_features/model/ogc_feature_conformance.dart';
+import '/src/ogcapi_features/model/ogc_feature_item.dart';
+import '/src/ogcapi_features/model/ogc_feature_items.dart';
+import '/src/ogcapi_features/model/ogc_feature_service.dart';
+import '/src/ogcapi_features/model/ogc_feature_source.dart';
+import '/src/utils/feature_http_adapter.dart';
 
 /// A class with static factory methods to create feature sources conforming to
 /// the OGC API Features standard.

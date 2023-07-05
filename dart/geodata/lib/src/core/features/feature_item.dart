@@ -8,7 +8,7 @@ import 'package:equatable/equatable.dart';
 import 'package:geobase/vector_data.dart';
 import 'package:meta/meta.dart';
 
-import '/src/common/meta.dart';
+import '/src/common/meta/meta_aware.dart';
 
 /// A result from a feature source containing [feature] and [meta] data.
 @immutable

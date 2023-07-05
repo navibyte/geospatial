@@ -8,10 +8,14 @@ import 'package:geobase/vector.dart';
 import 'package:geobase/vector_data.dart';
 import 'package:http/http.dart';
 
-import '/src/common/paged.dart';
-import '/src/common/service.dart';
-import '/src/core/features.dart';
-import '/src/utils/features.dart';
+import '/src/common/paged/paged.dart';
+import '/src/common/service/service_exception.dart';
+import '/src/core/features/basic_feature_source.dart';
+import '/src/core/features/feature_failure.dart';
+import '/src/core/features/feature_item.dart';
+import '/src/core/features/feature_items.dart';
+import '/src/utils/feature_future_adapter.dart';
+import '/src/utils/feature_http_adapter.dart';
 
 /// A class with static factory methods to create feature sources conforming to
 /// the GeoJSON format.

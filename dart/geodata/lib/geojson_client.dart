@@ -15,4 +15,4 @@ library geojson_client;
 export 'common.dart';
 export 'core.dart';
 
-export 'src/geojson/service/client.dart';
+export 'src/geojson/service/client/geojson_feature_client.dart';

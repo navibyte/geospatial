@@ -9,7 +9,9 @@
 /// Usage: import `package:geodata/common.dart`
 library common;
 
-export 'src/common/links.dart';
-export 'src/common/meta.dart';
-export 'src/common/paged.dart';
-export 'src/common/service.dart';
+export 'src/common/links/link.dart';
+export 'src/common/links/links.dart';
+export 'src/common/links/links_aware.dart';
+export 'src/common/meta/meta_aware.dart';
+export 'src/common/paged/paged.dart';
+export 'src/common/service/service_exception.dart';
