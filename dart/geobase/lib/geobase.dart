@@ -15,7 +15,8 @@
 /// * temporal data structures (instant, interval) and spatial extents
 /// * vector data formats supported ([GeoJSON](https://geojson.org/), [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry), [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary))
 /// * coordinate projections (web mercator + based on the external [proj4dart](https://pub.dev/packages/proj4dart) library)
-/// * tiling schemes and tile matrix sets (web mercator, global geodetic)///
+/// * tiling schemes and tile matrix sets (web mercator, global geodetic)
+/// * spherical geodesy tools
 ///
 /// Usage: import `package:geobase/geobase.dart`
 library geobase;
@@ -48,6 +49,7 @@ export 'src/coordinates/scalable/scalable2i.dart';
 
 // geodesy
 export 'src/geodesy/spherical/distance_haversine.dart';
+export 'src/geodesy/spherical/spherical_extension.dart';
 
 // meta
 export 'src/meta/extent/geo_extent.dart';
