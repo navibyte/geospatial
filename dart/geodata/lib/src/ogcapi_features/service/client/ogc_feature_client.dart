@@ -57,26 +57,6 @@ class OGCAPIFeatures {
       );
 }
 
-/// A client for accessing `OGC API Features` compliant sources via http(s)
-/// conforming to [format].
-///
-/// See [OGCAPIFeatures.http].
-@Deprecated('Use GeoJSONFeature.http instead.')
-OGCFeatureService ogcApiFeaturesHttpClient({
-  required Uri endpoint,
-  Client? client,
-  Map<String, String>? headers,
-  TextReaderFormat<FeatureContent> format = GeoJSON.feature,
-}) =>
-    _OGCFeatureClientHttp(
-      endpoint,
-      adapter: FeatureHttpAdapter(
-        client: client,
-        headers: headers,
-      ),
-      format: format,
-    );
-
 // -----------------------------------------------------------------------------
 // Private implementation code below.
 // The implementation may change in future.

@@ -70,39 +70,6 @@ class GeoJSONFeatures {
       );
 }
 
-/// A client for accessing a `GeoJSON` data resource at [location] via http(s)
-/// conforming to [format].
-///
-/// See [GeoJSONFeatures.http].
-@Deprecated('Use GeoJSONFeature.http instead.')
-BasicFeatureSource geoJsonHttpClient({
-  required Uri location,
-  Client? client,
-  Map<String, String>? headers,
-  TextReaderFormat<FeatureContent> format = GeoJSON.feature,
-}) =>
-    _GeoJSONFeatureSource(
-      location,
-      adapter: FeatureHttpAdapter(
-        client: client,
-        headers: headers,
-      ),
-      format: format,
-    );
-
-/// A client for accessing a `GeoJSON` feature collection from [source];
-///
-/// See [GeoJSONFeatures.any].
-@Deprecated('Use GeoJSONFeature.any instead.')
-BasicFeatureSource geoJsonFutureClient(
-  Future<String> Function() source, {
-  TextReaderFormat<FeatureContent> format = GeoJSON.feature,
-}) =>
-    _GeoJSONFeatureSource(
-      source,
-      format: format,
-    );
-
 // -----------------------------------------------------------------------------
 // Private implementation code below.
 // The implementation may change in future.
