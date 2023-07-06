@@ -1,5 +1,5 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
-/* Latitude/longitude spherical geodesy tools                         (c) Chris Veness 2002-2021  */
+/* Latitude/longitude spherical geodesy tools                         (c) Chris Veness 2002-2022  */
 /*                                                                                   MIT Licence  */
 /* www.movable-type.co.uk/scripts/latlong.html                                                    */
 /* www.movable-type.co.uk/scripts/geodesy-library.html#latlon-spherical                           */
@@ -8,6 +8,9 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 // Dart port of spherical geodesy tools by Chris Veness, see license above.
+// 
+// Source: 
+// https://github.com/chrisveness/geodesy/blob/master/latlon-spherical.js
 //
 // Library of geodesy functions for operations on a spherical earth model.
 //
