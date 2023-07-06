@@ -149,34 +149,54 @@ void main() {
   group('Geographic class', () {
     test('Longitude normalization/clipping & latitude clipping', () {
       // normal values
-      expect(normalizeLongitude(-185.6), closeTo(174.4, 0.0000000000001));
-      expect(normalizeLongitude(-180.0), -180.0);
-      expect(normalizeLongitude(-179.534343), -179.534343);
-      expect(normalizeLongitude(139.423), 139.423);
-      expect(normalizeLongitude(179.99999999), 179.99999999);
-      expect(normalizeLongitude(180.0), -180.0);
-      expect(normalizeLongitude(185.6), closeTo(-174.4, 0.0000000000001));
-      expect(clipLongitude(-185.6), -180.0);
-      expect(clipLongitude(-180.0), -180.0);
-      expect(clipLongitude(-179.534343), -179.534343);
-      expect(clipLongitude(139.423), 139.423);
-      expect(clipLongitude(179.99999999), 179.99999999);
-      expect(clipLongitude(180.0), 180.0);
-      expect(clipLongitude(185.6), 180.0);
-      expect(clipLatitude(90.0), 90.0);
-      expect(clipLatitude(-90.0), -90.0);
-      expect(clipLatitude(84.345), 84.345);
-      expect(clipLatitude(90.1), 90.0);
-      expect(clipLatitudeWebMercator(90.0), maxLatitudeWebMercator);
-      expect(clipLatitudeWebMercator(-90.0), minLatitudeWebMercator);
-      expect(clipLatitudeWebMercator(84.345), 84.345);
-      expect(clipLatitudeWebMercator(85.064), maxLatitudeWebMercator);
+      final closeTo174 = closeTo(174.4, 0.0000000000001);
+      expect((-185.6).wrapLongitude(), closeTo174);
+      expect((-185.6 - 360.0).wrapLongitude(), closeTo174);
+      expect((-185.6 + 360.0).wrapLongitude(), closeTo174);
+      expect((-185.6 - 5 * 360.0).wrapLongitude(), closeTo174);
+      expect((-185.6 + 8 * 360.0).wrapLongitude(), closeTo174);
+      expect((-180.0).wrapLongitude(), -180.0);
+      expect((-179.534343).wrapLongitude(), -179.534343);
+      expect(139.423.wrapLongitude(), 139.423);
+      expect(179.99999999.wrapLongitude(), 179.99999999);
+      expect(180.0.wrapLongitude(), -180.0);
+      expect(185.6.wrapLongitude(), closeTo(-174.4, 0.0000000000001));
+      expect((-185.6).clipLongitude(), -180.0);
+      expect((-180.0).clipLongitude(), -180.0);
+      expect((-179.534343).clipLongitude(), -179.534343);
+      expect(139.423.clipLongitude(), 139.423);
+      expect(179.99999999.clipLongitude(), 179.99999999);
+      expect(180.0.clipLongitude(), 180.0);
+      expect(185.6.clipLongitude(), 180.0);
+      expect(90.0.clipLatitude(), 90.0);
+      expect((-90.0).clipLatitude(), -90.0);
+      expect(84.345.clipLatitude(), 84.345);
+      expect(90.1.clipLatitude(), 90.0);
+      expect(90.0.clipLatitudeWebMercator(), maxLatitudeWebMercator);
+      expect((-90.0).clipLatitudeWebMercator(), minLatitudeWebMercator);
+      expect(84.345.clipLatitudeWebMercator(), 84.345);
+      expect(85.064.clipLatitudeWebMercator(), maxLatitudeWebMercator);
 
       // NaN values
-      expect(normalizeLongitude(double.nan), isNaN);
-      expect(clipLongitude(double.nan), isNaN);
-      expect(clipLatitude(double.nan), isNaN);
-      expect(clipLatitudeWebMercator(double.nan), isNaN);
+      expect(double.nan.wrapLongitude(), isNaN);
+      expect(double.nan.clipLongitude(), isNaN);
+      expect(double.nan.clipLatitude(), isNaN);
+      expect(double.nan.clipLatitudeWebMercator(), isNaN);
+    });
+
+    test('Bearing normalization', () {
+      expect(0.0.wrap360(), 0.0);
+      expect(360.0.wrap360(), 0.0);
+      expect((-360.0).wrap360(), 0.0);
+      expect(0.001.wrap360(), 0.001);
+      expect(360.001.wrap360(), closeTo(0.001, 0.000000001));
+      expect((-359.999).wrap360(), closeTo(0.001, 0.000000001));
+      expect((-4.34).wrap360(), 355.66);
+      expect((-4.34 - 360.0).wrap360(), 355.66);
+      expect((-4.34 + 360.0).wrap360(), 355.66);
+      expect((-4.34 - 7 * 360.0).wrap360(), closeTo(355.66, 0.00000000001));
+      expect((-4.34 + 7 * 360.0).wrap360(), closeTo(355.66, 0.00000000001));
+      expect(double.nan.wrap360(), isNaN);
     });
 
     test('Coordinate access and factories', () {

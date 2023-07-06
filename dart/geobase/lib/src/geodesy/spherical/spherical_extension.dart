@@ -8,8 +8,8 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 // Dart port of spherical geodesy tools by Chris Veness, see license above.
-// 
-// Source: 
+//
+// Source:
 // https://github.com/chrisveness/geodesy/blob/master/latlon-spherical.js
 //
 // Library of geodesy functions for operations on a spherical earth model.
@@ -22,14 +22,7 @@
 import 'dart:math';
 
 import '/src/coordinates/geographic/geographic.dart';
-
-const _toRad = pi / 180.0;
-
-/// A private extension on double values.
-extension on double {
-  /// Converts a double value in degrees to radians.
-  double toRadians() => this * _toRad;
-}
+import '/src/coordinates/geographic/geographic_functions.dart';
 
 /// Latitude/longitude points on a spherical model earth, and methods for
 /// calculating distances, bearings, destinations, etc on (orthodromic)
@@ -77,5 +70,30 @@ extension SphericalExtension on Geographic {
     final c = 2 * atan2(sqrt(a), sqrt(1 - a));
 
     return radius * c;
+  }
+
+  /// Returns the initial bearing from this position to [destination].
+  ///
+  /// Returns the initial bearing in degrees from north (0°..360°).
+  ///
+  /// Examples:
+  /// ```dart
+  ///   const p1 = Geographic(lat: 52.205, lon: 0.119);
+  ///   const p2 = Geographic(lat: 48.857, lon: 2.351);
+  ///   final b1 = p1.initialBearingTo(p2); // 156.2°
+  /// ```
+  double initialBearingTo(Geographic destination) {
+    // tanθ = sinΔλ⋅cosφ2 / cosφ1⋅sinφ2 − sinφ1⋅cosφ2⋅cosΔλ
+    // see mathforum.org/library/drmath/view/55417.html for derivation
+
+    final lat1 = lat.toRadians();
+    final lat2 = destination.lat.toRadians();
+    final dlon = (destination.lon - lon).toRadians();
+
+    final x = cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(dlon);
+    final y = sin(dlon) * cos(lat2);
+    final brng = atan2(y, x);
+
+    return brng.toDegrees().wrap360();
   }
 }
