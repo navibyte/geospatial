@@ -30,9 +30,12 @@ void main() {
       expect(p3.distanceTo(p4), 968853.5441168448);
     });
 
-    test('Initial bearing', () {
+    test('Initial and final bearing', () {
       expect(p1.initialBearingTo(p2), closeTo(156.2, 0.1)); // 156.2°
       expect(p3.initialBearingTo(p4), closeTo(9.1198, 0.0001));
+
+      expect(p1.finalBearingTo(p2), closeTo(157.9, 0.1)); // 157.9°
+      expect(p3.finalBearingTo(p4), closeTo(11.2752, 0.0001));
     });
   });
 }

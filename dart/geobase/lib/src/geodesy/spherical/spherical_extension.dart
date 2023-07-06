@@ -34,10 +34,10 @@ extension SphericalExtension on Geographic {
   /// An optional [radius] is radius of earth (defaults to mean radius in
   /// metres).
   ///
-  /// Returns the distance between this position and destination, in same units
-  /// as radius.
+  /// The distance between this position and the destination is measured in same
+  /// units as the given radius.
   ///
-  /// Uses haversine formula:
+  /// Uses the *haversine* formula:
   /// ```
   /// a = sin²(Δφ/2) + cosφ1·cosφ2 · sin²(Δλ/2)
   /// d = 2 · atan2(√a, √(a-1))
@@ -74,7 +74,7 @@ extension SphericalExtension on Geographic {
 
   /// Returns the initial bearing from this position to [destination].
   ///
-  /// Returns the initial bearing in degrees from north (0°..360°).
+  /// The initial bearing is measured in degrees from north (0°..360°).
   ///
   /// Examples:
   /// ```dart
@@ -95,5 +95,24 @@ extension SphericalExtension on Geographic {
     final brng = atan2(y, x);
 
     return brng.toDegrees().wrap360();
+  }
+
+  /// Returns the final bearing arriving at [destination] from this position.
+  ///
+  /// The final bearing differs from the initial bearing by varying degrees
+  /// according to distance and latitude.
+  ///
+  /// The initial bearing is measured in degrees from north (0°..360°).
+  ///
+  /// Examples:
+  /// ```dart
+  ///   const p1 = Geographic(lat: 52.205, lon: 0.119);
+  ///   const p2 = Geographic(lat: 48.857, lon: 2.351);
+  ///   final b2 = p1.finaBearingTo(p2); // 157.9°
+  /// ```
+  double finalBearingTo(Geographic destination) {
+    // get initial bearing from destination to this & reverse it by adding 180°
+    final bearing = destination.initialBearingTo(this) + 180.0;
+    return bearing.wrap360();
   }
 }
