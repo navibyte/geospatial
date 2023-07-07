@@ -37,5 +37,23 @@ void main() {
       expect(p1.finalBearingTo(p2), closeTo(157.9, 0.1)); // 157.9°
       expect(p3.finalBearingTo(p4), closeTo(11.2752, 0.0001));
     });
+
+    test('Mid and intermediate points', () {
+      expect(
+          p1.midPointTo(p2).equals2D(
+              const Geographic(lat: 50.5363, lon: 1.2746),
+              toleranceHoriz: 0.0001),
+          true);
+      expect(
+          p3.midPointTo(p4).equals2D(
+              const Geographic(lat: 54.362287, lon: -4.530672),
+              toleranceHoriz: 0.000001),
+          true);
+      expect(
+          p1.intermediatePointTo(p2, fraction: 0.25).equals2D(
+              const Geographic(lat: 51.3721, lon: 0.7073),
+              toleranceHoriz: 0.0001),
+          true);
+    });
   });
 }
