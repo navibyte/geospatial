@@ -420,4 +420,23 @@ extension SphericalExtension on Geographic {
     final sign = cos(brng12 - brng13).sign;
     return dstat * sign * radius;
   }
+
+  /// Returns the maximum latitude reached when travelling on a great circle on
+  /// the given [bearing] from this position.
+  ///
+  /// Based on the *Clairaut’s formula*. Negate the result for the minimum
+  /// latitude (in the southern hemisphere). The maximum latitude is independent
+  /// of longitude; it will be the same for all points on a given latitude.
+  ///
+  /// Parameters:
+  /// * [bearing]: The initial bearing.
+  double maxLatitude({
+    required double bearing,
+  }) {
+    final brng = bearing.toRadians();
+    final lat1 = lat.toRadians();
+
+    final latMax = acos((sin(brng) * cos(lat1)).abs());
+    return latMax.toDegrees();
+  }
 }
