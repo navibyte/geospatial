@@ -346,4 +346,78 @@ extension SphericalExtension on Geographic {
 
     return Geographic(lat: lat3.toDegrees(), lon: lon3.toDegrees());
   }
+
+  /// Returns (signed) distance from this position to great circle defined by
+  /// [start] and [end] points.
+  ///
+  /// Parameters:
+  /// * [start]: The start point on a great circle path.
+  /// * [end]: The end point on a great circle path.
+  /// * [radius]: The radius of earth (defaults to mean radius in metres).
+  ///
+  /// The returned value is a distance to a great circle (-ve if to left, +ve
+  /// if to right of path).
+  ///
+  /// Examples:
+  /// ```dart
+  ///   const pCurrent = Geographic(lat: 53.2611, lon: -0.7972);
+  ///   const p1 =  Geographic(lat: 53.3206, lon: -1.7297);
+  ///   const p2 =  Geographic(lat: 53.1887, lon: 0.1334);
+  ///   final d = pCurrent.crossTrackDistanceTo(start: p1, end: p2); // -307.5 m
+  /// ```
+  double crossTrackDistanceTo({
+    required Geographic start,
+    required Geographic end,
+    double radius = 6371000.0,
+  }) {
+    if (this == start) return 0;
+
+    final dst13 = start.distanceTo(this, radius: radius) / radius;
+    final brng13 = start.initialBearingTo(this).toRadians();
+    final brng12 = start.initialBearingTo(end).toRadians();
+
+    final dstxt = asin(sin(dst13) * sin(brng13 - brng12));
+
+    return dstxt * radius;
+  }
+
+  /// Returns how far this position is along a path from the [start] point,
+  /// heading towards the [end] point.
+  ///
+  /// That is, if a perpendicular is drawn from this position to the (great
+  /// circle) path, the along-track distance is the distance from the start
+  /// point to where the perpendicular crosses the path.
+  ///
+  /// Parameters:
+  /// * [start]: The start point on a great circle path.
+  /// * [end]: The end point on a great circle path.
+  /// * [radius]: The radius of earth (defaults to mean radius in metres).
+  ///
+  /// The returned value a distance along great circle to point nearest this
+  /// position.
+  ///
+  /// Examples:
+  /// ```dart
+  ///   const pCurrent = Geographic(lat: 53.2611, lon: -0.7972);
+  ///   const p1 =  Geographic(lat: 53.3206, lon: -1.7297);
+  ///   const p2 =  Geographic(lat: 53.1887, lon: 0.1334);
+  ///   final d = pCurrent.alongTrackDistanceTo(start: p1, end: p2); // 62.331km
+  /// ```
+  double alongTrackDistanceTo({
+    required Geographic start,
+    required Geographic end,
+    double radius = 6371000.0,
+  }) {
+    if (this == start) return 0;
+
+    final dst13 = start.distanceTo(this, radius: radius) / radius;
+    final brng13 = start.initialBearingTo(this).toRadians();
+    final brng12 = start.initialBearingTo(end).toRadians();
+
+    final dstxt = asin(sin(dst13) * sin(brng13 - brng12));
+
+    final dstat = acos(cos(dst13) / cos(dstxt).abs());
+    final sign = cos(brng12 - brng13).sign;
+    return dstat * sign * radius;
+  }
 }

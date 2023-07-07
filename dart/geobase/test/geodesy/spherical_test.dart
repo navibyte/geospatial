@@ -81,5 +81,15 @@ void main() {
                   toleranceHoriz: 0.0001),
           true);
     });
+
+    test('Cross and along track distance to great circle path', () {
+      const current = Geographic(lat: 53.2611, lon: -0.7972);
+      const path1 = Geographic(lat: 53.3206, lon: -1.7297);
+      const path2 = Geographic(lat: 53.1887, lon: 0.1334);
+      expect(current.crossTrackDistanceTo(start: path1, end: path2),
+          closeTo(-307.5, 0.1));
+      expect(current.alongTrackDistanceTo(start: path1, end: path2),
+          closeTo(62331.49, 0.1));
+    });
   });
 }
