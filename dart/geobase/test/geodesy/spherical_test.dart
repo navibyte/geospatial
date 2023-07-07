@@ -55,5 +55,31 @@ void main() {
               toleranceHoriz: 0.0001),
           true);
     });
+
+    test('Destination point', () {
+      const p = Geographic(lat: 51.47788, lon: -0.00147);
+      expect(
+          p.destinationPoint(distance: 7794.0, bearing: 300.7).equals2D(
+              const Geographic(lat: 51.5136, lon: -0.0983),
+              toleranceHoriz: 0.0001),
+          true);
+    });
+
+    test('Intersection point', () {
+      const p = Geographic(lat: 51.8853, lon: 0.2545);
+      const bearing = 108.547;
+      const other = Geographic(lat: 49.0034, lon: 2.5735);
+      const otherBearing = 32.435;
+      expect(
+          p
+              .intersectionWith(
+                bearing: bearing,
+                other: other,
+                otherBearing: otherBearing,
+              )!
+              .equals2D(const Geographic(lat: 50.9078, lon: 4.5084),
+                  toleranceHoriz: 0.0001),
+          true);
+    });
   });
 }

@@ -31,8 +31,8 @@ extension SphericalExtension on Geographic {
   /// Returns the distance along the surface of the earth from this position to
   /// [destination].
   ///
-  /// An optional [radius] is radius of earth (defaults to mean radius in
-  /// metres).
+  /// Parameters:
+  /// * [radius]: The radius of earth (defaults to mean radius in metres).
   ///
   /// The distance between this position and the destination is measured in same
   /// units as the given radius.
@@ -169,7 +169,8 @@ extension SphericalExtension on Geographic {
   /// Returns the itermediate point at the given fraction between this position
   /// and [destination].
   ///
-  /// [fraction]: 0.0 = this position, 1.0 = destination
+  /// Parameters:
+  /// * [fraction]: 0.0 = this position, 1.0 = destination
   ///
   /// Examples:
   /// ```dart
@@ -204,6 +205,144 @@ extension SphericalExtension on Geographic {
 
     final lat3 = atan2(z, sqrt(x * x + y * y));
     final lon3 = atan2(y, x);
+
+    return Geographic(lat: lat3.toDegrees(), lon: lon3.toDegrees());
+  }
+
+  /// Returns the destination point from this position having travelled the
+  /// given [distance] on the given initial [bearing] (bearing normally varies
+  /// around path followed).
+  ///
+  /// Parameters:
+  /// * [distance]: Distance travelled (same units as radius, default: metres).
+  /// * [bearing]: Initial bearing in degrees from north (0°..360°).
+  /// * [radius]: The radius of earth (defaults to mean radius in metres).
+  ///
+  /// Examples:
+  /// ```dart
+  ///   const p1 = Geographic(lat: 51.47788, lon: -0.00147);
+  ///
+  ///   // destination point (lat: 51.5136°N, lon: 000.0983°W)
+  ///   final p2 = p1.destinationPoint(distance: 7794.0, bearing: 300.7);
+  /// ```
+  Geographic destinationPoint({
+    required double distance,
+    required double bearing,
+    double radius = 6371000.0,
+  }) {
+    // sinφ2 = sinφ1⋅cosδ + cosφ1⋅sinδ⋅cosθ
+    // tanΔλ = sinθ⋅sinδ⋅cosφ1 / cosδ−sinφ1⋅sinφ2
+    // see mathforum.org/library/drmath/view/52049.html for derivation
+
+    final lat1 = lat.toRadians();
+    final lon1 = lon.toRadians();
+
+    final dst = distance / radius; // angular distance in radians
+    final brng = bearing.toRadians();
+
+    final sinLat2 = sin(lat1) * cos(dst) + cos(lat1) * sin(dst) * cos(brng);
+    final lat2 = asin(sinLat2);
+    final y = sin(brng) * sin(dst) * cos(lat1);
+    final x = cos(dst) - sin(lat1) * sinLat2;
+    final lon2 = lon1 + atan2(y, x);
+
+    return Geographic(lat: lat2.toDegrees(), lon: lon2.toDegrees());
+  }
+
+  /// Returns the point of intersection of two paths both defined by a position
+  /// and a bearing.
+  ///
+  /// The two paths are defined by:
+  /// * this position and [bearing]
+  /// * [other] position and [otherBearing]
+  ///
+  /// Both bearings are measured in degrees from north (0°..360°).
+  ///
+  /// The destination point is returned as a geographic position (or `null` if
+  /// no unique intersection can be calculated).
+  ///
+  /// Examples:
+  /// ```dart
+  ///   const p1 = Geographic(lat: 51.8853, lon: 0.2545);
+  ///   const brng1 = 108.547;
+  ///   const p2 = Geographic(lat: 49.0034, lon: 2.5735);
+  ///   const brng2 = 32.435;
+  ///
+  ///   // intersection point (lat: 50.9078°N, lon: 004.5084°E)
+  ///   final pInt =
+  ///       p1.intersectionWith(bearing: brng1, other: p2, otherBearing: brng2);
+  /// ```
+  Geographic? intersectionWith({
+    required double bearing,
+    required Geographic other,
+    required double otherBearing,
+  }) {
+    if (this == other) return this;
+
+    // see www.edwilliams.org/avform.htm#Intersection
+
+    final lat1 = lat.toRadians();
+    final lon1 = lon.toRadians();
+    final lat2 = other.lat.toRadians();
+    final lon2 = other.lon.toRadians();
+    final dlat = lat2 - lat1;
+    final dlon = lon2 - lon1;
+
+    final brng13 = bearing.toRadians();
+    final brng23 = otherBearing.toRadians();
+
+    // angular distance p1-p2
+    final dst12 = 2 *
+        asin(
+          sqrt(
+            sin(dlat / 2.0) * sin(dlat / 2.0) +
+                cos(lat1) * cos(lat2) * sin(dlon / 2.0) * sin(dlon / 2.0),
+          ),
+        );
+
+    // NOTE: what is correct epsilon?
+    //       (original JS code had Number.EPSILON == 2.220446049250313E-16)
+    const epsilon = 2.220446049250313E-16; // or ?? 4.94065645841247E-324;
+    if (dst12.abs() < epsilon) return this; // coincident points
+
+    // initial/final bearings between points
+    final cosBrngA =
+        (sin(lat2) - sin(lat1) * cos(dst12)) / (sin(dst12) * cos(lat1));
+    final cosBrngB =
+        (sin(lat1) - sin(lat2) * cos(dst12)) / (sin(dst12) * cos(lat2));
+    final brngA =
+        acos(cosBrngA.clamp(-1.0, 1.0)); // protect against rounding errors
+    final brngB =
+        acos(cosBrngB.clamp(-1.0, 1.0)); // protect against rounding errors
+
+    final brng12 = sin(lon2 - lon1) > 0 ? brngA : 2.0 * pi - brngA;
+    final brng21 = sin(lon2 - lon1) > 0 ? 2.0 * pi - brngB : brngB;
+
+    final ang1 = brng13 - brng12; // angle 2-1-3
+    final ang2 = brng21 - brng23; // angle 1-2-3
+
+    // check for infinite intersections
+    if (sin(ang1) == 0 && sin(ang2) == 0) return null;
+    // check for ambiguous intersection (antipodal/360°)
+    if (sin(ang1) * sin(ang2) < 0) return null;
+
+    final cosAng3 = -cos(ang1) * cos(ang2) + sin(ang1) * sin(ang2) * cos(dst12);
+
+    final dst13 = atan2(
+      sin(dst12) * sin(ang1) * sin(ang2),
+      cos(ang2) + cos(ang1) * cosAng3,
+    );
+
+    final lat3 = asin(
+      (sin(lat1) * cos(dst13) + cos(lat1) * sin(dst13) * cos(brng13))
+          .clamp(-1.0, 1.0),
+    );
+
+    final dlon13 = atan2(
+      sin(brng13) * sin(dst13) * cos(lat1),
+      cos(dst13) - sin(lat1) * sin(lat3),
+    );
+    final lon3 = lon1 + dlon13;
 
     return Geographic(lat: lat3.toDegrees(), lon: lon3.toDegrees());
   }
