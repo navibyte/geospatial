@@ -21,13 +21,30 @@
 
 import 'dart:math';
 
+import 'package:meta/meta.dart';
+
 import '/src/coordinates/geographic/geographic.dart';
 import '/src/coordinates/geographic/geographic_functions.dart';
+import '/src/geodesy/base/geodetic.dart';
+
+/// An extension for easier access to [SphericalGreatCircle].
+extension SphericalGreatCircleExtension on Geographic {
+  /// Create an object calculating distances, bearings, destinations, etc on
+  /// (orthodromic) great-circle paths with this position as a "source"
+  /// position.
+  SphericalGreatCircle get spherical => SphericalGreatCircle(this);
+}
 
 /// Latitude/longitude points on a spherical model earth, and methods for
 /// calculating distances, bearings, destinations, etc on (orthodromic)
-/// great-circle paths and (loxodromic) rhumb lines.
-extension SphericalExtension on Geographic {
+/// great-circle paths.
+@immutable
+class SphericalGreatCircle extends Geodetic {
+  /// Create an object calculating distances, bearings, destinations, etc on
+  /// (orthodromic) great-circle paths with the given [position] as a "source"
+  /// position.
+  const SphericalGreatCircle(super.position);
+
   /// Returns the distance along the surface of the earth from this position to
   /// [destination].
   ///
@@ -47,21 +64,22 @@ extension SphericalExtension on Geographic {
   /// ```dart
   ///   const p1 = Geographic(lat: 52.205, lon: 0.119);
   ///   const p2 = Geographic(lat: 48.857, lon: 2.351);
-  ///   final d = p1.distanceTo(p2);       // 404.3×10³ m
-  ///   final m = p1.distanceTo(p2, 3959); // 251.2 miles
+  ///   final d = p1.spherical.distanceTo(p2);       // 404.3×10³ m
+  ///   final m = p1.spherical.distanceTo(p2, 3959); // 251.2 miles
   /// ```
+  @override
   double distanceTo(
     Geographic destination, {
     double radius = 6371000.0,
   }) {
-    if (this == destination) return 0.0;
+    if (position == destination) return 0.0;
 
     // a = sin²(Δφ/2) + cos(φ1)⋅cos(φ2)⋅sin²(Δλ/2)
     // δ = 2·atan2(√(a), √(1−a))
     // see mathforum.org/library/drmath/view/51879.html for derivation
 
-    final lat1 = lat.toRadians();
-    final lon1 = lon.toRadians();
+    final lat1 = position.lat.toRadians();
+    final lon1 = position.lon.toRadians();
     final lat2 = destination.lat.toRadians();
     final lon2 = destination.lon.toRadians();
     final dlat = lat2 - lat1;
@@ -82,17 +100,18 @@ extension SphericalExtension on Geographic {
   /// ```dart
   ///   const p1 = Geographic(lat: 52.205, lon: 0.119);
   ///   const p2 = Geographic(lat: 48.857, lon: 2.351);
-  ///   final b1 = p1.initialBearingTo(p2); // 156.2°
+  ///   final b1 = p1.spherical.initialBearingTo(p2); // 156.2°
   /// ```
+  @override
   double initialBearingTo(Geographic destination) {
-    if (this == destination) return 0.0;
+    if (position == destination) return 0.0;
 
     // tanθ = sinΔλ⋅cosφ2 / cosφ1⋅sinφ2 − sinφ1⋅cosφ2⋅cosΔλ
     // see mathforum.org/library/drmath/view/55417.html for derivation
 
-    final lat1 = lat.toRadians();
+    final lat1 = position.lat.toRadians();
     final lat2 = destination.lat.toRadians();
-    final dlon = (destination.lon - lon).toRadians();
+    final dlon = (destination.lon - position.lon).toRadians();
 
     final x = cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(dlon);
     final y = sin(dlon) * cos(lat2);
@@ -112,13 +131,14 @@ extension SphericalExtension on Geographic {
   /// ```dart
   ///   const p1 = Geographic(lat: 52.205, lon: 0.119);
   ///   const p2 = Geographic(lat: 48.857, lon: 2.351);
-  ///   final b2 = p1.finaBearingTo(p2); // 157.9°
+  ///   final b2 = p1.spherical.finaBearingTo(p2); // 157.9°
   /// ```
+  @override
   double finalBearingTo(Geographic destination) {
-    if (this == destination) return 0.0;
+    if (position == destination) return 0.0;
 
     // get initial bearing from destination to this & reverse it by adding 180°
-    final bearing = destination.initialBearingTo(this) + 180.0;
+    final bearing = destination.spherical.initialBearingTo(position) + 180.0;
     return bearing.wrap360();
   }
 
@@ -128,10 +148,13 @@ extension SphericalExtension on Geographic {
   /// ```dart
   ///   const p1 = Geographic(lat: 52.205, lon: 0.119);
   ///   const p2 = Geographic(lat: 48.857, lon: 2.351);
-  ///   final pMid = p1.midPointTo(p2); // lat: 50.5363°N, lon: 001.2746°E
+  ///
+  ///   // midpoint (lat: 50.5363°N, lon: 001.2746°E)
+  ///   final pMid = p1.spherical.midPointTo(p2);
   /// ```
+  @override
   Geographic midPointTo(Geographic destination) {
-    if (this == destination) return this;
+    if (position == destination) return position;
 
     // φm = atan2( sinφ1 + sinφ2,
     //             √( (cosφ1 + cosφ2⋅cosΔλ)² + cos²φ2⋅sin²Δλ ) )
@@ -140,10 +163,10 @@ extension SphericalExtension on Geographic {
     // midpoint is sum of vectors to two points:
     // mathforum.org/library/drmath/view/51822.html
 
-    final lat1 = lat.toRadians();
-    final lon1 = lon.toRadians();
+    final lat1 = position.lat.toRadians();
+    final lon1 = position.lon.toRadians();
     final lat2 = destination.lat.toRadians();
-    final dlon = (destination.lon - lon).toRadians();
+    final dlon = (destination.lon - position.lon).toRadians();
 
     // get cartesian coordinates for the two points
     // (place point A on prime meridian y=0)
@@ -176,16 +199,18 @@ extension SphericalExtension on Geographic {
   /// ```dart
   ///   const p1 = Geographic(lat: 52.205, lon: 0.119);
   ///   const p2 = Geographic(lat: 48.857, lon: 2.351);
-  ///   final pInt = p1.intermediatePointTo(p2, 0.25); // 51.3721°N, 000.7073°E
+  ///
+  ///   // intermediate point (lat: 51.3721°N, lon: 000.7073°E)
+  ///   final pInt = p1.spherical.intermediatePointTo(p2, 0.25);
   /// ```
   Geographic intermediatePointTo(
     Geographic destination, {
     required double fraction,
   }) {
-    if (this == destination) return this;
+    if (position == destination) return position;
 
-    final lat1 = lat.toRadians();
-    final lon1 = lon.toRadians();
+    final lat1 = position.lat.toRadians();
+    final lon1 = position.lon.toRadians();
     final lat2 = destination.lat.toRadians();
     final lon2 = destination.lon.toRadians();
 
@@ -223,8 +248,10 @@ extension SphericalExtension on Geographic {
   ///   const p1 = Geographic(lat: 51.47788, lon: -0.00147);
   ///
   ///   // destination point (lat: 51.5136°N, lon: 000.0983°W)
-  ///   final p2 = p1.destinationPoint(distance: 7794.0, bearing: 300.7);
+  ///   final p2 = p1.spherical.
+  ///        destinationPoint(distance: 7794.0, bearing: 300.7);
   /// ```
+  @override
   Geographic destinationPoint({
     required double distance,
     required double bearing,
@@ -234,8 +261,8 @@ extension SphericalExtension on Geographic {
     // tanΔλ = sinθ⋅sinδ⋅cosφ1 / cosδ−sinφ1⋅sinφ2
     // see mathforum.org/library/drmath/view/52049.html for derivation
 
-    final lat1 = lat.toRadians();
-    final lon1 = lon.toRadians();
+    final lat1 = position.lat.toRadians();
+    final lon1 = position.lon.toRadians();
 
     final dst = distance / radius; // angular distance in radians
     final brng = bearing.toRadians();
@@ -269,20 +296,20 @@ extension SphericalExtension on Geographic {
   ///   const brng2 = 32.435;
   ///
   ///   // intersection point (lat: 50.9078°N, lon: 004.5084°E)
-  ///   final pInt =
-  ///       p1.intersectionWith(bearing: brng1, other: p2, otherBearing: brng2);
+  ///   final pInt = p1.spherical.intersectionWith(bearing: brng1, other: p2,
+  ///       otherBearing: brng2);
   /// ```
   Geographic? intersectionWith({
     required double bearing,
     required Geographic other,
     required double otherBearing,
   }) {
-    if (this == other) return this;
+    if (position == other) return position;
 
     // see www.edwilliams.org/avform.htm#Intersection
 
-    final lat1 = lat.toRadians();
-    final lon1 = lon.toRadians();
+    final lat1 = position.lat.toRadians();
+    final lon1 = position.lon.toRadians();
     final lat2 = other.lat.toRadians();
     final lon2 = other.lon.toRadians();
     final dlat = lat2 - lat1;
@@ -303,7 +330,7 @@ extension SphericalExtension on Geographic {
     // NOTE: what is correct epsilon?
     //       (original JS code had Number.EPSILON == 2.220446049250313E-16)
     const epsilon = 2.220446049250313E-16; // or ?? 4.94065645841247E-324;
-    if (dst12.abs() < epsilon) return this; // coincident points
+    if (dst12.abs() < epsilon) return position; // coincident points
 
     // initial/final bearings between points
     final cosBrngA =
@@ -363,18 +390,21 @@ extension SphericalExtension on Geographic {
   ///   const pCurrent = Geographic(lat: 53.2611, lon: -0.7972);
   ///   const p1 =  Geographic(lat: 53.3206, lon: -1.7297);
   ///   const p2 =  Geographic(lat: 53.1887, lon: 0.1334);
-  ///   final d = pCurrent.crossTrackDistanceTo(start: p1, end: p2); // -307.5 m
+  ///
+  ///   // cross track distance: -307.5 m
+  ///   final d = pCurrent.spherical.crossTrackDistanceTo(start: p1, end: p2);
   /// ```
   double crossTrackDistanceTo({
     required Geographic start,
     required Geographic end,
     double radius = 6371000.0,
   }) {
-    if (this == start) return 0;
+    if (position == start) return 0;
 
-    final dst13 = start.distanceTo(this, radius: radius) / radius;
-    final brng13 = start.initialBearingTo(this).toRadians();
-    final brng12 = start.initialBearingTo(end).toRadians();
+    final spherical = start.spherical;
+    final dst13 = spherical.distanceTo(position, radius: radius) / radius;
+    final brng13 = spherical.initialBearingTo(position).toRadians();
+    final brng12 = spherical.initialBearingTo(end).toRadians();
 
     final dstxt = asin(sin(dst13) * sin(brng13 - brng12));
 
@@ -401,18 +431,21 @@ extension SphericalExtension on Geographic {
   ///   const pCurrent = Geographic(lat: 53.2611, lon: -0.7972);
   ///   const p1 =  Geographic(lat: 53.3206, lon: -1.7297);
   ///   const p2 =  Geographic(lat: 53.1887, lon: 0.1334);
-  ///   final d = pCurrent.alongTrackDistanceTo(start: p1, end: p2); // 62.331km
+  ///
+  ///   // along track distance: 62.331km
+  ///   final d = pCurrent.spherical.alongTrackDistanceTo(start: p1, end: p2);
   /// ```
   double alongTrackDistanceTo({
     required Geographic start,
     required Geographic end,
     double radius = 6371000.0,
   }) {
-    if (this == start) return 0;
+    if (position == start) return 0;
 
-    final dst13 = start.distanceTo(this, radius: radius) / radius;
-    final brng13 = start.initialBearingTo(this).toRadians();
-    final brng12 = start.initialBearingTo(end).toRadians();
+    final spherical = start.spherical;
+    final dst13 = spherical.distanceTo(position, radius: radius) / radius;
+    final brng13 = spherical.initialBearingTo(position).toRadians();
+    final brng12 = spherical.initialBearingTo(end).toRadians();
 
     final dstxt = asin(sin(dst13) * sin(brng13 - brng12));
 
@@ -434,7 +467,7 @@ extension SphericalExtension on Geographic {
     required double bearing,
   }) {
     final brng = bearing.toRadians();
-    final lat1 = lat.toRadians();
+    final lat1 = position.lat.toRadians();
 
     final latMax = acos((sin(brng) * cos(lat1)).abs());
     return latMax.toDegrees();

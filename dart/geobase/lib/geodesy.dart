@@ -21,4 +21,4 @@
 /// Usage: import `package:geobase/geodesy.dart`
 library geodesy;
 
-export 'src/geodesy/spherical/spherical_extension.dart';
+export 'src/geodesy/spherical/spherical_great_circle.dart';

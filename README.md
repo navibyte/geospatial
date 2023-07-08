@@ -215,9 +215,9 @@ Please see the [LICENSE](LICENSE).
 
 This project contains derivative work in following locations:
 
-File | License and author of original work | More information
+Files | License and author of original work | More information
 ---- | ----------------------------------- | -----------------------------------
-[spherical_extension.dart](dart/geobase/lib/src/geodesy/spherical/spherical_extension.dart) | MIT License (c) Chris Veness 2002-2022 | Latitude/longitude spherical geodesy tools, see [latlong.html](www.movable-type.co.uk/scripts/latlong.html) and [geodesy-library.html#latlon-spherical](www.movable-type.co.uk/scripts/geodesy-library.html#latlon-spherical).  
+Portions of Dart code in [geodesy](dart/geobase/lib/src/geodesy) ported. | MIT License (c) Chris Veness 2002-2022 | Latitude/longitude spherical geodesy tools, see [latlong.html](www.movable-type.co.uk/scripts/latlong.html) and [geodesy-library.html#latlon-spherical](www.movable-type.co.uk/scripts/geodesy-library.html#latlon-spherical).  
 
 ## :star: Links and other resources
 

@@ -25,32 +25,33 @@ void main() {
       // ignore: deprecated_member_use_from_same_package
       expect(distanceHaversine(p3, p4), 968853.5441168448);
 
-      expect(p1.distanceTo(p2), closeTo(404300, 300)); // 404.3×10³ m
-      expect(p1.distanceTo(p2, radius: 3959), closeTo(251.2, 0.03)); // 251.2 mi
-      expect(p3.distanceTo(p4), 968853.5441168448);
+      expect(p1.spherical.distanceTo(p2), closeTo(404300, 300)); // 404.3×10³ m
+      expect(p1.spherical.distanceTo(p2, radius: 3959),
+          closeTo(251.2, 0.03)); // 251.2 mi
+      expect(p3.spherical.distanceTo(p4), 968853.5441168448);
     });
 
     test('Initial and final bearing', () {
-      expect(p1.initialBearingTo(p2), closeTo(156.2, 0.1)); // 156.2°
-      expect(p3.initialBearingTo(p4), closeTo(9.1198, 0.0001));
+      expect(p1.spherical.initialBearingTo(p2), closeTo(156.2, 0.1)); // 156.2°
+      expect(p3.spherical.initialBearingTo(p4), closeTo(9.1198, 0.0001));
 
-      expect(p1.finalBearingTo(p2), closeTo(157.9, 0.1)); // 157.9°
-      expect(p3.finalBearingTo(p4), closeTo(11.2752, 0.0001));
+      expect(p1.spherical.finalBearingTo(p2), closeTo(157.9, 0.1)); // 157.9°
+      expect(p3.spherical.finalBearingTo(p4), closeTo(11.2752, 0.0001));
     });
 
     test('Mid and intermediate points', () {
       expect(
-          p1.midPointTo(p2).equals2D(
+          p1.spherical.midPointTo(p2).equals2D(
               const Geographic(lat: 50.5363, lon: 1.2746),
               toleranceHoriz: 0.0001),
           true);
       expect(
-          p3.midPointTo(p4).equals2D(
+          p3.spherical.midPointTo(p4).equals2D(
               const Geographic(lat: 54.362287, lon: -4.530672),
               toleranceHoriz: 0.000001),
           true);
       expect(
-          p1.intermediatePointTo(p2, fraction: 0.25).equals2D(
+          p1.spherical.intermediatePointTo(p2, fraction: 0.25).equals2D(
               const Geographic(lat: 51.3721, lon: 0.7073),
               toleranceHoriz: 0.0001),
           true);
@@ -59,9 +60,10 @@ void main() {
     test('Destination point', () {
       const p = Geographic(lat: 51.47788, lon: -0.00147);
       expect(
-          p.destinationPoint(distance: 7794.0, bearing: 300.7).equals2D(
-              const Geographic(lat: 51.5136, lon: -0.0983),
-              toleranceHoriz: 0.0001),
+          p.spherical
+              .destinationPoint(distance: 7794.0, bearing: 300.7)
+              .equals2D(const Geographic(lat: 51.5136, lon: -0.0983),
+                  toleranceHoriz: 0.0001),
           true);
     });
 
@@ -71,7 +73,7 @@ void main() {
       const other = Geographic(lat: 49.0034, lon: 2.5735);
       const otherBearing = 32.435;
       expect(
-          p
+          p.spherical
               .intersectionWith(
                 bearing: bearing,
                 other: other,
@@ -86,9 +88,9 @@ void main() {
       const current = Geographic(lat: 53.2611, lon: -0.7972);
       const path1 = Geographic(lat: 53.3206, lon: -1.7297);
       const path2 = Geographic(lat: 53.1887, lon: 0.1334);
-      expect(current.crossTrackDistanceTo(start: path1, end: path2),
+      expect(current.spherical.crossTrackDistanceTo(start: path1, end: path2),
           closeTo(-307.5, 0.1));
-      expect(current.alongTrackDistanceTo(start: path1, end: path2),
+      expect(current.spherical.alongTrackDistanceTo(start: path1, end: path2),
           closeTo(62331.49, 0.1));
     });
   });
