@@ -23,15 +23,15 @@ import '/src/coordinates/geographic/geographic.dart';
 /// Sub classes should implement methods defined here. Sub classes may also
 /// introduce other geodetic calculations.
 abstract class Geodetic {
-  /// The "source" position for calculations.
+  /// The current geographic position for calculations.
   final Geographic position;
 
   /// Create an object calculating distances, bearings, destinations, etc on
-  /// a geographic position.
+  /// a geographic [position] as the current position.
   const Geodetic(this.position);
 
-  /// Returns the distance along the surface of the earth from this position to
-  /// [destination].
+  /// Returns the distance along the surface of the earth from the current
+  /// [position] to [destination].
   ///
   /// Parameters:
   /// * [radius]: The radius of earth (defaults to mean radius in metres).
@@ -43,22 +43,22 @@ abstract class Geodetic {
     double radius = 6371000.0,
   });
 
-  /// Returns the initial bearing from this position to [destination].
+  /// Returns the initial bearing from the current [position] to [destination].
   ///
   /// The initial bearing is measured in degrees from north (0°..360°).
   double initialBearingTo(Geographic destination);
 
-  /// Returns the final bearing arriving at [destination] from this position.
+  /// Returns the final bearing arriving at [destination] from the current
+  /// [position].
   ///
   /// The initial bearing is measured in degrees from north (0°..360°).
   double finalBearingTo(Geographic destination);
 
-  /// Returns the midpoint between this position and [destination].
+  /// Returns the midpoint between the current [position] and [destination].
   Geographic midPointTo(Geographic destination);
 
-  /// Returns the destination point from this position having travelled the
-  /// given [distance] on the given initial [bearing] (bearing normally varies
-  /// around path followed).
+  /// Returns the destination point from the current [position] having travelled
+  /// the given [distance] on the given initial [bearing].
   ///
   /// Parameters:
   /// * [distance]: Distance travelled (same units as radius, default: metres).

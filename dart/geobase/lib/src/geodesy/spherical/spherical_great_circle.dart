@@ -30,7 +30,7 @@ import '/src/geodesy/base/geodetic.dart';
 /// An extension for easier access to [SphericalGreatCircle].
 extension SphericalGreatCircleExtension on Geographic {
   /// Create an object calculating distances, bearings, destinations, etc on
-  /// (orthodromic) great-circle paths with this position as a "source"
+  /// (orthodromic) great-circle paths with this position as the current
   /// position.
   SphericalGreatCircle get spherical => SphericalGreatCircle(this);
 }
@@ -41,12 +41,11 @@ extension SphericalGreatCircleExtension on Geographic {
 @immutable
 class SphericalGreatCircle extends Geodetic {
   /// Create an object calculating distances, bearings, destinations, etc on
-  /// (orthodromic) great-circle paths with the given [position] as a "source"
-  /// position.
+  /// (orthodromic) great-circle paths with [position] as the current position.
   const SphericalGreatCircle(super.position);
 
-  /// Returns the distance along the surface of the earth from this position to
-  /// [destination].
+  /// Returns the distance along the surface of the earth from the current
+  /// [position] to [destination].
   ///
   /// Parameters:
   /// * [radius]: The radius of earth (defaults to mean radius in metres).
@@ -92,7 +91,7 @@ class SphericalGreatCircle extends Geodetic {
     return radius * c;
   }
 
-  /// Returns the initial bearing from this position to [destination].
+  /// Returns the initial bearing from the current [position] to [destination].
   ///
   /// The initial bearing is measured in degrees from north (0°..360°).
   ///
@@ -120,7 +119,8 @@ class SphericalGreatCircle extends Geodetic {
     return brng.toDegrees().wrap360();
   }
 
-  /// Returns the final bearing arriving at [destination] from this position.
+  /// Returns the final bearing arriving at [destination] from the current
+  /// [position].
   ///
   /// The final bearing differs from the initial bearing by varying degrees
   /// according to distance and latitude.
@@ -142,7 +142,7 @@ class SphericalGreatCircle extends Geodetic {
     return bearing.wrap360();
   }
 
-  /// Returns the midpoint between this position and [destination].
+  /// Returns the midpoint between the current [position] and [destination].
   ///
   /// Examples:
   /// ```dart
@@ -189,8 +189,8 @@ class SphericalGreatCircle extends Geodetic {
     return Geographic(lat: latm.toDegrees(), lon: lonm.toDegrees());
   }
 
-  /// Returns the itermediate point at the given fraction between this position
-  /// and [destination].
+  /// Returns the itermediate point at the given fraction between the current
+  /// [position] and [destination].
   ///
   /// Parameters:
   /// * [fraction]: 0.0 = this position, 1.0 = destination
@@ -234,9 +234,9 @@ class SphericalGreatCircle extends Geodetic {
     return Geographic(lat: lat3.toDegrees(), lon: lon3.toDegrees());
   }
 
-  /// Returns the destination point from this position having travelled the
-  /// given [distance] on the given initial [bearing] (bearing normally varies
-  /// around path followed).
+  /// Returns the destination point from the current [position] having travelled
+  /// the given [distance] on the given initial [bearing] (bearing normally
+  /// varies around path followed).
   ///
   /// Parameters:
   /// * [distance]: Distance travelled (same units as radius, default: metres).
@@ -280,8 +280,8 @@ class SphericalGreatCircle extends Geodetic {
   /// and a bearing.
   ///
   /// The two paths are defined by:
-  /// * this position and [bearing]
-  /// * [other] position and [otherBearing]
+  /// * the current [position] and the [bearing] parameter
+  /// * [other] position and [otherBearing] both as parameters
   ///
   /// Both bearings are measured in degrees from north (0°..360°).
   ///
@@ -374,8 +374,8 @@ class SphericalGreatCircle extends Geodetic {
     return Geographic(lat: lat3.toDegrees(), lon: lon3.toDegrees());
   }
 
-  /// Returns (signed) distance from this position to great circle defined by
-  /// [start] and [end] points.
+  /// Returns (signed) distance from the current [position] to great circle
+  /// defined by [start] and [end] points.
   ///
   /// Parameters:
   /// * [start]: The start point on a great circle path.
@@ -411,12 +411,12 @@ class SphericalGreatCircle extends Geodetic {
     return dstxt * radius;
   }
 
-  /// Returns how far this position is along a path from the [start] point,
-  /// heading towards the [end] point.
+  /// Returns how far the current [position] is along a path from the [start]
+  /// point, heading towards the [end] point.
   ///
-  /// That is, if a perpendicular is drawn from this position to the (great
-  /// circle) path, the along-track distance is the distance from the start
-  /// point to where the perpendicular crosses the path.
+  /// That is, if a perpendicular is drawn from the current position to the
+  /// (great circle) path, the along-track distance is the distance from the
+  /// start point to where the perpendicular crosses the path.
   ///
   /// Parameters:
   /// * [start]: The start point on a great circle path.
@@ -455,7 +455,7 @@ class SphericalGreatCircle extends Geodetic {
   }
 
   /// Returns the maximum latitude reached when travelling on a great circle on
-  /// the given [bearing] from this position.
+  /// the given [bearing] from the current [position].
   ///
   /// Based on the *Clairaut’s formula*. Negate the result for the minimum
   /// latitude (in the southern hemisphere). The maximum latitude is independent
@@ -471,5 +471,52 @@ class SphericalGreatCircle extends Geodetic {
 
     final latMax = acos((sin(brng) * cos(lat1)).abs());
     return latMax.toDegrees();
+  }
+
+  /// Returns the pair of meridians at which a great circle defined by two
+  /// points (the current [position] and [other] position) crosses the given
+  /// [latitude].
+  ///
+  /// If the great circle doesn't reach the given latitude, null is returned.
+  ///
+  /// Parameters:
+  /// * [latitude]: The latitude crossings are to be determined for.
+  List<double>? crossingParallels({
+    required Geographic other,
+    required double latitude,
+  }) {
+    // NOTE: return value could be changed to record notation on Dart 3
+
+    if (position == other) return null; // coincident points
+
+    final lat = latitude.toRadians();
+
+    final lat1 = position.lat.toRadians();
+    final lon1 = position.lon.toRadians();
+    final lat2 = other.lat.toRadians();
+    final lon2 = other.lon.toRadians();
+    final dlon = lon2 - lon1;
+
+    final x = sin(lat1) * cos(lat2) * cos(lat) * sin(dlon);
+    final y = sin(lat1) * cos(lat2) * cos(lat) * cos(dlon) -
+        cos(lat1) * sin(lat2) * cos(lat);
+    final z = cos(lat1) * cos(lat2) * sin(lat) * sin(dlon);
+
+    if (z * z > x * x + y * y) {
+      // great circle doesn't reach latitude
+      return null;
+    }
+
+    final lonm = atan2(-y, x); // longitude at max latitude
+    final dloni =
+        acos(z / sqrt(x * x + y * y)); // Δλ from λm to intersection points
+
+    final loni1 = lon1 + lonm - dloni;
+    final loni2 = lon1 + lonm + dloni;
+
+    return [
+      loni1.toDegrees().wrapLongitude(),
+      loni2.toDegrees().wrapLongitude(),
+    ];
   }
 }
