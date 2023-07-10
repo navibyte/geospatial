@@ -11,7 +11,7 @@ import 'package:geobase/geobase.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('Spherical geodesy functions', () {
+  group('Spherical geodesy functions (great circle)', () {
     // with test values derived from:
     //   https://www.movable-type.co.uk/scripts/latlong.html
 
@@ -92,6 +92,39 @@ void main() {
           closeTo(-307.5, 0.1));
       expect(current.spherical.alongTrackDistanceTo(start: path1, end: path2),
           closeTo(62331.49, 0.1));
+    });
+  });
+
+  group('Spherical geodesy functions (rhumb line)', () {
+    // with test values derived from:
+    //   https://www.movable-type.co.uk/scripts/latlong.html
+
+    const p1 = Geographic(lat: 51.127, lon: 1.338);
+    const p2 = Geographic(lat: 50.964, lon: 1.853);
+
+    test('Rhumb line distance', () {
+      expect(p1.rhumb.distanceTo(p2), closeTo(40307.745, 0.001));
+    });
+
+    test('Rhumb line bearing', () {
+      expect(p1.rhumb.initialBearingTo(p2), closeTo(116.721, 0.001));
+      expect(p1.rhumb.finalBearingTo(p2), closeTo(116.721, 0.001));
+    });
+
+    test('Rhumb line destination point', () {
+      expect(
+          p1.rhumb.destinationPoint(distance: 40300.0, bearing: 116.7).equals2D(
+              const Geographic(lat: 50.9642, lon: 1.8530),
+              toleranceHoriz: 0.0001),
+          true);
+    });
+
+    test('Rhumb line mid point', () {
+      expect(
+          p1.rhumb.midPointTo(p2).equals2D(
+              const Geographic(lat: 51.0455, lon: 001.5957),
+              toleranceHoriz: 0.0001),
+          true);
     });
   });
 }

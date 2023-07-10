@@ -50,6 +50,7 @@ export 'src/coordinates/scalable/scalable2i.dart';
 // geodesy
 export 'src/geodesy/spherical/distance_haversine.dart';
 export 'src/geodesy/spherical/spherical_great_circle.dart';
+export 'src/geodesy/spherical/spherical_rhumb_line.dart';
 
 // meta
 export 'src/meta/extent/geo_extent.dart';

@@ -22,3 +22,4 @@
 library geodesy;
 
 export 'src/geodesy/spherical/spherical_great_circle.dart';
+export 'src/geodesy/spherical/spherical_rhumb_line.dart';
