@@ -93,6 +93,17 @@ void main() {
       expect(current.spherical.alongTrackDistanceTo(start: path1, end: path2),
           closeTo(62331.49, 0.1));
     });
+
+    test('Polygon area', () {
+      const polygon = [
+        Geographic(lat: 0.0, lon: 0.0),
+        Geographic(lat: 1.0, lon: 0.0),
+        Geographic(lat: 0.0, lon: 1.0),
+        Geographic(lat: 0.0, lon: 0.0),
+      ];
+      expect(polygon.spherical.polygonArea(),
+          closeTo(6182469722.7, 0.1)); // 6.18e9 m²
+    });
   });
 
   group('Spherical geodesy functions (rhumb line)', () {

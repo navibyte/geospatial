@@ -35,6 +35,14 @@ extension SphericalGreatCircleExtension on Geographic {
   SphericalGreatCircle get spherical => SphericalGreatCircle(this);
 }
 
+/// An extension for easier access to [SphericalGreatCircleLineString].
+extension SphericalGreatCircleIterableExtension on Iterable<Geographic> {
+  /// Create an object providing calculations for line strings (as an iterable
+  /// of geographic positions) on a spherical model earth (great-circle paths).
+  SphericalGreatCircleLineString get spherical =>
+      SphericalGreatCircleLineString(this);
+}
+
 /// Latitude/longitude points on a spherical model earth, and methods for
 /// calculating distances, bearings, destinations, etc on (orthodromic)
 /// great-circle paths.
@@ -518,5 +526,131 @@ class SphericalGreatCircle extends Geodetic {
       loni1.toDegrees().wrapLongitude(),
       loni2.toDegrees().wrapLongitude(),
     ];
+  }
+}
+
+/// Calculations for line strings (as an iterable of geographic positions) on a
+/// spherical model earth (great-circle paths).
+@immutable
+class SphericalGreatCircleLineString {
+  /// The current line string with geographic positions for calculations.
+  final Iterable<Geographic> lineString;
+
+  /// Creates and object with calculations for line strings (as an iterable of
+  /// geographic positions) on a spherical model earth (great-circle paths).
+  const SphericalGreatCircleLineString(this.lineString);
+
+  /// Calculates the area of a spherical polygon where the sides of the polygon
+  /// are great circle arcs joining the vertices.
+  ///
+  /// The current line string is considered as a polygon that must contain at
+  /// least 4 points and it should be a closed linear ring (first and last
+  /// points must equal).
+  ///
+  /// Parameters:
+  /// * [radius]: The radius of earth (defaults to mean radius in metres).
+  ///
+  /// Example:
+  /// ```dart
+  ///   // a polygon as a closed linear ring (`Iterable<Geographic>`)
+  ///   const polygon = [
+  ///     Geographic(lat: 0.0, lon: 0.0),
+  ///     Geographic(lat: 1.0, lon: 0.0),
+  ///     Geographic(lat: 0.0, lon: 1.0),
+  ///     Geographic(lat: 0.0, lon: 0.0),
+  ///   ];
+  ///   final area = polygon.spherical.polygonArea(); // 6.18e9 m²
+  /// ```
+  double polygonArea({double radius = 6371000.0}) {
+    // uses method due to Karney:
+    //  osgeo-org.1560.x6.nabble.com/Area-of-a-spherical-polygon-td3841625.html
+    //
+    // for each edge of the polygon:
+    //  tan(E/2) = tan(Δλ/2)·(tan(φ₁/2)+tan(φ₂/2)) / (1+tan(φ₁/2)·tan(φ₂/2))
+    //
+    // Where E is the spherical excess of the trapezium obtained by extending
+    // the edge to the equator (Karney's method is probably more efficient than
+    // the more widely known L’Huilier’s Theorem).
+
+    // consider the current line string as a polygon (a closed linear ring)
+    final polygon = lineString;
+    if (polygon.length < 4) {
+      throw const FormatException('Polygon must contain at least 4 points.');
+    }
+    final first = polygon.first;
+    final last = polygon.last;
+    if (first != last) {
+      throw const FormatException('Polygon must be a closed linear ring.');
+    }
+
+    var S = 0.0; // spherical excess in steradians
+
+    var isFirst = true;
+    late Geographic p1;
+    for (final p2 in polygon) {
+      if (isFirst) {
+        p1 = p2;
+        isFirst = false;
+      } else {
+        final lat1 = p1.lat.toRadians();
+        final lat2 = p2.lat.toRadians();
+        final dlon = (p2.lon - p1.lon).toRadians();
+        final E = 2.0 *
+            atan2(
+              tan(dlon / 2.0) * (tan(lat1 / 2.0) + tan(lat2 / 2.0)),
+              1.0 + tan(lat1 / 2.0) * tan(lat2 / 2.0),
+            );
+        S += E;
+
+        p1 = p2;
+      }
+    }
+
+    if (_isPoleEnclosedBy(polygon)) {
+      S = S.abs() - 2.0 * pi;
+    }
+
+    return (S * radius * radius).abs(); // area in units of radius
+  }
+
+  // Returns whether a polygon encloses pole (sum of course deltas around pole
+  // is 0° rather than normal ±360°).
+  //
+  // See:
+  // blog.element84.com/determining-if-a-spherical-polygon-contains-a-pole.html
+  static bool _isPoleEnclosedBy(
+    Iterable<Geographic> polygon,
+  ) {
+    // NOTE: any better test than this?
+
+    var sumDelta = 0.0;
+    final first = polygon.elementAt(0);
+    final firstSpherical = first.spherical;
+    final second = polygon.elementAt(1);
+    var prevBrng = firstSpherical.initialBearingTo(second);
+
+    var isFirst = true;
+    late SphericalGreatCircle p1Spherical;
+    for (final p2 in polygon) {
+      if (isFirst) {
+        p1Spherical = p2.spherical;
+        isFirst = false;
+      } else {
+        final initialBrng = p1Spherical.initialBearingTo(p2);
+        final finalBrng = p1Spherical.finalBearingTo(p2);
+        sumDelta += (initialBrng - prevBrng + 540.0) % 360.0 - 180.0;
+        sumDelta += (finalBrng - initialBrng + 540.0) % 360.0 - 180.0;
+        prevBrng = finalBrng;
+        p1Spherical = p2.spherical;
+      }
+    }
+
+    final initialBrng = firstSpherical.initialBearingTo(second);
+    sumDelta += (initialBrng - prevBrng + 540) % 360 - 180;
+
+    // NOTE: fix (intermittant) edge crossing pole - eg (85,90), (85,0), (85,-90)
+
+    final enclosed = sumDelta.abs() < 90.0; // 0°-ish
+    return enclosed;
   }
 }
