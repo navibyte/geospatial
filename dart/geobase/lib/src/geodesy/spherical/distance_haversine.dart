@@ -12,7 +12,7 @@ import '/src/coordinates/geographic/geographic.dart';
 ///
 /// Given [earthRadius] is used for calculation with the approximate mean radius
 /// as a default.
-@Deprecated('Use SphericalExtension instead.')
+@Deprecated('Use SphericalGreatCircle.distanceTo instead.')
 double distanceHaversine(
   Geographic position1,
   Geographic position2, {
