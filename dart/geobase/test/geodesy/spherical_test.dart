@@ -104,6 +104,21 @@ void main() {
       expect(polygon.spherical.polygonArea(),
           closeTo(6182469722.7, 0.1)); // 6.18e9 m²
     });
+
+    test('Polygon area from vector data polygon object', () {
+      // a closed linear ring of <lon, lat> points as flat coordinate data.
+      const linearRing = [0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0];
+
+      // create a polygon object with an exterior linear ring (and no holes)
+      final polygon = Polygon.build(const [linearRing]);
+
+      // an exterior linear ring as an iterable of geographic positions
+      final positions = polygon.exterior.toGeographicPositions;
+
+      // test area
+      expect(positions.spherical.polygonArea(),
+          closeTo(6182469722.7, 0.1)); // 6.18e9 m²
+    });
   });
 
   group('Spherical geodesy functions (rhumb line)', () {

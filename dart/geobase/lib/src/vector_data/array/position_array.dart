@@ -85,13 +85,21 @@ abstract class PositionArray with _CoordinatesMixin {
     };
   }
 
-  /// Access position array as projected positions.
+  /// Access position array as a [PositionData] containing projected positions.
   PositionData<Projected, double> get toProjected =>
       _PositionArrayData<Projected>(_data, _type, Projected.build);
 
-  /// Access position array as geographic positions.
+  /// Access position array as a [PositionData] containing geographic positions.
   PositionData<Geographic, double> get toGeographic =>
       _PositionArrayData<Geographic>(_data, _type, Geographic.build);
+
+  /// Access position array as an iterable of projected positions.
+  Iterable<Projected> get toProjectedPositions =>
+      _PositionArrayData<Projected>(_data, _type, Projected.build).all;
+
+  /// Access position array as an iterable of geographic positions.
+  Iterable<Geographic> get toGeographicPositions =>
+      _PositionArrayData<Geographic>(_data, _type, Geographic.build).all;
 
   /// Returns a new position array with all positions projected using
   /// [projection].
