@@ -1276,8 +1276,6 @@ Please see the
 
 ## Derivative work
 
-This project contains derivative work in following locations:
+This project contains portions of derivative work. 
 
-File | License and author of original work | More information
----- | ----------------------------------- | -----------------------------------
-Portions of Dart code in [geodesy](lib/src/geodesy) ported. | MIT License (c) Chris Veness 2002-2022 | Latitude/longitude spherical geodesy tools, see [latlong.html](www.movable-type.co.uk/scripts/latlong.html) and [geodesy-library.html#latlon-spherical](www.movable-type.co.uk/scripts/geodesy-library.html#latlon-spherical).   
+See details about [DERIVATIVE](DERIVATIVE.md) work.
