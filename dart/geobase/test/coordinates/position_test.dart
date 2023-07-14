@@ -184,6 +184,26 @@ void main() {
       expect(double.nan.clipLatitudeWebMercator(), isNaN);
     });
 
+    test('Latitude normalization', () {
+      expect(0.0.wrapLatitude(), 0.0);
+      expect(23.0.wrapLatitude(), 23.0);
+      expect(-19.0.wrapLatitude(), -19.0);
+      expect(-89.0.wrapLatitude(), -89.0);
+      expect(-92.0.wrapLatitude(), -88.0);
+      expect((-92.0 - 2 * 180.0).wrapLatitude(), -88.0);
+      expect((-269.0).wrapLatitude(), 89.0);
+      expect(89.0.wrapLatitude(), 89.0);
+      expect(269.0.wrapLatitude(), -89.0);
+      expect(92.0.wrapLatitude(), 88.0);
+
+      expect(183.62.wrapLatitude(), closeTo(-3.62, 0.000000000001));
+      expect(176.38.wrapLatitude(), closeTo(3.62, 0.000000000001));
+      expect((-183.62).wrapLatitude(), closeTo(3.62, 0.000000000001));
+      expect(-176.38.wrapLatitude(), closeTo(-3.62, 0.000000000001));
+
+      expect(double.nan.wrapLatitude(), isNaN);
+    });
+
     test('Bearing normalization', () {
       expect(0.0.wrap360(), 0.0);
       expect(360.0.wrap360(), 0.0);

@@ -60,6 +60,27 @@ extension DoubleAngleExtension on double {
       ? minLongitude
       : (this > maxLongitude ? maxLongitude : this);
 
+  /// Converts this double value in degrees to a normalized latitude in the
+  /// range `[-90.0, 90.0]`.
+  ///
+  /// Examples:
+  /// * `-89.0` => `-89.0`
+  /// * `-92.0` => `-88.0`
+  /// * `89.0` => `89.0`
+  /// * `92.0` => `88.0`
+  ///
+  /// Uses the formula `-90.0 + (this + 90.0).abs() % 180.0` if this < 90.0
+  /// or `90.0 - (this - 90.0) % 180.0` if this > 90.0.
+  /// 
+  /// As a special case if this is `double.nan` then `double.nan` is returned.
+  ///
+  /// See also [clipLatitude].
+  double wrapLatitude() => this >= -90.0 && this <= 90.0
+      ? this
+      : this < -90.0
+          ? -90.0 + (this + 90.0).abs() % 180.0
+          : 90.0 - (this - 90.0) % 180.0;
+
   /// Converts this double value in degrees to a clipped latitude in the range
   /// `[-90.0, 90.0]`.
   ///
