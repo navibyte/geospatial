@@ -4,6 +4,7 @@ NOTE: Version 0.5.0 currently under development (0.5.0-dev.0).
 
 🧩 Features:
 * [Add common geospatial and geodesy functions #106](https://github.com/navibyte/geospatial/issues/106)
+* [Add parse and format functions for dms representations of degrees #173](https://github.com/navibyte/geospatial/issues/173)
 
 🐛 Bugs fixed:
 * [Clipping when projection WGS 84 to Web Mercator metric coordinates #123](https://github.com/navibyte/geospatial/issues/123)

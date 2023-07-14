@@ -37,6 +37,7 @@ export 'src/coordinates/base/measurable.dart';
 export 'src/coordinates/base/position.dart';
 export 'src/coordinates/base/positionable.dart';
 export 'src/coordinates/data/position_data.dart';
+export 'src/coordinates/geographic/dms.dart';
 export 'src/coordinates/geographic/geobox.dart';
 export 'src/coordinates/geographic/geographic.dart';
 export 'src/coordinates/geographic/geographic_functions.dart';

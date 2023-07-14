@@ -20,11 +20,13 @@ This project contains derivative work originated from following sources.
 
 ### Geodesy functions by Chris Veness
 
-Source: Latitude/longitude spherical geodesy tools, see [latlong.html](www.movable-type.co.uk/scripts/latlong.html) and [geodesy-library.html#latlon-spherical](www.movable-type.co.uk/scripts/geodesy-library.html#latlon-spherical).
+Source: https://github.com/chrisveness/geodesy
 
-License: MIT License
+License: [MIT License](https://github.com/chrisveness/geodesy/blob/master/LICENSE)
 
 Copyright: (c) Chris Veness 2002-2022
+
+Latitude/longitude spherical geodesy tools (see [latlong.html](www.movable-type.co.uk/scripts/latlong.html) and [geodesy-library.html#latlon-spherical](www.movable-type.co.uk/scripts/geodesy-library.html#latlon-spherical)):
 
 Dart code file ported to this project | Related original JavaScript code
 ------------------------------------- | --------------------------------
@@ -32,3 +34,8 @@ Dart code file ported to this project | Related original JavaScript code
 [spherical_great_circle.dart](lib/src/geodesy/spherical/spherical_great_circle.dart) | [latlon-spherical.js](https://github.com/chrisveness/geodesy/blob/master/latlon-spherical.js)
 [spherical_rhumb_lone.dart](lib/src/geodesy/spherical/spherical_rhumb_lone.dart) | [latlon-spherical.js](https://github.com/chrisveness/geodesy/blob/master/latlon-spherical.js)
 
+Geodesy representation conversion functions:
+
+Dart code file ported to this project | Related original JavaScript code
+------------------------------------- | --------------------------------
+[dms.dart](lib/src/coordinates/geographic/dms.dart) | [dms.js](https://github.com/chrisveness/geodesy/blob/master/dms.js)
