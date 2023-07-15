@@ -136,6 +136,8 @@ class Dms extends DmsFormat {
   final DmsType _type;
   final String _separator;
   final int? _decimals;
+  final bool _zeroPadDegrees;
+  final bool _zeroPadMinSec;
 
   /// Creates a new formatter for parsing and formatting degrees/minutes/seconds
   /// on latitude, longitude and bearing values.
@@ -144,13 +146,19 @@ class Dms extends DmsFormat {
   /// * [type]: Specifies how return values are formatted (`d`, `dm` or `dms`).
   /// * [separator]: The separator character to be used to separate degrees, minutes, and seconds. The default separator is U+202F ‘narrow no-break space’.
   /// * [decimals]: Number of decimal places to use (default 4 for `d`, 2 for `dm`, 0 for `dms`).
+  /// * [zeroPadDegrees]: If true then degree values are (left) zero-padded to 2 or 3 digits (before optional decimal part).
+  /// * [zeroPadMinSec]: If true then min and sec values are (left) zero-padded to 2 digits (before optional decimal part).
   const Dms({
     DmsType type = DmsType.dms,
     String separator = '\u202f',
     int? decimals,
+    bool zeroPadDegrees = false,
+    bool zeroPadMinSec = true,
   })  : _type = type,
         _separator = separator,
-        _decimals = decimals;
+        _decimals = decimals,
+        _zeroPadDegrees = zeroPadDegrees,
+        _zeroPadMinSec = zeroPadMinSec;
 
   // note: Unicode Degree = U+00B0. Prime = U+2032, Double prime = U+2033
 
@@ -167,7 +175,7 @@ class Dms extends DmsFormat {
   ///
   /// Examples:
   /// ```dart
-  ///   // 51.4779°N, 000.0015°W
+  ///   // 51.4779°N, 0.0015°W
   ///   final p1 = Geographic(lat: Dms().parseDeg('51° 28′ 40.37″ N'),
   ///                         lon: Dms().parseDeg('000° 00′ 05.29″ W'));
   /// ```
@@ -229,8 +237,7 @@ class Dms extends DmsFormat {
   /// * Degree, prime, double-prime symbols are added.
   /// * The sign symbol is discarded.
   /// * No compass direction is added.
-  /// * Degree values are zero-padded to 3 digits.
-  /// * For a degree of latitude, use `.substring(1)` to remove a leading zero.
+  /// * Degree values are zero-padded to 3 digits (if `zeroPadDegrees` is true).
   ///
   /// Parameters:
   /// * [deg]: The degree value (ie. latitude, longitude or bearing) to be formatted as specified.
@@ -239,7 +246,7 @@ class Dms extends DmsFormat {
   ///
   /// Examples:
   /// ```dart
-  ///   final formatted = Dms().formatDms(-3.62); // 003° 37′ 12″
+  ///   final formatted = Dms().formatDms(-3.62); // 3° 37′ 12″
   /// ```
   String formatDms(double deg) {
     if (deg.isNaN || deg.isInfinite) {
@@ -270,13 +277,14 @@ class Dms extends DmsFormat {
     switch (_type) {
       case DmsType.d:
         final ds = degAbs.toStringAsFixed(dp);
-        if (degAbs < 10.0 && !ds.startsWith('10')) {
-          return '00$ds°';
-        } else if (degAbs < 100.0 && !ds.startsWith('100')) {
-          return '0$ds°';
-        } else {
-          return '$ds°';
+        if (_zeroPadDegrees) {
+          if (degAbs < 10.0 && !ds.startsWith('10')) {
+            return '00$ds°';
+          } else if (degAbs < 100.0 && !ds.startsWith('100')) {
+            return '0$ds°';
+          } 
         }
+        return '$ds°';
       case DmsType.dm:
         // get component deg
         var d = degAbs.floor();
@@ -289,10 +297,11 @@ class Dms extends DmsFormat {
           ms = m.toStringAsFixed(dp);
           d++;
         }
-        // left-pad with leading zeros
-        final ds = d.toString().padLeft(3, '0');
-        // left-pad with leading zeros (note may include decimals) & result
-        if (m < 10 && !ms.startsWith('10')) {
+        // (optionally) left-pad with leading zeros
+        final ds =
+            _zeroPadDegrees ? d.toString().padLeft(3, '0') : d.toString();
+        // (optionally) left-pad with leading zeros (note may include decimals) & result
+        if (_zeroPadMinSec && m < 10 && !ms.startsWith('10')) {
           return '$ds°${_separator}0$ms′';
         } else {
           return '$ds°$_separator$ms′';
@@ -315,11 +324,12 @@ class Dms extends DmsFormat {
           m = 0;
           d++;
         }
-        // left-pad with leading zeros
-        final ds = d.toString().padLeft(3, '0');
-        final ms = m.toString().padLeft(2, '0');
-        // left-pad with leading zeros (note may include decimals) & result
-        if (s < 10.0 && !ss.startsWith('10')) {
+        // (optionally) left-pad with leading zeros
+        final ds =
+            _zeroPadDegrees ? d.toString().padLeft(3, '0') : d.toString();
+        final ms = _zeroPadMinSec ? m.toString().padLeft(2, '0') : m.toString();
+        // (optionally) left-pad with leading zeros (note may include decimals) & result
+        if (_zeroPadMinSec && s < 10.0 && !ss.startsWith('10')) {
           return '$ds°$_separator$ms′${_separator}0$ss″';
         } else {
           return '$ds°$_separator$ms′$_separator$ss″';
@@ -335,7 +345,7 @@ class Dms extends DmsFormat {
   /// * The latitude value is normalized to the range [90° S .. 90° N]
   /// * Degree, prime, double-prime symbols are added.
   /// * Compass direction is added.
-  /// * Degree values are zero-padded to 2 digits.
+  /// * Degree values are zero-padded to 2 digits (if `zeroPadDegrees` is true).
   ///
   /// Parameters:
   /// * [deg]: The degree value of latitude to be formatted as specified.
@@ -344,17 +354,21 @@ class Dms extends DmsFormat {
   ///
   /// Examples:
   /// ```dart
-  ///   final latDms = Dms().latitude(-3.62); // 03° 37′ 12″ S
-  ///   final latDm = Dms(type: DmsType.dm).latitude(-3.62); // 03° 37.20′ S
-  ///   final latD = Dms(type: DmsType.d)).latitude(-3.62); // 03.6200° S
+  ///   final latDms = Dms().latitude(-3.62); // 3° 37′ 12″ S
+  ///   final latDm = Dms(type: DmsType.dm).latitude(-3.62); // 3° 37.20′ S
+  ///   final latD = Dms(type: DmsType.d)).latitude(-3.62); // 3.6200° S
   /// ```
   @override
   String lat(double deg) {
     final normalized = deg.wrapLatitude();
     final lat = formatDms(normalized);
 
-    // knock off initial '0' for latitude and return the formatted result
-    return lat.substring(1) + _separator + (normalized < 0.0 ? 'S' : 'N');
+    if (_zeroPadDegrees) {
+      // knock off initial '0' for latitude and return the formatted result
+      return lat.substring(1) + _separator + (normalized < 0.0 ? 'S' : 'N');
+    } else {
+      return lat + _separator + (normalized < 0.0 ? 'S' : 'N');
+    }
   }
 
   /// Converts a degree value [deg] to a String representation (deg/min/sec) of
@@ -365,7 +379,7 @@ class Dms extends DmsFormat {
   /// * The longitude value is normalized to the range [180° W .. 180° E[
   /// * Degree, prime, double-prime symbols are added.
   /// * Compass direction is added.
-  /// * Degree values are zero-padded to 2 digits.
+  /// * Degree values are zero-padded to 3 digits (if `zeroPadDegrees` is true).
   ///
   /// Parameters:
   /// * [deg]: The degree value of longitude to be formatted as specified.
@@ -374,9 +388,9 @@ class Dms extends DmsFormat {
   ///
   /// Examples:
   /// ```dart
-  ///   final lonDms = Dms().longitude(-3.62); // 003° 37′ 12″ W
-  ///   final lonDm = Dms(type: DmsType.dm).longitude(-3.62); // 003° 37.20′ W
-  ///   final lonD = Dms(type: DmsType.d).longitude(-3.62); // 003.6200° W
+  ///   final lonDms = Dms().longitude(-3.62); // 3° 37′ 12″ W
+  ///   final lonDm = Dms(type: DmsType.dm).longitude(-3.62); // 3° 37.20′ W
+  ///   final lonD = Dms(type: DmsType.d).longitude(-3.62); // 3.6200° W
   /// ```
   @override
   String lon(double deg) {
@@ -391,7 +405,7 @@ class Dms extends DmsFormat {
   /// For returned values:
   /// * The bearing value is normalized to the range [0°..360°[
   /// * Degree, prime, double-prime symbols are added.
-  /// * Degree values are zero-padded to 3 digits.
+  /// * Degree values are zero-padded to 3 digits (if `zeroPadDegrees` is true).
   ///
   /// Parameters:
   /// * [deg]: The degree value of bearing to be formatted as specified.
@@ -410,7 +424,11 @@ class Dms extends DmsFormat {
     final brng = formatDms(normalized);
     if (brng.startsWith('360')) {
       // just in case rounding took us up to 360°!
-      return brng.replaceRange(0, 3, '000');
+      if (_zeroPadDegrees) {
+        return brng.replaceRange(0, 3, '000');
+      } else {
+        return '0${brng.substring(3)}';
+      }
     } else {
       return brng;
     }

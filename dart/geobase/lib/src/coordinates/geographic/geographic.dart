@@ -268,7 +268,7 @@ class Geographic extends Position {
   /// ```dart
   ///   const p1 = Geographic(lat: 51.4778, lon: -0.0014);
   ///
-  ///   // 000° 00′ 05″ W
+  ///   // 0° 00′ 05″ W
   ///   final p1Lon = p1.toDmsLon();
   /// ```
   String toDmsLon({DmsFormat format = const Dms()}) => format.lon(lon);
@@ -280,12 +280,12 @@ class Geographic extends Position {
   /// ```dart
   ///   const p1 = Geographic(lat: 51.4778, lon: -0.0014);
   ///
-  ///   // 51° 28′ 40″ N 000° 00′ 05″ W
+  ///   // 51° 28′ 40″ N 0° 00′ 05″ W
   ///   final p1LatLon = p1.toDmsLatLon();
   ///
-  ///   const format = Dms(separator: '', decimals: 3);
+  ///   const format = Dms(separator: '', decimals: 3, zeroPadMinSec: false);
   ///
-  ///   // 51°28′40.080″N 000°00′05.040″W
+  ///   // 51°28′40.080″N 0°0′5.040″W
   ///   final p1LatLon2 = p1.toDmsLatLon(format: format);
   /// ```
   String toDmsLatLon({
