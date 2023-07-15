@@ -11,6 +11,7 @@
 /// Usage: import `package:geobase/coordinates.dart`
 library coordinates;
 
+export 'src/codes/cardinal_precision.dart';
 export 'src/codes/coords.dart';
 export 'src/coordinates/base/aligned.dart';
 export 'src/coordinates/base/box.dart';

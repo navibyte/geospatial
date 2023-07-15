@@ -26,6 +26,8 @@
 
 import 'dart:math';
 
+import '/src/codes/cardinal_precision.dart';
+
 import 'geographic_functions.dart';
 
 final _regExpMinus = RegExp('^-');
@@ -81,18 +83,15 @@ abstract class DmsFormat {
   /// * [bearing]: The bearing in degrees from north (0°..360°).
   /// * [precision]: The precision with three allowed values (1: cardinal, 2: intercardinal, 3: secondary-intercardinal).
   ///
-  /// Throws ArgumentError if the precision is out of range.
-  ///
   /// Examples:
   /// ```dart
-  ///   compassPoint(24.0);               // 'NNE'
-  ///   compassPoint(24.0, precision: 1); // 'N'
+  ///   compassPoint(24.0);                                        // 'NNE'
+  ///   compassPoint(24.0, precision: CardinalPrecision.cardinal); // 'N'
   /// ```
-  String compassPoint(double bearing, {int precision = 3}) {
-    if (precision < 1 || precision > 3) {
-      throw ArgumentError('The precision value $precision out of range.');
-    }
-
+  String compassPoint(
+    double bearing, {
+    CardinalPrecision precision = CardinalPrecision.secondaryIntercardinal,
+  }) {
     // NOTE: precision could be extended to 4 for quarter-winds (eg NbNW).
     // (but they are little used)
 
@@ -100,7 +99,7 @@ abstract class DmsFormat {
     final normalized = bearing.wrap360();
 
     // number of compass points at requested precision (1 => 4, 2 => 8, 3 => 16)
-    final n = 4 * pow(2, precision - 1);
+    final n = 4 * pow(2, precision.value - 1);
 
     // get compass point
     const cardinals = [
@@ -144,7 +143,7 @@ class Dms extends DmsFormat {
   ///
   /// Parameters:
   /// * [type]: Specifies how return values are formatted (`d`, `dm` or `dms`).
-  /// * [separator]: The separator character to be used to separate degrees, minutes, and seconds. The default separator is U+202F ‘narrow no-break space’.
+  /// * [separator]: The separator character to be used to separate degrees, minutes, seconds, and cardinal directions. The default separator is U+202F ‘narrow no-break space’.
   /// * [decimals]: Number of decimal places to use (default 4 for `d`, 2 for `dm`, 0 for `dms`).
   /// * [zeroPadDegrees]: If true then degree values are (left) zero-padded to 2 or 3 digits (before optional decimal part).
   /// * [zeroPadMinSec]: If true then min and sec values are (left) zero-padded to 2 digits (before optional decimal part).
@@ -282,7 +281,7 @@ class Dms extends DmsFormat {
             return '00$ds°';
           } else if (degAbs < 100.0 && !ds.startsWith('100')) {
             return '0$ds°';
-          } 
+          }
         }
         return '$ds°';
       case DmsType.dm:

@@ -140,28 +140,34 @@ void main() {
 
     test('Compass point', () {
       expect(Dms().compassPoint(24.0), 'NNE');
-      expect(Dms().compassPoint(24.0, precision: 1), 'N');
+      expect(
+        Dms().compassPoint(24.0, precision: CardinalPrecision.cardinal),
+        'N',
+      );
 
       // precision 1: cardinal (90° each compass point)
-      expect(Dms().compassPoint(-45.1, precision: 1), 'W');
-      expect(Dms().compassPoint(-44.9, precision: 1), 'N');
-      expect(Dms().compassPoint(44.9, precision: 1), 'N');
-      expect(Dms().compassPoint(45.1, precision: 1), 'E');
+      var precision = CardinalPrecision.cardinal;
+      expect(Dms().compassPoint(-45.1, precision: precision), 'W');
+      expect(Dms().compassPoint(-44.9, precision: precision), 'N');
+      expect(Dms().compassPoint(44.9, precision: precision), 'N');
+      expect(Dms().compassPoint(45.1, precision: precision), 'E');
 
       // precision 2: intercardinal (45.0° each compass point)
-      expect(Dms().compassPoint(-66.4, precision: 2), 'NW');
-      expect(Dms().compassPoint(-67.5, precision: 2), 'NW');
-      expect(Dms().compassPoint(-67.6, precision: 2), 'W');
-      expect(Dms().compassPoint(66.4, precision: 2), 'NE');
-      expect(Dms().compassPoint(67.5, precision: 2), 'E');
-      expect(Dms().compassPoint(67.6, precision: 2), 'E');
-      expect(Dms().compassPoint(67.6 + 10 * 360.0, precision: 2), 'E');
+      precision = CardinalPrecision.intercardinal;
+      expect(Dms().compassPoint(-66.4, precision: precision), 'NW');
+      expect(Dms().compassPoint(-67.5, precision: precision), 'NW');
+      expect(Dms().compassPoint(-67.6, precision: precision), 'W');
+      expect(Dms().compassPoint(66.4, precision: precision), 'NE');
+      expect(Dms().compassPoint(67.5, precision: precision), 'E');
+      expect(Dms().compassPoint(67.6, precision: precision), 'E');
+      expect(Dms().compassPoint(67.6 + 10 * 360.0, precision: precision), 'E');
 
       // precision 3: secondary-intercardinal (22.5° each compass point)
-      expect(Dms().compassPoint(-191.24, precision: 3), 'S');
-      expect(Dms().compassPoint(-191.26, precision: 3), 'SSE');
-      expect(Dms().compassPoint(191.24, precision: 3), 'S');
-      expect(Dms().compassPoint(191.26, precision: 3), 'SSW');
+      precision = CardinalPrecision.secondaryIntercardinal;
+      expect(Dms().compassPoint(-191.24, precision: precision), 'S');
+      expect(Dms().compassPoint(-191.26, precision: precision), 'SSE');
+      expect(Dms().compassPoint(191.24, precision: precision), 'S');
+      expect(Dms().compassPoint(191.26, precision: precision), 'SSW');
     });
 
     test('NaN values', () {
