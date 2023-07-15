@@ -33,9 +33,91 @@ final _regExpNSEW = RegExp(r'[NSEW]$', caseSensitive: false);
 final _regExpSplitter = RegExp('[^0-9.,]+');
 final _regExpMinusOrSW = RegExp(r'^-|[WS]$', caseSensitive: false);
 
-/// An enum for degrees/minutes/seconds formatting types.
-enum DmsFormat {
-  /// Format a degree value using the "degrees" only pattern, ie. '003.6200° W'.
+/// A base class for formatters with methods for parsing and formatting
+/// degrees/minutes/seconds on latitude, longitude and bearing values.
+///
+/// Sub classes must implement [parseDeg], [lat], [lon] and [bearing].
+/// Such classes could configure parsing and formatting parameters as they like.
+///
+/// This base class provides a default implementation for [compassPoint] and
+/// [tryParseDeg].
+abstract class DmsFormat {
+  /// Default `const` constructor to allow extending this abstract class.
+  const DmsFormat();
+
+  /// Parses a string [dms] representing degrees/minutes/seconds into a numeric
+  /// degree value (ie. latitude, longitude or bearing).
+  ///
+  /// Throws [FormatException] if numeric degrees cannot be parsed.
+  double parseDeg(String dms);
+
+  /// Parses a string [dms] representing degrees/minutes/seconds into a numeric
+  /// degree value (ie. latitude, longitude or bearing).
+  ///
+  /// Returns null if numeric degrees cannot be parsed.
+  double? tryParseDeg(String dms) {
+    try {
+      return parseDeg(dms);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Converts a degree value [deg] to a String representation (deg/min/sec) of
+  /// the latitude.
+  String lat(double deg);
+
+  /// Converts a degree value [deg] to a String representation (deg/min/sec) of
+  /// the longitude.
+  String lon(double deg);
+
+  /// Converts a degree value [deg] to a String representation (deg/min/sec) of
+  /// the bearing.
+  String bearing(double deg);
+
+  /// Returns the compass point for [bearing] on the given [precision].
+  ///
+  /// Parameters:
+  /// * [bearing]: The bearing in degrees from north (0°..360°).
+  /// * [precision]: The precision with three allowed values (1: cardinal, 2: intercardinal, 3: secondary-intercardinal).
+  ///
+  /// Throws ArgumentError if the precision is out of range.
+  ///
+  /// Examples:
+  /// ```dart
+  ///   compassPoint(24.0);               // 'NNE'
+  ///   compassPoint(24.0, precision: 1); // 'N'
+  /// ```
+  String compassPoint(double bearing, {int precision = 3}) {
+    if (precision < 1 || precision > 3) {
+      throw ArgumentError('The precision value $precision out of range.');
+    }
+
+    // NOTE: precision could be extended to 4 for quarter-winds (eg NbNW).
+    // (but they are little used)
+
+    // normalize to range 0..360°
+    final normalized = bearing.wrap360();
+
+    // number of compass points at requested precision (1 => 4, 2 => 8, 3 => 16)
+    final n = 4 * pow(2, precision - 1);
+
+    // get compass point
+    const cardinals = [
+      'N', 'NNE', 'NE', 'ENE',
+      'E', 'ESE', 'SE', 'SSE',
+      'S', 'SSW', 'SW', 'WSW',
+      'W', 'WNW', 'NW', 'NNW',
+      //
+    ];
+    return cardinals[(normalized * n / 360.0).round() % n * 16 ~/ n];
+  }
+}
+
+/// An enum for degrees/minutes/seconds formatting types used by [Dms]
+/// implementation of [DmsFormat].
+enum DmsType {
+  /// Format a degree value as decimal degrees, ie. '003.6200° W'.
   d,
 
   /// Format a degree value using the "degrees/minutes" pattern, ie.
@@ -47,10 +129,11 @@ enum DmsFormat {
   dms
 }
 
-/// A formatter with methods for parsing and formatting degrees/minutes/seconds
-/// on latitude, longitude and bearing values.
-class Dms {
-  final DmsFormat _format;
+/// A default implementation for [DmsFormat] abstract base class, that defines
+/// methods for parsing and formatting degrees/minutes/seconds on latitude,
+/// longitude and bearing values.
+class Dms extends DmsFormat {
+  final DmsType _type;
   final String _separator;
   final int? _decimals;
 
@@ -58,14 +141,14 @@ class Dms {
   /// on latitude, longitude and bearing values.
   ///
   /// Parameters:
-  /// * [format]: Specifies how return values are formatted (`d`, `dm` or `dms`).
+  /// * [type]: Specifies how return values are formatted (`d`, `dm` or `dms`).
   /// * [separator]: The separator character to be used to separate degrees, minutes, and seconds. The default separator is U+202F ‘narrow no-break space’.
   /// * [decimals]: Number of decimal places to use (default 4 for `d`, 2 for `dm`, 0 for `dms`).
   const Dms({
-    DmsFormat format = DmsFormat.dms,
+    DmsType type = DmsType.dms,
     String separator = '\u202f',
     int? decimals,
-  })  : _format = format,
+  })  : _type = type,
         _separator = separator,
         _decimals = decimals;
 
@@ -79,16 +162,17 @@ class Dms {
   /// separators are accepted.
   ///
   /// Examples '-3.62', '3 37 12W', '3°37′12″W'.
-  //
+  ///
   /// Throws [FormatException] if numeric degrees cannot be parsed.
   ///
   /// Examples:
   /// ```dart
   ///   // 51.4779°N, 000.0015°W
-  ///   final p1 = Geographic(lat: Dms().parse('51° 28′ 40.37″ N'),
-  ///                         lon: Dms().parse('000° 00′ 05.29″ W'));
+  ///   final p1 = Geographic(lat: Dms().parseDeg('51° 28′ 40.37″ N'),
+  ///                         lon: Dms().parseDeg('000° 00′ 05.29″ W'));
   /// ```
-  double parse(String dms) {
+  @override
+  double parseDeg(String dms) {
     final dmsTrimmed = dms.trim();
 
     // check for signed decimal degrees without NSEW, if so return it directly
@@ -139,7 +223,7 @@ class Dms {
   }
 
   /// Converts the degree value of [deg] to a String representation
-  /// (deg/min/sec) according to the specified [_format].
+  /// (deg/min/sec) according to the specified [_type].
   ///
   /// For returned values:
   /// * Degree, prime, double-prime symbols are added.
@@ -155,9 +239,9 @@ class Dms {
   ///
   /// Examples:
   /// ```dart
-  ///   final formatted = Dms().format(-3.62); // 003° 37′ 12″
+  ///   final formatted = Dms().formatDms(-3.62); // 003° 37′ 12″
   /// ```
-  String format(double deg) {
+  String formatDms(double deg) {
     if (deg.isNaN || deg.isInfinite) {
       throw const FormatException('Invalid value');
     }
@@ -167,14 +251,14 @@ class Dms {
     if (_decimals != null) {
       dp = _decimals!;
     } else {
-      switch (_format) {
-        case DmsFormat.d:
+      switch (_type) {
+        case DmsType.d:
           dp = 4;
           break;
-        case DmsFormat.dm:
+        case DmsType.dm:
           dp = 2;
           break;
-        case DmsFormat.dms:
+        case DmsType.dms:
           dp = 0;
           break;
       }
@@ -183,8 +267,8 @@ class Dms {
     // (unsigned result ready for appending compass dir'n)
     final degAbs = deg.abs();
 
-    switch (_format) {
-      case DmsFormat.d:
+    switch (_type) {
+      case DmsType.d:
         final ds = degAbs.toStringAsFixed(dp);
         if (degAbs < 10.0 && !ds.startsWith('10')) {
           return '00$ds°';
@@ -193,7 +277,7 @@ class Dms {
         } else {
           return '$ds°';
         }
-      case DmsFormat.dm:
+      case DmsType.dm:
         // get component deg
         var d = degAbs.floor();
         // get component min & round/right-pad
@@ -213,7 +297,7 @@ class Dms {
         } else {
           return '$ds°$_separator$ms′';
         }
-      case DmsFormat.dms:
+      case DmsType.dms:
         // get component deg
         var d = degAbs.floor();
         // get component min
@@ -245,7 +329,7 @@ class Dms {
 
   /// Converts a degree value [deg] to a String representation (deg/min/sec) of
   /// the latitude (2-digit degrees, suffixed with N/S) according to the
-  /// specified [_format].
+  /// specified [_type].
   ///
   /// For returned values:
   /// * The latitude value is normalized to the range [90° S .. 90° N]
@@ -261,12 +345,13 @@ class Dms {
   /// Examples:
   /// ```dart
   ///   final latDms = Dms().latitude(-3.62); // 03° 37′ 12″ S
-  ///   final latDm = Dms(format: DmsFormat.dm).latitude(-3.62); // 03° 37.20′ S
-  ///   final latD = Dms(format: DmsFormat.d)).latitude(-3.62); // 03.6200° S
+  ///   final latDm = Dms(type: DmsType.dm).latitude(-3.62); // 03° 37.20′ S
+  ///   final latD = Dms(type: DmsType.d)).latitude(-3.62); // 03.6200° S
   /// ```
-  String latitude(double deg) {
+  @override
+  String lat(double deg) {
     final normalized = deg.wrapLatitude();
-    final lat = format(normalized);
+    final lat = formatDms(normalized);
 
     // knock off initial '0' for latitude and return the formatted result
     return lat.substring(1) + _separator + (normalized < 0.0 ? 'S' : 'N');
@@ -274,7 +359,7 @@ class Dms {
 
   /// Converts a degree value [deg] to a String representation (deg/min/sec) of
   /// the longitude (3-digit degrees, suffixed with E/W) according to the
-  /// specified [_format].
+  /// specified [_type].
   ///
   /// For returned values:
   /// * The longitude value is normalized to the range [180° W .. 180° E[
@@ -290,17 +375,18 @@ class Dms {
   /// Examples:
   /// ```dart
   ///   final lonDms = Dms().longitude(-3.62); // 003° 37′ 12″ W
-  ///   final lonDm = Dms(format: DmsFormat.dm).longitude(-3.62); // 003° 37.20′ W
-  ///   final lonD = Dms(format: DmsFormat.dm).longitude(-3.62); // 003.6200° W
+  ///   final lonDm = Dms(type: DmsType.dm).longitude(-3.62); // 003° 37.20′ W
+  ///   final lonD = Dms(type: DmsType.d).longitude(-3.62); // 003.6200° W
   /// ```
-  String longitude(double deg) {
+  @override
+  String lon(double deg) {
     final normalized = deg.wrapLongitude();
-    final lon = format(normalized);
+    final lon = formatDms(normalized);
     return lon + _separator + (normalized < 0.0 ? 'W' : 'E');
   }
 
   /// Converts a degree value [deg] to a String representation (deg/min/sec) of
-  /// the bearing (3-digit degrees, 0°..360°) according to the specified [_format].
+  /// the bearing (3-digit degrees, 0°..360°) according to the specified [_type].
   ///
   /// For returned values:
   /// * The bearing value is normalized to the range [0°..360°[
@@ -315,55 +401,18 @@ class Dms {
   /// Examples:
   /// ```dart
   ///   final brngDms = Dms().bearing(-3.62); // 356° 22′ 48″
-  ///   final brngDm = Dms(format: DmsFormat.dm).bearing(-3.62); // 356° 22.80′
-  ///   final brngD = Dms(format: DmsFormat.d).bearing(-3.62); // 356.3800°
+  ///   final brngDm = Dms(type: DmsType.dm).bearing(-3.62); // 356° 22.80′
+  ///   final brngD = Dms(type: DmsType.d).bearing(-3.62); // 356.3800°
   /// ```
+  @override
   String bearing(double deg) {
     final normalized = deg.wrap360();
-    final brng = format(normalized);
+    final brng = formatDms(normalized);
     if (brng.startsWith('360')) {
       // just in case rounding took us up to 360°!
       return brng.replaceRange(0, 3, '000');
     } else {
       return brng;
     }
-  }
-
-  /// Returns the compass point for [bearing] on the given [precision].
-  ///
-  /// Parameters:
-  /// * [bearing]: The bearing in degrees from north (0°..360°).
-  /// * [precision]: The precision with three allowed values (1: cardinal, 2: intercardinal, 3: secondary-intercardinal).
-  ///
-  /// Throws ArgumentError if the precision is out of range.
-  ///
-  /// Examples:
-  /// ```dart
-  ///   final cp1 = Dms().compassPoint(24.0);               // 'NNE'
-  ///   final cp2 = Dms().compassPoint(24.0, precision: 1); // 'N'
-  /// ```
-  String compassPoint(double bearing, {int precision = 3}) {
-    if (precision < 1 || precision > 3) {
-      throw ArgumentError('The precision value $precision out of range.');
-    }
-
-    // NOTE: precision could be extended to 4 for quarter-winds (eg NbNW).
-    // (but they are little used)
-
-    // normalize to range 0..360°
-    final normalized = bearing.wrap360();
-
-    // number of compass points at requested precision (1 => 4, 2 => 8, 3 => 16)
-    final n = 4 * pow(2, precision - 1);
-
-    // get compass point
-    const cardinals = [
-      'N', 'NNE', 'NE', 'ENE',
-      'E', 'ESE', 'SE', 'SSE',
-      'S', 'SSW', 'SW', 'WSW',
-      'W', 'WNW', 'NW', 'NNW',
-      //
-    ];
-    return cardinals[(normalized * n / 360.0).round() % n * 16 ~/ n];
   }
 }

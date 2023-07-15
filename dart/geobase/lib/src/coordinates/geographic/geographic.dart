@@ -9,6 +9,8 @@ import 'package:meta/meta.dart';
 import '/src/codes/coords.dart';
 import '/src/coordinates/base/position.dart';
 
+import 'dms.dart';
+
 /// A geographic position with longitude, latitude and optional elevation and m.
 ///
 /// Longitude is available at [lon], latitude at [lat] and elevation at [elev].
@@ -224,6 +226,73 @@ class Geographic extends Position {
 
   @override
   int get hashCode => Position.hash(this);
+
+  // ---------------------------------------------------------------------------
+  // Special coordinate formats etc.
+
+  /// Parses a geographic position from [lon] and [lat] text values that are
+  /// formatted as specified (and parsed) by [format].
+  ///
+  /// By default the [Dms] class is used as the format.
+  ///
+  /// Optionally [elev] and/or [m] are parsed using the standard
+  /// `double.tryParse` method.
+  factory Geographic.parseDms({
+    DmsFormat format = const Dms(),
+    required String lon,
+    required String lat,
+    String? elev,
+    String? m,
+  }) =>
+      Geographic(
+        lon: format.parseDeg(lon),
+        lat: format.parseDeg(lat),
+        elev: elev != null ? double.tryParse(elev) : null,
+        m: m != null ? double.tryParse(m) : null,
+      );
+
+  /// Formats [lat] according to [format].
+  ///
+  /// Examples:
+  /// ```dart
+  ///   const p1 = Geographic(lat: 51.4778, lon: -0.0014);
+  ///
+  ///   // 51° 28′ 40″ N
+  ///   final p1Lat = p1.toDmsLat();
+  /// ```
+  String toDmsLat({DmsFormat format = const Dms()}) => format.lat(lat);
+
+  /// Formats [lon] according to [format].
+  ///
+  /// Examples:
+  /// ```dart
+  ///   const p1 = Geographic(lat: 51.4778, lon: -0.0014);
+  ///
+  ///   // 000° 00′ 05″ W
+  ///   final p1Lon = p1.toDmsLon();
+  /// ```
+  String toDmsLon({DmsFormat format = const Dms()}) => format.lon(lon);
+
+  /// Formats [lat] and [lon] according to [format], with [lat] formatted first
+  /// and separated from [lon] by [separator].
+  ///
+  /// Examples:
+  /// ```dart
+  ///   const p1 = Geographic(lat: 51.4778, lon: -0.0014);
+  ///
+  ///   // 51° 28′ 40″ N 000° 00′ 05″ W
+  ///   final p1LatLon = p1.toDmsLatLon();
+  ///
+  ///   const format = Dms(separator: '', decimals: 3);
+  ///
+  ///   // 51°28′40.080″N 000°00′05.040″W
+  ///   final p1LatLon2 = p1.toDmsLatLon(format: format);
+  /// ```
+  String toDmsLatLon({
+    DmsFormat format = const Dms(),
+    String separator = ' ',
+  }) =>
+      '${format.lat(lat)}$separator${format.lon(lon)}';
 
   // ---------------------------------------------------------------------------
   // Static methods with default logic, used by Geographic itself too.

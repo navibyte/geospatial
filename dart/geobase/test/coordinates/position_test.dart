@@ -219,6 +219,26 @@ void main() {
       expect(double.nan.wrap360(), isNaN);
     });
 
+    test('Dms parsing and formatting', () {
+      const p1 = Geographic(lon: -0.0014, lat: 51.4778);
+      final p1Lat = p1.toDmsLat();
+      final p1Lon = p1.toDmsLon();
+      final p1LatLon = p1.toDmsLatLon();
+
+      expect(p1Lat, '51° 28′ 40″ N');
+      expect(p1Lon, '000° 00′ 05″ W');
+      expect(p1LatLon, '51° 28′ 40″ N 000° 00′ 05″ W');
+
+      expect(
+        Geographic.parseDms(lat: p1Lat, lon: p1Lon)
+            .equals2D(p1, toleranceHoriz: 0.001),
+        true,
+      );
+
+      const format = Dms(separator: '', decimals: 3);
+      expect(p1.toDmsLatLon(format: format), '51°28′40.080″N 000°00′05.040″W');
+    });
+
     test('Coordinate access and factories', () {
       const p1 = Geographic(lon: 1.0, lat: 2.0);
       const p2 = Geographic(lon: 1.0, lat: 2.0, elev: 3.0);

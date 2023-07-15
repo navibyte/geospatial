@@ -8,6 +8,7 @@ import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
 import '/src/coordinates/base/position.dart';
+import '/src/coordinates/geographic/dms.dart';
 import '/src/coordinates/geographic/geographic.dart';
 import '/src/coordinates/geographic/geographic_functions.dart';
 import '/src/utils/format_validation.dart';
@@ -147,6 +148,19 @@ class LonLat extends PositionCoords implements Geographic {
 
   @override
   String toString() => '$lon,$lat';
+
+  @override
+  String toDmsLat({DmsFormat format = const Dms()}) => format.lat(lat);
+
+  @override
+  String toDmsLon({DmsFormat format = const Dms()}) => format.lon(lon);
+
+  @override
+  String toDmsLatLon({
+    DmsFormat format = const Dms(),
+    String separator = ' ',
+  }) =>
+      '${format.lat(lat)}$separator${format.lon(lon)}';
 }
 
 /// A geographic position as an iterable collection of lon, lat and elev values.
