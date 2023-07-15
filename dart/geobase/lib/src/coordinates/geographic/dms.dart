@@ -34,10 +34,7 @@ final _regExpSplitter = RegExp('[^0-9.,]+');
 final _regExpMinusOrSW = RegExp(r'^-|[WS]$', caseSensitive: false);
 
 /// An enum for degrees/minutes/seconds formatting types.
-///
-/// Contains also **static functions** for parsing and formatting
-/// degrees/minutes/seconds on latitude, longitude and bearing values.
-enum Dms {
+enum DmsFormat {
   /// Format a degree value using the "degrees" only pattern, ie. '003.6200° W'.
   d,
 
@@ -47,7 +44,30 @@ enum Dms {
 
   /// Format a degree value using the "degrees/minutes/seconds" pattern, ie.
   /// '003° 37′ 12″ W'.
-  dms;
+  dms
+}
+
+/// A formatter with methods for parsing and formatting degrees/minutes/seconds
+/// on latitude, longitude and bearing values.
+class Dms {
+  final DmsFormat _format;
+  final String _separator;
+  final int? _decimals;
+
+  /// Creates a new formatter for parsing and formatting degrees/minutes/seconds
+  /// on latitude, longitude and bearing values.
+  ///
+  /// Parameters:
+  /// * [format]: Specifies how return values are formatted (`d`, `dm` or `dms`).
+  /// * [separator]: The separator character to be used to separate degrees, minutes, and seconds. The default separator is U+202F ‘narrow no-break space’.
+  /// * [decimals]: Number of decimal places to use (default 4 for `d`, 2 for `dm`, 0 for `dms`).
+  const Dms({
+    DmsFormat format = DmsFormat.dms,
+    String separator = '\u202f',
+    int? decimals,
+  })  : _format = format,
+        _separator = separator,
+        _decimals = decimals;
 
   // note: Unicode Degree = U+00B0. Prime = U+2032, Double prime = U+2033
 
@@ -65,10 +85,10 @@ enum Dms {
   /// Examples:
   /// ```dart
   ///   // 51.4779°N, 000.0015°W
-  ///   final p1 = Geographic(lat: Dms.parse('51° 28′ 40.37″ N'),
-  ///                         lon: Dms.parse('000° 00′ 05.29″ W'));
+  ///   final p1 = Geographic(lat: Dms().parse('51° 28′ 40.37″ N'),
+  ///                         lon: Dms().parse('000° 00′ 05.29″ W'));
   /// ```
-  static double parse(String dms) {
+  double parse(String dms) {
     final dmsTrimmed = dms.trim();
 
     // check for signed decimal degrees without NSEW, if so return it directly
@@ -119,7 +139,7 @@ enum Dms {
   }
 
   /// Converts the degree value of [deg] to a String representation
-  /// (deg/min/sec) according to the specified [format].
+  /// (deg/min/sec) according to the specified [_format].
   ///
   /// For returned values:
   /// * Degree, prime, double-prime symbols are added.
@@ -130,39 +150,31 @@ enum Dms {
   ///
   /// Parameters:
   /// * [deg]: The degree value (ie. latitude, longitude or bearing) to be formatted as specified.
-  /// * [format]: Specifies how return values are formatted (`d`, `dm` or `dms`).
-  /// * [separator]: The separator character to be used to separate degrees, minutes, and seconds. The default separator is U+202F ‘narrow no-break space’.
-  /// * [decimals]: Number of decimal places to use (default 4 for `d`, 2 for `dm`, 0 for `dms`).
   ///
   /// Throws [FormatException] if a string representation cannot be formatted.
   ///
   /// Examples:
   /// ```dart
-  ///   final formatted = Dms.formatDms(-3.62); // 003° 37′ 12″
+  ///   final formatted = Dms().format(-3.62); // 003° 37′ 12″
   /// ```
-  static String formatDms(
-    double deg, {
-    Dms format = Dms.dms,
-    String separator = '\u202f',
-    int? decimals,
-  }) {
+  String format(double deg) {
     if (deg.isNaN || deg.isInfinite) {
       throw const FormatException('Invalid value');
     }
 
     // decimal points
     final int dp;
-    if (decimals != null) {
-      dp = decimals;
+    if (_decimals != null) {
+      dp = _decimals!;
     } else {
-      switch (format) {
-        case Dms.d:
+      switch (_format) {
+        case DmsFormat.d:
           dp = 4;
           break;
-        case Dms.dm:
+        case DmsFormat.dm:
           dp = 2;
           break;
-        case Dms.dms:
+        case DmsFormat.dms:
           dp = 0;
           break;
       }
@@ -171,8 +183,8 @@ enum Dms {
     // (unsigned result ready for appending compass dir'n)
     final degAbs = deg.abs();
 
-    switch (format) {
-      case Dms.d:
+    switch (_format) {
+      case DmsFormat.d:
         final ds = degAbs.toStringAsFixed(dp);
         if (degAbs < 10.0 && !ds.startsWith('10')) {
           return '00$ds°';
@@ -181,7 +193,7 @@ enum Dms {
         } else {
           return '$ds°';
         }
-      case Dms.dm:
+      case DmsFormat.dm:
         // get component deg
         var d = degAbs.floor();
         // get component min & round/right-pad
@@ -197,11 +209,11 @@ enum Dms {
         final ds = d.toString().padLeft(3, '0');
         // left-pad with leading zeros (note may include decimals) & result
         if (m < 10 && !ms.startsWith('10')) {
-          return '$ds°${separator}0$ms′';
+          return '$ds°${_separator}0$ms′';
         } else {
-          return '$ds°$separator$ms′';
+          return '$ds°$_separator$ms′';
         }
-      case Dms.dms:
+      case DmsFormat.dms:
         // get component deg
         var d = degAbs.floor();
         // get component min
@@ -224,16 +236,16 @@ enum Dms {
         final ms = m.toString().padLeft(2, '0');
         // left-pad with leading zeros (note may include decimals) & result
         if (s < 10.0 && !ss.startsWith('10')) {
-          return '$ds°$separator$ms′${separator}0$ss″';
+          return '$ds°$_separator$ms′${_separator}0$ss″';
         } else {
-          return '$ds°$separator$ms′$separator$ss″';
+          return '$ds°$_separator$ms′$_separator$ss″';
         }
     }
   }
 
   /// Converts a degree value [deg] to a String representation (deg/min/sec) of
   /// the latitude (2-digit degrees, suffixed with N/S) according to the
-  /// specified [format].
+  /// specified [_format].
   ///
   /// For returned values:
   /// * The latitude value is normalized to the range [90° S .. 90° N]
@@ -243,38 +255,26 @@ enum Dms {
   ///
   /// Parameters:
   /// * [deg]: The degree value of latitude to be formatted as specified.
-  /// * [format]: Specifies how return values are formatted (`d`, `dm` or `dms`).
-  /// * [separator]: The separator character to be used to separate degrees, minutes, seconds, and cardinal directions. The default separator is U+202F ‘narrow no-break space’.
-  /// * [decimals]: Number of decimal places to use (default 4 for `d`, 2 for `dm`, 0 for `dms`).
   ///
   /// Throws [FormatException] if a string representation cannot be formatted.
   ///
   /// Examples:
   /// ```dart
-  ///   final latDms = Dms.latitude(-3.62); // 03° 37′ 12″ S
-  ///   final latDm = Dms.latitude(-3.62, format: Dms.dm); // 03° 37.20′ S
-  ///   final latD = Dms.latitude(-3.62, format: Dms.d); // 03.6200° S
+  ///   final latDms = Dms().latitude(-3.62); // 03° 37′ 12″ S
+  ///   final latDm = Dms(format: DmsFormat.dm).latitude(-3.62); // 03° 37.20′ S
+  ///   final latD = Dms(format: DmsFormat.d)).latitude(-3.62); // 03.6200° S
   /// ```
-  static String latitude(
-    double deg, {
-    Dms format = Dms.dms,
-    String separator = '\u202f',
-    int? decimals,
-  }) {
+  String latitude(double deg) {
     final normalized = deg.wrapLatitude();
-    final lat = formatDms(
-      normalized,
-      format: format,
-      separator: separator,
-      decimals: decimals,
-    );
+    final lat = format(normalized);
+
     // knock off initial '0' for latitude and return the formatted result
-    return lat.substring(1) + separator + (normalized < 0.0 ? 'S' : 'N');
+    return lat.substring(1) + _separator + (normalized < 0.0 ? 'S' : 'N');
   }
 
   /// Converts a degree value [deg] to a String representation (deg/min/sec) of
   /// the longitude (3-digit degrees, suffixed with E/W) according to the
-  /// specified [format].
+  /// specified [_format].
   ///
   /// For returned values:
   /// * The longitude value is normalized to the range [180° W .. 180° E[
@@ -284,36 +284,23 @@ enum Dms {
   ///
   /// Parameters:
   /// * [deg]: The degree value of longitude to be formatted as specified.
-  /// * [format]: Specifies how return values are formatted (`d`, `dm` or `dms`).
-  /// * [separator]: The separator character to be used to separate degrees, minutes, seconds, and cardinal directions. The default separator is U+202F ‘narrow no-break space’.
-  /// * [decimals]: Number of decimal places to use (default 4 for `d`, 2 for `dm`, 0 for `dms`).
   ///
   /// Throws [FormatException] if a string representation cannot be formatted.
   ///
   /// Examples:
   /// ```dart
-  ///   final lonDms = Dms.longitude(-3.62); // 003° 37′ 12″ W
-  ///   final lonDm = Dms.longitude(-3.62, format: Dms.dm); // 003° 37.20′ W
-  ///   final lonD = Dms.longitude(-3.62, format: Dms.d); // 003.6200° W
+  ///   final lonDms = Dms().longitude(-3.62); // 003° 37′ 12″ W
+  ///   final lonDm = Dms(format: DmsFormat.dm).longitude(-3.62); // 003° 37.20′ W
+  ///   final lonD = Dms(format: DmsFormat.dm).longitude(-3.62); // 003.6200° W
   /// ```
-  static String longitude(
-    double deg, {
-    Dms format = Dms.dms,
-    String separator = '\u202f',
-    int? decimals,
-  }) {
+  String longitude(double deg) {
     final normalized = deg.wrapLongitude();
-    final lon = formatDms(
-      normalized,
-      format: format,
-      separator: separator,
-      decimals: decimals,
-    );
-    return lon + separator + (normalized < 0.0 ? 'W' : 'E');
+    final lon = format(normalized);
+    return lon + _separator + (normalized < 0.0 ? 'W' : 'E');
   }
 
   /// Converts a degree value [deg] to a String representation (deg/min/sec) of
-  /// the bearing (3-digit degrees, 0°..360°) according to the specified [format].
+  /// the bearing (3-digit degrees, 0°..360°) according to the specified [_format].
   ///
   /// For returned values:
   /// * The bearing value is normalized to the range [0°..360°[
@@ -322,31 +309,18 @@ enum Dms {
   ///
   /// Parameters:
   /// * [deg]: The degree value of bearing to be formatted as specified.
-  /// * [type]: Specifies how return values are formatted (`d`, `dm` or `dms`).
-  /// * [separator]: The separator character to be used to separate degrees, minutes, and seconds. The default separator is U+202F ‘narrow no-break space’.
-  /// * [decimals]: Number of decimal places to use (default 4 for `d`, 2 for `dm`, 0 for `dms`).
   ///
   /// Throws [FormatException] if a string representation cannot be formatted.
   ///
   /// Examples:
   /// ```dart
-  ///   final brngDms = Dms.bearing(-3.62); // 356° 22′ 48″
-  ///   final brngDm = Dms.bearing(-3.62, format: Dms.dm); // 356° 22.80′
-  ///   final brngD = Dms.bearing(-3.62, format: Dms.d); // 356.3800°
+  ///   final brngDms = Dms().bearing(-3.62); // 356° 22′ 48″
+  ///   final brngDm = Dms(format: DmsFormat.dm).bearing(-3.62); // 356° 22.80′
+  ///   final brngD = Dms(format: DmsFormat.d).bearing(-3.62); // 356.3800°
   /// ```
-  static String bearing(
-    double deg, {
-    Dms format = Dms.dms,
-    String separator = '\u202f',
-    int? decimals,
-  }) {
+  String bearing(double deg) {
     final normalized = deg.wrap360();
-    final brng = formatDms(
-      normalized,
-      format: format,
-      separator: separator,
-      decimals: decimals,
-    );
+    final brng = format(normalized);
     if (brng.startsWith('360')) {
       // just in case rounding took us up to 360°!
       return brng.replaceRange(0, 3, '000');
@@ -365,10 +339,10 @@ enum Dms {
   ///
   /// Examples:
   /// ```dart
-  ///   final cp1 = Dms.compassPoint(24.0);               // 'NNE'
-  ///   final cp2 = Dms.compassPoint(24.0, precision: 1); // 'N'
+  ///   final cp1 = Dms().compassPoint(24.0);               // 'NNE'
+  ///   final cp2 = Dms().compassPoint(24.0, precision: 1); // 'N'
   /// ```
-  static String compassPoint(double bearing, {int precision = 3}) {
+  String compassPoint(double bearing, {int precision = 3}) {
     if (precision < 1 || precision > 3) {
       throw ArgumentError('The precision value $precision out of range.');
     }
