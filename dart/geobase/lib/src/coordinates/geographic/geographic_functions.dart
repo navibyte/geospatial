@@ -69,17 +69,33 @@ extension DoubleAngleExtension on double {
   /// * `89.0` => `89.0`
   /// * `92.0` => `88.0`
   ///
-  /// Uses the formula `-90.0 + (this + 90.0).abs() % 180.0` if this < 90.0
-  /// or `90.0 - (this - 90.0) % 180.0` if this > 90.0.
-  /// 
   /// As a special case if this is `double.nan` then `double.nan` is returned.
   ///
   /// See also [clipLatitude].
-  double wrapLatitude() => this >= -90.0 && this <= 90.0
-      ? this
-      : this < -90.0
-          ? -90.0 + (this + 90.0).abs() % 180.0
-          : 90.0 - (this - 90.0) % 180.0;
+  double wrapLatitude() {
+    if (this >= -90.0 && this <= 90.0) {
+      // already normalized
+      return this;
+    } else {
+      if (this > 90.0) {
+        // north pole as reference
+        final x = (this - 90.0) % 360.0;
+        if (x <= 180.0) {
+          return 90.0 - x;
+        } else {
+          return -90.0 + (x - 180.0);
+        }
+      } else {
+        // south pole as reference
+        final x = (this + 90.0).abs() % 360.0;
+        if (x <= 180.0) {
+          return -90.0 + x;
+        } else {
+          return 90.0 - (x - 180.0);
+        }
+      }
+    }
+  }
 
   /// Converts this double value in degrees to a clipped latitude in the range
   /// `[-90.0, 90.0]`.

@@ -21,7 +21,10 @@ void main() {
     test('Format', () {
       expect(Dms.formatDms(51.477881, format: Dms.d, decimals: 4), '051.4779°');
       expect(Dms.formatDms(51.477881, format: Dms.d, decimals: 2), '051.48°');
-      expect(Dms.formatDms(51.477881, format: Dms.dm, decimals: 2), '051° 28.67′');
+      expect(
+        Dms.formatDms(51.477881, format: Dms.dm, decimals: 2),
+        '051° 28.67′',
+      );
       expect(Dms.formatDms(51.477881, format: Dms.dm, decimals: 0), '051° 29′');
       expect(Dms.formatDms(51.477881, decimals: 0), '051° 28′ 40″');
       expect(Dms.formatDms(51.477881, decimals: 2), '051° 28′ 40.37″');
@@ -57,7 +60,10 @@ void main() {
       expect(Dms.longitude(3.62, separator: ''), '003°37′12″E');
 
       expect(Dms.longitude(3.62, format: Dms.dm), '003° 37.20′ E');
-      expect(Dms.longitude(-3.62, format: Dms.dm, separator: ''), '003°37.20′W');
+      expect(
+        Dms.longitude(-3.62, format: Dms.dm, separator: ''),
+        '003°37.20′W',
+      );
 
       expect(Dms.longitude(-3.62, format: Dms.d), '003.6200° W');
       expect(Dms.longitude(-3.62, format: Dms.d, separator: ''), '003.6200°W');
@@ -65,8 +71,14 @@ void main() {
       // wrapped longitudes
       expect(Dms.longitude(176.38, format: Dms.d, separator: ''), '176.3800°E');
       expect(Dms.longitude(183.62, format: Dms.d, separator: ''), '176.3800°W');
-      expect(Dms.longitude(-176.38, format: Dms.d, separator: ''), '176.3800°W');
-      expect(Dms.longitude(-183.62, format: Dms.d, separator: ''), '176.3800°E');
+      expect(
+        Dms.longitude(-176.38, format: Dms.d, separator: ''),
+        '176.3800°W',
+      );
+      expect(
+        Dms.longitude(-183.62, format: Dms.d, separator: ''),
+        '176.3800°E',
+      );
     });
 
     test('Bearing', () {
@@ -121,6 +133,30 @@ void main() {
           expect(Dms.bearing(Dms.parse(brng), format: dms), brng);
         }
       }
+    });
+
+    test('ST_AsLatLonText reference tests', () {
+      // samples from: https://postgis.net/docs/ST_AsLatLonText.html
+
+      expect((-792.32498).wrapLatitude(), closeTo(-72.32498, 0.00001));
+      expect(
+        Dms.latitude(-792.32498, separator: '', decimals: 3),
+        '72°19′29.928″S',
+      );
+      expect((-302.2342342).wrapLongitude(), closeTo(57.76576, 0.00001));
+      expect(
+        Dms.longitude(-302.2342342, separator: '', decimals: 3),
+        '057°45′56.757″E',
+      );
+
+      expect(
+        Dms.latitude(-2.32498, separator: '', decimals: 3),
+        '02°19′29.928″S',
+      );
+      expect(
+        Dms.longitude(-3.2342342, separator: '', decimals: 3),
+        '003°14′03.243″W',
+      );
     });
   });
 }
