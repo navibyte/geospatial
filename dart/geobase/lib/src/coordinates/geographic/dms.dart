@@ -180,20 +180,17 @@ class Dms extends DmsFormat {
         _doublePrime = doublePrime;
 
   /// Creates a new formatter for parsing and formatting degrees/minutes/seconds
-  /// on latitude, longitude and bearing values separating degrees, minutes,
-  /// seconds, and cardinal directions by default with Unicode U+202F
-  /// ‘narrow no-break space’.
+  /// on latitude, longitude and bearing.
+  /// 
+  /// Uses Unicode U+202F ‘narrow no-break space’ as `separator` that is used to
+  /// separate degrees, minutes, seconds, and cardinal directions.
   ///
   /// This constructor is logically the same as the default constructor `Dms()`
   /// but this has different default value for separating components.
   ///
-  /// Parameters:
-  /// * [separator]: The separator character to be used to separate degrees, minutes, seconds, and cardinal directions. The default separator is U+202F ‘narrow no-break space’.
-  ///
-  /// See documentation for other parameters in the default constructor.
+  /// See documentation for parameters from the default constructor.
   const Dms.narrowSpace({
     DmsType type = DmsType.dms,
-    String separator = '\u202f', // Unicode U+202F ‘narrow no-break space’.
     int? decimals,
     bool signedDegrees = false,
     bool zeroPadDegrees = false,
@@ -202,7 +199,7 @@ class Dms extends DmsFormat {
     String prime = '′', // Unicode Prime = U+2032,
     String doublePrime = '″', //  Unicode Double prime = U+2033
   })  : _type = type,
-        _separator = separator,
+        _separator = '\u202f', // Unicode U+202F ‘narrow no-break space’.
         _decimals = decimals,
         _signedDegrees = signedDegrees,
         _zeroPadDegrees = zeroPadDegrees,
