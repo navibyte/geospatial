@@ -23,7 +23,9 @@ library geobase;
 
 // codes
 export 'src/codes/canvas_origin.dart';
+export 'src/codes/cardinal_precision.dart';
 export 'src/codes/coords.dart';
+export 'src/codes/dms_type.dart';
 export 'src/codes/geom.dart';
 
 // constants

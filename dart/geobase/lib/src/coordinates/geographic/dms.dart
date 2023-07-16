@@ -31,6 +31,7 @@
 import 'dart:math';
 
 import '/src/codes/cardinal_precision.dart';
+import '/src/codes/dms_type.dart';
 
 import 'geographic_functions.dart';
 
@@ -117,21 +118,6 @@ abstract class DmsFormat {
   }
 }
 
-/// An enum for degrees/minutes/seconds formatting types used by [Dms]
-/// implementation of [DmsFormat].
-enum DmsType {
-  /// Format a degree value as decimal degrees, ie. '003.6200°W'.
-  d,
-
-  /// Format a degree value using the "degrees/minutes" pattern, ie.
-  /// '003°37.20′W'.
-  dm,
-
-  /// Format a degree value using the "degrees/minutes/seconds" pattern, ie.
-  /// '003°37′12″W'.
-  dms
-}
-
 /// A default implementation for [DmsFormat] abstract base class, that defines
 /// methods for parsing and formatting degrees/minutes/seconds on latitude,
 /// longitude and bearing values.
@@ -160,7 +146,7 @@ class Dms extends DmsFormat {
   /// * [prime]: A prime symbol (or other text) to be formatted just after minutes.
   /// * [doublePrime]: A double prime symbol (or other text) to be formatted just after seconds.
   const Dms({
-    DmsType type = DmsType.dms,
+    DmsType type = DmsType.degMinSec,
     String separator = '', // by default no separator
     int? decimals,
     bool signedDegrees = false,
@@ -181,7 +167,7 @@ class Dms extends DmsFormat {
 
   /// Creates a new formatter for parsing and formatting degrees/minutes/seconds
   /// on latitude, longitude and bearing.
-  /// 
+  ///
   /// Uses Unicode U+202F ‘narrow no-break space’ as `separator` that is used to
   /// separate degrees, minutes, seconds, and cardinal directions.
   ///
@@ -190,7 +176,7 @@ class Dms extends DmsFormat {
   ///
   /// See documentation for parameters from the default constructor.
   const Dms.narrowSpace({
-    DmsType type = DmsType.dms,
+    DmsType type = DmsType.degMinSec,
     int? decimals,
     bool signedDegrees = false,
     bool zeroPadDegrees = false,
@@ -306,13 +292,13 @@ class Dms extends DmsFormat {
       dp = _decimals!;
     } else {
       switch (_type) {
-        case DmsType.d:
+        case DmsType.deg:
           dp = 4;
           break;
-        case DmsType.dm:
+        case DmsType.degMin:
           dp = 2;
           break;
-        case DmsType.dms:
+        case DmsType.degMinSec:
           dp = 0;
           break;
       }
@@ -322,7 +308,7 @@ class Dms extends DmsFormat {
     final degAbs = deg.abs();
 
     switch (_type) {
-      case DmsType.d:
+      case DmsType.deg:
         final ds = degAbs.toStringAsFixed(dp);
         if (_zeroPadDegrees) {
           if (degAbs < 10.0 && !ds.startsWith('10')) {
@@ -332,7 +318,7 @@ class Dms extends DmsFormat {
           }
         }
         return '$ds$_degree';
-      case DmsType.dm:
+      case DmsType.degMin:
         // get component deg
         var d = degAbs.floor();
         // get component min & round/right-pad
@@ -353,7 +339,7 @@ class Dms extends DmsFormat {
         } else {
           return '$ds$_degree$_separator$ms$_prime';
         }
-      case DmsType.dms:
+      case DmsType.degMinSec:
         // get component deg
         var d = degAbs.floor();
         // get component min
