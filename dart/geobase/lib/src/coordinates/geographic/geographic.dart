@@ -257,8 +257,16 @@ class Geographic extends Position {
   /// ```dart
   ///   const p1 = Geographic(lat: 51.4778, lon: -0.0014);
   ///
-  ///   // 51° 28′ 40″ N
-  ///   final p1Lat = p1.toDmsLat();
+  ///   // Decimal degrees on latitude: 51.4778°N
+  ///   final p1Deg = p1.toDmsLat();
+  /// 
+  ///   // DM representation with three decimals on latitude: 51°28.668′N
+  ///   const dm = Dms(type: DmsType.degMin, decimals: 3);
+  ///   final p1DegMin = p1.toDmsLat(format: dm);
+  ///   
+  ///   // DMS representation with narrow spaces on latitude: 51° 28′ 40″ N
+  ///   const dms = Dms.narrowSpace(type: DmsType.degMinSec);
+  ///   final p1DegMinSec = p1.toDmsLat(format: dms);
   /// ```
   String toDmsLat({DmsFormat format = const Dms()}) => format.lat(lat);
 
@@ -268,8 +276,16 @@ class Geographic extends Position {
   /// ```dart
   ///   const p1 = Geographic(lat: 51.4778, lon: -0.0014);
   ///
-  ///   // 0°00′05″W
-  ///   final p1Lon = p1.toDmsLon();
+  ///   // Decimal degrees on longitude: 0.0014°W
+  ///   final p1Deg = p1.toDmsLon();
+  /// 
+  ///   // DM representation with three decimals on longitude: 0°00.084′W
+  ///   const dm = Dms(type: DmsType.degMin, decimals: 3);
+  ///   final p1DegMin = p1.toDmsLon(format: dm);
+  ///   
+  ///   // DMS representation with narrow spaces on longitude: 0° 00′ 05″ W
+  ///   const dms = Dms.narrowSpace(type: DmsType.degMinSec);
+  ///   final p1DegMinSec = p1.toDmsLon(format: dms);
   /// ```
   String toDmsLon({DmsFormat format = const Dms()}) => format.lon(lon);
 
@@ -286,18 +302,27 @@ class Geographic extends Position {
   /// ```dart
   ///   const p1 = Geographic(lat: 51.4778, lon: -0.0014);
   ///
-  ///   // 51° 28′ 40″ N 0° 00′ 05″ W
-  ///   final p1LatLon = p1.toDmsLatLon(format: Dms.narrowSpace());
+  ///   // Decimal degrees on lat-lon: 51.4778°N 0.0014°W
+  ///   final p1Deg = p1.toDmsLatLon();
+  /// 
+  ///   // DM with three decimals on lat-lon: 51°28.668′N 0°00.084′W
+  ///   const dm = Dms(type: DmsType.degMin, decimals: 3);
+  ///   final p1DegMin = p1.toDmsLatLon(format: dm);
+  ///   
+  ///   // DMS with narrow spaces on lat-lon: 51° 28′ 40″ N 0° 00′ 05″ W
+  ///   const dms = Dms.narrowSpace(type: DmsType.degMinSec);
+  ///   final p1DegMinSec = p1.toDmsLatLon(format: dms);
   ///
-  ///   const format = Dms(decimals: 3, zeroPadMinSec: false);
-  ///
-  ///   // 51°28′40.080″N 0°0′5.040″W
-  ///   final p1LatLon2 = p1.toDmsLatLon(format: format);
-  ///
+  ///   // geographic position with elevation
   ///   const p2 = Geographic(lon: -0.0014, lat: 51.4778, elev: 45.83764);
   ///
-  ///   // 51°28′40.080″N 0°0′5.040″W 45.84m
-  ///   final p2LatLonWithElev = p2.toDmsLatLon(format: format);
+  ///   // DMS lat-lon with elevation: 51°28′40.080″N 0°0′5.040″W
+  ///   const format = Dms(
+  ///     type: DmsType.degMinSec,
+  ///     decimals: 3,
+  ///     zeroPadMinSec: false,
+  ///   );
+  ///   final p2DegMinSecWithElev = p2.toDmsLatLon(format: format);
   /// ```
   String toDmsLatLon({
     DmsFormat format = const Dms(),

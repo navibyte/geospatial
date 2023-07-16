@@ -20,12 +20,11 @@ void main() {
     });
     test('Format', () {
       expect(
-        Dms(type: DmsType.deg, decimals: 4, zeroPadDegrees: true)
-            .formatDms(51.477881),
+        Dms(decimals: 4, zeroPadDegrees: true).formatDms(51.477881),
         '051.4779°',
       );
       expect(
-        Dms(type: DmsType.deg, decimals: 2).formatDms(51.477881),
+        Dms(decimals: 2).formatDms(51.477881),
         '51.48°',
       );
       expect(
@@ -36,25 +35,48 @@ void main() {
         Dms.narrowSpace(type: DmsType.degMin, decimals: 0).formatDms(51.477881),
         '51° 29′',
       );
-      expect(Dms(decimals: 0).formatDms(51.477881), '51°28′40″');
-      expect(Dms(decimals: 2).formatDms(51.477881), '51°28′40.37″');
-      expect(Dms(decimals: 0).formatDms(-0.001469), '0°00′05″');
       expect(
-        Dms(decimals: 0, signedDegrees: true).formatDms(-0.001469),
+        Dms(type: DmsType.degMinSec, decimals: 0).formatDms(51.477881),
+        '51°28′40″',
+      );
+      expect(
+        Dms(type: DmsType.degMinSec, decimals: 2).formatDms(51.477881),
+        '51°28′40.37″',
+      );
+      expect(
+        Dms(type: DmsType.degMinSec, decimals: 0).formatDms(-0.001469),
+        '0°00′05″',
+      );
+      expect(
+        Dms(type: DmsType.degMinSec, decimals: 0, signedDegrees: true)
+            .formatDms(-0.001469),
         '-0°00′05″',
       );
       expect(
-        Dms.narrowSpace(decimals: 2, zeroPadMinSec: false).formatDms(-0.001469),
+        Dms.narrowSpace(
+          type: DmsType.degMinSec,
+          decimals: 2,
+          zeroPadMinSec: false,
+        ).formatDms(-0.001469),
         '0° 0′ 5.29″',
       );
-      expect(Dms(signedDegrees: true).formatDms(-3.62), '-3°37′12″');
+      expect(
+        Dms(type: DmsType.degMinSec, signedDegrees: true).formatDms(-3.62),
+        '-3°37′12″',
+      );
     });
 
     test('Latitude', () {
-      expect(Dms(zeroPadDegrees: true).formatDms(-3.62), '003°37′12″');
-      expect(Dms().formatDms(-3.62), '3°37′12″');
-      expect(Dms.narrowSpace().lat(-3.62), '3° 37′ 12″ S');
-      expect(Dms().lat(-3.62), '3°37′12″S');
+      expect(
+        Dms(type: DmsType.degMinSec, zeroPadDegrees: true).formatDms(-3.62),
+        '003°37′12″',
+      );
+      expect(Dms(type: DmsType.degMinSec).formatDms(-3.62), '3°37′12″');
+      expect(
+        Dms.narrowSpace(type: DmsType.degMinSec).lat(-3.62),
+        '3° 37′ 12″ S',
+      );
+      expect(Dms(type: DmsType.degMinSec).lat(-3.62), '3°37′12″S');
 
       expect(
         Dms.narrowSpace(type: DmsType.degMin).formatDms(-3.62),
@@ -70,41 +92,48 @@ void main() {
       expect(Dms(type: DmsType.deg).lat(-3.62), '3.6200°S');
 
       // wrapped latitudes
-      expect(Dms(type: DmsType.deg).lat(176.38), '3.6200°N');
-      expect(Dms(type: DmsType.deg).lat(183.62), '3.6200°S');
-      expect(Dms(type: DmsType.deg).lat(-176.38), '3.6200°S');
-      expect(Dms(type: DmsType.deg).lat(-183.62), '3.6200°N');
+      expect(Dms().lat(176.38), '3.6200°N');
+      expect(Dms().lat(183.62), '3.6200°S');
+      expect(Dms().lat(-176.38), '3.6200°S');
+      expect(Dms().lat(-183.62), '3.6200°N');
     });
 
     test('Longitude', () {
       expect(
-        Dms.narrowSpace(zeroPadDegrees: true).lon(-3.62),
+        Dms.narrowSpace(type: DmsType.degMinSec, zeroPadDegrees: true)
+            .lon(-3.62),
         '003° 37′ 12″ W',
       );
-      expect(Dms().lon(3.62), '3°37′12″E');
+      expect(Dms(type: DmsType.degMinSec).lon(3.62), '3°37′12″E');
 
       expect(Dms.narrowSpace(type: DmsType.degMin).lon(3.62), '3° 37.20′ E');
       expect(Dms(type: DmsType.degMin).lon(-3.62), '3°37.20′W');
 
-      expect(Dms.narrowSpace(type: DmsType.deg).lon(-3.62), '3.6200° W');
-      expect(Dms(type: DmsType.deg).lon(-3.62), '3.6200°W');
+      expect(Dms.narrowSpace().lon(-3.62), '3.6200° W');
+      expect(Dms().lon(-3.62), '3.6200°W');
 
       // wrapped longitudes
-      expect(Dms(type: DmsType.deg).lon(176.38), '176.3800°E');
-      expect(Dms(type: DmsType.deg).lon(183.62), '176.3800°W');
-      expect(Dms(type: DmsType.deg).lon(-176.38), '176.3800°W');
-      expect(Dms(type: DmsType.deg).lon(-183.62), '176.3800°E');
+      expect(Dms().lon(176.38), '176.3800°E');
+      expect(Dms().lon(183.62), '176.3800°W');
+      expect(Dms().lon(-176.38), '176.3800°W');
+      expect(Dms().lon(-183.62), '176.3800°E');
     });
 
     test('Bearing', () {
-      expect(Dms.narrowSpace().bearing(-3.62), '356° 22′ 48″');
+      expect(
+        Dms.narrowSpace(type: DmsType.degMinSec).bearing(-3.62),
+        '356° 22′ 48″',
+      );
       expect(
         Dms.narrowSpace(type: DmsType.degMin).bearing(-3.62),
         '356° 22.80′',
       );
-      expect(Dms.narrowSpace(type: DmsType.deg).bearing(-3.62), '356.3800°');
-      expect(Dms().bearing(3.62), '3°37′12″');
-      expect(Dms(zeroPadDegrees: true).bearing(3.62), '003°37′12″');
+      expect(Dms.narrowSpace().bearing(-3.62), '356.3800°');
+      expect(Dms(type: DmsType.degMinSec).bearing(3.62), '3°37′12″');
+      expect(
+        Dms(type: DmsType.degMinSec, zeroPadDegrees: true).bearing(3.62),
+        '003°37′12″',
+      );
     });
 
     test('Compass point', () {
@@ -144,6 +173,32 @@ void main() {
       expect(() => Dms().lat(double.nan), throwsFormatException);
     });
 
+    test('Documentation examples', () {
+      expect(
+        Dms.narrowSpace(type: DmsType.degMinSec).formatDms(-3.62),
+        '3° 37′ 12″',
+      );
+      expect(
+        Dms(type: DmsType.degMin, signedDegrees: true).formatDms(-3.62),
+        '-3°37.20′',
+      );
+      expect(Dms().formatDms(-3.62), '3.6200°');
+
+      expect(
+        Dms.narrowSpace(type: DmsType.degMinSec).lat(-3.62),
+        '3° 37′ 12″ S',
+      );
+      expect(Dms(type: DmsType.degMin).lat(-3.62), '3°37.20′S');
+      expect(Dms().lat(-3.62), '3.6200°S');
+
+      expect(
+        Dms.narrowSpace(type: DmsType.degMinSec).bearing(-3.62),
+        '356° 22′ 48″',
+      );
+      expect(Dms(type: DmsType.degMin).bearing(-3.62), '356°22.80′');
+      expect(Dms().bearing(-3.62), '356.3800°');
+    });
+
     test('Random tests (format -> parse -> format)', () {
       final r = Random(298884);
       for (var n = 0; n < 1000; n++) {
@@ -167,6 +222,7 @@ void main() {
       const p1 = Geographic(lat: -2.32498, lon: -3.2342342);
 
       var dms = Dms(
+        type: DmsType.degMinSec,
         decimals: 3,
       );
       expect((-792.32498).wrapLatitude(), closeTo(-72.32498, 0.00001));
@@ -179,6 +235,7 @@ void main() {
 
       // "Characters other than D, M, S, C and . are just passed through."
       dms = Dms(
+        type: DmsType.degMinSec,
         separator: ' ',
         decimals: 0,
         zeroPadMinSec: false,
@@ -204,7 +261,6 @@ void main() {
 
       // "Decimal degrees."
       dms = Dms(
-        type: DmsType.deg,
         separator: ' ',
         degree: ' degrees',
       );

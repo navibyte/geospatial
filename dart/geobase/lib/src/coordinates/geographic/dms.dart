@@ -35,11 +35,6 @@ import '/src/codes/dms_type.dart';
 
 import 'geographic_functions.dart';
 
-final _regExpMinus = RegExp('^-');
-final _regExpNSEW = RegExp(r'[NSEW]$', caseSensitive: false);
-final _regExpSplitter = RegExp('[^0-9.,]+');
-final _regExpMinusOrSW = RegExp(r'^-|[WS]$', caseSensitive: false);
-
 /// A base class for formatters with methods for parsing and formatting
 /// degrees/minutes/seconds on latitude, longitude and bearing values.
 ///
@@ -186,6 +181,11 @@ abstract class DmsFormat {
   }
 }
 
+final _regExpMinus = RegExp('^-');
+final _regExpNSEW = RegExp(r'[NSEW]$', caseSensitive: false);
+final _regExpSplitter = RegExp('[^0-9.,]+');
+final _regExpMinusOrSW = RegExp(r'^-|[WS]$', caseSensitive: false);
+
 /// A default implementation for [DmsFormat] abstract base class, that defines
 /// methods for parsing and formatting degrees/minutes/seconds on latitude,
 /// longitude and bearing values.
@@ -204,9 +204,9 @@ class Dms extends DmsFormat {
   /// on latitude, longitude and bearing values.
   ///
   /// Parameters:
-  /// * [type]: Specifies how return values are formatted (`d`, `dm` or `dms`).
+  /// * [type]: Specifies how return values are formatted (`deg`, `degMin` or `degMinSec`).
   /// * [separator]: The separator character to be used to separate degrees, minutes, seconds, and cardinal directions. By default there is no separator (see also the [Dms.narrowSpace] constructor).
-  /// * [decimals]: Number of decimal places to use (default 4 for `d`, 2 for `dm`, 0 for `dms`).
+  /// * [decimals]: Number of decimal places to use (default 4 for `deg`, 2 for `degMin`, 0 for `degMinSec`).
   /// * [signedDegrees]: If true then degree values are formatted with - symbol for negative values instead of W or S cardinal direction symbols.
   /// * [zeroPadDegrees]: If true then degree values are (left) zero-padded to 2 or 3 digits (before optional decimal part).
   /// * [zeroPadMinSec]: If true then min and sec values are (left) zero-padded to 2 digits (before optional decimal part).
@@ -214,7 +214,7 @@ class Dms extends DmsFormat {
   /// * [prime]: A prime symbol (or other text) to be formatted just after minutes.
   /// * [doublePrime]: A double prime symbol (or other text) to be formatted just after seconds.
   const Dms({
-    DmsType type = DmsType.degMinSec,
+    DmsType type = DmsType.deg,
     String separator = '', // by default no separator
     int? decimals,
     bool signedDegrees = false,
@@ -244,7 +244,7 @@ class Dms extends DmsFormat {
   ///
   /// See documentation for parameters from the default constructor.
   const Dms.narrowSpace({
-    DmsType type = DmsType.degMinSec,
+    DmsType type = DmsType.deg,
     int? decimals,
     bool signedDegrees = false,
     bool zeroPadDegrees = false,
@@ -347,9 +347,15 @@ class Dms extends DmsFormat {
   ///
   /// Examples:
   /// ```dart
-  ///   final noSpace = Dms().formatDms(-3.62); // 3°37′12″
-  ///   final signed = Dms(signedDegrees: true).formatDms(-3.62); // -3°37′12″
-  ///   final narrowSpace = Dms.narrowSpace().formatDms(-3.62); // 3° 37′ 12″
+  ///   // 3° 37′ 12″
+  ///   final dms = Dms.narrowSpace(type: DmsType.degMinSec).formatDms(-3.62);
+  ///
+  ///   // -3°37.20′
+  ///   final format = Dms(type: DmsType.degMin, signedDegrees: true);
+  ///   final dmSigned = format.formatDms(-3.62);
+  ///
+  ///   // 3.6200°
+  ///   final d = Dms().formatDms(-3.62);
   /// ```
   @override
   String formatDms(double deg, {bool twoDigitDeg = false});
@@ -490,9 +496,14 @@ class Dms extends DmsFormat {
   ///
   /// Examples:
   /// ```dart
-  ///   final latDms = Dms.narrowSpace().lat(-3.62); // 3° 37′ 12″ S
-  ///   final latDm = Dms(type: DmsType.dm).lat(-3.62); // 3°37.20′S
-  ///   final latD = Dms(type: DmsType.d)).lat(-3.62); // 3.6200°S
+  ///   // 3° 37′ 12″ S
+  ///   final latDms = Dms.narrowSpace(type: DmsType.degMinSec).lat(-3.62);
+  ///
+  ///   // 3°37.20′S
+  ///   final latDm = Dms(type: DmsType.degMin).lat(-3.62);
+  ///
+  ///   // 3.6200°S
+  ///   final latD = Dms().lat(-3.62);
   /// ```
   @override
   String lat(double deg);
@@ -525,9 +536,14 @@ class Dms extends DmsFormat {
   ///
   /// Examples:
   /// ```dart
-  ///   final lonDms = Dms.narrowSpace().lon(-3.62); // 3° 37′ 12″ W
-  ///   final lonDm = Dms(type: DmsType.dm).lon(-3.62); // 3°37.20′W
-  ///   final lonD = Dms(type: DmsType.d).lon(-3.62); // 3.6200°W
+  ///   // 3° 37′ 12″ W
+  ///   final lonDms = Dms.narrowSpace(type: DmsType.degMinSec).lon(-3.62);
+  ///
+  ///   // 3°37.20′W
+  ///   final lonDm = Dms(type: DmsType.degMin).lon(-3.62);
+  ///
+  ///   // 3.6200°W
+  ///   final lonD = Dms().lon(-3.62);
   /// ```
   @override
   String lon(double deg);
@@ -558,9 +574,14 @@ class Dms extends DmsFormat {
   ///
   /// Examples:
   /// ```dart
-  ///   final brngDms = Dms.narrowSpace().bearing(-3.62); // 356° 22′ 48″
-  ///   final brngDm = Dms(type: DmsType.dm).bearing(-3.62); // 356°22.80′
-  ///   final brngD = Dms(type: DmsType.d).bearing(-3.62); // 356.3800°
+  ///   // 356° 22′ 48″
+  ///   final brngDms = Dms.narrowSpace(type: DmsType.degMinSec).bearing(-3.62);
+  ///
+  ///   // 356°22.80′
+  ///   final brngDm = Dms(type: DmsType.degMin).bearing(-3.62);
+  ///
+  ///   // 356.3800°
+  ///   final brngD = Dms().bearing(-3.62);
   /// ```
   @override
   String bearing(double deg);

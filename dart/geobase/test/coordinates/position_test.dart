@@ -225,9 +225,9 @@ void main() {
       final p1Lon = p1.toDmsLon();
       final p1LatLon = p1.toDmsLatLon();
 
-      expect(p1Lat, '51°28′40″N');
-      expect(p1Lon, '0°00′05″W');
-      expect(p1LatLon, '51°28′40″N 0°00′05″W');
+      expect(p1Lat, '51.4778°N');
+      expect(p1Lon, '0.0014°W');
+      expect(p1LatLon, '51.4778°N 0.0014°W');
 
       expect(
         Geographic.parseDms(lat: p1Lat, lon: p1Lon)
@@ -235,7 +235,11 @@ void main() {
         true,
       );
 
-      const format = Dms(decimals: 3, zeroPadMinSec: false);
+      const format = Dms(
+        type: DmsType.degMinSec,
+        decimals: 3,
+        zeroPadMinSec: false,
+      );
       expect(p1.toDmsLatLon(format: format), '51°28′40.080″N 0°0′5.040″W');
 
       const p2 = Geographic(lon: -0.0014, lat: 51.4778, elev: 45.83764);
@@ -243,6 +247,21 @@ void main() {
         p2.toDmsLatLon(format: format),
         '51°28′40.080″N 0°0′5.040″W 45.84m',
       );
+    });
+
+    test('Dms for documentation examples', () {
+      const p1 = Geographic(lon: -0.0014, lat: 51.4778);
+
+      expect(p1.toDmsLat(), '51.4778°N');
+      expect(p1.toDmsLon(), '0.0014°W');
+      
+      const dm = Dms(type: DmsType.degMin, decimals: 3);
+      expect(p1.toDmsLat(format: dm), '51°28.668′N');
+      expect(p1.toDmsLon(format: dm), '0°00.084′W');
+
+      const dms = Dms.narrowSpace(type: DmsType.degMinSec);
+      expect(p1.toDmsLat(format: dms), '51° 28′ 40″ N');   
+      expect(p1.toDmsLon(format: dms), '0° 00′ 05″ W');   
     });
 
     test('Coordinate access and factories', () {
