@@ -163,16 +163,20 @@ class LonLat extends PositionCoords implements Geographic {
     int elevDecimals = 2,
     String mUnits = '',
     int mDecimals = 2,
-  }) =>
-      Geographic.positionToDmsLatLon(
-        this,
-        format: format,
-        separator: separator,
-        elevUnits: elevUnits,
-        elevDecimals: elevDecimals,
-        mUnits: mUnits,
-        mDecimals: mDecimals,
-      );
+  }) {
+    final buf = StringBuffer();
+    Geographic.writeDmsLatLon(
+      buf,
+      this,
+      format: format,
+      separator: separator,
+      elevUnits: elevUnits,
+      elevDecimals: elevDecimals,
+      mUnits: mUnits,
+      mDecimals: mDecimals,
+    );
+    return buf.toString();
+  }
 }
 
 /// A geographic position as an iterable collection of lon, lat and elev values.

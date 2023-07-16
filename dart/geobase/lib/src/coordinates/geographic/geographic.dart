@@ -306,19 +306,27 @@ class Geographic extends Position {
     int elevDecimals = 2,
     String mUnits = '',
     int mDecimals = 2,
-  }) =>
-      Geographic.positionToDmsLatLon(
-        this,
-        format: format,
-        separator: separator,
-        elevUnits: elevUnits,
-        elevDecimals: elevDecimals,
-        mUnits: mUnits,
-        mDecimals: mDecimals,
-      );
+  }) {
+    final buf = StringBuffer();
+    Geographic.writeDmsLatLon(
+      buf,
+      this,
+      format: format,
+      separator: separator,
+      elevUnits: elevUnits,
+      elevDecimals: elevDecimals,
+      mUnits: mUnits,
+      mDecimals: mDecimals,
+    );
+    return buf.toString();
+  }
 
-  /// Formats geographic [position] according to [format].
-  static String positionToDmsLatLon(
+  /// Formats geographic [position] according to [format] and writes it to
+  /// [buf].
+  /// 
+  /// See also [toDmsLatLon] for documentation.
+  static void writeDmsLatLon(
+    StringSink buf,
     Geographic position, {
     DmsFormat format = const Dms(),
     String separator = ' ',
@@ -327,7 +335,7 @@ class Geographic extends Position {
     String mUnits = '',
     int mDecimals = 2,
   }) {
-    final buf = StringBuffer()
+    buf
       ..write(format.lat(position.lat))
       ..write(separator)
       ..write(format.lon(position.lon));
@@ -347,8 +355,6 @@ class Geographic extends Position {
         ..write(m.toStringAsFixed(mDecimals))
         ..write(mUnits);
     }
-
-    return buf.toString();
   }
 
   // ---------------------------------------------------------------------------

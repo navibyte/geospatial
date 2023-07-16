@@ -43,12 +43,12 @@ final _regExpMinusOrSW = RegExp(r'^-|[WS]$', caseSensitive: false);
 /// A base class for formatters with methods for parsing and formatting
 /// degrees/minutes/seconds on latitude, longitude and bearing values.
 ///
-/// Sub classes must implement [parseDeg], [formatDms], [lat], [lon], and
-/// [bearing]. Such classes could configure parsing and formatting parameters as
-/// they like.
+/// Sub classes must implement [parseDeg], [writeDms], [writeLat], [writeLon],
+/// and [writeBearing]. Such classes could configure parsing and formatting
+/// parameters as they like.
 ///
-/// This base class provides a default implementation for [compassPoint] and
-/// [tryParseDeg].
+/// This base class provides default implementations for [tryParseDeg],
+/// [formatDms], [lat], [lon], [bearing], and [compassPoint].
 abstract class DmsFormat {
   /// Default `const` constructor to allow extending this abstract class.
   const DmsFormat();
@@ -78,25 +78,77 @@ abstract class DmsFormat {
   /// * [twoDigitDeg]: If true degrees are considered to have two digits (like in normalized latitude) otherwise three digits is considered.
   ///
   /// Throws [FormatException] if a string representation cannot be formatted.
-  String formatDms(double deg, {bool twoDigitDeg = false});
+  String formatDms(double deg, {bool twoDigitDeg = false}) {
+    final buf = StringBuffer();
+    writeDms(buf, deg, twoDigitDeg: twoDigitDeg);
+    return buf.toString();
+  }
+
+  /// Writes the degree value [deg] as a String representation (deg/min/sec) to
+  /// [buf].
+  ///
+  /// Parameters:
+  /// * [deg]: The degree value (ie. latitude, longitude or bearing) to be formatted as specified.
+  /// * [twoDigitDeg]: If true degrees are considered to have two digits (like in normalized latitude) otherwise three digits is considered.
+  ///
+  /// Throws [FormatException] if a string representation cannot be formatted.
+  ///
+  /// See also [formatDms] for documentation.
+  void writeDms(StringSink buf, double deg, {bool twoDigitDeg = false});
 
   /// Converts a degree value [deg] to a String representation (deg/min/sec) of
   /// the latitude.
-  /// 
+  ///
   /// Throws [FormatException] if a string representation cannot be formatted.
-  String lat(double deg);
+  String lat(double deg) {
+    final buf = StringBuffer();
+    writeLat(buf, deg);
+    return buf.toString();
+  }
+
+  /// Writes a degree value [deg] as a String representation (deg/min/sec) of
+  /// the latitude to [buf].
+  ///
+  /// Throws [FormatException] if a string representation cannot be formatted.
+  ///
+  /// See also [lat] for documentation.
+  void writeLat(StringSink buf, double deg);
 
   /// Converts a degree value [deg] to a String representation (deg/min/sec) of
   /// the longitude.
-  /// 
+  ///
   /// Throws [FormatException] if a string representation cannot be formatted.
-  String lon(double deg);
+  String lon(double deg) {
+    final buf = StringBuffer();
+    writeLon(buf, deg);
+    return buf.toString();
+  }
+
+  /// Writes a degree value [deg] as a String representation (deg/min/sec) of
+  /// the longitude to [buf].
+  ///
+  /// Throws [FormatException] if a string representation cannot be formatted.
+  ///
+  /// See also [lon] for documentation.
+  void writeLon(StringSink buf, double deg);
 
   /// Converts a degree value [deg] to a String representation (deg/min/sec) of
   /// the bearing.
-  /// 
+  ///
   /// Throws [FormatException] if a string representation cannot be formatted.
-  String bearing(double deg);
+  String bearing(double deg) {
+    final buf = StringBuffer();
+    writeBearing(buf, deg);
+    return buf.toString();
+  }
+
+  /// Writes a degree value [deg] as a String representation (deg/min/sec) of
+  /// the bearing to [buf].
+  ///
+  /// Throws [FormatException] if a string representation cannot be formatted.
+  ///
+  /// See also [bearing] for documentation.
+  void writeBearing(StringSink buf, double deg);
 
   /// Returns the compass point for [bearing] on the given [precision].
   ///
@@ -300,7 +352,10 @@ class Dms extends DmsFormat {
   ///   final narrowSpace = Dms.narrowSpace().formatDms(-3.62); // 3° 37′ 12″
   /// ```
   @override
-  String formatDms(double deg, {bool twoDigitDeg = false}) {
+  String formatDms(double deg, {bool twoDigitDeg = false});
+
+  @override
+  void writeDms(StringSink buf, double deg, {bool twoDigitDeg = false}) {
     if (deg.isNaN || deg.isInfinite) {
       throw const FormatException('Invalid value');
     }
@@ -325,19 +380,26 @@ class Dms extends DmsFormat {
 
     // (unsigned result ready for appending compass dir'n)
     final degAbs = deg.abs();
-    final sign = _signedDegrees && deg < 0.0 ? '-' : '';
+
+    // write sign if needed
+    if (_signedDegrees && deg < 0.0) {
+      buf.write('-');
+    }
 
     switch (_type) {
       case DmsType.deg:
         final ds = degAbs.toStringAsFixed(dp);
         if (_zeroPadDegrees) {
           if (degAbs < 10.0 && !ds.startsWith('10')) {
-            return twoDigitDeg ? '${sign}0$ds$_degree' : '${sign}00$ds$_degree';
+            buf.write(twoDigitDeg ? '0' : '00');
           } else if (!twoDigitDeg && degAbs < 100.0 && !ds.startsWith('100')) {
-            return '${sign}0$ds$_degree';
+            buf.write('0');
           }
         }
-        return '$ds$_degree';
+        buf
+          ..write(ds)
+          ..write(_degree);
+        break;
       case DmsType.degMin:
         // get component deg
         var d = degAbs.floor();
@@ -354,12 +416,20 @@ class Dms extends DmsFormat {
         final ds = _zeroPadDegrees
             ? d.toString().padLeft(twoDigitDeg ? 2 : 3, '0')
             : d.toString();
-        // (optionally) left-pad with leading zeros (note may include decimals) & result
+        // write degrees
+        buf
+          ..write(ds)
+          ..write(_degree)
+          ..write(_separator);
+        // (optionally) left-pad with leading zeros (note may include decimals)
         if (_zeroPadMinSec && m < 10 && !ms.startsWith('10')) {
-          return '$sign$ds$_degree${_separator}0$ms$_prime';
-        } else {
-          return '$sign$ds$_degree$_separator$ms$_prime';
+          buf.write('0');
         }
+        // write minutes
+        buf
+          ..write(ms)
+          ..write(_prime);
+        break;
       case DmsType.degMinSec:
         // get component deg
         var d = degAbs.floor();
@@ -383,14 +453,23 @@ class Dms extends DmsFormat {
             ? d.toString().padLeft(twoDigitDeg ? 2 : 3, '0')
             : d.toString();
         final ms = _zeroPadMinSec ? m.toString().padLeft(2, '0') : m.toString();
-        // (optionally) left-pad with leading zeros (note may include decimals) & result
+        // write degrees and minutes
+        buf
+          ..write(ds)
+          ..write(_degree)
+          ..write(_separator)
+          ..write(ms)
+          ..write(_prime)
+          ..write(_separator);
+        // (optionally) left-pad with leading zeros (note may include decimals)
         if (_zeroPadMinSec && s < 10.0 && !ss.startsWith('10')) {
-          return '$sign$ds$_degree$_separator'
-              '$ms$_prime${_separator}0$ss$_doublePrime';
-        } else {
-          return '$sign$ds$_degree$_separator'
-              '$ms$_prime$_separator$ss$_doublePrime';
+          buf.write('0');
         }
+        // write seconds
+        buf
+          ..write(ss)
+          ..write(_doublePrime);
+        break;
     }
   }
 
@@ -416,12 +495,17 @@ class Dms extends DmsFormat {
   ///   final latD = Dms(type: DmsType.d)).lat(-3.62); // 3.6200°S
   /// ```
   @override
-  String lat(double deg) {
+  String lat(double deg);
+
+  @override
+  void writeLat(StringSink buf, double deg) {
     final normalized = deg.wrapLatitude();
-    final lat = formatDms(normalized, twoDigitDeg: true);
-    return _signedDegrees
-        ? lat // already signed by formatDms()
-        : lat + _separator + (normalized < 0.0 ? 'S' : 'N');
+    writeDms(buf, normalized, twoDigitDeg: true);
+    if (!_signedDegrees) {
+      buf
+        ..write(_separator)
+        ..write(normalized < 0.0 ? 'S' : 'N');
+    }
   }
 
   /// Converts a degree value [deg] to a String representation (deg/min/sec) of
@@ -446,12 +530,17 @@ class Dms extends DmsFormat {
   ///   final lonD = Dms(type: DmsType.d).lon(-3.62); // 3.6200°W
   /// ```
   @override
-  String lon(double deg) {
+  String lon(double deg);
+
+  @override
+  void writeLon(StringSink buf, double deg) {
     final normalized = deg.wrapLongitude();
-    final lon = formatDms(normalized);
-    return _signedDegrees
-        ? lon // already signed by formatDms()
-        : lon + _separator + (normalized < 0.0 ? 'W' : 'E');
+    writeDms(buf, normalized);
+    if (!_signedDegrees) {
+      buf
+        ..write(_separator)
+        ..write(normalized < 0.0 ? 'W' : 'E');
+    }
   }
 
   /// Converts a degree value [deg] to a String representation (deg/min/sec) of
@@ -474,18 +563,23 @@ class Dms extends DmsFormat {
   ///   final brngD = Dms(type: DmsType.d).bearing(-3.62); // 356.3800°
   /// ```
   @override
-  String bearing(double deg) {
+  String bearing(double deg);
+
+  @override
+  void writeBearing(StringSink buf, double deg) {
     final normalized = deg.wrap360();
     final brng = formatDms(normalized);
     if (brng.startsWith('360')) {
       // just in case rounding took us up to 360°!
       if (_zeroPadDegrees) {
-        return brng.replaceRange(0, 3, '000');
+        buf.write(brng.replaceRange(0, 3, '000'));
       } else {
-        return '0${brng.substring(3)}';
+        buf
+          ..write('0')
+          ..write(brng.substring(3));
       }
     } else {
-      return brng;
+      buf.write(brng);
     }
   }
 }
