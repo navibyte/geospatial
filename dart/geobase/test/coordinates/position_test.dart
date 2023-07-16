@@ -237,6 +237,12 @@ void main() {
 
       const format = Dms(decimals: 3, zeroPadMinSec: false);
       expect(p1.toDmsLatLon(format: format), '51°28′40.080″N 0°0′5.040″W');
+
+      const p2 = Geographic(lon: -0.0014, lat: 51.4778, elev: 45.83764);
+      expect(
+        p2.toDmsLatLon(format: format),
+        '51°28′40.080″N 0°0′5.040″W 45.84m',
+      );
     });
 
     test('Coordinate access and factories', () {

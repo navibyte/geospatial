@@ -159,8 +159,20 @@ class LonLat extends PositionCoords implements Geographic {
   String toDmsLatLon({
     DmsFormat format = const Dms(),
     String separator = ' ',
+    String elevUnits = 'm',
+    int elevDecimals = 2,
+    String mUnits = '',
+    int mDecimals = 2,
   }) =>
-      '${format.lat(lat)}$separator${format.lon(lon)}';
+      Geographic.positionToDmsLatLon(
+        this,
+        format: format,
+        separator: separator,
+        elevUnits: elevUnits,
+        elevDecimals: elevDecimals,
+        mUnits: mUnits,
+        mDecimals: mDecimals,
+      );
 }
 
 /// A geographic position as an iterable collection of lon, lat and elev values.

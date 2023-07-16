@@ -276,6 +276,12 @@ class Geographic extends Position {
   /// Formats [lat] and [lon] according to [format], with [lat] formatted first
   /// and separated from [lon] by [separator].
   ///
+  /// If this position contains an elevation in [optElev], then it's formatted
+  /// after longitude according to [elevUnits] and [elevDecimals].
+  ///
+  /// If this position contains a measure in [optM], then it's formatted after
+  /// elevation according to [mUnits] and [mDecimals].
+  ///
   /// Examples:
   /// ```dart
   ///   const p1 = Geographic(lat: 51.4778, lon: -0.0014);
@@ -287,12 +293,63 @@ class Geographic extends Position {
   ///
   ///   // 51°28′40.080″N 0°0′5.040″W
   ///   final p1LatLon2 = p1.toDmsLatLon(format: format);
+  ///
+  ///   const p2 = Geographic(lon: -0.0014, lat: 51.4778, elev: 45.83764);
+  ///
+  ///   // 51°28′40.080″N 0°0′5.040″W 45.84m
+  ///   final p2LatLonWithElev = p2.toDmsLatLon(format: format);
   /// ```
   String toDmsLatLon({
     DmsFormat format = const Dms(),
     String separator = ' ',
+    String elevUnits = 'm',
+    int elevDecimals = 2,
+    String mUnits = '',
+    int mDecimals = 2,
   }) =>
-      '${format.lat(lat)}$separator${format.lon(lon)}';
+      Geographic.positionToDmsLatLon(
+        this,
+        format: format,
+        separator: separator,
+        elevUnits: elevUnits,
+        elevDecimals: elevDecimals,
+        mUnits: mUnits,
+        mDecimals: mDecimals,
+      );
+
+  /// Formats geographic [position] according to [format].
+  static String positionToDmsLatLon(
+    Geographic position, {
+    DmsFormat format = const Dms(),
+    String separator = ' ',
+    String elevUnits = 'm',
+    int elevDecimals = 2,
+    String mUnits = '',
+    int mDecimals = 2,
+  }) {
+    final buf = StringBuffer()
+      ..write(format.lat(position.lat))
+      ..write(separator)
+      ..write(format.lon(position.lon));
+
+    final elev = position.optElev;
+    if (elev != null) {
+      buf
+        ..write(separator)
+        ..write(elev.toStringAsFixed(elevDecimals))
+        ..write(elevUnits);
+    }
+
+    final m = position.optM;
+    if (m != null) {
+      buf
+        ..write(separator)
+        ..write(m.toStringAsFixed(mDecimals))
+        ..write(mUnits);
+    }
+
+    return buf.toString();
+  }
 
   // ---------------------------------------------------------------------------
   // Static methods with default logic, used by Geographic itself too.
