@@ -43,8 +43,9 @@ final _regExpMinusOrSW = RegExp(r'^-|[WS]$', caseSensitive: false);
 /// A base class for formatters with methods for parsing and formatting
 /// degrees/minutes/seconds on latitude, longitude and bearing values.
 ///
-/// Sub classes must implement [parseDeg], [lat], [lon] and [bearing].
-/// Such classes could configure parsing and formatting parameters as they like.
+/// Sub classes must implement [parseDeg], [formatDms], [lat], [lon], and
+/// [bearing]. Such classes could configure parsing and formatting parameters as
+/// they like.
 ///
 /// This base class provides a default implementation for [compassPoint] and
 /// [tryParseDeg].
@@ -70,16 +71,31 @@ abstract class DmsFormat {
     }
   }
 
+  /// Converts the degree value [deg] to a String representation (deg/min/sec).
+  ///
+  /// Parameters:
+  /// * [deg]: The degree value (ie. latitude, longitude or bearing) to be formatted as specified.
+  /// * [twoDigitDeg]: If true degrees are considered to have two digits (like in normalized latitude) otherwise three digits is considered.
+  ///
+  /// Throws [FormatException] if a string representation cannot be formatted.
+  String formatDms(double deg, {bool twoDigitDeg = false});
+
   /// Converts a degree value [deg] to a String representation (deg/min/sec) of
   /// the latitude.
+  /// 
+  /// Throws [FormatException] if a string representation cannot be formatted.
   String lat(double deg);
 
   /// Converts a degree value [deg] to a String representation (deg/min/sec) of
   /// the longitude.
+  /// 
+  /// Throws [FormatException] if a string representation cannot be formatted.
   String lon(double deg);
 
   /// Converts a degree value [deg] to a String representation (deg/min/sec) of
   /// the bearing.
+  /// 
+  /// Throws [FormatException] if a string representation cannot be formatted.
   String bearing(double deg);
 
   /// Returns the compass point for [bearing] on the given [precision].
@@ -262,26 +278,28 @@ class Dms extends DmsFormat {
     return deg;
   }
 
-  /// Converts the degree value of [deg] to a String representation
-  /// (deg/min/sec) according to the specified [_type].
+  /// Converts the degree value [deg] to a String representation (deg/min/sec)
+  /// according to the specified `type`.
   ///
   /// For returned values:
   /// * Degree, prime, double-prime symbols are added (see also parameters `degree`, `prime` and `doublePrime`).
-  /// * The sign symbol is discarded (even if `signedDegrees` is true).
+  /// * The sign symbol is discarded (if `signedDegrees` is false).
   /// * No compass direction is added.
   /// * Degree values are zero-padded to 2 or 3 digits (if `zeroPadDegrees` is true).
   ///
   /// Parameters:
   /// * [deg]: The degree value (ie. latitude, longitude or bearing) to be formatted as specified.
-  /// * [twoDigitDeg]: If true degrees are consider to have two digits (like in normalized latitude) otherwise three digits is considered.
-  /// 
+  /// * [twoDigitDeg]: If true degrees are considered to have two digits (like in normalized latitude) otherwise three digits is considered.
+  ///
   /// Throws [FormatException] if a string representation cannot be formatted.
   ///
   /// Examples:
   /// ```dart
   ///   final noSpace = Dms().formatDms(-3.62); // 3°37′12″
+  ///   final signed = Dms(signedDegrees: true).formatDms(-3.62); // -3°37′12″
   ///   final narrowSpace = Dms.narrowSpace().formatDms(-3.62); // 3° 37′ 12″
   /// ```
+  @override
   String formatDms(double deg, {bool twoDigitDeg = false}) {
     if (deg.isNaN || deg.isInfinite) {
       throw const FormatException('Invalid value');
@@ -307,15 +325,16 @@ class Dms extends DmsFormat {
 
     // (unsigned result ready for appending compass dir'n)
     final degAbs = deg.abs();
+    final sign = _signedDegrees && deg < 0.0 ? '-' : '';
 
     switch (_type) {
       case DmsType.deg:
         final ds = degAbs.toStringAsFixed(dp);
         if (_zeroPadDegrees) {
           if (degAbs < 10.0 && !ds.startsWith('10')) {
-            return twoDigitDeg ? '0$ds$_degree' : '00$ds$_degree';
+            return twoDigitDeg ? '${sign}0$ds$_degree' : '${sign}00$ds$_degree';
           } else if (!twoDigitDeg && degAbs < 100.0 && !ds.startsWith('100')) {
-            return '0$ds$_degree';
+            return '${sign}0$ds$_degree';
           }
         }
         return '$ds$_degree';
@@ -337,9 +356,9 @@ class Dms extends DmsFormat {
             : d.toString();
         // (optionally) left-pad with leading zeros (note may include decimals) & result
         if (_zeroPadMinSec && m < 10 && !ms.startsWith('10')) {
-          return '$ds$_degree${_separator}0$ms$_prime';
+          return '$sign$ds$_degree${_separator}0$ms$_prime';
         } else {
-          return '$ds$_degree$_separator$ms$_prime';
+          return '$sign$ds$_degree$_separator$ms$_prime';
         }
       case DmsType.degMinSec:
         // get component deg
@@ -366,10 +385,10 @@ class Dms extends DmsFormat {
         final ms = _zeroPadMinSec ? m.toString().padLeft(2, '0') : m.toString();
         // (optionally) left-pad with leading zeros (note may include decimals) & result
         if (_zeroPadMinSec && s < 10.0 && !ss.startsWith('10')) {
-          return '$ds$_degree$_separator'
+          return '$sign$ds$_degree$_separator'
               '$ms$_prime${_separator}0$ss$_doublePrime';
         } else {
-          return '$ds$_degree$_separator'
+          return '$sign$ds$_degree$_separator'
               '$ms$_prime$_separator$ss$_doublePrime';
         }
     }
@@ -377,7 +396,7 @@ class Dms extends DmsFormat {
 
   /// Converts a degree value [deg] to a String representation (deg/min/sec) of
   /// the latitude (2-digit degrees, suffixed with N/S) according to the
-  /// specified [_type].
+  /// specified `type`.
   ///
   /// For returned values:
   /// * The latitude value is normalized to the range [90° S .. 90° N]
@@ -392,22 +411,22 @@ class Dms extends DmsFormat {
   ///
   /// Examples:
   /// ```dart
-  ///   final latDms = Dms.narrowSpace().latitude(-3.62); // 3° 37′ 12″ S
-  ///   final latDm = Dms(type: DmsType.dm).latitude(-3.62); // 3°37.20′S
-  ///   final latD = Dms(type: DmsType.d)).latitude(-3.62); // 3.6200°S
+  ///   final latDms = Dms.narrowSpace().lat(-3.62); // 3° 37′ 12″ S
+  ///   final latDm = Dms(type: DmsType.dm).lat(-3.62); // 3°37.20′S
+  ///   final latD = Dms(type: DmsType.d)).lat(-3.62); // 3.6200°S
   /// ```
   @override
   String lat(double deg) {
     final normalized = deg.wrapLatitude();
     final lat = formatDms(normalized, twoDigitDeg: true);
     return _signedDegrees
-        ? (normalized < 0.0 ? '-' : '') + lat
+        ? lat // already signed by formatDms()
         : lat + _separator + (normalized < 0.0 ? 'S' : 'N');
   }
 
   /// Converts a degree value [deg] to a String representation (deg/min/sec) of
   /// the longitude (3-digit degrees, suffixed with E/W) according to the
-  /// specified [_type].
+  /// specified `type`.
   ///
   /// For returned values:
   /// * The longitude value is normalized to the range [180° W .. 180° E[
@@ -422,21 +441,21 @@ class Dms extends DmsFormat {
   ///
   /// Examples:
   /// ```dart
-  ///   final lonDms = Dms.narrowSpace().longitude(-3.62); // 3° 37′ 12″ W
-  ///   final lonDm = Dms(type: DmsType.dm).longitude(-3.62); // 3°37.20′W
-  ///   final lonD = Dms(type: DmsType.d).longitude(-3.62); // 3.6200°W
+  ///   final lonDms = Dms.narrowSpace().lon(-3.62); // 3° 37′ 12″ W
+  ///   final lonDm = Dms(type: DmsType.dm).lon(-3.62); // 3°37.20′W
+  ///   final lonD = Dms(type: DmsType.d).lon(-3.62); // 3.6200°W
   /// ```
   @override
   String lon(double deg) {
     final normalized = deg.wrapLongitude();
     final lon = formatDms(normalized);
     return _signedDegrees
-        ? (normalized < 0.0 ? '-' : '') + lon
+        ? lon // already signed by formatDms()
         : lon + _separator + (normalized < 0.0 ? 'W' : 'E');
   }
 
   /// Converts a degree value [deg] to a String representation (deg/min/sec) of
-  /// the bearing (3-digit degrees, 0°..360°) according to the specified [_type].
+  /// the bearing (3-digit degrees, 0°..360°) according to the specified `type`.
   ///
   /// For returned values:
   /// * The bearing value is normalized to the range [0°..360°[

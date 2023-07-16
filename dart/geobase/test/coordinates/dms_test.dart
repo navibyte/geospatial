@@ -40,9 +40,14 @@ void main() {
       expect(Dms(decimals: 2).formatDms(51.477881), '51°28′40.37″');
       expect(Dms(decimals: 0).formatDms(-0.001469), '0°00′05″');
       expect(
+        Dms(decimals: 0, signedDegrees: true).formatDms(-0.001469),
+        '-0°00′05″',
+      );
+      expect(
         Dms.narrowSpace(decimals: 2, zeroPadMinSec: false).formatDms(-0.001469),
         '0° 0′ 5.29″',
       );
+      expect(Dms(signedDegrees: true).formatDms(-3.62), '-3°37′12″');
     });
 
     test('Latitude', () {
