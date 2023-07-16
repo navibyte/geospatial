@@ -262,6 +262,31 @@ class Dms extends DmsFormat {
         _prime = prime,
         _doublePrime = doublePrime;
 
+  /// Creates a new formatter for parsing and formatting degrees/minutes/seconds
+  /// on latitude, longitude and bearing.
+  ///
+  /// See documentation for parameters from the default constructor.
+  /// 
+  /// This constructor differs from the default constructor as:
+  /// * The default [separator] (between degrees, minutes, and seconds) is Unicode U+202F ‘narrow no-break space’.
+  /// * Symbols for `deegree`, `prime` and `doublePrime` are set empty.
+  /// * Formatted numbers are always signed, no cardinal direction symbols are shown.
+  const Dms.numeric({
+    DmsType type = DmsType.deg,
+    String separator = '\u202f', // Unicode U+202F ‘narrow no-break space’.
+    int? decimals,
+    bool zeroPadDegrees = false,
+    bool zeroPadMinSec = true,
+  })  : _type = type,
+        _separator = separator,
+        _decimals = decimals,
+        _signedDegrees = true,
+        _zeroPadDegrees = zeroPadDegrees,
+        _zeroPadMinSec = zeroPadMinSec,
+        _degree = '',
+        _prime = '',
+        _doublePrime = '';
+
   /// Parses a string [dms] representing degrees/minutes/seconds into a numeric
   /// degree value (ie. latitude, longitude or bearing).
   ///
