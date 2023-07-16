@@ -24,6 +24,10 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+// Standard representation of geographic point location by coordinates:
+// * [ISO 6709](https://en.wikipedia.org/wiki/ISO_6709) on Wikipedia
+// * [ISO 6709:2022](https://www.iso.org/standard/75147.html)
+
 import 'dart:math';
 
 import '/src/codes/cardinal_precision.dart';
@@ -135,8 +139,12 @@ class Dms extends DmsFormat {
   final DmsType _type;
   final String _separator;
   final int? _decimals;
+  final bool _signedDegrees;
   final bool _zeroPadDegrees;
   final bool _zeroPadMinSec;
+  final String _degree;
+  final String _prime;
+  final String _doublePrime;
 
   /// Creates a new formatter for parsing and formatting degrees/minutes/seconds
   /// on latitude, longitude and bearing values.
@@ -145,21 +153,31 @@ class Dms extends DmsFormat {
   /// * [type]: Specifies how return values are formatted (`d`, `dm` or `dms`).
   /// * [separator]: The separator character to be used to separate degrees, minutes, seconds, and cardinal directions. The default separator is U+202F ‘narrow no-break space’.
   /// * [decimals]: Number of decimal places to use (default 4 for `d`, 2 for `dm`, 0 for `dms`).
+  /// * [signedDegrees]: If true then degree values are formatted with - symbol for negative values instead of W or S cardinal direction symbols.
   /// * [zeroPadDegrees]: If true then degree values are (left) zero-padded to 2 or 3 digits (before optional decimal part).
   /// * [zeroPadMinSec]: If true then min and sec values are (left) zero-padded to 2 digits (before optional decimal part).
+  /// * [degree]: A degree symbol (or other text) to be formatted just after degrees.
+  /// * [prime]: A prime symbol (or other text) to be formatted just after minutes.
+  /// * [doublePrime]: A double prime symbol (or other text) to be formatted just after seconds.
   const Dms({
     DmsType type = DmsType.dms,
-    String separator = '\u202f',
+    String separator = '\u202f', // Unicode U+202F ‘narrow no-break space’.
     int? decimals,
+    bool signedDegrees = false,
     bool zeroPadDegrees = false,
     bool zeroPadMinSec = true,
+    String degree = '°', // Unicode Degree = U+00B0
+    String prime = '′', // Unicode Prime = U+2032,
+    String doublePrime = '″', //  Unicode Double prime = U+2033
   })  : _type = type,
         _separator = separator,
         _decimals = decimals,
+        _signedDegrees = signedDegrees,
         _zeroPadDegrees = zeroPadDegrees,
-        _zeroPadMinSec = zeroPadMinSec;
-
-  // note: Unicode Degree = U+00B0. Prime = U+2032, Double prime = U+2033
+        _zeroPadMinSec = zeroPadMinSec,
+        _degree = degree,
+        _prime = prime,
+        _doublePrime = doublePrime;
 
   /// Parses a string [dms] representing degrees/minutes/seconds into a numeric
   /// degree value (ie. latitude, longitude or bearing).
@@ -233,8 +251,8 @@ class Dms extends DmsFormat {
   /// (deg/min/sec) according to the specified [_type].
   ///
   /// For returned values:
-  /// * Degree, prime, double-prime symbols are added.
-  /// * The sign symbol is discarded.
+  /// * Degree, prime, double-prime symbols are added (see also parameters `degree`, `prime` and `doublePrime`).
+  /// * The sign symbol is discarded (even if `signedDegrees` is true).
   /// * No compass direction is added.
   /// * Degree values are zero-padded to 3 digits (if `zeroPadDegrees` is true).
   ///
@@ -278,12 +296,12 @@ class Dms extends DmsFormat {
         final ds = degAbs.toStringAsFixed(dp);
         if (_zeroPadDegrees) {
           if (degAbs < 10.0 && !ds.startsWith('10')) {
-            return '00$ds°';
+            return '00$ds$_degree';
           } else if (degAbs < 100.0 && !ds.startsWith('100')) {
-            return '0$ds°';
+            return '0$ds$_degree';
           }
         }
-        return '$ds°';
+        return '$ds$_degree';
       case DmsType.dm:
         // get component deg
         var d = degAbs.floor();
@@ -301,9 +319,9 @@ class Dms extends DmsFormat {
             _zeroPadDegrees ? d.toString().padLeft(3, '0') : d.toString();
         // (optionally) left-pad with leading zeros (note may include decimals) & result
         if (_zeroPadMinSec && m < 10 && !ms.startsWith('10')) {
-          return '$ds°${_separator}0$ms′';
+          return '$ds$_degree${_separator}0$ms$_prime';
         } else {
-          return '$ds°$_separator$ms′';
+          return '$ds$_degree$_separator$ms$_prime';
         }
       case DmsType.dms:
         // get component deg
@@ -329,9 +347,11 @@ class Dms extends DmsFormat {
         final ms = _zeroPadMinSec ? m.toString().padLeft(2, '0') : m.toString();
         // (optionally) left-pad with leading zeros (note may include decimals) & result
         if (_zeroPadMinSec && s < 10.0 && !ss.startsWith('10')) {
-          return '$ds°$_separator$ms′${_separator}0$ss″';
+          return '$ds$_degree$_separator'
+              '$ms$_prime${_separator}0$ss$_doublePrime';
         } else {
-          return '$ds°$_separator$ms′$_separator$ss″';
+          return '$ds$_degree$_separator'
+              '$ms$_prime$_separator$ss$_doublePrime';
         }
     }
   }
@@ -342,8 +362,8 @@ class Dms extends DmsFormat {
   ///
   /// For returned values:
   /// * The latitude value is normalized to the range [90° S .. 90° N]
-  /// * Degree, prime, double-prime symbols are added.
-  /// * Compass direction is added.
+  /// * Degree, prime, double-prime symbols are added (see also parameters `degree`, `prime` and `doublePrime`).
+  /// * Compass direction is added (if `signedDegrees` is false).
   /// * Degree values are zero-padded to 2 digits (if `zeroPadDegrees` is true).
   ///
   /// Parameters:
@@ -362,12 +382,13 @@ class Dms extends DmsFormat {
     final normalized = deg.wrapLatitude();
     final lat = formatDms(normalized);
 
-    if (_zeroPadDegrees) {
-      // knock off initial '0' for latitude and return the formatted result
-      return lat.substring(1) + _separator + (normalized < 0.0 ? 'S' : 'N');
-    } else {
-      return lat + _separator + (normalized < 0.0 ? 'S' : 'N');
-    }
+    // knock off initial '0' for latitude when zero padded degrees
+    final latStr = _zeroPadDegrees ? lat.substring(1) : lat;
+
+    // return the formatted result
+    return _signedDegrees
+        ? (normalized < 0.0 ? '-' : '') + latStr
+        : latStr + _separator + (normalized < 0.0 ? 'S' : 'N');
   }
 
   /// Converts a degree value [deg] to a String representation (deg/min/sec) of
@@ -376,8 +397,8 @@ class Dms extends DmsFormat {
   ///
   /// For returned values:
   /// * The longitude value is normalized to the range [180° W .. 180° E[
-  /// * Degree, prime, double-prime symbols are added.
-  /// * Compass direction is added.
+  /// * Degree, prime, double-prime symbols are added (see also parameters `degree`, `prime` and `doublePrime`).
+  /// * Compass direction is added (if `signedDegrees` is false).
   /// * Degree values are zero-padded to 3 digits (if `zeroPadDegrees` is true).
   ///
   /// Parameters:
@@ -395,7 +416,9 @@ class Dms extends DmsFormat {
   String lon(double deg) {
     final normalized = deg.wrapLongitude();
     final lon = formatDms(normalized);
-    return lon + _separator + (normalized < 0.0 ? 'W' : 'E');
+    return _signedDegrees
+        ? (normalized < 0.0 ? '-' : '') + lon
+        : lon + _separator + (normalized < 0.0 ? 'W' : 'E');
   }
 
   /// Converts a degree value [deg] to a String representation (deg/min/sec) of
@@ -403,7 +426,7 @@ class Dms extends DmsFormat {
   ///
   /// For returned values:
   /// * The bearing value is normalized to the range [0°..360°[
-  /// * Degree, prime, double-prime symbols are added.
+  /// * Degree, prime, double-prime symbols are added (see also parameters `degree`, `prime` and `doublePrime`).
   /// * Degree values are zero-padded to 3 digits (if `zeroPadDegrees` is true).
   ///
   /// Parameters:

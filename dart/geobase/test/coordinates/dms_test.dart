@@ -195,7 +195,12 @@ void main() {
     test('ST_AsLatLonText reference tests', () {
       // samples from: https://postgis.net/docs/ST_AsLatLonText.html
 
-      final dms = Dms(separator: '', decimals: 3);
+      const p1 = Geographic(lat: -2.32498, lon: -3.2342342);
+
+      var dms = Dms(
+        separator: '',
+        decimals: 3,
+      );
       expect((-792.32498).wrapLatitude(), closeTo(-72.32498, 0.00001));
       expect(dms.lat(-792.32498), '72°19′29.928″S');
       expect((-302.2342342).wrapLongitude(), closeTo(57.76576, 0.00001));
@@ -203,6 +208,43 @@ void main() {
 
       expect(dms.lat(-2.32498), '2°19′29.928″S');
       expect(dms.lon(-3.2342342), '3°14′03.243″W');
+
+      // "Characters other than D, M, S, C and . are just passed through."
+      dms = Dms(
+        separator: ' ',
+        decimals: 0,
+        zeroPadMinSec: false,
+        degree: ' degrees,',
+        prime: ' minutes,',
+        doublePrime: ' seconds to the',
+      );
+      expect(
+        p1.toDmsLatLon(format: dms),
+        '2 degrees, 19 minutes, 30 seconds to the S 3 degrees, 14 minutes, 3 seconds to the W',
+      );
+
+      // "Signed degrees instead of cardinal directions."
+      dms = Dms(
+        type: DmsType.dms,
+        separator: '',
+        decimals: 3,
+        signedDegrees: true,
+      );
+      expect(
+        p1.toDmsLatLon(format: dms),
+        '-2°19′29.928″ -3°14′03.243″',
+      );
+
+      // "Decimal degrees."
+      dms = Dms(
+        type: DmsType.d,
+        separator: ' ',
+        degree: ' degrees',
+      );
+      expect(
+        p1.toDmsLatLon(format: dms),
+        '2.3250 degrees S 3.2342 degrees W',
+      );
     });
   });
 }
