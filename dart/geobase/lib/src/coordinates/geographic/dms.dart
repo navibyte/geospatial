@@ -269,11 +269,12 @@ class Dms extends DmsFormat {
   /// * Degree, prime, double-prime symbols are added (see also parameters `degree`, `prime` and `doublePrime`).
   /// * The sign symbol is discarded (even if `signedDegrees` is true).
   /// * No compass direction is added.
-  /// * Degree values are zero-padded to 3 digits (if `zeroPadDegrees` is true).
+  /// * Degree values are zero-padded to 2 or 3 digits (if `zeroPadDegrees` is true).
   ///
   /// Parameters:
   /// * [deg]: The degree value (ie. latitude, longitude or bearing) to be formatted as specified.
-  ///
+  /// * [twoDigitDeg]: If true degrees are consider to have two digits (like in normalized latitude) otherwise three digits is considered.
+  /// 
   /// Throws [FormatException] if a string representation cannot be formatted.
   ///
   /// Examples:
@@ -281,7 +282,7 @@ class Dms extends DmsFormat {
   ///   final noSpace = Dms().formatDms(-3.62); // 3°37′12″
   ///   final narrowSpace = Dms.narrowSpace().formatDms(-3.62); // 3° 37′ 12″
   /// ```
-  String formatDms(double deg) {
+  String formatDms(double deg, {bool twoDigitDeg = false}) {
     if (deg.isNaN || deg.isInfinite) {
       throw const FormatException('Invalid value');
     }
@@ -312,8 +313,8 @@ class Dms extends DmsFormat {
         final ds = degAbs.toStringAsFixed(dp);
         if (_zeroPadDegrees) {
           if (degAbs < 10.0 && !ds.startsWith('10')) {
-            return '00$ds$_degree';
-          } else if (degAbs < 100.0 && !ds.startsWith('100')) {
+            return twoDigitDeg ? '0$ds$_degree' : '00$ds$_degree';
+          } else if (!twoDigitDeg && degAbs < 100.0 && !ds.startsWith('100')) {
             return '0$ds$_degree';
           }
         }
@@ -331,8 +332,9 @@ class Dms extends DmsFormat {
           d++;
         }
         // (optionally) left-pad with leading zeros
-        final ds =
-            _zeroPadDegrees ? d.toString().padLeft(3, '0') : d.toString();
+        final ds = _zeroPadDegrees
+            ? d.toString().padLeft(twoDigitDeg ? 2 : 3, '0')
+            : d.toString();
         // (optionally) left-pad with leading zeros (note may include decimals) & result
         if (_zeroPadMinSec && m < 10 && !ms.startsWith('10')) {
           return '$ds$_degree${_separator}0$ms$_prime';
@@ -358,8 +360,9 @@ class Dms extends DmsFormat {
           d++;
         }
         // (optionally) left-pad with leading zeros
-        final ds =
-            _zeroPadDegrees ? d.toString().padLeft(3, '0') : d.toString();
+        final ds = _zeroPadDegrees
+            ? d.toString().padLeft(twoDigitDeg ? 2 : 3, '0')
+            : d.toString();
         final ms = _zeroPadMinSec ? m.toString().padLeft(2, '0') : m.toString();
         // (optionally) left-pad with leading zeros (note may include decimals) & result
         if (_zeroPadMinSec && s < 10.0 && !ss.startsWith('10')) {
@@ -396,15 +399,10 @@ class Dms extends DmsFormat {
   @override
   String lat(double deg) {
     final normalized = deg.wrapLatitude();
-    final lat = formatDms(normalized);
-
-    // knock off initial '0' for latitude when zero padded degrees
-    final latStr = _zeroPadDegrees ? lat.substring(1) : lat;
-
-    // return the formatted result
+    final lat = formatDms(normalized, twoDigitDeg: true);
     return _signedDegrees
-        ? (normalized < 0.0 ? '-' : '') + latStr
-        : latStr + _separator + (normalized < 0.0 ? 'S' : 'N');
+        ? (normalized < 0.0 ? '-' : '') + lat
+        : lat + _separator + (normalized < 0.0 ? 'S' : 'N');
   }
 
   /// Converts a degree value [deg] to a String representation (deg/min/sec) of
