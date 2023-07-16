@@ -120,15 +120,15 @@ abstract class DmsFormat {
 /// An enum for degrees/minutes/seconds formatting types used by [Dms]
 /// implementation of [DmsFormat].
 enum DmsType {
-  /// Format a degree value as decimal degrees, ie. '003.6200° W'.
+  /// Format a degree value as decimal degrees, ie. '003.6200°W'.
   d,
 
   /// Format a degree value using the "degrees/minutes" pattern, ie.
-  /// '003° 37.20′ W'.
+  /// '003°37.20′W'.
   dm,
 
   /// Format a degree value using the "degrees/minutes/seconds" pattern, ie.
-  /// '003° 37′ 12″ W'.
+  /// '003°37′12″W'.
   dms
 }
 
@@ -151,7 +151,7 @@ class Dms extends DmsFormat {
   ///
   /// Parameters:
   /// * [type]: Specifies how return values are formatted (`d`, `dm` or `dms`).
-  /// * [separator]: The separator character to be used to separate degrees, minutes, seconds, and cardinal directions. The default separator is U+202F ‘narrow no-break space’.
+  /// * [separator]: The separator character to be used to separate degrees, minutes, seconds, and cardinal directions. By default there is no separator (see also the [Dms.narrowSpace] constructor).
   /// * [decimals]: Number of decimal places to use (default 4 for `d`, 2 for `dm`, 0 for `dms`).
   /// * [signedDegrees]: If true then degree values are formatted with - symbol for negative values instead of W or S cardinal direction symbols.
   /// * [zeroPadDegrees]: If true then degree values are (left) zero-padded to 2 or 3 digits (before optional decimal part).
@@ -160,6 +160,38 @@ class Dms extends DmsFormat {
   /// * [prime]: A prime symbol (or other text) to be formatted just after minutes.
   /// * [doublePrime]: A double prime symbol (or other text) to be formatted just after seconds.
   const Dms({
+    DmsType type = DmsType.dms,
+    String separator = '', // by default no separator
+    int? decimals,
+    bool signedDegrees = false,
+    bool zeroPadDegrees = false,
+    bool zeroPadMinSec = true,
+    String degree = '°', // Unicode Degree = U+00B0
+    String prime = '′', // Unicode Prime = U+2032,
+    String doublePrime = '″', //  Unicode Double prime = U+2033
+  })  : _type = type,
+        _separator = separator,
+        _decimals = decimals,
+        _signedDegrees = signedDegrees,
+        _zeroPadDegrees = zeroPadDegrees,
+        _zeroPadMinSec = zeroPadMinSec,
+        _degree = degree,
+        _prime = prime,
+        _doublePrime = doublePrime;
+
+  /// Creates a new formatter for parsing and formatting degrees/minutes/seconds
+  /// on latitude, longitude and bearing values separating degrees, minutes,
+  /// seconds, and cardinal directions by default with Unicode U+202F
+  /// ‘narrow no-break space’.
+  ///
+  /// This constructor is logically the same as the default constructor `Dms()`
+  /// but this has different default value for separating components.
+  ///
+  /// Parameters:
+  /// * [separator]: The separator character to be used to separate degrees, minutes, seconds, and cardinal directions. The default separator is U+202F ‘narrow no-break space’.
+  ///
+  /// See documentation for other parameters in the default constructor.
+  const Dms.narrowSpace({
     DmsType type = DmsType.dms,
     String separator = '\u202f', // Unicode U+202F ‘narrow no-break space’.
     int? decimals,
@@ -263,7 +295,8 @@ class Dms extends DmsFormat {
   ///
   /// Examples:
   /// ```dart
-  ///   final formatted = Dms().formatDms(-3.62); // 3° 37′ 12″
+  ///   final noSpace = Dms().formatDms(-3.62); // 3°37′12″
+  ///   final narrowSpace = Dms.narrowSpace().formatDms(-3.62); // 3° 37′ 12″
   /// ```
   String formatDms(double deg) {
     if (deg.isNaN || deg.isInfinite) {
@@ -373,9 +406,9 @@ class Dms extends DmsFormat {
   ///
   /// Examples:
   /// ```dart
-  ///   final latDms = Dms().latitude(-3.62); // 3° 37′ 12″ S
-  ///   final latDm = Dms(type: DmsType.dm).latitude(-3.62); // 3° 37.20′ S
-  ///   final latD = Dms(type: DmsType.d)).latitude(-3.62); // 3.6200° S
+  ///   final latDms = Dms.narrowSpace().latitude(-3.62); // 3° 37′ 12″ S
+  ///   final latDm = Dms(type: DmsType.dm).latitude(-3.62); // 3°37.20′S
+  ///   final latD = Dms(type: DmsType.d)).latitude(-3.62); // 3.6200°S
   /// ```
   @override
   String lat(double deg) {
@@ -408,9 +441,9 @@ class Dms extends DmsFormat {
   ///
   /// Examples:
   /// ```dart
-  ///   final lonDms = Dms().longitude(-3.62); // 3° 37′ 12″ W
-  ///   final lonDm = Dms(type: DmsType.dm).longitude(-3.62); // 3° 37.20′ W
-  ///   final lonD = Dms(type: DmsType.d).longitude(-3.62); // 3.6200° W
+  ///   final lonDms = Dms.narrowSpace().longitude(-3.62); // 3° 37′ 12″ W
+  ///   final lonDm = Dms(type: DmsType.dm).longitude(-3.62); // 3°37.20′W
+  ///   final lonD = Dms(type: DmsType.d).longitude(-3.62); // 3.6200°W
   /// ```
   @override
   String lon(double deg) {
@@ -436,8 +469,8 @@ class Dms extends DmsFormat {
   ///
   /// Examples:
   /// ```dart
-  ///   final brngDms = Dms().bearing(-3.62); // 356° 22′ 48″
-  ///   final brngDm = Dms(type: DmsType.dm).bearing(-3.62); // 356° 22.80′
+  ///   final brngDms = Dms.narrowSpace().bearing(-3.62); // 356° 22′ 48″
+  ///   final brngDm = Dms(type: DmsType.dm).bearing(-3.62); // 356°22.80′
   ///   final brngD = Dms(type: DmsType.d).bearing(-3.62); // 356.3800°
   /// ```
   @override

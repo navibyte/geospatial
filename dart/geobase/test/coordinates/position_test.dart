@@ -225,9 +225,9 @@ void main() {
       final p1Lon = p1.toDmsLon();
       final p1LatLon = p1.toDmsLatLon();
 
-      expect(p1Lat, '51° 28′ 40″ N');
-      expect(p1Lon, '0° 00′ 05″ W');
-      expect(p1LatLon, '51° 28′ 40″ N 0° 00′ 05″ W');
+      expect(p1Lat, '51°28′40″N');
+      expect(p1Lon, '0°00′05″W');
+      expect(p1LatLon, '51°28′40″N 0°00′05″W');
 
       expect(
         Geographic.parseDms(lat: p1Lat, lon: p1Lon)
@@ -235,7 +235,7 @@ void main() {
         true,
       );
 
-      const format = Dms(separator: '', decimals: 3, zeroPadMinSec: false);
+      const format = Dms(decimals: 3, zeroPadMinSec: false);
       expect(p1.toDmsLatLon(format: format), '51°28′40.080″N 0°0′5.040″W');
     });
 
