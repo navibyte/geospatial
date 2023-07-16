@@ -39,3 +39,4 @@ Geodesy representation conversion functions:
 Dart code file ported to this project | Related original JavaScript code
 ------------------------------------- | --------------------------------
 [dms.dart](lib/src/coordinates/geographic/dms.dart) | [dms.js](https://github.com/chrisveness/geodesy/blob/master/dms.js)
+[dms_ported_test.dart](test/coordinates/dms_ported_test.dart) | [dms-tests.js](https://github.com/chrisveness/geodesy/blob/master/test/dms-tests.js)
