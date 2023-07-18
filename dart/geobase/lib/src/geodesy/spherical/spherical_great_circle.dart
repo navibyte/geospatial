@@ -119,7 +119,7 @@ class SphericalGreatCircle extends Geodetic {
   /// ```
   @override
   double initialBearingTo(Geographic destination) {
-    if (position == destination) return 0.0;
+    if (position == destination) return double.nan;
 
     // tanθ = sinΔλ⋅cosφ2 / cosφ1⋅sinφ2 − sinφ1⋅cosφ2⋅cosΔλ
     // see mathforum.org/library/drmath/view/55417.html for derivation
@@ -151,7 +151,7 @@ class SphericalGreatCircle extends Geodetic {
   /// ```
   @override
   double finalBearingTo(Geographic destination) {
-    if (position == destination) return 0.0;
+    if (position == destination) return double.nan;
 
     // get initial bearing from destination to this & reverse it by adding 180°
     final bearing = destination.spherical.initialBearingTo(position) + 180.0;
@@ -273,6 +273,8 @@ class SphericalGreatCircle extends Geodetic {
     required double bearing,
     double radius = 6371000.0,
   }) {
+    if (distance == 0.0) return position;
+
     // sinφ2 = sinφ1⋅cosδ + cosφ1⋅sinδ⋅cosθ
     // tanΔλ = sinθ⋅sinδ⋅cosφ1 / cosδ−sinφ1⋅sinφ2
     // see mathforum.org/library/drmath/view/52049.html for derivation
@@ -280,7 +282,9 @@ class SphericalGreatCircle extends Geodetic {
     final lat1 = position.lat.toRadians();
     final lon1 = position.lon.toRadians();
 
-    final dst = distance / radius; // angular distance in radians
+    // angular distance in radians
+    final dst = distance / radius;
+
     final brng = bearing.toRadians();
 
     final sinLat2 = sin(lat1) * cos(dst) + cos(lat1) * sin(dst) * cos(brng);
@@ -333,9 +337,9 @@ class SphericalGreatCircle extends Geodetic {
 
     final brng13 = bearing.toRadians();
     final brng23 = otherBearing.toRadians();
-
+  
     // angular distance p1-p2
-    final dst12 = 2 *
+    final dst12 = 2.0 *
         asin(
           sqrt(
             sin(dlat / 2.0) * sin(dlat / 2.0) +
@@ -366,6 +370,7 @@ class SphericalGreatCircle extends Geodetic {
 
     // check for infinite intersections
     if (sin(ang1) == 0 && sin(ang2) == 0) return null;
+
     // check for ambiguous intersection (antipodal/360°)
     if (sin(ang1) * sin(ang2) < 0) return null;
 
@@ -389,6 +394,58 @@ class SphericalGreatCircle extends Geodetic {
 
     return Geographic(lat: lat3.toDegrees(), lon: lon3.toDegrees());
   }
+
+  /*
+NOTE: original source code for intersection:
+
+static intersection(p1, brng1, p2, brng2) {
+        if (!(p1 instanceof LatLonSpherical)) p1 = LatLonSpherical.parse(p1); // allow literal forms
+        if (!(p2 instanceof LatLonSpherical)) p2 = LatLonSpherical.parse(p2); // allow literal forms
+        if (isNaN(brng1)) throw new TypeError(`invalid brng1 ‘${brng1}’`);
+        if (isNaN(brng2)) throw new TypeError(`invalid brng2 ‘${brng2}’`);
+
+        // see www.edwilliams.org/avform.htm#Intersection
+
+        const φ1 = p1.lat.toRadians(), λ1 = p1.lon.toRadians();
+        const φ2 = p2.lat.toRadians(), λ2 = p2.lon.toRadians();
+        const θ13 = Number(brng1).toRadians(), θ23 = Number(brng2).toRadians();
+        const Δφ = φ2 - φ1, Δλ = λ2 - λ1;
+
+        // angular distance p1-p2
+        const δ12 = 2 * Math.asin(Math.sqrt(Math.sin(Δφ/2) * Math.sin(Δφ/2)
+            + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2)));
+        if (Math.abs(δ12) < Number.EPSILON) return new LatLonSpherical(p1.lat, p1.lon); // coincident points
+
+        // initial/final bearings between points
+        const cosθa = (Math.sin(φ2) - Math.sin(φ1)*Math.cos(δ12)) / (Math.sin(δ12)*Math.cos(φ1));
+        const cosθb = (Math.sin(φ1) - Math.sin(φ2)*Math.cos(δ12)) / (Math.sin(δ12)*Math.cos(φ2));
+        const θa = Math.acos(Math.min(Math.max(cosθa, -1), 1)); // protect against rounding errors
+        const θb = Math.acos(Math.min(Math.max(cosθb, -1), 1)); // protect against rounding errors
+
+        const θ12 = Math.sin(λ2-λ1)>0 ? θa : 2*π-θa;
+        const θ21 = Math.sin(λ2-λ1)>0 ? 2*π-θb : θb;
+
+        const α1 = θ13 - θ12; // angle 2-1-3
+        const α2 = θ21 - θ23; // angle 1-2-3
+
+        if (Math.sin(α1) == 0 && Math.sin(α2) == 0) return null; // infinite intersections
+        if (Math.sin(α1) * Math.sin(α2) < 0) return null;        // ambiguous intersection (antipodal/360°)
+
+        const cosα3 = -Math.cos(α1)*Math.cos(α2) + Math.sin(α1)*Math.sin(α2)*Math.cos(δ12);
+
+        const δ13 = Math.atan2(Math.sin(δ12)*Math.sin(α1)*Math.sin(α2), Math.cos(α2) + Math.cos(α1)*cosα3);
+
+        const φ3 = Math.asin(Math.min(Math.max(Math.sin(φ1)*Math.cos(δ13) + Math.cos(φ1)*Math.sin(δ13)*Math.cos(θ13), -1), 1));
+
+        const Δλ13 = Math.atan2(Math.sin(θ13)*Math.sin(δ13)*Math.cos(φ1), Math.cos(δ13) - Math.sin(φ1)*Math.sin(φ3));
+        const λ3 = λ1 + Δλ13;
+
+        const lat = φ3.toDegrees();
+        const lon = λ3.toDegrees();
+
+        return new LatLonSpherical(lat, lon);
+    }
+  */
 
   /// Returns (signed) distance from the current [position] to great circle
   /// defined by [start] and [end] points.
@@ -465,7 +522,7 @@ class SphericalGreatCircle extends Geodetic {
 
     final dstxt = asin(sin(dst13) * sin(brng13 - brng12));
 
-    final dstat = acos(cos(dst13) / cos(dstxt).abs());
+    final dstat = acos(cos(dst13) / (cos(dstxt).abs()));
     final sign = cos(brng12 - brng13).sign;
     return dstat * sign * radius;
   }
@@ -503,7 +560,8 @@ class SphericalGreatCircle extends Geodetic {
   }) {
     // NOTE: return value could be changed to record notation on Dart 3
 
-    if (position == other) return null; // coincident points
+    // coincident points
+    if (position == other) return null;
 
     final lat = latitude.toRadians();
 
@@ -523,9 +581,11 @@ class SphericalGreatCircle extends Geodetic {
       return null;
     }
 
-    final lonm = atan2(-y, x); // longitude at max latitude
-    final dloni =
-        acos(z / sqrt(x * x + y * y)); // Δλ from λm to intersection points
+    // longitude at max latitude
+    final lonm = atan2(-y, x);
+
+    // Δλ from λm to intersection points
+    final dloni = acos(z / sqrt(x * x + y * y));
 
     final loni1 = lon1 + lonm - dloni;
     final loni2 = lon1 + lonm + dloni;
@@ -591,7 +651,8 @@ class SphericalGreatCircleLineString {
       throw const FormatException('Polygon must be a closed linear ring.');
     }
 
-    var S = 0.0; // spherical excess in steradians
+    // spherical excess in steradians
+    var S = 0.0;
 
     var isFirst = true;
     late Geographic p1;

@@ -116,6 +116,8 @@ class SphericalRhumbLine extends Geodetic {
   /// bearings equals).
   @override
   double initialBearingTo(Geographic destination) {
+    if (position == destination) return double.nan;
+
     final lat1 = position.lat.toRadians();
     final lat2 = destination.lat.toRadians();
     var dlon = (destination.lon - position.lon).toRadians();
@@ -172,6 +174,8 @@ class SphericalRhumbLine extends Geodetic {
     required double bearing,
     double radius = 6371000.0,
   }) {
+    if (distance == 0.0) return position;
+
     final lat1 = position.lat.toRadians();
     final lon1 = position.lon.toRadians();
     final brng = bearing.toRadians();
@@ -209,6 +213,8 @@ class SphericalRhumbLine extends Geodetic {
   /// ```
   @override
   Geographic midPointTo(Geographic destination) {
+    if (position == destination) return position;
+
     // see mathforum.org/kb/message.jspa?messageID=148837
 
     final lat1 = position.lat.toRadians();

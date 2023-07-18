@@ -33,6 +33,7 @@ Dart code file ported to this project | Related original JavaScript code
 [geodetic.dart](lib/src/geodesy/base/geodetic.dart) | [latlon-spherical.js](https://github.com/chrisveness/geodesy/blob/master/latlon-spherical.js)
 [spherical_great_circle.dart](lib/src/geodesy/spherical/spherical_great_circle.dart) | [latlon-spherical.js](https://github.com/chrisveness/geodesy/blob/master/latlon-spherical.js)
 [spherical_rhumb_lone.dart](lib/src/geodesy/spherical/spherical_rhumb_lone.dart) | [latlon-spherical.js](https://github.com/chrisveness/geodesy/blob/master/latlon-spherical.js)
+[spherical_ported_test.dart](test/geodesy/spherical_ported_test.dart) | [latlon-spherical-tests.js](https://github.com/chrisveness/geodesy/blob/master/test/latlon-spherical-tests.js)
 
 Geodesy representation conversion functions:
 
