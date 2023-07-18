@@ -10,6 +10,7 @@ import '/src/codes/coords.dart';
 import '/src/coordinates/base/aligned.dart';
 import '/src/coordinates/base/box.dart';
 
+import 'dms.dart';
 import 'geographic.dart';
 
 /// A geographic bounding box with [west], [south], [east] and [north] values.
@@ -282,4 +283,48 @@ class GeoBox extends Box {
 
   @override
   int get hashCode => Box.hash(this);
+
+  // ---------------------------------------------------------------------------
+  // Special coordinate formats etc.
+
+  /// Parses a geographic bounding box from [west], [south], [east] and [north]
+  /// values that are formatted as specified (and parsed) by [format].
+  ///
+  /// By default the [Dms] class is used as the format.
+  ///
+  /// Optionally [minElev] and [maxElev] for 3D boxes, and [minM] and [maxM] for
+  /// measured boxes are parsed using the standard `double.tryParse` method.
+  factory GeoBox.parseDms({
+    DmsFormat format = const Dms(),
+    required String west,
+    required String south,
+    String? minElev,
+    String? minM,
+    required String east,
+    required String north,
+    String? maxElev,
+    String? maxM,
+  }) =>
+      GeoBox(
+        west: format.parse(west),
+        south: format.parse(south),
+        minElev: minElev != null ? double.tryParse(minElev) : null,
+        minM: minM != null ? double.tryParse(minM) : null,
+        east: format.parse(east),
+        north: format.parse(north),
+        maxElev: maxElev != null ? double.tryParse(maxElev) : null,
+        maxM: maxM != null ? double.tryParse(maxM) : null,
+      );
+
+  /// Formats [west] according to [format].
+  String westDms([DmsFormat format = const Dms()]) => format.lon(west);
+
+  /// Formats [south] according to [format].
+  String southDms([DmsFormat format = const Dms()]) => format.lat(south);
+
+  /// Formats [east] according to [format].
+  String eastDms([DmsFormat format = const Dms()]) => format.lon(east);
+
+  /// Formats [north] according to [format].
+  String northDms([DmsFormat format = const Dms()]) => format.lat(north);
 }

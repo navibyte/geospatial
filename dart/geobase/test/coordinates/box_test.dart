@@ -393,6 +393,17 @@ void main() {
         ],
       );
     });
+
+    test('Dms for documentation examples', () {
+      final box = GeoBox.parseDms(
+          west: '20°W', south: '50°N', east: '20°E', north: '60°N');
+      const dm0 = Dms(type: DmsType.degMin, decimals: 0, zeroPadMinSec: false);
+      expect(
+        '${box.westDms(dm0)} ${box.southDms(dm0)}'
+            ' ${box.eastDms(dm0)} ${box.northDms(dm0)}',
+        '20°0′W 50°0′N 20°0′E 60°0′N',
+      );
+    });
   });
 
   group('Other tests', () {
