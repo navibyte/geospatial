@@ -43,9 +43,13 @@ Geographic and projected *positions* and *bounding boxes*:
   ProjBox(minX: 10, minY: 10, maxX: 20, maxY: 20);
 
   // Positions and bounding boxes can be also built from an array or parsed.
+  Geographic.build([-0.0014, 51.4778]);
+  Geographic.parse('-0.0014,51.4778');
+  Geographic.parse('-0.0014 51.4778', delimiter: ' ');
+  Geographic.parseDms(lon: '0° 00′ 05″ W', lat: '51° 28′ 40″');
   GeoBox.build([-20, 50, 100, 20, 60, 200]);
   GeoBox.parse('-20,50,100,20,60,200');
-  GeoBox.parse('-20 50 100 20 60 200', delimiter: ' ');
+  GeoBox.parseDms(west: '20°W', south: '50°N', east: '20°E', north: '60°N');
 ```
 
 Coordinates for *pixels* and *tiles* in tiling schemes:
@@ -297,6 +301,83 @@ Geographic *bounding boxes*:
   GeoBox.build([-20, 50, 100, 20, 60, 200]);
   GeoBox.parse('-20,50,100,20,60,200');
 ```
+
+### Geographic string representations (DMS)
+
+A geographic position can also be parsed from sexagesimal degrees (latitude
+and longitude subdivided to degrees, minutes and seconds):
+
+```dart
+  // Decimal degrees (DD) with signed numeric degree values.
+  Geographic.parseDms(lat: '51.4778', lon: '-0.0014');
+
+  // Decimal degrees (DD) with degree and cardinal direction symbols (N/E/S/W).
+  Geographic.parseDms(lat: '51.4778°N', lon: '0.0014°W');
+
+  // Degrees and minutes (DM).
+  Geographic.parseDms(lat: '51°28.668′N', lon: '0°00.084′W');
+
+  // Degrees, minutes and seconds (DMS).
+  Geographic.parseDms(lat: '51° 28′ 40″', lon: '0° 00′ 05″ W');
+```
+
+Format geographic coordinates as string representations (DD, DM, DMS):
+
+```dart
+  const p = Geographic(lat: 51.4778, lon: -0.0014);
+
+  // all three samples print decimal degrees: 51.4778°N 0.0014°W
+  print(p.latLonDms());
+  print('${p.latDms()} ${p.lonDms()}');
+  print('${Dms().lat(51.4778)} ${Dms().lon(-0.0014)}');
+
+  // prints degrees and minutes: 51°28.668′N 0°00.084′W
+  const dm = Dms(type: DmsType.degMin, decimals: 3);
+  print(p.latLonDms(format: dm));
+
+  // prints degrees, minutes and seconds: 51° 28′ 40″ N 0° 00′ 05″ W
+  const dms = Dms.narrowSpace(type: DmsType.degMinSec);
+  print(p.latLonDms(format: dms));
+
+  // 51 degrees 28 minutes 40 seconds to N, 0 degrees 0 minutes 5 seconds to W
+  const dmsTextual = Dms(
+    type: DmsType.degMinSec,
+    separator: ' ',
+    decimals: 0,
+    zeroPadMinSec: false,
+    degree: ' degrees',
+    prime: ' minutes',
+    doublePrime: ' seconds to',
+  );
+  print(p.latLonDms(format: dmsTextual, separator: ', '));
+```
+
+Parsing and formatting is supported also for geographic bounding boxes:
+
+```dart
+  // Parses box from decimal degrees (DD) with cardinal direction symbols.
+  final box =
+      GeoBox.parseDms(west: '20°W', south: '50°N', east: '20°E', north: '60°N');
+
+  // prints degrees and minutes: 20°0′W 50°0′N 20°0′E 60°0′N
+  const dm0 = Dms(type: DmsType.degMin, decimals: 0, zeroPadMinSec: false);
+  print('${box.westDms(dm0)} ${box.southDms(dm0)}'
+      ' ${box.eastDms(dm0)} ${box.northDms(dm0)}');
+```
+
+In the previous example `dm`, `dm0`, `dms` and `dmsTextual` are instances of the
+`Dms` class that implements `DmsFormat`. This defines multiple methods for
+parsing and formatting decimal degrees and sexagesimal degrees
+(degrees/minutes/seconds) on latitude, longitude and bearing values. 
+
+The default format used by `Geographic` and `GeoBox` classes formats values as
+decimal degrees with cardinal direction symbols. To use other formats
+(degrees/minutes or degrees/minutes/seconds), or to set other parameters (like
+separators, symbol characters, the number of decimals, zero padding or value
+signing) you should create a custom `Dms` instance.
+
+See the API documentation and [DMS test cases](test/coordinates/dms_test.dart)
+for more samples.
 
 ### Projected coordinates
 
