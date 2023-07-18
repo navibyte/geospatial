@@ -258,17 +258,17 @@ class Geographic extends Position {
   ///   const p1 = Geographic(lat: 51.4778, lon: -0.0014);
   ///
   ///   // Decimal degrees on latitude: 51.4778°N
-  ///   final p1Deg = p1.toDmsLat();
+  ///   final p1Deg = p1.latDms();
   ///
   ///   // DM representation with three decimals on latitude: 51°28.668′N
   ///   const dm = Dms(type: DmsType.degMin, decimals: 3);
-  ///   final p1DegMin = p1.toDmsLat(dm);
+  ///   final p1DegMin = p1.latDms(dm);
   ///
   ///   // DMS representation with narrow spaces on latitude: 51° 28′ 40″ N
   ///   const dms = Dms.narrowSpace(type: DmsType.degMinSec);
-  ///   final p1DegMinSec = p1.toDmsLat(dms);
+  ///   final p1DegMinSec = p1.latDms(dms);
   /// ```
-  String toDmsLat([DmsFormat format = const Dms()]) => format.lat(lat);
+  String latDms([DmsFormat format = const Dms()]) => format.lat(lat);
 
   /// Formats [lon] according to [format].
   ///
@@ -277,17 +277,17 @@ class Geographic extends Position {
   ///   const p1 = Geographic(lat: 51.4778, lon: -0.0014);
   ///
   ///   // Decimal degrees on longitude: 0.0014°W
-  ///   final p1Deg = p1.toDmsLon();
+  ///   final p1Deg = p1.lonDms();
   ///
   ///   // DM representation with three decimals on longitude: 0°00.084′W
   ///   const dm = Dms(type: DmsType.degMin, decimals: 3);
-  ///   final p1DegMin = p1.toDmsLon(dm);
+  ///   final p1DegMin = p1.lonDms(dm);
   ///
   ///   // DMS representation with narrow spaces on longitude: 0° 00′ 05″ W
   ///   const dms = Dms.narrowSpace(type: DmsType.degMinSec);
-  ///   final p1DegMinSec = p1.toDmsLon(dms);
+  ///   final p1DegMinSec = p1.lonDms(dms);
   /// ```
-  String toDmsLon([DmsFormat format = const Dms()]) => format.lon(lon);
+  String lonDms([DmsFormat format = const Dms()]) => format.lon(lon);
 
   /// Formats [lat] and [lon] according to [format], with [lat] formatted first
   /// and separated from [lon] by [separator].
@@ -303,15 +303,15 @@ class Geographic extends Position {
   ///   const p1 = Geographic(lat: 51.4778, lon: -0.0014);
   ///
   ///   // Decimal degrees on lat-lon: 51.4778°N 0.0014°W
-  ///   final p1Deg = p1.toDmsLatLon();
+  ///   final p1Deg = p1.latLonDms();
   ///
   ///   // DM with three decimals on lat-lon: 51°28.668′N 0°00.084′W
   ///   const dm = Dms(type: DmsType.degMin, decimals: 3);
-  ///   final p1DegMin = p1.toDmsLatLon(format: dm);
+  ///   final p1DegMin = p1.latLonDms(format: dm);
   ///
   ///   // DMS with narrow spaces on lat-lon: 51° 28′ 40″ N 0° 00′ 05″ W
   ///   const dms = Dms.narrowSpace(type: DmsType.degMinSec);
-  ///   final p1DegMinSec = p1.toDmsLatLon(format: dms);
+  ///   final p1DegMinSec = p1.latLonDms(format: dms);
   ///
   ///   // geographic position with elevation
   ///   const p2 = Geographic(lon: -0.0014, lat: 51.4778, elev: 45.83764);
@@ -322,9 +322,9 @@ class Geographic extends Position {
   ///     decimals: 3,
   ///     zeroPadMinSec: false,
   ///   );
-  ///   final p2DegMinSecWithElev = p2.toDmsLatLon(format: format);
+  ///   final p2DegMinSecWithElev = p2.latLonDms(format: format);
   /// ```
-  String toDmsLatLon({
+  String latLonDms({
     DmsFormat format = const Dms(),
     String separator = ' ',
     String elevUnits = 'm',
@@ -333,7 +333,7 @@ class Geographic extends Position {
     int mDecimals = 2,
   }) {
     final buf = StringBuffer();
-    Geographic.writeDmsLatLon(
+    Geographic.writeLatLonDms(
       buf,
       this,
       format: format,
@@ -349,8 +349,8 @@ class Geographic extends Position {
   /// Formats geographic [position] according to [format] and writes it to
   /// [buf].
   ///
-  /// See also [toDmsLatLon] for documentation.
-  static void writeDmsLatLon(
+  /// See also [latLonDms] for documentation.
+  static void writeLatLonDms(
     StringSink buf,
     Geographic position, {
     DmsFormat format = const Dms(),

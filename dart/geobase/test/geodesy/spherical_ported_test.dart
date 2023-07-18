@@ -28,7 +28,7 @@ void main() {
       const p2 = Geographic(lat: 48.857, lon: 2.351);
       const greenwich = Geographic(lat: 51.47788, lon: -0.00147);
 
-      expect(p1.toDmsLatLon(), '52.2050°N 0.1190°E');
+      expect(p1.latLonDms(), '52.2050°N 0.1190°E');
 
       const latLonData = [
         ['52.205', '0.119'],
@@ -38,7 +38,7 @@ void main() {
       ];
       for (final latLon in latLonData) {
         expect(
-          Geographic.parseDms(lat: latLon[0], lon: latLon[1]).toDmsLatLon(),
+          Geographic.parseDms(lat: latLon[0], lon: latLon[1]).latLonDms(),
           '52.2050°N 0.1190°E',
         );
       }
@@ -53,17 +53,17 @@ void main() {
       expect(sp1.initialBearingTo(p2).toStringAsFixed(1), '156.2');
       expect(sp1.finalBearingTo(p2).toStringAsFixed(1), '157.9');
       expect(
-        sp1.midPointTo(p2).toDmsLatLon(),
+        sp1.midPointTo(p2).latLonDms(),
         '50.5363°N 1.2746°E',
       );
       expect(
-        sp1.intermediatePointTo(p2, fraction: 0.25).toDmsLatLon(),
+        sp1.intermediatePointTo(p2, fraction: 0.25).latLonDms(),
         '51.3721°N 0.7073°E',
       );
       expect(
         greenwich.spherical
             .destinationPoint(distance: 7794, bearing: 300.7)
-            .toDmsLatLon(),
+            .latLonDms(),
         '51.5136°N 0.0983°W',
       );
       expect(
@@ -74,7 +74,7 @@ void main() {
               other: Geographic(lat: 49.0034, lon: 2.5735),
               otherBearing: 32.435,
             )!
-            .toDmsLatLon(),
+            .latLonDms(),
         '50.9078°N 4.5084°E',
       );
       expect(
@@ -106,11 +106,11 @@ void main() {
       expect(rl3.initialBearingTo(p4).toStringAsFixed(1), '116.7');
       expect(rl3.finalBearingTo(p4).toStringAsFixed(1), '116.7');
       expect(
-        rl3.destinationPoint(distance: 40300, bearing: 116.7).toDmsLatLon(),
+        rl3.destinationPoint(distance: 40300, bearing: 116.7).latLonDms(),
         '50.9642°N 1.8530°E',
       );
       expect(
-        rl3.midPointTo(p4).toDmsLatLon(),
+        rl3.midPointTo(p4).latLonDms(),
         '51.0455°N 1.5957°E',
       );
 
@@ -129,15 +129,15 @@ void main() {
         Geographic(lat: 52.205, lon: 0.119),
       );
 
-      expect(greenwich.toDmsLatLon(), '51.4779°N 0.0015°W');
+      expect(greenwich.latLonDms(), '51.4779°N 0.0015°W');
       expect(
-        greenwich.toDmsLatLon(
+        greenwich.latLonDms(
           format: Dms(type: DmsType.degMinSec, decimals: 2),
         ),
         '51°28′40.37″N 0°00′05.29″W',
       );
       expect(
-        greenwich.toDmsLatLon(format: Dms.numeric()).split(' '),
+        greenwich.latLonDms(format: Dms.numeric()).split(' '),
         ['51.4779', '-0.0015'],
       );
     });
@@ -161,15 +161,15 @@ void main() {
       expect(cambgSp.finalBearingTo(cambg), isNaN);
       expect(parisSp.initialBearingTo(cambg).toStringAsFixed(1), '337.9');
       expect(
-        cambgSp.midPointTo(paris).toDmsLatLon(),
+        cambgSp.midPointTo(paris).latLonDms(),
         '50.5363°N 1.2746°E',
       );
       expect(
-        cambgSp.intermediatePointTo(paris, fraction: 0.25).toDmsLatLon(),
+        cambgSp.intermediatePointTo(paris, fraction: 0.25).latLonDms(),
         '51.3721°N 0.7073°E',
       );
       expect(
-        cambgSp.intermediatePointTo(cambg, fraction: 0.25).toDmsLatLon(),
+        cambgSp.intermediatePointTo(cambg, fraction: 0.25).latLonDms(),
         '52.2050°N 0.1190°E',
       );
 
@@ -177,9 +177,7 @@ void main() {
       const dist = 7794.0;
       const brng = 300.7;
       expect(
-        greenwichSp
-            .destinationPoint(distance: dist, bearing: brng)
-            .toDmsLatLon(),
+        greenwichSp.destinationPoint(distance: dist, bearing: brng).latLonDms(),
         '51.5136°N 0.0983°W',
       );
     });
@@ -198,7 +196,7 @@ void main() {
       expect(
         p01.spherical
             .intersectionWith(bearing: N, other: p10, otherBearing: E)!
-            .toDmsLatLon(),
+            .latLonDms(),
         '0.9998°N 1.0000°E',
       );
     });
@@ -206,7 +204,7 @@ void main() {
       expect(
         p10.spherical
             .intersectionWith(bearing: E, other: p01, otherBearing: N)!
-            .toDmsLatLon(),
+            .latLonDms(),
         '0.9998°N 1.0000°E',
       );
     });
@@ -244,7 +242,7 @@ void main() {
       expect(
         p01.spherical
             .intersectionWith(bearing: S, other: p10, otherBearing: W)!
-            .toDmsLatLon(),
+            .latLonDms(),
         '0.9998°S 179.0000°W',
       );
     });
@@ -252,7 +250,7 @@ void main() {
       expect(
         p10.spherical
             .intersectionWith(bearing: W, other: p01, otherBearing: S)!
-            .toDmsLatLon(),
+            .latLonDms(),
         '0.9998°S 179.0000°W',
       );
     });
@@ -267,7 +265,7 @@ void main() {
       expect(
         p01.spherical
             .intersectionWith(bearing: N, other: p1_92, otherBearing: E)!
-            .toDmsLatLon(),
+            .latLonDms(),
         '0.0175°N 179.0000°W',
       );
     });
@@ -275,7 +273,7 @@ void main() {
       expect(
         p11.spherical
             .intersectionWith(bearing: N, other: p11, otherBearing: E)!
-            .toDmsLatLon(),
+            .latLonDms(),
         '1.0000°N 1.0000°E',
       );
     });
@@ -291,7 +289,7 @@ void main() {
               other: cdg,
               otherBearing: 32.435,
             )!
-            .toDmsLatLon(),
+            .latLonDms(),
         '50.9078°N 4.5084°E',
       );
     });
@@ -304,7 +302,7 @@ void main() {
               other: Geographic(lat: 50, lon: 0),
               otherBearing: 60,
             )!
-            .toDmsLatLon(),
+            .latLonDms(),
         '50.4921°N 1.3612°E',
       );
     });
@@ -470,13 +468,13 @@ void main() {
 
     test('parallels 1', () {
       expect(
-        Geographic(lat: 30, lon: parallels![0]).toDmsLatLon(format: dms),
+        Geographic(lat: 30, lon: parallels![0]).latLonDms(format: dms),
         '30°00′00″N 9°35′39″E',
       );
     });
     test('parallels 2', () {
       expect(
-        Geographic(lat: 30, lon: parallels![1]).toDmsLatLon(format: dms),
+        Geographic(lat: 30, lon: parallels![1]).latLonDms(format: dms),
         '30°00′00″N 170°24′21″E',
       );
     });
@@ -657,7 +655,7 @@ void main() {
       expect(
         lax.spherical
             .intermediatePointTo(jfk, fraction: 100.0 / 2144.0)
-            .toDmsLatLon(format: Dms(type: DmsType.degMin, decimals: 0)),
+            .latLonDms(format: Dms(type: DmsType.degMin, decimals: 0)),
         '34°37′N 116°33′W',
       );
     });
@@ -684,7 +682,7 @@ void main() {
       expect(
         lax.spherical
             .intermediatePointTo(jfk, fraction: 0.4)
-            .toDmsLatLon(format: Dms(type: DmsType.degMin, decimals: 3)),
+            .latLonDms(format: Dms(type: DmsType.degMin, decimals: 3)),
         '38°40.167′N 101°37.570′W',
       );
     });
@@ -696,7 +694,7 @@ void main() {
       expect(
         reo.spherical
             .intersectionWith(bearing: 51, other: bke, otherBearing: 137)!
-            .toDmsLatLon(format: Dms(decimals: 3)),
+            .latLonDms(format: Dms(decimals: 3)),
         '43.572°N 116.189°W',
       );
     });
@@ -763,16 +761,14 @@ void main() {
     });
     test('dest’n', () {
       expect(
-        dov.rhumb
-            .destinationPoint(distance: 40310, bearing: 116.7)
-            .toDmsLatLon(),
+        dov.rhumb.destinationPoint(distance: 40310, bearing: 116.7).latLonDms(),
         '50.9641°N 1.8531°E',
       );
       expect(
         Geographic(lat: 1, lon: 1)
             .rhumb
             .destinationPoint(distance: 111178, bearing: 90)
-            .toDmsLatLon(),
+            .latLonDms(),
         '1.0000°N 2.0000°E',
       );
     });
@@ -781,20 +777,20 @@ void main() {
         Geographic(lat: 1, lon: 179)
             .rhumb
             .destinationPoint(distance: 222356, bearing: 90)
-            .toDmsLatLon(),
+            .latLonDms(),
         '1.0000°N 179.0000°W',
       );
       expect(
         Geographic(lat: 1, lon: -179)
             .rhumb
             .destinationPoint(distance: 222356, bearing: 270)
-            .toDmsLatLon(),
+            .latLonDms(),
         '1.0000°N 179.0000°E',
       );
     });
     test('midpoint', () {
       expect(
-        dov.rhumb.midPointTo(cal).toDmsLatLon(),
+        dov.rhumb.midPointTo(cal).latLonDms(),
         '51.0455°N 1.5957°E',
       );
     });
@@ -803,7 +799,7 @@ void main() {
         Geographic(lat: 1, lon: -179)
             .rhumb
             .midPointTo(Geographic(lat: 1, lon: 178))
-            .toDmsLatLon(),
+            .latLonDms(),
         '1.0000°N 179.5000°E',
       );
     });

@@ -221,9 +221,9 @@ void main() {
 
     test('Dms parsing and formatting', () {
       const p1 = Geographic(lon: -0.0014, lat: 51.4778);
-      final p1Lat = p1.toDmsLat();
-      final p1Lon = p1.toDmsLon();
-      final p1LatLon = p1.toDmsLatLon();
+      final p1Lat = p1.latDms();
+      final p1Lon = p1.lonDms();
+      final p1LatLon = p1.latLonDms();
 
       expect(p1Lat, '51.4778°N');
       expect(p1Lon, '0.0014°W');
@@ -240,11 +240,11 @@ void main() {
         decimals: 3,
         zeroPadMinSec: false,
       );
-      expect(p1.toDmsLatLon(format: format), '51°28′40.080″N 0°0′5.040″W');
+      expect(p1.latLonDms(format: format), '51°28′40.080″N 0°0′5.040″W');
 
       const p2 = Geographic(lon: -0.0014, lat: 51.4778, elev: 45.83764);
       expect(
-        p2.toDmsLatLon(format: format),
+        p2.latLonDms(format: format),
         '51°28′40.080″N 0°0′5.040″W 45.84m',
       );
     });
@@ -252,16 +252,16 @@ void main() {
     test('Dms for documentation examples', () {
       const p1 = Geographic(lon: -0.0014, lat: 51.4778);
 
-      expect(p1.toDmsLat(), '51.4778°N');
-      expect(p1.toDmsLon(), '0.0014°W');
+      expect(p1.latDms(), '51.4778°N');
+      expect(p1.lonDms(), '0.0014°W');
 
       const dm = Dms(type: DmsType.degMin, decimals: 3);
-      expect(p1.toDmsLat(dm), '51°28.668′N');
-      expect(p1.toDmsLon(dm), '0°00.084′W');
+      expect(p1.latDms(dm), '51°28.668′N');
+      expect(p1.lonDms(dm), '0°00.084′W');
 
       const dms = Dms.narrowSpace(type: DmsType.degMinSec);
-      expect(p1.toDmsLat(dms), '51° 28′ 40″ N');
-      expect(p1.toDmsLon(dms), '0° 00′ 05″ W');
+      expect(p1.latDms(dms), '51° 28′ 40″ N');
+      expect(p1.lonDms(dms), '0° 00′ 05″ W');
     });
 
     test('Coordinate access and factories', () {

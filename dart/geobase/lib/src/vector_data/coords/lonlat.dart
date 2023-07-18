@@ -150,13 +150,13 @@ class LonLat extends PositionCoords implements Geographic {
   String toString() => '$lon,$lat';
 
   @override
-  String toDmsLat([DmsFormat format = const Dms()]) => format.lat(lat);
+  String latDms([DmsFormat format = const Dms()]) => format.lat(lat);
 
   @override
-  String toDmsLon([DmsFormat format = const Dms()]) => format.lon(lon);
+  String lonDms([DmsFormat format = const Dms()]) => format.lon(lon);
 
   @override
-  String toDmsLatLon({
+  String latLonDms({
     DmsFormat format = const Dms(),
     String separator = ' ',
     String elevUnits = 'm',
@@ -165,7 +165,7 @@ class LonLat extends PositionCoords implements Geographic {
     int mDecimals = 2,
   }) {
     final buf = StringBuffer();
-    Geographic.writeDmsLatLon(
+    Geographic.writeLatLonDms(
       buf,
       this,
       format: format,

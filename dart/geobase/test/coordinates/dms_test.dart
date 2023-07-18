@@ -244,7 +244,7 @@ void main() {
         doublePrime: ' seconds to the',
       );
       expect(
-        p1.toDmsLatLon(format: dms),
+        p1.latLonDms(format: dms),
         '2 degrees, 19 minutes, 30 seconds to the S 3 degrees, 14 minutes, 3 seconds to the W',
       );
 
@@ -255,7 +255,7 @@ void main() {
         signedDegrees: true,
       );
       expect(
-        p1.toDmsLatLon(format: dms),
+        p1.latLonDms(format: dms),
         '-2°19′29.928″ -3°14′03.243″',
       );
 
@@ -265,7 +265,7 @@ void main() {
         degree: ' degrees',
       );
       expect(
-        p1.toDmsLatLon(format: dms),
+        p1.latLonDms(format: dms),
         '2.3250 degrees S 3.2342 degrees W',
       );
     });
