@@ -15,41 +15,41 @@ import 'package:test/test.dart';
 void main() {
   group('Dms parsing and representations (degrees / minutes / seconds)', () {
     test('Parse', () {
-      expect(Dms().parseDeg('51° 28′ 40.37″ N'), closeTo(51.4779, 0.0001));
-      expect(Dms().parseDeg('000° 00′ 05.29″ W'), closeTo(-0.0015, 0.0001));
+      expect(Dms().parse('51° 28′ 40.37″ N'), closeTo(51.4779, 0.0001));
+      expect(Dms().parse('000° 00′ 05.29″ W'), closeTo(-0.0015, 0.0001));
     });
     test('Format', () {
       expect(
-        Dms(decimals: 4, zeroPadDegrees: true).formatDms(51.477881),
+        Dms(decimals: 4, zeroPadDegrees: true).format(51.477881),
         '051.4779°',
       );
       expect(
-        Dms(decimals: 2).formatDms(51.477881),
+        Dms(decimals: 2).format(51.477881),
         '51.48°',
       );
       expect(
-        Dms.narrowSpace(type: DmsType.degMin, decimals: 2).formatDms(51.477881),
+        Dms.narrowSpace(type: DmsType.degMin, decimals: 2).format(51.477881),
         '51° 28.67′',
       );
       expect(
-        Dms.narrowSpace(type: DmsType.degMin, decimals: 0).formatDms(51.477881),
+        Dms.narrowSpace(type: DmsType.degMin, decimals: 0).format(51.477881),
         '51° 29′',
       );
       expect(
-        Dms(type: DmsType.degMinSec, decimals: 0).formatDms(51.477881),
+        Dms(type: DmsType.degMinSec, decimals: 0).format(51.477881),
         '51°28′40″',
       );
       expect(
-        Dms(type: DmsType.degMinSec, decimals: 2).formatDms(51.477881),
+        Dms(type: DmsType.degMinSec, decimals: 2).format(51.477881),
         '51°28′40.37″',
       );
       expect(
-        Dms(type: DmsType.degMinSec, decimals: 0).formatDms(-0.001469),
+        Dms(type: DmsType.degMinSec, decimals: 0).format(-0.001469),
         '0°00′05″',
       );
       expect(
         Dms(type: DmsType.degMinSec, decimals: 0, signedDegrees: true)
-            .formatDms(-0.001469),
+            .format(-0.001469),
         '-0°00′05″',
       );
       expect(
@@ -57,21 +57,21 @@ void main() {
           type: DmsType.degMinSec,
           decimals: 2,
           zeroPadMinSec: false,
-        ).formatDms(-0.001469),
+        ).format(-0.001469),
         '0° 0′ 5.29″',
       );
       expect(
-        Dms(type: DmsType.degMinSec, signedDegrees: true).formatDms(-3.62),
+        Dms(type: DmsType.degMinSec, signedDegrees: true).format(-3.62),
         '-3°37′12″',
       );
     });
 
     test('Latitude', () {
       expect(
-        Dms(type: DmsType.degMinSec, zeroPadDegrees: true).formatDms(-3.62),
+        Dms(type: DmsType.degMinSec, zeroPadDegrees: true).format(-3.62),
         '003°37′12″',
       );
-      expect(Dms(type: DmsType.degMinSec).formatDms(-3.62), '3°37′12″');
+      expect(Dms(type: DmsType.degMinSec).format(-3.62), '3°37′12″');
       expect(
         Dms.narrowSpace(type: DmsType.degMinSec).lat(-3.62),
         '3° 37′ 12″ S',
@@ -79,15 +79,15 @@ void main() {
       expect(Dms(type: DmsType.degMinSec).lat(-3.62), '3°37′12″S');
 
       expect(
-        Dms.narrowSpace(type: DmsType.degMin).formatDms(-3.62),
+        Dms.narrowSpace(type: DmsType.degMin).format(-3.62),
         '3° 37.20′',
       );
-      expect(Dms(type: DmsType.degMin).formatDms(-3.62), '3°37.20′');
+      expect(Dms(type: DmsType.degMin).format(-3.62), '3°37.20′');
       expect(Dms.narrowSpace(type: DmsType.degMin).lat(-3.62), '3° 37.20′ S');
       expect(Dms(type: DmsType.degMin).lat(-3.62), '3°37.20′S');
 
-      expect(Dms(type: DmsType.deg).formatDms(-3.62), '3.6200°');
-      expect(Dms(type: DmsType.deg).formatDms(-3.62), '3.6200°');
+      expect(Dms(type: DmsType.deg).format(-3.62), '3.6200°');
+      expect(Dms(type: DmsType.deg).format(-3.62), '3.6200°');
       expect(Dms.narrowSpace(type: DmsType.deg).lat(-3.62), '3.6200° S');
       expect(Dms(type: DmsType.deg).lat(-3.62), '3.6200°S');
 
@@ -169,20 +169,20 @@ void main() {
     });
 
     test('NaN values', () {
-      expect(() => Dms().formatDms(double.nan), throwsFormatException);
+      expect(() => Dms().format(double.nan), throwsFormatException);
       expect(() => Dms().lat(double.nan), throwsFormatException);
     });
 
     test('Documentation examples', () {
       expect(
-        Dms.narrowSpace(type: DmsType.degMinSec).formatDms(-3.62),
+        Dms.narrowSpace(type: DmsType.degMinSec).format(-3.62),
         '3° 37′ 12″',
       );
       expect(
-        Dms(type: DmsType.degMin, signedDegrees: true).formatDms(-3.62),
+        Dms(type: DmsType.degMin, signedDegrees: true).format(-3.62),
         '-3°37.20′',
       );
-      expect(Dms().formatDms(-3.62), '3.6200°');
+      expect(Dms().format(-3.62), '3.6200°');
 
       expect(
         Dms.narrowSpace(type: DmsType.degMinSec).lat(-3.62),
@@ -207,11 +207,11 @@ void main() {
         for (final type in DmsType.values) {
           final dms = Dms(type: type);
           final lat = dms.lat(deg);
-          expect(dms.lat(dms.parseDeg(lat)), lat);
+          expect(dms.lat(dms.parse(lat)), lat);
           final lon = dms.lon(deg);
-          expect(dms.lon(dms.parseDeg(lon)), lon);
+          expect(dms.lon(dms.parse(lon)), lon);
           final brng = dms.bearing(deg);
-          expect(dms.bearing(dms.parseDeg(brng)), brng);
+          expect(dms.bearing(dms.parse(brng)), brng);
         }
       }
     });

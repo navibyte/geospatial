@@ -150,10 +150,10 @@ class LonLat extends PositionCoords implements Geographic {
   String toString() => '$lon,$lat';
 
   @override
-  String toDmsLat({DmsFormat format = const Dms()}) => format.lat(lat);
+  String toDmsLat([DmsFormat format = const Dms()]) => format.lat(lat);
 
   @override
-  String toDmsLon({DmsFormat format = const Dms()}) => format.lon(lon);
+  String toDmsLon([DmsFormat format = const Dms()]) => format.lon(lon);
 
   @override
   String toDmsLatLon({

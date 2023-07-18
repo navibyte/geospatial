@@ -24,17 +24,17 @@ void main() {
         zeroPadDegrees: true,
         decimals: 2,
       );
-      expect(d.parseDeg('0.0°'), 0);
-      expect(d.formatDms(0), '000.0000°');
-      expect(d0.parseDeg('0°'), 0);
-      expect(d0.formatDms(0), '000°');
-      expect(dms.parseDeg('000 00 00 '), 0);
-      expect(dms.parseDeg('000°00′00″'), 0);
-      expect(dms.formatDms(0), '000°00′00″');
+      expect(d.parse('0.0°'), 0);
+      expect(d.format(0), '000.0000°');
+      expect(d0.parse('0°'), 0);
+      expect(d0.format(0), '000°');
+      expect(dms.parse('000 00 00 '), 0);
+      expect(dms.parse('000°00′00″'), 0);
+      expect(dms.format(0), '000°00′00″');
 
-      expect(dms.parseDeg('000°00′00.0″'), 0);
-      expect(dms.formatDms(0), '000°00′00″');
-      expect(dms2.formatDms(0), '000°00′00.00″');
+      expect(dms.parse('000°00′00.0″'), 0);
+      expect(dms.format(0), '000°00′00″');
+      expect(dms2.format(0), '000°00′00.00″');
     });
 
     test('parse variations', () {
@@ -56,53 +56,53 @@ void main() {
       ];
       const d = Dms(zeroPadDegrees: true);
       for (final v in variations) {
-        expect(d.parseDeg(v), 45.76260);
-        expect(d.parseDeg('-$v'), -45.76260);
-        expect(d.parseDeg('${v}N'), 45.76260);
-        expect(d.parseDeg('${v}S'), -45.76260);
-        expect(d.parseDeg('${v}E'), 45.76260);
-        expect(d.parseDeg('${v}W'), -45.76260);
-        expect(d.parseDeg('$v N'), 45.76260);
-        expect(d.parseDeg('$v S'), -45.76260);
-        expect(d.parseDeg('$v E'), 45.76260);
-        expect(d.parseDeg('$v W'), -45.76260);
+        expect(d.parse(v), 45.76260);
+        expect(d.parse('-$v'), -45.76260);
+        expect(d.parse('${v}N'), 45.76260);
+        expect(d.parse('${v}S'), -45.76260);
+        expect(d.parse('${v}E'), 45.76260);
+        expect(d.parse('${v}W'), -45.76260);
+        expect(d.parse('$v N'), 45.76260);
+        expect(d.parse('$v S'), -45.76260);
+        expect(d.parse('$v E'), 45.76260);
+        expect(d.parse('$v W'), -45.76260);
       }
-      expect(d.parseDeg(' 45°45′45.36″ '), 45.76260);
+      expect(d.parse(' 45°45′45.36″ '), 45.76260);
     });
 
     test('parse out-of-range (should be normalised externally)', () {
       const d = Dms(zeroPadDegrees: true);
-      expect(d.parseDeg('185'), 185);
-      expect(d.parseDeg('365'), 365);
-      expect(d.parseDeg('-185'), -185);
-      expect(d.parseDeg('-365'), -365);
+      expect(d.parse('185'), 185);
+      expect(d.parse('365'), 365);
+      expect(d.parse('-185'), -185);
+      expect(d.parse('-365'), -365);
     });
 
     test('output variations', () {
       expect(
-        Dms(zeroPadDegrees: true).formatDms(9.1525),
+        Dms(zeroPadDegrees: true).format(9.1525),
         '009.1525°',
       );
       expect(
-        Dms(type: DmsType.degMin, zeroPadDegrees: true).formatDms(9.1525),
+        Dms(type: DmsType.degMin, zeroPadDegrees: true).format(9.1525),
         '009°09.15′',
       );
       expect(
-        Dms(type: DmsType.degMinSec, zeroPadDegrees: true).formatDms(9.1525),
+        Dms(type: DmsType.degMinSec, zeroPadDegrees: true).format(9.1525),
         '009°09′09″',
       );
       expect(
-        Dms(zeroPadDegrees: true, decimals: 6).formatDms(9.1525),
+        Dms(zeroPadDegrees: true, decimals: 6).format(9.1525),
         '009.152500°',
       );
       expect(
         Dms(type: DmsType.degMin, zeroPadDegrees: true, decimals: 4)
-            .formatDms(9.1525),
+            .format(9.1525),
         '009°09.1500′',
       );
       expect(
         Dms(type: DmsType.degMinSec, zeroPadDegrees: true, decimals: 2)
-            .formatDms(9.1525),
+            .format(9.1525),
         '009°09′09.00″',
       );
     });
@@ -139,25 +139,21 @@ void main() {
       expect(dm.lat(51.19999999999999), '51°12.00′N');
       expect(dms.lat(51.19999999999999), '51°12′00″N');
       expect(dms.lon(0.33), '000°19′48″E');
-      expect(d.formatDms(51.99999999999999), '052.0000°');
-      expect(dm.formatDms(51.99999999999999), '052°00.00′');
-      expect(dms.formatDms(51.99999999999999), '052°00′00″');
-      expect(d.formatDms(51.19999999999999), '051.2000°');
-      expect(dm.formatDms(51.19999999999999), '051°12.00′');
-      expect(dms.formatDms(51.19999999999999), '051°12′00″');
+      expect(d.format(51.99999999999999), '052.0000°');
+      expect(dm.format(51.99999999999999), '052°00.00′');
+      expect(dms.format(51.99999999999999), '052°00′00″');
+      expect(d.format(51.19999999999999), '051.2000°');
+      expect(dm.format(51.19999999999999), '051°12.00′');
+      expect(dms.format(51.19999999999999), '051°12′00″');
       expect(d.bearing(1), '001.0000°');
     });
 
     test('parse failures', () {
-      const inputs = [
-        '0 0 0 0',
-        'xxx',
-        ''
-      ];
+      const inputs = ['0 0 0 0', 'xxx', ''];
       const d = Dms(zeroPadDegrees: true);
       for (final input in inputs) {
-        expect(() => d.parseDeg(input), throwsFormatException);
-        expect(d.tryParseDeg(input), isNull);
+        expect(() => d.parse(input), throwsFormatException);
+        expect(d.tryParse(input), isNull);
       }
     });
 
@@ -186,7 +182,7 @@ void main() {
         [405, 45, 45, 45],
         [450, 90, 90, 90],
       ];
-      for(final testCase in testCases) {
+      for (final testCase in testCases) {
         final sample = testCase[0].toDouble();
         expect(sample.wrap360(), testCase[1]);
         expect(sample.wrapLongitude(), testCase[2]);

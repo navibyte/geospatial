@@ -38,12 +38,12 @@ import 'geographic_functions.dart';
 /// A base class for formatters with methods for parsing and formatting
 /// degrees/minutes/seconds on latitude, longitude and bearing values.
 ///
-/// Sub classes must implement [parseDeg], [writeDms], [writeLat], [writeLon],
+/// Sub classes must implement [parse], [write], [writeLat], [writeLon],
 /// and [writeBearing]. Such classes could configure parsing and formatting
 /// parameters as they like.
 ///
-/// This base class provides default implementations for [tryParseDeg],
-/// [formatDms], [lat], [lon], [bearing], and [compassPoint].
+/// This base class provides default implementations for [tryParse],
+/// [format], [lat], [lon], [bearing], and [compassPoint].
 abstract class DmsFormat {
   /// Default `const` constructor to allow extending this abstract class.
   const DmsFormat();
@@ -52,15 +52,15 @@ abstract class DmsFormat {
   /// degree value (ie. latitude, longitude or bearing).
   ///
   /// Throws [FormatException] if numeric degrees cannot be parsed.
-  double parseDeg(String dms);
+  double parse(String dms);
 
   /// Parses a string [dms] representing degrees/minutes/seconds into a numeric
   /// degree value (ie. latitude, longitude or bearing).
   ///
   /// Returns null if numeric degrees cannot be parsed.
-  double? tryParseDeg(String dms) {
+  double? tryParse(String dms) {
     try {
-      return parseDeg(dms);
+      return parse(dms);
     } catch (_) {
       return null;
     }
@@ -73,9 +73,9 @@ abstract class DmsFormat {
   /// * [twoDigitDeg]: If true degrees are considered to have two digits (like in normalized latitude) otherwise three digits is considered.
   ///
   /// Throws [FormatException] if a string representation cannot be formatted.
-  String formatDms(double deg, {bool twoDigitDeg = false}) {
+  String format(double deg, {bool twoDigitDeg = false}) {
     final buf = StringBuffer();
-    writeDms(buf, deg, twoDigitDeg: twoDigitDeg);
+    write(buf, deg, twoDigitDeg: twoDigitDeg);
     return buf.toString();
   }
 
@@ -88,8 +88,8 @@ abstract class DmsFormat {
   ///
   /// Throws [FormatException] if a string representation cannot be formatted.
   ///
-  /// See also [formatDms] for documentation.
-  void writeDms(StringSink buf, double deg, {bool twoDigitDeg = false});
+  /// See also [format] for documentation.
+  void write(StringSink buf, double deg, {bool twoDigitDeg = false});
 
   /// Converts a degree value [deg] to a String representation (deg/min/sec) of
   /// the latitude.
@@ -266,7 +266,7 @@ class Dms extends DmsFormat {
   /// on latitude, longitude and bearing.
   ///
   /// See documentation for parameters from the default constructor.
-  /// 
+  ///
   /// This constructor differs from the default constructor as:
   /// * The default [separator] (between degrees, minutes, and seconds) is Unicode U+202F ‘narrow no-break space’.
   /// * Symbols for `deegree`, `prime` and `doublePrime` are set empty.
@@ -301,11 +301,11 @@ class Dms extends DmsFormat {
   /// Examples:
   /// ```dart
   ///   // 51.4779°N, 0.0015°W
-  ///   final p1 = Geographic(lat: Dms().parseDeg('51° 28′ 40.37″ N'),
-  ///                         lon: Dms().parseDeg('000° 00′ 05.29″ W'));
+  ///   final p1 = Geographic(lat: Dms().parse('51° 28′ 40.37″ N'),
+  ///                         lon: Dms().parse('000° 00′ 05.29″ W'));
   /// ```
   @override
-  double parseDeg(String dms) {
+  double parse(String dms) {
     final dmsTrimmed = dms.trim();
 
     // check for signed decimal degrees without NSEW, if so return it directly
@@ -373,20 +373,21 @@ class Dms extends DmsFormat {
   /// Examples:
   /// ```dart
   ///   // 3° 37′ 12″
-  ///   final dms = Dms.narrowSpace(type: DmsType.degMinSec).formatDms(-3.62);
+  ///   final dms = Dms.narrowSpace(type: DmsType.degMinSec);
+  ///   final narrow = dms.format(-3.62);
   ///
   ///   // -3°37.20′
-  ///   final format = Dms(type: DmsType.degMin, signedDegrees: true);
-  ///   final dmSigned = format.formatDms(-3.62);
+  ///   final dm = Dms(type: DmsType.degMin, signedDegrees: true);
+  ///   final signed = dm.format(-3.62);
   ///
   ///   // 3.6200°
-  ///   final d = Dms().formatDms(-3.62);
+  ///   final decimal = Dms().formatDms(-3.62);
   /// ```
   @override
-  String formatDms(double deg, {bool twoDigitDeg = false});
+  String format(double deg, {bool twoDigitDeg = false});
 
   @override
-  void writeDms(StringSink buf, double deg, {bool twoDigitDeg = false}) {
+  void write(StringSink buf, double deg, {bool twoDigitDeg = false}) {
     if (deg.isNaN || deg.isInfinite) {
       throw const FormatException('Invalid value');
     }
@@ -536,7 +537,7 @@ class Dms extends DmsFormat {
   @override
   void writeLat(StringSink buf, double deg) {
     final normalized = deg.wrapLatitude();
-    writeDms(buf, normalized, twoDigitDeg: true);
+    write(buf, normalized, twoDigitDeg: true);
     if (!_signedDegrees) {
       buf
         ..write(_separator)
@@ -576,7 +577,7 @@ class Dms extends DmsFormat {
   @override
   void writeLon(StringSink buf, double deg) {
     final normalized = deg.wrapLongitude();
-    writeDms(buf, normalized);
+    write(buf, normalized);
     if (!_signedDegrees) {
       buf
         ..write(_separator)
@@ -614,7 +615,7 @@ class Dms extends DmsFormat {
   @override
   void writeBearing(StringSink buf, double deg) {
     final normalized = deg.wrap360();
-    final brng = formatDms(normalized);
+    final brng = format(normalized);
     if (brng.startsWith('360')) {
       // just in case rounding took us up to 360°!
       if (_zeroPadDegrees) {

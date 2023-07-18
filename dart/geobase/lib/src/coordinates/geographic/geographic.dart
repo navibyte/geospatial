@@ -245,8 +245,8 @@ class Geographic extends Position {
     String? m,
   }) =>
       Geographic(
-        lon: format.parseDeg(lon),
-        lat: format.parseDeg(lat),
+        lon: format.parse(lon),
+        lat: format.parse(lat),
         elev: elev != null ? double.tryParse(elev) : null,
         m: m != null ? double.tryParse(m) : null,
       );
@@ -259,16 +259,16 @@ class Geographic extends Position {
   ///
   ///   // Decimal degrees on latitude: 51.4778°N
   ///   final p1Deg = p1.toDmsLat();
-  /// 
+  ///
   ///   // DM representation with three decimals on latitude: 51°28.668′N
   ///   const dm = Dms(type: DmsType.degMin, decimals: 3);
-  ///   final p1DegMin = p1.toDmsLat(format: dm);
-  ///   
+  ///   final p1DegMin = p1.toDmsLat(dm);
+  ///
   ///   // DMS representation with narrow spaces on latitude: 51° 28′ 40″ N
   ///   const dms = Dms.narrowSpace(type: DmsType.degMinSec);
-  ///   final p1DegMinSec = p1.toDmsLat(format: dms);
+  ///   final p1DegMinSec = p1.toDmsLat(dms);
   /// ```
-  String toDmsLat({DmsFormat format = const Dms()}) => format.lat(lat);
+  String toDmsLat([DmsFormat format = const Dms()]) => format.lat(lat);
 
   /// Formats [lon] according to [format].
   ///
@@ -278,16 +278,16 @@ class Geographic extends Position {
   ///
   ///   // Decimal degrees on longitude: 0.0014°W
   ///   final p1Deg = p1.toDmsLon();
-  /// 
+  ///
   ///   // DM representation with three decimals on longitude: 0°00.084′W
   ///   const dm = Dms(type: DmsType.degMin, decimals: 3);
-  ///   final p1DegMin = p1.toDmsLon(format: dm);
-  ///   
+  ///   final p1DegMin = p1.toDmsLon(dm);
+  ///
   ///   // DMS representation with narrow spaces on longitude: 0° 00′ 05″ W
   ///   const dms = Dms.narrowSpace(type: DmsType.degMinSec);
-  ///   final p1DegMinSec = p1.toDmsLon(format: dms);
+  ///   final p1DegMinSec = p1.toDmsLon(dms);
   /// ```
-  String toDmsLon({DmsFormat format = const Dms()}) => format.lon(lon);
+  String toDmsLon([DmsFormat format = const Dms()]) => format.lon(lon);
 
   /// Formats [lat] and [lon] according to [format], with [lat] formatted first
   /// and separated from [lon] by [separator].
@@ -304,11 +304,11 @@ class Geographic extends Position {
   ///
   ///   // Decimal degrees on lat-lon: 51.4778°N 0.0014°W
   ///   final p1Deg = p1.toDmsLatLon();
-  /// 
+  ///
   ///   // DM with three decimals on lat-lon: 51°28.668′N 0°00.084′W
   ///   const dm = Dms(type: DmsType.degMin, decimals: 3);
   ///   final p1DegMin = p1.toDmsLatLon(format: dm);
-  ///   
+  ///
   ///   // DMS with narrow spaces on lat-lon: 51° 28′ 40″ N 0° 00′ 05″ W
   ///   const dms = Dms.narrowSpace(type: DmsType.degMinSec);
   ///   final p1DegMinSec = p1.toDmsLatLon(format: dms);
@@ -348,7 +348,7 @@ class Geographic extends Position {
 
   /// Formats geographic [position] according to [format] and writes it to
   /// [buf].
-  /// 
+  ///
   /// See also [toDmsLatLon] for documentation.
   static void writeDmsLatLon(
     StringSink buf,

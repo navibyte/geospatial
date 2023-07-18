@@ -254,14 +254,14 @@ void main() {
 
       expect(p1.toDmsLat(), '51.4778°N');
       expect(p1.toDmsLon(), '0.0014°W');
-      
+
       const dm = Dms(type: DmsType.degMin, decimals: 3);
-      expect(p1.toDmsLat(format: dm), '51°28.668′N');
-      expect(p1.toDmsLon(format: dm), '0°00.084′W');
+      expect(p1.toDmsLat(dm), '51°28.668′N');
+      expect(p1.toDmsLon(dm), '0°00.084′W');
 
       const dms = Dms.narrowSpace(type: DmsType.degMinSec);
-      expect(p1.toDmsLat(format: dms), '51° 28′ 40″ N');   
-      expect(p1.toDmsLon(format: dms), '0° 00′ 05″ W');   
+      expect(p1.toDmsLat(dms), '51° 28′ 40″ N');
+      expect(p1.toDmsLon(dms), '0° 00′ 05″ W');
     });
 
     test('Coordinate access and factories', () {
