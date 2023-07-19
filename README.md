@@ -6,8 +6,8 @@
 
 **Geospatial** data structures, tools and utilities for 
 [Dart](https://dart.dev/) and [Flutter](https://flutter.dev/) - coordinates,
-geometries, feature objects, metadata, projections, tiling schemes, vector data
-models and formats, and gespatial Web APIs.
+geometries, feature objects, metadata, spherical geodesy, projections, tiling
+schemes, vector data models and formats, and gespatial Web APIs.
 
 [![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev/) [![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)](https://flutter.dev/)
 
@@ -45,7 +45,7 @@ Key features of the [geodata](https://pub.dev/packages/geodata) package:
 
 ### Geodesy functions with geobase
 
-🛠 *(2023-07-19) under development since `geobase 0.5.0-dev.0` pre-version*.
+🛠 *under development since [geobase 0.5.0-dev.0](https://github.com/navibyte/geospatial/issues/174)*.
 
 Spherical geodesy functions for *great circle* (shown below) and *rhumb line*
 paths:
@@ -216,14 +216,12 @@ See also older news in the [changelog](CHANGELOG.md) of this repository.
 💡 Any comments, questions, suggestions of new features and other other
 contributions are welcome, of course!
 
-🪄 New features shall be **actively added and development continues** on 
-[geobase](https://pub.dev/packages/geobase) and 
-[geodata](https://pub.dev/packages/geodata) packages. 
+🪄 Active packages in this repository: 
+* [geobase](https://pub.dev/packages/geobase) 
+* [geodata](https://pub.dev/packages/geodata) 
 
-⚠️ However after the `geocore` version 0.10.0 (published at 2022-08-21), no new
-features are currently planned on the
-[geocore](https://pub.dev/packages/geocore) package. Still this package too
-shall be maintained as a part of this repository.
+⚠️ Not active packages in this repository:
+* [geocore](https://pub.dev/packages/geocore)
 
 ## :house_with_garden: Authors
 

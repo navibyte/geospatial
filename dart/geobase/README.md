@@ -1,8 +1,8 @@
 [![pub package](https://img.shields.io/pub/v/geobase.svg)](https://pub.dev/packages/geobase) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause) [![style: very good analysis](https://img.shields.io/badge/style-very_good_analysis-B22C89.svg)](https://pub.dev/packages/very_good_analysis)
 
-Geospatial data structures (coordinates, geometries, features, metadata),
-projections and tiling schemes. Vector data format support for
-[GeoJSON](https://geojson.org/),
+Geospatial data structures (coordinates, geometries, features, metadata), 
+spherical geodesy, projections and tiling schemes. Vector data format support
+for [GeoJSON](https://geojson.org/),
 [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)
 and [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary).
 
@@ -10,7 +10,8 @@ and [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geomet
 
 ## Features
 
-✨ New: spherical geodesy functions (distance, bearing, destination point, etc.) for *great circle* and *rhumb line* paths.
+✨ New (2023-07): spherical geodesy functions (distance, bearing, destination
+point, etc.) for *great circle* and *rhumb line* paths.
 
 <a title="Ktrinko, CC0, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Eckert4.jpg"><img alt="World map with Natural Earth data, Excert projection" src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/projections/eckert4/320px-Eckert4.jpg" align="right"></a>
 
@@ -257,7 +258,7 @@ Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geobase: ^0.4.2
+  geobase: ^0.5.0-dev.0
 ```
 
 Import it:
@@ -1473,9 +1474,10 @@ used to import only a certain subset instead of the whole **geobase** package:
 
 Package                | Description 
 ---------------------- | ----------- 
-**codes**              | Enums (codes) for geospatial coordinate, geometry types and canvas origin.
+**codes**              | Enums (codes) for geospatial coordinate, geometry types, canvas origin, cardinal direction and DMS type.
 **constants**          | Geodetic and screen related constants.
 **coordinates**        | Geographic (longitude-latitude) and projected positions and bounding boxes.
+**geodesy**            | Spherical geodesy functions for *great circle* and *rhumb line* paths.
 **meta**               | Temporal data structures (instant, interval) and spatial extents.
 **projections**        | Geospatial projections (currently only between WGS84 and Web Mercator).
 **projections_proj4d** | Projections provided by the external [proj4dart](https://pub.dev/packages/proj4dart) package.

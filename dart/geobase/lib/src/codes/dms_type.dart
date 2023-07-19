@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// An enum for common representation of geographic positions by coordinates 
+/// An enum for common representation of geographic positions by coordinates
 /// (using degrees, minutes and seconds as components).
 enum DmsType {
   /// Format degree values as decimal degrees, ie. '23.6200°W'.

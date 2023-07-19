@@ -2,10 +2,10 @@
 /* Geodesy Test Harness - latlon-spherical                            (c) Chris Veness 2014-2021  */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
+// Spherical geodesy tools by Chris Veness ported to Dart by Navibyte.
+//
 // Source:
 // https://github.com/chrisveness/geodesy/blob/master/test/latlon-spherical-tests.js
-//
-// Test cases ported from JavaScript source to Dart code by Navibyte (2023).
 
 // ignore_for_file: lines_longer_than_80_chars, prefer_const_constructors
 // ignore_for_file: avoid_multiple_declarations_per_line

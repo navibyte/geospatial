@@ -6,10 +6,12 @@
 
 // ignore_for_file: lines_longer_than_80_chars
 
-/// Geospatial data structures, projections, tiling schemes and vector data.
+/// Geospatial data, spherical geodesy, projections, tiling schemes and vector
+/// data.
 ///
 /// Key features:
 /// * geographic (longitude-latitude) and projected positions and bounding boxes
+/// * spherical geodesy functions for *great circle* and *rhumb line* paths
 /// * simple geometries (point, line string, polygon, multi point, multi line string, multi polygon, geometry collection)
 /// * features (with id, properties and geometry) and feature collections
 /// * temporal data structures (instant, interval) and spatial extents

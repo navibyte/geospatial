@@ -1,5 +1,5 @@
 name: geobase
-description: Geospatial data structures, projections, tiling schemes and vector data support (GeoJSON, WKT, WKB). 
+description: Geospatial data, spherical geodesy, projections, tiling schemes, and vector formats (GeoJSON, WKT, WKB). 
 version: 0.5.0-dev.0
 repository: https://github.com/navibyte/geospatial
 homepage: https://github.com/navibyte/geospatial/tree/main/dart/geobase

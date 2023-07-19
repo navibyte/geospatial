@@ -7,7 +7,8 @@
 
 // ignore_for_file: lines_longer_than_80_chars, prefer_const_declarations
 
-// Dart port of spherical geodesy tools by Chris Veness, see license above.
+// Spherical geodesy tools (see license above) by Chris Veness ported to Dart
+// by Navibyte.
 //
 // Source:
 // https://github.com/chrisveness/geodesy/blob/master/latlon-spherical.js
@@ -337,7 +338,7 @@ class SphericalGreatCircle extends Geodetic {
 
     final brng13 = bearing.toRadians();
     final brng23 = otherBearing.toRadians();
-  
+
     // angular distance p1-p2
     final dst12 = 2.0 *
         asin(

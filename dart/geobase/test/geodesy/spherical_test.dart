@@ -229,8 +229,7 @@ void main() {
     const dm = Dms.narrowSpace(type: DmsType.degMin, decimals: 1);
 
     test('distanceTo', () {
-      expect(
-          (greenwich.rhumb.distanceTo(sydney) / 1000.0).toStringAsFixed(0),
+      expect((greenwich.rhumb.distanceTo(sydney) / 1000.0).toStringAsFixed(0),
           '17670');
     });
     test('initialBearingTo / finalBearingTo', () {
