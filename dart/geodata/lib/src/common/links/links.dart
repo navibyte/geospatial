@@ -14,6 +14,9 @@ import 'link.dart';
 ///
 /// See also IANA descriptions about common values for a link
 /// [rel](https://www.iana.org/assignments/link-relations/link-relations.xhtml).
+/// 
+/// See also [OGC API Features](https://ogcapi.ogc.org/features/) standard
+/// "Part 1: Core" section "5.2. Link relations" for reference.
 @immutable
 class Links with EquatableMixin {
   final List<Link> _items;
@@ -36,14 +39,14 @@ class Links with EquatableMixin {
       );
 
   /// All links as a list.
-  List<Link> get items => _items;
+  List<Link> get all => _items;
 
   @override
-  List<Object?> get props => [items];
+  List<Object?> get props => [all];
 
   /// All links matching by the given [rel], and optional [type] and [hreflang].
   Iterable<Link> byRel(String rel, {String? type, String? hreflang}) =>
-      items.where(
+      all.where(
         (e) =>
             e.rel == rel &&
             (type == null || e.type == type) &&
@@ -115,6 +118,8 @@ class Links with EquatableMixin {
   ///
   /// IANA description: "Indicates that the link's context is a part of
   /// a series, and that the previous in the series is the link target".
+  /// 
+  /// OGC API Features: "This relation is only used in examples".
   ///
   /// Optional [type] and [hreflang] params can specify links more precisely.
   Iterable<Link> prev({String? type, String? hreflang}) =>
@@ -141,6 +146,8 @@ class Links with EquatableMixin {
   ///
   /// IANA description: "Identifies service description for the context that is
   /// primarily intended for consumption by machines".
+  /// 
+  /// OGC API Features: "API definitions are considered service descriptions".
   ///
   /// Optional [type] and [hreflang] params can specify links more precisely.
   Iterable<Link> serviceDesc({String? type, String? hreflang}) =>
@@ -163,4 +170,30 @@ class Links with EquatableMixin {
   /// Optional [type] and [hreflang] params can specify links more precisely.
   Iterable<Link> serviceMeta({String? type, String? hreflang}) =>
       byRel('service-meta', type: type, hreflang: hreflang);
+
+  /// All links with `rel` matching `items`.
+  ///
+  /// OGC API Features: "Refers to a resource that is comprised of members of
+  /// the collection represented by the link’s context".
+  ///
+  /// Optional [type] and [hreflang] params can specify links more precisely.
+  Iterable<Link> items({String? type, String? hreflang}) =>
+      byRel('items', type: type, hreflang: hreflang);
+
+  /// All links with `rel` matching `conformance`.
+  ///
+  /// OGC API Features: "Refers to a resource that identifies the specifications
+  /// that the link’s context conforms to".
+  ///
+  /// Optional [type] and [hreflang] params can specify links more precisely.
+  Iterable<Link> conformance({String? type, String? hreflang}) =>
+      byRel('conformance', type: type, hreflang: hreflang);
+
+  /// All links with `rel` matching `data`.
+  ///
+  /// OGC API Features: "Refers to the root resource of a dataset in an API.".
+  ///
+  /// Optional [type] and [hreflang] params can specify links more precisely.
+  Iterable<Link> data({String? type, String? hreflang}) =>
+      byRel('data', type: type, hreflang: hreflang);
 }

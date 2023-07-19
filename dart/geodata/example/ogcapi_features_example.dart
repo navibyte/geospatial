@@ -235,7 +235,7 @@ void _printFeature(
 
 void _printLinks(Links links) {
   print('Links');
-  for (final link in links.items) {
+  for (final link in links.all) {
     print('  ${link.rel}: ${link.href}');
   }
 }

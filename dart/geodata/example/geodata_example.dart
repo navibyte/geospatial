@@ -266,9 +266,9 @@ void _printConformance(Iterable<String> conformance) {
 }
 
 void _printLinks(Links links) {
-  if (links.items.isNotEmpty) {
+  if (links.all.isNotEmpty) {
     print('  Links:');
-    for (final link in links.items) {
+    for (final link in links.all) {
       print('    ${link.rel} : ${link.href}');
     }
   }
