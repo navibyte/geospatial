@@ -526,11 +526,11 @@ when using a spherical model instead of an ellipsoidal.
 According to Wikipedia, a
 [great circle](https://en.wikipedia.org/wiki/Great_circle) or *orthodrome* is
 the circular intersection of a sphere and a plane passing through the sphere's
-center point. A [rhumb line](https://en.wikipedia.org/wiki/Rhumb_line), or
+center point. A [rhumb line](https://en.wikipedia.org/wiki/Rhumb_line) or
 *loxodrome* is an arc crossing all meridians of longitude at the same angle,
 that is, a path with constant bearing as measured relative to true north.
 
-<a title="Jacob Rus CC BY-SA 4.0 &lt;https://creativecommons.org/licenses/by-sa/4.0/deed.en&gt;, via Wikimedia Commons" href="https://en.wikipedia.org/wiki/File:Rhumb_line_vs_great-circle_arc.png"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/geodesy/rhumb_line_vs_great_circle/395px_Rhumb_line_vs_great-circle_arc.png" align="right"></a>
+<a title="Jacob Rus CC BY-SA 4.0 &lt;https://creativecommons.org/licenses/by-sa/4.0/deed.en&gt;, via Wikimedia Commons" href="https://en.wikipedia.org/wiki/File:Rhumb_line_vs_great-circle_arc.png"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/geodesy/rhumb_line_vs_great_circle/197px_Rhumb_line_vs_great-circle_arc.png" align="right"></a>
 
 Differences between a rhumb line (blue) compared to a great-circle arc (red) as
 [described](https://en.wikipedia.org/wiki/Rhumb_line) by Wikipedia are
