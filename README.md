@@ -213,8 +213,7 @@ See also older news in the [changelog](CHANGELOG.md) of this repository.
 
 🧩 See [open issues](https://github.com/navibyte/geospatial/issues) for planned features, requests for change, and observed bugs.
 
-💡 Any comments, questions, suggestions of new features and other other
-contributions are welcome, of course!
+💡 Any comments, questions, suggestions of new features and other other contributions are welcome, of course!
 
 🪄 Active packages in this repository: 
 * [geobase](https://pub.dev/packages/geobase) 
