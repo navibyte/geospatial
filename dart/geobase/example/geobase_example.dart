@@ -24,6 +24,10 @@ void main() {
   _projectedCoordinates();
   _scalableCoordinates();
 
+  // geodesy
+  _sphericalGeodesyGreatCircle();
+  _sphericalGeodesyRhumbLine();
+
   // geometries
   _geometryTypes2D();
   _point();
@@ -91,6 +95,26 @@ void _intro() {
 
   // Projected coordinates to represent *pixels* or *tiles* in tiling schemes.
   Scalable2i(zoom: 9, x: 23, y: 10);
+
+  // -------
+
+  // Spherical geodesy functions for great circle (shown) and rhumb line paths.
+
+  final greenwich = Geographic.parseDms(lat: '51°28′40″ N', lon: '0°00′05″ W');
+  final sydney = Geographic.parseDms(lat: '33.8688° S', lon: '151.2093° E');
+
+  // Distance (~ 16988 km)
+  greenwich.spherical.distanceTo(sydney);
+
+  // Destination point (10 km to bearing 61°): 51° 31.3′ N, 0° 07.5′ E
+  greenwich.spherical.initialBearingTo(sydney);
+  greenwich.spherical.finalBearingTo(sydney);
+
+  // Destination point: 51° 31.3′ N, 0° 07.5′ E
+  greenwich.spherical.destinationPoint(distance: 10000, bearing: 61.0);
+
+  // Midpoint: 28° 34.0′ N, 104° 41.6′ E
+  greenwich.spherical.midPointTo(sydney);
 
   // -------
 
@@ -254,7 +278,7 @@ void _geographicCoordinatesDMS() {
   Geographic.parseDms(lat: '51°28.668′N', lon: '0°00.084′W');
 
   // Degrees, minutes and seconds (DMS).
-  Geographic.parseDms(lat: '51° 28′ 40″', lon: '0° 00′ 05″ W');
+  Geographic.parseDms(lat: '51° 28′ 40″ N', lon: '0° 00′ 05″ W');
 
   // -------
 
@@ -337,6 +361,78 @@ void _scalableCoordinates() {
   pixel.zoomIn(); // => Scalable2i(zoom: 10, x: 46, y: 20);
   pixel.zoomOut(); // => Scalable2i(zoom: 8, x: 11, y: 5);
   pixel.zoomTo(13); // => Scalable2i(zoom: 13, x: 368, y: 160));
+}
+
+void _sphericalGeodesyGreatCircle() {
+  // sample geographic positions
+  final greenwich = Geographic.parseDms(lat: '51°28′40″ N', lon: '0°00′05″ W');
+  final sydney = Geographic.parseDms(lat: '33.8688° S', lon: '151.2093° E');
+
+  // decimal degrees (DD) and degrees-minutes (DM) formats
+  const dd = Dms(decimals: 0);
+  const dm = Dms.narrowSpace(type: DmsType.degMin, decimals: 1);
+
+  // prints: 16988 km
+  final distanceKm = greenwich.spherical.distanceTo(sydney) / 1000.0;
+  print('${distanceKm.toStringAsFixed(0)} km');
+
+  // prints (bearing varies along the great circle path): 61° -> 139°
+  final initialBearing = greenwich.spherical.initialBearingTo(sydney);
+  final finalBearing = greenwich.spherical.finalBearingTo(sydney);
+  print('${dd.bearing(initialBearing)} -> ${dd.bearing(finalBearing)}');
+
+  // prints: 51° 31.3′ N, 0° 07.5′ E
+  final destPoint =
+      greenwich.spherical.destinationPoint(distance: 10000, bearing: 61.0);
+  print(destPoint.latLonDms(format: dm, separator: ', '));
+
+  // prints: 28° 34.0′ N, 104° 41.6′ E
+  final midPoint = greenwich.spherical.midPointTo(sydney);
+  print(midPoint.latLonDms(format: dm, separator: ', '));
+
+  // prints 10 intermediate points, like fraction 0.6: 16° 14.5′ N 114° 29.3′ E
+  for (var fr = 0.0; fr < 1.0; fr += 0.1) {
+    final ip = greenwich.spherical.intermediatePointTo(sydney, fraction: fr);
+    print('${fr.toStringAsFixed(1)}: ${ip.latLonDms(format: dm)}');
+  }
+
+  // prints: 0° 00.0′ N, 125° 19.0′ E
+  final intersection = greenwich.spherical.intersectionWith(
+    bearing: 61.0,
+    other: const Geographic(lat: 0.0, lon: 179.0),
+    otherBearing: 270.0,
+  );
+  if (intersection != null) {
+    print(intersection.latLonDms(format: dm, separator: ', '));
+  }
+}
+
+void _sphericalGeodesyRhumbLine() {
+  // sample geographic positions
+  final greenwich = Geographic.parseDms(lat: '51°28′40″ N', lon: '0°00′05″ W');
+  final sydney = Geographic.parseDms(lat: '33.8688° S', lon: '151.2093° E');
+
+  // decimal degrees (DD) and degrees-minutes (DM) formats
+  const dd = Dms(decimals: 0);
+  const dm = Dms.narrowSpace(type: DmsType.degMin, decimals: 1);
+
+  // prints: 17670 km
+  final distanceKm = greenwich.rhumb.distanceTo(sydney) / 1000.0;
+  print('${distanceKm.toStringAsFixed(0)} km');
+
+  // prints (bearing remains the same along the rhumb line path): 122° -> 122°
+  final initialBearing = greenwich.rhumb.initialBearingTo(sydney);
+  final finalBearing = greenwich.rhumb.finalBearingTo(sydney);
+  print('${dd.bearing(initialBearing)} -> ${dd.bearing(finalBearing)}');
+
+  // prints: 51° 25.8′ N, 0° 07.3′ E
+  final destPoint =
+      greenwich.spherical.destinationPoint(distance: 10000, bearing: 122.0);
+  print(destPoint.latLonDms(format: dm, separator: ', '));
+
+  // prints: 8° 48.3′ N, 80° 44.0′ E
+  final midPoint = greenwich.rhumb.midPointTo(sydney);
+  print(midPoint.latLonDms(format: dm, separator: ', '));
 }
 
 void _geometryTypes2D() {

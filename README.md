@@ -26,6 +26,7 @@ Code           | Package | Description
 Key features of the [geobase](https://pub.dev/packages/geobase) package:
 
 * 🌐 geographic (longitude-latitude) and projected positions and bounding boxes
+* 📐 spherical geodesy functions for *great circle* and *rhumb line* paths
 * 🧩 simple geometries (point, line string, polygon, multi point, multi line string, multi polygon, geometry collection)
 * 🔷 features (with id, properties and geometry) and feature collections
 * 📅 temporal data structures (instant, interval) and spatial extents
@@ -41,6 +42,31 @@ Key features of the [geodata](https://pub.dev/packages/geodata) package:
 * 🌎 The [OGC API Features](https://ogcapi.ogc.org/features/) client to access metadata and feature items from a compliant geospatial Web API providing GeoJSON data
 
 ## :keyboard: Sample code
+
+### Geodesy functions with geobase
+
+🛠 *(2023-07-19) under development since `geobase 0.5.0-dev.0` pre-version*.
+
+Spherical geodesy functions for *great circle* (shown below) and *rhumb line*
+paths:
+
+```dart
+  final greenwich = Geographic.parseDms(lat: '51°28′40″ N', lon: '0°00′05″ W');
+  final sydney = Geographic.parseDms(lat: '33.8688° S', lon: '151.2093° E');
+
+  // Distance (~ 16988 km)
+  greenwich.spherical.distanceTo(sydney);
+
+  // Initial and final bearing: 61° -> 139°
+  greenwich.spherical.initialBearingTo(sydney);
+  greenwich.spherical.finalBearingTo(sydney);
+
+  // Destination point (10 km to bearing 61°): 51° 31.3′ N, 0° 07.5′ E
+  greenwich.spherical.destinationPoint(distance: 10000, bearing: 61.0);
+
+  // Midpoint: 28° 34.0′ N, 104° 41.6′ E
+  greenwich.spherical.midPointTo(sydney);
+```
 
 ### Geospatial data structures with geobase
 
@@ -217,6 +243,9 @@ This project contains portions of derivative work:
 
 * [geobase](dart/geobase): details about [DERIVATIVE](dart/geobase/DERIVATIVE.md) work.
 
+Source repositories used when porting functionality to Dart and this project:
+* [geodesy](https://github.com/chrisveness/geodesy) by Chris Veness 2002-2022
+
 ## :star: Links and other resources
 
 Some external links and other resources.
@@ -232,6 +261,7 @@ Geospatial:
 * [EPSG](https://epsg.org/home.html) (Geodetic Parameter Dataset)
 * [World Geodetic System](https://en.wikipedia.org/wiki/World_Geodetic_System), see also [EPSG:4326](https://epsg.io/4326) about WGS 84
 * [Web Mercator projection](https://en.wikipedia.org/wiki/Web_Mercator_projection), see also [EPSG:3857](https://epsg.io/3857) and [Bing Maps Tile System](https://docs.microsoft.com/en-us/bingmaps/articles/bing-maps-tile-system)
+* [ISO 6709](https://en.wikipedia.org/wiki/ISO_6709) on standard representation of geographic point location by coordinates
 
 OGC (The Open Geospatial Consortium) related:
 * [OGC APIs](https://ogcapi.ogc.org/)

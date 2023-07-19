@@ -16,6 +16,7 @@ and [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geomet
 
 Key features:
 * 🌐 geographic (longitude-latitude) and projected positions and bounding boxes
+* 📐 spherical geodesy functions for *great circle* and *rhumb line* paths
 * 🧩 simple geometries (point, line string, polygon, multi point, multi line string, multi polygon, geometry collection)
 * 🔷 features (with id, properties and geometry) and feature collections
 * 📅 temporal data structures (instant, interval) and spatial extents
@@ -57,6 +58,27 @@ Coordinates for *pixels* and *tiles* in tiling schemes:
 ```dart
   // Projected coordinates to represent *pixels* or *tiles* in tiling schemes.
   Scalable2i(zoom: 9, x: 23, y: 10);
+```
+
+Spherical geodesy functions for *great circle* (shown below) and *rhumb line*
+paths:
+
+```dart
+  final greenwich = Geographic.parseDms(lat: '51°28′40″ N', lon: '0°00′05″ W');
+  final sydney = Geographic.parseDms(lat: '33.8688° S', lon: '151.2093° E');
+
+  // Distance (~ 16988 km)
+  greenwich.spherical.distanceTo(sydney);
+
+  // Initial and final bearing: 61° -> 139°
+  greenwich.spherical.initialBearingTo(sydney);
+  greenwich.spherical.finalBearingTo(sydney);
+
+  // Destination point (10 km to bearing 61°): 51° 31.3′ N, 0° 07.5′ E
+  greenwich.spherical.destinationPoint(distance: 10000, bearing: 61.0);
+
+  // Midpoint: 28° 34.0′ N, 104° 41.6′ E
+  greenwich.spherical.midPointTo(sydney);
 ```
 
 Geometry primitive and multi geometry objects:
@@ -318,7 +340,7 @@ and longitude subdivided to degrees, minutes and seconds):
   Geographic.parseDms(lat: '51°28.668′N', lon: '0°00.084′W');
 
   // Degrees, minutes and seconds (DMS).
-  Geographic.parseDms(lat: '51° 28′ 40″', lon: '0° 00′ 05″ W');
+  Geographic.parseDms(lat: '51° 28′ 40″ N', lon: '0° 00′ 05″ W');
 ```
 
 Format geographic coordinates as string representations (DD, DM, DMS):
@@ -477,6 +499,110 @@ information about them in the API reference.
 See also the appendix about [Coordinate array](#coordinate-arrays) for more
 advanced topic about handling coordinate value arrays for a single position,
 multiple positions and a single bounding box. 
+
+## Spherical geodesy
+
+### Overview
+
+The package contains a port for Dart language of spherical geodesy tools,
+originally written in JavaScript by Chris Veness. See the online form at the
+[Movable Type Scripts](www.movable-type.co.uk/scripts/latlong.html) web site and
+source
+[code](https://github.com/chrisveness/geodesy/blob/master/latlon-spherical.js)
+at GitHub.
+
+These geodesy functions are based on calculations on a spherical earth model.
+Distance, bearing, destination and other functions are provided both for great
+circle paths and rhumb lines. All calculations use simple spherical
+trigonometric algorithms.
+
+Actually the earth is slightly ellipsoidal, not spherical. However errors are
+typically up to 0.3% (see notes by
+[Movable Type Scripts](www.movable-type.co.uk/scripts/latlong.html)) when using
+a spherical model instead of an ellipsoidal.
+
+To use geodesy function you may import the whole `geobase` but following partial
+imports should be enough for most cases:
+
+```dart
+import 'package:geobase/coordinates.dart';
+import 'package:geobase/geodesy.dart';
+```
+
+### Great circle paths
+
+Examples using *great circle* paths (orthodromic) on a spherical earth model:
+
+```dart
+  // sample geographic positions
+  final greenwich = Geographic.parseDms(lat: '51°28′40″ N', lon: '0°00′05″ W');
+  final sydney = Geographic.parseDms(lat: '33.8688° S', lon: '151.2093° E');
+
+  // decimal degrees (DD) and degrees-minutes (DM) formats
+  const dd = Dms(decimals: 0);
+  const dm = Dms.narrowSpace(type: DmsType.degMin, decimals: 1);
+
+  // prints: 16988 km
+  final distanceKm = greenwich.spherical.distanceTo(sydney) / 1000.0;
+  print('${distanceKm.toStringAsFixed(0)} km');
+
+  // prints (bearing varies along the great circle path): 61° -> 139°
+  final initialBearing = greenwich.spherical.initialBearingTo(sydney);
+  final finalBearing = greenwich.spherical.finalBearingTo(sydney);
+  print('${dd.bearing(initialBearing)} -> ${dd.bearing(finalBearing)}');
+
+  // prints: 51° 31.3′ N, 0° 07.5′ E
+  final destPoint =
+      greenwich.spherical.destinationPoint(distance: 10000, bearing: 61.0);
+  print(destPoint.latLonDms(format: dm, separator: ', '));
+
+  // prints: 28° 34.0′ N, 104° 41.6′ E
+  final midPoint = greenwich.spherical.midPointTo(sydney);
+  print(midPoint.latLonDms(format: dm, separator: ', '));
+
+  // prints 10 intermediate points, like fraction 0.6: 16° 14.5′ N 114° 29.3′ E
+  for (var fr = 0.0; fr < 1.0; fr += 0.1) {
+    final ip = greenwich.spherical.intermediatePointTo(sydney, fraction: fr);
+    print('${fr.toStringAsFixed(1)}: ${ip.latLonDms(format: dm)}');
+  }
+
+  // prints: 0° 00.0′ N, 125° 19.0′ E
+  final intersection = greenwich.spherical.intersectionWith(
+    bearing: 61.0,
+    other: const Geographic(lat: 0.0, lon: 179.0),
+    otherBearing: 270.0,
+  );
+  if (intersection != null) {
+    print(intersection.latLonDms(format: dm, separator: ', '));
+  }
+```
+
+### Rhumb line paths
+
+Examples using *rhumb line* paths (loxodromic) on a spherical earth model:
+
+```dart
+  // prints: 17670 km
+  final distanceKm = greenwich.rhumb.distanceTo(sydney) / 1000.0;
+  print('${distanceKm.toStringAsFixed(0)} km');
+
+  // prints (bearing remains the same along the rhumb line path): 122° -> 122°
+  final initialBearing = greenwich.rhumb.initialBearingTo(sydney);
+  final finalBearing = greenwich.rhumb.finalBearingTo(sydney);
+  print('${dd.bearing(initialBearing)} -> ${dd.bearing(finalBearing)}');
+
+  // prints: 51° 25.8′ N, 0° 07.3′ E
+  final destPoint =
+      greenwich.spherical.destinationPoint(distance: 10000, bearing: 122.0);
+  print(destPoint.latLonDms(format: dm, separator: ', '));
+
+  // prints: 8° 48.3′ N, 80° 44.0′ E
+  final midPoint = greenwich.rhumb.midPointTo(sydney);
+  print(midPoint.latLonDms(format: dm, separator: ', '));
+```
+
+More examples are provided in the API documentation and
+[test cases](test/geodesy/spherical_ported_test.dart).
 
 ## Geometries
 

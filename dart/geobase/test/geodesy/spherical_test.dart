@@ -153,4 +153,105 @@ void main() {
           true);
     });
   });
+
+  group('Spherical geodesy functions (great circle) / documentation', () {
+    final greenwich =
+        Geographic.parseDms(lat: '51°28′40″ N', lon: '0°00′05″ W');
+    final sydney = Geographic.parseDms(lat: '33.8688° S', lon: '151.2093° E');
+
+    const dd = Dms(decimals: 0);
+    const dm = Dms.narrowSpace(type: DmsType.degMin, decimals: 1);
+
+    test('distanceTo', () {
+      expect(
+          (greenwich.spherical.distanceTo(sydney) / 1000.0).toStringAsFixed(0),
+          '16988');
+    });
+    test('initialBearingTo / finalBearingTo', () {
+      final initialBearing = greenwich.spherical.initialBearingTo(sydney);
+      final finalBearing = greenwich.spherical.finalBearingTo(sydney);
+      expect('${dd.bearing(initialBearing)} -> ${dd.bearing(finalBearing)}',
+          '61° -> 139°');
+    });
+    test('destinationPoint', () {
+      expect(
+          greenwich.spherical
+              .destinationPoint(distance: 10000, bearing: 61.0)
+              .latLonDms(format: dm, separator: ', '),
+          '51° 31.3′ N, 0° 07.5′ E');
+    });
+    test('midPointTo', () {
+      expect(
+          greenwich.spherical
+              .midPointTo(sydney)
+              .latLonDms(format: dm, separator: ', '),
+          '28° 34.0′ N, 104° 41.6′ E');
+    });
+    test('intermediatePointTo', () {
+      const results = [
+        '0.0: 51° 28.7′ N 0° 00.1′ W',
+        '0.1: 56° 33.4′ N 24° 42.1′ E',
+        '0.2: 55° 50.8′ N 52° 19.4′ E',
+        '0.3: 49° 39.2′ N 75° 34.1′ E',
+        '0.4: 40° 00.4′ N 92° 22.9′ E',
+        '0.5: 28° 34.0′ N 104° 41.6′ E',
+        '0.6: 16° 14.5′ N 114° 29.3′ E',
+        '0.7: 3° 31.3′ N 123° 05.8′ E',
+        '0.8: 9° 16.6′ S 131° 28.2′ E',
+        '0.9: 21° 51.8′ S 140° 28.9′ E',
+        '1.0: 33° 52.1′ S 151° 12.6′ E',
+      ];
+
+      for (var fr = 0.0, i = 0; fr < 1.0; fr += 0.1, i++) {
+        final ip =
+            greenwich.spherical.intermediatePointTo(sydney, fraction: fr);
+        expect('${fr.toStringAsFixed(1)}: ${ip.latLonDms(format: dm)}',
+            results[i]);
+      }
+    });
+    test('intersectionWith', () {
+      final intersection = greenwich.spherical.intersectionWith(
+        bearing: 61.0,
+        other: const Geographic(lat: 0.0, lon: 179.0),
+        otherBearing: 270.0,
+      );
+      expect(intersection!.latLonDms(format: dm, separator: ', '),
+          '0° 00.0′ N, 125° 19.0′ E');
+    });
+  });
+
+  group('Spherical geodesy functions (rhumb line) / documentation', () {
+    final greenwich =
+        Geographic.parseDms(lat: '51°28′40″ N', lon: '0°00′05″ W');
+    final sydney = Geographic.parseDms(lat: '33.8688° S', lon: '151.2093° E');
+
+    const dd = Dms(decimals: 0);
+    const dm = Dms.narrowSpace(type: DmsType.degMin, decimals: 1);
+
+    test('distanceTo', () {
+      expect(
+          (greenwich.rhumb.distanceTo(sydney) / 1000.0).toStringAsFixed(0),
+          '17670');
+    });
+    test('initialBearingTo / finalBearingTo', () {
+      final initialBearing = greenwich.rhumb.initialBearingTo(sydney);
+      final finalBearing = greenwich.rhumb.finalBearingTo(sydney);
+      expect('${dd.bearing(initialBearing)} -> ${dd.bearing(finalBearing)}',
+          '122° -> 122°');
+    });
+    test('destinationPoint', () {
+      expect(
+          greenwich.rhumb
+              .destinationPoint(distance: 10000, bearing: 122.0)
+              .latLonDms(format: dm, separator: ', '),
+          '51° 25.8′ N, 0° 07.3′ E');
+    });
+    test('midPointTo', () {
+      expect(
+          greenwich.rhumb
+              .midPointTo(sydney)
+              .latLonDms(format: dm, separator: ', '),
+          '8° 48.3′ N, 80° 44.0′ E');
+    });
+  });
 }
