@@ -231,13 +231,13 @@ This project is authored by [Navibyte](https://navibyte.com).
 
 ## :copyright: License
 
-### Original work
+### The project
 
 This project is licensed under the "BSD-3-Clause"-style license.
 
 Please see the [LICENSE](LICENSE).
 
-### Derivative work
+### Included derivative work
 
 This project contains portions of derivative work: 
 

@@ -10,7 +10,7 @@ and [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geomet
 
 ## Features
 
-✨ New: Updated docs about positions, geometries, features and vector formats.
+✨ New: spherical geodesy functions (distance, bearing, destination point, etc.) for *great circle* and *rhumb line* paths.
 
 <a title="Ktrinko, CC0, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Eckert4.jpg"><img alt="World map with Natural Earth data, Excert projection" src="https://raw.githubusercontent.com/navibyte/geospatial_docs/main/assets/doc/projections/eckert4/320px-Eckert4.jpg" align="right"></a>
 
@@ -47,7 +47,7 @@ Geographic and projected *positions* and *bounding boxes*:
   Geographic.build([-0.0014, 51.4778]);
   Geographic.parse('-0.0014,51.4778');
   Geographic.parse('-0.0014 51.4778', delimiter: ' ');
-  Geographic.parseDms(lon: '0° 00′ 05″ W', lat: '51° 28′ 40″');
+  Geographic.parseDms(lon: '0° 00′ 05″ W', lat: '51° 28′ 40″ N');
   GeoBox.build([-20, 50, 100, 20, 60, 200]);
   GeoBox.parse('-20,50,100,20,60,200');
   GeoBox.parseDms(west: '20°W', south: '50°N', east: '20°E', north: '60°N');
@@ -506,8 +506,8 @@ multiple positions and a single bounding box.
 
 The package contains a port for Dart language of spherical geodesy tools,
 originally written in JavaScript by Chris Veness. See the online form at the
-[Movable Type Scripts](www.movable-type.co.uk/scripts/latlong.html) web site and
-source
+[Movable Type Scripts](https://www.movable-type.co.uk/scripts/latlong.html) web
+site and source
 [code](https://github.com/chrisveness/geodesy/blob/master/latlon-spherical.js)
 at GitHub.
 
@@ -518,11 +518,11 @@ trigonometric algorithms.
 
 Actually the earth is slightly ellipsoidal, not spherical. However errors are
 typically up to 0.3% (see notes by
-[Movable Type Scripts](www.movable-type.co.uk/scripts/latlong.html)) when using
-a spherical model instead of an ellipsoidal.
+[Movable Type Scripts](https://www.movable-type.co.uk/scripts/latlong.html))
+when using a spherical model instead of an ellipsoidal.
 
-To use geodesy function you may import the whole `geobase` but following partial
-imports should be enough for most cases:
+To use geodesy functions you may import the whole `geobase` but following
+partial imports should also be enough for most cases:
 
 ```dart
 import 'package:geobase/coordinates.dart';
