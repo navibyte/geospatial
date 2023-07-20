@@ -10,8 +10,11 @@ import 'package:geobase/vector.dart';
 import 'package:geobase/vector_data.dart';
 import 'package:http/http.dart';
 
+import '/src/common/links/link.dart';
 import '/src/common/links/links.dart';
 import '/src/common/paged/paged.dart';
+import '/src/common/service/service_exception.dart';
+import '/src/core/api/open_api_document.dart';
 import '/src/core/base/collection_meta.dart';
 import '/src/core/base/resource_meta.dart';
 import '/src/core/data/bounded_items_query.dart';
@@ -61,6 +64,17 @@ class OGCAPIFeatures {
 // Private implementation code below.
 // The implementation may change in future.
 
+// OpenAPI definition resources
+const _acceptJSONOpenAPI = {
+  'accept': 'application/vnd.oai.openapi+json, application/openapi+json'
+};
+const _expectJSONOpenAPI = [
+  'application/vnd.oai.openapi+json',
+  'application/openapi+json',
+  'application/json',
+];
+
+// collection items of geospatial features (actual data)
 const _acceptGeoJSON = {'accept': 'application/geo+json'};
 const _expectGeoJSON = ['application/geo+json', 'application/json'];
 const _nextAndPrevLinkType = 'application/geo+json';
@@ -97,6 +111,50 @@ class _OGCFeatureClientHttp implements OGCFeatureService {
         );
       },
     );
+  }
+
+  /// Resolve an url that's providing OpenAPI or JSON service description.
+  Link? _resolveServiceDescLink(Iterable<Link> links) {
+    for (final type in _expectJSONOpenAPI) {
+      for (final link in links) {
+        if (link.type?.startsWith(type) ?? false) {
+          return link;
+        }
+      }
+    }
+    return null;
+  }
+
+  @override
+  Future<OpenAPIDocument> openAPI() async {
+    // 1. Get a link from [meta] for the relation "service-desc".
+    // 2. Ensure it's type is "application/vnd.oai.openapi+json".
+    final m = await meta();
+    final links = m.links.serviceDesc();
+    final link = _resolveServiceDescLink(links);
+    if (link == null) {
+      throw const ServiceException('No valid service-desc link.');
+    }
+
+    // 3. Read JSON content from a HTTP service.
+    // 4. Decode content received as JSON Object using the standard JSON decoder
+    // 5. Wrap such decoded object in an [OpenAPIDefinition] instance.
+    final type = link.type;
+    if (type != null) {
+      return adapter.getEntityFromJsonObject(
+        link.href,
+        headers: {'accept': type},
+        expect: _expectJSONOpenAPI,
+        toEntity: (data) => OpenAPIDocument(meta: data),
+      );
+    } else {
+      return adapter.getEntityFromJsonObject(
+        link.href,
+        headers: _acceptJSONOpenAPI,
+        expect: _expectJSONOpenAPI,
+        toEntity: (data) => OpenAPIDocument(meta: data),
+      );
+    }
   }
 
   @override

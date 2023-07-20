@@ -6,6 +6,10 @@ NOTE: Version 0.12.0 currently under development (0.12.0-dev.0).
 * [Check conformance classes known by OGC API Features #169](https://github.com/navibyte/geospatial/issues/169)
 * Removed deprecated functions to create GeoJSON and OGC API Features clients.
 
+🧩 Features:
+* [Full client-side support for calling OGC API Features service according to Part 1 + 2 #9](https://github.com/navibyte/geospatial/issues/9)
+* [Add support for API definition (like Open API 3.0) when accessing OGC API Features clients #170](https://github.com/navibyte/geospatial/issues/170)
+
 🛠 Maintenance:
 * Removed extra internal export files and made internal imports more excplicit.
 

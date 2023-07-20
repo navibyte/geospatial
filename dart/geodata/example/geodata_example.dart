@@ -142,6 +142,10 @@ Future<void> main(List<String> args) async {
             print('OGC API Features service:');
             _printMeta(meta);
 
+            // read OpenAPI definition
+            final openAPI = await service.openAPI();
+            _printOpenAPI(openAPI);
+
             // read conformance classes
             final conformance = await service.conformance();
             _printConformance(conformance.classes);
@@ -255,6 +259,17 @@ void _printMeta(ResourceMeta meta) {
   print('  title: ${meta.title}');
   if (meta.description != null) {
     print('  description: ${meta.description}');
+  }
+}
+
+void _printOpenAPI(OpenAPIDocument document) {
+  print('OpenAPI ${document.openapi}');
+  final servers = document.meta['servers'] as Iterable<dynamic>;
+  for (final s in servers) {
+    final server = s as Map<String, dynamic>;
+    final url = server['url'];
+    final desc = server['description'];
+    print('  $url : $desc');
   }
 }
 

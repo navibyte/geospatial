@@ -148,7 +148,7 @@ Quick start code to access a Web API service conforming to OGC API Features:
 // 1. Get a client instance for a Web API endpoint.
 final client = OGCAPIFeatures.http(endpoint: Uri.parse('...'));
 
-// 2. Access (and check) metadata (meta, conformance or collections) as needed.
+// 2. Access/check metadata (meta, OpenAPI, conformance, collections) as needed.
 final conformance = await client.conformance();
 if(!conformance.conformsToCore(geoJSON: true)) {
   return; // not conforming to core and GeoJSON - so return

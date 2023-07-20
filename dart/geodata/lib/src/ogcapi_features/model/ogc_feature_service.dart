@@ -4,6 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import '/src/core/api/open_api_document.dart';
 import '/src/core/base/collection_meta.dart';
 import '/src/core/base/resource_meta.dart';
 
@@ -15,7 +16,23 @@ abstract class OGCFeatureService {
   /// Get meta data (or "landing page" information) about this service.
   Future<ResourceMeta> meta();
 
-  // NOTE: API description: api();
+  /// Get an OpenAPI documentation (API definition) for this service.
+  /// 
+  /// The API definition is retrieved:
+  /// 1. Get a link from [meta] for the relation "service-desc".
+  /// 2. Ensure it's type is "application/vnd.oai.openapi+json".
+  /// 3. Read JSON content from a HTTP service.
+  /// 4. Decode content received as JSON Object using the standard JSON decoder.
+  /// 5. Wrap such decoded object in an [OpenAPIDocument] instance.
+  /// 
+  /// If a service does not provide an OpenAPI definition in JSON or retrieving
+  /// it fails, then a `ServiceException` is thrown.
+  /// 
+  /// Most often for an OGC API Features service an API definition is an
+  /// OpenAPI 3.0 document, but this is not required by the standard. You could
+  /// also check whether [conformance] suggests a service conforming to 
+  /// `openAPI30` before calling [openAPI].
+  Future<OpenAPIDocument> openAPI();
 
   /// Conformance classes this service is conforming to.
   Future<OGCFeatureConformance> conformance();

@@ -78,7 +78,7 @@ for (final feat in features) {
 // 1. Get a client instance for a Web API endpoint.
 final client = OGCAPIFeatures.http(endpoint: Uri.parse('...'));
 
-// 2. Access (and check) metadata (meta, conformance or collections) as needed.
+// 2. Access/check metadata (meta, OpenAPI, conformance, collections) as needed.
 final conformance = await client.conformance();
 if(!conformance.conformsToCore(geoJSON: true)) {
   return; // not conforming to core and GeoJSON - so return
@@ -263,6 +263,11 @@ Future<void> main(List<String> args) async {
   // resource meta contains the service title (+ links and optional description)
   final meta = await client.meta();
   print('Service: ${meta.title}');
+
+  // access OpenAPI definition for the service and check for terms of service
+  // (OpenAPI contains also other info of service, queries and responses, etc.)
+  final info = (await client.openAPI()).meta['info'] as Map<String, dynamic>;
+  print('Terms of service: ${info['termsOfService']}');
 
   // get a feature source (`OGCFeatureSource`) for Dutch windmill point features
   final source = await client.collection('dutch_windmills');
