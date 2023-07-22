@@ -25,6 +25,7 @@ import '/src/ogcapi_features/model/ogc_feature_items.dart';
 import '/src/ogcapi_features/model/ogc_feature_service.dart';
 import '/src/ogcapi_features/model/ogc_feature_source.dart';
 import '/src/utils/feature_http_adapter.dart';
+import '/src/utils/resolve_api_call.dart';
 
 /// A class with static factory methods to create feature sources conforming to
 /// the OGC API Features standard.
@@ -160,7 +161,7 @@ class _OGCFeatureClientHttp implements OGCFeatureService {
   @override
   Future<OGCFeatureConformance> conformance() async {
     // fetch data as JSON Object, and parse conformance classes
-    final url = endpoint.resolve('conformance');
+    final url = resolveAPICall(endpoint, 'conformance');
     return adapter.getEntityFromJsonObject(
       url,
       toEntity: (data) => OGCFeatureConformance(
@@ -172,7 +173,7 @@ class _OGCFeatureClientHttp implements OGCFeatureService {
   @override
   Future<Iterable<CollectionMeta>> collections() async {
     // fetch data as JSON Object, and parse conformance classes
-    final url = endpoint.resolve('collections');
+    final url = resolveAPICall(endpoint, 'collections');
     return adapter.getEntityFromJsonObject(
       url,
       toEntity: (data) {
@@ -198,7 +199,7 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
   Future<CollectionMeta> meta() async {
     // read "collections/{collectionId}
 
-    final url = service.endpoint.resolve('collections/$collectionId');
+    final url = resolveAPICall(service.endpoint, 'collections/$collectionId');
     return service.adapter.getEntityFromJsonObject(
       url,
       toEntity: (data) {
@@ -245,7 +246,8 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
     if (query.extraParams != null) {
       params = Map.of(query.extraParams!)..addAll(params);
     }
-    final url = service.endpoint.resolveUri(
+    final url = resolveAPICallUri(
+      service.endpoint,
       Uri(
         path: 'collections/$collectionId/items/${query.id}',
         queryParameters: params,
@@ -302,7 +304,7 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
     }
 
     /*
-    print(service.endpoint.resolveUri(
+    print(resolveAPICallUri(service.endpoint,
         Uri(
           path: 'collections/$collectionId/items',
           queryParameters: params,
@@ -313,7 +315,8 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
     // read from client and return paged feature collection response
     return _OGCPagedFeaturesItems.parse(
       service,
-      service.endpoint.resolveUri(
+      resolveAPICallUri(
+        service.endpoint,
         Uri(
           path: 'collections/$collectionId/items',
           queryParameters: params,

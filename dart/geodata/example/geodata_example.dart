@@ -13,6 +13,8 @@ import 'package:geobase/vector_data.dart';
 import 'package:geodata/geojson_client.dart';
 import 'package:geodata/ogcapi_features_client.dart';
 
+import 'package:geodata/src/utils/resolve_api_call.dart';
+
 /*
 To test run this from command line: 
 
@@ -107,7 +109,7 @@ Future<void> main(List<String> args) async {
         // Loop over all collections (here sub resources like "2.5_day.geojson")
         for (final collectionId in collectionIds) {
           // A location to read GeoJSON data from.
-          final location = Uri.parse(baseURL).resolve(collectionId);
+          final location = resolveAPICall(Uri.parse(baseURL), collectionId);
 
           print('');
           print('Reading web resource at: $location');

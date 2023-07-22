@@ -13,8 +13,10 @@ import 'package:equatable/equatable.dart';
 import 'package:geobase/coordinates.dart';
 import 'package:geobase/meta.dart';
 import 'package:geodata/core.dart';
+import 'package:geodata/src/utils/resolve_api_call.dart';
 
 import 'package:test/test.dart';
+
 
 void main() {
   // configure Equatable to apply toString() default impls
@@ -60,6 +62,89 @@ void main() {
           'instant=2022-01-15T19%3A01%3A22.000&'
           'interval=..%2F2022-01-15T19%3A01%3A22.000&'
           'bounds=-10.1%2C-20.2%2C-400.0%2C10.1%2C20.2%2C400.0');
+    });
+  });
+
+  group('Uri test', () {
+    final endpoint1 = Uri.parse('https://example.org/myapp/');
+    final endpoint2 = Uri.parse('https://example.org/myapp');
+    final endpoint3 = Uri.parse('https://example.org/myapp/part/');
+    final endpoint4 = Uri.parse('https://example.org/myapp/part');
+
+    test('Uri.resolve', () {
+      expect(
+        endpoint1.resolve('sub'),
+        Uri.parse('https://example.org/myapp/sub'),
+      );
+      expect(
+        endpoint1.resolve('/sub'),
+        Uri.parse('https://example.org/sub'),
+      );
+
+      expect(
+        endpoint2.resolve('sub'),
+        Uri.parse('https://example.org/sub'),
+      );
+      expect(
+        endpoint2.resolve('/sub'),
+        Uri.parse('https://example.org/sub'),
+      );
+
+      expect(
+        endpoint3.resolve('sub'),
+        Uri.parse('https://example.org/myapp/part/sub'),
+      );
+      expect(
+        endpoint3.resolve('/sub'),
+        Uri.parse('https://example.org/sub'),
+      );
+
+      expect(
+        endpoint4.resolve('sub'),
+        Uri.parse('https://example.org/myapp/sub'),
+      );
+      expect(
+        endpoint4.resolve('/sub'),
+        Uri.parse('https://example.org/sub'),
+      );
+    });
+
+    test('resolveAPICall', () {
+      expect(
+        resolveAPICall(endpoint1, 'sub'),
+        Uri.parse('https://example.org/myapp/sub'),
+      );
+      expect(
+        resolveAPICall(endpoint1, '/sub'),
+        Uri.parse('https://example.org/sub'),
+      );
+
+      expect(
+        resolveAPICall(endpoint2, 'sub'),
+        Uri.parse('https://example.org/myapp/sub'),
+      );
+      expect(
+        resolveAPICall(endpoint2, '/sub'),
+        Uri.parse('https://example.org/sub'),
+      );
+
+      expect(
+        resolveAPICall(endpoint3, 'sub'),
+        Uri.parse('https://example.org/myapp/part/sub'),
+      );
+      expect(
+        resolveAPICall(endpoint3, '/sub'),
+        Uri.parse('https://example.org/sub'),
+      );
+
+      expect(
+        resolveAPICall(endpoint4, 'sub'),
+        Uri.parse('https://example.org/myapp/part/sub'),
+      );
+      expect(
+        resolveAPICall(endpoint4, '/sub'),
+        Uri.parse('https://example.org/sub'),
+      );
     });
   });
 }
