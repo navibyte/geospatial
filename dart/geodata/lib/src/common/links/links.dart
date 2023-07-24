@@ -14,7 +14,7 @@ import 'link.dart';
 ///
 /// See also IANA descriptions about common values for a link
 /// [rel](https://www.iana.org/assignments/link-relations/link-relations.xhtml).
-/// 
+///
 /// See also [OGC API Features](https://ogcapi.ogc.org/features/) standard
 /// "Part 1: Core" section "5.2. Link relations" for reference.
 @immutable
@@ -57,6 +57,10 @@ class Links with EquatableMixin {
   ///
   /// IANA description: "Refers to a substitute for this context".
   ///
+  /// OGC API - Common Part 1 (Core): "Refers to a representation of the current
+  /// resource that is encoded using another media type (the media type is
+  /// specified in the type link attribute)."
+  ///
   /// Optional [type] and [hreflang] params can specify links more precisely.
   Iterable<Link> alternate({String? type, String? hreflang}) =>
       byRel('alternate', type: type, hreflang: hreflang);
@@ -83,6 +87,9 @@ class Links with EquatableMixin {
   ///
   /// IANA description: "Refers to a resource providing information about the
   /// link's context".
+  ///
+  /// OGC API - Common Part 1 (Core): "Links to external resources that further
+  /// describe the subject resource".
   ///
   /// Optional [type] and [hreflang] params can specify links more precisely.
   Iterable<Link> describedBy({String? type, String? hreflang}) =>
@@ -118,7 +125,7 @@ class Links with EquatableMixin {
   ///
   /// IANA description: "Indicates that the link's context is a part of
   /// a series, and that the previous in the series is the link target".
-  /// 
+  ///
   /// OGC API Features: "This relation is only used in examples".
   ///
   /// Optional [type] and [hreflang] params can specify links more precisely.
@@ -128,6 +135,9 @@ class Links with EquatableMixin {
   /// All links with `rel` matching `self`.
   ///
   /// IANA description: "Conveys an identifier for the link's context".
+  ///
+  /// OGC API - Common Part 1 (Core): "A link to another representation of this
+  /// resource".
   ///
   /// Optional [type] and [hreflang] params can specify links more precisely.
   Iterable<Link> self({String? type, String? hreflang}) =>
@@ -146,8 +156,9 @@ class Links with EquatableMixin {
   ///
   /// IANA description: "Identifies service description for the context that is
   /// primarily intended for consumption by machines".
-  /// 
-  /// OGC API Features: "API definitions are considered service descriptions".
+  ///
+  /// OGC API Features & OGC API - Common Part 1 (Core): "API definitions are
+  /// considered service descriptions".
   ///
   /// Optional [type] and [hreflang] params can specify links more precisely.
   Iterable<Link> serviceDesc({String? type, String? hreflang}) =>
@@ -171,29 +182,69 @@ class Links with EquatableMixin {
   Iterable<Link> serviceMeta({String? type, String? hreflang}) =>
       byRel('service-meta', type: type, hreflang: hreflang);
 
-  /// All links with `rel` matching `items`.
+  /// All links with `rel` matching `items` or
+  /// `http://www.opengis.net/def/rel/ogc/1.0/items`.
   ///
-  /// OGC API Features: "Refers to a resource that is comprised of members of
-  /// the collection represented by the link’s context".
+  /// OGC API Features & OGC API - Common Part 2 (Geospatial data): "Refers to a
+  /// resource that is comprised of members of the collection represented by the
+  /// link’s context".
   ///
   /// Optional [type] and [hreflang] params can specify links more precisely.
   Iterable<Link> items({String? type, String? hreflang}) =>
-      byRel('items', type: type, hreflang: hreflang);
+      byRel('items', type: type, hreflang: hreflang).followedBy(
+        byRel(
+          'http://www.opengis.net/def/rel/ogc/1.0/items',
+          type: type,
+          hreflang: hreflang,
+        ),
+      );
 
-  /// All links with `rel` matching `conformance`.
+  /// All links with `rel` matching `conformance` or
+  /// `http://www.opengis.net/def/rel/ogc/1.0/conformance`.
   ///
-  /// OGC API Features: "Refers to a resource that identifies the specifications
-  /// that the link’s context conforms to".
+  /// OGC API Features & OGC API - Common Part 1 (Core): "Refers to a resource
+  /// that identifies the specifications that the link’s context conforms to".
   ///
   /// Optional [type] and [hreflang] params can specify links more precisely.
   Iterable<Link> conformance({String? type, String? hreflang}) =>
-      byRel('conformance', type: type, hreflang: hreflang);
+      byRel('conformance', type: type, hreflang: hreflang).followedBy(
+        byRel(
+          'http://www.opengis.net/def/rel/ogc/1.0/conformance',
+          type: type,
+          hreflang: hreflang,
+        ),
+      );
 
-  /// All links with `rel` matching `data`.
+  /// All links with `rel` matching `data` or
+  /// `http://www.opengis.net/def/rel/ogc/1.0/data`.
   ///
   /// OGC API Features: "Refers to the root resource of a dataset in an API.".
   ///
+  /// OGC API - Common Part 2 (Geospatial data): "Indicates that the link’s
+  /// context is a distribution of a dataset that is an API and refers to the
+  /// root resource of the dataset in an API."
+  ///
   /// Optional [type] and [hreflang] params can specify links more precisely.
   Iterable<Link> data({String? type, String? hreflang}) =>
-      byRel('data', type: type, hreflang: hreflang);
+      byRel('data', type: type, hreflang: hreflang).followedBy(
+        byRel(
+          'http://www.opengis.net/def/rel/ogc/1.0/data',
+          type: type,
+          hreflang: hreflang,
+        ),
+      );
+
+  /// All links with `rel` matching
+  /// `http://www.opengis.net/def/rel/ogc/1.0/data-meta`.
+  ///
+  /// OGC API - Common Part 1 (Core): "Identifies general metadata for the
+  /// context (dataset or collection) that is primarily intended for consumption
+  /// by machines".
+  ///
+  /// Optional [type] and [hreflang] params can specify links more precisely.
+  Iterable<Link> dataMeta({String? type, String? hreflang}) => byRel(
+        'http://www.opengis.net/def/rel/ogc/1.0/data-meta',
+        type: type,
+        hreflang: hreflang,
+      );
 }
