@@ -19,4 +19,7 @@ class ServiceException<T> implements Exception {
 
   /// An optional stack trace that is accociated to an optional [cause].
   final StackTrace? trace;
+
+  @override
+  String toString() => failure.toString();
 }

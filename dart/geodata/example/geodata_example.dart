@@ -109,7 +109,7 @@ Future<void> main(List<String> args) async {
         // Loop over all collections (here sub resources like "2.5_day.geojson")
         for (final collectionId in collectionIds) {
           // A location to read GeoJSON data from.
-          final location = resolveAPICall(Uri.parse(baseURL), collectionId);
+          final location = resolveSubResource(Uri.parse(baseURL), collectionId);
 
           print('');
           print('Reading web resource at: $location');

@@ -12,7 +12,7 @@ import 'package:meta/meta.dart';
 /// The [subResource] should not start with `/', or such a resource shall be
 /// resolved directly under the host of [endpoint].
 @internal
-Uri resolveAPICall(Uri endpoint, String subResource) {
+Uri resolveSubResource(Uri endpoint, String subResource) {
   final basePath = endpoint.path;
   if (basePath.endsWith('/')) {
     return endpoint.resolve(subResource);
@@ -27,11 +27,25 @@ Uri resolveAPICall(Uri endpoint, String subResource) {
 /// The [subResource] should not start with `/', or such a resource shall be
 /// resolved directly under the host of [endpoint].
 @internal
-Uri resolveAPICallUri(Uri endpoint, Uri subResource) {
+Uri resolveSubResourceUri(Uri endpoint, Uri subResource) {
   final basePath = endpoint.path;
   if (basePath.endsWith('/')) {
     return endpoint.resolveUri(subResource);
   } else {
     return endpoint.replace(path: '$basePath/').resolveUri(subResource);
+  }
+}
+
+/// Creates an API call path from [link].
+/// 
+/// If [link] has an authority part, then it is returned.
+/// 
+/// Otherwise `endpoint.resolveUri(link)` is returned.
+@internal
+Uri resolveLinkReferenceUri(Uri endpoint, Uri link) {
+  if (link.hasAuthority) {
+    return link;
+  } else {
+    return endpoint.resolveUri(link);
   }
 }

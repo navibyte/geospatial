@@ -111,38 +111,38 @@ void main() {
 
     test('resolveAPICall', () {
       expect(
-        resolveAPICall(endpoint1, 'sub'),
+        resolveSubResource(endpoint1, 'sub'),
         Uri.parse('https://example.org/myapp/sub'),
       );
       expect(
-        resolveAPICall(endpoint1, '/sub'),
+        resolveSubResource(endpoint1, '/sub'),
         Uri.parse('https://example.org/sub'),
       );
 
       expect(
-        resolveAPICall(endpoint2, 'sub'),
+        resolveSubResource(endpoint2, 'sub'),
         Uri.parse('https://example.org/myapp/sub'),
       );
       expect(
-        resolveAPICall(endpoint2, '/sub'),
+        resolveSubResource(endpoint2, '/sub'),
         Uri.parse('https://example.org/sub'),
       );
 
       expect(
-        resolveAPICall(endpoint3, 'sub'),
+        resolveSubResource(endpoint3, 'sub'),
         Uri.parse('https://example.org/myapp/part/sub'),
       );
       expect(
-        resolveAPICall(endpoint3, '/sub'),
+        resolveSubResource(endpoint3, '/sub'),
         Uri.parse('https://example.org/sub'),
       );
 
       expect(
-        resolveAPICall(endpoint4, 'sub'),
+        resolveSubResource(endpoint4, 'sub'),
         Uri.parse('https://example.org/myapp/part/sub'),
       );
       expect(
-        resolveAPICall(endpoint4, '/sub'),
+        resolveSubResource(endpoint4, '/sub'),
         Uri.parse('https://example.org/sub'),
       );
     });

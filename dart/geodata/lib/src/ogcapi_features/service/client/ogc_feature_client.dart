@@ -115,9 +115,20 @@ class _OGCFeatureClientHttp implements OGCFeatureService {
   }
 
   /// Resolve an url that's providing OpenAPI or JSON service description.
-  Link? _resolveServiceDescLink(Iterable<Link> links) {
+  Link? _resolveServiceDescLink(Links links) {
+    // check for links of "service-desc" rel type
+    final serviceDesc = links.serviceDesc();
     for (final type in _expectJSONOpenAPI) {
-      for (final link in links) {
+      for (final link in serviceDesc) {
+        if (link.type?.startsWith(type) ?? false) {
+          return link;
+        }
+      }
+    }
+    // check for links of "service" rel type (NOT STANDARD)
+    final service = links.service();
+    for (final type in _expectJSONOpenAPI) {
+      for (final link in service) {
         if (link.type?.startsWith(type) ?? false) {
           return link;
         }
@@ -130,12 +141,13 @@ class _OGCFeatureClientHttp implements OGCFeatureService {
   Future<OpenAPIDocument> openAPI() async {
     // 1. Get a link from [meta] for the relation "service-desc".
     // 2. Ensure it's type is "application/vnd.oai.openapi+json".
+    //    (here we are allowing other JSON based content types too)
     final m = await meta();
-    final links = m.links.serviceDesc();
-    final link = _resolveServiceDescLink(links);
+    final link = _resolveServiceDescLink(m.links);
     if (link == null) {
       throw const ServiceException('No valid service-desc link.');
     }
+    final url = resolveLinkReferenceUri(endpoint, link.href);
 
     // 3. Read JSON content from a HTTP service.
     // 4. Decode content received as JSON Object using the standard JSON decoder
@@ -143,14 +155,14 @@ class _OGCFeatureClientHttp implements OGCFeatureService {
     final type = link.type;
     if (type != null) {
       return adapter.getEntityFromJsonObject(
-        link.href,
+        url,
         headers: {'accept': type},
         expect: _expectJSONOpenAPI,
         toEntity: (data) => OpenAPIDocument(meta: data),
       );
     } else {
       return adapter.getEntityFromJsonObject(
-        link.href,
+        url,
         headers: _acceptJSONOpenAPI,
         expect: _expectJSONOpenAPI,
         toEntity: (data) => OpenAPIDocument(meta: data),
@@ -161,19 +173,28 @@ class _OGCFeatureClientHttp implements OGCFeatureService {
   @override
   Future<OGCFeatureConformance> conformance() async {
     // fetch data as JSON Object, and parse conformance classes
-    final url = resolveAPICall(endpoint, 'conformance');
-    return adapter.getEntityFromJsonObject(
+    final url = resolveSubResource(endpoint, 'conformance');
+    return adapter.getEntityFromJson(
       url,
-      toEntity: (data) => OGCFeatureConformance(
-        (data['conformsTo'] as Iterable<dynamic>?)?.cast<String>() ?? [],
-      ),
+      toEntity: (data) {
+        if (data is Map<String, dynamic>) {
+          // standard: root has JSON Object with "conformsTo" containing classes
+          return OGCFeatureConformance(
+            (data['conformsTo'] as Iterable<dynamic>?)?.cast<String>() ?? [],
+          );
+        } else if (data is Iterable<dynamic>) {
+          // NOT STANDARD: root has JSON Array containing conformance classes
+          return OGCFeatureConformance(data.cast<String>());
+        }
+        throw const ServiceException('Could not parse conformance classes');
+      },
     );
   }
 
   @override
   Future<Iterable<CollectionMeta>> collections() async {
     // fetch data as JSON Object, and parse conformance classes
-    final url = resolveAPICall(endpoint, 'collections');
+    final url = resolveSubResource(endpoint, 'collections');
     return adapter.getEntityFromJsonObject(
       url,
       toEntity: (data) {
@@ -199,7 +220,8 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
   Future<CollectionMeta> meta() async {
     // read "collections/{collectionId}
 
-    final url = resolveAPICall(service.endpoint, 'collections/$collectionId');
+    final url =
+        resolveSubResource(service.endpoint, 'collections/$collectionId');
     return service.adapter.getEntityFromJsonObject(
       url,
       toEntity: (data) {
@@ -246,7 +268,7 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
     if (query.extraParams != null) {
       params = Map.of(query.extraParams!)..addAll(params);
     }
-    final url = resolveAPICallUri(
+    final url = resolveSubResourceUri(
       service.endpoint,
       Uri(
         path: 'collections/$collectionId/items/${query.id}',
@@ -304,7 +326,7 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
     }
 
     /*
-    print(resolveAPICallUri(service.endpoint,
+    print(resolveSubResourcelUri(service.endpoint,
         Uri(
           path: 'collections/$collectionId/items',
           queryParameters: params,
@@ -315,7 +337,7 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
     // read from client and return paged feature collection response
     return _OGCPagedFeaturesItems.parse(
       service,
-      resolveAPICallUri(
+      resolveSubResourceUri(
         service.endpoint,
         Uri(
           path: 'collections/$collectionId/items',
@@ -356,9 +378,13 @@ class _OGCPagedFeaturesItems with Paged<OGCFeatureItems> {
         if (links is Iterable<dynamic>) {
           final parsedLinks = Links.fromJson(links);
           final next = parsedLinks.next(type: _nextAndPrevLinkType);
-          nextURL = next.isNotEmpty ? next.first.href : null;
+          nextURL = next.isNotEmpty
+              ? resolveLinkReferenceUri(service.endpoint, next.first.href)
+              : null;
           final prev = parsedLinks.prev(type: _nextAndPrevLinkType);
-          prevURL = prev.isNotEmpty ? prev.first.href : null;
+          prevURL = prev.isNotEmpty
+              ? resolveLinkReferenceUri(service.endpoint, prev.first.href)
+              : null;
         }
 
         // parses Feature collection from GeoJSON data decoded using format
