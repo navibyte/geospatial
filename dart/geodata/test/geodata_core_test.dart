@@ -17,7 +17,6 @@ import 'package:geodata/src/utils/resolve_api_call.dart';
 
 import 'package:test/test.dart';
 
-
 void main() {
   // configure Equatable to apply toString() default impls
   EquatableConfig.stringify = true;

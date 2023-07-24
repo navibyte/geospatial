@@ -266,7 +266,7 @@ Future<void> main(List<String> args) async {
 
   // access OpenAPI definition for the service and check for terms of service
   // (OpenAPI contains also other info of service, queries and responses, etc.)
-  final info = (await client.openAPI()).meta['info'] as Map<String, dynamic>;
+  final info = (await meta.openAPI()).content['info'] as Map<String, dynamic>;
   print('Terms of service: ${info['termsOfService']}');
 
   // get a feature source (`OGCFeatureSource`) for Dutch windmill point features
@@ -337,7 +337,7 @@ has the following signature:
 /// A feature service compliant with the OGC API Features standard.
 abstract class OGCFeatureService {
   /// Get meta data (or "landing page" information) about this service.
-  Future<ResourceMeta> meta();
+  Future<OGCResourceMeta> meta();
 
   /// Conformance classes this service is conforming to.
   Future<OGCFeatureConformance> conformance();

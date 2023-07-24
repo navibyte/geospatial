@@ -30,7 +30,7 @@ Future<void> main(List<String> args) async {
 
   // access OpenAPI definition for the service and check for terms of service
   // (OpenAPI contains also other info of service, queries and responses, etc.)
-  final info = (await client.openAPI()).meta['info'] as Map<String, dynamic>;
+  final info = (await meta.openAPI()).content['info'] as Map<String, dynamic>;
   print('Terms of service: ${info['termsOfService']}');
 
   // conformance classes (text ids) informs the capabilities of the service

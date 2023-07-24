@@ -4,8 +4,9 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+
+import '/src/ogcapi_common/model/ogc_conformance.dart';
 
 /// A wrapper for conformance classes for a OGC API Features compliant service.
 ///
@@ -15,12 +16,9 @@ import 'package:meta/meta.dart';
 /// * `OGC API - Features - Part 1: Core`
 /// * `OGC API - Features - Part 2: Coordinate Reference Systems by Reference`
 @immutable
-class OGCFeatureConformance extends Equatable {
-  /// Conformance classes a service is conforming to.
-  final Iterable<String> classes;
-
+class OGCFeatureConformance extends OGCConformance {
   /// Creates a wrapper for conformance classes a service is conforming to.
-  const OGCFeatureConformance(this.classes);
+  const OGCFeatureConformance(super.classes);
 
   /// Check whether a service conforms to `OGC API - Features - Part 1: Core`.
   ///
@@ -94,9 +92,6 @@ class OGCFeatureConformance extends Equatable {
   ///   conformsToCrs();
   /// ```
   bool conformsToCrs() => classes.contains(crsClass);
-
-  @override
-  List<Object?> get props => [classes];
 
   /// The `Core` conformance class for the
   /// `OGC API - Features - Part 1: Core` standard.

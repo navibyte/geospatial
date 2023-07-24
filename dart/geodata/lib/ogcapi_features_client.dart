@@ -15,6 +15,9 @@ library ogcapi_features_client;
 export 'common.dart';
 export 'core.dart';
 
+export 'src/ogcapi_common/model/ogc_conformance.dart';
+export 'src/ogcapi_common/model/ogc_resource_meta.dart';
+export 'src/ogcapi_common/model/ogc_service.dart';
 export 'src/ogcapi_features/model/ogc_feature_conformance.dart';
 export 'src/ogcapi_features/model/ogc_feature_item.dart';
 export 'src/ogcapi_features/model/ogc_feature_items.dart';

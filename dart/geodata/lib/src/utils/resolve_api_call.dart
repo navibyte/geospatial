@@ -37,9 +37,9 @@ Uri resolveSubResourceUri(Uri endpoint, Uri subResource) {
 }
 
 /// Creates an API call path from [link].
-/// 
+///
 /// If [link] has an authority part, then it is returned.
-/// 
+///
 /// Otherwise `endpoint.resolveUri(link)` is returned.
 @internal
 Uri resolveLinkReferenceUri(Uri endpoint, Uri link) {

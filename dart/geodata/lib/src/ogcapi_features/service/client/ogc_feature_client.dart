@@ -10,15 +10,13 @@ import 'package:geobase/vector.dart';
 import 'package:geobase/vector_data.dart';
 import 'package:http/http.dart';
 
-import '/src/common/links/link.dart';
 import '/src/common/links/links.dart';
 import '/src/common/paged/paged.dart';
 import '/src/common/service/service_exception.dart';
-import '/src/core/api/open_api_document.dart';
 import '/src/core/base/collection_meta.dart';
-import '/src/core/base/resource_meta.dart';
 import '/src/core/data/bounded_items_query.dart';
 import '/src/core/data/item_query.dart';
+import '/src/ogcapi_common/service/client/ogc_client.dart';
 import '/src/ogcapi_features/model/ogc_feature_conformance.dart';
 import '/src/ogcapi_features/model/ogc_feature_item.dart';
 import '/src/ogcapi_features/model/ogc_feature_items.dart';
@@ -65,110 +63,24 @@ class OGCAPIFeatures {
 // Private implementation code below.
 // The implementation may change in future.
 
-// OpenAPI definition resources
-const _acceptJSONOpenAPI = {
-  'accept': 'application/vnd.oai.openapi+json, application/openapi+json'
-};
-const _expectJSONOpenAPI = [
-  'application/vnd.oai.openapi+json',
-  'application/openapi+json',
-  'application/json',
-];
-
 // collection items of geospatial features (actual data)
 const _acceptGeoJSON = {'accept': 'application/geo+json'};
 const _expectGeoJSON = ['application/geo+json', 'application/json'];
 const _nextAndPrevLinkType = 'application/geo+json';
 
 /// A client for accessing `OGC API Features` compliant sources via http(s).
-class _OGCFeatureClientHttp implements OGCFeatureService {
+class _OGCFeatureClientHttp extends OGCClientHttp implements OGCFeatureService {
   const _OGCFeatureClientHttp(
-    this.endpoint, {
-    required this.adapter,
+    super.endpoint, {
+    required super.adapter,
     required this.format,
   });
 
-  final Uri endpoint;
-  final FeatureHttpAdapter adapter;
   final TextReaderFormat<FeatureContent> format;
 
   @override
   Future<OGCFeatureSource> collection(String id) =>
       Future.value(_OGCFeatureSourceHttp(this, id));
-
-  @override
-  Future<ResourceMeta> meta() async {
-    // fetch data as JSON Object, and parse meta data
-    return adapter.getEntityFromJsonObject(
-      endpoint,
-      toEntity: (data) {
-        final links = Links.fromJson(data['links'] as Iterable<dynamic>);
-        return ResourceMeta(
-          title: data['title'] as String? ??
-              links.self().first.title ??
-              'An OGC API service',
-          links: links,
-          description: data['description'] as String?,
-        );
-      },
-    );
-  }
-
-  /// Resolve an url that's providing OpenAPI or JSON service description.
-  Link? _resolveServiceDescLink(Links links) {
-    // check for links of "service-desc" rel type
-    final serviceDesc = links.serviceDesc();
-    for (final type in _expectJSONOpenAPI) {
-      for (final link in serviceDesc) {
-        if (link.type?.startsWith(type) ?? false) {
-          return link;
-        }
-      }
-    }
-    // check for links of "service" rel type (NOT STANDARD)
-    final service = links.service();
-    for (final type in _expectJSONOpenAPI) {
-      for (final link in service) {
-        if (link.type?.startsWith(type) ?? false) {
-          return link;
-        }
-      }
-    }
-    return null;
-  }
-
-  @override
-  Future<OpenAPIDocument> openAPI() async {
-    // 1. Get a link from [meta] for the relation "service-desc".
-    // 2. Ensure it's type is "application/vnd.oai.openapi+json".
-    //    (here we are allowing other JSON based content types too)
-    final m = await meta();
-    final link = _resolveServiceDescLink(m.links);
-    if (link == null) {
-      throw const ServiceException('No valid service-desc link.');
-    }
-    final url = resolveLinkReferenceUri(endpoint, link.href);
-
-    // 3. Read JSON content from a HTTP service.
-    // 4. Decode content received as JSON Object using the standard JSON decoder
-    // 5. Wrap such decoded object in an [OpenAPIDefinition] instance.
-    final type = link.type;
-    if (type != null) {
-      return adapter.getEntityFromJsonObject(
-        url,
-        headers: {'accept': type},
-        expect: _expectJSONOpenAPI,
-        toEntity: (data) => OpenAPIDocument(meta: data),
-      );
-    } else {
-      return adapter.getEntityFromJsonObject(
-        url,
-        headers: _acceptJSONOpenAPI,
-        expect: _expectJSONOpenAPI,
-        toEntity: (data) => OpenAPIDocument(meta: data),
-      );
-    }
-  }
 
   @override
   Future<OGCFeatureConformance> conformance() async {

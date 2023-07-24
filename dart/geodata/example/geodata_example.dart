@@ -145,7 +145,7 @@ Future<void> main(List<String> args) async {
             _printMeta(meta);
 
             // read OpenAPI definition
-            final openAPI = await service.openAPI();
+            final openAPI = await meta.openAPI();
             _printOpenAPI(openAPI);
 
             // read conformance classes
@@ -266,11 +266,11 @@ void _printMeta(ResourceMeta meta) {
 
 void _printOpenAPI(OpenAPIDocument document) {
   print('OpenAPI ${document.openapi}');
-  final servers = document.meta['servers'] as Iterable<dynamic>;
+  final servers = document.content['servers'] as Iterable<dynamic>;
   for (final s in servers) {
     final server = s as Map<String, dynamic>;
-    final url = server['url'];
-    final desc = server['description'];
+    final url = server['url'] as String;
+    final desc = server['description'] as String;
     print('  $url : $desc');
   }
 }
