@@ -35,65 +35,6 @@ class FeatureHttpAdapter {
         : http.get(url, headers: _combineHeaders(headers));
   }
 
-/*
-  /// Makes `GET` request to [url] with optional [headers].
-  ///
-  /// Returns an entity mapped from JSON Object using [toEntity].
-  Future<T> getEntityFromJsonObject<T>(
-    Uri url, {
-    required T Function(Map<String, dynamic> data) toEntity,
-    Map<String, String>? headers = _acceptJSON,
-    List<String>? expect = _expectJSON,
-  }) async {
-    try {
-      print('calling $url');
-      final response = await get(url, headers: headers);
-      switch (response.statusCode) {
-        case 200:
-          // optionally check that we got content type that was expected
-          // if expect list contains ..
-          //     "application/json"
-          // .. then for example these types from header 'content-type' are ok
-          //     "application/json"
-          //     "application/json; charset=utf-8"
-          // not perfect checking anyways
-          if (expect != null) {
-            var ok = false;
-            final type = response.headers['content-type'];
-            if (type != null) {
-              for (final exp in expect) {
-                if (type.startsWith(exp)) {
-                  ok = true;
-                  break;
-                }
-              }
-            }
-            if (!ok) {
-              throw FormatException('Content type "$type" not expected.');
-            }
-          }
-
-          // decode JSON and expect it to contain JSON Object
-          final data = json.decode(response.body) as Map<String, dynamic>;
-
-          // map JSON Object to an entity
-          return toEntity(data);
-        case 400:
-          throw const ServiceException(FeatureFailure.badRequest);
-        case 404:
-          throw const ServiceException(FeatureFailure.notFound);
-        default:
-          throw const ServiceException(FeatureFailure.queryFailed);
-      }
-    } on ServiceException<FeatureFailure> {
-      rethrow;
-    } catch (e, st) {
-      // other exceptions (including errors)
-      throw ServiceException(FeatureFailure.clientError, cause: e, trace: st);
-    }
-  }
-*/
-
   /// Makes `GET` request to [url] with optional [headers].
   ///
   /// Returns an entity mapped from JSON Object using [toEntity].
@@ -120,7 +61,7 @@ class FeatureHttpAdapter {
     List<String>? expect = _expectJSON,
   }) async {
     try {
-      print('calling $url');
+      //print('calling $url');
       final response = await get(url, headers: headers);
       switch (response.statusCode) {
         case 200:
