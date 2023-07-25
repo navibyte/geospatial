@@ -19,11 +19,13 @@ class GeospatialQuery with EquatableMixin {
   /// An optional id defining a coordinate reference system for result data.
   final String? crs;
 
-  /// Optional extra parameters for queries as a data record.
+  /// Optional extra parameters for queries as a map of named parameters.
   ///
   /// Note that such parameters that are defined in other members of this class
   /// or it's sub type, override any parameter on [extra], if available. Use
   /// this only for parameters that are not defined by geospatial queries.
+  /// 
+  /// See also the [extraParams] getter that maps all values to `String`.
   final Map<String, dynamic>? extra;
 
   /// Optional extra parameters for queries with values mapped to `String`.

@@ -18,21 +18,28 @@ const _expectJSON = ['application/json'];
 /// An adapter to fetch HTTP client, used by a feature service.
 @internal
 class FeatureHttpAdapter {
-  /// Create an adapter with an optional [client] and [headers].
+  /// Create an adapter with an optional [client], [headers] and [extraParams].
   const FeatureHttpAdapter({
     http.Client? client,
     Map<String, String>? headers,
+    Map<String, String>? extraParams,
   })  : _client = client,
-        _baseHeaders = headers;
+        _baseHeaders = headers,
+        _extraParams = extraParams;
 
   final http.Client? _client;
   final Map<String, String>? _baseHeaders;
+  final Map<String, String>? _extraParams;
 
   /// Makes `GET` request to [url] with optional [headers].
   Future<http.Response> get(Uri url, {Map<String, String>? headers}) {
+    final httpUrl = _handleExtraParams(url);
+    final httpHeaders = _combineHeaders(headers);
+
+    //print('calling $httpUrl');
     return _client != null
-        ? _client!.get(url, headers: _combineHeaders(headers))
-        : http.get(url, headers: _combineHeaders(headers));
+        ? _client!.get(httpUrl, headers: httpHeaders)
+        : http.get(httpUrl, headers: httpHeaders);
   }
 
   /// Makes `GET` request to [url] with optional [headers].
@@ -61,7 +68,6 @@ class FeatureHttpAdapter {
     List<String>? expect = _expectJSON,
   }) async {
     try {
-      //print('calling $url');
       final response = await get(url, headers: headers);
       switch (response.statusCode) {
         case 200:
@@ -117,6 +123,18 @@ class FeatureHttpAdapter {
       }
     } else {
       return headers;
+    }
+  }
+
+  Uri _handleExtraParams(Uri url) {
+    if (_extraParams == null) {
+      return url;
+    } else {
+      final resultParams = Map.of(url.queryParameters);
+      for (final param in _extraParams!.entries) {
+        resultParams.putIfAbsent(param.key, () => param.value);
+      }
+      return url.replace(queryParameters: resultParams);
     }
   }
 }

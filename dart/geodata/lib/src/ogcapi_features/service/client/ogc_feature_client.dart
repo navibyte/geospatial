@@ -36,8 +36,11 @@ class OGCAPIFeatures {
   /// When given the optional [client] is used for http requests, otherwise the
   /// default client of the `package:http/http.dart` package is used.
   ///
-  /// When given [headers] are injected to http requests (however some can be
-  /// overridden by the feature service implementation).
+  /// When given [headers] are injected to http requests as http headers
+  /// (however some can be overridden by the feature service implementation).
+  /// 
+  /// When given [extraParams] are injected to query part of http requests
+  /// (however some can be overridden by the feature service implementation).
   ///
   /// When [format] is not given, then [GeoJSON] with default settings is used
   /// as a default. Note that currently only GeoJSON is supported, but it's
@@ -47,6 +50,7 @@ class OGCAPIFeatures {
     required Uri endpoint,
     Client? client,
     Map<String, String>? headers,
+    Map<String, String>? extraParams,
     TextReaderFormat<FeatureContent> format = GeoJSON.feature,
   }) =>
       _OGCFeatureClientHttp(
@@ -54,6 +58,7 @@ class OGCAPIFeatures {
         adapter: FeatureHttpAdapter(
           client: client,
           headers: headers,
+          extraParams: extraParams,
         ),
         format: format,
       );
