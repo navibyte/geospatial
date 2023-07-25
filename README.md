@@ -150,7 +150,7 @@ final client = OGCAPIFeatures.http(endpoint: Uri.parse('...'));
 
 // 2. Access/check metadata (meta, OpenAPI, conformance, collections) as needed.
 final conformance = await client.conformance();
-if(!conformance.conformsToCore(geoJSON: true)) {
+if (!conformance.conformsToFeaturesCore(geoJSON: true)) {
   return; // not conforming to core and GeoJSON - so return
 }
 

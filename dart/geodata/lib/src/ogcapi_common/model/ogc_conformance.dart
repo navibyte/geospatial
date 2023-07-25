@@ -10,6 +10,10 @@ import 'package:meta/meta.dart';
 /// A wrapper for conformance classes for a OGC API Common compliant service.
 ///
 /// See [OGC API Common](https://github.com/opengeospatial/ogcapi-common).
+///
+/// This class can be used to check conformance classes for:
+/// * `OGC API - Common - Part 1: Core`
+/// * `OGC API - Common - Part 2: Geospatial Data`
 @immutable
 class OGCConformance extends Equatable {
   /// Conformance classes a service is conforming to.
@@ -51,19 +55,19 @@ class OGCConformance extends Equatable {
     var isOpenAPI30 = false;
 
     for (final id in classes) {
-      if (!isCore && id == common1CoreClass) {
+      if (!isCore && id == common1Core) {
         isCore = true;
       }
-      if (!isLandingPage && id == common1LandingPageClass) {
+      if (!isLandingPage && id == common1LandingPage) {
         isLandingPage = true;
       }
-      if (!isHTML && id == common1HTMLClass) {
+      if (!isHTML && id == common1HTML) {
         isHTML = true;
       }
-      if (!isJSON && id == common1JSONClass) {
+      if (!isJSON && id == common1JSON) {
         isJSON = true;
       }
-      if (!isOpenAPI30 && id == common1OpenAPI30Class) {
+      if (!isOpenAPI30 && id == common1OpenAPI30) {
         isOpenAPI30 = true;
       }
     }
@@ -106,16 +110,16 @@ class OGCConformance extends Equatable {
     var isHTML = false;
 
     for (final id in classes) {
-      if (!isCollections && id == common2CollectionsClass) {
+      if (!isCollections && id == common2Collections) {
         isCollections = true;
       }
-      if (!isSimpleQuery && id == common2SimpleQueryClass) {
+      if (!isSimpleQuery && id == common2SimpleQuery) {
         isSimpleQuery = true;
       }
-      if (!isHTML && id == common2HTMLClass) {
+      if (!isHTML && id == common2HTML) {
         isHTML = true;
       }
-      if (!isJSON && id == common2JSONClass) {
+      if (!isJSON && id == common2JSON) {
         isJSON = true;
       }
     }
@@ -133,7 +137,12 @@ class OGCConformance extends Equatable {
   /// `OGC API - Common - Part 1: Core` standard.
   ///
   /// `http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/core`
-  static const common1CoreClass =
+  ///
+  /// External dependencies:
+  /// * [RFC 7231 (HTTP/1.1)](https://www.rfc-editor.org/info/rfc7231)
+  /// * [RFC 2818 (HTTP over TLS)](https://www.rfc-editor.org/info/rfc2818)
+  /// * [RFC 8288 (Web Linking)](https://www.rfc-editor.org/info/rfc8288)
+  static const common1Core =
       'http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/core';
 
   /// The `Landing Page` conformance class for the
@@ -141,9 +150,9 @@ class OGCConformance extends Equatable {
   ///
   /// `http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/landing-page`
   ///
-  /// Prerequisites:
-  /// * [common1CoreClass]
-  static const common1LandingPageClass =
+  /// Dependencies to other conformance classes:
+  /// * [common1Core]
+  static const common1LandingPage =
       'http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/landing-page';
 
   /// The `JSON` conformance class for the
@@ -151,10 +160,14 @@ class OGCConformance extends Equatable {
   ///
   /// `http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/json`
   ///
-  /// Prerequisites:
-  /// * [common1CoreClass]
-  /// * [common1LandingPageClass]
-  static const common1JSONClass =
+  /// Dependencies to other conformance classes:
+  /// * [common1Core]
+  /// * [common1LandingPage]
+  ///
+  /// External dependencies:
+  /// * [IETF RFC 8259, The JavaScript Object Notation (JSON) Data Interchange Format](https://tools.ietf.org/rfc/rfc8259.txt)
+  /// * [JSON Schema](https://json-schema.org/specification.html)
+  static const common1JSON =
       'http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/json';
 
   /// The `HTML` conformance class for the
@@ -162,10 +175,14 @@ class OGCConformance extends Equatable {
   ///
   /// `http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/html`.
   ///
-  /// Prerequisites:
-  /// * [common1CoreClass]
-  /// * [common1LandingPageClass]
-  static const common1HTMLClass =
+  /// Dependencies to other conformance classes:
+  /// * [common1Core]
+  /// * [common1LandingPage]
+  ///
+  /// External dependencies:
+  /// * [HTML5](https://www.w3.org/TR/html5/)
+  /// * [Schema.org](https://schema.org/docs/schemas.html)
+  static const common1HTML =
       'http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/html';
 
   /// The `OpenAPI 3.0` conformance class for the
@@ -173,17 +190,20 @@ class OGCConformance extends Equatable {
   ///
   /// `http://www.opengis.net/spec/ogcapi-common/1.0/req/oas30`.
   ///
-  /// Prerequisites:
-  /// * [common1CoreClass]
-  /// * [common1LandingPageClass]
-  static const common1OpenAPI30Class =
+  /// Dependencies to other conformance classes:
+  /// * [common1Core]
+  /// * [common1LandingPage]
+  static const common1OpenAPI30 =
       'http://www.opengis.net/spec/ogcapi-common/1.0/req/oas30';
 
   /// The `Collections` conformance class for the
   /// `OGC API - Common - Part 2: Geospatial Data` standard.
   ///
   /// `http://www.opengis.net/spec/ogcapi-common-2/1.0/conf/collections`
-  static const common2CollectionsClass =
+  ///
+  /// External dependencies:
+  /// * [Hypertext Transfer Protocol (HTTP/1.1): Semantics and Content](https://www.rfc-editor.org/rfc/rfc7231.txt)
+  static const common2Collections =
       'http://www.opengis.net/spec/ogcapi-common-2/1.0/conf/collections';
 
   /// The `Simple Query` conformance class for the
@@ -191,9 +211,12 @@ class OGCConformance extends Equatable {
   ///
   /// `http://www.opengis.net/spec/ogcapi-common-2/1.0/conf/simple-query`
   ///
-  /// Prerequisites:
-  /// * [common2CollectionsClass]
-  static const common2SimpleQueryClass =
+  /// Dependencies to other conformance classes:
+  /// * [common2Collections]
+  ///
+  /// External dependencies:
+  /// * [IETF RFC 3339, Date and Time on the Internet: Timestamps](https://tools.ietf.org/rfc/rfc3339.txt)
+  static const common2SimpleQuery =
       'http://www.opengis.net/spec/ogcapi-common-2/1.0/conf/simple-query';
 
   /// The `JSON` conformance class for the
@@ -201,9 +224,13 @@ class OGCConformance extends Equatable {
   ///
   /// `http://www.opengis.net/spec/ogcapi-common-2/1.0/conf/json`
   ///
-  /// Prerequisites:
-  /// * [common2CollectionsClass]
-  static const common2JSONClass =
+  /// Dependencies to other conformance classes:
+  /// * [common2Collections]
+  ///
+  /// External dependencies:
+  /// * [IETF RFC 8259, The JavaScript Object Notation (JSON) Data Interchange Format](https://tools.ietf.org/rfc/rfc8259.txt)
+  /// * [JSON Schema](https://json-schema.org/specification.html)
+  static const common2JSON =
       'http://www.opengis.net/spec/ogcapi-common-2/1.0/conf/json';
 
   /// The `HTML` conformance class for the
@@ -211,8 +238,12 @@ class OGCConformance extends Equatable {
   ///
   /// `http://www.opengis.net/spec/ogcapi-common-2/1.0/conf/html`
   ///
-  /// Prerequisites:
-  /// * [common2CollectionsClass]
-  static const common2HTMLClass =
+  /// Dependencies to other conformance classes:
+  /// * [common2Collections]
+  ///
+  /// External dependencies:
+  /// * [HTML5](https://www.w3.org/TR/html5/)
+  /// * [Schema.org](https://schema.org/docs/schemas.html)
+  static const common2HTML =
       'http://www.opengis.net/spec/ogcapi-common-2/1.0/conf/html';
 }

@@ -40,7 +40,7 @@ Future<void> main(List<String> args) async {
     print('  $e');
   }
   // the service should be compliant with OGC API Features - Part 1 and GeoJSON
-  if (conformance.conformsToCore(geoJSON: true)) {
+  if (conformance.conformsToFeaturesCore(geoJSON: true)) {
     print('The service is compliant with OGC API Features, Part 1 and GeoJSON');
   } else {
     print('The service is NOT compliant.');
