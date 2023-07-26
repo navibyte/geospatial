@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/core/base/collection_meta.dart';
+import '/src/ogcapi_common/model/ogc_collection_meta.dart';
 import '/src/ogcapi_common/model/ogc_service.dart';
 
 import 'ogc_feature_conformance.dart';
@@ -16,7 +16,7 @@ abstract class OGCFeatureService extends OGCService {
   Future<OGCFeatureConformance> conformance();
 
   /// Get metadata about feature collections provided by this service.
-  Future<Iterable<CollectionMeta>> collections();
+  Future<Iterable<OGCCollectionMeta>> collections();
 
   /// Get a feature source for a feature collection identified by [id].
   Future<OGCFeatureSource> collection(String id);

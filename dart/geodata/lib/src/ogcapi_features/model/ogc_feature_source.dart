@@ -4,8 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/core/base/collection_meta.dart';
 import '/src/core/features/feature_source.dart';
+import '/src/ogcapi_common/model/ogc_collection_meta.dart';
 
 import 'ogc_feature_item.dart';
 import 'ogc_feature_items.dart';
@@ -14,5 +14,5 @@ import 'ogc_feature_items.dart';
 abstract class OGCFeatureSource
     extends FeatureSource<OGCFeatureItem, OGCFeatureItems> {
   /// Get metadata about the feature collection represented by this source.
-  Future<CollectionMeta> meta();
+  Future<OGCCollectionMeta> meta();
 }

@@ -5,12 +5,12 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import 'ogc_conformance.dart';
-import 'ogc_resource_meta.dart';
+import 'ogc_service_meta.dart';
 
 /// A service compliant with the OGC API Common standard.
 abstract class OGCService {
   /// Get meta data (or "landing page" information) about this service.
-  Future<OGCResourceMeta> meta();
+  Future<OGCServiceMeta> meta();
 
   /// Conformance classes this service is conforming to.
   Future<OGCConformance> conformance();

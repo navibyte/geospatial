@@ -270,7 +270,7 @@ void _printOpenAPI(OpenAPIDocument document) {
   for (final s in servers) {
     final server = s as Map<String, dynamic>;
     final url = server['url'] as String;
-    final desc = server['description'] as String;
+    final desc = server['description'] as String?;
     print('  $url : $desc');
   }
 }
@@ -291,8 +291,24 @@ void _printLinks(Links links) {
   }
 }
 
-void _printCollection(CollectionMeta meta) {
+void _printCollection(OGCCollectionMeta meta) {
   _printResource(meta);
+
+  final supported = meta.crs;
+  print('    supported CRS identifiers:');
+  var i = 0;
+  for (final crs in supported) {
+    print('      $crs');
+    if (++i >= 10) break;
+  }
+
+  if (meta.storageCrs != null) {
+    print('    storageCrs: ${meta.storageCrs}');
+  }
+  if (meta.storageCrsCoordinateEpoch != null) {
+    print('    storageCrsCoordinateEpoch: ${meta.storageCrsCoordinateEpoch}');
+  }
+
   final extent = meta.extent;
   if (extent != null) {
     print('    extent crs: ${extent.spatial.crs}');
@@ -319,5 +335,8 @@ void _printResource(ResourceMeta meta) {
   }
   if (meta.description != null) {
     print('    ${meta.description}');
+  }
+  if (meta.attribution != null) {
+    print('    ${meta.attribution}');
   }
 }

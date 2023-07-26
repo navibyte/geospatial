@@ -10,8 +10,8 @@ import '/src/common/links/link.dart';
 import '/src/common/links/links.dart';
 import '/src/common/service/service_exception.dart';
 import '/src/core/api/open_api_document.dart';
-import '/src/ogcapi_common/model/ogc_resource_meta.dart';
 import '/src/ogcapi_common/model/ogc_service.dart';
+import '/src/ogcapi_common/model/ogc_service_meta.dart';
 import '/src/utils/feature_http_adapter.dart';
 import '/src/utils/resolve_api_call.dart';
 
@@ -45,13 +45,13 @@ abstract class OGCClientHttp implements OGCService {
   final FeatureHttpAdapter adapter;
 
   @override
-  Future<OGCResourceMeta> meta() async {
+  Future<OGCServiceMeta> meta() async {
     // fetch data as JSON Object, and parse meta data
     return adapter.getEntityFromJsonObject(
       endpoint,
       toEntity: (data) {
         final links = Links.fromJson(data['links'] as Iterable<dynamic>);
-        return _OGCResourceMetaImpl(
+        return _OGCServiceMetaImpl(
           service: this,
           title: data['title'] as String? ??
               links.self().first.title ??
@@ -65,10 +65,10 @@ abstract class OGCClientHttp implements OGCService {
   }
 }
 
-class _OGCResourceMetaImpl extends OGCResourceMeta {
+class _OGCServiceMetaImpl extends OGCServiceMeta {
   final OGCClientHttp service;
 
-  const _OGCResourceMetaImpl({
+  const _OGCServiceMetaImpl({
     required this.service,
     required super.title,
     super.description,

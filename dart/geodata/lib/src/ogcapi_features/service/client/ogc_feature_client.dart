@@ -13,9 +13,9 @@ import 'package:http/http.dart';
 import '/src/common/links/links.dart';
 import '/src/common/paged/paged.dart';
 import '/src/common/service/service_exception.dart';
-import '/src/core/base/collection_meta.dart';
 import '/src/core/data/bounded_items_query.dart';
 import '/src/core/data/item_query.dart';
+import '/src/ogcapi_common/model/ogc_collection_meta.dart';
 import '/src/ogcapi_common/service/client/ogc_client.dart';
 import '/src/ogcapi_features/model/ogc_feature_conformance.dart';
 import '/src/ogcapi_features/model/ogc_feature_item.dart';
@@ -38,7 +38,7 @@ class OGCAPIFeatures {
   ///
   /// When given [headers] are injected to http requests as http headers
   /// (however some can be overridden by the feature service implementation).
-  /// 
+  ///
   /// When given [extraParams] are injected to query part of http requests
   /// (however some can be overridden by the feature service implementation).
   ///
@@ -109,16 +109,23 @@ class _OGCFeatureClientHttp extends OGCClientHttp implements OGCFeatureService {
   }
 
   @override
-  Future<Iterable<CollectionMeta>> collections() async {
+  Future<Iterable<OGCCollectionMeta>> collections() async {
     // fetch data as JSON Object, and parse conformance classes
     final url = resolveSubResource(endpoint, 'collections');
     return adapter.getEntityFromJsonObject(
       url,
       toEntity: (data) {
+        // global crs identifiers supported by all collection that refer to them
+        final globalCrs = (data['crs'] as Iterable<dynamic>?)?.cast<String>();
+
+        // get collections and parse each of them as `OGCCollectionMeta` 
         final list = data['collections'] as Iterable<dynamic>;
         return list
-            .map<CollectionMeta>(
-              (e) => _collectionFromJson(e as Map<String, dynamic>),
+            .map<OGCCollectionMeta>(
+              (e) => _collectionFromJson(
+                e as Map<String, dynamic>,
+                globalCrs: globalCrs,
+              ),
             )
             .toList(growable: false);
       },
@@ -134,7 +141,7 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
   final String collectionId;
 
   @override
-  Future<CollectionMeta> meta() async {
+  Future<OGCCollectionMeta> meta() async {
     // read "collections/{collectionId}
 
     final url =
@@ -366,18 +373,73 @@ class _OGCPagedFeaturesItems with Paged<OGCFeatureItems> {
 }
 
 /// Parses a '/collections/{collectionId}' meta data from a OGC API service.
-CollectionMeta _collectionFromJson(Map<String, dynamic> data) {
+OGCCollectionMeta _collectionFromJson(
+  Map<String, dynamic> data, {
+  Iterable<String>? globalCrs,
+}) {
+  // get basic properties
   final links = Links.fromJson(data['links'] as Iterable<dynamic>);
-  final extent = data['extent'] as Map<String, dynamic>?;
+  final extentObject = data['extent'] as Map<String, dynamic>?;
+  final extent = extentObject != null ? _extentFromJson(extentObject) : null;
   final id = data['id'] as String? ??
       data['name'] as String; // "name" not really standard, but somewhere used
-  return CollectionMeta(
-    id: id,
-    title: data['title'] as String? ?? links.self().first.title ?? id,
-    description: data['description'] as String?,
-    links: links,
-    extent: extent != null ? _extentFromJson(extent) : null,
-  );
+  final title = data['title'] as String? ?? links.self().first.title ?? id;
+  final description = data['description'] as String?;
+  final attribution = data['attribution'] as String?;
+
+  // Resolve supported ids from optional global and collection specific ids.
+  // See the section 6.2 of the standard
+  // `OGC API - Features - Part 2: Coordinate Reference Systems by Reference`.
+  final Iterable<String>? supportedCrs;
+  final collectionCrs = (data['crs'] as Iterable<dynamic>?)?.cast<String>();
+  if (collectionCrs != null) {
+    if (globalCrs != null) {
+      if (collectionCrs.contains('#/crs')) {
+        // collection has json pointer to global crs, so combine without pointer
+        supportedCrs = globalCrs.followedBy(
+          collectionCrs.where((crs) => crs != '#/crs'),
+        ).toList(growable: false);
+      } else {
+        supportedCrs = collectionCrs;
+      }
+    } else {
+      supportedCrs = collectionCrs;
+    }
+  } else {
+    supportedCrs = globalCrs;
+  }
+
+  // storage crs
+  final storageCrs = data['storageCrs'] as String?;
+  final storageCrsCoordinateEpoch = data['storageCrsCoordinateEpoch'] as num?;
+
+  // return as collection meta object
+  if (supportedCrs != null) {
+    return OGCCollectionMeta(
+      id: id,
+      title: title,
+      description: description,
+      attribution: attribution,
+      links: links,
+      extent: extent,
+      //itemType: 'feature', // no need to specify default
+      crs: supportedCrs,
+      storageCrs: storageCrs,
+      storageCrsCoordinateEpoch: storageCrsCoordinateEpoch,
+    );
+  } else {
+    return OGCCollectionMeta(
+      id: id,
+      title: title,
+      description: description,
+      attribution: attribution,
+      links: links,
+      extent: extent,
+      //itemType: 'feature', // no need to specify default
+      storageCrs: storageCrs,
+      storageCrsCoordinateEpoch: storageCrsCoordinateEpoch,
+    );
+  }
 }
 
 /// Parses [GeoExtent] data structure from a json snippet.

@@ -70,6 +70,17 @@ Future<void> main(List<String> args) async {
   print('Temporal extent: ${collectionMeta.extent?.temporal}');
   _printLinks(collectionMeta.links);
 
+  // metadata also has info about coordinate systems supported by a collection
+  final storageCrs = collectionMeta.storageCrs;
+  if (storageCrs != null) {
+    print('Storage CRS: $storageCrs');
+  }
+  final supportedCrs = collectionMeta.crs;
+  print('All supported CRS identifiers:');
+  for (final crs in supportedCrs) {
+    print('  $crs');
+  }
+
   // next read actual data (wind mills) from this collection
 
   // `itemsAll` lets access all features on source (optionally limited by limit)
@@ -122,9 +133,17 @@ Future<void> main(List<String> args) async {
   // In this case check the following queryables resource from the service:
   // https://demo.pygeoapi.io/master/collections/dutch_windmills/queryables
   // (currently the geodata client does not decode queryables yet)
+  //
+  // Try to get result geometries projected to WGS 84 / Web Mercator instead of
+  // using geographic coordinates of WGS84.
+  const webMercator = 'http://www.opengis.net/def/crs/EPSG/0/3857';
   final itemsByPlace = await source.items(
-    const BoundedItemsQuery(
-      extra: {'PLAATS': 'Uitgeest'},
+    BoundedItemsQuery(
+      // ask for result geometries projected to WGS 84 / Web Mercator
+      crs: supportedCrs.contains(webMercator) ? webMercator : null,
+
+      // property filter
+      extra: const {'PLAATS': 'Uitgeest'},
     ),
   );
   await _readFeatureItems(

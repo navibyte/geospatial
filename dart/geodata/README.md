@@ -269,6 +269,16 @@ Future<void> main(List<String> args) async {
   final info = (await meta.openAPI()).content['info'] as Map<String, dynamic>;
   print('Terms of service: ${info['termsOfService']}');
 
+  // conformance classes (text ids) informs the capabilities of the service
+  final conformance = await client.conformance();
+  // the service should be compliant with OGC API Features - Part 1 and GeoJSON
+  if (conformance.conformsToFeaturesCore(geoJSON: true)) {
+    print('The service is compliant with OGC API Features, Part 1 and GeoJSON');
+  } else {
+    print('The service is NOT compliant.');
+    return;
+  }
+
   // get a feature source (`OGCFeatureSource`) for Dutch windmill point features
   final source = await client.collection('dutch_windmills');
 
@@ -279,6 +289,17 @@ Future<void> main(List<String> args) async {
   print('Description: ${collectionMeta.description}');
   print('Spatial extent: ${collectionMeta.extent?.spatial}');
   print('Temporal extent: ${collectionMeta.extent?.temporal}');
+
+  // metadata also has info about coordinate systems supported by a collection
+  final storageCrs = collectionMeta.storageCrs;
+  if (storageCrs != null) {
+    print('Storage CRS: $storageCrs');
+  }
+  final supportedCrs = collectionMeta.crs;
+  print('All supported CRS identifiers:');
+  for (final crs in supportedCrs) {
+    print('  $crs');
+  }
 
   // next read actual data (wind mills) from this collection
 
@@ -337,13 +358,13 @@ has the following signature:
 /// A feature service compliant with the OGC API Features standard.
 abstract class OGCFeatureService {
   /// Get meta data (or "landing page" information) about this service.
-  Future<OGCResourceMeta> meta();
+  Future<OGCServiceMeta> meta();
 
   /// Conformance classes this service is conforming to.
   Future<OGCFeatureConformance> conformance();
 
   /// Get metadata about feature collections provided by this service.
-  Future<Iterable<CollectionMeta>> collections();
+  Future<Iterable<OGCCollectionMeta>> collections();
 
   /// Get a feature source for a feature collection identified by [id].
   Future<OGCFeatureSource> collection(String id);
@@ -354,7 +375,7 @@ The feature source returned by `collection()` provides following methods:
 
 ```dart
   /// Get metadata about the feature collection represented by this source.
-  Future<CollectionMeta> meta();
+  Future<OGCCollectionMeta> meta();
 
   /// Fetches a single feature by [id] from this source.
   ///

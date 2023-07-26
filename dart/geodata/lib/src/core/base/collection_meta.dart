@@ -17,6 +17,7 @@ class CollectionMeta extends ResourceMeta {
     required this.id,
     required super.title,
     super.description,
+    super.attribution,
     required super.links,
     this.extent,
   });
@@ -30,5 +31,6 @@ class CollectionMeta extends ResourceMeta {
   final GeoExtent? extent;
 
   @override
-  List<Object?> get props => [id, title, description, links, extent];
+  List<Object?> get props =>
+      [id, title, description, attribution, links, extent];
 }

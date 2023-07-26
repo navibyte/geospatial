@@ -14,10 +14,12 @@ import '/src/common/links/links_aware.dart';
 /// Basic metadata about some resource.
 @immutable
 class ResourceMeta with LinksAware, EquatableMixin {
-  /// A new resource metadata instance with [title], [description] and [links].
+  /// A new resource metadata instance with [title], [description],
+  /// [attribution] and [links].
   const ResourceMeta({
     required this.title,
     this.description,
+    this.attribution,
     required this.links,
   });
 
@@ -27,9 +29,13 @@ class ResourceMeta with LinksAware, EquatableMixin {
   /// An optional description for a resource.
   final String? description;
 
+  /// An optional attribution about a resource, intended for presentation to an
+  /// user.
+  final String? attribution;
+
   @override
   final Links links;
 
   @override
-  List<Object?> get props => [title, description, links];
+  List<Object?> get props => [title, description, attribution, links];
 }

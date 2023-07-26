@@ -30,7 +30,7 @@ import 'package:meta/meta.dart';
 ///   for (final s in servers) {
 ///     final server = s as Map<String, dynamic>;
 ///     final url = server['url'] as String;
-///     final desc = server['description'] as String;
+///     final desc = server['description'] as String?;
 ///     print('  $url : $desc');
 ///   }
 /// }
