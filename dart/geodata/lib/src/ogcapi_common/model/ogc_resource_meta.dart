@@ -9,7 +9,7 @@ import 'package:meta/meta.dart';
 import '/src/core/api/open_api_document.dart';
 import '/src/core/base/resource_meta.dart';
 
-/// Basic metadata about some resource.
+/// Basic metadata about some resource (like OGC API service).
 @immutable
 abstract class OGCResourceMeta extends ResourceMeta {
   /// A new resource metadata instance with [title], [description],
@@ -17,9 +17,13 @@ abstract class OGCResourceMeta extends ResourceMeta {
   const OGCResourceMeta({
     required super.title,
     super.description,
-    super.attribution,
+    this.attribution,
     required super.links,
   });
+
+  /// An optional attribution about a resource, intended for presentation to an
+  /// user.
+  final String? attribution;
 
   /// Get an OpenAPI documentation (API definition) for this service.
   ///
@@ -36,4 +40,7 @@ abstract class OGCResourceMeta extends ResourceMeta {
   /// Most often for an OGC API Features service an API definition is an
   /// OpenAPI 3.0 document, but this is not required by the standard.
   Future<OpenAPIDocument> openAPI();
+
+  @override
+  List<Object?> get props => [title, description, attribution, links];
 }
