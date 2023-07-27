@@ -396,8 +396,10 @@ OGCCollectionMeta _collectionFromJson(
     if (globalCrs != null) {
       if (collectionCrs.contains('#/crs')) {
         // collection has json pointer to global crs, so combine without pointer
+        // (remove also any duplicates)
+        final seen = <String>{};
         supportedCrs = globalCrs.followedBy(
-          collectionCrs.where((crs) => crs != '#/crs'),
+          collectionCrs.where((crs) => crs != '#/crs' && seen.add(crs)),
         ).toList(growable: false);
       } else {
         supportedCrs = collectionCrs;
