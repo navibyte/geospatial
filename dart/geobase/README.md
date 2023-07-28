@@ -500,6 +500,38 @@ See also the appendix about [Coordinate array](#coordinate-arrays) for more
 advanced topic about handling coordinate value arrays for a single position,
 multiple positions and a single bounding box. 
 
+## Coordinate reference systems
+
+According to Wikipedia a
+[Coordinate reference system](https://en.wikipedia.org/wiki/Spatial_reference_system) 
+is *a coordinate-based local, regional or global system used to locate
+geographical entities*. 
+
+Coordinate reference systems are identified by `String` identifiers. Such ids
+specified by registries like [The EPSG dataset](https://epsg.org/).
+
+The package also contains `CoordRefSys` class that has constant instaces for:
+
+Constant    | Description
+----------- | -----------
+`CRS84`     | WGS 84 geographic coordinates (order: longitude, latitude).
+`CRS84h`    | WGS 84 geographic coordinates (order: longitude, latitude) with ellipsoidal height (elevation).
+`EPSG:4326` | WGS 84 geographic coordinates (order: latitude, longitude).
+`EPSG:3857` | WGS 84 projected (Web Mercator) metric coordinates based on "spherical development of ellipsoidal coordinates".
+`EPSG:3395` | WGS 84 projected (World Mercator) metric coordinates based on "ellipsoidal coordinates".
+
+The `String` identifiers for these constants are formatted using the
+`http://www.opengis.net/def/crs/{authority}/{version}/{code}` template.
+Identifiers using the common `EPSG:{code}` template are normalized also to it
+when instantiating with the `CoordRefSys.normalized()` constructor.
+
+Please note that `CRS84` and `EPSG:4326` both refer to the WGS 84 geographic
+coordinate system, but in external data representation their axis order differs.
+
+To customize identifier normalization and axis order resolving algorithm you
+should create a custom class implementing `CoordRefSysResolver` and register
+it's global instance using `CoordRefSysResolver.register()`.
+
 ## Spherical geodesy
 
 ### Overview
@@ -1048,38 +1080,6 @@ As a small bonus let's continue the last sample a bit:
 
 ## Meta
 
-## Coordinate reference systems
-
-According to Wikipedia a
-[Coordinate reference system](https://en.wikipedia.org/wiki/Spatial_reference_system) 
-is *a coordinate-based local, regional or global system used to locate
-geographical entities*. 
-
-Coordinate reference systems are identified by `String` identifiers. Such ids
-specified by registries like [The EPSG dataset](https://epsg.org/).
-
-The package also contains `CoordRefSys` class that has constant instaces for:
-
-Constant    | Description
------------ | -----------
-`CRS84`     | WGS 84 geographic coordinates (order: longitude, latitude).
-`CRS84h`    | WGS 84 geographic coordinates (order: longitude, latitude) with ellipsoidal height (elevation).
-`EPSG:4326` | WGS 84 geographic coordinates (order: latitude, longitude).
-`EPSG:3857` | WGS 84 projected (Web Mercator) metric coordinates based on "spherical development of ellipsoidal coordinates".
-`EPSG:3395` | WGS 84 projected (World Mercator) metric coordinates based on "ellipsoidal coordinates".
-
-The `String` identifiers for these constants are formatted using the
-`http://www.opengis.net/def/crs/{authority}/{version}/{code}` template.
-Identifiers using the common `EPSG:{code}` template are normalized also to it
-when instantiating with the `CoordRefSys.normalized()` constructor.
-
-Please note that `CRS84` and `EPSG:4326` both refer to the WGS 84 geographic
-coordinate system, but in external data representation their axis order differs.
-
-To customize identifier normalization and axis order resolving algorithm you
-should create a custom class implementing `CoordRefSysResolver` and register
-it's global instance using `CoordRefSysResolver.register()`.
-
 ### Metadata classes
 
 The class diagram of temporal data and geospatial extent classes:
@@ -1133,6 +1133,10 @@ useful in metadata structures for geospatial data sources.
     ],
   );
 ```
+
+See the section about
+[coordinate reference systems](#coordinate-reference-systems) for the
+description of `CoordRefSys`.
 
 ## Projections
 

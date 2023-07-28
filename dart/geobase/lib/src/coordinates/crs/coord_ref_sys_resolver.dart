@@ -13,7 +13,8 @@ import '/src/codes/axis_order.dart';
 /// custom instance using [register]).
 ///
 /// NOTE: The current version of this resolver class provides only methods
-/// [normalizeId] and [axisOrder]. In future other methods might be added.
+/// [normalizeId], [axisOrder] and [epsg]. In future other methods might be
+/// added.
 abstract class CoordRefSysResolver {
   const CoordRefSysResolver._();
 

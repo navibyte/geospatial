@@ -41,6 +41,8 @@ export 'src/coordinates/base/box.dart';
 export 'src/coordinates/base/measurable.dart';
 export 'src/coordinates/base/position.dart';
 export 'src/coordinates/base/positionable.dart';
+export 'src/coordinates/crs/coord_ref_sys.dart';
+export 'src/coordinates/crs/coord_ref_sys_resolver.dart';
 export 'src/coordinates/data/position_data.dart';
 export 'src/coordinates/geographic/dms.dart';
 export 'src/coordinates/geographic/geobox.dart';
@@ -59,8 +61,6 @@ export 'src/geodesy/spherical/spherical_great_circle.dart';
 export 'src/geodesy/spherical/spherical_rhumb_line.dart';
 
 // meta
-export 'src/meta/crs/coord_ref_sys.dart';
-export 'src/meta/crs/coord_ref_sys_resolver.dart';
 export 'src/meta/extent/geo_extent.dart';
 export 'src/meta/extent/spatial_extent.dart';
 export 'src/meta/extent/temporal_extent.dart';

@@ -5,12 +5,16 @@
 // Docs: https://github.com/navibyte/geospatial
 
 /// Geographic (longitude-latitude) and projected positions and bounding boxes.
+/// 
+/// Contains also coordinate reference system (CRS) metadata and projection
+/// abstraction classes.
 ///
 /// This libary exports a subset of `package:geobase/geobase.dart`.
 ///
 /// Usage: import `package:geobase/coordinates.dart`
 library coordinates;
 
+export 'src/codes/axis_order.dart';
 export 'src/codes/cardinal_precision.dart';
 export 'src/codes/coords.dart';
 export 'src/codes/dms_type.dart';
@@ -19,6 +23,8 @@ export 'src/coordinates/base/box.dart';
 export 'src/coordinates/base/measurable.dart';
 export 'src/coordinates/base/position.dart';
 export 'src/coordinates/base/positionable.dart';
+export 'src/coordinates/crs/coord_ref_sys.dart';
+export 'src/coordinates/crs/coord_ref_sys_resolver.dart';
 export 'src/coordinates/data/position_data.dart';
 export 'src/coordinates/geographic/dms.dart';
 export 'src/coordinates/geographic/geobox.dart';
