@@ -40,6 +40,17 @@ abstract class CoordRefSysResolver {
   /// The axis order logic depends on the resolver of [registry].
   AxisOrder? axisOrder(String id);
 
+  /// Returns an EPSG identifier according to the common `EPSG:{code}` template
+  /// for [id] if the coordinate reference system is recognized by the
+  /// [EPSG register](https://epsg.org/).
+  ///
+  /// For example for `http://www.opengis.net/def/crs/EPSG/0/4326` (WGS 84
+  /// latitude/longitude) this getter returns `EPSG:4326`, but for
+  /// `http://www.opengis.net/def/crs/OGC/1.3/CRS84` this returns null as CRS84
+  /// (WGS 84 longitude/latitude) do not have an exact corresponding identifier
+  /// in the EPSG register.
+  String? epsg(String id);
+
   /// The current instance of [CoordRefSysResolver], initially instantiated with
   /// the basic default implementation.
   ///
@@ -78,15 +89,18 @@ abstract class CoordRefSysResolver {
       CoordRefSysResolver.registry = resolver;
 }
 
+const _epsgPrefix = 'EPSG:';
+const _opengisEPSG0Prefix = 'http://www.opengis.net/def/crs/EPSG/0/';
+
 class _BasicCoordRefSysRegistry implements CoordRefSysResolver {
   const _BasicCoordRefSysRegistry();
 
   @override
   String normalizeId(String id) {
-    if (id.startsWith('EPSG:') && id.length >= 6) {
-      final code = int.tryParse(id.substring(5));
+    if (id.startsWith(_epsgPrefix) && id.length >= _epsgPrefix.length + 1) {
+      final code = int.tryParse(id.substring(_epsgPrefix.length));
       if (code != null) {
-        return 'http://www.opengis.net/def/crs/EPSG/0/$code';
+        return '$_opengisEPSG0Prefix$code';
       }
     }
 
@@ -106,6 +120,25 @@ class _BasicCoordRefSysRegistry implements CoordRefSysResolver {
       case 'http://www.opengis.net/def/crs/EPSG/0/3395':
         return AxisOrder.xy;
     }
+    return null; // do not know
+  }
+
+  @override
+  String? epsg(String id) {
+    if (id.startsWith(_epsgPrefix) && id.length >= _epsgPrefix.length + 1) {
+      final code = int.tryParse(id.substring(_epsgPrefix.length));
+      if (code != null) {
+        return id;
+      }
+    }
+    if (id.startsWith(_opengisEPSG0Prefix) &&
+        id.length >= _opengisEPSG0Prefix.length + 1) {
+      final code = int.tryParse(id.substring(_opengisEPSG0Prefix.length));
+      if (code != null) {
+        return '$_epsgPrefix$code';
+      }
+    }
+
     return null; // do not know
   }
 }

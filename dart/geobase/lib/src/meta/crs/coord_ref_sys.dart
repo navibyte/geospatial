@@ -35,7 +35,7 @@ class CoordRefSys {
   /// specified by the normalized identifier of [id].
   ///
   /// Normalization: `CoordRefSysResolver.registry.normalizeId(id)`.
-  /// 
+  ///
   /// Using the basic default implementation of CoordRefSysResolver
   /// `CoordRefSys.normalized('http://www.opengis.net/def/crs/EPSG/0/4326')` and
   /// `CoordRefSys.normalized('EPSG:4326')` would refer to the same instance
@@ -73,6 +73,17 @@ class CoordRefSys {
   ///
   /// The `null` return value is interpreted as "the axis order is not known".
   AxisOrder? get axisOrder => CoordRefSysResolver.registry.axisOrder(id);
+
+  /// Returns an EPSG identifier according to the common `EPSG:{code}` template
+  /// for [id] if the coordinate reference system is recognized by the
+  /// [EPSG register](https://epsg.org/).
+  ///
+  /// For example for `http://www.opengis.net/def/crs/EPSG/0/4326` (WGS 84
+  /// latitude/longitude) this getter returns `EPSG:4326`, but for
+  /// `http://www.opengis.net/def/crs/OGC/1.3/CRS84` this returns null as CRS84
+  /// (WGS 84 longitude/latitude) do not have an exact corresponding identifier
+  /// in the EPSG register.
+  String? get epsg => CoordRefSysResolver.registry.epsg(id);
 
   /// The coordinate reference system resolved in this order:
   /// 1. [coordRefSys] if it's non-null
@@ -114,7 +125,7 @@ class CoordRefSys {
   ///
   /// References WGS 84 projected (Web Mercator) metric coordinates ordered as
   /// specified by `AxisOrder.xy`.
-  /// 
+  ///
   /// Also known as WGS 84 / Pseudo-Mercator. Uses "spherical development of
   /// ellipsoidal coordinates".
   static const CoordRefSys EPSG_3857 =

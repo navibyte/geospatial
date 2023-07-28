@@ -45,5 +45,17 @@ void main() {
       expect(CoordRefSys.EPSG_3395.axisOrder, AxisOrder.xy);
       expect(CoordRefSys.id('EPSG:27700').axisOrder, isNull);
     });
+
+    test('epsg', () {
+      expect(CoordRefSys.CRS84.epsg, isNull);
+      expect(CoordRefSys.CRS84h.epsg, isNull);
+      expect(CoordRefSys.EPSG_4326.epsg, 'EPSG:4326');
+      expect(CoordRefSys.EPSG_3857.epsg, 'EPSG:3857');
+      expect(CoordRefSys.EPSG_3395.epsg, 'EPSG:3395');
+      expect(CoordRefSys.id('EPSG:27700').epsg, 'EPSG:27700');
+      expect(CoordRefSys.normalized('EPSG:27700').epsg, 'EPSG:27700');
+      expect(CoordRefSys.id('EPSG:NOTVALID').epsg, isNull);
+      expect(CoordRefSys.normalized('EPSG:NOTVALID').epsg, isNull);
+    });
   });
 }
