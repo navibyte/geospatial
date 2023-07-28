@@ -467,7 +467,7 @@ GeoExtent _extentFromJson(Map<String, dynamic> data) {
           SpatialExtent.single(_bboxFromJson(spatial! as List<dynamic>));
     } catch (_) {
       // fallback (world extent)
-      spatialExtent = const SpatialExtent.single(
+      spatialExtent = const SpatialExtent(
         GeoBox(west: -180.0, south: -90.0, east: 180.0, north: 90.0),
       );
     }

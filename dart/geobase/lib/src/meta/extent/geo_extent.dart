@@ -7,6 +7,7 @@
 import 'package:meta/meta.dart';
 
 import '/src/coordinates/geographic/geobox.dart';
+import '/src/meta/crs/coord_ref_sys.dart';
 import '/src/meta/time/interval.dart';
 
 import 'spatial_extent.dart';
@@ -29,29 +30,50 @@ class GeoExtent {
 
   /// A geospatial extent of one [bbox] and optional [interval].
   ///
-  /// Coordinate reference system can be specified by [crs] and temporal
-  /// reference system by [trs].
+  /// A coordinate reference system can be specified by [crs] or [coordRefSys],
+  /// and a temporal reference system by [trs].
+  ///
+  /// See [SpatialExtent.single] for how [crs] or [coordRefSys] is handled.
   GeoExtent.single({
     required GeoBox bbox,
     Interval? interval,
-    String crs = 'http://www.opengis.net/def/crs/OGC/1.3/CRS84',
+    CoordRefSys? coordRefSys,
+    String? crs,
     String trs = 'http://www.opengis.net/def/uom/ISO-8601/0/Gregorian',
-  })  : _spatial = SpatialExtent<GeoBox>.single(bbox, crs: crs),
-        _temporal =
-            interval != null ? TemporalExtent.single(interval, trs: trs) : null;
+  })  : _spatial = SpatialExtent<GeoBox>.single(
+          bbox,
+          coordRefSys: coordRefSys,
+          crs: crs,
+        ),
+        _temporal = interval != null
+            ? TemporalExtent.single(
+                interval,
+                trs: trs,
+              )
+            : null;
 
   /// A geospatial extent of [boxes] and optional [intervals].
   ///
-  /// Coordinate reference system can be specified by [crs] and temporal
-  /// reference system by [trs].
+  /// A coordinate reference system can be specified by [crs] or [coordRefSys],
+  /// and a temporal reference system by [trs].
+  ///
+  /// See [SpatialExtent.single] for how [crs] or [coordRefSys] is handled.
   GeoExtent.multi({
     required Iterable<GeoBox> boxes,
     Iterable<Interval>? intervals,
-    String crs = 'http://www.opengis.net/def/crs/OGC/1.3/CRS84',
+    CoordRefSys? coordRefSys,
+    String? crs,
     String trs = 'http://www.opengis.net/def/uom/ISO-8601/0/Gregorian',
-  })  : _spatial = SpatialExtent<GeoBox>.multi(boxes, crs: crs),
+  })  : _spatial = SpatialExtent<GeoBox>.multi(
+          boxes,
+          coordRefSys: coordRefSys,
+          crs: crs,
+        ),
         _temporal = intervals != null
-            ? TemporalExtent.multi(intervals, trs: trs)
+            ? TemporalExtent.multi(
+                intervals,
+                trs: trs,
+              )
             : null;
 
   /// The spatial extent with bounding boxes in geographic coordinates.
