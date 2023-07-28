@@ -24,6 +24,7 @@
 library geobase;
 
 // codes
+export 'src/codes/axis_order.dart';
 export 'src/codes/canvas_origin.dart';
 export 'src/codes/cardinal_precision.dart';
 export 'src/codes/coords.dart';
@@ -58,6 +59,8 @@ export 'src/geodesy/spherical/spherical_great_circle.dart';
 export 'src/geodesy/spherical/spherical_rhumb_line.dart';
 
 // meta
+export 'src/meta/crs/coord_ref_sys.dart';
+export 'src/meta/crs/coord_ref_sys_resolver.dart';
 export 'src/meta/extent/geo_extent.dart';
 export 'src/meta/extent/spatial_extent.dart';
 export 'src/meta/extent/temporal_extent.dart';

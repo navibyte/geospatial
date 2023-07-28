@@ -1,12 +1,13 @@
 ## 0.5.0
 
-NOTE: Version 0.5.0 currently [under development](https://github.com/navibyte/geospatial/issues/174) (0.5.0-dev.0).
+NOTE: Version 0.5.0 currently [under development](https://github.com/navibyte/geospatial/issues/174) (0.5.0-dev.1).
 
 ✨ New (2023-07): spherical geodesy functions (distance, bearing, destination point, etc.) for *great circle* and *rhumb line* paths.
 
 🧩 Features:
 * [Add common geospatial and geodesy functions #106](https://github.com/navibyte/geospatial/issues/106)
 * [Add parse and format functions for dms representations of degrees #173](https://github.com/navibyte/geospatial/issues/173)
+* [Axis order information of coordinate reference systems #178](https://github.com/navibyte/geospatial/issues/178)
 
 🐛 Bugs fixed:
 * [Clipping when projection WGS 84 to Web Mercator metric coordinates #123](https://github.com/navibyte/geospatial/issues/123)
