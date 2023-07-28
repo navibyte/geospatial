@@ -73,8 +73,6 @@ class SpatialExtent<T extends Box> {
   Iterable<T> get boxes => _boxes ?? [_first];
 
   /// The coordinate reference system for bounding boxes of this extent.
-  ///
-  /// See also [crs] that returns the identifier of [coordRefSys].
   CoordRefSys get coordRefSys => _coordRefSys;
 
   /// The identifier of the coordinate reference system for bounding boxes of
@@ -82,11 +80,12 @@ class SpatialExtent<T extends Box> {
   ///
   /// See also [coordRefSys] that returns metadata about a coordinate reference
   /// system identified by [crs].
+  @Deprecated('Use coordRefSys.id or coordRefSys.epsg instead.')
   String get crs => _coordRefSys.id;
 
   @override
   String toString() {
-    final buf = StringBuffer()..write(crs);
+    final buf = StringBuffer()..write(coordRefSys);
     for (final item in boxes) {
       buf
         ..write(',[')
@@ -98,7 +97,7 @@ class SpatialExtent<T extends Box> {
 
   @override
   bool operator ==(Object other) {
-    if (other is SpatialExtent<T> && crs == other.crs) {
+    if (other is SpatialExtent<T> && coordRefSys == other.coordRefSys) {
       final items1 = boxes;
       final items2 = other.boxes;
       if (items1.length == items2.length) {
@@ -115,5 +114,5 @@ class SpatialExtent<T extends Box> {
   }
 
   @override
-  int get hashCode => Object.hash(crs, Object.hashAll(boxes));
+  int get hashCode => Object.hash(coordRefSys, Object.hashAll(boxes));
 }

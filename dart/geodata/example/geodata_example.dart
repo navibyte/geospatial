@@ -311,7 +311,7 @@ void _printCollection(OGCCollectionMeta meta) {
 
   final extent = meta.extent;
   if (extent != null) {
-    print('    extent crs: ${extent.spatial.crs}');
+    print('    extent crs: ${extent.spatial.coordRefSys}');
     for (final bounds in extent.spatial.boxes) {
       print('    spatial bbox min: ${bounds.min}');
       print('    spatial bbox max: ${bounds.max}');
