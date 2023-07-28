@@ -13,12 +13,12 @@ class WGS84 {
   /// A projection adapter between WGS84 geographic and Web Mercator positions.
   ///
   /// Use `forward` of the adapter to return a projection for:
-  /// * source: `lon` and `lat` coordinates ("EPSG:4326", WGS 84)
+  /// * source: `lon` and `lat` geographic coordinates (WGS 84)
   /// * target: `x` and `y` coordinates ("EPSG:3857", WGS 84 / Web Mercator)
   ///
   /// Use `inverse` of the adapter to return a projection for:
   /// * source: `x` and `y` coordinates ("EPSG:3857", WGS 84 / Web Mercator)
-  /// * target: `lon` and `lat` coordinates ("EPSG:4326", WGS 84)
+  /// * target: `lon` and `lat` geographic coordinates (WGS 84)
   ///
   /// Other coordinates, if available in the source and if expected for target
   /// coordinates, are just copied (`elev` <=> `z` and `m` <=> `m`) without any

@@ -13,16 +13,34 @@ import '../projections/projection_sample.dart';
 
 void main() {
   group('Test proj4dart with built in projections', () {
-    final adapterWgs84ToWM = Proj4d.resolve('EPSG:4326', 'EPSG:3857');
-    final adapterWMToWgs84 = Proj4d.resolve('EPSG:3857', 'EPSG:4326');
+    // here WGS84 geographic coordinates specified by CRS84
+
+    final adapterWgs84ToWM =
+        Proj4d.init(CoordRefSys.CRS84, CoordRefSys.EPSG_3857);
+    final adapterWMToWgs84 = Proj4d.init(
+      CoordRefSys.EPSG_3857,
+      CoordRefSys.CRS84,
+    );
 
     test('Create projection adapters', () {
-      expect(adapterWgs84ToWM.fromCrs, 'EPSG:4326');
-      expect(adapterWgs84ToWM.toCrs, 'EPSG:3857');
+      expect(
+        adapterWgs84ToWM.fromCoordRefSys.toString(),
+        'http://www.opengis.net/def/crs/OGC/1.3/CRS84',
+      );
+      expect(
+        adapterWgs84ToWM.toCoordRefSys.toString(),
+        'http://www.opengis.net/def/crs/EPSG/0/3857',
+      );
       expect(adapterWgs84ToWM.tuple.fromProj.projName, 'longlat');
       expect(adapterWgs84ToWM.tuple.toProj.projName, 'merc');
-      expect(adapterWMToWgs84.fromCrs, 'EPSG:3857');
-      expect(adapterWMToWgs84.toCrs, 'EPSG:4326');
+      expect(
+        adapterWMToWgs84.fromCoordRefSys.toString(),
+        'http://www.opengis.net/def/crs/EPSG/0/3857',
+      );
+      expect(
+        adapterWMToWgs84.toCoordRefSys.toString(),
+        'http://www.opengis.net/def/crs/OGC/1.3/CRS84',
+      );
       expect(adapterWMToWgs84.tuple.fromProj.projName, 'merc');
       expect(adapterWMToWgs84.tuple.toProj.projName, 'longlat');
     });
@@ -62,7 +80,9 @@ void main() {
 
   group('Test proj4dart flat coordinate arrays', () {
     test('Wgs84 <-> WebMercator', () {
-      final adapter = Proj4d.resolve('EPSG:4326', 'EPSG:3857');
+      // here WGS84 geographic coordinates specified by EPSG:4326
+
+      final adapter = Proj4d.init(CoordRefSys.EPSG_4326, CoordRefSys.EPSG_3857);
       final forward = adapter.forward;
       final inverse = adapter.inverse;
 
@@ -128,17 +148,19 @@ void main() {
 
     for (var i = 0; i < defs.length; i++) {
       final def = defs[i];
-      final adapter = Proj4d.tryResolve(
-        'EPSG:4326',
-        'EPSG:23700',
+      final adapter = Proj4d.tryInit(
+        CoordRefSys.EPSG_4326,
+        CoordRefSys.normalized('EPSG:23700'),
         toDef: def,
       );
       test('Test between EPSG:4326 and EPSG:23700', () {
+        // here WGS84 geographic coordinates specified by EPSG:4326
+
         expect(adapter, isNotNull);
 
         if (adapter != null) {
-          expect(adapter.fromCrs, 'EPSG:4326');
-          expect(adapter.toCrs, 'EPSG:23700');
+          expect(adapter.fromCoordRefSys.epsg, 'EPSG:4326');
+          expect(adapter.toCoordRefSys.epsg, 'EPSG:23700');
 
           const proj = Projected(x: 561651.8408065987, y: 172658.61998377228);
           const geo =
@@ -159,9 +181,11 @@ void main() {
   });
 
   group('Test proj4dart with defined projections (geocentric)', () {
-    final adapter = Proj4d.resolve(
-      'EPSG:4326',
-      'WGS84 geocentric',
+    // here WGS84 geographic coordinates specified by CRS84
+
+    final adapter = Proj4d.init(
+      CoordRefSys.CRS84,
+      CoordRefSys.normalized('WGS84 geocentric'),
       toDef: '+proj=geocent +datum=WGS84',
     );
     test('Test between WGS84 lon-lat-elev(h) to WGS84 geocentric (XYZ)', () {

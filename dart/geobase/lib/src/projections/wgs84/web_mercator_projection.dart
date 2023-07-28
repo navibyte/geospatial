@@ -8,6 +8,7 @@ import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
 import '/src/coordinates/base/position.dart';
+import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/projection/projection_adapter.dart';
 import '/src/utils/format_validation.dart';
@@ -30,10 +31,10 @@ class Wgs84ToWebMercatorAdapter with ProjectionAdapter {
   const Wgs84ToWebMercatorAdapter();
 
   @override
-  String get fromCrs => 'EPSG:4326';
+  CoordRefSys get fromCoordRefSys => CoordRefSys.CRS84;
 
   @override
-  String get toCrs => 'EPSG:3857';
+  CoordRefSys get toCoordRefSys => CoordRefSys.EPSG_3857;
 
   @override
   Projection get forward => const _Wgs84ToWebMercatorProjection();

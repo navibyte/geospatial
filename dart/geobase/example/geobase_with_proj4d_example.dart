@@ -26,11 +26,11 @@ void main() {
 void _proj4projections() {
   // Coordinate projections based on the external proj4dart package.
 
-  // A projection adapter from WGS84 (EPSG:4326) to EPSG:23700 (with definition)
+  // A projection adapter from WGS84 (CRS84) to EPSG:23700 (with definition)
   // (based on the sample at https://pub.dev/packages/proj4dart).
-  final adapter = Proj4d.resolve(
-    'EPSG:4326',
-    'EPSG:23700',
+  final adapter = Proj4d.init(
+    CoordRefSys.CRS84,
+    CoordRefSys.normalized('EPSG:23700'),
     toDef: '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 '
         '+k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 '
         '+towgs84=52.17,-71.82,-14.9,0,0,0,0 +units=m +no_defs',
