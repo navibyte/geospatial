@@ -31,10 +31,10 @@ class Wgs84ToWebMercatorAdapter with ProjectionAdapter {
   const Wgs84ToWebMercatorAdapter();
 
   @override
-  CoordRefSys get fromCoordRefSys => CoordRefSys.CRS84;
+  CoordRefSys get sourceCrs => CoordRefSys.CRS84;
 
   @override
-  CoordRefSys get toCoordRefSys => CoordRefSys.EPSG_3857;
+  CoordRefSys get targetCrs => CoordRefSys.EPSG_3857;
 
   @override
   Projection get forward => const _Wgs84ToWebMercatorProjection();

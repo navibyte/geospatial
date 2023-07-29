@@ -16,10 +16,10 @@ import '/src/utils/format_validation.dart';
 /// A projection adapter based on the Proj4dart package.
 class Proj4d with ProjectionAdapter {
   /// Create an adapter with a projection [tuple] of the Proj4dart package.
-  const Proj4d(this.fromCoordRefSys, this.toCoordRefSys, this.tuple);
+  const Proj4d(this.sourceCrs, this.targetCrs, this.tuple);
 
-  /// Initializes a projection adapter between [fromCoordRefSys] and
-  /// [toCoordRefSys].
+  /// Initializes a projection adapter between [sourceCrs] and
+  /// [targetCrs].
   ///
   /// As based on the Proj4dart package, it has built-in support for following
   /// identifiers: "EPSG:4326" (with alias "WGS84"), "EPSG:4269", "EPSG:3857"
@@ -30,28 +30,28 @@ class Proj4d with ProjectionAdapter {
   /// supported coordinates reference systems.
   ///
   /// For all other coordinate reference systems, also a projection definition
-  /// must be given via [fromDef] or [toDef]. Proj4 definition strings, OGC WKT
-  /// definitions and ESRI WKT definitions are supported. More info from the
-  /// Proj4dart package.
+  /// must be given via [sourceDef] or [targetDef]. Proj4 definition strings,
+  /// OGC WKT definitions and ESRI WKT definitions are supported. More info from
+  /// the Proj4dart package.
   ///
   /// Throws FormatException if projections could not be initialized.
   factory Proj4d.init(
-    CoordRefSys fromCoordRefSys,
-    CoordRefSys toCoordRefSys, {
-    String? fromDef,
-    String? toDef,
+    CoordRefSys sourceCrs,
+    CoordRefSys targetCrs, {
+    String? sourceDef,
+    String? targetDef,
   }) =>
       Proj4d(
-        fromCoordRefSys,
-        toCoordRefSys,
+        sourceCrs,
+        targetCrs,
         p4d.ProjectionTuple(
-          fromProj: _resolveProj4dProjection(fromCoordRefSys, fromDef),
-          toProj: _resolveProj4dProjection(toCoordRefSys, toDef),
+          fromProj: _resolveProj4dProjection(sourceCrs, sourceDef),
+          toProj: _resolveProj4dProjection(targetCrs, targetDef),
         ),
       );
 
-  /// Initializes a projection adapter between [fromCoordRefSys] and
-  /// [toCoordRefSys].
+  /// Initializes a projection adapter between [sourceCrs] and
+  /// [targetCrs].
   ///
   /// As based on the Proj4dart package, it has built-in support for following
   /// identifiers: "EPSG:4326" (with alias "WGS84"), "EPSG:4269", "EPSG:3857"
@@ -62,23 +62,23 @@ class Proj4d with ProjectionAdapter {
   /// supported coordinates reference systems.
   ///
   /// For all other coordinate reference systems, also a projection definition
-  /// must be given via [fromDef] or [toDef]. Proj4 definition strings, OGC WKT
-  /// definitions and ESRI WKT definitions are supported. More info from the
-  /// Proj4dart package.
+  /// must be given via [sourceDef] or [targetDef]. Proj4 definition strings,
+  /// OGC WKT definitions and ESRI WKT definitions are supported. More info from
+  /// the Proj4dart package.
   ///
   /// Returns null if projections could not be initialized.
   static Proj4d? tryInit(
-    CoordRefSys fromCoordRefSys,
-    CoordRefSys toCoordRefSys, {
-    String? fromDef,
-    String? toDef,
+    CoordRefSys sourceCrs,
+    CoordRefSys targetCrs, {
+    String? sourceDef,
+    String? targetDef,
   }) {
     try {
       return Proj4d.init(
-        fromCoordRefSys,
-        toCoordRefSys,
-        fromDef: fromDef,
-        toDef: toDef,
+        sourceCrs,
+        targetCrs,
+        sourceDef: sourceDef,
+        targetDef: targetDef,
       );
     } on Exception {
       return null;
@@ -106,8 +106,8 @@ class Proj4d with ProjectionAdapter {
       Proj4d.init(
         CoordRefSys.normalized(fromCode),
         CoordRefSys.normalized(toCode),
-        fromDef: fromDef,
-        toDef: toDef,
+        sourceDef: fromDef,
+        targetDef: toDef,
       );
 
   /// Resolves a projection adapter between [fromCode] and [toCode].
@@ -131,18 +131,18 @@ class Proj4d with ProjectionAdapter {
       Proj4d.tryInit(
         CoordRefSys.normalized(fromCode),
         CoordRefSys.normalized(toCode),
-        fromDef: fromDef,
-        toDef: toDef,
+        sourceDef: fromDef,
+        targetDef: toDef,
       );
 
   /// A projection tuple contains source and target projections.
   final p4d.ProjectionTuple tuple;
 
   @override
-  final CoordRefSys fromCoordRefSys;
+  final CoordRefSys sourceCrs;
 
   @override
-  final CoordRefSys toCoordRefSys;
+  final CoordRefSys targetCrs;
 
   @override
   Projection get forward => _ProjectionProxy(
@@ -262,17 +262,16 @@ class _ProjectionProxy with Projection {
 }
 
 p4d.Projection _resolveProj4dProjection(
-  CoordRefSys coordRefSys, [
+  CoordRefSys crs, [
   String? def,
 ]) {
   // resolve first EPSG code like "EPSG:4326" (not that CRS84 and CRS84h do not
   // have direct corresponding EPSG code, but they refer to same geographic
   // coordinate system, WGS 84, as EPSG:4326 too, and here axis order is not
   // relevant).
-  final epsg =
-      (coordRefSys == CoordRefSys.CRS84 || coordRefSys == CoordRefSys.CRS84h)
-          ? CoordRefSys.EPSG_4326.epsg
-          : coordRefSys.epsg;
+  final epsg = (crs == CoordRefSys.CRS84 || crs == CoordRefSys.CRS84h)
+      ? CoordRefSys.EPSG_4326.epsg
+      : crs.epsg;
 
   // then resolve the Projection provided by proj4dart package
   p4d.Projection? proj;
@@ -289,17 +288,17 @@ p4d.Projection _resolveProj4dProjection(
       }
     } else if (def != null) {
       // no epsg, but if def given, then try to add a projection
-      proj = p4d.Projection.add(coordRefSys.id, def);
+      proj = p4d.Projection.add(crs.id, def);
     }
   } catch (e) {
     throw FormatException(
-      'Cannot resolve a projection for $coordRefSys ($def)'
+      'Cannot resolve a projection for $crs ($def)'
       ' with error $e',
     );
   }
   if (proj == null) {
     throw FormatException(
-      'Cannot resolve a projection for $coordRefSys ($def)',
+      'Cannot resolve a projection for $crs ($def)',
     );
   }
   return proj;

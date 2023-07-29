@@ -24,21 +24,21 @@ void main() {
 
     test('Create projection adapters', () {
       expect(
-        adapterWgs84ToWM.fromCoordRefSys.toString(),
+        adapterWgs84ToWM.sourceCrs.toString(),
         'http://www.opengis.net/def/crs/OGC/1.3/CRS84',
       );
       expect(
-        adapterWgs84ToWM.toCoordRefSys.toString(),
+        adapterWgs84ToWM.targetCrs.toString(),
         'http://www.opengis.net/def/crs/EPSG/0/3857',
       );
       expect(adapterWgs84ToWM.tuple.fromProj.projName, 'longlat');
       expect(adapterWgs84ToWM.tuple.toProj.projName, 'merc');
       expect(
-        adapterWMToWgs84.fromCoordRefSys.toString(),
+        adapterWMToWgs84.sourceCrs.toString(),
         'http://www.opengis.net/def/crs/EPSG/0/3857',
       );
       expect(
-        adapterWMToWgs84.toCoordRefSys.toString(),
+        adapterWMToWgs84.targetCrs.toString(),
         'http://www.opengis.net/def/crs/OGC/1.3/CRS84',
       );
       expect(adapterWMToWgs84.tuple.fromProj.projName, 'merc');
@@ -151,7 +151,7 @@ void main() {
       final adapter = Proj4d.tryInit(
         CoordRefSys.EPSG_4326,
         CoordRefSys.normalized('EPSG:23700'),
-        toDef: def,
+        targetDef: def,
       );
       test('Test between EPSG:4326 and EPSG:23700', () {
         // here WGS84 geographic coordinates specified by EPSG:4326
@@ -159,8 +159,8 @@ void main() {
         expect(adapter, isNotNull);
 
         if (adapter != null) {
-          expect(adapter.fromCoordRefSys.epsg, 'EPSG:4326');
-          expect(adapter.toCoordRefSys.epsg, 'EPSG:23700');
+          expect(adapter.sourceCrs.epsg, 'EPSG:4326');
+          expect(adapter.targetCrs.epsg, 'EPSG:23700');
 
           const proj = Projected(x: 561651.8408065987, y: 172658.61998377228);
           const geo =
@@ -186,7 +186,7 @@ void main() {
     final adapter = Proj4d.init(
       CoordRefSys.CRS84,
       CoordRefSys.normalized('WGS84 geocentric'),
-      toDef: '+proj=geocent +datum=WGS84',
+      targetDef: '+proj=geocent +datum=WGS84',
     );
     test('Test between WGS84 lon-lat-elev(h) to WGS84 geocentric (XYZ)', () {
       // this is NOT very geodetically accurate test (values are NOT reference

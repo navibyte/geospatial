@@ -12,29 +12,29 @@ import 'projection.dart';
 mixin ProjectionAdapter {
   /// The source coordinate reference system (or projection), ie.
   /// `CoordRefSys.CRS84`.
-  CoordRefSys get fromCoordRefSys;
+  CoordRefSys get sourceCrs;
 
   /// The EPSG code or other identifier of the source coordinate reference
   /// system (or projection), ie. "EPSG:4326" or
   /// "http://www.opengis.net/def/crs/OGC/1.3/CRS84".
   ///
-  @Deprecated('Use fromCoordRefSys.epsg or fromCoordRefSys.id instead')
-  String get fromCrs => fromCoordRefSys.epsg ?? fromCoordRefSys.id;
+  @Deprecated('Use sourceCrs.epsg or sourceCrs.id instead')
+  String get fromCrs => sourceCrs.epsg ?? sourceCrs.id;
 
   /// The target coordinate reference system (or projection), ie.
   /// `CoordRefSys.EPSG_3857`.
-  CoordRefSys get toCoordRefSys;
+  CoordRefSys get targetCrs;
 
   /// The EPSG code or other identifier of the target coordinate reference
   /// system (or projection), ie. "EPSG:3857".
-  @Deprecated('Use toCoordRefSys.epsg or toCoordRefSys.id instead')
-  String get toCrs => toCoordRefSys.epsg ?? toCoordRefSys.id;
+  @Deprecated('Use targetCrs.epsg or targetCrs.id instead')
+  String get toCrs => targetCrs.epsg ?? targetCrs.id;
 
-  /// Returns a projection that projects from [fromCoordRefSys] to
-  /// [toCoordRefSys].
+  /// Returns a projection that projects from [sourceCrs] to
+  /// [targetCrs].
   Projection get forward;
 
-  /// Returns a projection that projects from [toCoordRefSys] to
-  /// [fromCoordRefSys].
+  /// Returns a projection that projects from [targetCrs] to
+  /// [sourceCrs].
   Projection get inverse;
 }
