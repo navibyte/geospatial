@@ -32,6 +32,13 @@ abstract class CoordRefSysResolver {
   /// The normalization logic depends on the resolver of [registry].
   String normalizeId(String id);
 
+  /// Returns true if coordinate reference system identified by [id] represents
+  /// geographic coordinates.
+  ///
+  /// Optionally check also that the axis order equals to given axis [order] or
+  /// that geographic coordinates are based on the WGS 84 datum.
+  bool isGeographic(String id, {bool? wgs84, AxisOrder? order});
+
   /// Try to resolve an axis order of coordinate values in position and point
   /// representations for this coordinate reference system identified and
   /// specified by [id].
@@ -65,6 +72,9 @@ abstract class CoordRefSysResolver {
   ///    `AxisOrder.xy`, with ellipsoidal height (elevation) as a third
   ///    coordinate.
   /// * `http://www.opengis.net/def/crs/EPSG/0/4326` or (`EPSG:4326`): WGS 84
+  ///    geographic coordinates (latitude, longitude) ordered as specified by
+  ///    `AxisOrder.yx`.
+  /// * `http://www.opengis.net/def/crs/EPSG/0/4258` or (`EPSG:4258`): ETRS89
   ///    geographic coordinates (latitude, longitude) ordered as specified by
   ///    `AxisOrder.yx`.
   /// * `http://www.opengis.net/def/crs/EPSG/0/3857` or (`EPSG:3857`): WGS 84
@@ -109,12 +119,39 @@ class _BasicCoordRefSysRegistry implements CoordRefSysResolver {
   }
 
   @override
+  bool isGeographic(String id, {bool? wgs84, AxisOrder? order}) {
+    final bool idOk;
+    switch (id) {
+      case 'http://www.opengis.net/def/crs/OGC/1.3/CRS84':
+      case 'http://www.opengis.net/def/crs/OGC/1.3/CRS84h':
+      case 'http://www.opengis.net/def/crs/EPSG/0/4326':
+        // these are all WGS84
+        idOk = wgs84 == null || wgs84;
+        break;
+      case 'http://www.opengis.net/def/crs/EPSG/0/4258':
+        // this is not WGS84 but ETRS89
+        idOk = wgs84 == null || !wgs84;
+        break;
+      default:
+        idOk = false;
+        break;
+    }
+    if (order != null) {
+      return idOk && order == axisOrder(id);
+    } else {
+      return idOk;
+    }
+  }
+
+  @override
   AxisOrder? axisOrder(String id) {
     switch (id) {
       case 'http://www.opengis.net/def/crs/OGC/1.3/CRS84':
       case 'http://www.opengis.net/def/crs/OGC/1.3/CRS84h':
         return AxisOrder.xy;
       case 'http://www.opengis.net/def/crs/EPSG/0/4326':
+        return AxisOrder.yx;
+      case 'http://www.opengis.net/def/crs/EPSG/0/4258':
         return AxisOrder.yx;
       case 'http://www.opengis.net/def/crs/EPSG/0/3857':
         return AxisOrder.xy;

@@ -93,7 +93,7 @@ class _OGCFeatureClientHttp extends OGCClientHttp implements OGCFeatureService {
     final url = resolveSubResource(endpoint, 'conformance');
     return adapter.getEntityFromJson(
       url,
-      toEntity: (data) {
+      toEntity: (data, _) {
         if (data is Map<String, dynamic>) {
           // standard: root has JSON Object with "conformsTo" containing classes
           return OGCFeatureConformance(
@@ -114,11 +114,11 @@ class _OGCFeatureClientHttp extends OGCClientHttp implements OGCFeatureService {
     final url = resolveSubResource(endpoint, 'collections');
     return adapter.getEntityFromJsonObject(
       url,
-      toEntity: (data) {
+      toEntity: (data, _) {
         // global crs identifiers supported by all collection that refer to them
         final globalCrs = (data['crs'] as Iterable<dynamic>?)?.cast<String>();
 
-        // get collections and parse each of them as `OGCCollectionMeta` 
+        // get collections and parse each of them as `OGCCollectionMeta`
         final list = data['collections'] as Iterable<dynamic>;
         return list
             .map<OGCCollectionMeta>(
@@ -148,7 +148,7 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
         resolveSubResource(service.endpoint, 'collections/$collectionId');
     return service.adapter.getEntityFromJsonObject(
       url,
-      toEntity: (data) {
+      toEntity: (data, _) {
         // data should contain a single collection as JSON Object
         // but some services seem to return this under "collections"...
         final collections = data['collections'];
@@ -187,7 +187,7 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
     final crs = query.crs;
     var params = <String, String>{
       //'f': 'json',
-      if (crs != null) 'crs': crs,
+      if (crs != null) 'crs': crs.toString(),
     };
     if (query.extraParams != null) {
       params = Map.of(query.extraParams!)..addAll(params);
@@ -203,9 +203,23 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
     // fetch data as JSON Object, and parse a feature and meta data
     return service.adapter.getEntityFromJsonObject(
       url,
-      toEntity: (data) {
+      toEntity: (data, headers) {
+        // whether there is a non-default (other than WGS84 lon-lat) query crs
+        final isDefaultCrs =
+            query.crs?.isGeographic(wgs84: true, order: AxisOrder.xy) ?? true;
+        final queryCrs = isDefaultCrs ? null : query.crs;
+
+        // get crs from "Content-Crs" header
+        final contentCrs = _parseContentCrs(headers);
+
         // parses Feature object from GeoJSON data decoded using format
-        final feature = Feature.fromData(data, format: service.format);
+        final feature = Feature.fromData(
+          data,
+          format: service.format,
+
+          // if crs suggest y-x (or lat-lon) order then fromData swaps x and y
+          crs: contentCrs ?? queryCrs,
+        );
 
         // meta as Map<String, dynamic> by removing Feature geometry and props
         final meta = Map.of(data)
@@ -217,6 +231,7 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
         return OGCFeatureItem(
           feature,
           meta: meta.isNotEmpty ? Map.unmodifiable(meta) : null,
+          contentCrs: contentCrs,
         );
       },
     );
@@ -235,13 +250,13 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
     final limit = query.limit;
     final crs = query.crs;
     final bboxCrs = query.bboxCrs;
-    final bbox = query.bbox?.toString();
+    final bbox = query.bbox?.toText(swapXY: bboxCrs?.swapXY ?? false);
     final datetime = query.timeFrame?.toString();
     var params = <String, String>{
       //'f': 'json',
       if (limit != null) 'limit': limit.toString(),
-      if (crs != null) 'crs': crs,
-      if (bboxCrs != null) 'bbox-crs': bboxCrs,
+      if (crs != null) 'crs': crs.toString(),
+      if (bboxCrs != null) 'bbox-crs': bboxCrs.toString(),
       if (bbox != null) 'bbox': bbox,
       if (datetime != null) 'datetime': datetime,
     };
@@ -261,6 +276,7 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
     // read from client and return paged feature collection response
     return _OGCPagedFeaturesItems.parse(
       service,
+      query,
       resolveSubResourceUri(
         service.endpoint,
         Uri(
@@ -275,18 +291,21 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
 class _OGCPagedFeaturesItems with Paged<OGCFeatureItems> {
   _OGCPagedFeaturesItems(
     this.service,
+    this.query,
     this.features, {
     this.nextURL,
     this.prevURL,
   });
 
   final _OGCFeatureClientHttp service;
+  final BoundedItemsQuery query;
   final OGCFeatureItems features;
   final Uri? nextURL;
   final Uri? prevURL;
 
   static Future<_OGCPagedFeaturesItems> parse(
     _OGCFeatureClientHttp service,
+    BoundedItemsQuery query,
     Uri url,
   ) async {
     // fetch data as JSON Object and parse paged response
@@ -294,7 +313,7 @@ class _OGCPagedFeaturesItems with Paged<OGCFeatureItems> {
       url,
       headers: _acceptGeoJSON,
       expect: _expectGeoJSON,
-      toEntity: (data) {
+      toEntity: (data, headers) {
         // check JSON Object for optional "next" and "prev" links
         Uri? nextURL;
         Uri? prevURL;
@@ -311,9 +330,22 @@ class _OGCPagedFeaturesItems with Paged<OGCFeatureItems> {
               : null;
         }
 
+        // whether there is a non-default (other than WGS84 lon-lat) query crs
+        final isDefaultCrs =
+            query.crs?.isGeographic(wgs84: true, order: AxisOrder.xy) ?? true;
+        final queryCrs = isDefaultCrs ? null : query.crs;
+
+        // get crs from "Content-Crs" header
+        final contentCrs = _parseContentCrs(headers);
+
         // parses Feature collection from GeoJSON data decoded using format
-        final collection =
-            FeatureCollection.fromData(data, format: service.format);
+        final collection = FeatureCollection.fromData(
+          data,
+          format: service.format,
+
+          // if crs suggest y-x (or lat-lon) order then fromData swaps x and y
+          crs: contentCrs ?? queryCrs,
+        );
 
         // meta as Map<String, dynamic> by removing features
         final meta = Map.of(data)
@@ -323,9 +355,11 @@ class _OGCPagedFeaturesItems with Paged<OGCFeatureItems> {
         // parse feature items (meta + actual features), return a paged result
         return _OGCPagedFeaturesItems(
           service,
+          query,
           OGCFeatureItems(
             collection,
             meta: meta.isNotEmpty ? Map.unmodifiable(meta) : null,
+            contentCrs: contentCrs,
           ),
           nextURL: nextURL,
           prevURL: prevURL,
@@ -347,6 +381,7 @@ class _OGCPagedFeaturesItems with Paged<OGCFeatureItems> {
       // read data from nextURL and return as paged response
       return _OGCPagedFeaturesItems.parse(
         service,
+        query,
         url,
       );
     } else {
@@ -364,6 +399,7 @@ class _OGCPagedFeaturesItems with Paged<OGCFeatureItems> {
       // read data from prevURL and return as paged response
       return _OGCPagedFeaturesItems.parse(
         service,
+        query,
         url,
       );
     } else {
@@ -400,7 +436,7 @@ OGCCollectionMeta _collectionFromJson(
         final seen = <String>{};
         supportedCrs = globalCrs.followedBy(
           collectionCrs.where((crs) => crs != '#/crs' && seen.add(crs)),
-        ).toList(growable: false);
+        );
       } else {
         supportedCrs = collectionCrs;
       }
@@ -413,6 +449,8 @@ OGCCollectionMeta _collectionFromJson(
 
   // storage crs
   final storageCrs = data['storageCrs'] as String?;
+  final storageCoordRefSys =
+      storageCrs != null ? CoordRefSys.normalized(storageCrs) : null;
   final storageCrsCoordinateEpoch = data['storageCrsCoordinateEpoch'] as num?;
 
   // return as collection meta object
@@ -425,8 +463,8 @@ OGCCollectionMeta _collectionFromJson(
       links: links,
       extent: extent,
       //itemType: 'feature', // no need to specify default
-      crs: supportedCrs,
-      storageCrs: storageCrs,
+      crs: supportedCrs.map(CoordRefSys.normalized).toList(growable: false),
+      storageCrs: storageCoordRefSys,
       storageCrsCoordinateEpoch: storageCrsCoordinateEpoch,
     );
   } else {
@@ -438,7 +476,7 @@ OGCCollectionMeta _collectionFromJson(
       links: links,
       extent: extent,
       //itemType: 'feature', // no need to specify default
-      storageCrs: storageCrs,
+      storageCrs: storageCoordRefSys,
       storageCrsCoordinateEpoch: storageCrsCoordinateEpoch,
     );
   }
@@ -533,4 +571,21 @@ double _parseDouble(Object? data) {
     }
   }
   throw FormatException('Cannot parse $data to double');
+}
+
+CoordRefSys? _parseContentCrs(Map<String, String> headers) {
+  // According to OGC API Features - Part 2 (CRS) response header example:
+  //    Content-Crs: <http://www.opengis.net/def/crs/EPSG/0/4258>
+
+  final header = headers['content-crs']; // lowercase for getting headers!
+  if (header != null &&
+      header.length > 3 &&
+      header.startsWith('<') &&
+      header.endsWith('>')) {
+    final contentCrs = CoordRefSys.normalized(
+      header.substring(1, header.length - 1),
+    );
+    return contentCrs;
+  }
+  return null;
 }

@@ -5,7 +5,7 @@
 // Docs: https://github.com/navibyte/geospatial
 
 /// Geographic (longitude-latitude) and projected positions and bounding boxes.
-/// 
+///
 /// Contains also coordinate reference system (CRS) metadata and projection
 /// abstraction classes.
 ///

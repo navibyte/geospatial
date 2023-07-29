@@ -228,9 +228,16 @@ class Scalable2i implements Scalable, Projected {
   String toText({
     String delimiter = ',',
     int? decimals,
+    bool swapXY = false,
   }) {
     final buf = StringBuffer();
-    Position.writeValues(this, buf, delimiter: delimiter, decimals: decimals);
+    Position.writeValues(
+      this,
+      buf,
+      delimiter: delimiter,
+      decimals: decimals,
+      swapXY: swapXY,
+    );
     return buf.toString();
   }
 

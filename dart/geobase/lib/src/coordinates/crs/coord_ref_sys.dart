@@ -59,6 +59,9 @@ class CoordRefSys {
   /// * `http://www.opengis.net/def/crs/EPSG/0/4326` or (`EPSG:4326`): WGS 84
   ///    geographic coordinates (latitude, longitude) ordered as specified by
   ///    `AxisOrder.yx`.
+  /// * `http://www.opengis.net/def/crs/EPSG/0/4258` or (`EPSG:4258`): ETRS89
+  ///    geographic coordinates (latitude, longitude) ordered as specified by
+  ///    `AxisOrder.yx`.
   /// * `http://www.opengis.net/def/crs/EPSG/0/3857` or (`EPSG:3857`): WGS 84
   ///    projected (Web Mercator) metric coordinates ordered as specified by
   ///    `AxisOrder.xy`.
@@ -67,12 +70,28 @@ class CoordRefSys {
   ///    `AxisOrder.xy`.
   final String id;
 
+  /// Returns true if coordinate reference system identified by [id] represents
+  /// geographic coordinates.
+  ///
+  /// Optionally check also that the axis order equals to given axis [order] or
+  /// that geographic coordinates are based on the WGS 84 datum.
+  bool isGeographic({bool? wgs84, AxisOrder? order}) =>
+      CoordRefSysResolver.registry.isGeographic(id, wgs84: wgs84, order: order);
+
   /// Try to resolve an axis order of coordinate values in position and point
   /// representations for this coordinate reference system identified and
   /// specified by [id].
   ///
   /// The `null` return value is interpreted as "the axis order is not known".
   AxisOrder? get axisOrder => CoordRefSysResolver.registry.axisOrder(id);
+
+  /// Whether x and y coordinates read from external data containing coordinates
+  /// according to this coordinate reference system should be swapped before
+  /// storing to the internal representation of coordinates in this package.
+  ///
+  /// The default implementation returns true if an optional [axisOrder] equals
+  /// to `AxisOrder.yx`.
+  bool get swapXY => axisOrder == AxisOrder.yx;
 
   /// Returns an EPSG identifier according to the common `EPSG:{code}` template
   /// for [id] if the coordinate reference system is recognized by the
@@ -119,6 +138,14 @@ class CoordRefSys {
   /// specified by `AxisOrder.yx`.
   static const CoordRefSys EPSG_4326 =
       CoordRefSys.id('http://www.opengis.net/def/crs/EPSG/0/4326');
+
+  /// The coordinate reference system identified by
+  /// 'http://www.opengis.net/def/crs/EPSG/0/4258'.
+  ///
+  /// References ETRS89 geographic coordinates (latitude, longitude) ordered as
+  /// specified by `AxisOrder.yx`.
+  static const CoordRefSys EPSG_4258 =
+      CoordRefSys.id('http://www.opengis.net/def/crs/EPSG/0/4258');
 
   /// The coordinate reference system identified by
   /// 'http://www.opengis.net/def/crs/EPSG/0/3857'.

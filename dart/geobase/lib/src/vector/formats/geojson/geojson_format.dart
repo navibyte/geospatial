@@ -11,6 +11,7 @@ import 'dart:typed_data';
 import 'package:equatable/equatable.dart';
 
 import '/src/codes/coords.dart';
+import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/utils/coord_arrays_from_json.dart';
 import '/src/utils/format_geojson_wkt.dart';
 import '/src/utils/format_impl.dart';
@@ -152,9 +153,14 @@ class _GeoJsonGeometryTextFormat with TextFormat<GeometryContent> {
   @override
   ContentDecoder decoder(
     GeometryContent builder, {
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) =>
-      _GeoJsonGeometryTextDecoder(builder, options: options);
+      _GeoJsonGeometryTextDecoder(
+        builder,
+        crs: crs,
+        options: options,
+      );
 
   @override
   ContentEncoder<GeometryContent> encoder({
@@ -173,9 +179,14 @@ class _GeoJsonFeatureTextFormat with TextFormat<FeatureContent> {
   @override
   ContentDecoder decoder(
     FeatureContent builder, {
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) =>
-      _GeoJsonFeatureTextDecoder(builder, options: options);
+      _GeoJsonFeatureTextDecoder(
+        builder,
+        crs: crs,
+        options: options,
+      );
 
   @override
   ContentEncoder<FeatureContent> encoder({

@@ -430,6 +430,21 @@ void main() {
           [1.0, 2.0, 3.0, 4.0, 11.0, 12.0, 13.0, 14.0], Coords.xyzm);
     });
 
+    test('Swapping x and y', () {
+      expect(
+        GeoBox.parse('1.1,1.2,2.1,2.2').toText(swapXY: true),
+        '1.2,1.1,2.2,2.1',
+      );
+      expect(
+        GeoBox.parse('1.1,1.2,1.3,2.1,2.2,2.3').toText(swapXY: true),
+        '1.2,1.1,1.3,2.2,2.1,2.3',
+      );
+      expect(
+        GeoBox.parse('1.1,1.2,1.3,1.4,2.1,2.2,2.3,2.4').toText(swapXY: true),
+        '1.2,1.1,1.3,1.4,2.2,2.1,2.3,2.4',
+      );
+    });
+
     test('createFromObject', () {
       final li4 = [1, 2, 3, 4, 11, 12, 13, 14];
       const p4 = ProjBox(

@@ -9,6 +9,7 @@ import 'dart:typed_data';
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/coord_arrays_from_json.dart';
@@ -73,17 +74,32 @@ class Point implements SimpleGeometry {
   /// When [format] is not given, then the geometry format of [GeoJSON] is used
   /// as a default.
   ///
+  /// Use [crs] to give hints (like axis order, and whether x and y must
+  /// be swapped when read in) about coordinate reference system in text input.
+  ///
   /// Format or decoder implementation specific options can be set by [options].
   factory Point.parse(
     String text, {
     TextReaderFormat<SimpleGeometryContent> format = GeoJSON.geometry,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) =>
-      GeometryBuilder.parse<Point>(text, format: format, options: options);
+      GeometryBuilder.parse<Point>(
+        text,
+        format: format,
+        crs: crs,
+        options: options,
+      );
 
   /// Parses a point geometry from [coordinates] conforming to [DefaultFormat].
-  factory Point.parseCoords(String coordinates) {
-    final pos = requirePositionDouble(json.decode('[$coordinates]'));
+  ///
+  /// Use [crs] to give hints (like axis order, and whether x and y must
+  /// be swapped when read in) about coordinate reference system in text input.
+  factory Point.parseCoords(String coordinates, {CoordRefSys? crs}) {
+    final pos = requirePositionDouble(
+      json.decode('[$coordinates]'),
+      crs,
+    );
     final coordType = Coords.fromDimension(pos.length);
     return Point.build(pos, type: coordType);
   }

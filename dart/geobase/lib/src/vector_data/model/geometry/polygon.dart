@@ -9,6 +9,7 @@ import 'dart:typed_data';
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/coord_arrays_from_json.dart';
@@ -101,22 +102,37 @@ class Polygon extends SimpleGeometry {
   /// When [format] is not given, then the geometry format of [GeoJSON] is used
   /// as a default.
   ///
+  /// Use [crs] to give hints (like axis order, and whether x and y must
+  /// be swapped when read in) about coordinate reference system in text input.
+  ///
   /// Format or decoder implementation specific options can be set by [options].
   factory Polygon.parse(
     String text, {
     TextReaderFormat<SimpleGeometryContent> format = GeoJSON.geometry,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) =>
-      GeometryBuilder.parse<Polygon>(text, format: format, options: options);
+      GeometryBuilder.parse<Polygon>(
+        text,
+        format: format,
+        crs: crs,
+        options: options,
+      );
 
   /// Parses a polygon geometry from [coordinates] conforming to
   /// [DefaultFormat].
-  factory Polygon.parseCoords(String coordinates) {
+  ///
+  /// Use [crs] to give hints (like axis order, and whether x and y must
+  /// be swapped when read in) about coordinate reference system in text input.
+  factory Polygon.parseCoords(
+    String coordinates, {
+    CoordRefSys? crs,
+  }) {
     final array = json.decode('[$coordinates]') as List<dynamic>;
     final coordType = resolveCoordType(array, positionLevel: 2);
     // NOTE: validate polygon (at least one ring)
     return Polygon.build(
-      createFlatPositionArrayArrayDouble(array, coordType),
+      createFlatPositionArrayArrayDouble(array, coordType, crs),
       type: coordType,
     );
   }

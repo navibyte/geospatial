@@ -27,7 +27,7 @@ void main() {
     });
 
     test('GeospatialQuery', () {
-      final query = GeospatialQuery(crs: 'EPSG:4326', extra: {
+      final query = GeospatialQuery(crs: CoordRefSys.EPSG_4326, extra: {
         'string': 'this is str',
         'int': 123,
         'double': 93.4245,
@@ -44,7 +44,7 @@ void main() {
           maxElev: 400.0,
         ),
       });
-      expect(query.crs, 'EPSG:4326');
+      expect(query.crs?.epsg, 'EPSG:4326');
       expect(query.extraParams, <String, String>{
         'string': 'this is str',
         'int': '123',

@@ -6,6 +6,7 @@
 
 import 'package:meta/meta.dart';
 
+import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/property_builder.dart';
@@ -165,15 +166,20 @@ class Feature<T extends Geometry> extends FeatureObject {
   /// When [format] is not given, then the feature format of [GeoJSON] is used
   /// as a default.
   ///
+  /// Use [crs] to give hints (like axis order, and whether x and y must
+  /// be swapped when read in) about coordinate reference system in text input.
+  ///
   /// Format or decoder implementation specific options can be set by [options].
   static Feature<T> parse<T extends Geometry>(
     String text, {
     TextReaderFormat<FeatureContent> format = GeoJSON.feature,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) =>
       FeatureBuilder.parse<Feature<T>, T>(
         text,
         format: format,
+        crs: crs,
         options: options,
       );
 
@@ -185,15 +191,20 @@ class Feature<T extends Geometry> extends FeatureObject {
   /// When [format] is not given, then the feature format of [GeoJSON] is used
   /// as a default.
   ///
+  /// Use [crs] to give hints (like axis order, and whether x and y must
+  /// be swapped when read in) about coordinate reference system in text input.
+  ///
   /// Format or decoder implementation specific options can be set by [options].
   static Feature<T> fromData<T extends Geometry>(
     Map<String, dynamic> data, {
     TextReaderFormat<FeatureContent> format = GeoJSON.feature,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) =>
       FeatureBuilder.decodeData<Feature<T>, T>(
         data,
         format: format,
+        crs: crs,
         options: options,
       );
 

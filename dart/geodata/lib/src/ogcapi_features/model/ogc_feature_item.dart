@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'package:geobase/coordinates.dart';
+
 import '/src/common/links/links.dart';
 import '/src/common/links/links_aware.dart';
 import '/src/core/features/feature_item.dart';
@@ -17,7 +19,12 @@ class OGCFeatureItem extends FeatureItem with LinksAware {
   const OGCFeatureItem(
     super.feature, {
     super.meta,
+    this.contentCrs,
   });
+
+  /// An optional coordinate reference system from "Content-Crs" response
+  /// header.
+  final CoordRefSys? contentCrs;
 
   // Note : Following getters access external data outside actual parsing code,
   // so there's some extra care to ensure nulls or empty data is returned if

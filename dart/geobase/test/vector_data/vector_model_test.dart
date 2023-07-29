@@ -6,6 +6,7 @@
 
 // ignore_for_file: cascade_invocations, lines_longer_than_80_chars
 
+import 'package:geobase/coordinates.dart';
 import 'package:geobase/vector.dart';
 import 'package:geobase/vector_data.dart';
 
@@ -55,25 +56,45 @@ void main() {
 
   group('Parsing geometries', () {
     const pointCoords = '1.5,2.5';
+    const pointCoordsYX = '2.5,1.5';
     const point = '{"type":"Point","coordinates":[$pointCoords]}';
+    const pointYX = '{"type":"Point","coordinates":[$pointCoordsYX]}';
     const lineStringCoords = '[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]';
+    const lineStringCoordsYX = '[-1.1,-1.1],[-2.5,2.1],[-3.49,3.5]';
     const lineString =
         '{"type":"LineString","coordinates":[$lineStringCoords]}';
+    const lineStringYX =
+        '{"type":"LineString","coordinates":[$lineStringCoordsYX]}';
     const polygonCoords =
         '[[10.1,10.1],[5.0,9.0],[12.0,4.0],[10.1,10.1]],[[11.1,11.1],[6.0,9.9],[13.0,4.9],[11.1,11.1]]';
+    const polygonCoordsYX =
+        '[[10.1,10.1],[9.0,5.0],[4.0,12.0],[10.1,10.1]],[[11.1,11.1],[9.9,6.0],[4.9,13.0],[11.1,11.1]]';
     const polygon = '{"type":"Polygon","coordinates":[$polygonCoords]}';
+    const polygonYX = '{"type":"Polygon","coordinates":[$polygonCoordsYX]}';
     const multiPointCoords =
         '[-1.1,-1.1,-1.1,-1.1],[2.1,-2.5,2.3,0.1],[3.5,-3.49,11.3,0.23]';
+    const multiPointCoordsYX =
+        '[-1.1,-1.1,-1.1,-1.1],[-2.5,2.1,2.3,0.1],[-3.49,3.5,11.3,0.23]';
     const multiPoint =
         '{"type":"MultiPoint","coordinates":[$multiPointCoords]}';
+    const multiPointYX =
+        '{"type":"MultiPoint","coordinates":[$multiPointCoordsYX]}';
     const multiLineStringCoords =
         '[[10.1,10.1],[5.0,9.0],[12.0,4.0],[10.1,10.1]],[[11.1,11.1],[6.0,9.9],[13.0,4.9],[11.1,11.1]]';
+    const multiLineStringCoordsYX =
+        '[[10.1,10.1],[9.0,5.0],[4.0,12.0],[10.1,10.1]],[[11.1,11.1],[9.9,6.0],[4.9,13.0],[11.1,11.1]]';
     const multiLineString =
         '{"type":"MultiLineString","coordinates":[$multiLineStringCoords]}';
+    const multiLineStringYX =
+        '{"type":"MultiLineString","coordinates":[$multiLineStringCoordsYX]}';
     const multiPolygonCoords =
         '[[[10.1,10.1],[5.0,9.0],[12.0,4.0],[10.1,10.1]],[[11.1,11.1],[6.0,9.9],[13.0,4.9],[11.1,11.1]]]';
+    const multiPolygonCoordsYX =
+        '[[[10.1,10.1],[9.0,5.0],[4.0,12.0],[10.1,10.1]],[[11.1,11.1],[9.9,6.0],[4.9,13.0],[11.1,11.1]]]';
     const multiPolygon =
         '{"type":"MultiPolygon","coordinates":[$multiPolygonCoords]}';
+    const multiPolygonYX =
+        '{"type":"MultiPolygon","coordinates":[$multiPolygonCoordsYX]}';
 
     test('Simple geometries', () {
       expect(Point.parse(point).toText(), point);
@@ -95,36 +116,154 @@ void main() {
         multiPolygon,
       );
     });
+
+    test('Simple geometries with crs with AxisOrder.yx input', () {
+      const crsDataList = [
+        [CoordRefSys.CRS84, AxisOrder.xy],
+        [CoordRefSys.EPSG_4326, AxisOrder.yx],
+        [CoordRefSys.EPSG_3857, AxisOrder.xy],
+      ];
+      for (final crsData in crsDataList) {
+        final crs = crsData[0] as CoordRefSys;
+        final order = crsData[1] as AxisOrder;
+        if (order == AxisOrder.xy) {
+          expect(Point.parse(point, crs: crs).toText(), point);
+          expect(Point.parseCoords(pointCoords, crs: crs).toText(), point);
+          expect(LineString.parse(lineString, crs: crs).toText(), lineString);
+          expect(
+            LineString.parseCoords(lineStringCoords, crs: crs).toText(),
+            lineString,
+          );
+          expect(Polygon.parse(polygon, crs: crs).toText(), polygon);
+          expect(
+            Polygon.parseCoords(polygonCoords, crs: crs).toText(),
+            polygon,
+          );
+          expect(MultiPoint.parse(multiPoint, crs: crs).toText(), multiPoint);
+          expect(
+            MultiPoint.parseCoords(multiPointCoords, crs: crs).toText(),
+            multiPoint,
+          );
+          expect(
+            MultiLineString.parse(multiLineString, crs: crs).toText(),
+            multiLineString,
+          );
+          expect(
+            MultiLineString.parseCoords(multiLineStringCoords, crs: crs)
+                .toText(),
+            multiLineString,
+          );
+          expect(
+            MultiPolygon.parse(multiPolygon, crs: crs).toText(),
+            multiPolygon,
+          );
+          expect(
+            MultiPolygon.parseCoords(multiPolygonCoords, crs: crs).toText(),
+            multiPolygon,
+          );
+        } else if (order == AxisOrder.yx) {
+          expect(Point.parse(pointYX, crs: crs).toText(), point);
+          expect(Point.parseCoords(pointCoordsYX, crs: crs).toText(), point);
+          expect(LineString.parse(lineStringYX, crs: crs).toText(), lineString);
+          expect(
+            LineString.parseCoords(lineStringCoordsYX, crs: crs).toText(),
+            lineString,
+          );
+          expect(Polygon.parse(polygonYX, crs: crs).toText(), polygon);
+          expect(
+            Polygon.parseCoords(polygonCoordsYX, crs: crs).toText(),
+            polygon,
+          );
+          expect(MultiPoint.parse(multiPointYX, crs: crs).toText(), multiPoint);
+          expect(
+            MultiPoint.parseCoords(multiPointCoordsYX, crs: crs).toText(),
+            multiPoint,
+          );
+          expect(
+            MultiLineString.parse(multiLineStringYX, crs: crs).toText(),
+            multiLineString,
+          );
+          expect(
+            MultiLineString.parseCoords(multiLineStringCoordsYX, crs: crs)
+                .toText(),
+            multiLineString,
+          );
+          expect(
+            MultiPolygon.parse(multiPolygonYX, crs: crs).toText(),
+            multiPolygon,
+          );
+          expect(
+            MultiPolygon.parseCoords(multiPolygonCoordsYX, crs: crs).toText(),
+            multiPolygon,
+          );
+        }
+      }
+    });
   });
 
   group('Typed collections and features', () {
     const props = '"properties":{"foo":1,"bar":"baz"}';
     const point = '{"type":"Point","coordinates":[1.5,2.5]}';
+    const pointYX = '{"type":"Point","coordinates":[2.5,1.5]}';
     const lineString =
         '{"type":"LineString","coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]}';
+    const lineStringYX =
+        '{"type":"LineString","coordinates":[[-1.1,-1.1],[-2.5,2.1],[-3.49,3.5]]}';
 
     const geomColl =
         '{"type":"GeometryCollection","geometries":[$point,$lineString]}';
+    const geomCollYX =
+        '{"type":"GeometryCollection","geometries":[$pointYX,$lineStringYX]}';
     const geomCollPoints =
         '{"type":"GeometryCollection","geometries":[$point,$point]}';
+    const geomCollPointsYX =
+        '{"type":"GeometryCollection","geometries":[$pointYX,$pointYX]}';
 
     const pointFeat = '{"type":"Feature","geometry":$point,$props}';
+    const pointFeatYX = '{"type":"Feature","geometry":$pointYX,$props}';
     const lineStringFeat = '{"type":"Feature","geometry":$lineString,$props}';
+    const lineStringFeatYX =
+        '{"type":"Feature","geometry":$lineStringYX,$props}';
 
     const featColl =
         '{"type":"FeatureCollection","features":[$pointFeat,$lineStringFeat]}';
+    const featCollYX =
+        '{"type":"FeatureCollection","features":[$pointFeatYX,$lineStringFeatYX]}';
     const featCollPoints =
         '{"type":"FeatureCollection","features":[$pointFeat,$pointFeat]}';
+    const featCollPointsYX =
+        '{"type":"FeatureCollection","features":[$pointFeatYX,$pointFeatYX]}';
+
+    const epsg4326 = CoordRefSys.EPSG_4326;
 
     test('Simple geometries', () {
       expect(Point.parse(point).toText(), point);
       expect(LineString.parse(lineString).toText(), lineString);
     });
 
+    test('Simple geometries (swapped)', () {
+      expect(Point.parse(pointYX, crs: epsg4326).toText(), point);
+      expect(
+        LineString.parse(lineStringYX, crs: epsg4326).toText(),
+        lineString,
+      );
+    });
+
     test('Geometry collection with non-typed geometry', () {
       expect(GeometryCollection.parse(geomColl).toText(), geomColl);
       expect(
         GeometryCollection.parse(geomCollPoints).toText(),
+        geomCollPoints,
+      );
+    });
+
+    test('Geometry collection with non-typed geometry (swapped)', () {
+      expect(
+        GeometryCollection.parse(geomCollYX, crs: epsg4326).toText(),
+        geomColl,
+      );
+      expect(
+        GeometryCollection.parse(geomCollPointsYX, crs: epsg4326).toText(),
         geomCollPoints,
       );
     });
@@ -146,6 +285,12 @@ void main() {
       expect(feat.toText(), lineStringFeat);
     });
 
+    test('Feature with non-typed geometry (swapped)', () {
+      expect(Feature.parse(pointFeatYX, crs: epsg4326).toText(), pointFeat);
+      final feat = Feature.parse(lineStringFeatYX, crs: epsg4326);
+      expect(feat.toText(), lineStringFeat);
+    });
+
     test('Feature with typed geometry', () {
       expect(Feature.parse<Point>(pointFeat).toText(), pointFeat);
       final feat = Feature.parse<LineString>(lineStringFeat);
@@ -155,6 +300,15 @@ void main() {
     test('Feature collection with non-typed geometry', () {
       expect(FeatureCollection.parse(featColl).toText(), featColl);
       final coll = FeatureCollection.parse(featCollPoints);
+      expect(coll.toText(), featCollPoints);
+    });
+
+    test('Feature collection with non-typed geometry (swapped)', () {
+      expect(
+        FeatureCollection.parse(featCollYX, crs: epsg4326).toText(),
+        featColl,
+      );
+      final coll = FeatureCollection.parse(featCollPointsYX, crs: epsg4326);
       expect(coll.toText(), featCollPoints);
     });
 

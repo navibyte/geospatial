@@ -4,6 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'package:geobase/coordinates.dart';
 import 'package:geobase/vector.dart';
 import 'package:geobase/vector_data.dart';
 import 'package:http/http.dart';
@@ -36,11 +37,15 @@ class GeoJSONFeatures {
   /// as a default. Note that currently only GeoJSON is supported, but it's
   /// possible to inject another format implementation (or with custom
   /// configuration) to the default one.
+  ///
+  /// Use [crs] to give hints (like axis order, and whether x and y must
+  /// be swapped when read in) about coordinate reference system in text input.
   static BasicFeatureSource http({
     required Uri location,
     Client? client,
     Map<String, String>? headers,
     TextReaderFormat<FeatureContent> format = GeoJSON.feature,
+    CoordRefSys? crs,
   }) =>
       _GeoJSONFeatureSource(
         location,
@@ -49,6 +54,7 @@ class GeoJSONFeatures {
           headers: headers,
         ),
         format: format,
+        crs: crs,
       );
 
   /// A client for accessing a `GeoJSON` feature collection from any [source];
@@ -60,13 +66,18 @@ class GeoJSONFeatures {
   /// as a default. Note that currently only GeoJSON is supported, but it's
   /// possible to inject another format implementation (or with custom
   /// configuration) to the default one.
+  ///
+  /// Use [crs] to give hints (like axis order, and whether x and y must
+  /// be swapped when read in) about coordinate reference system in text input.
   static BasicFeatureSource any(
     Future<String> Function() source, {
     TextReaderFormat<FeatureContent> format = GeoJSON.feature,
+    CoordRefSys? crs,
   }) =>
       _GeoJSONFeatureSource(
         source,
         format: format,
+        crs: crs,
       );
 }
 
@@ -79,6 +90,7 @@ class _GeoJSONFeatureSource implements BasicFeatureSource {
     this.source, {
     this.adapter,
     required this.format,
+    this.crs,
   });
 
   // source can be
@@ -90,6 +102,8 @@ class _GeoJSONFeatureSource implements BasicFeatureSource {
   final FeatureHttpAdapter? adapter;
 
   final TextReaderFormat<FeatureContent> format;
+
+  final CoordRefSys? crs;
 
   @override
   Future<FeatureItem> itemById(Object id) async {
@@ -131,13 +145,13 @@ class _GeoJSONFeatureSource implements BasicFeatureSource {
       // read web resource and convert to entity
       return adapter!.getEntityFromJsonObject(
         src,
-        toEntity: (data) => _parseFeatureItems(limit, data, format),
+        toEntity: (data, _) => _parseFeatureItems(limit, data, format, crs),
       );
     } else if (src is Future<String> Function()) {
       // read a future returned by a function
       return readEntityFromJsonObject(
         src,
-        toEntity: (data) => _parseFeatureItems(limit, data, format),
+        toEntity: (data) => _parseFeatureItems(limit, data, format, crs),
       );
     }
 
@@ -150,9 +164,12 @@ _GeoJSONPagedFeaturesItems _parseFeatureItems(
   int? limit,
   Map<String, dynamic> data,
   TextReaderFormat<FeatureContent> format,
+  CoordRefSys? crs,
 ) {
   // NOTE: get count without actually parsing the whole feature collection
-  final collection = FeatureCollection.fromData(data, format: format);
+
+  // get the whole collection to get count
+  final collection = FeatureCollection.fromData(data, format: format, crs: crs);
   final count = collection.features.length;
 
   // analyze if only a first set or all items should be returned
@@ -166,12 +183,13 @@ _GeoJSONPagedFeaturesItems _parseFeatureItems(
   }
 
   // return as paged collection (paging through already fetched data)
-  return _GeoJSONPagedFeaturesItems.parse(format, data, count, range);
+  return _GeoJSONPagedFeaturesItems.parse(format, crs, data, count, range);
 }
 
 class _GeoJSONPagedFeaturesItems with Paged<FeatureItems> {
-  _GeoJSONPagedFeaturesItems(
+  const _GeoJSONPagedFeaturesItems(
     this.format,
+    this.crs,
     this.features,
     this.count, [
     this.data,
@@ -180,6 +198,7 @@ class _GeoJSONPagedFeaturesItems with Paged<FeatureItems> {
 
   factory _GeoJSONPagedFeaturesItems.parse(
     TextReaderFormat<FeatureContent> format,
+    CoordRefSys? crs,
     Map<String, dynamic> data,
     int count,
     _Range? range,
@@ -188,6 +207,7 @@ class _GeoJSONPagedFeaturesItems with Paged<FeatureItems> {
     final collection = FeatureCollection.fromData(
       data,
       format: format,
+      crs: crs,
       options: range != null
           ? {'itemOffset': range.start, 'itemLimit': range.limit}
           : null,
@@ -210,15 +230,13 @@ class _GeoJSONPagedFeaturesItems with Paged<FeatureItems> {
 
     // return a paged result either with ref to next range or without
     return nextRange != null
-        ? _GeoJSONPagedFeaturesItems(format, items, count, data, nextRange)
-        : _GeoJSONPagedFeaturesItems(
-            format,
-            items,
-            count,
-          );
+        ? _GeoJSONPagedFeaturesItems(format, crs, items, count, data, nextRange)
+        : _GeoJSONPagedFeaturesItems(format, crs, items, count);
   }
 
-  TextReaderFormat<FeatureContent> format;
+  final TextReaderFormat<FeatureContent> format;
+  final CoordRefSys? crs;
+
   final FeatureItems features;
   final int count;
 
@@ -236,7 +254,13 @@ class _GeoJSONPagedFeaturesItems with Paged<FeatureItems> {
     if (nextRange == null || data == null) {
       return null;
     }
-    return _GeoJSONPagedFeaturesItems.parse(format, data!, count, nextRange);
+    return _GeoJSONPagedFeaturesItems.parse(
+      format,
+      crs,
+      data!,
+      count,
+      nextRange,
+    );
   }
 }
 

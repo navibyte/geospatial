@@ -10,6 +10,7 @@ import 'dart:typed_data';
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/vector/content/geometry_content.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
@@ -117,10 +118,14 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
   /// When [format] is not given, then the geometry format of [GeoJSON] is used
   /// as a default.
   ///
+  /// Use [crs] to give hints (like axis order, and whether x and y must
+  /// be swapped when read in) about coordinate reference system in text input.
+  ///
   /// Format or decoder implementation specific options can be set by [options].
   static R parse<R extends Geometry>(
     String text, {
     TextReaderFormat<SimpleGeometryContent> format = GeoJSON.geometry,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) {
     R? result;
@@ -134,7 +139,11 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
     });
 
     // get decoder with the content decoded sent to builder
-    final decoder = format.decoder(builder, options: options);
+    final decoder = format.decoder(
+      builder,
+      crs: crs,
+      options: options,
+    );
 
     // decode and return result if succesful
     decoder.decodeText(text);
@@ -151,10 +160,14 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
   /// When [format] is not given, then the geometry format of [GeoJSON] is used
   /// as a default.
   ///
+  /// Use [crs] to give hints (like axis order, and whether x and y must
+  /// be swapped when read in) about coordinate reference system in text input.
+  ///
   /// Format or decoder implementation specific options can be set by [options].
   static GeometryCollection<T> parseCollection<T extends Geometry>(
     String text, {
     TextReaderFormat<GeometryContent> format = GeoJSON.geometry,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) {
     GeometryCollection<T>? result;
@@ -169,7 +182,11 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
     });
 
     // get decoder with the content decoded sent to builder
-    final decoder = format.decoder(builder, options: options);
+    final decoder = format.decoder(
+      builder,
+      crs: crs,
+      options: options,
+    );
 
     // decode and return result if succesful
     decoder.decodeText(text);

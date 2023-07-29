@@ -215,6 +215,8 @@ abstract class Position extends Positionable {
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
   ///
+  /// Set [swapXY] to true to print y (or latitude) before x (or longitude).
+  ///
   /// A sample with default parameters (for a 3D position):
   /// `10.1,20.3,30.3`
   ///
@@ -223,9 +225,16 @@ abstract class Position extends Positionable {
   String toText({
     String delimiter = ',',
     int? decimals,
+    bool swapXY = false,
   }) {
     final buf = StringBuffer();
-    Position.writeValues(this, buf, delimiter: delimiter, decimals: decimals);
+    Position.writeValues(
+      this,
+      buf,
+      delimiter: delimiter,
+      decimals: decimals,
+      swapXY: swapXY,
+    );
     return buf.toString();
   }
 
@@ -491,6 +500,8 @@ abstract class Position extends Positionable {
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
   ///
+  /// Set [swapXY] to true to print y (or latitude) before x (or longitude).
+  ///
   /// A sample with default parameters (for a 3D point):
   /// `10.1,20.3,30.3`
   ///
@@ -501,12 +512,23 @@ abstract class Position extends Positionable {
     StringSink buffer, {
     String delimiter = ',',
     int? decimals,
+    bool swapXY = false,
   }) {
     if (decimals != null) {
       buffer
-        ..write(toStringAsFixedWhenDecimals(position.x, decimals))
+        ..write(
+          toStringAsFixedWhenDecimals(
+            swapXY ? position.y : position.x,
+            decimals,
+          ),
+        )
         ..write(delimiter)
-        ..write(toStringAsFixedWhenDecimals(position.y, decimals));
+        ..write(
+          toStringAsFixedWhenDecimals(
+            swapXY ? position.x : position.y,
+            decimals,
+          ),
+        );
       if (position.is3D) {
         buffer
           ..write(delimiter)
@@ -519,9 +541,9 @@ abstract class Position extends Positionable {
       }
     } else {
       buffer
-        ..write(position.x)
+        ..write(swapXY ? position.y : position.x)
         ..write(delimiter)
-        ..write(position.y);
+        ..write(swapXY ? position.x : position.y);
       if (position.is3D) {
         buffer
           ..write(delimiter)

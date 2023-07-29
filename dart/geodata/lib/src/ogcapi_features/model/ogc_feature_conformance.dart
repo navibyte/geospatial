@@ -101,7 +101,7 @@ class OGCFeatureConformance extends OGCConformance {
   /// `OGC API - Features - Part 1: Core` standard.
   ///
   /// `http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core`
-  /// 
+  ///
   /// External dependencies:
   /// * [RFC 9110 (HTTP Semantics)](https://www.rfc-editor.org/rfc/rfc9110.html)
   /// * [RFC 9112 (HTTP/1.1)](https://www.rfc-editor.org/rfc/rfc9112.html)
@@ -131,7 +131,7 @@ class OGCFeatureConformance extends OGCConformance {
   ///
   /// Dependencies to other conformance classes:
   /// * [features1Core]
-  /// 
+  ///
   /// External dependencies:
   /// * [HTML5](https://html.spec.whatwg.org/)
   /// * [Schema.org](https://schema.org/docs/schemas.html)

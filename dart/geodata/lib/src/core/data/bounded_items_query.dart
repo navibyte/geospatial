@@ -44,7 +44,7 @@ class BoundedItemsQuery extends ItemsQuery {
             );
 
   /// An optional coordinate reference system used by [bbox].
-  final String? bboxCrs;
+  final CoordRefSys? bboxCrs;
 
   /// An optional [bbox] as a geospatial bounding filter (like `bbox`).
   final Box? bbox;

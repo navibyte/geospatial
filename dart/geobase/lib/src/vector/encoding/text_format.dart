@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import '/src/coordinates/crs/coord_ref_sys.dart';
+
 import 'content_decoder.dart';
 import 'content_encoder.dart';
 
@@ -38,8 +40,15 @@ abstract class TextReaderFormat<Content extends Object> {
   /// Content decoded by a decoder is sent to a content interface represented
   /// by an object [builder].
   ///
+  /// Use [crs] to give hints (like axis order, and whether x and y must
+  /// be swapped when read in) about coordinate reference system in text input.
+  ///
   /// Format or decoder implementation specific options can be set by [options].
-  ContentDecoder decoder(Content builder, {Map<String, dynamic>? options});
+  ContentDecoder decoder(
+    Content builder, {
+    CoordRefSys? crs,
+    Map<String, dynamic>? options,
+  });
 }
 
 /// A mixin to access text format encoders and decoders for [Content].

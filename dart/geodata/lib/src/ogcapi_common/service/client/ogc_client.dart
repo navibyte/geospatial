@@ -49,7 +49,7 @@ abstract class OGCClientHttp implements OGCService {
     // fetch data as JSON Object, and parse meta data
     return adapter.getEntityFromJsonObject(
       endpoint,
-      toEntity: (data) {
+      toEntity: (data, _) {
         final links = Links.fromJson(data['links'] as Iterable<dynamic>);
         return _OGCServiceMetaImpl(
           service: this,
@@ -96,14 +96,14 @@ class _OGCServiceMetaImpl extends OGCServiceMeta {
         url,
         headers: {'accept': type},
         expect: _expectJSONOpenAPI,
-        toEntity: (data) => OpenAPIDocument(content: data),
+        toEntity: (data, _) => OpenAPIDocument(content: data),
       );
     } else {
       return service.adapter.getEntityFromJsonObject(
         url,
         headers: _acceptJSONOpenAPI,
         expect: _expectJSONOpenAPI,
-        toEntity: (data) => OpenAPIDocument(content: data),
+        toEntity: (data, _) => OpenAPIDocument(content: data),
       );
     }
   }

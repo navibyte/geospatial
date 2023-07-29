@@ -47,13 +47,17 @@ class FeatureHttpAdapter {
   /// Returns an entity mapped from JSON Object using [toEntity].
   Future<T> getEntityFromJsonObject<T>(
     Uri url, {
-    required T Function(Map<String, dynamic> data) toEntity,
+    required T Function(
+      Map<String, dynamic> data,
+      Map<String, String> responseHeaders,
+    ) toEntity,
     Map<String, String>? headers = _acceptJSON,
     List<String>? expect = _expectJSON,
   }) =>
       getEntityFromJson(
         url,
-        toEntity: (data) => toEntity(data as Map<String, dynamic>),
+        toEntity: (data, responseHeaders) =>
+            toEntity(data as Map<String, dynamic>, responseHeaders),
         headers: headers,
         expect: expect,
       );
@@ -63,7 +67,10 @@ class FeatureHttpAdapter {
   /// Returns an entity mapped from JSON element using [toEntity].
   Future<T> getEntityFromJson<T>(
     Uri url, {
-    required T Function(dynamic data) toEntity,
+    required T Function(
+      dynamic data,
+      Map<String, String> responseHeaders,
+    ) toEntity,
     Map<String, String>? headers = _acceptJSON,
     List<String>? expect = _expectJSON,
   }) async {
@@ -98,7 +105,7 @@ class FeatureHttpAdapter {
           final data = json.decode(response.body);
 
           // map JSON data to an entity
-          return toEntity(data);
+          return toEntity(data, response.headers);
         case 400:
           throw const ServiceException(FeatureFailure.badRequest);
         case 404:

@@ -452,6 +452,26 @@ void main() {
       expect(p3i.toText(decimals: 2), '10,20,30');
     });
 
+    test('toText swapping X and Y', () {
+      expect(p3dec.toText(swapXY: true), '20.217,10.1,30.73942');
+      expect(p3dec.toText(decimals: 0, swapXY: true), '20,10,31');
+      expect(p3.toText(decimals: 3, swapXY: true), '20,10.001,30');
+      expect(p3i.toText(decimals: 2, swapXY: true), '20,10,30');
+
+      expect(
+        Geographic.build(const [1.1, 2.2]).toText(swapXY: true),
+        '2.2,1.1',
+      );
+      expect(
+        Geographic.build(const [1.1, 2.2, 3.3]).toText(swapXY: true),
+        '2.2,1.1,3.3',
+      );
+      expect(
+        Geographic.build(const [1.1, 2.2, 3.3, 4.4]).toText(swapXY: true),
+        '2.2,1.1,3.3,4.4',
+      );
+    });
+
     test('toText with space delimiter', () {
       expect(p3dec.toText(delimiter: ' '), '10.1 20.217 30.73942');
       expect(p3dec.toText(decimals: 0, delimiter: ' '), '10 20 31');
@@ -574,9 +594,16 @@ class _TestXYZM implements Projected {
   String toText({
     String delimiter = ',',
     int? decimals,
+    bool swapXY = false,
   }) {
     final buf = StringBuffer();
-    Position.writeValues(this, buf, delimiter: delimiter, decimals: decimals);
+    Position.writeValues(
+      this,
+      buf,
+      delimiter: delimiter,
+      decimals: decimals,
+      swapXY: swapXY,
+    );
     return buf.toString();
   }
 

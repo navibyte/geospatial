@@ -6,6 +6,7 @@
 
 // ignore_for_file: cascade_invocations
 
+import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/vector/content/feature_content.dart';
 import '/src/vector/content/geometry_content.dart';
 import '/src/vector/content/property_content.dart';
@@ -79,10 +80,14 @@ class FeatureBuilder<T extends FeatureObject, E extends Geometry>
   /// When [format] is not given, then the feature format of [GeoJSON] is used
   /// as a default.
   ///
+  /// Use [crs] to give hints (like axis order, and whether x and y must
+  /// be swapped when read in) about coordinate reference system in text input.
+  ///
   /// Format or decoder implementation specific options can be set by [options].
   static R parse<R extends FeatureObject, E extends Geometry>(
     String text, {
     TextReaderFormat<FeatureContent> format = GeoJSON.feature,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) {
     R? result;
@@ -96,7 +101,11 @@ class FeatureBuilder<T extends FeatureObject, E extends Geometry>
     });
 
     // get decoder with the content decoded sent to builder
-    final decoder = format.decoder(builder, options: options);
+    final decoder = format.decoder(
+      builder,
+      crs: crs,
+      options: options,
+    );
 
     // decode and return result if succesful
     decoder.decodeText(text);
@@ -114,10 +123,14 @@ class FeatureBuilder<T extends FeatureObject, E extends Geometry>
   /// When [format] is not given, then the feature format of [GeoJSON] is used
   /// as a default.
   ///
+  /// Use [crs] to give hints (like axis order, and whether x and y must
+  /// be swapped when read in) about coordinate reference system in text input.
+  ///
   /// Format or decoder implementation specific options can be set by [options].
   static R decodeData<R extends FeatureObject, E extends Geometry>(
     Map<String, dynamic> data, {
     TextReaderFormat<FeatureContent> format = GeoJSON.feature,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) {
     R? result;
@@ -131,7 +144,11 @@ class FeatureBuilder<T extends FeatureObject, E extends Geometry>
     });
 
     // get decoder with the content decoded sent to builder
-    final decoder = format.decoder(builder, options: options);
+    final decoder = format.decoder(
+      builder,
+      crs: crs,
+      options: options,
+    );
 
     // decode and return result if succesful
     decoder.decodeData(data);

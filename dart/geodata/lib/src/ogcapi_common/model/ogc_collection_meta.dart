@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'package:geobase/coordinates.dart';
+
 import '/src/core/base/collection_meta.dart';
 
 /// Metadata for a collection resource (like OGC API collection).
@@ -20,7 +22,7 @@ class OGCCollectionMeta extends CollectionMeta {
     super.extent,
     this.itemType = 'feature',
     this.crs = const [
-      'http://www.opengis.net/def/crs/OGC/1.3/CRS84',
+      CoordRefSys.CRS84,
     ],
     this.storageCrs,
     this.storageCrsCoordinateEpoch,
@@ -41,14 +43,14 @@ class OGCCollectionMeta extends CollectionMeta {
   /// result of coordinate reference systems this collection actually supports
   /// from global and collection specific crs ids.
   ///
-  /// The default list contains only WGS84
+  /// The default list contains only WGS84 longitude/latitude
   /// (`http://www.opengis.net/def/crs/OGC/1.3/CRS84`).
-  final Iterable<String> crs;
+  final Iterable<CoordRefSys> crs;
 
   /// A coordinate reference system (that is included in [crs] too)
   /// *that may be used to retrieve features from a collection without the need*
   /// *to apply a CRS transformation*.
-  final String? storageCrs;
+  final CoordRefSys? storageCrs;
 
   /// *A point in time at which coordinates in the spatial feature collection*
   /// *are referenced to the dynamic coordinate reference system in*

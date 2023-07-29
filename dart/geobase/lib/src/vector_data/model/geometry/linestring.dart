@@ -9,6 +9,7 @@ import 'dart:typed_data';
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/coord_arrays_from_json.dart';
@@ -77,22 +78,37 @@ class LineString extends SimpleGeometry {
   /// When [format] is not given, then the geometry format of [GeoJSON] is used
   /// as a default.
   ///
+  /// Use [crs] to give hints (like axis order, and whether x and y must
+  /// be swapped when read in) about coordinate reference system in text input.
+  ///
   /// Format or decoder implementation specific options can be set by [options].
   factory LineString.parse(
     String text, {
     TextReaderFormat<SimpleGeometryContent> format = GeoJSON.geometry,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) =>
-      GeometryBuilder.parse<LineString>(text, format: format, options: options);
+      GeometryBuilder.parse<LineString>(
+        text,
+        format: format,
+        crs: crs,
+        options: options,
+      );
 
   /// Parses a line string geometry from [coordinates] conforming to
   /// [DefaultFormat].
-  factory LineString.parseCoords(String coordinates) {
+  ///
+  /// Use [crs] to give hints (like axis order, and whether x and y must
+  /// be swapped when read in) about coordinate reference system in text input.
+  factory LineString.parseCoords(
+    String coordinates, {
+    CoordRefSys? crs,
+  }) {
     final array = json.decode('[$coordinates]') as List<dynamic>;
     final coordType = resolveCoordType(array, positionLevel: 1);
     // NOTE: validate line string (at least two points)
     return LineString.build(
-      createFlatPositionArrayDouble(array, coordType),
+      createFlatPositionArrayDouble(array, coordType, crs),
       type: coordType,
     );
   }

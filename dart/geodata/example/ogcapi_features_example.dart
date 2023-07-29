@@ -136,7 +136,7 @@ Future<void> main(List<String> args) async {
   //
   // Try to get result geometries projected to WGS 84 / Web Mercator instead of
   // using geographic coordinates of WGS84.
-  const webMercator = 'http://www.opengis.net/def/crs/EPSG/0/3857';
+  const webMercator = CoordRefSys.EPSG_3857;
   final itemsByPlace = await source.items(
     BoundedItemsQuery(
       // ask for result geometries projected to WGS 84 / Web Mercator

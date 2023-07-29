@@ -227,11 +227,19 @@ abstract class Box extends Positionable {
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
   ///
+  /// Set [swapXY] to true to print y (or latitude) before x (or longitude).
+  ///
   /// A sample with default parameters (for a 2D bounding box):
   /// `10.1,10.1,20.2,20.2`
-  String toText({String delimiter = ',', int? decimals}) {
+  String toText({String delimiter = ',', int? decimals, bool swapXY = false}) {
     final buf = StringBuffer();
-    Box.writeValues(this, buf, delimiter: delimiter, decimals: decimals);
+    Box.writeValues(
+      this,
+      buf,
+      delimiter: delimiter,
+      decimals: decimals,
+      swapXY: swapXY,
+    );
     return buf.toString();
   }
 
@@ -625,6 +633,8 @@ abstract class Box extends Positionable {
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
   ///
+  /// Set [swapXY] to true to print y (or latitude) before x (or longitude).
+  ///
   /// A sample with default parameters (for a 2D bounding box):
   /// `10.1,10.1,20.2,20.2`
   static void writeValues(
@@ -632,12 +642,14 @@ abstract class Box extends Positionable {
     StringSink buffer, {
     String delimiter = ',',
     int? decimals,
+    bool swapXY = false,
   }) {
     Position.writeValues(
       box.min,
       buffer,
       delimiter: delimiter,
       decimals: decimals,
+      swapXY: swapXY,
     );
     buffer.write(delimiter);
     Position.writeValues(
@@ -645,6 +657,7 @@ abstract class Box extends Positionable {
       buffer,
       delimiter: delimiter,
       decimals: decimals,
+      swapXY: swapXY,
     );
   }
 
