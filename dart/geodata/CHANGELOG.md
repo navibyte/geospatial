@@ -1,6 +1,6 @@
 ## 0.12.0
 
-NOTE: Version 0.12.0 currently under development (0.12.0-dev.0).
+NOTE: Version 0.12.0 currently [under development](https://github.com/navibyte/geospatial/issues/177) (0.12.0-dev.0).
 
 ⚠️ Breaking changes:
 * [Check conformance classes known by OGC API Features #169](https://github.com/navibyte/geospatial/issues/169)

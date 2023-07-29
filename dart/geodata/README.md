@@ -125,7 +125,7 @@ Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geodata: ^0.11.4
+  geodata: ^0.12.0-dev.0
 ```
 
 Import it:
@@ -425,6 +425,10 @@ which provides:
 
   /// Links related to this object.
   Links get links;
+
+  /// An optional coordinate reference system from "Content-Crs" response
+  /// header.
+  final CoordRefSys? contentCrs;
 
   /// The time stamp
   DateTime? get timeStamp;
