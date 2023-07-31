@@ -41,6 +41,13 @@ Key features of the [geodata](https://pub.dev/packages/geodata) package:
 * 🌐 The [GeoJSON](https://geojson.org/) client to read features from static web resources and local files
 * 🌎 The [OGC API Features](https://ogcapi.ogc.org/features/) client to access metadata and feature items from a compliant geospatial Web API providing GeoJSON data
 
+Client-side support for the OGC API Features standard:
+
+Standard part | Support in this package
+------------- | -----------------------
+[OGC API - Features - Part 1: Core](https://docs.ogc.org/is/17-069r4/17-069r4.html) | Supported for accessing metadata and GeoJSON feature collections.
+[OGC API - Features - Part 2: Coordinate Reference Systems by Reference](https://docs.ogc.org/is/18-058r1/18-058r1.html) | Supported.
+
 ## :keyboard: Sample code
 
 ### Geodesy functions with geobase

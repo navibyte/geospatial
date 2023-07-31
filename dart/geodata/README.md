@@ -8,14 +8,20 @@ Geospatial feature service Web APIs with support for
 
 ## Features
 
+✨ New (2023-07): better client-side support for OGC API Features (Part 1 and 2).
+
 Key features:
 
 * 🪄 Client-side data source abstraction for geospatial feature service Web APIs
 * 🌐 The [GeoJSON](https://geojson.org/) client to read features from static web resources and local files
 * 🌎 The [OGC API Features](https://ogcapi.ogc.org/features/) client to access metadata and feature items from a compliant geospatial Web API providing GeoJSON data
 
-The client-side support for the OGC API Features standard is not complete,
-however key functionality of `Part1 : Core` of this standard is supported. 
+Client-side support for the OGC API Features standard:
+
+Standard part | Support in this package
+------------- | -----------------------
+[OGC API - Features - Part 1: Core](https://docs.ogc.org/is/17-069r4/17-069r4.html) | Supported for accessing metadata and GeoJSON feature collections.
+[OGC API - Features - Part 2: Coordinate Reference Systems by Reference](https://docs.ogc.org/is/18-058r1/18-058r1.html) | Supported.
 
 ## Introduction
 
