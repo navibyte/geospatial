@@ -517,6 +517,7 @@ Constant    | Description
 `CRS84`     | WGS 84 geographic coordinates (order: longitude, latitude).
 `CRS84h`    | WGS 84 geographic coordinates (order: longitude, latitude) with ellipsoidal height (elevation).
 `EPSG:4326` | WGS 84 geographic coordinates (order: latitude, longitude).
+`EPSG:4258` | ETRS89 geographic coordinates (order: latitude, longitude).
 `EPSG:3857` | WGS 84 projected (Web Mercator) metric coordinates based on "spherical development of ellipsoidal coordinates".
 `EPSG:3395` | WGS 84 projected (World Mercator) metric coordinates based on "ellipsoidal coordinates".
 
