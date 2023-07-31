@@ -35,10 +35,19 @@ class GeoJsonConf with EquatableMixin {
   /// section 6.1 of the specifcation (RFC 7946).
   final bool ignoreForeignMembers;
 
+  /// When [printNonDefaultCrs], then "crs" attribute is printed to the
+  /// "FeatureCollection".
+  ///
+  /// The "crs" property is printed only when a coordinate reference system is
+  /// "non-default", that is, other than WGS 84 with the longitude-latitude axis
+  /// order.
+  final bool printNonDefaultCrs;
+
   /// Optional configuration parameters for formatting GeoJSON.
   const GeoJsonConf({
     this.ignoreMeasured = false,
     this.ignoreForeignMembers = false,
+    this.printNonDefaultCrs = false,
   });
 
   @override
@@ -110,6 +119,12 @@ class GeoJsonConf with EquatableMixin {
 ///   * `{"type":"Point","coordinates":[10.1,20.2,0,40.4]}`
 /// * point (x, y, z, m), with z = 30.3 and m = 40.4:
 ///   * `{"type":"Point","coordinates":[10.1,20.2,30.3,40.4]}`
+///
+/// When getting an encoder from text writer format objects this `GeoJSON`
+/// class provides you can use `crs` parameter to give hints (like axis order,
+/// and whether x and y must be swapped when writing) about coordinate reference
+/// system in text output. When `crs` is available then `crs.swapXY` is used to
+/// determine whether swapping (x/longitude <-> y/latitude) should occur. 
 class GeoJSON {
   /// The GeoJSON text format (encoding only) for coordinate objects.
   static const TextWriterFormat<CoordinateContent> coordinate =
@@ -166,9 +181,15 @@ class _GeoJsonGeometryTextFormat with TextFormat<GeometryContent> {
   ContentEncoder<GeometryContent> encoder({
     StringSink? buffer,
     int? decimals,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) =>
-      GeoJsonTextWriter(buffer: buffer, decimals: decimals, conf: conf);
+      GeoJsonTextWriter(
+        buffer: buffer,
+        decimals: decimals,
+        crs: crs,
+        conf: conf,
+      );
 }
 
 class _GeoJsonFeatureTextFormat with TextFormat<FeatureContent> {
@@ -192,7 +213,13 @@ class _GeoJsonFeatureTextFormat with TextFormat<FeatureContent> {
   ContentEncoder<FeatureContent> encoder({
     StringSink? buffer,
     int? decimals,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) =>
-      GeoJsonTextWriter(buffer: buffer, decimals: decimals, conf: conf);
+      GeoJsonTextWriter(
+        buffer: buffer,
+        decimals: decimals,
+        crs: crs,
+        conf: conf,
+      );
 }

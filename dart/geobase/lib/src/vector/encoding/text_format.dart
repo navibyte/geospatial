@@ -23,11 +23,15 @@ abstract class TextWriterFormat<Content extends Object> {
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
   ///
+  /// Use [crs] to give hints (like axis order, and whether x and y must
+  /// be swapped when writing) about coordinate reference system in text output.
+  ///
   /// Other format or encoder implementation specific options can be set by
   /// [options].
   ContentEncoder<Content> encoder({
     StringSink? buffer,
     int? decimals,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   });
 }

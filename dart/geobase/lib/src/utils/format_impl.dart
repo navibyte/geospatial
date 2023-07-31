@@ -6,6 +6,7 @@
 
 import 'package:meta/meta.dart';
 
+import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/vector/encoding/content_encoder.dart';
 import '/src/vector/encoding/text_format.dart';
 
@@ -15,6 +16,7 @@ typedef CreateTextEncoder<Content extends Object> = ContentEncoder<Content>
     Function({
   StringSink? buffer,
   int? decimals,
+  CoordRefSys? crs,
 });
 
 /// A helper implementation of [TextWriterFormat] for [Content].
@@ -31,9 +33,10 @@ class TextWriterFormatImpl<Content extends Object>
   ContentEncoder<Content> encoder({
     StringSink? buffer,
     int? decimals,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) =>
-      factory.call(buffer: buffer, decimals: decimals);
+      factory.call(buffer: buffer, decimals: decimals, crs: crs);
 }
 
 /// A factory function to create [ContentEncoder] for [Content] with [Conf].
@@ -42,6 +45,7 @@ typedef CreateTextEncoderConf<Content extends Object, Conf extends Object>
     = ContentEncoder<Content> Function({
   StringSink? buffer,
   int? decimals,
+  CoordRefSys? crs,
   Conf? conf,
 });
 
@@ -62,11 +66,13 @@ class TextWriterFormatImplConf<Content extends Object, Conf extends Object>
   ContentEncoder<Content> encoder({
     StringSink? buffer,
     int? decimals,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) =>
       factory.call(
         buffer: buffer,
         decimals: decimals,
+        crs: crs,
         conf: conf,
       );
 }

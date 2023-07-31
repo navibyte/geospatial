@@ -162,6 +162,7 @@ void main() {
             multiPolygon,
           );
         } else if (order == AxisOrder.yx) {
+          // toText without CRS (so default xy order)
           expect(Point.parse(pointYX, crs: crs).toText(), point);
           expect(Point.parseCoords(pointCoordsYX, crs: crs).toText(), point);
           expect(LineString.parse(lineStringYX, crs: crs).toText(), lineString);
@@ -196,6 +197,57 @@ void main() {
             MultiPolygon.parseCoords(multiPolygonCoordsYX, crs: crs).toText(),
             multiPolygon,
           );
+
+          // toText with CRS (so yx order and swapping should occur)
+          expect(Point.parse(pointYX, crs: crs).toText(crs: crs), pointYX);
+          expect(
+            Point.parseCoords(pointCoordsYX, crs: crs).toText(crs: crs),
+            pointYX,
+          );
+          expect(
+            LineString.parse(lineStringYX, crs: crs).toText(crs: crs),
+            lineStringYX,
+          );
+          expect(
+            LineString.parseCoords(lineStringCoordsYX, crs: crs)
+                .toText(crs: crs),
+            lineStringYX,
+          );
+          expect(
+            Polygon.parse(polygonYX, crs: crs).toText(crs: crs),
+            polygonYX,
+          );
+          expect(
+            Polygon.parseCoords(polygonCoordsYX, crs: crs).toText(crs: crs),
+            polygonYX,
+          );
+          expect(
+            MultiPoint.parse(multiPointYX, crs: crs).toText(crs: crs),
+            multiPointYX,
+          );
+          expect(
+            MultiPoint.parseCoords(multiPointCoordsYX, crs: crs)
+                .toText(crs: crs),
+            multiPointYX,
+          );
+          expect(
+            MultiLineString.parse(multiLineStringYX, crs: crs).toText(crs: crs),
+            multiLineStringYX,
+          );
+          expect(
+            MultiLineString.parseCoords(multiLineStringCoordsYX, crs: crs)
+                .toText(crs: crs),
+            multiLineStringYX,
+          );
+          expect(
+            MultiPolygon.parse(multiPolygonYX, crs: crs).toText(crs: crs),
+            multiPolygonYX,
+          );
+          expect(
+            MultiPolygon.parseCoords(multiPolygonCoordsYX, crs: crs)
+                .toText(crs: crs),
+            multiPolygonYX,
+          );
         }
       }
     });
@@ -229,10 +281,15 @@ void main() {
         '{"type":"FeatureCollection","features":[$pointFeat,$lineStringFeat]}';
     const featCollYX =
         '{"type":"FeatureCollection","features":[$pointFeatYX,$lineStringFeatYX]}';
+    const featCollYXEpsg4326 =
+        '{"type":"FeatureCollection","crs":"http://www.opengis.net/def/crs/EPSG/0/4326","features":[$pointFeatYX,$lineStringFeatYX]}';
+
     const featCollPoints =
         '{"type":"FeatureCollection","features":[$pointFeat,$pointFeat]}';
     const featCollPointsYX =
         '{"type":"FeatureCollection","features":[$pointFeatYX,$pointFeatYX]}';
+    const featCollPointsYXEpsg4326 =
+        '{"type":"FeatureCollection","crs":"http://www.opengis.net/def/crs/EPSG/0/4326","features":[$pointFeatYX,$pointFeatYX]}';
 
     const epsg4326 = CoordRefSys.EPSG_4326;
 
@@ -246,6 +303,18 @@ void main() {
       expect(
         LineString.parse(lineStringYX, crs: epsg4326).toText(),
         lineString,
+      );
+
+      expect(Point.parse(point).toText(crs: epsg4326), pointYX);
+      expect(LineString.parse(lineString).toText(crs: epsg4326), lineStringYX);
+
+      expect(
+        Point.parse(pointYX, crs: epsg4326).toText(crs: epsg4326),
+        pointYX,
+      );
+      expect(
+        LineString.parse(lineStringYX, crs: epsg4326).toText(crs: epsg4326),
+        lineStringYX,
       );
     });
 
@@ -265,6 +334,26 @@ void main() {
       expect(
         GeometryCollection.parse(geomCollPointsYX, crs: epsg4326).toText(),
         geomCollPoints,
+      );
+
+      expect(
+        GeometryCollection.parse(geomColl).toText(crs: epsg4326),
+        geomCollYX,
+      );
+      expect(
+        GeometryCollection.parse(geomCollPoints).toText(crs: epsg4326),
+        geomCollPointsYX,
+      );
+
+      expect(
+        GeometryCollection.parse(geomCollYX, crs: epsg4326)
+            .toText(crs: epsg4326),
+        geomCollYX,
+      );
+      expect(
+        GeometryCollection.parse(geomCollPointsYX, crs: epsg4326)
+            .toText(crs: epsg4326),
+        geomCollPointsYX,
       );
     });
 
@@ -287,8 +376,25 @@ void main() {
 
     test('Feature with non-typed geometry (swapped)', () {
       expect(Feature.parse(pointFeatYX, crs: epsg4326).toText(), pointFeat);
-      final feat = Feature.parse(lineStringFeatYX, crs: epsg4326);
-      expect(feat.toText(), lineStringFeat);
+      expect(
+        Feature.parse(lineStringFeatYX, crs: epsg4326).toText(),
+        lineStringFeat,
+      );
+
+      expect(Feature.parse(pointFeat).toText(crs: epsg4326), pointFeatYX);
+      expect(
+        Feature.parse(lineStringFeat).toText(crs: epsg4326),
+        lineStringFeatYX,
+      );
+
+      expect(
+        Feature.parse(pointFeatYX, crs: epsg4326).toText(crs: epsg4326),
+        pointFeatYX,
+      );
+      expect(
+        Feature.parse(lineStringFeatYX, crs: epsg4326).toText(crs: epsg4326),
+        lineStringFeatYX,
+      );
     });
 
     test('Feature with typed geometry', () {
@@ -308,8 +414,67 @@ void main() {
         FeatureCollection.parse(featCollYX, crs: epsg4326).toText(),
         featColl,
       );
-      final coll = FeatureCollection.parse(featCollPointsYX, crs: epsg4326);
-      expect(coll.toText(), featCollPoints);
+      expect(
+        FeatureCollection.parse(featCollPointsYX, crs: epsg4326).toText(),
+        featCollPoints,
+      );
+
+      expect(
+        FeatureCollection.parse(featColl).toText(crs: epsg4326),
+        featCollYX,
+      );
+      expect(
+        FeatureCollection.parse(featCollPoints).toText(crs: epsg4326),
+        featCollPointsYX,
+      );
+
+      expect(
+        FeatureCollection.parse(featCollYX, crs: epsg4326)
+            .toText(crs: epsg4326),
+        featCollYX,
+      );
+      expect(
+        FeatureCollection.parse(featCollPointsYX, crs: epsg4326)
+            .toText(crs: epsg4326),
+        featCollPointsYX,
+      );
+    });
+
+    test('Feature collection with non-typed geometry (swapped) with CRS', () {
+      final f = GeoJSON.featureFormat(
+        conf: const GeoJsonConf(printNonDefaultCrs: true),
+      );
+
+      expect(
+        FeatureCollection.parse(featCollYX, crs: epsg4326).toText(format: f),
+        featColl,
+      );
+      expect(
+        FeatureCollection.parse(featCollPointsYX, crs: epsg4326)
+            .toText(format: f),
+        featCollPoints,
+      );
+
+      expect(
+        FeatureCollection.parse(featColl).toText(format: f, crs: epsg4326),
+        featCollYXEpsg4326,
+      );
+      expect(
+        FeatureCollection.parse(featCollPoints)
+            .toText(format: f, crs: epsg4326),
+        featCollPointsYXEpsg4326,
+      );
+
+      expect(
+        FeatureCollection.parse(featCollYX, crs: epsg4326)
+            .toText(format: f, crs: epsg4326),
+        featCollYXEpsg4326,
+      );
+      expect(
+        FeatureCollection.parse(featCollPointsYX, crs: epsg4326)
+            .toText(format: f, crs: epsg4326),
+        featCollPointsYXEpsg4326,
+      );
     });
 
     test('Feature collection with typed geometry', () {

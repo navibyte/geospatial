@@ -157,9 +157,11 @@ class Point implements SimpleGeometry {
   String toText({
     TextWriterFormat<SimpleGeometryContent> format = GeoJSON.geometry,
     int? decimals,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) {
-    final encoder = format.encoder(decimals: decimals, options: options);
+    final encoder =
+        format.encoder(decimals: decimals, crs: crs, options: options);
     writeTo(encoder.writer);
     return encoder.toText();
   }

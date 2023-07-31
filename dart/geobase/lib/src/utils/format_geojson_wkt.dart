@@ -11,10 +11,12 @@ import 'dart:typed_data';
 
 import 'package:meta/meta.dart';
 
+import '/src/codes/axis_order.dart';
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
+import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
@@ -41,11 +43,22 @@ enum _Container {
 abstract class _BaseTextWriter<T extends Object>
     with GeometryContent, CoordinateContent
     implements ContentEncoder<T> {
-  _BaseTextWriter({StringSink? buffer, this.decimals})
+  _BaseTextWriter({StringSink? buffer, this.decimals, this.crs})
       : _buffer = buffer ?? StringBuffer();
 
   final StringSink _buffer;
   final int? decimals;
+
+  /// Optional information about coordinate reference system related to data
+  /// to be written by a text writer.
+  ///
+  /// Text writer implementation may act (ie. swap x and y for certain crs) but
+  /// they are free also to ignore this.
+  ///
+  /// TextWriterFormat defines this:
+  /// "Use [crs] to give hints (like axis order, and whether x and y must be
+  /// swapped when writing) about coordinate reference system in text output".
+  final CoordRefSys? crs;
 
   final List<bool> _hasItemsOnLevel = List.of([false]);
   final List<_Container> _containerTypeOnLevel = List.of([_Container.root]);
@@ -355,17 +368,25 @@ abstract class _BaseTextWriter<T extends Object>
 // Writer for the "default" format ---------------------------------------------
 
 /// A geometery writer for Default text output.
+///
+/// Default text format: Swaps x and y for the output if `crs?.swapXY` is true.
+///
+/// This class swaps X and Y in function `_printPoint()` according to getter
+/// `_crsRequiresToSwapXY`.
 @internal
 class DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
   /// A geometery writer for Default text output.
   DefaultTextWriter({
     super.buffer,
     super.decimals,
+    super.crs,
     GeoJsonConf? conf,
   }) : conf = conf ?? const GeoJsonConf();
 
   /// Configuration options for GeoJSON and GeoJSON like formats.
   final GeoJsonConf conf;
+
+  bool get _crsRequiresToSwapXY => crs?.swapXY ?? false;
 
   @override
   void _startObjectArray({int? count}) {
@@ -458,6 +479,8 @@ class DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
     num? z,
     num? m,
   ) {
+    // whether to swap x and y
+    final swapXY = _crsRequiresToSwapXY;
     // check optional expected coordinate type
     final coordType = _coordTypes.isNotEmpty ? _coordTypes.last : null;
     // print M only in non-strict mode when
@@ -473,9 +496,9 @@ class DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
     final dec = decimals;
     if (dec != null) {
       _buffer
-        ..write(toStringAsFixedWhenDecimals(x, dec))
+        ..write(toStringAsFixedWhenDecimals(swapXY ? y : x, dec))
         ..write(',')
-        ..write(toStringAsFixedWhenDecimals(y, dec));
+        ..write(toStringAsFixedWhenDecimals(swapXY ? x : y, dec));
       if (printZ) {
         _buffer
           ..write(',')
@@ -488,9 +511,9 @@ class DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
       }
     } else {
       _buffer
-        ..write(x)
+        ..write(swapXY ? y : x)
         ..write(',')
-        ..write(y);
+        ..write(swapXY ? x : y);
       if (printZ) {
         _buffer
           ..write(',')
@@ -508,6 +531,11 @@ class DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
 // Writer  for the "GeoJSON" format --------------------------------------------
 
 /// A feature writer for GeoJSON text output.
+///
+/// GeoJSON text format: Swaps x and y for the output if `crs?.swapXY` is true.
+///
+/// The super class (`DefaultTextWriter`) class swaps X and Y in function
+/// `_printPoint()` according to getter `_crsRequiresToSwapXY`.
 @internal
 class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     with FeatureContent, PropertyContent {
@@ -515,12 +543,14 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
   GeoJsonTextWriter({
     super.buffer,
     super.decimals,
+    super.crs,
     super.conf,
   });
 
   GeoJsonTextWriter<T> _subWriter() => GeoJsonTextWriter(
         buffer: _buffer,
         decimals: decimals,
+        crs: crs,
         conf: conf,
       );
 
@@ -641,6 +671,17 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     }
     _startContainer(_Container.featureCollection);
     _buffer.write('{"type":"FeatureCollection"');
+    if (crs != null && conf.printNonDefaultCrs) {
+      final isDefaultCrsForGeoJSON =
+          crs!.isGeographic(wgs84: true, order: AxisOrder.xy);
+      if (!isDefaultCrsForGeoJSON) {
+        // for non-default crs print non-standard "crs" attribute
+        _buffer
+          ..write(',"crs":"')
+          ..write(crs!.id)
+          ..write('"');
+      }
+    }
     if (bounds != null) {
       _buffer.write(',"bbox":[');
       _subWriter().bounds(buildBoxCoords(bounds));
@@ -784,10 +825,12 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
 // Writer for the "wkt like" format --------------------------------------------
 
 /// A geometry writer for WKT "like" text output.
+///
+/// WKT like text format: Ignore `crs` and never swap x and y for the output.
 @internal
 class WktLikeTextWriter<T extends Object> extends _BaseTextWriter<T> {
   /// A geometry writer for WKT "like" text output.
-  WktLikeTextWriter({super.buffer, super.decimals});
+  WktLikeTextWriter({super.buffer, super.decimals, super.crs});
 
   @override
   void _startObjectArray({int? count}) {
@@ -945,9 +988,11 @@ class WktLikeTextWriter<T extends Object> extends _BaseTextWriter<T> {
 // Writer for the "wkt" format -------------------------------------------------
 
 /// A geometry writer for WKT text output.
+///
+/// WKT text format: Ignore `crs` and never swap x and y for the output.
 class WktTextWriter<T extends Object> extends WktLikeTextWriter<T> {
   /// A geometry writer for WKT text output.
-  WktTextWriter({super.buffer, super.decimals});
+  WktTextWriter({super.buffer, super.decimals, super.crs});
 
   @override
   bool _geometryBeforeCoordinates({

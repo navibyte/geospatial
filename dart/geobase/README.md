@@ -466,7 +466,7 @@ level, with all values as integers.
   pixel.zoomTo(13); // => Scalable2i(zoom: 13, x: 368, y: 160));
 ```
 
-### Summary 
+### Coordinates summary 
 
 Classes representing *projected*, *geographic* and *scalable* coordinates:
 
@@ -835,7 +835,7 @@ A `FeatureCollection` object with `Feature` objects:
 
 ## Vector data formats
 
-### GeoJSON
+### GeoJSON with WGS 84 longitude/latitude
 
 As already described [GeoJSON](https://geojson.org/) is a format for encoding
 geometry, feature and feature collection objects. The data structures introduced
@@ -845,9 +845,13 @@ encoding and decoding GeoJSON data.
 
 As specified by the [RFC 7946](https://tools.ietf.org/html/rfc7946) standard,
 all GeoJSON geometry objects use 
-[WGS 84](https://en.wikipedia.org/wiki/World_Geodetic_System) geographic 
-coordinates. Also alternative coordinate reference systems can be used when 
-*involved parties have a prior arrangement* of using other systems.
+[WGS 84](https://en.wikipedia.org/wiki/World_Geodetic_System) longitude/latitude
+geographic coordinates. Also alternative coordinate reference systems can be used when *involved parties have a prior arrangement* of using other systems.
+
+In this package the default coordinate reference system (WGS 84 with longitude
+before latitude) can also be referenced by the `CoordRefSys.CRS84` constant.
+Normally when parsing and writing content in this default coordinate system you
+don't need to specify a crs however.
 
 This package supports encoding GeoJSON text from geometry and feature objects:
 
@@ -943,6 +947,61 @@ representations:
 All geometry, feature and feature collection classes has similar `parse` methods
 to support parsing from GeoJSON.
 
+### GeoJSON with alternative coordinate reference systems
+
+When using GeoJSON to represent geospatial data in "alternative coordinate
+reference systems", such a system must be explicitely defined (and known) before
+reading in or before writing out GeoJSON content.
+
+As described in the [coordinates summary](#coordinates-summary) internally all
+classes in this package handle coordinate axis order so that x (or longitude) is
+always before y (or latitude). However some coordinate reference systems require
+other axis order when representing geometries in external data formats.
+
+The `CoordRefSys` class introduced in the section about
+[coordinate reference systems](#coordinate-reference-systems) has the `swapXY`
+getter that tells how axis order should be handled for a certain coordinate
+reference system when dealing with external data representations (like the
+current specification of GeoJSON) that do not specify a generic axis order for
+alternative coordinate reference systems.
+
+The sample below demonstrates the logic:
+
+```dart
+  // CRS for geographic coordinates with latitude before longitude in GeoJSON.
+  const epsg4326 = CoordRefSys.EPSG_4326;
+
+  // Read GeoJSON content with coordinate order: longitude, latitude, elevation.
+  final point1 = Point.parse(
+    '{"type": "Point", "coordinates": [-0.0014, 51.4778, 45.0]}',
+    // no CRS must be specified for the default coordinate reference system:
+    // `CoordRefSys.CRS84` or `http://www.opengis.net/def/crs/OGC/1.3/CRS84`
+  );
+  final pos1 = point1.position.asGeographic;
+  // prints: Point1: lon: 0.0014°W lat: 51.4778°N
+  print('Point1: lon: ${pos1.lonDms()} lat: ${pos1.latDms()}');
+
+  // Read GeoJSON content with coordinate order: latitude, longitude, elevation.
+  final point2 = Point.parse(
+    '{"type": "Point", "coordinates": [51.4778, -0.0014, 45.0]}',
+    crs: epsg4326, // CRS must be explicitely specified
+  );
+  final pos2 = point2.position.asGeographic;
+  // prints: Point2: lon: 0.0014°W lat: 51.4778°N
+  print('Point2: lon: ${pos2.lonDms()} lat: ${pos2.latDms()}');
+
+  // Both `point1` and `point2` store coordinates internally in this order:
+  // longitude, latitude, elevation.
+
+  // Writing GeoJSON without crs information expects longitude-latitude order.
+  // Prints: {"type":"Point","coordinates":[-0.0014,51.4778,45.0]}
+  print(point2.toText(format: GeoJSON.geometry));
+
+  // Writing with crs (EPSG:4326) results in latitude-longitude order.
+  // Prints: {"type":"Point","coordinates":[51.4778,-0.0014,45.0]}
+  print(point2.toText(format: GeoJSON.geometry, crs: epsg4326));
+```
+
 ### WKT
 
 [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) (WKT) is 
@@ -952,6 +1011,9 @@ specified by the [Simple Feature Access - Part 1: Common Architecture](https://w
 Positions and geometries can be encoded to WKT text representations. However
 feature and feature collections cannot be written to WKT even if those are
 supported by GeoJSON.
+
+WKT output has always x (or longitude) printed before y (or latitude) coordinate
+regardless of a coordinate reference system used.
 
 A sample to encode a `Point` geometry to WKT (with z and m coordinates too):
 
@@ -993,6 +1055,9 @@ Currently this package does not (yet) support parsing from WKT text.
 The `WKB` class provides encoders and decoders for
 [Well-known binary](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary)
 binary format supporting simple geometry objects.
+
+WKB input and output have always x (or longitude) encoded before y (or latitude)
+coordinate regardless of a coordinate reference system used.
 
 Two different approaches to use WKB encoders and decoders are presented in this
 section.

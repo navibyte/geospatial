@@ -8,6 +8,7 @@ import 'dart:typed_data';
 
 import 'package:meta/meta.dart';
 
+import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/vector/content/feature_content.dart';
 import '/src/vector/encoding/binary_format.dart';
@@ -48,14 +49,19 @@ abstract class FeatureObject extends Bounded {
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
   ///
+  /// Use [crs] to give hints (like axis order, and whether x and y must
+  /// be swapped when writing) about coordinate reference system in text output.
+  ///
   /// Other format or encoder implementation specific options can be set by
   /// [options].
   String toText({
     TextWriterFormat<FeatureContent> format = GeoJSON.feature,
     int? decimals,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) {
-    final encoder = format.encoder(decimals: decimals, options: options);
+    final encoder =
+        format.encoder(decimals: decimals, crs: crs, options: options);
     writeTo(encoder.writer);
     return encoder.toText();
   }

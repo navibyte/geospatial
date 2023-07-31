@@ -47,7 +47,8 @@ void main() {
   _geospatialExtents();
 
   // vector data
-  _geoJson();
+  _geoJsonWithDefaultCRS();
+  _geoJsonWithAlternativeCRS();
   _wkt();
   _wkbSample1();
   _wkbSample2();
@@ -599,7 +600,7 @@ void _featureCollection() {
   ]);
 }
 
-void _geoJson() {
+void _geoJsonWithDefaultCRS() {
   // build a LineString sample geometry
   final lineString = LineString.build(
     [-1.1, -1.1, 2.1, -2.5, 3.5, -3.49],
@@ -683,6 +684,41 @@ void _geoJson() {
       print('    $key: ${feature.properties[key]}');
     }
   }
+}
+
+void _geoJsonWithAlternativeCRS() {
+  // CRS for geographic coordinates with latitude before longitude in GeoJSON.
+  const epsg4326 = CoordRefSys.EPSG_4326;
+
+  // Read GeoJSON content with coordinate order: longitude, latitude, elevation.
+  final point1 = Point.parse(
+    '{"type": "Point", "coordinates": [-0.0014, 51.4778, 45.0]}',
+    // no CRS must be specified for the default coordinate reference system:
+    // `CoordRefSys.CRS84` or `http://www.opengis.net/def/crs/OGC/1.3/CRS84`
+  );
+  final pos1 = point1.position.asGeographic;
+  // prints: Point1: lon: 0.0014°W lat: 51.4778°N
+  print('Point1: lon: ${pos1.lonDms()} lat: ${pos1.latDms()}');
+
+  // Read GeoJSON content with coordinate order: latitude, longitude, elevation.
+  final point2 = Point.parse(
+    '{"type": "Point", "coordinates": [51.4778, -0.0014, 45.0]}',
+    crs: epsg4326, // CRS must be explicitely specified
+  );
+  final pos2 = point2.position.asGeographic;
+  // prints: Point2: lon: 0.0014°W lat: 51.4778°N
+  print('Point2: lon: ${pos2.lonDms()} lat: ${pos2.latDms()}');
+
+  // Both `point1` and `point2` store coordinates internally in this order:
+  // longitude, latitude, elevation.
+
+  // Writing GeoJSON without crs information expects longitude-latitude order.
+  // Prints: {"type":"Point","coordinates":[-0.0014,51.4778,45.0]}
+  print(point2.toText(format: GeoJSON.geometry));
+
+  // Writing with crs (EPSG:4326) results in latitude-longitude order.
+  // Prints: {"type":"Point","coordinates":[51.4778,-0.0014,45.0]}
+  print(point2.toText(format: GeoJSON.geometry, crs: epsg4326));
 }
 
 void _wkt() {

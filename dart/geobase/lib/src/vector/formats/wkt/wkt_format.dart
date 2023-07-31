@@ -39,6 +39,13 @@ import '/src/vector/encoding/text_format.dart';
 /// Note that WKT does not specify bounding box formatting. Here bounding boxes
 /// are formatted as polygons. See also `wktLikeFormat` that formats them as a
 /// point series of two points (min, max).
+/// 
+/// When getting an encoder from text writer format objects this `WKT`
+/// class provides you COULD use `crs` parameter to give hints (like axis order,
+/// and whether x and y must be swapped when writing) about coordinate reference
+/// system in text output. However for the WKT text format such crs
+/// information is ignored, x/longitude is always printed before y/latitude
+/// regardless of crs axis order.
 class WKT {
   /// The WKT text writer format for coordinate objects.
   static const TextWriterFormat<CoordinateContent> coordinate =

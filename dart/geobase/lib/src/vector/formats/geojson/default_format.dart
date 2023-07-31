@@ -29,6 +29,12 @@ import '/src/vector/encoding/text_format.dart';
 /// * multi polygon (with 2D points):
 ///   * `[[[35,10],[45,45],[15,40],[10,20],[35,10]]]`
 /// * coordinates for other geometries with similar principles
+///
+/// When getting an encoder from text writer format objects this `DefaultFormat`
+/// class provides you can use `crs` parameter to give hints (like axis order,
+/// and whether x and y must be swapped when writing) about coordinate reference
+/// system in text output. When `crs` is available then `crs.swapXY` is used to
+/// determine whether swapping (x/longitude <-> y/latitude) should occur.
 class DefaultFormat {
   /// The (default) text writer format for coordinate objects.
   static const TextWriterFormat<CoordinateContent> coordinate =
