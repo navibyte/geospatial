@@ -15,6 +15,7 @@ import '/src/ogcapi_common/model/ogc_conformance.dart';
 /// This class can be used to check conformance classes for:
 /// * `OGC API - Features - Part 1: Core`
 /// * `OGC API - Features - Part 2: Coordinate Reference Systems by Reference`
+/// * `OGC API - Features - Part 3: Filtering`
 ///
 /// The class extends [OGCConformance] that knows also conformance classes for:
 /// * `OGC API - Common - Part 1: Core`
@@ -96,6 +97,59 @@ class OGCFeatureConformance extends OGCConformance {
   ///   conformsToCrs();
   /// ```
   bool conformsToFeaturesCrs() => classes.contains(features2Crs);
+
+  /// Check whether a service conforms to the `Queryables` conformance class of
+  /// the `OGC API - Features - Part 3: Filtering` standard.
+  ///
+  /// Optionally also check whether it supports querybles as [queryParameters]
+  /// (that is conforming to the `Queryables as Query Parameters` conformance
+  /// class), [filter] and/or [featuresFilter].
+  ///
+  /// Examples:
+  /// ```dart
+  ///   // Require the `Queryables` conformance class. Other classes could be
+  ///   // supported or not.
+  ///   conformsToFeaturesQueryables();
+  ///
+  ///   // Require `Queryables` and `Queryables as Query Parameters` conformance
+  ///   // classes. Other classes could be supported or not.
+  ///   conformsToFeaturesQueryables(queryParameters: true);
+  ///
+  ///   // Require `Queryables` and `Queryables as Query Parameters` conformance
+  ///   // classes, and require NOT conforming to `Filter`. Other classes could
+  ///   // be supported or not.
+  ///   conformsToFeaturesQueryables(queryParameters: true, filter: false);
+  /// ```
+  bool conformsToFeaturesQueryables({
+    bool? queryParameters,
+    bool? filter,
+    bool? featuresFilter,
+  }) {
+    var isQueryables = false;
+    var isQueryParameters = false;
+    var isFilter = false;
+    var isFeaturesFilter = false;
+
+    for (final id in classes) {
+      if (!isQueryables && id == features3Queryables) {
+        isQueryables = true;
+      }
+      if (!isQueryParameters && id == features3QueryablesAsQueryParameters) {
+        isQueryParameters = true;
+      }
+      if (!isFilter && id == features3Filter) {
+        isFilter = true;
+      }
+      if (!isFeaturesFilter && id == features3FeaturesFilter) {
+        isFeaturesFilter = true;
+      }
+    }
+
+    return isQueryables &&
+        (queryParameters == null || isQueryParameters == queryParameters) &&
+        (filter == null || isFilter == filter) &&
+        (featuresFilter == null || isFeaturesFilter == featuresFilter);
+  }
 
   /// The `Core` conformance class for the
   /// `OGC API - Features - Part 1: Core` standard.
@@ -188,4 +242,46 @@ class OGCFeatureConformance extends OGCConformance {
   /// * [features1Core]
   static const features2Crs =
       'http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs';
+
+  /// The `Queryables` conformance class for the
+  /// `OGC API - Features - Part 3: Filtering` standard.
+  ///
+  /// `http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/queryables`
+  static const features3Queryables =
+      'http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/queryables';
+
+  /// The `Queryables as Query Parameters` conformance class for the
+  /// `OGC API - Features - Part 3: Filtering` standard.
+  ///
+  /// `http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/queryables-query-parameters`
+  ///
+  /// Dependencies to other conformance classes:
+  /// * [features1Core]
+  /// * [features3Queryables]
+  static const features3QueryablesAsQueryParameters =
+      'http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/queryables-query-parameters';
+
+  /// The `Filter` conformance class for the
+  /// `OGC API - Features - Part 3: Filtering` standard.
+  ///
+  /// `http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter`
+  ///
+  /// Dependencies to other conformance classes:
+  /// * [features3Queryables]
+  static const features3Filter =
+      'http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter';
+
+  /// The `Features Filter` conformance class for the
+  /// `OGC API - Features - Part 3: Filtering` standard.
+  ///
+  /// `http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter`
+  ///
+  /// Dependencies to other conformance classes:
+  /// * [features3Filter]
+  /// * [features1Core]
+  ///
+  /// Conditional dependencies to other conformance classes:
+  /// * [features2Crs]
+  static const features3FeaturesFilter =
+      'http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter';
 }
