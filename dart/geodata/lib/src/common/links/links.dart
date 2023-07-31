@@ -44,14 +44,18 @@ class Links with EquatableMixin {
   @override
   List<Object?> get props => [all];
 
-  /// All links matching by the given [rel], and optional [type] and [hreflang].
-  Iterable<Link> byRel(String rel, {String? type, String? hreflang}) =>
+  Iterable<Link> _byRelInternal(String rel, {String? type, String? hreflang}) =>
       all.where(
         (e) =>
             e.rel == rel &&
             (type == null || e.type == type) &&
             (hreflang == null || e.hreflang == hreflang),
       );
+
+  /// All links matching by the given [rel], and optional [type] and [hreflang].
+  Iterable<Link> byRel(String rel, {String? type, String? hreflang}) =>
+      _byRelInternal(rel, type: type, hreflang: hreflang)
+          .toList(growable: false);
 
   /// All links with `rel` matching `alternate`.
   ///
@@ -191,13 +195,15 @@ class Links with EquatableMixin {
   ///
   /// Optional [type] and [hreflang] params can specify links more precisely.
   Iterable<Link> items({String? type, String? hreflang}) =>
-      byRel('items', type: type, hreflang: hreflang).followedBy(
-        byRel(
-          'http://www.opengis.net/def/rel/ogc/1.0/items',
-          type: type,
-          hreflang: hreflang,
-        ),
-      );
+      _byRelInternal('items', type: type, hreflang: hreflang)
+          .followedBy(
+            _byRelInternal(
+              'http://www.opengis.net/def/rel/ogc/1.0/items',
+              type: type,
+              hreflang: hreflang,
+            ),
+          )
+          .toList(growable: false);
 
   /// All links with `rel` matching `conformance` or
   /// `http://www.opengis.net/def/rel/ogc/1.0/conformance`.
@@ -207,13 +213,15 @@ class Links with EquatableMixin {
   ///
   /// Optional [type] and [hreflang] params can specify links more precisely.
   Iterable<Link> conformance({String? type, String? hreflang}) =>
-      byRel('conformance', type: type, hreflang: hreflang).followedBy(
-        byRel(
-          'http://www.opengis.net/def/rel/ogc/1.0/conformance',
-          type: type,
-          hreflang: hreflang,
-        ),
-      );
+      _byRelInternal('conformance', type: type, hreflang: hreflang)
+          .followedBy(
+            _byRelInternal(
+              'http://www.opengis.net/def/rel/ogc/1.0/conformance',
+              type: type,
+              hreflang: hreflang,
+            ),
+          )
+          .toList(growable: false);
 
   /// All links with `rel` matching `data` or
   /// `http://www.opengis.net/def/rel/ogc/1.0/data`.
@@ -226,13 +234,15 @@ class Links with EquatableMixin {
   ///
   /// Optional [type] and [hreflang] params can specify links more precisely.
   Iterable<Link> data({String? type, String? hreflang}) =>
-      byRel('data', type: type, hreflang: hreflang).followedBy(
-        byRel(
-          'http://www.opengis.net/def/rel/ogc/1.0/data',
-          type: type,
-          hreflang: hreflang,
-        ),
-      );
+      _byRelInternal('data', type: type, hreflang: hreflang)
+          .followedBy(
+            _byRelInternal(
+              'http://www.opengis.net/def/rel/ogc/1.0/data',
+              type: type,
+              hreflang: hreflang,
+            ),
+          )
+          .toList(growable: false);
 
   /// All links with `rel` matching
   /// `http://www.opengis.net/def/rel/ogc/1.0/data-meta`.
