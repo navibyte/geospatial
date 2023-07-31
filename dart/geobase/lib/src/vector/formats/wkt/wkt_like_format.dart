@@ -34,7 +34,7 @@ import '/src/vector/encoding/text_format.dart';
 /// bounding boxes are formatted as polygons. An example presented above however
 /// format bounding box as a point series of two points (min, max). See also
 /// `wktFormat` that formats them as polygons.
-/// 
+///
 /// When getting an encoder from text writer format objects this `WktLikeFormat`
 /// class provides you COULD use `crs` parameter to give hints (like axis order,
 /// and whether x and y must be swapped when writing) about coordinate reference

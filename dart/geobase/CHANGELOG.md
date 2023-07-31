@@ -1,6 +1,6 @@
 ## 0.5.0
 
-NOTE: Version 0.5.0 currently [under development](https://github.com/navibyte/geospatial/issues/174) (0.5.0-dev.1).
+NOTE: Version 0.5.0 currently [under development](https://github.com/navibyte/geospatial/issues/174) (0.5.0-dev.2).
 
 ✨ New (2023-07): spherical geodesy functions (distance, bearing, destination point, etc.) for *great circle* and *rhumb line* paths.
 

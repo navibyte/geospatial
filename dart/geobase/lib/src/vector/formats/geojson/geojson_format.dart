@@ -124,7 +124,7 @@ class GeoJsonConf with EquatableMixin {
 /// class provides you can use `crs` parameter to give hints (like axis order,
 /// and whether x and y must be swapped when writing) about coordinate reference
 /// system in text output. When `crs` is available then `crs.swapXY` is used to
-/// determine whether swapping (x/longitude <-> y/latitude) should occur. 
+/// determine whether swapping (x/longitude <-> y/latitude) should occur.
 class GeoJSON {
   /// The GeoJSON text format (encoding only) for coordinate objects.
   static const TextWriterFormat<CoordinateContent> coordinate =
