@@ -9,6 +9,7 @@ NOTE: Version 0.12.0 currently [under development](https://github.com/navibyte/g
 🧩 Features:
 * [Full client-side support for calling OGC API Features service according to Part 1 + 2 #9](https://github.com/navibyte/geospatial/issues/9)
 * [Add support for API definition (like Open API 3.0) when accessing OGC API Features clients #170](https://github.com/navibyte/geospatial/issues/170)
+* [Map HTTP status codes to feature service exception (OGC API Features) #68](https://github.com/navibyte/geospatial/issues/68)
 
 🛠 Maintenance:
 * Removed extra internal export files and made internal imports more excplicit.

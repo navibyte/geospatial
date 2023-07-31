@@ -106,10 +106,30 @@ class FeatureHttpAdapter {
 
           // map JSON data to an entity
           return toEntity(data, response.headers);
+        case 302:
+          throw const ServiceException(FeatureFailure.found);
+        case 303:
+          throw const ServiceException(FeatureFailure.seeOther);
+        case 304:
+          throw const ServiceException(FeatureFailure.notModified);
+        case 307:
+          throw const ServiceException(FeatureFailure.temporaryRedirect);
+        case 308:
+          throw const ServiceException(FeatureFailure.permanentRedirect);
         case 400:
           throw const ServiceException(FeatureFailure.badRequest);
+        case 401:
+          throw const ServiceException(FeatureFailure.unauthorized);
+        case 403:
+          throw const ServiceException(FeatureFailure.forbidden);
         case 404:
           throw const ServiceException(FeatureFailure.notFound);
+        case 405:
+          throw const ServiceException(FeatureFailure.methodNotAllowed);
+        case 406:
+          throw const ServiceException(FeatureFailure.notAcceptable);
+        case 500:
+          throw const ServiceException(FeatureFailure.internalServerError);
         default:
           throw const ServiceException(FeatureFailure.queryFailed);
       }
