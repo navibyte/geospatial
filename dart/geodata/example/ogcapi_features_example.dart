@@ -81,6 +81,15 @@ Future<void> main(List<String> args) async {
     print('  $crs');
   }
 
+  // optional metadata about queryable properties
+  final queryables = await source.queryables();
+  if (queryables != null) {
+    print('Queryables for ${queryables.title}:');
+    for (final prop in queryables.properties.values) {
+      print('  ${prop.name} (${prop.title}): ${prop.type}');
+    }
+  }
+
   // next read actual data (wind mills) from this collection
 
   // `itemsAll` lets access all features on source (optionally limited by limit)
@@ -132,7 +141,6 @@ Future<void> main(List<String> args) async {
   //
   // In this case check the following queryables resource from the service:
   // https://demo.pygeoapi.io/master/collections/dutch_windmills/queryables
-  // (currently the geodata client does not decode queryables yet)
   //
   // Try to get result geometries projected to WGS 84 / Web Mercator instead of
   // using geographic coordinates of WGS84.

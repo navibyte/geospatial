@@ -6,6 +6,7 @@
 
 import '/src/core/features/feature_source.dart';
 import '/src/ogcapi_common/model/ogc_collection_meta.dart';
+import '/src/ogcapi_common/model/ogc_queryable_object.dart';
 
 import 'ogc_feature_item.dart';
 import 'ogc_feature_items.dart';
@@ -15,4 +16,15 @@ abstract class OGCFeatureSource
     extends FeatureSource<OGCFeatureItem, OGCFeatureItems> {
   /// Get metadata about the feature collection represented by this source.
   Future<OGCCollectionMeta> meta();
+
+  /// Get optional metadata about queryable properties for the feature
+  /// collection represented by this source.
+  ///
+  /// Returns null if no "queryables" metadata is available for this feature
+  /// source.
+  ///
+  /// An OGC API Features service providing "queryables" metadata must publish
+  /// support for the `Queryables` conformance class specified in the
+  /// `OGC API - Features - Part 3: Filtering` standard.
+  Future<OGCQueryableObject?> queryables();
 }

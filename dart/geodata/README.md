@@ -22,6 +22,7 @@ Standard part | Support in this package
 ------------- | -----------------------
 [OGC API - Features - Part 1: Core](https://docs.ogc.org/is/17-069r4/17-069r4.html) | Supported for accessing metadata and GeoJSON feature collections.
 [OGC API - Features - Part 2: Coordinate Reference Systems by Reference](https://docs.ogc.org/is/18-058r1/18-058r1.html) | Supported.
+OGC API - Features - Part 3: Filtering (draft) | Partially supported (conformance classes, queryables).
 
 ## Introduction
 
@@ -307,6 +308,15 @@ Future<void> main(List<String> args) async {
     print('  $crs');
   }
 
+  // optional metadata about queryable properties
+  final queryables = await source.queryables();
+  if (queryables != null) {
+    print('Queryables for ${queryables.title}:');
+    for (final prop in queryables.properties.values) {
+      print('  ${prop.name} (${prop.title}): ${prop.type}');
+    }
+  }
+
   // next read actual data (wind mills) from this collection
 
   // `items` is used for filtered queries, here bounding box, WGS 84 coordinates
@@ -382,6 +392,13 @@ The feature source returned by `collection()` provides following methods:
 ```dart
   /// Get metadata about the feature collection represented by this source.
   Future<OGCCollectionMeta> meta();
+
+  /// Get optional metadata about queryable properties for the feature
+  /// collection represented by this source.
+  ///
+  /// Returns null if no "queryables" metadata is available for this feature
+  /// source.
+  Future<OGCQueryableObject?> queryables();
 
   /// Fetches a single feature by [id] from this source.
   ///

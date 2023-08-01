@@ -22,16 +22,23 @@ GeoJSON (web / http) resource as a data source:
 dart example/geodata_example.dart geojson https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/ 2.5_day.geojson,significant_week.geojson 3 items
 dart example/geodata_example.dart geojson https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/ significant_month.geojson 3 items id ok2022cedc
 
-OGC API Features data sources:
+OGC API Features service meta queries:
+dart example/geodata_example.dart ogcfeat https://demo.pygeoapi.io/master/ - 1 meta
+dart example/geodata_example.dart ogcfeat https://weather.obs.fmibeta.com/ - 1 meta
+dart example/geodata_example.dart ogcfeat https://demo.ldproxy.net/zoomstack - 1 meta
+
+OGC API Features meta and queryables from collections:
+dart example/geodata_example.dart ogcfeat https://demo.pygeoapi.io/master/ lakes,obs,dutch_windmills 1 collection
+dart example/geodata_example.dart ogcfeat https://weather.obs.fmibeta.com/ fmi_aws_observations 1 collection
+dart example/geodata_example.dart ogcfeat https://demo.ldproxy.net/zoomstack airports 1 collection
+
+OGC API Features feature items from collections:
 dart example/geodata_example.dart ogcfeat https://demo.pygeoapi.io/master/ lakes 2 items
 dart example/geodata_example.dart ogcfeat https://demo.pygeoapi.io/master/ lakes 2 items id 3
 dart example/geodata_example.dart ogcfeat https://weather.obs.fmibeta.com/ fmi_aws_observations 2 items bbox 23,62,24,63
+dart example/geodata_example.dart ogcfeat https://demo.ldproxy.net/zoomstack airports 2 items
 
-OGC API Features meta queries:
-dart example/geodata_example.dart ogcfeat https://demo.pygeoapi.io/master/ - 1 meta
-dart example/geodata_example.dart ogcfeat https://weather.obs.fmibeta.com/ - 1 meta
-
-More demo APIs (however this page seems to be somewhat outdated, be careful!):
+More OGC API Features implementations:
 https://github.com/opengeospatial/ogcapi-features/tree/master/implementations
 */
 
@@ -159,7 +166,7 @@ Future<void> main(List<String> args) async {
               _printCollection(coll);
             }
             break;
-          case 'items':
+          case 'collection':
             // Loop over all collections
             for (final collectionId in collectionIds) {
               // get feature source for a collection
@@ -169,6 +176,20 @@ Future<void> main(List<String> args) async {
               final meta = await source.meta();
               print('Collection meta:');
               _printCollection(meta);
+
+              // optional metadata about queryable properties
+              final queryables = await source.queryables();
+              if (queryables != null) {
+                // got queryables
+                _printQueryables(queryables);
+              }
+            }
+            break;
+          case 'items':
+            // Loop over all collections
+            for (final collectionId in collectionIds) {
+              // get feature source for a collection
+              final source = await service.collection(collectionId);
 
               // get actual data, a single feature or features
               if (query is BoundedItemsQuery) {
@@ -261,6 +282,13 @@ void _printMeta(ResourceMeta meta) {
   print('  title: ${meta.title}');
   if (meta.description != null) {
     print('  description: ${meta.description}');
+  }
+}
+
+void _printQueryables(OGCQueryableObject queryables) {
+  print('Queryables for ${queryables.title}:');
+  for (final prop in queryables.properties.values) {
+    print('  ${prop.name} (${prop.title}): ${prop.type}');
   }
 }
 

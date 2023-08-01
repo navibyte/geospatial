@@ -16,6 +16,7 @@ import '/src/common/service/service_exception.dart';
 import '/src/core/data/bounded_items_query.dart';
 import '/src/core/data/item_query.dart';
 import '/src/ogcapi_common/model/ogc_collection_meta.dart';
+import '/src/ogcapi_common/model/ogc_queryable_object.dart';
 import '/src/ogcapi_common/service/client/ogc_client.dart';
 import '/src/ogcapi_features/model/ogc_feature_conformance.dart';
 import '/src/ogcapi_features/model/ogc_feature_item.dart';
@@ -68,10 +69,22 @@ class OGCAPIFeatures {
 // Private implementation code below.
 // The implementation may change in future.
 
+// JSON content types
+const _contentTypeJSON = 'application/json';
+const _contentTypeGeoJSON = 'application/geo+json';
+const _contentTypeJSONSchema = 'application/schema+json';
+
 // collection items of geospatial features (actual data)
-const _acceptGeoJSON = {'accept': 'application/geo+json'};
-const _expectGeoJSON = ['application/geo+json', 'application/json'];
-const _nextAndPrevLinkType = 'application/geo+json';
+const _acceptGeoJSON = {'accept': _contentTypeGeoJSON};
+const _expectGeoJSON = [_contentTypeGeoJSON, _contentTypeJSON];
+const _nextAndPrevLinkType = _contentTypeGeoJSON;
+
+// JSON Schema definition resources
+const _acceptJSONSchema = {'accept': _contentTypeJSONSchema};
+const _expectJSONSchema = [
+  _contentTypeJSONSchema,
+  _contentTypeJSON,
+];
 
 /// A client for accessing `OGC API Features` compliant sources via http(s).
 class _OGCFeatureClientHttp extends OGCClientHttp implements OGCFeatureService {
@@ -165,6 +178,36 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
         // (single collection meta as JSON object)
         return _collectionFromJson(data);
       },
+    );
+  }
+
+  @override
+  Future<OGCQueryableObject?> queryables() async {
+    // need metadata for links
+    final collectionMeta = await meta();
+
+    // try to get queryables links with type "application/schema+json"
+    var links = collectionMeta.links.queryables(type: _contentTypeJSONSchema);
+    if (links.isEmpty) {
+      // if did got any, try to get basic JSON (some service announced as such)
+      links = collectionMeta.links.queryables(type: _contentTypeJSON);
+
+      if (links.isEmpty) {
+        // if did got any, try to get without specifying type
+        links = collectionMeta.links.queryables();
+      }
+    }
+    if (links.isEmpty) {
+      return null; // no link --> no queryables
+    }
+
+    final url = resolveLinkReferenceUri(service.endpoint, links.first.href);
+
+    return service.adapter.getEntityFromJsonObject(
+      url,
+      headers: _acceptJSONSchema,
+      expect: _expectJSONSchema,
+      toEntity: (data, _) => OGCQueryableObject.fromJson(data),
     );
   }
 

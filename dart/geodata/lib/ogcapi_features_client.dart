@@ -17,6 +17,7 @@ export 'core.dart';
 
 export 'src/ogcapi_common/model/ogc_collection_meta.dart';
 export 'src/ogcapi_common/model/ogc_conformance.dart';
+export 'src/ogcapi_common/model/ogc_queryable_object.dart';
 export 'src/ogcapi_common/model/ogc_service.dart';
 export 'src/ogcapi_common/model/ogc_service_meta.dart';
 export 'src/ogcapi_features/model/ogc_feature_conformance.dart';

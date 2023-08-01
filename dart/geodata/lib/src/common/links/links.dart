@@ -257,4 +257,32 @@ class Links with EquatableMixin {
         type: type,
         hreflang: hreflang,
       );
+
+  /// All links with `rel` matching
+  /// `http://www.opengis.net/def/rel/ogc/1.0/queryables` or
+  /// `[ogc-rel:queryables]` or `queryables` (the last one not standard but
+  /// was found somewhere..).
+  ///
+  /// OGC API - Features - Part 3: Filtering: "The Queryables resource SHALL be
+  /// referenced from any filterable resource with a link with the link relation
+  /// type http://www.opengis.net/def/rel/ogc/1.0/queryables (or, alternatively,
+  /// [ogc-rel:queryables])".
+  ///
+  /// Optional [type] and [hreflang] params can specify links more precisely.
+  Iterable<Link> queryables({String? type, String? hreflang}) =>
+      _byRelInternal('queryables', type: type, hreflang: hreflang)
+          .followedBy(
+            _byRelInternal(
+              '[ogc-rel:queryables]',
+              type: type,
+              hreflang: hreflang,
+            ).followedBy(
+              _byRelInternal(
+                'http://www.opengis.net/def/rel/ogc/1.0/queryables',
+                type: type,
+                hreflang: hreflang,
+              ),
+            ),
+          )
+          .toList(growable: false);
 }
