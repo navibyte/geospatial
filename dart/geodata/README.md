@@ -22,7 +22,7 @@ Standard part | Support in this package
 ------------- | -----------------------
 [OGC API - Features - Part 1: Core](https://docs.ogc.org/is/17-069r4/17-069r4.html) | Supported for accessing metadata and GeoJSON feature collections.
 [OGC API - Features - Part 2: Coordinate Reference Systems by Reference](https://docs.ogc.org/is/18-058r1/18-058r1.html) | Supported.
-OGC API - Features - Part 3: Filtering (draft) | Partially supported (conformance classes, queryables).
+OGC API - Features - Part 3: Filtering (draft) | Partially supported (conformance classes, queryables, features filter).
 
 ## Introduction
 
@@ -437,17 +437,33 @@ The feature source returned by `collection()` provides following methods:
   /// Fetches a single feature by id (set in [query]) from this source.
   Future<OGCFeatureItem> item(ItemQuery query);
 
-  /// Fetches features matching [query] from this source.
+  /// Fetches features matching [query] (and an optional [cql] query) from this
+  /// source.
+  ///
+  /// If both [query] and [cql] are provided, then a service returns only
+  /// features that match both [query] AND the [cql] query.
   ///
   /// This call accesses only one set of feature items (number of returned items
   /// can be limited).
-  Future<OGCFeatureItems> items(BoundedItemsQuery query);
+  @override
+  Future<OGCFeatureItems> items(
+    BoundedItemsQuery query, {
+    CQLQuery? cql,
+  });
 
-  /// Fetches features as paged sets matching [query] from this source.
+  /// Fetches features as paged sets matching [query] (and an optional [cql]
+  /// query) from this source.
+  ///
+  /// If both [query] and [cql] are provided, then a service returns only
+  /// features that match both [query] AND the [cql] query.
   ///
   /// This call returns a first set of feature items (number of returned items
   /// can be limited), with a link to an optional next set of feature items.
-  Future<Paged<OGCFeatureItems>> itemsPaged(BoundedItemsQuery query);
+  @override
+  Future<Paged<OGCFeatureItems>> itemsPaged(
+    BoundedItemsQuery query, {
+    CQLQuery? cql,
+  });
 ```
 
 Methods accessing multiple feature items return a future of `OGCFeatureItems``

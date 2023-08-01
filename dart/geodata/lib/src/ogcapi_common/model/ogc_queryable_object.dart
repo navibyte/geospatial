@@ -155,7 +155,7 @@ class OGCQueryableProperty {
   /// * `number` / `integer` (numeric properties)
   /// * `boolean` (boolean properties)
   /// * `array` (array properties)
-  /// 
+  ///
   /// In practise different OGC API Features implementations seem also to use
   /// different specifiers for types.
   final String type;

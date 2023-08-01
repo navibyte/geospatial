@@ -15,6 +15,7 @@ import '/src/common/paged/paged.dart';
 import '/src/common/service/service_exception.dart';
 import '/src/core/data/bounded_items_query.dart';
 import '/src/core/data/item_query.dart';
+import '/src/cql2/model/cql_query.dart';
 import '/src/ogcapi_common/model/ogc_collection_meta.dart';
 import '/src/ogcapi_common/model/ogc_queryable_object.dart';
 import '/src/ogcapi_common/service/client/ogc_client.dart';
@@ -230,7 +231,7 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
     final crs = query.crs;
     var params = <String, String>{
       //'f': 'json',
-      if (crs != null) 'crs': crs.toString(),
+      if (crs != null) 'crs': crs.id,
     };
     if (query.queryablesAsParameters != null) {
       params = Map.of(query.queryablesAsParameters!)..addAll(params);
@@ -281,12 +282,18 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
   }
 
   @override
-  Future<OGCFeatureItems> items(BoundedItemsQuery query) async =>
+  Future<OGCFeatureItems> items(
+    BoundedItemsQuery query, {
+    CQLQuery? cql,
+  }) async =>
       // read only first set of feature items
-      (await itemsPaged(query)).current;
+      (await itemsPaged(query, cql: cql)).current;
 
   @override
-  Future<Paged<OGCFeatureItems>> itemsPaged(BoundedItemsQuery query) async {
+  Future<Paged<OGCFeatureItems>> itemsPaged(
+    BoundedItemsQuery query, {
+    CQLQuery? cql,
+  }) async {
     // read "collections/{collectionId}/items" and return as paged response
 
     // form a query url
@@ -298,10 +305,13 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
     var params = <String, String>{
       //'f': 'json',
       if (limit != null) 'limit': limit.toString(),
-      if (crs != null) 'crs': crs.toString(),
-      if (bboxCrs != null) 'bbox-crs': bboxCrs.toString(),
+      if (crs != null) 'crs': crs.id,
+      if (bboxCrs != null) 'bbox-crs': bboxCrs.id,
       if (bbox != null) 'bbox': bbox,
       if (datetime != null) 'datetime': datetime,
+      if (cql != null) 'filter': cql.filter,
+      if (cql != null) 'filter-lang': cql.filterLang,
+      if (cql != null && cql.filterCrs != null) 'filter-crs': cql.filterCrs!.id,
     };
     if (query.queryablesAsParameters != null) {
       params = Map.of(query.queryablesAsParameters!)..addAll(params);

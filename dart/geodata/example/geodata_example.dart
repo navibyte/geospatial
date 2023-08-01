@@ -6,6 +6,8 @@
 
 // ignore_for_file: avoid_print
 
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
 import 'package:geobase/coordinates.dart';
 import 'package:geobase/vector_data.dart';
@@ -37,6 +39,9 @@ dart example/geodata_example.dart ogcfeat https://demo.pygeoapi.io/master/ lakes
 dart example/geodata_example.dart ogcfeat https://demo.pygeoapi.io/master/ lakes 2 items id 3
 dart example/geodata_example.dart ogcfeat https://weather.obs.fmibeta.com/ fmi_aws_observations 2 items bbox 23,62,24,63
 dart example/geodata_example.dart ogcfeat https://demo.ldproxy.net/zoomstack airports 2 items
+
+OGC API Features feature items from collections using CQL2:
+dart example/geodata_example.dart ogcfeat https://demo.ldproxy.net/zoomstack airports 2 items cql cql2-text - "name='London Oxford Airport'"
 
 More OGC API Features implementations:
 https://github.com/opengeospatial/ogcapi-features/tree/master/implementations
@@ -71,6 +76,7 @@ Future<void> main(List<String> args) async {
 
   // parse query
   GeospatialQuery query = BoundedItemsQuery(limit: limit);
+  CQLQuery? cql;
 
   if (args.length >= 7) {
     switch (args[5]) {
@@ -106,6 +112,27 @@ Future<void> main(List<String> args) async {
           }
         }
         break;
+      case 'cql':
+        if (args.length >= 9) {
+          final filterLang = args[6];
+          final filterCrs =
+              args[7] == '-' ? null : CoordRefSys.normalized(args[7]);
+          switch (filterLang) {
+            case CQLQuery.filterLangCQL2Text:
+              cql = CQLQuery.fromText(
+                args[8],
+                filterCrs: filterCrs,
+              );
+              break;
+            case CQLQuery.filterLangCQL2Json:
+              cql = CQLQuery.fromJson(
+                json.decode(args[8]) as Map<String, dynamic>,
+                filterCrs: filterCrs,
+              );
+              break;
+          }
+        }
+        break;
     }
   }
 
@@ -127,7 +154,7 @@ Future<void> main(List<String> args) async {
             case 'items':
               // get actual data, a single feature or features
               if (query is BoundedItemsQuery) {
-                await _callItemsPaged(source, query, maxPagedResults);
+                await _callItemsPaged(source, query, null, maxPagedResults);
               } else if (query is ItemQuery) {
                 await _callItemById(source, query);
               }
@@ -193,7 +220,7 @@ Future<void> main(List<String> args) async {
 
               // get actual data, a single feature or features
               if (query is BoundedItemsQuery) {
-                await _callItemsPaged(source, query, maxPagedResults);
+                await _callItemsPaged(source, query, cql, maxPagedResults);
               } else if (query is ItemQuery) {
                 await _callItemById(source, query);
               }
@@ -235,12 +262,15 @@ Future<bool> _callItemById(
 Future<bool> _callItemsPaged(
   BasicFeatureSource source,
   BoundedItemsQuery query,
+  CQLQuery? cql,
   int maxPagedResults,
 ) async {
   // fetch feature items as paged results, max rounds by maxPagedResults
   var round = 0;
   Paged<FeatureItems>? page;
-  if (source is FeatureSource) {
+  if (source is OGCFeatureSource) {
+    page = await source.itemsPaged(query, cql: cql);
+  } else if (source is FeatureSource) {
     page = await source.itemsPaged(query);
   } else {
     page = await source.itemsAllPaged(limit: query.limit);
