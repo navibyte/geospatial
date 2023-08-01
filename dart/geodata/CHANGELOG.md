@@ -1,6 +1,6 @@
 ## 0.12.0
 
-NOTE: Version 0.12.0 currently [under development](https://github.com/navibyte/geospatial/issues/177) (0.12.0-dev.0).
+NOTE: Version 0.12.0 currently [under development](https://github.com/navibyte/geospatial/issues/177) (0.12.0-dev.1).
 
 ✨ New (2023-07): better client-side support for OGC API Features (Part 1 and 2).
 
