@@ -18,7 +18,7 @@ class BoundedItemsQuery extends ItemsQuery {
     this.bbox,
     this.timeFrame,
     super.limit,
-    super.extra,
+    super.parameters,
   });
 
   /// A new query with query parameters copied from an optional [query].
@@ -35,12 +35,12 @@ class BoundedItemsQuery extends ItemsQuery {
               bbox: query.bbox,
               timeFrame: query.timeFrame,
               limit: query.limit,
-              extra: query.extra,
+              parameters: query.parameters,
             )
           : BoundedItemsQuery(
               crs: query?.crs,
               limit: query?.limit,
-              extra: query?.extra,
+              parameters: query?.parameters,
             );
 
   /// An optional coordinate reference system used by [bbox].
@@ -53,5 +53,5 @@ class BoundedItemsQuery extends ItemsQuery {
   final Temporal? timeFrame;
 
   @override
-  List<Object?> get props => [crs, bboxCrs, bbox, timeFrame, limit, extra];
+  List<Object?> get props => [crs, bboxCrs, bbox, timeFrame, limit, parameters];
 }

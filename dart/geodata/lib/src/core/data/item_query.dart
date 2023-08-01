@@ -12,7 +12,7 @@ class ItemQuery extends GeospatialQuery {
   const ItemQuery({
     required this.id,
     super.crs,
-    super.extra,
+    super.parameters,
   });
 
   /// An identifier specifying an item on a geodata source.
@@ -21,5 +21,5 @@ class ItemQuery extends GeospatialQuery {
   final Object id;
 
   @override
-  List<Object?> get props => [id, crs, extra];
+  List<Object?> get props => [id, crs, parameters];
 }

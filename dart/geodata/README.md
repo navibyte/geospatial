@@ -336,10 +336,21 @@ Future<void> main(List<String> args) async {
   // 
   // (*) supported only by services conforming to OGC API Features - Part 2: CRS
 
+
   // `items` allows also setting property filters when supported by a service.
+  //
+  // Try to get result geometries projected to WGS 84 / Web Mercator instead of
+  // using geographic coordinates of WGS84.
+  const webMercator = CoordRefSys.EPSG_3857;
   final itemsByPlace = await source.items(
-    const BoundedItemsQuery(
-      extra: {'PLAATS': 'Uitgeest'},
+    BoundedItemsQuery(
+      // ask for result geometries projected to WGS 84 / Web Mercator
+      crs: supportedCrs.contains(webMercator) ? webMercator : null,
+
+      // queryables as query parameters
+      parameters: const {
+        'PLAATS': 'Uitgeest',
+      },
     ),
   );
   // Read features from "dutch_windmills" filtered by a place name.

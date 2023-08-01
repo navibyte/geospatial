@@ -232,8 +232,8 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
       //'f': 'json',
       if (crs != null) 'crs': crs.toString(),
     };
-    if (query.extraParams != null) {
-      params = Map.of(query.extraParams!)..addAll(params);
+    if (query.queryablesAsParameters != null) {
+      params = Map.of(query.queryablesAsParameters!)..addAll(params);
     }
     final url = resolveSubResourceUri(
       service.endpoint,
@@ -303,8 +303,8 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
       if (bbox != null) 'bbox': bbox,
       if (datetime != null) 'datetime': datetime,
     };
-    if (query.extraParams != null) {
-      params = Map.of(query.extraParams!)..addAll(params);
+    if (query.queryablesAsParameters != null) {
+      params = Map.of(query.queryablesAsParameters!)..addAll(params);
     }
 
     /*

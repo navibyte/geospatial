@@ -22,6 +22,12 @@ abstract class OGCFeatureSource
   ///
   /// Returns null if no "queryables" metadata is available for this feature
   /// source.
+  /// 
+  /// An instance of `OGCQueryableObject` contains metadata about supported
+  /// queryable parameters (in `properties`) instantiated as
+  /// `OGCQueryableProperty` objects. You may use this information when
+  /// specifying actual query parameters (for feature collection properties)
+  /// using `BoundedItemsQuery` class when calling `items` or `itemsAll`.
   ///
   /// An OGC API Features service providing "queryables" metadata must publish
   /// support for the `Queryables` conformance class specified in the

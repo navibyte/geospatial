@@ -53,7 +53,7 @@ Future<void> main(List<String> args) async {
     final itemsByName = await airports.items(
       BoundedItemsQuery(
         crs: crs,
-        extra: const {
+        parameters: const {
           'name': 'London Oxford Airport',
         },
       ),

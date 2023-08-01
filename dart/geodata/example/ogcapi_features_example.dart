@@ -150,8 +150,10 @@ Future<void> main(List<String> args) async {
       // ask for result geometries projected to WGS 84 / Web Mercator
       crs: supportedCrs.contains(webMercator) ? webMercator : null,
 
-      // property filter
-      extra: const {'PLAATS': 'Uitgeest'},
+      // queryables as query parameters
+      parameters: const {
+        'PLAATS': 'Uitgeest',
+      },
     ),
   );
   await _readFeatureItems(

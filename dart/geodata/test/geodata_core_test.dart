@@ -27,7 +27,7 @@ void main() {
     });
 
     test('GeospatialQuery', () {
-      final query = GeospatialQuery(crs: CoordRefSys.EPSG_4326, extra: {
+      final query = GeospatialQuery(crs: CoordRefSys.EPSG_4326, parameters: {
         'string': 'this is str',
         'int': 123,
         'double': 93.4245,
@@ -45,7 +45,7 @@ void main() {
         ),
       });
       expect(query.crs?.epsg, 'EPSG:4326');
-      expect(query.extraParams, <String, String>{
+      expect(query.queryablesAsParameters, <String, String>{
         'string': 'this is str',
         'int': '123',
         'double': '93.4245',
@@ -56,7 +56,7 @@ void main() {
         'bounds': '-10.1,-20.2,-400.0,10.1,20.2,400.0',
       });
       expect(
-          Uri(path: 'a/b', queryParameters: query.extraParams).toString(),
+          Uri(path: 'a/b', queryParameters: query.queryablesAsParameters).toString(),
           'a/b?string=this+is+str&int=123&double=93.4245&bool=false&null=null&'
           'instant=2022-01-15T19%3A01%3A22.000&'
           'interval=..%2F2022-01-15T19%3A01%3A22.000&'

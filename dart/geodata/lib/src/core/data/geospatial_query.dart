@@ -14,28 +14,37 @@ class GeospatialQuery with EquatableMixin {
   /// A base query for requesting data from a geospatial data source.
   const GeospatialQuery({
     this.crs,
-    this.extra,
+    this.parameters,
   });
 
   /// An optional id defining a coordinate reference system for result data.
   final CoordRefSys? crs;
 
-  /// Optional extra parameters for queries as a map of named parameters.
+  /// Optional query parameters for queries as a map of named parameters.
   ///
   /// Note that such parameters that are defined in other members of this class
-  /// or it's sub type, override any parameter on [extra], if available. Use
-  /// this only for parameters that are not defined by geospatial queries.
+  /// or it's sub type, override any parameter on [parameters], if available.
+  /// Use this only for parameters that are not defined by other members.
   ///
-  /// See also the [extraParams] getter that maps all values to `String`.
-  final Map<String, dynamic>? extra;
+  /// See also the [queryablesAsParameters] getter that maps all values to
+  /// `String`.
+  final Map<String, dynamic>? parameters;
 
-  /// Optional extra parameters for queries with values mapped to `String`.
+  /// Optional query parameters for queries with values mapped to `String`.
   ///
-  /// This getter maps values from [extra] using the mapper function:
+  /// This getter maps values from [parameters] using the mapper function:
   /// `(key, value) => MapEntry(key, value.toString())`
-  Map<String, String>? get extraParams =>
-      extra?.map((key, value) => MapEntry(key, value.toString()));
+  Map<String, String>? get queryablesAsParameters =>
+      parameters?.map((key, value) => MapEntry(key, value.toString()));
+
+  /// Optional query parameters for queries as a map of named parameters.
+  @Deprecated('Use parameters instead.')
+  Map<String, dynamic>? get extra => parameters;
+
+  /// Optional query parameters for queries with values mapped to `String`.
+  @Deprecated('Use queryablesAsParameters instead.')
+  Map<String, String>? get extraParams => queryablesAsParameters;
 
   @override
-  List<Object?> get props => [crs, extra];
+  List<Object?> get props => [crs, parameters];
 }
