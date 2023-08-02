@@ -30,6 +30,41 @@ import '/src/utils/resolve_api_call.dart';
 
 /// A class with static factory methods to create feature sources conforming to
 /// the OGC API Features standard.
+///
+/// A basic sample how to access and read metadata and geospatial feature items
+/// from a feature service compliant with OGC API Features standard.
+///
+/// ```dart
+/// // 1. Get a client instance for a Web API endpoint.
+/// final client = OGCAPIFeatures.http(endpoint: Uri.parse('...'));
+///
+/// // 2. Access/check metadata (meta, OpenAPI, conformance, collections) as needed.
+/// final conformance = await client.conformance();
+/// if (!conformance.conformsToFeaturesCore(geoJSON: true)) {
+///   return; // not conforming to core and GeoJSON - so return
+/// }
+///
+/// // 3. Get a feature source for a specific collection.
+/// final source = await client.collection('my_collection');
+///
+/// // 4. Access (and check) metadata for this collection.
+/// final meta = await source.meta();
+/// print('Collection title: ${meta.title}');
+///
+/// // 5. Access feature items.
+/// final items = await source.itemsAll(limit: 100);
+///
+/// // 6. Check response metadata.
+/// print('Timestamp: ${items.timeStamp}');
+///
+/// // 7. Get an iterable of feature objects.
+/// final features = items.collection.features;
+///
+/// // 8. Loop through features (each with id, properties and geometry)
+/// for (final feat in features) {
+///   print('Feature ${feat.id} with geometry: ${feat.geometry}');
+/// }
+/// ```
 class OGCAPIFeatures {
   /// A client for accessing `OGC API Features` compliant sources via http(s)
   /// conforming to [format].

@@ -31,10 +31,6 @@ As a background you might want first to check a good
 [OGC API standard family](https://www.youtube.com/watch?v=xpw_VvcPjaE),
 both provided by OGC (The Open Geospatial Consortium) itself.
 
-In this package see [geodata_example.dart](example/geodata_example.dart) for
-a simple CLI tool reading metadata and feature items from GeoJSON and OGC API
-Features data sources.
-
 The following diagram describes a decision flowchart to select a client class
 and a feature source to access GeoJSON feature collections and feature items:
 
@@ -150,8 +146,8 @@ Other documentation:
 > are unfamiliar concepts, you might want to read more about
 > [geometries](https://pub.dev/packages/geobase#geometries),
 > [geospatial features](https://pub.dev/packages/geobase#geospatial-features)
-> and [GeoJSON](https://pub.dev/packages/geobase#geojson) in the documentation
-> of the [geobase](https://pub.dev/packages/geobase) package.
+> and [GeoJSON](https://pub.dev/packages/geobase#vector-data-formats) in the
+> documentation of the [geobase](https://pub.dev/packages/geobase) package.
 > 
 > 🚀 **Samples**: 
 > The [Geospatial demos for Dart](https://github.com/navibyte/geospatial_demos)
@@ -219,6 +215,8 @@ The full sample for accessing GeoJSON feature sources is available in
 
 ### OGC API Features client
 
+#### Part 1: Core
+
 The GeoJSON client discussed above allows reading data from a static web
 resource or a local file. However most often geospatial APIs contains huge
 datasets, and data items to be queried must be selected and filtered. 
@@ -229,14 +227,14 @@ how data is discovered and accessed:
 
 > OGC API Features provides API building blocks to create, modify and query 
 > features on the Web. OGC API Features is comprised of multiple parts, each of 
-> them is a separate standard. This part, the "Core" specifies the core 
+> them is a separate standard. The "Core" part specifies the core 
 > capabilities and is restricted to fetching features where geometries are 
 > represented in the coordinate reference system WGS 84 with axis order
 > longitude/latitude. Additional capabilities that address more advanced needs
 > will be specified in additional parts. 
 
-A compliant (according to `Part 1: Core`) API service should provide at least
-following resources:
+A compliant (according to `OGC API - Features - Part 1: Core`) API service
+should provide at least following resources:
 
 Resource | Path | Description
 -------- | ---- | ----------- 
@@ -250,11 +248,11 @@ Feature (by id) | `/collections/{collectionId}/items/{featureId}` | A single fea
 Most services also provide an API definition (ie. an Open API 3.0 document) at
 `/api` describing the capabilities of the API service.
 
-See [ogcapi_features_example.dart](example/ogcapi_features_example.dart) for a
-sample how to read metadata and feature items from an API service conforming to
+See [geodata_example.dart](example/geodata_example.dart) for a sample how to
+read metadata and feature items from an API service conforming to
 [OGC API Features](https://ogcapi.ogc.org/features/).
 
-Some most relevant portions of this sample:
+Most relevant portions of this sample:
 
 ```dart
 import 'package:geobase/coordinates.dart';
@@ -273,16 +271,15 @@ Future<void> main(List<String> args) async {
 
   // access OpenAPI definition for the service and check for terms of service
   // (OpenAPI contains also other info of service, queries and responses, etc.)
-  final info = (await meta.openAPI()).content['info'] as Map<String, dynamic>;
+  final openAPI = await meta.openAPI();
+  final info = openAPI.content['info'] as Map<String, dynamic>;
   print('Terms of service: ${info['termsOfService']}');
 
   // conformance classes (text ids) informs the capabilities of the service
   final conformance = await client.conformance();
-  // the service should be compliant with OGC API Features - Part 1 and GeoJSON
-  if (conformance.conformsToFeaturesCore(geoJSON: true)) {
-    print('The service is compliant with OGC API Features, Part 1 and GeoJSON');
-  } else {
-    print('The service is NOT compliant.');
+  // service should (at least) be compliant with Part 1 (Core + GeoJSON)
+  if (!conformance.conformsToFeaturesCore(geoJSON: true)) {
+    print('NOT compliant with Part 1 (Core, GeoJSON).');
     return;
   }
 
@@ -297,15 +294,172 @@ Future<void> main(List<String> args) async {
   print('Spatial extent: ${collectionMeta.extent?.spatial}');
   print('Temporal extent: ${collectionMeta.extent?.temporal}');
 
-  // metadata also has info about coordinate systems supported by a collection
-  final storageCrs = collectionMeta.storageCrs;
+  // **** next read actual data (wind mills) from this collection
+
+  // `itemsAll` lets access all features on source (optionally limited by limit)
+  final itemsAll = await source.itemsAll(
+    limit: 2,
+  );
+  // (... code omitted ...)
+
+  // `itemsAllPaged` helps paginating through a large dataset with many features
+  // (here each page is limited to 2 features)
+  Paged<OGCFeatureItems>? page = await source.itemsAllPaged(limit: 2);
+  // (... code omitted ...)
+
+  // `items` is used for filtered queries, here bounding box, WGS 84 coordinates
+  final items = await source.items(
+    const BoundedItemsQuery(
+      limit: 2,
+      bbox: GeoBox(west: 5.03, south: 52.21, east: 5.06, north: 52.235),
+    ),
+  );
+  // (... code omitted ...)
+
+  // `BoundedItemsQuery` provides also following filters:
+  // - `limit` sets the maximum number of features returned
+  // - `timeFrame` sets a temporal filter
+  // - `bboxCrs` sets the CRS used by the `bbox` filter (*)
+  // - `crs` sets the CRS used by geometry objects of response features (*)
+  // - `parameters` sets queryable properties as a query parameter filter (#)
+  //
+  // (*) supported by services conforming to Part 2: CRS
+  // (*) supported by services conforming to Part 3: Filtering
+
+  // `itemsPaged` is used for paginated access on filtered queries
+  // (not demostrated here, see `itemsAllPaged` sample above about paggination)
+
+  // samples above accessed feature collections (resuls with 0 to N features)
+  // it's possible to access also a single specific feature item by ID
+  final item = await source.itemById('Molens.5');
+  // (... code omitted ...)
+}
+```
+
+As mentioned above, see [geodata_example.dart](example/geodata_example.dart) for
+the full sample.
+
+#### Part 2: Coordinate Reference Systems by Reference
+
+The `Part 1: Core` defined feature services that support only accessing data
+using WGS 84 longitude / latitude coordinates (with optional height or
+elevation).
+
+The second part of the `OGC API - Features` standard is
+`Part 2: Coordinate Reference Systems by Reference` that specifies how servers
+publish supported coordinate refererence systems (as CRS identifiers) and how
+clients request and receive geospatial feature items whose geometries
+(coordinates) are in "alternative coordinate reference systems" (other than
+WGS 84 longitude/latitude).
+
+The following example demonstrates these capabilities (see the full sample at
+[ogcapi_features_crs_example.dart](example/ogcapi_features_crs_example.dart)): 
+
+```dart
+  // create an OGC API Features client for the open ldproxy demo service
+  // (see https://demo.ldproxy.net/zoomstack for more info)
+  final client = OGCAPIFeatures.http(
+    endpoint: Uri.parse('https://demo.ldproxy.net/zoomstack'),
+  );
+
+  // get service description and attribution info
+  final meta = await client.meta();
+  print('Service: ${meta.description}');
+  print('Attribution: ${meta.attribution}');
+
+  // service should be compliant with Part 1 (Core, GeoJSON) and Part 2 (CRS)
+  final conformance = await client.conformance();
+  if (!(conformance.conformsToFeaturesCore(geoJSON: true) &&
+      conformance.conformsToFeaturesCrs())) {
+    print('NOT compliant with Part 1 (Core, GeoJSON) and Part 2 (CRS).');
+    return;
+  }
+
+  // get "airports" collection, and print spatial extent and storage CRS
+  final airports = await client.collection('airports');
+  final airportsMeta = await airports.meta();
+  final extent = airportsMeta.extent?.spatial;
+  if (extent != null) {
+    final crs = extent.coordRefSys;
+    print('Spatial bbox list (crs: $crs):');
+    for (final box in extent.boxes) {
+      print('  $box');
+    }
+  }
+  final storageCrs = airportsMeta.storageCrs;
   if (storageCrs != null) {
     print('Storage CRS: $storageCrs');
   }
-  final supportedCrs = collectionMeta.crs;
-  print('All supported CRS identifiers:');
+
+  // get all supported CRS identifiers
+  final supportedCrs = airportsMeta.crs;
   for (final crs in supportedCrs) {
-    print('  $crs');
+    print('---------------------');
+    print('query crs: $crs');
+
+    // get feature items filtered by name and result geometries in `crs`
+    final itemsByName = await airports.items(
+      BoundedItemsQuery(
+        // output result geometries in crs of the loop
+        crs: crs,
+
+        // bbox in EPSG:27700
+        bboxCrs: CoordRefSys.normalized(
+          'http://www.opengis.net/def/crs/EPSG/0/27700',
+        ),
+        bbox: const ProjBox(
+          minX: 447000,
+          minY: 215500,
+          maxX: 448000,
+          maxY: 215600,
+        ),
+      ),
+    );
+
+    // print metadata about response
+    final returned = itemsByName.numberReturned;
+    final contentCrs = itemsByName.contentCrs;
+    print('got $returned items');
+    print('content crs: $contentCrs');
+
+    // print features items contained in response feature collection
+    for (final feature in itemsByName.collection.features) {
+      final id = feature.id;
+      final name = feature.properties['name'];
+      final geometry = feature.geometry;
+      if (geometry is Point) {
+        if (crs.isGeographic()) {
+          final position = geometry.position.asGeographic;
+          const dms = Dms(type: DmsType.degMinSec, decimals: 3);
+          print('$id $name ${position.lonDms(dms)},${position.latDms(dms)}');
+        } else {
+          final position = geometry.position;
+          print('$id $name $position');
+        }
+      }
+    }
+  }
+```
+
+#### Part 3: Filtering
+
+The third part - `Part 3: Filtering` of `OGC API - Features` - further extends
+capabilities of feature services.
+
+For example when `client` is `OGCFeatureService` and `source` is
+`OGCFeatureSource`, and both are initialized just like in the previous samples,
+then it's possible to check for the support of filtering, get queryable
+properties, and utilize properties in simple (queryables as query parameters in
+HTTP requests):
+
+```dart
+  // service should be compliant with OGC API Features - Part 3 (Filtering)
+  final conformance = await client.conformance();
+  if (!conformance.conformsToFeaturesQueryables(queryParameters: true)) {
+    print(
+      'NOT compliant with Part 3 Filtering (Queryables + Query Parameters).',
+    );
+    return;
   }
 
   // optional metadata about queryable properties
@@ -317,56 +471,21 @@ Future<void> main(List<String> args) async {
     }
   }
 
-  // next read actual data (wind mills) from this collection
-
-  // `items` is used for filtered queries, here bounding box, WGS 84 coordinates
-  final items = await source.items(
-    const BoundedItemsQuery(
-      bbox: GeoBox(west: 5.03, south: 52.21, east: 5.06, north: 52.235),
-    ),
-  );
-  // Read features from "dutch_windmills" matching the bbox filter.
-  // (... code omitted ...)
-
-  // `BoundedItemsQuery` provides also following filters:
-  // - `limit` sets the maximum number of features returned
-  // - `timeFrame` sets a temporal filter
-  // - `bboxCrs` sets the CRS used by the `bbox` filter (*)
-  // - `crs` sets the CRS used by geometry objects of response features (*)
-  // 
-  // (*) supported only by services conforming to OGC API Features - Part 2: CRS
-
-
-  // `items` allows also setting property filters when supported by a service.
-  //
-  // Try to get result geometries projected to WGS 84 / Web Mercator instead of
-  // using geographic coordinates of WGS84.
-  const webMercator = CoordRefSys.EPSG_3857;
+  // here query parameters is set to define a simple filter by a place name
   final itemsByPlace = await source.items(
-    BoundedItemsQuery(
-      // ask for result geometries projected to WGS 84 / Web Mercator
-      crs: supportedCrs.contains(webMercator) ? webMercator : null,
-
-      // queryables as query parameters
-      parameters: const {
+    const BoundedItemsQuery(
+      // queryables as query parameters (`PLAATS` is a queryable property)
+      parameters: {
         'PLAATS': 'Uitgeest',
       },
     ),
   );
-  // Read features from "dutch_windmills" filtered by a place name.
   // (... code omitted ...)
-
-  // samples above accessed feature collections (resuls with 0 to N features)
-  // it's possible to access also a single specific feature item by ID
-  final item = await source.itemById('Molens.5');
-  // Read a single feature by ID from "dutch_windmills".
-  // (... code omitted ...)
-}
 ```
 
-As mentioned above, see 
-[ogcapi_features_example.dart](example/ogcapi_features_example.dart) for the
-full sample.
+Queryable properties can also be utilized in more complex filters (based on the
+`Common Query Language` or CQL2). See the API documentation of `items` and
+`itemsPaged` methods in `OGCFeatureSource` for more information.
 
 ## Reference
 
@@ -466,6 +585,29 @@ The feature source returned by `collection()` provides following methods:
   });
 ```
 
+Queries for `items` and `itemsPaged` are normally specified by
+`BoundedItemsQuery` instances:
+
+```dart
+  /// An optional coordinate reference system used by [bbox].
+  final CoordRefSys? bboxCrs;
+
+  /// An optional [bbox] as a geospatial bounding filter (like `bbox`).
+  final Box? bbox;
+
+  /// An optional time frame as a temporal object (ie. instant or interval).
+  final Temporal? timeFrame;
+
+  /// An optional id defining a coordinate reference system for result data.
+  final CoordRefSys? crs;
+
+  /// Optional query parameters for queries as a map of named parameters.
+  final Map<String, dynamic>? parameters;
+
+  /// An optional [limit] setting maximum number of items returned.
+  final int? limit;
+```
+
 Methods accessing multiple feature items return a future of `OGCFeatureItems``
 which provides:
 
@@ -495,6 +637,77 @@ Feature objects are available from the `collection` property. See the
 chapter in the [geobase](https://pub.dev/packages/geobase) package for more
 information about `Feature` and `FeatureCollection` objects.
 
+The `queryables` metadata from a feature source is provide information about
+queryable properties that a service supports:
+
+```dart
+/// Represents `Queryables` document for an OGC API service parsed from JSON
+/// Schema data.
+class OGCQueryableObject {
+  /// JSON Schema based data representing `Queryables` document for an OGC API
+  /// service.
+  ///
+  /// This is data that is directly parsed from JSON Schema data an OGC API
+  /// Service has published. Use this for more detailed inspection of
+  /// Queryables metadata when other class members are not enough.
+  final Map<String, dynamic> content;
+
+  /// The URI of the resource without query parameters.
+  final String id;
+
+  /// The schema id of JSON Schema data in content.
+  ///
+  /// Should be either "https://json-schema.org/draft/2019-09/schema" or
+  /// "https://json-schema.org/draft/2020-12/schema" according to the
+  /// `OGC API - Features - Part 3: Filtering` standard.
+  final String schemaId;
+
+  /// The human readable title for this queryable object.
+  final String title;
+
+  /// An optional human readable description.
+  final String? description;
+
+  /// If true, any properties are valid in filter expressions even when not
+  /// declared in a queryable schema.
+  final bool additionalProperties;
+
+  /// A map of queryable properties for this queryable object.
+  ///
+  /// The map key represents a property name (that is accessible also from
+  /// the `name` property of `OGCQueryableProperty` object).
+  ///
+  /// NOTE: currently this contains only non-geospatial properties that SHOULD
+  /// have at least "type" and "title" attributes.
+  final Map<String, OGCQueryableProperty> properties;
+}
+
+/// A queryable non-geospatial property.
+class OGCQueryableProperty {
+  /// The property name.
+  final String name;
+
+  /// The human readable title for this property.
+  final String title;
+
+  /// An optional human readable description.
+  final String? description;
+
+  /// The type for this property.
+  ///
+  /// According to the `OGC API - Features - Part 3: Filtering` standard a type
+  /// SHOULD be one of the following:
+  /// * `string` (string or temporal properties)
+  /// * `number` / `integer` (numeric properties)
+  /// * `boolean` (boolean properties)
+  /// * `array` (array properties)
+  ///
+  /// In practise different OGC API Features implementations seem also to use
+  /// different specifiers for types.
+  final String type;
+}
+```
+
 ### Packages
 
 The **geodata** library contains also following partial packages, that can be
@@ -504,8 +717,9 @@ Package            | Exports also | Description
 ------------------ | ----------- | -----------------------------------------------
 **common**         | | Common data structures and helpers (for links, metadata, paged responses).
 **core**           | | Metadata and data source abstractions of geospatial Web APIs (ie. features).
+**formats**        | |  OpenAPI document and Common Query Language (CQL2) formats (partial support).
 **geojson_client** | common, core | A client-side data source to read GeoJSON data from web and file resources.
-**ogcapi_features_client** |  common, core | A client-side data source to read features from OGC API Features services.
+**ogcapi_features_client** |  common, core, formats | A client-side data source to read features from OGC API Features services.
 
 External packages `geodata` is depending on:
 * [equatable](https://pub.dev/packages/equatable) for equality and hash utils
