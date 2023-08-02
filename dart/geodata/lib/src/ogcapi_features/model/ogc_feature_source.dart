@@ -7,7 +7,7 @@
 import '/src/common/paged/paged.dart';
 import '/src/core/data/bounded_items_query.dart';
 import '/src/core/features/feature_source.dart';
-import '/src/cql2/model/cql_query.dart';
+import '/src/formats/cql2/cql_query.dart';
 import '/src/ogcapi_common/model/ogc_collection_meta.dart';
 import '/src/ogcapi_common/model/ogc_queryable_object.dart';
 

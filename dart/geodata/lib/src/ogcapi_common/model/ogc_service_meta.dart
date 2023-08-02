@@ -6,8 +6,8 @@
 
 import 'package:meta/meta.dart';
 
-import '/src/core/api/open_api_document.dart';
 import '/src/core/base/resource_meta.dart';
+import '/src/formats/openapi/open_api_document.dart';
 
 /// Basic metadata about OGC API service.
 @immutable

@@ -6,16 +6,16 @@
 
 /// A client-side data source to read features from OGC API Features services.
 ///
-/// This library exports also all classes of `package:geodata/common.dart` and
-/// `package:geodata/core.dart`.
+/// This library exports also all classes of `package:geodata/common.dart`,
+/// `package:geodata/core.dart` and `package:geodata/formats.dart`.
 ///
 /// Usage: import `package:geodata/ogcapi_features_client.dart`
 library ogcapi_features_client;
 
 export 'common.dart';
 export 'core.dart';
+export 'formats.dart';
 
-export 'src/cql2/model/cql_query.dart';
 export 'src/ogcapi_common/model/ogc_collection_meta.dart';
 export 'src/ogcapi_common/model/ogc_conformance.dart';
 export 'src/ogcapi_common/model/ogc_queryable_object.dart';

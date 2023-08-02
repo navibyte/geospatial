@@ -17,6 +17,7 @@ NOTE: Version 0.12.0 currently [under development](https://github.com/navibyte/g
 
 🛠 Maintenance:
 * Removed extra internal export files and made internal imports more excplicit.
+* A new library `package:geodata/formats.dart` with OpenAPI document and Common Query Language (CQL2) formats (partial support).
 
 ## 0.11.2 - 0.11.4
 

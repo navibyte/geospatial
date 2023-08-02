@@ -15,7 +15,7 @@ import '/src/common/paged/paged.dart';
 import '/src/common/service/service_exception.dart';
 import '/src/core/data/bounded_items_query.dart';
 import '/src/core/data/item_query.dart';
-import '/src/cql2/model/cql_query.dart';
+import '/src/formats/cql2/cql_query.dart';
 import '/src/ogcapi_common/model/ogc_collection_meta.dart';
 import '/src/ogcapi_common/model/ogc_queryable_object.dart';
 import '/src/ogcapi_common/service/client/ogc_client.dart';
