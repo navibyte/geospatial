@@ -27,8 +27,12 @@ class GeoJSONFeatures {
   /// The required [location] should refer to a web resource containing GeoJSON
   /// compliant data.
   ///
-  /// When given the optional [client] is used for http requests, otherwise the
-  /// default client of the `package:http/http.dart` package is used.
+  /// When given an optional [client] is used for http requests, otherwise the
+  /// default client of the `package:http/http.dart` package is used (a new
+  /// instance of default client for each service request). When [client] is
+  /// given, this allows a client to better maintain persistent connections to a
+  /// service, but it's also responsibility of a caller to close it
+  /// appropriately.
   ///
   /// When given [headers] are injected to http requests (however some can be
   /// overridden by the feature source implementation).

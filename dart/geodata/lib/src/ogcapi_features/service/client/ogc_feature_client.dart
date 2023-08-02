@@ -24,6 +24,7 @@ import '/src/ogcapi_features/model/ogc_feature_item.dart';
 import '/src/ogcapi_features/model/ogc_feature_items.dart';
 import '/src/ogcapi_features/model/ogc_feature_service.dart';
 import '/src/ogcapi_features/model/ogc_feature_source.dart';
+import '/src/utils/cached_object.dart';
 import '/src/utils/feature_http_adapter.dart';
 import '/src/utils/resolve_api_call.dart';
 
@@ -35,8 +36,12 @@ class OGCAPIFeatures {
   ///
   /// The required [endpoint] should refer to a base url of a feature service.
   ///
-  /// When given the optional [client] is used for http requests, otherwise the
-  /// default client of the `package:http/http.dart` package is used.
+  /// When given an optional [client] is used for http requests, otherwise the
+  /// default client of the `package:http/http.dart` package is used (a new
+  /// instance of default client for each service request). When [client] is
+  /// given, this allows a client to better maintain persistent connections to a
+  /// service, but it's also responsibility of a caller to close it
+  /// appropriately.
   ///
   /// When given [headers] are injected to http requests as http headers
   /// (however some can be overridden by the feature service implementation).
@@ -48,12 +53,16 @@ class OGCAPIFeatures {
   /// as a default. Note that currently only GeoJSON is supported, but it's
   /// possible to inject another format implementation (or with custom
   /// configuration) to the default one.
+  ///
+  /// [metaMaxAge] specifies a max age to cache metadata objects retrieved from
+  /// a service and that are cached internally (in-memory) by this client.
   static OGCFeatureService http({
     required Uri endpoint,
     Client? client,
     Map<String, String>? headers,
     Map<String, String>? extraParams,
     TextReaderFormat<FeatureContent> format = GeoJSON.feature,
+    Duration metaMaxAge = const Duration(minutes: 15),
   }) =>
       _OGCFeatureClientHttp(
         endpoint,
@@ -63,6 +72,7 @@ class OGCAPIFeatures {
           extraParams: extraParams,
         ),
         format: format,
+        metaMaxAge: metaMaxAge,
       );
 }
 
@@ -89,128 +99,144 @@ const _expectJSONSchema = [
 
 /// A client for accessing `OGC API Features` compliant sources via http(s).
 class _OGCFeatureClientHttp extends OGCClientHttp implements OGCFeatureService {
-  const _OGCFeatureClientHttp(
+  _OGCFeatureClientHttp(
     super.endpoint, {
     required super.adapter,
+    super.metaMaxAge,
     required this.format,
-  });
+  })  : _cachedConformance = CachedObject(metaMaxAge),
+        _cachedCollections = CachedObject(metaMaxAge);
 
   final TextReaderFormat<FeatureContent> format;
+
+  final CachedObject<OGCFeatureConformance> _cachedConformance;
+  final CachedObject<Iterable<OGCCollectionMeta>> _cachedCollections;
 
   @override
   Future<OGCFeatureSource> collection(String id) =>
       Future.value(_OGCFeatureSourceHttp(this, id));
 
   @override
-  Future<OGCFeatureConformance> conformance() async {
-    // fetch data as JSON Object, and parse conformance classes
-    final url = resolveSubResource(endpoint, 'conformance');
-    return adapter.getEntityFromJson(
-      url,
-      toEntity: (data, _) {
-        if (data is Map<String, dynamic>) {
-          // standard: root has JSON Object with "conformsTo" containing classes
-          return OGCFeatureConformance(
-            (data['conformsTo'] as Iterable<dynamic>?)?.cast<String>() ?? [],
-          );
-        } else if (data is Iterable<dynamic>) {
-          // NOT STANDARD: root has JSON Array containing conformance classes
-          return OGCFeatureConformance(data.cast<String>());
-        }
-        throw const ServiceException('Could not parse conformance classes');
-      },
-    );
-  }
+  Future<OGCFeatureConformance> conformance() =>
+      _cachedConformance.getAsync(() {
+        // fetch data as JSON Object, and parse conformance classes
+        final url = resolveSubResource(endpoint, 'conformance');
+        return adapter.getEntityFromJson(
+          url,
+          toEntity: (data, _) {
+            if (data is Map<String, dynamic>) {
+              // standard: root has JSON Object with "conformsTo" containing
+              // conformance classes
+              return OGCFeatureConformance(
+                (data['conformsTo'] as Iterable<dynamic>?)?.cast<String>() ??
+                    [],
+              );
+            } else if (data is Iterable<dynamic>) {
+              // NOT STANDARD: root has JSON Array with conformance classes
+              return OGCFeatureConformance(data.cast<String>());
+            }
+            throw const ServiceException('Could not parse conformance classes');
+          },
+        );
+      });
 
   @override
-  Future<Iterable<OGCCollectionMeta>> collections() async {
-    // fetch data as JSON Object, and parse conformance classes
-    final url = resolveSubResource(endpoint, 'collections');
-    return adapter.getEntityFromJsonObject(
-      url,
-      toEntity: (data, _) {
-        // global crs identifiers supported by all collection that refer to them
-        final globalCrs = (data['crs'] as Iterable<dynamic>?)?.cast<String>();
+  Future<Iterable<OGCCollectionMeta>> collections() =>
+      _cachedCollections.getAsync(() {
+        // fetch data as JSON Object, and parse conformance classes
+        final url = resolveSubResource(endpoint, 'collections');
+        return adapter.getEntityFromJsonObject(
+          url,
+          toEntity: (data, _) {
+            // global crs identifiers supported by all collection that refer to
+            final globalCrs =
+                (data['crs'] as Iterable<dynamic>?)?.cast<String>();
 
-        // get collections and parse each of them as `OGCCollectionMeta`
-        final list = data['collections'] as Iterable<dynamic>;
-        return list
-            .map<OGCCollectionMeta>(
-              (e) => _collectionFromJson(
-                e as Map<String, dynamic>,
-                globalCrs: globalCrs,
-              ),
-            )
-            .toList(growable: false);
-      },
-    );
-  }
+            // get collections and parse each of them as `OGCCollectionMeta`
+            final list = data['collections'] as Iterable<dynamic>;
+            return list
+                .map<OGCCollectionMeta>(
+                  (e) => _collectionFromJson(
+                    e as Map<String, dynamic>,
+                    globalCrs: globalCrs,
+                  ),
+                )
+                .toList(growable: false);
+          },
+        );
+      });
 }
 
 /// A data source for accessing a `OGC API Features` collection.
 class _OGCFeatureSourceHttp implements OGCFeatureSource {
-  const _OGCFeatureSourceHttp(this.service, this.collectionId);
+  _OGCFeatureSourceHttp(this.service, this.collectionId)
+      : _cachedMeta = CachedObject(service.metaMaxAge),
+        _cachedQueryables = CachedObject(service.metaMaxAge);
 
   final _OGCFeatureClientHttp service;
   final String collectionId;
 
-  @override
-  Future<OGCCollectionMeta> meta() async {
-    // read "collections/{collectionId}
+  final CachedObject<OGCCollectionMeta> _cachedMeta;
+  final CachedObject<OGCQueryableObject?> _cachedQueryables;
 
-    final url =
-        resolveSubResource(service.endpoint, 'collections/$collectionId');
-    return service.adapter.getEntityFromJsonObject(
-      url,
-      toEntity: (data, _) {
-        // data should contain a single collection as JSON Object
-        // but some services seem to return this under "collections"...
-        final collections = data['collections'];
-        if (collections is Iterable<dynamic>) {
-          for (final coll in collections) {
-            final collObj = coll as Map<String, dynamic>;
-            if (collObj['id'] == collectionId) {
-              return _collectionFromJson(collObj);
+  @override
+  Future<OGCCollectionMeta> meta() => _cachedMeta.getAsync(() {
+        // read "collections/{collectionId}
+        final url =
+            resolveSubResource(service.endpoint, 'collections/$collectionId');
+        return service.adapter.getEntityFromJsonObject(
+          url,
+          toEntity: (data, _) {
+            // data should contain a single collection as JSON Object
+            // but some services seem to return this under "collections"...
+            final collections = data['collections'];
+            if (collections is Iterable<dynamic>) {
+              for (final coll in collections) {
+                final collObj = coll as Map<String, dynamic>;
+                if (collObj['id'] == collectionId) {
+                  return _collectionFromJson(collObj);
+                }
+              }
             }
+
+            // this is the way the standard suggests
+            // (single collection meta as JSON object)
+            return _collectionFromJson(data);
+          },
+        );
+      });
+
+  @override
+  Future<OGCQueryableObject?> queryables() =>
+      _cachedQueryables.getAsync(() async {
+        // need metadata for links
+        final collectionMeta = await meta();
+
+        // try to get queryables links with type "application/schema+json"
+        var links =
+            collectionMeta.links.queryables(type: _contentTypeJSONSchema);
+        if (links.isEmpty) {
+          // if did got any, try to get basic JSON (some service announced such)
+          links = collectionMeta.links.queryables(type: _contentTypeJSON);
+
+          if (links.isEmpty) {
+            // if did got any, try to get without specifying type
+            links = collectionMeta.links.queryables();
           }
         }
+        if (links.isEmpty) {
+          return null; // no link --> no queryables
+        }
 
-        // this is the way the standard suggests
-        // (single collection meta as JSON object)
-        return _collectionFromJson(data);
-      },
-    );
-  }
+        final url = resolveLinkReferenceUri(service.endpoint, links.first.href);
 
-  @override
-  Future<OGCQueryableObject?> queryables() async {
-    // need metadata for links
-    final collectionMeta = await meta();
-
-    // try to get queryables links with type "application/schema+json"
-    var links = collectionMeta.links.queryables(type: _contentTypeJSONSchema);
-    if (links.isEmpty) {
-      // if did got any, try to get basic JSON (some service announced as such)
-      links = collectionMeta.links.queryables(type: _contentTypeJSON);
-
-      if (links.isEmpty) {
-        // if did got any, try to get without specifying type
-        links = collectionMeta.links.queryables();
-      }
-    }
-    if (links.isEmpty) {
-      return null; // no link --> no queryables
-    }
-
-    final url = resolveLinkReferenceUri(service.endpoint, links.first.href);
-
-    return service.adapter.getEntityFromJsonObject(
-      url,
-      headers: _acceptJSONSchema,
-      expect: _expectJSONSchema,
-      toEntity: (data, _) => OGCQueryableObject.fromJson(data),
-    );
-  }
+        return service.adapter.getEntityFromJsonObject(
+          url,
+          headers: _acceptJSONSchema,
+          expect: _expectJSONSchema,
+          toEntity: (data, _) => OGCQueryableObject.fromJson(data),
+        );
+      });
 
   @override
   Future<OGCFeatureItem> itemById(Object id) => item(ItemQuery(id: id));
@@ -316,15 +342,6 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
     if (query.queryablesAsParameters != null) {
       params = Map.of(query.queryablesAsParameters!)..addAll(params);
     }
-
-    /*
-    print(resolveSubResourcelUri(service.endpoint,
-        Uri(
-          path: 'collections/$collectionId/items',
-          queryParameters: params,
-        ),
-      ));
-    */
 
     // read from client and return paged feature collection response
     return _OGCPagedFeaturesItems.parse(
