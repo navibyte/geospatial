@@ -4,7 +4,6 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 /// An OpenAPI document for some service with raw content parsed in [content].
@@ -36,19 +35,33 @@ import 'package:meta/meta.dart';
 /// }
 /// ```
 @immutable
-class OpenAPIDocument with EquatableMixin {
-  /// An OpenAPI document for some service with raw content parsed in [content].
-  const OpenAPIDocument({
-    Map<String, dynamic>? content,
-  }) : content = content ?? const {};
-
+class OpenAPIDocument {
   /// The OpenAPI document as a data object (ie. data from a JSON Object).
   final Map<String, dynamic> content;
 
   /// The version number of the OpenAPI Specification that this OpenAPI document
   /// uses.
-  String get openapi => content['openapi'] as String;
+  final String openapi;
+
+  const OpenAPIDocument._({
+    this.content = const {},
+    required this.openapi,
+  });
+
+  /// Parses Open API document for a service from Open API data in [content].
+  factory OpenAPIDocument.fromJson(Map<String, dynamic> content) =>
+      OpenAPIDocument._(
+        content: content,
+        openapi: content['openapi'] as String, // required
+      );
 
   @override
-  List<Object?> get props => [content];
+  String toString() => content.toString();
+
+  @override
+  bool operator ==(Object other) =>
+      other is OpenAPIDocument && content == other.content;
+
+  @override
+  int get hashCode => content.hashCode;
 }

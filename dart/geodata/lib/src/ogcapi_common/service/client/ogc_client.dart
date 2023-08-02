@@ -106,14 +106,14 @@ class _OGCServiceMetaImpl extends OGCServiceMeta {
             url,
             headers: {'accept': type},
             expect: _expectJSONOpenAPI,
-            toEntity: (data, _) => OpenAPIDocument(content: data),
+            toEntity: (data, _) => OpenAPIDocument.fromJson(data),
           );
         } else {
           return service.adapter.getEntityFromJsonObject(
             url,
             headers: _acceptJSONOpenAPI,
             expect: _expectJSONOpenAPI,
-            toEntity: (data, _) => OpenAPIDocument(content: data),
+            toEntity: (data, _) => OpenAPIDocument.fromJson(data),
           );
         }
       });
