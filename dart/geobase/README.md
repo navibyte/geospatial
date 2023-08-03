@@ -163,7 +163,7 @@ this text representation each position is encoded between brackets):
   LineString.parseCoords('[30,10,5.5],[10,30,5.5],[40,40,5.5]'); // 3D  
 ```
 
-GeoJSON and WKB formats are supported as input and output (WKT only output):
+GeoJSON, WKT and WKB formats are supported as input and output:
 
 ```dart
   // Parse a geometry from GeoJSON text.
@@ -1016,15 +1016,40 @@ supported by GeoJSON.
 WKT output has always x (or longitude) printed before y (or latitude) coordinate
 regardless of a coordinate reference system used.
 
-A sample to encode a `Point` geometry to WKT (with z and m coordinates too):
+A sample to parse a `Point` geometry from WKT (with z and m coordinates too) and
+then format it back to WKT encoded text:
 
 ```dart
-  // create a Point geometry
-  final point = Point.build([10.123, 20.25, -30.95, -1.999], type: Coords.xyzm);
+void _wkt() {
+  // parse a Point geometry from WKT text
+  final point = Point.parse(
+    'POINT ZM(10.123 20.25 -30.95 -1.999)',
+    format: WKT.geometry,
+  );
 
-  // format it as WKT text that is printed:
+  // format it (back) as WKT text that is printed:
   //    POINT ZM(10.123 20.25 -30.95 -1.999)
   print(point.toText(format: WKT.geometry));
+```
+
+If geometry type is not known when parsing text from external datasources, you
+can use `GeometryBuilder` to parse geometries of any type:
+
+```dart
+  const geometriesWkt = [
+    'POINT Z(10.123 20.25 -30.95)',
+    'LINESTRING(-1.1 -1.1, 2.1 -2.5, 3.5 -3.49)',
+  ];
+  for(final geomWkt in geometriesWkt) {
+    // parse geometry (Point and LineString inherits from Geometry)
+    final Geometry geom = GeometryBuilder.parse(geomWkt, format: WKT.geometry);
+
+    if(geom is Point) {
+      // do something with point geometry
+    } else if(geom is LineString) {
+      // do something with line string geometry
+    }
+  }
 ```
 
 It's possible to encode geometry data as WKT text also without creating geometry 
@@ -1048,8 +1073,6 @@ format, and then writing content to that encoder. See sample below:
 Such format encoders (and formatting without geometry objects) are suppported
 also for GeoJSON. However for both WKT and GeoJSON encoding might be easier
 using concrete geometry model objects.
-
-Currently this package does not (yet) support parsing from WKT text.
 
 ### WKB
 

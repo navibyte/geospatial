@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-// ignore_for_file: avoid_print, prefer_const_constructors, prefer_const_literals_to_create_immutables, cascade_invocations, lines_longer_than_80_chars, avoid_redundant_argument_values
+// ignore_for_file: avoid_print, prefer_const_constructors, prefer_const_literals_to_create_immutables, cascade_invocations, lines_longer_than_80_chars, avoid_redundant_argument_values, omit_local_variable_types
 
 import 'package:geobase/geobase.dart';
 
@@ -722,12 +722,35 @@ void _geoJsonWithAlternativeCRS() {
 }
 
 void _wkt() {
-  // create a Point geometry
-  final point = Point.build([10.123, 20.25, -30.95, -1.999], type: Coords.xyzm);
+  // parse a Point geometry from WKT text
+  final point = Point.parse(
+    'POINT ZM(10.123 20.25 -30.95 -1.999)',
+    format: WKT.geometry,
+  );
 
-  // format it as WKT text that is printed:
+  // format it (back) as WKT text that is printed:
   //    POINT ZM(10.123 20.25 -30.95 -1.999)
   print(point.toText(format: WKT.geometry));
+
+  // -------
+
+  // if geometry type is not known when parsing text from external datasources,
+  // you can use `GeometryBuilder` to parse geometries of any type
+
+  const geometriesWkt = [
+    'POINT Z(10.123 20.25 -30.95)',
+    'LINESTRING(-1.1 -1.1, 2.1 -2.5, 3.5 -3.49)',
+  ];
+  for(final geomWkt in geometriesWkt) {
+    // parse geometry (Point and LineString inherits from Geometry)
+    final Geometry geom = GeometryBuilder.parse(geomWkt, format: WKT.geometry);
+
+    if(geom is Point) {
+      // do something with point geometry
+    } else if(geom is LineString) {
+      // do something with line string geometry
+    }
+  }
 
   // -------
 

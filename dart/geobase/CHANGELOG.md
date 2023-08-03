@@ -9,6 +9,7 @@ NOTE: Version 0.5.0 currently [under development](https://github.com/navibyte/ge
 * [Add parse and format functions for dms representations of degrees #173](https://github.com/navibyte/geospatial/issues/173)
 * [Axis order information of coordinate reference systems #178](https://github.com/navibyte/geospatial/issues/178)
 * [GeoJSON output for non-default coordinate reference systems #179](https://github.com/navibyte/geospatial/issues/179)
+* [WKT decoder on geobase #159](https://github.com/navibyte/geospatial/issues/159)
 
 🐛 Bugs fixed:
 * [Clipping when projection WGS 84 to Web Mercator metric coordinates #123](https://github.com/navibyte/geospatial/issues/123)

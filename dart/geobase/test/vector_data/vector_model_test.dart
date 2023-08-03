@@ -13,6 +13,7 @@ import 'package:geobase/vector_data.dart';
 import 'package:test/test.dart';
 
 import '../vector/geojson_samples.dart';
+import '../vector/wkt_samples.dart';
 
 // see also '../vector/geojson_test.dart'
 
@@ -21,7 +22,7 @@ void main() {
     test('Test geometry samples (GeoJSON)', () {
       for (final sample in geoJsonGeometries) {
         //print(sample);
-        _testDecodeGeometryAndEncodeToGeoJSON(GeoJSON.geometry, sample);
+        _testDecodeGeometryAndEncodeToText(GeoJSON.geometry, sample);
       }
     });
 
@@ -51,6 +52,75 @@ void main() {
         //print(sample);
         _testDecodeFeatureObjectAndEncodeToGeoJSON(GeoJSON.feature, sample);
       }
+    });
+  });
+
+  group('Test WKT decoding to model objects and back to WKT', () {
+    test('Test geometry samples (WKT', () {
+      for (final sample in wktGeometries) {
+        //print(sample);
+        _testDecodeGeometryAndEncodeToText(WKT.geometry, sample);
+      }
+    });
+
+    test('Test geometry samples (WKT -> WKB)', () {
+      for (final sample in wktGeometries) {
+        // filter out samples with bbox as WKB does not support
+        if (!sample.contains('bbox')) {
+          //print(sample);
+          _testDecodeGeometryAndEncodeToWKB(
+            WKT.geometry,
+            WKB.geometry,
+            sample,
+          );
+        }
+      }
+    });
+
+    test('WKT multipoint special cases', () {
+      const mp1 = 'MULTIPOINT(10.1 10.1,20.2 20.2,30.3 30.3)';
+      const mp2 = 'MULTIPOINT((10.1 10.1),(20.2 20.2),(30.3 30.3))';
+
+      expect(
+        MultiPoint.parse(mp1, format: WKT.geometry)
+            .toText(format: WKT.geometry),
+        mp1,
+      );
+      expect(
+        MultiPoint.parse(mp2, format: WKT.geometry)
+            .toText(format: WKT.geometry),
+        mp1,
+      );
+    });
+
+    test('WKT empty geometry special cases', () {
+      /*
+      // empty geometries
+      'POINT EMPTY',
+      'LINESTRING EMPTY',
+      'POLYGON EMPTY',
+      'MULTIPOINT EMPTY',
+      'MULTILINESTRING EMPTY',
+      'MULTIPOLYGON EMPTY',
+      'GEOMETRYCOLLECTION EMPTY',
+      */
+
+      // NOTE: currently empty geometries are not supported
+      expect(
+        () =>
+            GeometryBuilder.parse<Geometry>('POINT EMPTY', format: WKT.geometry)
+                .toText(format: WKT.geometry),
+        throwsFormatException,
+      );
+    });
+    test('WKT example use cases', () {
+      expect(
+        Point.parse(
+          'POINT ZM(10.123 20.25 -30.95 -1.999)',
+          format: WKT.geometry,
+        ).toText(format: WKT.geometry),
+        'POINT ZM(10.123 20.25 -30.95 -1.999)',
+      );
     });
   });
 
@@ -484,18 +554,18 @@ void main() {
   });
 }
 
-void _testDecodeGeometryAndEncodeToGeoJSON(
+void _testDecodeGeometryAndEncodeToText(
   TextFormat<GeometryContent> format,
-  String geoJsonText,
+  String geometryAsText,
 ) {
-  // builder geometries from content decoded from GeoJSON text
+  // builder geometries from content decoded from text [format]
   final geometries = GeometryBuilder.buildList(
     (builder) {
       // GeoJSON decoder from text to geometry content (writing to builder)
       final decoder = format.decoder(builder);
 
       // decode
-      decoder.decodeText(geoJsonText);
+      decoder.decodeText(geometryAsText);
     },
   );
 
@@ -503,38 +573,62 @@ void _testDecodeGeometryAndEncodeToGeoJSON(
   expect(geometries.length, 1);
   final geometry = geometries.first;
 
-  // GeoJSON encoder from geometry content to text
+  // text [format] encoder from geometry content to text
   final encoder = format.encoder();
 
-  // encode geometry object back to GeoJSON text
+  // encode geometry object back to text [format]
   geometry.writeTo(encoder.writer);
   final geoJsonTextEncoded = encoder.toText();
 
   // test
-  expect(geoJsonTextEncoded, geoJsonText);
+  expect(geoJsonTextEncoded, geometryAsText);
 
   // try to create also using factory method and then write back
   switch (geometry.geomType) {
     case Geom.point:
-      expect(Point.parse(geoJsonText).toText(), geoJsonText);
+      expect(
+        Point.parse(geometryAsText, format: format).toText(format: format),
+        geometryAsText,
+      );
       break;
     case Geom.lineString:
-      expect(LineString.parse(geoJsonText).toText(), geoJsonText);
+      expect(
+        LineString.parse(geometryAsText, format: format).toText(format: format),
+        geometryAsText,
+      );
       break;
     case Geom.polygon:
-      expect(Polygon.parse(geoJsonText).toText(), geoJsonText);
+      expect(
+        Polygon.parse(geometryAsText, format: format).toText(format: format),
+        geometryAsText,
+      );
       break;
     case Geom.multiPoint:
-      expect(MultiPoint.parse(geoJsonText).toText(), geoJsonText);
+      expect(
+        MultiPoint.parse(geometryAsText, format: format).toText(format: format),
+        geometryAsText,
+      );
       break;
     case Geom.multiLineString:
-      expect(MultiLineString.parse(geoJsonText).toText(), geoJsonText);
+      expect(
+        MultiLineString.parse(geometryAsText, format: format)
+            .toText(format: format),
+        geometryAsText,
+      );
       break;
     case Geom.multiPolygon:
-      expect(MultiPolygon.parse(geoJsonText).toText(), geoJsonText);
+      expect(
+        MultiPolygon.parse(geometryAsText, format: format)
+            .toText(format: format),
+        geometryAsText,
+      );
       break;
     case Geom.geometryCollection:
-      expect(GeometryCollection.parse(geoJsonText).toText(), geoJsonText);
+      expect(
+        GeometryCollection.parse(geometryAsText, format: format)
+            .toText(format: format),
+        geometryAsText,
+      );
       break;
   }
 }
@@ -542,16 +636,17 @@ void _testDecodeGeometryAndEncodeToGeoJSON(
 void _testDecodeGeometryAndEncodeToWKB(
   TextFormat<GeometryContent> textFormat,
   BinaryFormat<GeometryContent> binaryFormat,
-  String geoJsonText,
+  String geometryAsText,
 ) {
-  // builder geometries from content decoded from GeoJSON text
+  // builder geometries from content decoded from [textFormat]
   final geometries = GeometryBuilder.buildList(
     (builder) {
-      // GeoJSON decoder from text to geometry content (writing to builder)
+      // [textFormat] decoder from text to geometry content
+      // (writing to builder)
       final decoder = textFormat.decoder(builder);
 
       // decode
-      decoder.decodeText(geoJsonText);
+      decoder.decodeText(geometryAsText);
     },
   );
 
@@ -559,33 +654,54 @@ void _testDecodeGeometryAndEncodeToWKB(
   expect(geometries.length, 1);
   final geometry = geometries.first;
 
-  // now not testing actually GeoJSON here, but WKB...
+  // now not testing actually [textFormat] here, but [binaryFormat]...
 
   // get encoded bytes from geometry
   final bytes = geometry.toBytes(format: binaryFormat);
 
-  // then decode those bytes back to geometry, get json text, that is compared
+  // then decode those bytes back to geometry, get text, that is compared
   switch (geometry.geomType) {
     case Geom.point:
-      expect(Point.decode(bytes).toText(), geoJsonText);
+      expect(
+        Point.decode(bytes).toText(format: textFormat),
+        geometryAsText,
+      );
       break;
     case Geom.lineString:
-      expect(LineString.decode(bytes).toText(), geoJsonText);
+      expect(
+        LineString.decode(bytes).toText(format: textFormat),
+        geometryAsText,
+      );
       break;
     case Geom.polygon:
-      expect(Polygon.decode(bytes).toText(), geoJsonText);
+      expect(
+        Polygon.decode(bytes).toText(format: textFormat),
+        geometryAsText,
+      );
       break;
     case Geom.multiPoint:
-      expect(MultiPoint.decode(bytes).toText(), geoJsonText);
+      expect(
+        MultiPoint.decode(bytes).toText(format: textFormat),
+        geometryAsText,
+      );
       break;
     case Geom.multiLineString:
-      expect(MultiLineString.decode(bytes).toText(), geoJsonText);
+      expect(
+        MultiLineString.decode(bytes).toText(format: textFormat),
+        geometryAsText,
+      );
       break;
     case Geom.multiPolygon:
-      expect(MultiPolygon.decode(bytes).toText(), geoJsonText);
+      expect(
+        MultiPolygon.decode(bytes).toText(format: textFormat),
+        geometryAsText,
+      );
       break;
     case Geom.geometryCollection:
-      expect(GeometryCollection.decode(bytes).toText(), geoJsonText);
+      expect(
+        GeometryCollection.decode(bytes).toText(format: textFormat),
+        geometryAsText,
+      );
       break;
   }
 }

@@ -4,11 +4,21 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'dart:convert';
+import 'dart:typed_data';
+
+import '/src/codes/coords.dart';
+import '/src/codes/geom.dart';
+import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/utils/format_geojson_wkt.dart';
 import '/src/utils/format_impl.dart';
 import '/src/vector/content/coordinates_content.dart';
 import '/src/vector/content/geometry_content.dart';
+import '/src/vector/encoding/content_decoder.dart';
+import '/src/vector/encoding/content_encoder.dart';
 import '/src/vector/encoding/text_format.dart';
+
+part 'wkt_decoder.dart';
 
 /// The WKT text format for [coordinate] and [geometry] objects.
 ///
@@ -16,12 +26,11 @@ import '/src/vector/encoding/text_format.dart';
 /// representation of geometry) formatting of coordinate lists and geometries.
 ///
 /// Examples:
-/// * point (empty): `POINT EMPTY`
 /// * point (x, y): `POINT(10.1 20.2)`
 /// * point (x, y, z): `POINT Z(10.1 20.2 30.3)`
 /// * point (x, y, m): `POINT M(10.1 20.2 30.3)`
 /// * point (x, y, z, m): `POINT ZM(10.1 20.2 30.3 40.4)`
-/// * geopoint (lon, lat): `POINT(10.1 20.2)`
+/// * point with geographic coordinates (lon, lat): `POINT(10.1 20.2)`
 /// * box (min-x, min-y, max-x, max-y) with values `10.1 10.1,20.2 20.2`:
 ///   * `POLYGON((10.1 10.1,20.2 10.1,20.2 20.2,10.1 20.2,10.1 10.1))`
 /// * multi point (with 2D points):
@@ -47,11 +56,39 @@ import '/src/vector/encoding/text_format.dart';
 /// information is ignored, x/longitude is always printed before y/latitude
 /// regardless of crs axis order.
 class WKT {
-  /// The WKT text writer format for coordinate objects.
+  /// The WKT text writer format (encoding only) for coordinate objects.
   static const TextWriterFormat<CoordinateContent> coordinate =
       TextWriterFormatImpl(WktTextWriter.new);
 
-  /// The WKT text writer format for geometry objects.
-  static const TextWriterFormat<GeometryContent> geometry =
-      TextWriterFormatImpl(WktTextWriter.new);
+  /// The WKT text format (encoding and decoding) for geometry objects.
+  static const TextFormat<GeometryContent> geometry = _WktGeometryTextFormat();
+}
+
+class _WktGeometryTextFormat with TextFormat<GeometryContent> {
+  const _WktGeometryTextFormat();
+
+  @override
+  ContentDecoder decoder(
+    GeometryContent builder, {
+    CoordRefSys? crs,
+    Map<String, dynamic>? options,
+  }) =>
+      _WktGeometryTextDecoder(
+        builder,
+        crs: crs,
+        options: options,
+      );
+
+  @override
+  ContentEncoder<GeometryContent> encoder({
+    StringSink? buffer,
+    int? decimals,
+    CoordRefSys? crs,
+    Map<String, dynamic>? options,
+  }) =>
+      WktTextWriter(
+        buffer: buffer,
+        decimals: decimals,
+        crs: crs,
+      );
 }
