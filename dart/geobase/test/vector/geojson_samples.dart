@@ -33,9 +33,9 @@ const geoJsonGeometries = [
 ];
 
 const geoJsonFeatures = [
-  '{"type":"Feature","properties":{}}',
-  '{"type":"Feature","properties":{}}',
-  '{"type":"Feature","id":123,"properties":{"sub":{"param1":1,"param2":2}}}',
+  '{"type":"Feature","geometry":null,"properties":{}}',
+  '{"type":"Feature","geometry":null,"properties":{}}',
+  '{"type":"Feature","id":123,"geometry":null,"properties":{"sub":{"param1":1,"param2":2}}}',
   '{"type":"Feature","id":"fid-1","geometry":{"type":"Point","coordinates":[10.123,20.25]},"properties":{"foo":100,"bar":"this is property value","baz":true}}',
 ];
 

@@ -129,7 +129,7 @@ String _makeTestCollection(List<int> ids) {
     } else {
       str.write(',');
     }
-    str.write('{"type":"Feature","id":$id,"properties":{}}');
+    str.write('{"type":"Feature","id":$id,"geometry":null,"properties":{}}');
   }
   str.write(']}');
   return str.toString();

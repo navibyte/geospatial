@@ -732,6 +732,10 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     }
     if (geometry != null) {
       geometry.call(this);
+    } else {
+      // GeoJSON specs: there should be "geometry" element under "Feature",
+      // either null or actual "Geometry" object, so printing here null then
+      _buffer.write(',"geometry":null');
     }
     _printMapEntryRecursive(
       'properties',

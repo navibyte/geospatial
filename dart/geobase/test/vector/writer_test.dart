@@ -761,7 +761,7 @@ void main() {
           (features) => features.feature(),
         ),
         geoJson: '{"type":"FeatureCollection","features":'
-            '[{"type":"Feature","properties":{}}]}',
+            '[{"type":"Feature","geometry":null,"properties":{}}]}',
       );
       _testGeoJsonWriters<FeatureContent>(
         (output) => output.featureCollection(
@@ -770,8 +770,8 @@ void main() {
             ..feature(),
         ),
         geoJson: '{"type":"FeatureCollection","features":'
-            '[{"type":"Feature","properties":{}},'
-            '{"type":"Feature","properties":{}}]}',
+            '[{"type":"Feature","geometry":null,"properties":{}},'
+            '{"type":"Feature","geometry":null,"properties":{}}]}',
       );
       _testGeoJsonWriters<FeatureContent>(
         (output) => output.featureCollection(
@@ -782,11 +782,11 @@ void main() {
             ),
         ),
         geoJson: '{"type":"FeatureCollection","features":'
-            '[{"type":"Feature","properties":{},"prop1":"value1"},'
-            '{"type":"Feature","properties":{},"map1":{"prop1":"value1"}}]}',
+            '[{"type":"Feature","geometry":null,"properties":{},"prop1":"value1"},'
+            '{"type":"Feature","geometry":null,"properties":{},"map1":{"prop1":"value1"}}]}',
         geoJsonStrict: '{"type":"FeatureCollection","features":'
-            '[{"type":"Feature","properties":{}},'
-            '{"type":"Feature","properties":{}}]}',
+            '[{"type":"Feature","geometry":null,"properties":{}},'
+            '{"type":"Feature","geometry":null,"properties":{}}]}',
       );
       _testGeoJsonWriters<FeatureContent>(
         (output) => output.featureCollection(
@@ -804,11 +804,11 @@ void main() {
             ),
         ),
         geoJson: '{"type":"FeatureCollection","features":'
-            '[{"type":"Feature","id":1,"properties":{"test1":3},"p1":1},'
-            '{"type":"Feature","id":"2","properties":{},"map1":{"p2":2}}]}',
+            '[{"type":"Feature","id":1,"geometry":null,"properties":{"test1":3},"p1":1},'
+            '{"type":"Feature","id":"2","geometry":null,"properties":{},"map1":{"p2":2}}]}',
         geoJsonStrict: '{"type":"FeatureCollection","features":'
-            '[{"type":"Feature","id":1,"properties":{"test1":3}},'
-            '{"type":"Feature","id":"2","properties":{}}]}',
+            '[{"type":"Feature","id":1,"geometry":null,"properties":{"test1":3}},'
+            '{"type":"Feature","id":"2","geometry":null,"properties":{}}]}',
       );
       _testGeoJsonWriters<FeatureContent>(
         (output) => output.featureCollection(
