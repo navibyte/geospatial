@@ -123,6 +123,9 @@ class MultiLineString extends SimpleGeometry {
     CoordRefSys? crs,
   }) {
     final array = json.decode('[$coordinates]') as List<dynamic>;
+    if (array.isEmpty) {
+      return MultiLineString.build(const []);
+    }
     final coordType = resolveCoordType(array, positionLevel: 2);
     return MultiLineString.build(
       createFlatPositionArrayArrayDouble(array, coordType, crs),
@@ -154,6 +157,9 @@ class MultiLineString extends SimpleGeometry {
   Coords get coordType =>
       _type ?? (_lineStrings.isNotEmpty ? _lineStrings.first.type : Coords.xy);
 
+  @override
+  bool get isEmpty => _lineStrings.isEmpty;
+
   /// The chains of all line strings.
   List<PositionArray> get chains => _lineStrings;
 
@@ -170,13 +176,14 @@ class MultiLineString extends SimpleGeometry {
       );
 
   @override
-  void writeTo(SimpleGeometryContent writer, {String? name}) =>
-      writer.multiLineString(
-        _lineStrings,
-        type: coordType,
-        name: name,
-        bounds: bounds,
-      );
+  void writeTo(SimpleGeometryContent writer, {String? name}) => isEmpty
+      ? writer.emptyGeometry(Geom.multiLineString, name: name)
+      : writer.multiLineString(
+          _lineStrings,
+          type: coordType,
+          name: name,
+          bounds: bounds,
+        );
 
   // NOTE: coordinates as raw data
 

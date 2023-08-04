@@ -42,15 +42,6 @@ class WKB {
   /// `multiLineString`    | 0005 | 1005 | 2005 | 3005
   /// `multiPolygon`       | 0006 | 1006 | 2006 | 3006
   /// `geometryCollection` | 0007 | 1007 | 2007 | 3007
-  ///
-  /// For the `decoder` of the returned geometry format you may provide an
-  /// optional parameter using `options`:
-  /// * `buildEmptyGeometries`: Bool (by default false). When true, geometries
-  ///   decoded and detected as "empty" are built with `emptyGeometry` method of
-  ///   content builder. If this is false (as it is by default) geometries
-  ///   detected as "empty" are built with content methods specific to
-  ///   geometries. For example an empty point (NaN, NaN) via `point` method and
-  ///   an empty line string (with 0 points) via `lineString` method.
   static const BinaryFormat<GeometryContent> geometry =
       _WkbGeometryBinaryFormat();
 }
@@ -73,9 +64,5 @@ class _WkbGeometryBinaryFormat with BinaryFormat<GeometryContent> {
     Map<String, dynamic>? options,
   }) =>
       // any endian given is ignored, because WKB data has this info on headers
-      _WkbGeometryDecoder(
-        builder,
-        buildEmptyGeometries:
-            (options?['buildEmptyGeometries'] ?? false) as bool,
-      );
+      _WkbGeometryDecoder(builder);
 }

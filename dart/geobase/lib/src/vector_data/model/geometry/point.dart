@@ -100,6 +100,9 @@ class Point implements SimpleGeometry {
       json.decode('[$coordinates]'),
       crs,
     );
+    if (pos.isEmpty) {
+      return Point.build(const [double.nan, double.nan]);
+    }
     final coordType = Coords.fromDimension(pos.length);
     return Point.build(pos, type: coordType);
   }
@@ -127,6 +130,9 @@ class Point implements SimpleGeometry {
   @override
   Coords get coordType => _position.type;
 
+  @override
+  bool get isEmpty => _position.x.isNaN && _position.y.isNaN;
+
   /// The position in this point geometry.
   PositionCoords get position => _position;
 
@@ -148,8 +154,9 @@ class Point implements SimpleGeometry {
       Point(projection.project(_position, to: PositionCoords.create));
 
   @override
-  void writeTo(SimpleGeometryContent writer, {String? name}) =>
-      writer.point(_position, type: coordType, name: name);
+  void writeTo(SimpleGeometryContent writer, {String? name}) => isEmpty
+      ? writer.emptyGeometry(Geom.point, name: name)
+      : writer.point(_position, type: coordType, name: name);
 
   // NOTE: coordinates as raw data
 

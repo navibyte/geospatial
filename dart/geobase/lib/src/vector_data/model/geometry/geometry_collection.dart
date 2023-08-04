@@ -121,6 +121,9 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   @override
   Geom get geomType => Geom.geometryCollection;
 
+  @override
+  bool get isEmpty => _geometries.isEmpty;
+
   /// All geometry items in this geometry collection.
   List<E> get geometries => _geometries;
 
@@ -132,17 +135,18 @@ class GeometryCollection<E extends Geometry> extends Geometry {
       );
 
   @override
-  void writeTo(GeometryContent writer, {String? name}) =>
-      writer.geometryCollection(
-        count: _geometries.length,
-        name: name,
-        (output) {
-          for (final geom in _geometries) {
-            geom.writeTo(output);
-          }
-        },
-        bounds: bounds,
-      );
+  void writeTo(GeometryContent writer, {String? name}) => isEmpty
+      ? writer.emptyGeometry(Geom.geometryCollection, name: name)
+      : writer.geometryCollection(
+          count: _geometries.length,
+          name: name,
+          (output) {
+            for (final geom in _geometries) {
+              geom.writeTo(output);
+            }
+          },
+          bounds: bounds,
+        );
 
   @override
   bool operator ==(Object other) =>

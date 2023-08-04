@@ -100,71 +100,99 @@ void _decodeGeometry(
   switch (geometry['type']) {
     case 'Point':
       final pos = requirePositionDouble(geometry['coordinates'], crs);
-      final coordType = Coords.fromDimension(pos.length);
-      builder.point(pos, type: coordType);
+      if (pos.isEmpty) {
+        builder.emptyGeometry(Geom.point);
+      } else {
+        final coordType = Coords.fromDimension(pos.length);
+        builder.point(pos, type: coordType);
+      }
       break;
     case 'LineString':
       final array = geometry['coordinates'] as List<dynamic>;
-      final coordType = resolveCoordType(array, positionLevel: 1);
-      // NOTE: validate line string (at least two points)
-      builder.lineString(
-        createFlatPositionArrayDouble(array, coordType, crs),
-        type: coordType,
-        bounds: _getBboxOpt(geometry, crs),
-      );
+      if (array.isEmpty) {
+        builder.emptyGeometry(Geom.lineString);
+      } else {
+        final coordType = resolveCoordType(array, positionLevel: 1);
+        // NOTE: validate line string (at least two points)
+        builder.lineString(
+          createFlatPositionArrayDouble(array, coordType, crs),
+          type: coordType,
+          bounds: _getBboxOpt(geometry, crs),
+        );
+      }
       break;
     case 'Polygon':
       final array = geometry['coordinates'] as List<dynamic>;
-      final coordType = resolveCoordType(array, positionLevel: 2);
-      // NOTE: validate polygon (at least one ring)
-      builder.polygon(
-        createFlatPositionArrayArrayDouble(array, coordType, crs),
-        type: coordType,
-        bounds: _getBboxOpt(geometry, crs),
-      );
+      if (array.isEmpty) {
+        builder.emptyGeometry(Geom.polygon);
+      } else {
+        final coordType = resolveCoordType(array, positionLevel: 2);
+        // NOTE: validate polygon (at least one ring)
+        builder.polygon(
+          createFlatPositionArrayArrayDouble(array, coordType, crs),
+          type: coordType,
+          bounds: _getBboxOpt(geometry, crs),
+        );
+      }
       break;
     case 'MultiPoint':
       final array = requirePositionArrayDouble(geometry['coordinates'], crs);
-      final coordType = resolveCoordType(array, positionLevel: 1);
-      builder.multiPoint(
-        array,
-        type: coordType,
-        bounds: _getBboxOpt(geometry, crs),
-      );
+      if (array.isEmpty) {
+        builder.emptyGeometry(Geom.multiPoint);
+      } else {
+        final coordType = resolveCoordType(array, positionLevel: 1);
+        builder.multiPoint(
+          array,
+          type: coordType,
+          bounds: _getBboxOpt(geometry, crs),
+        );
+      }
       break;
     case 'MultiLineString':
       final array = geometry['coordinates'] as List<dynamic>;
-      final coordType = resolveCoordType(array, positionLevel: 2);
-      builder.multiLineString(
-        createFlatPositionArrayArrayDouble(array, coordType, crs),
-        type: coordType,
-        bounds: _getBboxOpt(geometry, crs),
-      );
+      if (array.isEmpty) {
+        builder.emptyGeometry(Geom.multiLineString);
+      } else {
+        final coordType = resolveCoordType(array, positionLevel: 2);
+        builder.multiLineString(
+          createFlatPositionArrayArrayDouble(array, coordType, crs),
+          type: coordType,
+          bounds: _getBboxOpt(geometry, crs),
+        );
+      }
       break;
     case 'MultiPolygon':
       final array = geometry['coordinates'] as List<dynamic>;
-      final coordType = resolveCoordType(array, positionLevel: 3);
-      builder.multiPolygon(
-        createFlatPositionArrayArrayArrayDouble(array, coordType, crs),
-        type: coordType,
-        bounds: _getBboxOpt(geometry, crs),
-      );
+      if (array.isEmpty) {
+        builder.emptyGeometry(Geom.multiPolygon);
+      } else {
+        final coordType = resolveCoordType(array, positionLevel: 3);
+        builder.multiPolygon(
+          createFlatPositionArrayArrayArrayDouble(array, coordType, crs),
+          type: coordType,
+          bounds: _getBboxOpt(geometry, crs),
+        );
+      }
       break;
     case 'GeometryCollection':
       final geometries = geometry['geometries'] as List<dynamic>;
-      builder.geometryCollection(
-        (geometryBuilder) {
-          for (final geometry in geometries) {
-            _decodeGeometry(
-              geometry as Map<String, dynamic>,
-              geometryBuilder,
-              crs,
-            );
-          }
-        },
-        count: geometries.length,
-        bounds: _getBboxOpt(geometry, crs),
-      );
+      if (geometries.isEmpty) {
+        builder.emptyGeometry(Geom.geometryCollection);
+      } else {
+        builder.geometryCollection(
+          (geometryBuilder) {
+            for (final geometry in geometries) {
+              _decodeGeometry(
+                geometry as Map<String, dynamic>,
+                geometryBuilder,
+                crs,
+              );
+            }
+          },
+          count: geometries.length,
+          bounds: _getBboxOpt(geometry, crs),
+        );
+      }
       break;
     default:
       throw _notValidGeoJsonData;

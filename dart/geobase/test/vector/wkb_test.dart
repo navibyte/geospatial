@@ -117,20 +117,11 @@ void main() {
 
         _testEncodeAndDecodeToWKT(
           endian,
-          'LINESTRING()',
-          [
-            (writer) => writer.lineString([], type: Coords.xy),
-            (writer) => writer.emptyGeometry(Geom.lineString),
-          ],
-        );
-        _testEncodeAndDecodeToWKT(
-          endian,
           'LINESTRING EMPTY',
           [
             (writer) => writer.lineString([], type: Coords.xy),
             (writer) => writer.emptyGeometry(Geom.lineString),
           ],
-          wkbOptions: {'buildEmptyGeometries': true},
         );
 
         final linestringsFlat = [
@@ -186,7 +177,7 @@ void main() {
         //   IEEE specifies NaN in float64 as (big endian) 7ff80000 00000000
         //   in Dart it seems that (using ByteData) need to write `-double.nan`
         //   this is handled by wkb encoder / byte writer util....
-        'POINT(NaN NaN)',
+        'POINT EMPTY',
         [
           (writer) => writer.emptyGeometry(Geom.point),
           (writer) => writer.point([double.nan, double.nan]),

@@ -363,6 +363,41 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
 
   @override
   void emptyGeometry(Geom type, {String? name}) {
-    // note: ignore empty geometries for this implementation
+    // as there is no a specific "empty-geometry" class, empty geometries are
+    // created as "normal" concrete geometry objects with some tricks
+    switch (type) {
+      case Geom.point:
+        // empty point with x and y set to double.nan
+        point(const [double.nan, double.nan]);
+        break;
+      case Geom.lineString:
+        // empty linestring with empty chain of points
+        lineString([], type: Coords.xy);
+        break;
+      case Geom.polygon:
+        // empty polygon with empty list of liner rings
+        polygon([], type: Coords.xy);
+        break;
+      case Geom.multiPoint:
+        // empty multi point without any points
+        multiPoint([], type: Coords.xy);
+        break;
+      case Geom.multiLineString:
+        // empty multi linestring without any linestrings
+        multiLineString([], type: Coords.xy);
+        break;
+      case Geom.multiPolygon:
+        // empty multi polygon without any polygons
+        multiPolygon([], type: Coords.xy);
+        break;
+      case Geom.geometryCollection:
+        // empty geometry collection without any geometries
+        geometryCollection(
+          (geom) => {
+            // nop
+          },
+        );
+        break;
+    }
   }
 }

@@ -29,6 +29,18 @@ abstract class Geometry extends Bounded {
   /// The geometry type.
   Geom get geomType;
 
+  /// Returns true if this geometry is considered empty.
+  ///
+  /// Emptiness in the context of this classes extending Geometry is defined:
+  /// * `Point` has x and y coordinates with value `double.nan`.
+  /// * `LineString` has an empty chain of points.
+  /// * `Polygon` has an empty list of linear rings.
+  /// * `MultiPoint` has no points.
+  /// * `MultiLineString` has no line strings.
+  /// * `MultiPolygon` has no polygons.
+  /// * `GeometryCollection` has no geometries.
+  bool get isEmpty;
+
   /// Returns a new geometry projected using [projection].
   ///
   /// The returned geometry sub type must be the same as the type of this.

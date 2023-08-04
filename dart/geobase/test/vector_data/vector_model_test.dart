@@ -93,26 +93,6 @@ void main() {
       );
     });
 
-    test('WKT empty geometry special cases', () {
-      /*
-      // empty geometries
-      'POINT EMPTY',
-      'LINESTRING EMPTY',
-      'POLYGON EMPTY',
-      'MULTIPOINT EMPTY',
-      'MULTILINESTRING EMPTY',
-      'MULTIPOLYGON EMPTY',
-      'GEOMETRYCOLLECTION EMPTY',
-      */
-
-      // NOTE: currently empty geometries are not supported
-      expect(
-        () =>
-            GeometryBuilder.parse<Geometry>('POINT EMPTY', format: WKT.geometry)
-                .toText(format: WKT.geometry),
-        throwsFormatException,
-      );
-    });
     test('WKT example use cases', () {
       expect(
         Point.parse(
@@ -120,6 +100,150 @@ void main() {
           format: WKT.geometry,
         ).toText(format: WKT.geometry),
         'POINT ZM(10.123 20.25 -30.95 -1.999)',
+      );
+    });
+  });
+
+  group('Empty geometries', () {
+    test('WKT empty geometry special cases', () {
+      const wkt = WKT.geometry;
+      const def = DefaultFormat.geometry;
+
+      final emptyPoint = Point.parse('POINT EMPTY', format: wkt);
+      expect(emptyPoint.isEmpty, true);
+      expect(emptyPoint.toText(format: wkt), 'POINT EMPTY');
+      expect(emptyPoint.toText(), '{"type":"Point","coordinates":[]}');
+      expect(
+        Point.parseCoords('').toText(format: def),
+        emptyPoint.toText(format: def),
+      );
+      expect(
+        Point.parse('{"type":"Point","coordinates":[]}').toText(format: wkt),
+        emptyPoint.toText(format: wkt),
+      );
+      expect(Point.decode(emptyPoint.toBytes()).toText(), emptyPoint.toText());
+
+      final emptyLineString = LineString.parse('LINESTRING EMPTY', format: wkt);
+      expect(emptyLineString.isEmpty, true);
+      expect(emptyLineString.toText(format: wkt), 'LINESTRING EMPTY');
+      expect(
+        LineString.parseCoords('').toText(format: def),
+        emptyLineString.toText(format: def),
+      );
+      expect(
+        emptyLineString.toText(),
+        '{"type":"LineString","coordinates":[]}',
+      );
+      expect(
+        LineString.parse('{"type":"LineString","coordinates":[]}')
+            .toText(format: wkt),
+        emptyLineString.toText(format: wkt),
+      );
+      expect(
+        LineString.decode(emptyLineString.toBytes()).toText(),
+        emptyLineString.toText(),
+      );
+
+      final emptyPolygon = Polygon.parse('POLYGON EMPTY', format: wkt);
+      expect(emptyPolygon.isEmpty, true);
+      expect(emptyPolygon.toText(format: wkt), 'POLYGON EMPTY');
+      expect(emptyPolygon.toText(), '{"type":"Polygon","coordinates":[]}');
+      expect(
+        Polygon.parseCoords('').toText(format: def),
+        emptyPolygon.toText(format: def),
+      );
+      expect(
+        Polygon.parse('{"type":"Polygon","coordinates":[]}')
+            .toText(format: wkt),
+        emptyPolygon.toText(format: wkt),
+      );
+      expect(
+        Polygon.decode(emptyPolygon.toBytes()).toText(),
+        emptyPolygon.toText(),
+      );
+
+      final emptyMultiPoint = MultiPoint.parse('MULTIPOINT EMPTY', format: wkt);
+      expect(emptyMultiPoint.isEmpty, true);
+      expect(emptyMultiPoint.toText(format: wkt), 'MULTIPOINT EMPTY');
+      expect(
+        emptyMultiPoint.toText(),
+        '{"type":"MultiPoint","coordinates":[]}',
+      );
+      expect(
+        MultiPoint.parseCoords('').toText(format: def),
+        emptyMultiPoint.toText(format: def),
+      );
+      expect(
+        MultiPoint.parse('{"type":"MultiPoint","coordinates":[]}')
+            .toText(format: wkt),
+        emptyMultiPoint.toText(format: wkt),
+      );
+      expect(
+        MultiPoint.decode(emptyMultiPoint.toBytes()).toText(),
+        emptyMultiPoint.toText(),
+      );
+
+      final emptyMultiLineString =
+          MultiLineString.parse('MULTILINESTRING EMPTY', format: wkt);
+      expect(emptyMultiLineString.isEmpty, true);
+      expect(emptyMultiLineString.toText(format: wkt), 'MULTILINESTRING EMPTY');
+      expect(
+        MultiLineString.parseCoords('').toText(format: def),
+        emptyMultiLineString.toText(format: def),
+      );
+      expect(
+        emptyMultiLineString.toText(),
+        '{"type":"MultiLineString","coordinates":[]}',
+      );
+      expect(
+        MultiLineString.parse('{"type":"MultiLineString","coordinates":[]}')
+            .toText(format: wkt),
+        emptyMultiLineString.toText(format: wkt),
+      );
+      expect(
+        MultiLineString.decode(emptyMultiLineString.toBytes()).toText(),
+        emptyMultiLineString.toText(),
+      );
+
+      final emptyMultiPolygon =
+          MultiPolygon.parse('MULTIPOLYGON EMPTY', format: wkt);
+      expect(emptyMultiPolygon.isEmpty, true);
+      expect(emptyMultiPolygon.toText(format: wkt), 'MULTIPOLYGON EMPTY');
+      expect(
+        MultiPolygon.parseCoords('').toText(format: def),
+        emptyMultiPolygon.toText(format: def),
+      );
+      expect(
+        emptyMultiPolygon.toText(),
+        '{"type":"MultiPolygon","coordinates":[]}',
+      );
+      expect(
+        MultiPolygon.parse('{"type":"MultiPolygon","coordinates":[]}')
+            .toText(format: wkt),
+        emptyMultiPolygon.toText(format: wkt),
+      );
+      expect(
+        MultiPolygon.decode(emptyMultiPolygon.toBytes()).toText(),
+        emptyMultiPolygon.toText(),
+      );
+
+      final emptyGeomColl =
+          GeometryCollection.parse('GEOMETRYCOLLECTION EMPTY', format: wkt);
+      expect(emptyGeomColl.isEmpty, true);
+      expect(emptyGeomColl.toText(format: wkt), 'GEOMETRYCOLLECTION EMPTY');
+      expect(
+        emptyGeomColl.toText(),
+        '{"type":"GeometryCollection","geometries":[]}',
+      );
+      expect(
+        GeometryCollection.parse(
+          '{"type":"GeometryCollection","geometries":[]}',
+        ).toText(format: wkt),
+        emptyGeomColl.toText(format: wkt),
+      );
+      expect(
+        GeometryCollection.decode(emptyGeomColl.toBytes()).toText(),
+        emptyGeomColl.toText(),
       );
     });
   });

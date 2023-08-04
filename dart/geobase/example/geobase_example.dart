@@ -741,13 +741,13 @@ void _wkt() {
     'POINT Z(10.123 20.25 -30.95)',
     'LINESTRING(-1.1 -1.1, 2.1 -2.5, 3.5 -3.49)',
   ];
-  for(final geomWkt in geometriesWkt) {
+  for (final geomWkt in geometriesWkt) {
     // parse geometry (Point and LineString inherits from Geometry)
     final Geometry geom = GeometryBuilder.parse(geomWkt, format: WKT.geometry);
 
-    if(geom is Point) {
+    if (geom is Point) {
       // do something with point geometry
-    } else if(geom is LineString) {
+    } else if (geom is LineString) {
       // do something with line string geometry
     }
   }

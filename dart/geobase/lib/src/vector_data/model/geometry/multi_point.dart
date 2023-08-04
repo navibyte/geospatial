@@ -107,6 +107,9 @@ class MultiPoint extends SimpleGeometry {
   }) {
     final array =
         requirePositionArrayDouble(json.decode('[$coordinates]'), crs);
+    if (array.isEmpty) {
+      return MultiPoint.build(const []);
+    }
     final coordType = resolveCoordType(array, positionLevel: 1);
     return MultiPoint.build(
       array,
@@ -138,6 +141,9 @@ class MultiPoint extends SimpleGeometry {
   Coords get coordType =>
       _type ?? (_points.isNotEmpty ? _points.first.type : Coords.xy);
 
+  @override
+  bool get isEmpty => _points.isEmpty;
+
   /// The positions of all points.
   List<PositionCoords> get positions => _points;
 
@@ -153,8 +159,9 @@ class MultiPoint extends SimpleGeometry {
       );
 
   @override
-  void writeTo(SimpleGeometryContent writer, {String? name}) =>
-      writer.multiPoint(_points, type: coordType, name: name, bounds: bounds);
+  void writeTo(SimpleGeometryContent writer, {String? name}) => isEmpty
+      ? writer.emptyGeometry(Geom.multiPoint, name: name)
+      : writer.multiPoint(_points, type: coordType, name: name, bounds: bounds);
 
   // NOTE: coordinates as raw data
 

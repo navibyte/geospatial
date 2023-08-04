@@ -24,31 +24,39 @@ import '/src/vector_data/array/coordinates.dart';
 import 'geometry.dart';
 import 'geometry_builder.dart';
 
-/// A polygon geometry with exactly one exterior and 0 to N interior rings.
+/// A polygon geometry with one exterior and 0 to N interior rings.
+///
+/// An empty polygon has no rings.
 class Polygon extends SimpleGeometry {
   final List<PositionArray> _rings;
   final Coords? _type;
 
-  /// A polygon geometry with exactly one exterior and 0 to N interior [rings].
+  /// A polygon geometry with one exterior and 0 to N interior [rings].
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry.
   ///
   /// Each ring in the polygon is represented by `PositionArray` instances.
   ///
-  /// The [rings] list must be non-empty. The first element is the exterior
-  /// ring, and any other rings are interior rings (or holes). All rings must be
-  /// closed linear rings. As specified by GeoJSON, they should "follow the
-  /// right-hand rule with respect to the area it bounds, i.e., exterior rings
-  /// are counterclockwise, and holes are clockwise".
+  /// An empty polygon has no rings.
+  ///
+  /// For "normal" polygons the [rings] list must be non-empty. The first
+  /// element is the exterior ring, and any other rings are interior rings (or
+  /// holes). All rings must be closed linear rings. As specified by GeoJSON,
+  /// they should "follow the right-hand rule with respect to the area it
+  /// bounds, i.e., exterior rings are counterclockwise, and holes are
+  /// clockwise".
   const Polygon(List<PositionArray> rings, {BoxCoords? bounds})
       : this._(rings, bounds: bounds);
 
-  const Polygon._(this._rings, {super.bounds, Coords? type})
-      : _type = type,
+  const Polygon._(this._rings, {super.bounds, Coords? type}) : _type = type;
+
+  /*
+  // NOTE: changed so that no assert - empty polygon do not have any rings
         assert(
           _rings.length > 0,
           'Polygon must contain at least the exterior ring',
         );
+        */
 
   /// Builds a polygon geometry from one exterior and 0 to N interior [rings].
   ///
@@ -63,11 +71,14 @@ class Polygon extends SimpleGeometry {
   /// position, the next three coordinate values are x, y and z of the second
   /// position, and so on.
   ///
-  /// The [rings] list must be non-empty. The first element is the exterior
-  /// ring, and any other rings are interior rings (or holes). All rings must be
-  /// closed linear rings. As specified by GeoJSON, they should "follow the
-  /// right-hand rule with respect to the area it bounds, i.e., exterior rings
-  /// are counterclockwise, and holes are clockwise".
+  /// An empty polygon has no rings.
+  ///
+  /// For "normal" polygons the [rings] list must be non-empty. The first
+  /// element is the exterior ring, and any other rings are interior rings (or
+  /// holes). All rings must be closed linear rings. As specified by GeoJSON,
+  /// they should "follow the right-hand rule with respect to the area it
+  /// bounds, i.e., exterior rings are counterclockwise, and holes are
+  /// clockwise".
   ///
   /// An example to build a polygon geometry with one linear ring containing
   /// 4 points:
@@ -129,8 +140,10 @@ class Polygon extends SimpleGeometry {
     CoordRefSys? crs,
   }) {
     final array = json.decode('[$coordinates]') as List<dynamic>;
+    if (array.isEmpty) {
+      return Polygon.build(const []);
+    }
     final coordType = resolveCoordType(array, positionLevel: 2);
-    // NOTE: validate polygon (at least one ring)
     return Polygon.build(
       createFlatPositionArrayArrayDouble(array, coordType, crs),
       type: coordType,
@@ -158,31 +171,25 @@ class Polygon extends SimpleGeometry {
   Geom get geomType => Geom.polygon;
 
   @override
-  Coords get coordType => _type ?? exterior.type;
+  Coords get coordType => _type ?? exterior?.type ?? Coords.xy;
+
+  @override
+  bool get isEmpty => _rings.isEmpty;
 
   /// The rings (exterior + interior) of this polygon.
   ///
-  /// The returned list is non-empty. The first element is the exterior ring,
+  /// For non-empty polygons the first element is the exterior ring,
   /// and any other rings are interior rings (or holes). All rings must be
   /// closed linear rings.
   List<PositionArray> get rings => _rings;
 
-  /// The (required) exterior ring of this polygon.
-  PositionArray get exterior => _rings[0];
+  /// An exterior ring of this polygon.
+  ///
+  /// For empty polygon this returns null.
+  PositionArray? get exterior => _rings.isEmpty ? null : _rings[0];
 
   /// The interior rings (or holes) of this polygon, allowed to be empty.
   Iterable<PositionArray> get interior => rings.skip(1);
-
-/*
-  /// The count of interior rings in this polygon.
-  int get interiorLength => _rings.length - 1;
-
-  /// The interior ring at the given index.
-  ///
-  /// The index refers to the index of interior rings, not all rings in the
-  /// polygon. It's required that `0 <= index < interiorLength`.
-  PositionArray interior(int index) => _rings[1 + index];
-*/
 
   @override
   Polygon project(Projection projection) => Polygon._(
@@ -191,8 +198,9 @@ class Polygon extends SimpleGeometry {
       );
 
   @override
-  void writeTo(SimpleGeometryContent writer, {String? name}) =>
-      writer.polygon(_rings, type: coordType, name: name, bounds: bounds);
+  void writeTo(SimpleGeometryContent writer, {String? name}) => isEmpty
+      ? writer.emptyGeometry(Geom.polygon, name: name)
+      : writer.polygon(_rings, type: coordType, name: name, bounds: bounds);
 
   // NOTE: coordinates as raw data
 

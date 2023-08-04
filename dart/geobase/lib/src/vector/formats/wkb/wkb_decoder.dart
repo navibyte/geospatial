@@ -9,23 +9,13 @@ part of 'wkb_format.dart';
 class _WkbGeometryDecoder implements ContentDecoder {
   final GeometryContent builder;
 
-  /// When true, geometries decoded and detected as "empty" are built with
-  /// `emptyGeometry` method of content builder.
-  ///
-  /// If this is false (as it is by default) geometries detected as "empty" are
-  /// built with content methods specific to geometries. For example an empty
-  /// point (NaN, NaN) via `point` method and an empty line string (with 0
-  /// points) via `lineString` method.
-  final bool buildEmptyGeometries;
-
-  _WkbGeometryDecoder(this.builder, {this.buildEmptyGeometries = false});
+  _WkbGeometryDecoder(this.builder);
 
   @override
   void decodeBytes(Uint8List source, {Map<String, dynamic>? options}) {
     _WkbGeometryBufferDecoder(
       builder,
       ByteReader.view(source),
-      buildEmptyGeometries: buildEmptyGeometries,
     ).buildAll();
   }
 
@@ -41,13 +31,8 @@ class _WkbGeometryDecoder implements ContentDecoder {
 class _WkbGeometryBufferDecoder {
   final GeometryContent builder;
   final ByteReader buffer;
-  final bool buildEmptyGeometries;
 
-  _WkbGeometryBufferDecoder(
-    this.builder,
-    this.buffer, {
-    this.buildEmptyGeometries = false,
-  });
+  _WkbGeometryBufferDecoder(this.builder, this.buffer);
 
   void buildAll() {
     // loop as long as some data available, so builds all geometries from buffer
@@ -105,7 +90,6 @@ class _WkbGeometryBufferDecoder {
           (geom) => _WkbGeometryBufferDecoder(
             geom,
             buffer,
-            buildEmptyGeometries: buildEmptyGeometries,
           ).buildCounted(numGeometries),
         );
         break;
@@ -114,7 +98,7 @@ class _WkbGeometryBufferDecoder {
 
   void _buildPoint(Coords coordType, Endian endian) {
     final point = _readPosition(coordType, endian);
-    if (buildEmptyGeometries && point[0].isNaN && point[1].isNaN) {
+    if (point[0].isNaN && point[1].isNaN) {
       // this is a special case, see => https://trac.osgeo.org/geos/ticket/1005
       //                             https://trac.osgeo.org/postgis/ticket/3181
       builder.emptyGeometry(Geom.point);
@@ -125,7 +109,7 @@ class _WkbGeometryBufferDecoder {
 
   void _buildLineString(Coords coordType, Endian endian) {
     final array = _readFlatPositionArray(coordType, endian);
-    if (buildEmptyGeometries && array.isEmpty) {
+    if (array.isEmpty) {
       builder.emptyGeometry(Geom.lineString);
     } else {
       builder.lineString(array, type: coordType);
@@ -134,7 +118,7 @@ class _WkbGeometryBufferDecoder {
 
   void _buildPolygon(Coords coordType, Endian endian) {
     final array = _readFlatLineStringArray(coordType, endian);
-    if (buildEmptyGeometries && array.isEmpty) {
+    if (array.isEmpty) {
       builder.emptyGeometry(Geom.polygon);
     } else {
       builder.polygon(array, type: coordType);
@@ -144,7 +128,7 @@ class _WkbGeometryBufferDecoder {
   void _buildMultiPoint(Coords coordType, Endian endian) {
     final array =
         _readPositionArray(coordType, endian, requireHeaderForItems: true);
-    if (buildEmptyGeometries && array.isEmpty) {
+    if (array.isEmpty) {
       builder.emptyGeometry(Geom.multiPoint);
     } else {
       builder.multiPoint(array, type: coordType);
@@ -157,7 +141,7 @@ class _WkbGeometryBufferDecoder {
       endian,
       requireHeaderForItems: true,
     );
-    if (buildEmptyGeometries && array.isEmpty) {
+    if (array.isEmpty) {
       builder.emptyGeometry(Geom.multiLineString);
     } else {
       builder.multiLineString(array, type: coordType);
@@ -167,7 +151,7 @@ class _WkbGeometryBufferDecoder {
   void _buildMultiPolygon(Coords coordType, Endian endian) {
     final array =
         _readFlatPolygonArray(coordType, endian, requireHeaderForItems: true);
-    if (buildEmptyGeometries && array.isEmpty) {
+    if (array.isEmpty) {
       builder.emptyGeometry(Geom.multiPolygon);
     } else {
       builder.multiPolygon(array, type: coordType);

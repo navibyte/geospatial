@@ -138,6 +138,9 @@ class MultiPolygon extends SimpleGeometry {
     CoordRefSys? crs,
   }) {
     final array = json.decode('[$coordinates]') as List<dynamic>;
+    if (array.isEmpty) {
+      return MultiPolygon.build(const []);
+    }
     final coordType = resolveCoordType(array, positionLevel: 3);
     return MultiPolygon.build(
       createFlatPositionArrayArrayArrayDouble(array, coordType, crs),
@@ -172,6 +175,9 @@ class MultiPolygon extends SimpleGeometry {
           ? _polygons.first.first.type
           : Coords.xy);
 
+  @override
+  bool get isEmpty => _polygons.isEmpty;
+
   /// The ring arrays of all polygons.
   List<List<PositionArray>> get ringArrays => _polygons;
 
@@ -191,8 +197,14 @@ class MultiPolygon extends SimpleGeometry {
       );
 
   @override
-  void writeTo(SimpleGeometryContent writer, {String? name}) => writer
-      .multiPolygon(_polygons, type: coordType, name: name, bounds: bounds);
+  void writeTo(SimpleGeometryContent writer, {String? name}) => isEmpty
+      ? writer.emptyGeometry(Geom.multiPolygon, name: name)
+      : writer.multiPolygon(
+          _polygons,
+          type: coordType,
+          name: name,
+          bounds: bounds,
+        );
 
   // NOTE: coordinates as raw data
 

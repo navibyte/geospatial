@@ -34,8 +34,8 @@ class LineString extends SimpleGeometry {
   const LineString(PositionArray chain, {super.bounds})
       : _chain = chain,
         assert(
-          chain.length >= 2,
-          'Chain must contain at least two positions',
+          chain.length == 0 || chain.length >= 2,
+          'Chain must contain at least two positions (or be empty)',
         );
 
   /// Builds a line string geometry from a [chain] of positions.
@@ -105,6 +105,9 @@ class LineString extends SimpleGeometry {
     CoordRefSys? crs,
   }) {
     final array = json.decode('[$coordinates]') as List<dynamic>;
+    if (array.isEmpty) {
+      return LineString.build(const []);
+    }
     final coordType = resolveCoordType(array, positionLevel: 1);
     // NOTE: validate line string (at least two points)
     return LineString.build(
@@ -136,6 +139,9 @@ class LineString extends SimpleGeometry {
   @override
   Coords get coordType => _chain.type;
 
+  @override
+  bool get isEmpty => _chain.isEmpty;
+
   /// The chain of positions in this line string geometry.
   PositionArray get chain => _chain;
 
@@ -144,8 +150,9 @@ class LineString extends SimpleGeometry {
       LineString(_chain.project(projection));
 
   @override
-  void writeTo(SimpleGeometryContent writer, {String? name}) =>
-      writer.lineString(_chain, type: coordType, name: name, bounds: bounds);
+  void writeTo(SimpleGeometryContent writer, {String? name}) => isEmpty
+      ? writer.emptyGeometry(Geom.lineString, name: name)
+      : writer.lineString(_chain, type: coordType, name: name, bounds: bounds);
 
   // NOTE: coordinates as raw data
 
