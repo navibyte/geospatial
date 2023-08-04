@@ -130,7 +130,7 @@ void main() {
             (writer) => writer.lineString([], type: Coords.xy),
             (writer) => writer.emptyGeometry(Geom.lineString),
           ],
-          const WkbConf(buildEmptyGeometries: true),
+          wkbOptions: {'buildEmptyGeometries': true},
         );
 
         final linestringsFlat = [
@@ -282,21 +282,23 @@ void _testEncodeToBytesBase64(
 void _testEncodeAndDecodeToWKT(
   Endian endian,
   String wktText,
-  Iterable<WriteGeometries> writeGeometriesArray, [
-  WkbConf? conf,
-]) {
+  Iterable<WriteGeometries> writeGeometriesArray, {
+  Map<String, dynamic>? wkbOptions,
+}) {
   for (final writeGeometries in writeGeometriesArray) {
     // wkb format
-    final format = conf != null ? WKB.geometryFormat(conf: conf) : WKB.geometry;
+    const format = WKB.geometry;
 
     // write geometry content using WKB encoder
-    final encoder = format.encoder(endian: endian);
+    final encoder = format.encoder(endian: endian, options: wkbOptions);
     writeGeometries.call(encoder.writer);
     final wkbBytes = encoder.toBytes();
 
     // decode bytes, and build WKT string that are tested
     final wktEncoder = WKT.geometry.encoder();
-    format.decoder(wktEncoder.writer).decodeBytes(wkbBytes);
+    format
+        .decoder(wktEncoder.writer, options: wkbOptions)
+        .decodeBytes(wkbBytes);
 
     // test
     expect(wktEncoder.toText(), wktText);

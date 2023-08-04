@@ -90,7 +90,6 @@ export 'src/vector/encoding/content_encoder.dart';
 export 'src/vector/encoding/text_format.dart';
 export 'src/vector/formats/geojson/default_format.dart';
 export 'src/vector/formats/geojson/geojson_format.dart';
-export 'src/vector/formats/wkb/wkb_conf.dart';
 export 'src/vector/formats/wkb/wkb_format.dart';
 export 'src/vector/formats/wkt/wkt_format.dart';
 export 'src/vector/formats/wkt/wkt_like_format.dart';

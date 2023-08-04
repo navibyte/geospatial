@@ -17,8 +17,6 @@ import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/content_decoder.dart';
 import '/src/vector/encoding/content_encoder.dart';
 
-import 'wkb_conf.dart';
-
 part 'wkb_decoder.dart';
 part 'wkb_encoder.dart';
 
@@ -44,20 +42,21 @@ class WKB {
   /// `multiLineString`    | 0005 | 1005 | 2005 | 3005
   /// `multiPolygon`       | 0006 | 1006 | 2006 | 3006
   /// `geometryCollection` | 0007 | 1007 | 2007 | 3007
+  ///
+  /// For the `decoder` of the returned geometry format you may provide an
+  /// optional parameter using `options`:
+  /// * `buildEmptyGeometries`: Bool (by default false). When true, geometries
+  ///   decoded and detected as "empty" are built with `emptyGeometry` method of
+  ///   content builder. If this is false (as it is by default) geometries
+  ///   detected as "empty" are built with content methods specific to
+  ///   geometries. For example an empty point (NaN, NaN) via `point` method and
+  ///   an empty line string (with 0 points) via `lineString` method.
   static const BinaryFormat<GeometryContent> geometry =
       _WkbGeometryBinaryFormat();
-
-  /// The Well-known binary (WKB) format for geometries with optional [conf].
-  ///
-  /// See [geometry] for more information about supported geometry types.
-  static BinaryFormat<GeometryContent> geometryFormat({WkbConf? conf}) =>
-      _WkbGeometryBinaryFormat(conf: conf);
 }
 
 class _WkbGeometryBinaryFormat with BinaryFormat<GeometryContent> {
-  const _WkbGeometryBinaryFormat({this.conf});
-
-  final WkbConf? conf;
+  const _WkbGeometryBinaryFormat();
 
   @override
   ContentEncoder<GeometryContent> encoder({
@@ -65,7 +64,7 @@ class _WkbGeometryBinaryFormat with BinaryFormat<GeometryContent> {
     Map<String, dynamic>? options,
   }) =>
       // endian: unless nothing specified, WKB data is encoding as Endian.big
-      _WkbGeometryEncoder(endian: endian ?? Endian.big, conf: conf);
+      _WkbGeometryEncoder(endian: endian ?? Endian.big);
 
   @override
   ContentDecoder decoder(
@@ -74,5 +73,9 @@ class _WkbGeometryBinaryFormat with BinaryFormat<GeometryContent> {
     Map<String, dynamic>? options,
   }) =>
       // any endian given is ignored, because WKB data has this info on headers
-      _WkbGeometryDecoder(builder, conf: conf);
+      _WkbGeometryDecoder(
+        builder,
+        buildEmptyGeometries:
+            (options?['buildEmptyGeometries'] ?? false) as bool,
+      );
 }

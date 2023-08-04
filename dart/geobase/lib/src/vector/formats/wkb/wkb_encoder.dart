@@ -10,19 +10,16 @@ class _WkbGeometryEncoder
     with GeometryContent
     implements ContentEncoder<GeometryContent> {
   final ByteWriter _buffer;
-  final WkbConf conf;
 
   _WkbGeometryEncoder({
     required Endian endian,
-    WkbConf? conf,
-  })  : _buffer = ByteWriter.buffered(
+  }) : _buffer = ByteWriter.buffered(
           endian: endian,
 
           // Note this is needed because of emptyGeometry special case of
           // POINT(NaN NaN) and how it is encoded in WKB (same way with OSGEO)
           nanEncodedAsNegative: true,
-        ),
-        conf = conf ?? const WkbConf();
+        );
 
   @override
   GeometryContent get writer => this;

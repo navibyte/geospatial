@@ -4,6 +4,9 @@ NOTE: Version 0.5.0 currently [under development](https://github.com/navibyte/ge
 
 ✨ New (2023-07): spherical geodesy functions (distance, bearing, destination point, etc.) for *great circle* and *rhumb line* paths.
 
+⚠️ Breaking changes:
+* The `WkbConf` class removed, added `buildEmptyGeometries` for WKB decoder.
+
 🧩 Features:
 * [Add common geospatial and geodesy functions #106](https://github.com/navibyte/geospatial/issues/106)
 * [Add parse and format functions for dms representations of degrees #173](https://github.com/navibyte/geospatial/issues/173)
