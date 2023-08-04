@@ -20,6 +20,10 @@ NOTE: Version 0.5.0 currently [under development](https://github.com/navibyte/ge
 🛠 Maintenance:
 * Removed extra internal export files and made internal imports more excplicit.
 
+✍️ In-progress:
+* [Geographic string representations (DMS) enhancements #176](https://github.com/navibyte/geospatial/issues/176)
+  * DMS lat/lon representatio default separator changed.
+
 ## 0.4.2
 
 📚 Documentation updates:

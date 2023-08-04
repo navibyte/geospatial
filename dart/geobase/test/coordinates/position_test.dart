@@ -223,7 +223,7 @@ void main() {
       const p1 = Geographic(lon: -0.0014, lat: 51.4778);
       final p1Lat = p1.latDms();
       final p1Lon = p1.lonDms();
-      final p1LatLon = p1.latLonDms();
+      final p1LatLon = p1.latLonDms(separator: ' ');
 
       expect(p1Lat, '51.4778°N');
       expect(p1Lon, '0.0014°W');
@@ -240,12 +240,16 @@ void main() {
         decimals: 3,
         zeroPadMinSec: false,
       );
-      expect(p1.latLonDms(format: format), '51°28′40.080″N 0°0′5.040″W');
+      expect(p1.latLonDms(format: format), '51°28′40.080″N, 0°0′5.040″W');
 
       const p2 = Geographic(lon: -0.0014, lat: 51.4778, elev: 45.83764);
       expect(
-        p2.latLonDms(format: format),
+        p2.latLonDms(format: format, separator: ' '),
         '51°28′40.080″N 0°0′5.040″W 45.84m',
+      );
+      expect(
+        p2.latLonDms(format: format),
+        '51°28′40.080″N, 0°0′5.040″W, 45.84m',
       );
     });
 

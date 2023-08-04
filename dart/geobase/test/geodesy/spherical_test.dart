@@ -177,14 +177,11 @@ void main() {
       expect(
           greenwich.spherical
               .destinationPoint(distance: 10000, bearing: 61.0)
-              .latLonDms(format: dm, separator: ', '),
+              .latLonDms(format: dm),
           '51° 31.3′ N, 0° 07.5′ E');
     });
     test('midPointTo', () {
-      expect(
-          greenwich.spherical
-              .midPointTo(sydney)
-              .latLonDms(format: dm, separator: ', '),
+      expect(greenwich.spherical.midPointTo(sydney).latLonDms(format: dm),
           '28° 34.0′ N, 104° 41.6′ E');
     });
     test('intermediatePointTo', () {
@@ -205,7 +202,9 @@ void main() {
       for (var fr = 0.0, i = 0; fr < 1.0; fr += 0.1, i++) {
         final ip =
             greenwich.spherical.intermediatePointTo(sydney, fraction: fr);
-        expect('${fr.toStringAsFixed(1)}: ${ip.latLonDms(format: dm)}',
+        expect(
+            '${fr.toStringAsFixed(1)}:'
+            ' ${ip.latLonDms(format: dm, separator: ' ')}',
             results[i]);
       }
     });
@@ -215,8 +214,7 @@ void main() {
         other: const Geographic(lat: 0.0, lon: 179.0),
         otherBearing: 270.0,
       );
-      expect(intersection!.latLonDms(format: dm, separator: ', '),
-          '0° 00.0′ N, 125° 19.0′ E');
+      expect(intersection!.latLonDms(format: dm), '0° 00.0′ N, 125° 19.0′ E');
     });
   });
 
@@ -242,14 +240,11 @@ void main() {
       expect(
           greenwich.rhumb
               .destinationPoint(distance: 10000, bearing: 122.0)
-              .latLonDms(format: dm, separator: ', '),
+              .latLonDms(format: dm),
           '51° 25.8′ N, 0° 07.3′ E');
     });
     test('midPointTo', () {
-      expect(
-          greenwich.rhumb
-              .midPointTo(sydney)
-              .latLonDms(format: dm, separator: ', '),
+      expect(greenwich.rhumb.midPointTo(sydney).latLonDms(format: dm),
           '8° 48.3′ N, 80° 44.0′ E');
     });
   });

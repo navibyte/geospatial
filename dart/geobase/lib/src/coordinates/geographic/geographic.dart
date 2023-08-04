@@ -303,20 +303,20 @@ class Geographic extends Position {
   ///   const p1 = Geographic(lat: 51.4778, lon: -0.0014);
   ///
   ///   // Decimal degrees on lat-lon: 51.4778°N 0.0014°W
-  ///   final p1Deg = p1.latLonDms();
+  ///   final p1Deg = p1.latLonDms(separator: ' ');
   ///
-  ///   // DM with three decimals on lat-lon: 51°28.668′N 0°00.084′W
+  ///   // DM with three decimals on lat-lon: 51°28.668′N, 0°00.084′W
   ///   const dm = Dms(type: DmsType.degMin, decimals: 3);
   ///   final p1DegMin = p1.latLonDms(format: dm);
   ///
-  ///   // DMS with narrow spaces on lat-lon: 51° 28′ 40″ N 0° 00′ 05″ W
+  ///   // DMS with narrow spaces on lat-lon: 51° 28′ 40″ N, 0° 00′ 05″ W
   ///   const dms = Dms.narrowSpace(type: DmsType.degMinSec);
   ///   final p1DegMinSec = p1.latLonDms(format: dms);
   ///
   ///   // geographic position with elevation
   ///   const p2 = Geographic(lon: -0.0014, lat: 51.4778, elev: 45.83764);
   ///
-  ///   // DMS lat-lon with elevation: 51°28′40.080″N 0°0′5.040″W
+  ///   // DMS lat-lon with elevation: 51°28′40.080″N, 0°0′5.040″W
   ///   const format = Dms(
   ///     type: DmsType.degMinSec,
   ///     decimals: 3,
@@ -326,7 +326,7 @@ class Geographic extends Position {
   /// ```
   String latLonDms({
     DmsFormat format = const Dms(),
-    String separator = ' ',
+    String separator = ', ',
     String elevUnits = 'm',
     int elevDecimals = 2,
     String mUnits = '',

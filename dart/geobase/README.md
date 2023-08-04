@@ -349,15 +349,15 @@ Format geographic coordinates as string representations (DD, DM, DMS):
   const p = Geographic(lat: 51.4778, lon: -0.0014);
 
   // all three samples print decimal degrees: 51.4778°N 0.0014°W
-  print(p.latLonDms());
+  print(p.latLonDms(separator: ' '));
   print('${p.latDms()} ${p.lonDms()}');
   print('${Dms().lat(51.4778)} ${Dms().lon(-0.0014)}');
 
-  // prints degrees and minutes: 51°28.668′N 0°00.084′W
+  // prints degrees and minutes: 51°28.668′N, 0°00.084′W
   const dm = Dms(type: DmsType.degMin, decimals: 3);
   print(p.latLonDms(format: dm));
 
-  // prints degrees, minutes and seconds: 51° 28′ 40″ N 0° 00′ 05″ W
+  // prints degrees, minutes and seconds: 51° 28′ 40″ N, 0° 00′ 05″ W
   const dms = Dms.narrowSpace(type: DmsType.degMinSec);
   print(p.latLonDms(format: dms));
 
@@ -371,7 +371,7 @@ Format geographic coordinates as string representations (DD, DM, DMS):
     prime: ' minutes',
     doublePrime: ' seconds to',
   );
-  print(p.latLonDms(format: dmsTextual, separator: ', '));
+  print(p.latLonDms(format: dmsTextual));
 ```
 
 Parsing and formatting is supported also for geographic bounding boxes:
@@ -381,7 +381,7 @@ Parsing and formatting is supported also for geographic bounding boxes:
   final box =
       GeoBox.parseDms(west: '20°W', south: '50°N', east: '20°E', north: '60°N');
 
-  // prints degrees and minutes: 20°0′W 50°0′N 20°0′E 60°0′N
+  // prints degrees and minutes: 20°0′W 50°0′N, 20°0′E 60°0′N
   const dm0 = Dms(type: DmsType.degMin, decimals: 0, zeroPadMinSec: false);
   print('${box.westDms(dm0)} ${box.southDms(dm0)}'
       ' ${box.eastDms(dm0)} ${box.northDms(dm0)}');
@@ -608,13 +608,13 @@ Examples using *great circle* paths (orthodromic) on a spherical earth model:
   // prints: 51° 31.3′ N, 0° 07.5′ E
   final destPoint =
       greenwich.spherical.destinationPoint(distance: 10000, bearing: 61.0);
-  print(destPoint.latLonDms(format: dm, separator: ', '));
+  print(destPoint.latLonDms(format: dm));
 
   // prints: 28° 34.0′ N, 104° 41.6′ E
   final midPoint = greenwich.spherical.midPointTo(sydney);
-  print(midPoint.latLonDms(format: dm, separator: ', '));
+  print(midPoint.latLonDms(format: dm));
 
-  // prints 10 intermediate points, like fraction 0.6: 16° 14.5′ N 114° 29.3′ E
+  // prints 10 intermediate points, like fraction 0.6: 16° 14.5′ N, 114° 29.3′ E
   for (var fr = 0.0; fr < 1.0; fr += 0.1) {
     final ip = greenwich.spherical.intermediatePointTo(sydney, fraction: fr);
     print('${fr.toStringAsFixed(1)}: ${ip.latLonDms(format: dm)}');
@@ -627,7 +627,7 @@ Examples using *great circle* paths (orthodromic) on a spherical earth model:
     otherBearing: 270.0,
   );
   if (intersection != null) {
-    print(intersection.latLonDms(format: dm, separator: ', '));
+    print(intersection.latLonDms(format: dm));
   }
 ```
 
@@ -648,11 +648,11 @@ Examples using *rhumb line* paths (loxodromic) on a spherical earth model:
   // prints: 51° 25.8′ N, 0° 07.3′ E
   final destPoint =
       greenwich.spherical.destinationPoint(distance: 10000, bearing: 122.0);
-  print(destPoint.latLonDms(format: dm, separator: ', '));
+  print(destPoint.latLonDms(format: dm));
 
   // prints: 8° 48.3′ N, 80° 44.0′ E
   final midPoint = greenwich.rhumb.midPointTo(sydney);
-  print(midPoint.latLonDms(format: dm, separator: ', '));
+  print(midPoint.latLonDms(format: dm));
 ```
 
 More examples are provided in the API documentation and
