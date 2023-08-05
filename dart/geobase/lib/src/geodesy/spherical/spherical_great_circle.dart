@@ -32,6 +32,7 @@ import 'dart:math';
 
 import 'package:meta/meta.dart';
 
+import '/src/constants/epsilon.dart';
 import '/src/coordinates/geographic/geographic.dart';
 import '/src/coordinates/geographic/geographic_functions.dart';
 import '/src/geodesy/base/geodetic.dart';
@@ -348,10 +349,8 @@ class SphericalGreatCircle extends Geodetic {
           ),
         );
 
-    // NOTE: what is correct epsilon?
-    //       (original JS code had Number.EPSILON == 2.220446049250313E-16)
-    const epsilon = 2.220446049250313E-16; // or ?? 4.94065645841247E-324;
-    if (dst12.abs() < epsilon) return position; // coincident points
+    // check for coincident points
+    if (dst12.abs() < doublePrecisionEpsilon) return position;
 
     // initial/final bearings between points
     final cosBrngA =

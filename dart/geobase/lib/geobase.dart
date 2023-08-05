@@ -32,6 +32,7 @@ export 'src/codes/dms_type.dart';
 export 'src/codes/geom.dart';
 
 // constants
+export 'src/constants/epsilon.dart';
 export 'src/constants/geodetic.dart';
 export 'src/constants/screen_ppi.dart';
 

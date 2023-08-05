@@ -4,12 +4,13 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// Geodetic and screen related constants.
+/// Epsilon, geodetic and screen related constants.
 ///
 /// This libary exports a subset of `package:geobase/geobase.dart`.
 ///
 /// Usage: import `package:geobase/constants.dart`
 library constants;
 
+export 'src/constants/epsilon.dart';
 export 'src/constants/geodetic.dart';
 export 'src/constants/screen_ppi.dart';
