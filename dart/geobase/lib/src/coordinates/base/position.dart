@@ -7,6 +7,7 @@
 import 'dart:math' as math;
 
 import '/src/codes/coords.dart';
+import '/src/constants/epsilon.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 import '/src/utils/tolerance.dart';
@@ -179,30 +180,31 @@ abstract class Position extends Positionable {
 
   /// True if this position equals with [other] by testing 2D coordinates only.
   ///
-  /// If [toleranceHoriz] is given, then differences on 2D coordinate values
-  /// (ie. x and y, or lon and lat) between this and [other] must be within
-  /// tolerance. Otherwise value must be exactly same.
+  /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
+  /// this and [other] must be within [toleranceHoriz].
   ///
-  /// Tolerance values must be null or positive (>= 0).
-  bool equals2D(Position other, {num? toleranceHoriz}) =>
+  /// Tolerance values must be positive (>= 0).
+  bool equals2D(
+    Position other, {
+    num toleranceHoriz = doublePrecisionEpsilon,
+  }) =>
       Position.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
 
   /// True if this position equals with [other] by testing 3D coordinates only.
   ///
   /// Returns false if this or [other] is not a 3D position.
   ///
-  /// If [toleranceHoriz] is given, then differences on 2D coordinate values
-  /// (ie. x and y, or lon and lat) between this and [other] must be within
-  /// tolerance. Otherwise value must be exactly same.
+  /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
+  /// this and [other] must be within [toleranceHoriz].
   ///
-  /// The tolerance for vertical coordinate values (ie. z or elev) is given by
-  /// an optional [toleranceVert] value.
+  /// Differences on for vertical coordinate values (ie. z or elev) between
+  /// this and [other] must be within [toleranceVert].
   ///
   /// Tolerance values must be null or positive (>= 0).
   bool equals3D(
     Position other, {
-    num? toleranceHoriz,
-    num? toleranceVert,
+    num toleranceHoriz = doublePrecisionEpsilon,
+    num toleranceVert = doublePrecisionEpsilon,
   }) =>
       Position.testEquals3D(
         this,
@@ -566,20 +568,22 @@ abstract class Position extends Positionable {
       Object.hash(position.x, position.y, position.optZ, position.optM);
 
   /// True if positions [p1] and [p2] equals by testing 2D coordinates only.
-  static bool testEquals2D(Position p1, Position p2, {num? toleranceHoriz}) {
+  static bool testEquals2D(
+    Position p1,
+    Position p2, {
+    num toleranceHoriz = doublePrecisionEpsilon,
+  }) {
     assertTolerance(toleranceHoriz);
-    return toleranceHoriz != null
-        ? (p1.x - p2.x).abs() <= toleranceHoriz &&
-            (p1.y - p2.y).abs() <= toleranceHoriz
-        : p1.x == p2.x && p1.y == p2.y;
+    return (p1.x - p2.x).abs() <= toleranceHoriz &&
+        (p1.y - p2.y).abs() <= toleranceHoriz;
   }
 
   /// True if positions [p1] and [p2] equals by testing 3D coordinates only.
   static bool testEquals3D(
     Position p1,
     Position p2, {
-    num? toleranceHoriz,
-    num? toleranceVert,
+    num toleranceHoriz = doublePrecisionEpsilon,
+    num toleranceVert = doublePrecisionEpsilon,
   }) {
     assertTolerance(toleranceVert);
     if (!Position.testEquals2D(p1, p2, toleranceHoriz: toleranceHoriz)) {
@@ -588,8 +592,6 @@ abstract class Position extends Positionable {
     if (!p1.is3D || !p1.is3D) {
       return false;
     }
-    return toleranceVert != null
-        ? (p1.z - p2.z).abs() <= toleranceVert
-        : p1.z == p2.z;
+    return (p1.z - p2.z).abs() <= toleranceVert;
   }
 }

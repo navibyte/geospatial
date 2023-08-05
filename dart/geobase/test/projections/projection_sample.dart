@@ -24,7 +24,7 @@ void expectPosition<T1 extends Position, T2 extends Position>(
       : actual.equals3D(
           expected,
           toleranceHoriz: tol ?? 0.0000001,
-          toleranceVert: tolZ,
+          toleranceVert: tolZ ?? 0.0000001,
         );
   if (!equals) {
     print('$actual $expected');

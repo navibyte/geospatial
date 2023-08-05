@@ -16,7 +16,7 @@ void expectScaled2i(
 }) {
   final equals = actual.equals2D(
     expected,
-    toleranceHoriz: tol,
+    toleranceHoriz: tol ?? 0.0000001,
   );
   if (!equals || actual.zoom != expected.zoom) {
     print('"$actual" not equals to "$expected"');

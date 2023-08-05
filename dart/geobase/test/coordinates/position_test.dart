@@ -334,6 +334,40 @@ void main() {
         p1.equals3D(p2, toleranceHoriz: 0.00011, toleranceVert: 0.0009),
         false,
       );
+
+      expect(p1.equals2D(p1), true);
+      expect(p1.equals3D(p1), true);
+      expect(p1.equals2D(p2), false);
+      expect(p1.equals3D(p2), false);
+
+      const p3 = Geographic(
+        lon: 1.0002 + doublePrecisionEpsilon,
+        lat: 2.0002,
+        elev: 3.002 + doublePrecisionEpsilon,
+        m: 4.0,
+      );
+      const p4 = Geographic(
+        lon: 1.0002 + doublePrecisionEpsilon,
+        lat: 2.0002,
+        elev: 3.002 + 2 * doublePrecisionEpsilon,
+        m: 4.0,
+      );
+      const p5 = Geographic(
+        lon: 1.0002 + 2 * doublePrecisionEpsilon,
+        lat: 2.0002,
+        elev: 3.002 + 2 * doublePrecisionEpsilon,
+        m: 4.0,
+      );
+      expect(p1.equals2D(p3), true);
+      expect(p1.equals3D(p3), true);
+      expect(p1.equals2D(p4), true);
+      expect(p1.equals3D(p4), false);
+      expect(p1.equals2D(p5), false);
+      expect(p1.equals3D(p5), false);
+      expect(p3.equals2D(p4), true);
+      expect(p3.equals3D(p4), false);
+      expect(p4.equals2D(p5), true);
+      expect(p4.equals3D(p5), true);      
     });
 
     test('Clamping longitude and latitude in constructor', () {
@@ -615,14 +649,17 @@ class _TestXYZM implements Projected {
   String toString() => '$x,$y,$z,$m';
 
   @override
-  bool equals2D(Position other, {num? toleranceHoriz}) =>
+  bool equals2D(
+    Position other, {
+    num toleranceHoriz = doublePrecisionEpsilon,
+  }) =>
       Position.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
 
   @override
   bool equals3D(
     Position other, {
-    num? toleranceHoriz,
-    num? toleranceVert,
+    num toleranceHoriz = doublePrecisionEpsilon,
+    num toleranceVert = doublePrecisionEpsilon,
   }) =>
       Position.testEquals3D(
         this,

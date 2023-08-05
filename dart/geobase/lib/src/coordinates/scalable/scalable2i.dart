@@ -7,6 +7,7 @@
 import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
+import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/projected/projected.dart';
 import '/src/utils/format_validation.dart';
@@ -208,14 +209,17 @@ class Scalable2i implements Scalable, Projected {
   Coords get type => Coords.xy; // Note: "zoom" is not coordinate but LOD
 
   @override
-  bool equals2D(Position other, {num? toleranceHoriz}) =>
+  bool equals2D(
+    Position other, {
+    num toleranceHoriz = doublePrecisionEpsilon,
+  }) =>
       Position.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
 
   @override
   bool equals3D(
     Position other, {
-    num? toleranceHoriz,
-    num? toleranceVert,
+    num toleranceHoriz = doublePrecisionEpsilon,
+    num toleranceVert = doublePrecisionEpsilon,
   }) =>
       Position.testEquals3D(
         this,

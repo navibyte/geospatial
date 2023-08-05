@@ -9,6 +9,7 @@
 import 'dart:math' as math;
 
 import '/src/codes/coords.dart';
+import '/src/constants/epsilon.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 import '/src/utils/tolerance.dart';
@@ -162,30 +163,28 @@ abstract class Box extends Positionable {
 
   /// True if this box equals with [other] by testing 2D coordinates only.
   ///
-  /// If [toleranceHoriz] is given, then differences on 2D coordinate values
-  /// (ie. x and y, or lon and lat) between this and [other] must be within
-  /// tolerance. Otherwise value must be exactly same.
+  /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
+  /// this and [other] must be within [toleranceHoriz].
   ///
   /// Tolerance values must be null or positive (>= 0).
-  bool equals2D(Box other, {num? toleranceHoriz}) =>
+  bool equals2D(Box other, {num toleranceHoriz = doublePrecisionEpsilon}) =>
       Box.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
 
   /// True if this box equals with [other] by testing 3D coordinates only.
   ///
   /// Returns false if this or [other] is not a 3D box.
   ///
-  /// If [toleranceHoriz] is given, then differences on 2D coordinate values
-  /// (ie. x and y, or lon and lat) between this and [other] must be within
-  /// tolerance. Otherwise value must be exactly same.
+  /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
+  /// this and [other] must be within [toleranceHoriz].
   ///
-  /// The tolerance for vertical coordinate values (ie. z or elev) is given by
-  /// an optional [toleranceVert] value.
+  /// Differences on for vertical coordinate values (ie. z or elev) between
+  /// this and [other] must be within [toleranceVert].
   ///
   /// Tolerance values must be null or positive (>= 0).
   bool equals3D(
     Box other, {
-    num? toleranceHoriz,
-    num? toleranceVert,
+    num toleranceHoriz = doublePrecisionEpsilon,
+    num toleranceVert = doublePrecisionEpsilon,
   }) =>
       Box.testEquals3D(
         this,
@@ -688,26 +687,21 @@ abstract class Box extends Positionable {
   static bool testEquals2D(
     Box box1,
     Box box2, {
-    num? toleranceHoriz,
+    num toleranceHoriz = doublePrecisionEpsilon,
   }) {
     assertTolerance(toleranceHoriz);
-    return toleranceHoriz != null
-        ? (box1.minX - box2.minX).abs() <= toleranceHoriz &&
-            (box1.minY - box2.minY).abs() <= toleranceHoriz &&
-            (box1.maxX - box2.maxX).abs() <= toleranceHoriz &&
-            (box1.maxY - box2.maxY).abs() <= toleranceHoriz
-        : box1.minX == box2.minX &&
-            box1.minY == box2.minY &&
-            box1.maxX == box2.maxX &&
-            box1.maxY == box2.maxY;
+    return (box1.minX - box2.minX).abs() <= toleranceHoriz &&
+        (box1.minY - box2.minY).abs() <= toleranceHoriz &&
+        (box1.maxX - box2.maxX).abs() <= toleranceHoriz &&
+        (box1.maxY - box2.maxY).abs() <= toleranceHoriz;
   }
 
   /// True if positions [box1] and [box2] equals by testing 3D coordinates only.
   static bool testEquals3D(
     Box box1,
     Box box2, {
-    num? toleranceHoriz,
-    num? toleranceVert,
+    num toleranceHoriz = doublePrecisionEpsilon,
+    num toleranceVert = doublePrecisionEpsilon,
   }) {
     assertTolerance(toleranceVert);
     if (!Box.testEquals2D(box1, box2, toleranceHoriz: toleranceHoriz)) {
@@ -716,20 +710,17 @@ abstract class Box extends Positionable {
     if (!box1.is3D || !box1.is3D) {
       return false;
     }
-    if (toleranceVert != null) {
-      final minZ1 = box1.minZ;
-      final maxZ1 = box1.maxZ;
-      final minZ2 = box2.minZ;
-      final maxZ2 = box2.maxZ;
-      return minZ1 != null &&
-          maxZ1 != null &&
-          minZ2 != null &&
-          maxZ2 != null &&
-          (minZ1 - minZ2).abs() <= toleranceVert &&
-          (maxZ1 - maxZ2).abs() <= toleranceVert;
-    } else {
-      return box1.minZ == box2.minZ && box1.maxZ == box2.maxZ;
-    }
+
+    final minZ1 = box1.minZ;
+    final maxZ1 = box1.maxZ;
+    final minZ2 = box2.minZ;
+    final maxZ2 = box2.maxZ;
+    return minZ1 != null &&
+        maxZ1 != null &&
+        minZ2 != null &&
+        maxZ2 != null &&
+        (minZ1 - minZ2).abs() <= toleranceVert &&
+        (maxZ1 - maxZ2).abs() <= toleranceVert;
   }
 
   /// Returns true if [box1] and [box2] intersects in 2D.

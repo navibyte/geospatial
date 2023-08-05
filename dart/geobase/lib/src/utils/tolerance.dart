@@ -6,11 +6,11 @@
 
 import 'package:meta/meta.dart';
 
-/// Asserts that [tolerance] is null or positive (>= 0).
+/// Asserts that [tolerance] is positive (>= 0).
 @internal
-void assertTolerance(num? tolerance) {
+void assertTolerance(num tolerance) {
   assert(
-    tolerance == null || tolerance >= 0.0,
-    'Tolerance must be null or positive (>= 0)',
+    tolerance >= 0.0,
+    'Tolerance positive (>= 0)',
   );
 }
