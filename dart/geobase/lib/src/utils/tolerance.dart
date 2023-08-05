@@ -8,7 +8,7 @@ import 'package:meta/meta.dart';
 
 /// Asserts that [tolerance] is positive (>= 0).
 @internal
-void assertTolerance(num tolerance) {
+void assertTolerance(double tolerance) {
   assert(
     tolerance >= 0.0,
     'Tolerance positive (>= 0)',

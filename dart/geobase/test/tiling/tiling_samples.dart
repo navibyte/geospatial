@@ -12,7 +12,7 @@ import 'package:test/test.dart';
 void expectScaled2i(
   Scalable2i actual,
   Scalable2i expected, {
-  num? tol,
+  double? tol,
 }) {
   final equals = actual.equals2D(
     expected,

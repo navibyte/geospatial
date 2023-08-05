@@ -104,7 +104,7 @@ mixin PositionData<E extends Position, C extends num> implements Positionable {
   }
 
   /// True if the first and last position equals in 2D within [toleranceHoriz].
-  bool isClosedBy([num toleranceHoriz = doublePrecisionEpsilon]) {
+  bool isClosedBy([double toleranceHoriz = doublePrecisionEpsilon]) {
     final len = length;
     if (len >= 2) {
       return this[0].equals2D(this[len - 1], toleranceHoriz: toleranceHoriz);

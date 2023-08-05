@@ -143,7 +143,7 @@ void main() {
         'PARAMETER["false_easting",650000],PARAMETER["false_northing",200000],'
         'UNIT["Meter",1]]';
     const defs = [proj4def, wktDef, esriDef];
-    const defsAccuracyProj = [null, 0.1, 100];
+    const defsAccuracyProj = [null, 0.1, 100.0];
     const defsAccuracyWgs84 = [null, 0.000001, 0.01];
 
     for (var i = 0; i < defs.length; i++) {

@@ -13,8 +13,8 @@ import 'package:test/test.dart';
 void expectPosition<T1 extends Position, T2 extends Position>(
   T1 actual,
   T2 expected, [
-  num? tol,
-  num? tolZ,
+  double? tol,
+  double? tolZ,
 ]) {
   final equals = !actual.is3D && !expected.is3D
       ? actual.equals2D(

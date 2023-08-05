@@ -167,7 +167,7 @@ abstract class Box extends Positionable {
   /// this and [other] must be within [toleranceHoriz].
   ///
   /// Tolerance values must be null or positive (>= 0).
-  bool equals2D(Box other, {num toleranceHoriz = doublePrecisionEpsilon}) =>
+  bool equals2D(Box other, {double toleranceHoriz = doublePrecisionEpsilon}) =>
       Box.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
 
   /// True if this box equals with [other] by testing 3D coordinates only.
@@ -183,8 +183,8 @@ abstract class Box extends Positionable {
   /// Tolerance values must be null or positive (>= 0).
   bool equals3D(
     Box other, {
-    num toleranceHoriz = doublePrecisionEpsilon,
-    num toleranceVert = doublePrecisionEpsilon,
+    double toleranceHoriz = doublePrecisionEpsilon,
+    double toleranceVert = doublePrecisionEpsilon,
   }) =>
       Box.testEquals3D(
         this,
@@ -687,7 +687,7 @@ abstract class Box extends Positionable {
   static bool testEquals2D(
     Box box1,
     Box box2, {
-    num toleranceHoriz = doublePrecisionEpsilon,
+    double toleranceHoriz = doublePrecisionEpsilon,
   }) {
     assertTolerance(toleranceHoriz);
     return (box1.minX - box2.minX).abs() <= toleranceHoriz &&
@@ -700,8 +700,8 @@ abstract class Box extends Positionable {
   static bool testEquals3D(
     Box box1,
     Box box2, {
-    num toleranceHoriz = doublePrecisionEpsilon,
-    num toleranceVert = doublePrecisionEpsilon,
+    double toleranceHoriz = doublePrecisionEpsilon,
+    double toleranceVert = doublePrecisionEpsilon,
   }) {
     assertTolerance(toleranceVert);
     if (!Box.testEquals2D(box1, box2, toleranceHoriz: toleranceHoriz)) {

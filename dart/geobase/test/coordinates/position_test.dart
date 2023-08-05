@@ -651,15 +651,15 @@ class _TestXYZM implements Projected {
   @override
   bool equals2D(
     Position other, {
-    num toleranceHoriz = doublePrecisionEpsilon,
+    double toleranceHoriz = doublePrecisionEpsilon,
   }) =>
       Position.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
 
   @override
   bool equals3D(
     Position other, {
-    num toleranceHoriz = doublePrecisionEpsilon,
-    num toleranceVert = doublePrecisionEpsilon,
+    double toleranceHoriz = doublePrecisionEpsilon,
+    double toleranceVert = doublePrecisionEpsilon,
   }) =>
       Position.testEquals3D(
         this,

@@ -6,6 +6,7 @@ NOTE: Version 0.5.0 currently [under development](https://github.com/navibyte/ge
 
 ⚠️ Breaking changes:
 * The `WkbConf` class removed, added `buildEmptyGeometries` for WKB decoder.
+* `Position` and `Box`: tolerance type from `num?` to `double` (see #146).
 
 🧩 Features:
 * [Add common geospatial and geodesy functions #106](https://github.com/navibyte/geospatial/issues/106)
