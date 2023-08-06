@@ -367,7 +367,7 @@ void main() {
       expect(p3.equals2D(p4), true);
       expect(p3.equals3D(p4), false);
       expect(p4.equals2D(p5), true);
-      expect(p4.equals3D(p5), true);      
+      expect(p4.equals3D(p5), true);
     });
 
     test('Clamping longitude and latitude in constructor', () {

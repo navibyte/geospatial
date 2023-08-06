@@ -302,6 +302,91 @@ void main() {
     });
   });
 
+  group('Testing equals2D and equals3D in features', () {
+    const e = 0.1 + 10 * doublePrecisionEpsilon;
+    const wkt = WKT.geometry;
+
+    test('Feature', () {
+      final xy = Feature(
+        geometry: Polygon.parse(
+          format: wkt,
+          'POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10), '
+          '(20 30, 35 35, 30 20, 20 30))',
+        ),
+      );
+      final xyz = Feature(
+        geometry: Polygon.parse(
+          format: wkt,
+          'POLYGON Z ((35 10 1, 45 45 2, 15 40 3, 10 20 4, 35 10 5), '
+          '(20 30 6, 35 35 7, 30 20 8, 20 30 9))',
+        ),
+      );
+      final fc = FeatureCollection([xy, xyz]);
+      final fcz = FeatureCollection([xyz]);
+      expect(xy.equals2D(xyz), true);
+      expect(xy.equals3D(xyz), false);
+      expect(xyz.equals2D(xyz), true);
+      expect(xyz.equals3D(xyz), true);
+      expect(fc.equals2D(fc), true);
+      expect(fc.equals3D(fc), false);
+      expect(fc.equals2D(fcz), false);
+      expect(fc.equals3D(fcz), false);
+      expect(fcz.equals2D(fcz), true);
+      expect(fcz.equals3D(fcz), true);
+
+      final xy1 = Feature(
+        geometry: Polygon.parse(
+          format: wkt,
+          'POLYGON ((35.1 10, 45 45, 15 40, 10 20, 35 10), '
+          '(20 30.1, 35 35, 30 20, 20 30))',
+        ),
+      );
+      final xy2 = Feature(
+        geometry: Polygon.parse(
+          format: wkt,
+          'POLYGON ((35.2 10, 45 45, 15 40, 10 20, 35 10), '
+          '(20 30.2, 35 35, 30 20, 20 30))',
+        ),
+      );
+      expect(xy.equals2D(xy1, toleranceHoriz: e), true);
+      expect(xy.equals2D(xy2, toleranceHoriz: e), false);
+      expect(xy.equals3D(xy1, toleranceHoriz: e, toleranceVert: e), false);
+      expect(xy.equals3D(xy2, toleranceHoriz: e, toleranceVert: e), false);
+
+      final xyz1 = Feature(
+        geometry: Polygon.parse(
+          format: wkt,
+          'POLYGON Z ((35.1 10 1, 45 45 2, 15 40 3, 10 20 4, 35 10 5.1), '
+          '(20 30.1 6, 35 35 7, 30 20 8, 20 30 9))',
+        ),
+      );
+      final xyz2 = Feature(
+        geometry: Polygon.parse(
+          format: wkt,
+          'POLYGON Z ((35.2 10 1, 45 45 2, 15 40 3, 10 20 4, 35 10 5.2), '
+          '(20 30.2 6, 35 35 7, 30 20 8, 20 30 9))',
+        ),
+      );
+      expect(xyz.equals2D(xyz1, toleranceHoriz: e), true);
+      expect(xyz.equals2D(xyz2, toleranceHoriz: e), false);
+      expect(xyz.equals3D(xyz1, toleranceHoriz: e, toleranceVert: e), true);
+      expect(xyz.equals3D(xyz2, toleranceHoriz: e, toleranceVert: e), false);
+
+      final fc1 = FeatureCollection([xy1, xyz1]);
+      final fcz1 = FeatureCollection([xyz1]);
+      final fc2 = FeatureCollection([xy2, xyz2]);
+      final fcz2 = FeatureCollection([xyz2]);
+      expect(fc.equals2D(fc1, toleranceHoriz: e), true);
+      expect(fc.equals3D(fc1, toleranceHoriz: e, toleranceVert: e), false);
+      expect(fcz.equals2D(fcz1, toleranceHoriz: e), true);
+      expect(fcz.equals3D(fcz1, toleranceHoriz: e, toleranceVert: e), true);
+      expect(fc.equals2D(fc2, toleranceHoriz: e), false);
+      expect(fc.equals3D(fc2, toleranceHoriz: e, toleranceVert: e), false);
+      expect(fcz.equals2D(fcz2, toleranceHoriz: e), false);
+      expect(fcz.equals3D(fcz2, toleranceHoriz: e, toleranceVert: e), false);
+    });
+  });
+
   group('Parsing geometries', () {
     const pointCoords = '1.5,2.5';
     const pointCoordsYX = '2.5,1.5';
@@ -947,9 +1032,17 @@ void _testDecodeFeatureObjectAndEncodeToGeoJSON(
   expect(geoJsonTextEncoded, geoJsonText);
 
   // try to create also using factory method and then write back
+  const eps = 5 * doublePrecisionEpsilon;
   if (object is Feature) {
-    expect(Feature.parse(geoJsonText).toText(), geoJsonText);
+    final parsed = Feature.parse(geoJsonText);
+    expect(parsed.toText(), geoJsonText);
+    expect(
+      object.equals2D(parsed, toleranceHoriz: eps),
+      !(parsed.geometry?.isEmpty ?? true),
+    );
   } else if (object is FeatureCollection) {
-    expect(FeatureCollection.parse(geoJsonText).toText(), geoJsonText);
+    final parsed = FeatureCollection.parse(geoJsonText);
+    expect(parsed.toText(), geoJsonText);
+    expect(object.equals2D(parsed, toleranceHoriz: eps), true);
   }
 }

@@ -106,7 +106,7 @@ abstract class Geometry extends Bounded {
   /// Returns false if this and [other] are not of the same geometry type.
   ///
   /// Returns false if this or [other] is an "empty geometry" ([isEmpty] true).
-  /// 
+  ///
   /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
   /// this and [other] must be within [toleranceHoriz].
   ///
@@ -122,7 +122,7 @@ abstract class Geometry extends Bounded {
   /// Returns false if this and [other] are not of the same geometry type.
   ///
   /// Returns false if this or [other] is an "empty geometry" ([isEmpty] true).
-  /// 
+  ///
   /// Returns false if this or [other] do not contain 3D coordinates.
   ///
   /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between

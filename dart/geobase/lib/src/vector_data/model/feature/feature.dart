@@ -6,10 +6,12 @@
 
 import 'package:meta/meta.dart';
 
+import '/src/constants/epsilon.dart';
 import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/property_builder.dart';
+import '/src/utils/tolerance.dart';
 import '/src/vector/content/feature_content.dart';
 import '/src/vector/content/geometry_content.dart';
 import '/src/vector/content/property_content.dart';
@@ -241,6 +243,148 @@ class Feature<T extends Geometry> extends FeatureObject {
       properties: _properties,
       bounds: bounds,
     );
+  }
+
+  /// True if this feature equals with [other] by testing 2D coordinates of the
+  /// [geometry] object (and any [customGeometries] possibly contained).
+  ///
+  /// If [ignoreCustomGeometries] is true, then [customGeometries] are ignored
+  /// in testing.
+  ///
+  /// Returns false if this or [other] contain a null or "empty" geometry object
+  /// in `geometry`.
+  ///
+  /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
+  /// this and [other] must be within [toleranceHoriz].
+  ///
+  /// Tolerance values must be positive (>= 0.0).
+  bool equals2D(
+    Feature other, {
+    double toleranceHoriz = doublePrecisionEpsilon,
+    bool ignoreCustomGeometries = false,
+  }) {
+    assertTolerance(toleranceHoriz);
+
+    // test bounding boxes if both have it
+    if (bounds != null &&
+        other.bounds != null &&
+        !bounds!.equals2D(
+          other.bounds!,
+          toleranceHoriz: toleranceHoriz,
+        )) {
+      // both geometries has bound boxes and boxes do not equal in 2D
+      return false;
+    }
+
+    // test main geometry
+    final mg1 = geometry;
+    final mg2 = other.geometry;
+    if (mg1 == null || mg2 == null || mg1.isEmpty || mg2.isEmpty) return false;
+    if (!mg1.equals2D(
+      mg2,
+      toleranceHoriz: toleranceHoriz,
+    )) {
+      return false;
+    }
+
+    // test custom geometries unless they should be ignored
+    if (!ignoreCustomGeometries) {
+      final cg1 = customGeometries;
+      final cg2 = other.customGeometries;
+      if (cg1 != null) {
+        if (cg2 == null || cg1.length != cg2.length) return false;
+        for (final cg1entry in cg1.entries) {
+          final cg2value = cg2[cg1entry.key];
+          if (cg2value == null) return false;
+          if (!cg1entry.value.equals2D(
+            cg2value,
+            toleranceHoriz: toleranceHoriz,
+          )) {
+            return false;
+          }
+        }
+      } else {
+        if (cg2 != null) return false;
+      }
+    }
+
+    // got here, features equals in 2D
+    return true;
+  }
+
+  /// True if this feature equals with [other] by testing 3D coordinates of the
+  /// [geometry] object (and any [customGeometries] possibly contained).
+  ///
+  /// If [ignoreCustomGeometries] is true, then [customGeometries] are ignored
+  /// in testing.
+  ///
+  /// Returns false if this or [other] contain a null, "empty" or non-3D
+  /// geometry object in `geometry`.
+  ///
+  /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
+  /// this and [other] must be within [toleranceHoriz].
+  ///
+  /// Differences on vertical coordinate values (ie. z or elev) between
+  /// this and [other] must be within [toleranceVert].
+  ///
+  /// Tolerance values must be positive (>= 0.0).
+  bool equals3D(
+    Feature other, {
+    double toleranceHoriz = doublePrecisionEpsilon,
+    double toleranceVert = doublePrecisionEpsilon,
+    bool ignoreCustomGeometries = false,
+  }) {
+    assertTolerance(toleranceHoriz);
+    assertTolerance(toleranceVert);
+
+    // test bounding boxes if both have it
+    if (bounds != null &&
+        other.bounds != null &&
+        !bounds!.equals3D(
+          other.bounds!,
+          toleranceHoriz: toleranceHoriz,
+          toleranceVert: toleranceVert,
+        )) {
+      // both geometries has bound boxes and boxes do not equal in 3D
+      return false;
+    }
+
+    // test main geometry
+    final mg1 = geometry;
+    final mg2 = other.geometry;
+    if (mg1 == null || mg2 == null || mg1.isEmpty || mg2.isEmpty) return false;
+    if (!mg1.equals3D(
+      mg2,
+      toleranceHoriz: toleranceHoriz,
+      toleranceVert: toleranceVert,
+    )) {
+      return false;
+    }
+
+    // test custom geometries unless they should be ignored
+    if (!ignoreCustomGeometries) {
+      final cg1 = customGeometries;
+      final cg2 = other.customGeometries;
+      if (cg1 != null) {
+        if (cg2 == null || cg1.length != cg2.length) return false;
+        for (final cg1entry in cg1.entries) {
+          final cg2value = cg2[cg1entry.key];
+          if (cg2value == null) return false;
+          if (!cg1entry.value.equals3D(
+            cg2value,
+            toleranceHoriz: toleranceHoriz,
+            toleranceVert: toleranceVert,
+          )) {
+            return false;
+          }
+        }
+      } else {
+        if (cg2 != null) return false;
+      }
+    }
+
+    // got here, features equals in 3D
+    return true;
   }
 
   @override

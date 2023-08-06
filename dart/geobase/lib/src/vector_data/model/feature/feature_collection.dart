@@ -6,10 +6,12 @@
 
 import 'package:meta/meta.dart';
 
+import '/src/constants/epsilon.dart';
 import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/property_builder.dart';
+import '/src/utils/tolerance.dart';
 import '/src/vector/content/feature_content.dart';
 import '/src/vector/content/property_content.dart';
 import '/src/vector/encoding/text_format.dart';
@@ -185,6 +187,107 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
             }
           : null,
     );
+  }
+
+  /// True if this feature collection equals with [other] by testing 2D
+  /// coordinates of geometries of [features] (that must be in same order in
+  /// both collections) contained.
+  ///
+  /// If [ignoreCustomGeometries] is true, then `customGeometries` of features
+  /// are ignored in testing.
+  ///
+  /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
+  /// this and [other] must be within [toleranceHoriz].
+  ///
+  /// Tolerance values must be positive (>= 0.0).
+  bool equals2D(
+    FeatureCollection other, {
+    double toleranceHoriz = doublePrecisionEpsilon,
+    bool ignoreCustomGeometries = false,
+  }) {
+    assertTolerance(toleranceHoriz);
+
+    // test bounding boxes if both have it
+    if (bounds != null &&
+        other.bounds != null &&
+        !bounds!.equals2D(
+          other.bounds!,
+          toleranceHoriz: toleranceHoriz,
+        )) {
+      // both geometries has bound boxes and boxes do not equal in 2D
+      return false;
+    }
+
+    // test features contained
+    final fc1 = features;
+    final fc2 = other.features;
+    if (fc1.length != fc2.length) return false;
+    for (var i = 0; i < fc1.length; i++) {
+      if (!fc1[i].equals2D(
+        fc2[i],
+        toleranceHoriz: toleranceHoriz,
+        ignoreCustomGeometries: ignoreCustomGeometries,
+      )) {
+        return false;
+      }
+    }
+
+    // got here, features equals in 2D
+    return true;
+  }
+
+  /// True if this feature collection equals with [other] by testing 3D
+  /// coordinates of geometries of [features] (that must be in same order in
+  /// both collections) contained.
+  ///
+  /// If [ignoreCustomGeometries] is true, then `customGeometries` of features
+  /// are ignored in testing.
+  ///
+  /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
+  /// this and [other] must be within [toleranceHoriz].
+  ///
+  /// Differences on vertical coordinate values (ie. z or elev) between
+  /// this and [other] must be within [toleranceVert].
+  ///
+  /// Tolerance values must be positive (>= 0.0).
+  bool equals3D(
+    FeatureCollection other, {
+    double toleranceHoriz = doublePrecisionEpsilon,
+    double toleranceVert = doublePrecisionEpsilon,
+    bool ignoreCustomGeometries = false,
+  }) {
+    assertTolerance(toleranceHoriz);
+    assertTolerance(toleranceVert);
+
+    // test bounding boxes if both have it
+    if (bounds != null &&
+        other.bounds != null &&
+        !bounds!.equals3D(
+          other.bounds!,
+          toleranceHoriz: toleranceHoriz,
+          toleranceVert: toleranceVert,
+        )) {
+      // both geometries has bound boxes and boxes do not equal in 3D
+      return false;
+    }
+
+    // test features contained
+    final fc1 = features;
+    final fc2 = other.features;
+    if (fc1.length != fc2.length) return false;
+    for (var i = 0; i < fc1.length; i++) {
+      if (!fc1[i].equals3D(
+        fc2[i],
+        toleranceHoriz: toleranceHoriz,
+        toleranceVert: toleranceVert,
+        ignoreCustomGeometries: ignoreCustomGeometries,
+      )) {
+        return false;
+      }
+    }
+
+    // got here, features equals in 3D
+    return true;
   }
 
   @override
