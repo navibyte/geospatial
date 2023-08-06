@@ -4,6 +4,16 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+/// The default epsilon value `1.0e-9` used as a tolerance in `equals2D`,
+/// `equals3D` and similar methods in this package.
+///
+/// NOTE: this value can be still adjusted to meet general geospatial use cases
+/// considering different coordinate types and accuracy requirements.
+///
+/// See also [doublePrecisionEpsilon] and
+/// [decimal degree precision](https://en.wikipedia.org/wiki/Decimal_degrees).
+const double defaultEpsilon = 1.0e-9;
+
 /// The maximum relative precision of double numbers (IEEE 754).
 ///
 /// The constant value can be calculated as `pow(2, -52) as double`.

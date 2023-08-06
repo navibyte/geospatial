@@ -186,7 +186,7 @@ abstract class Position extends Positionable {
   /// Tolerance values must be positive (>= 0.0).
   bool equals2D(
     Position other, {
-    double toleranceHoriz = doublePrecisionEpsilon,
+    double toleranceHoriz = defaultEpsilon,
   }) =>
       Position.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
 
@@ -203,8 +203,8 @@ abstract class Position extends Positionable {
   /// Tolerance values must be positive (>= 0.0).
   bool equals3D(
     Position other, {
-    double toleranceHoriz = doublePrecisionEpsilon,
-    double toleranceVert = doublePrecisionEpsilon,
+    double toleranceHoriz = defaultEpsilon,
+    double toleranceVert = defaultEpsilon,
   }) =>
       Position.testEquals3D(
         this,
@@ -571,7 +571,7 @@ abstract class Position extends Positionable {
   static bool testEquals2D(
     Position p1,
     Position p2, {
-    double toleranceHoriz = doublePrecisionEpsilon,
+    double toleranceHoriz = defaultEpsilon,
   }) {
     assertTolerance(toleranceHoriz);
     return (p1.x - p2.x).abs() <= toleranceHoriz &&
@@ -582,8 +582,8 @@ abstract class Position extends Positionable {
   static bool testEquals3D(
     Position p1,
     Position p2, {
-    double toleranceHoriz = doublePrecisionEpsilon,
-    double toleranceVert = doublePrecisionEpsilon,
+    double toleranceHoriz = defaultEpsilon,
+    double toleranceVert = defaultEpsilon,
   }) {
     assertTolerance(toleranceVert);
     if (!Position.testEquals2D(p1, p2, toleranceHoriz: toleranceHoriz)) {

@@ -249,7 +249,7 @@ void main() {
   });
 
   group('Testing equals2D and equals3D in geometries', () {
-    const e = 0.1 + 10 * doublePrecisionEpsilon;
+    const e = 0.1 + 10 * defaultEpsilon;
     const t3d = Coords.xyz;
 
     test('Point', () {
@@ -303,7 +303,7 @@ void main() {
   });
 
   group('Testing equals2D and equals3D in features', () {
-    const e = 0.1 + 10 * doublePrecisionEpsilon;
+    const e = 0.1 + 10 * defaultEpsilon;
     const wkt = WKT.geometry;
 
     test('Feature', () {
@@ -847,7 +847,7 @@ void _testDecodeGeometryAndEncodeToText(
   expect(geoJsonTextEncoded, geometryAsText);
 
   // try to create also using factory method and then write back
-  const eps = 5 * doublePrecisionEpsilon;
+  const eps = 5 * defaultEpsilon;
   switch (geometry.geomType) {
     case Geom.point:
       final parsed = Point.parse(geometryAsText, format: format);
@@ -938,7 +938,7 @@ void _testDecodeGeometryAndEncodeToWKB(
   final bytes = geometry.toBytes(format: binaryFormat);
 
   // then decode those bytes back to geometry, get text, that is compared
-  const eps = 5 * doublePrecisionEpsilon;
+  const eps = 5 * defaultEpsilon;
   switch (geometry.geomType) {
     case Geom.point:
       final parsed = Point.decode(bytes);
@@ -1032,7 +1032,7 @@ void _testDecodeFeatureObjectAndEncodeToGeoJSON(
   expect(geoJsonTextEncoded, geoJsonText);
 
   // try to create also using factory method and then write back
-  const eps = 5 * doublePrecisionEpsilon;
+  const eps = 5 * defaultEpsilon;
   if (object is Feature) {
     final parsed = Feature.parse(geoJsonText);
     expect(parsed.toText(), geoJsonText);

@@ -188,7 +188,7 @@ class Point implements SimpleGeometry {
   @override
   bool equals2D(
     Geometry other, {
-    double toleranceHoriz = doublePrecisionEpsilon,
+    double toleranceHoriz = defaultEpsilon,
   }) =>
       other is Point &&
       !isEmpty &&
@@ -201,8 +201,8 @@ class Point implements SimpleGeometry {
   @override
   bool equals3D(
     Geometry other, {
-    double toleranceHoriz = doublePrecisionEpsilon,
-    double toleranceVert = doublePrecisionEpsilon,
+    double toleranceHoriz = defaultEpsilon,
+    double toleranceVert = defaultEpsilon,
   }) =>
       other is Point &&
       !isEmpty &&

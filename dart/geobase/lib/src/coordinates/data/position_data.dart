@@ -105,7 +105,7 @@ mixin PositionData<E extends Position, C extends num> implements Positionable {
   }
 
   /// True if the first and last position equals in 2D within [toleranceHoriz].
-  bool isClosedBy([double toleranceHoriz = doublePrecisionEpsilon]) {
+  bool isClosedBy([double toleranceHoriz = defaultEpsilon]) {
     final len = length;
     if (len >= 2) {
       return this[0].equals2D(this[len - 1], toleranceHoriz: toleranceHoriz);
@@ -124,7 +124,7 @@ mixin PositionData<E extends Position, C extends num> implements Positionable {
   /// Tolerance values must be positive (>= 0.0).
   bool equals2D(
     PositionData<E, C> other, {
-    double toleranceHoriz = doublePrecisionEpsilon,
+    double toleranceHoriz = defaultEpsilon,
   }) {
     assertTolerance(toleranceHoriz);
     if (isEmpty || other.isEmpty) return false;
@@ -155,8 +155,8 @@ mixin PositionData<E extends Position, C extends num> implements Positionable {
   /// Tolerance values must be positive (>= 0.0).
   bool equals3D(
     PositionData other, {
-    double toleranceHoriz = doublePrecisionEpsilon,
-    double toleranceVert = doublePrecisionEpsilon,
+    double toleranceHoriz = defaultEpsilon,
+    double toleranceVert = defaultEpsilon,
   }) {
     assertTolerance(toleranceHoriz);
     assertTolerance(toleranceVert);

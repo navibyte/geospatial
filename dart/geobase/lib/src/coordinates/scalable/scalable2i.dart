@@ -211,15 +211,15 @@ class Scalable2i implements Scalable, Projected {
   @override
   bool equals2D(
     Position other, {
-    double toleranceHoriz = doublePrecisionEpsilon,
+    double toleranceHoriz = defaultEpsilon,
   }) =>
       Position.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
 
   @override
   bool equals3D(
     Position other, {
-    double toleranceHoriz = doublePrecisionEpsilon,
-    double toleranceVert = doublePrecisionEpsilon,
+    double toleranceHoriz = defaultEpsilon,
+    double toleranceVert = defaultEpsilon,
   }) =>
       Position.testEquals3D(
         this,

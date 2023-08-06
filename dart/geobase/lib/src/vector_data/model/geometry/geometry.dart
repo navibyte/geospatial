@@ -113,7 +113,7 @@ abstract class Geometry extends Bounded {
   /// Tolerance values must be positive (>= 0.0).
   bool equals2D(
     Geometry other, {
-    double toleranceHoriz = doublePrecisionEpsilon,
+    double toleranceHoriz = defaultEpsilon,
   });
 
   /// True if this geometry equals with [other] by testing 3D coordinates of all
@@ -134,8 +134,8 @@ abstract class Geometry extends Bounded {
   /// Tolerance values must be positive (>= 0.0).
   bool equals3D(
     Geometry other, {
-    double toleranceHoriz = doublePrecisionEpsilon,
-    double toleranceVert = doublePrecisionEpsilon,
+    double toleranceHoriz = defaultEpsilon,
+    double toleranceVert = defaultEpsilon,
   });
 
   /// The string representation of this geometry object as specified by

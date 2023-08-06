@@ -161,7 +161,7 @@ class LineString extends SimpleGeometry {
   @override
   bool equals2D(
     Geometry other, {
-    double toleranceHoriz = doublePrecisionEpsilon,
+    double toleranceHoriz = defaultEpsilon,
   }) {
     assertTolerance(toleranceHoriz);
     if (other is! LineString) return false;
@@ -185,8 +185,8 @@ class LineString extends SimpleGeometry {
   @override
   bool equals3D(
     Geometry other, {
-    double toleranceHoriz = doublePrecisionEpsilon,
-    double toleranceVert = doublePrecisionEpsilon,
+    double toleranceHoriz = defaultEpsilon,
+    double toleranceVert = defaultEpsilon,
   }) {
     assertTolerance(toleranceHoriz);
     assertTolerance(toleranceVert);

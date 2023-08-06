@@ -341,21 +341,21 @@ void main() {
       expect(p1.equals3D(p2), false);
 
       const p3 = Geographic(
-        lon: 1.0002 + doublePrecisionEpsilon,
+        lon: 1.0002 + 0.99 * defaultEpsilon,
         lat: 2.0002,
-        elev: 3.002 + doublePrecisionEpsilon,
+        elev: 3.002 + 0.99 * defaultEpsilon,
         m: 4.0,
       );
       const p4 = Geographic(
-        lon: 1.0002 + doublePrecisionEpsilon,
+        lon: 1.0002 + 0.99 * defaultEpsilon,
         lat: 2.0002,
-        elev: 3.002 + 2 * doublePrecisionEpsilon,
+        elev: 3.002 + 1.97 * defaultEpsilon,
         m: 4.0,
       );
       const p5 = Geographic(
-        lon: 1.0002 + 2 * doublePrecisionEpsilon,
+        lon: 1.0002 + 1.97 * defaultEpsilon,
         lat: 2.0002,
-        elev: 3.002 + 2 * doublePrecisionEpsilon,
+        elev: 3.002 + 1.97 * defaultEpsilon,
         m: 4.0,
       );
       expect(p1.equals2D(p3), true);
@@ -365,7 +365,7 @@ void main() {
       expect(p1.equals2D(p5), false);
       expect(p1.equals3D(p5), false);
       expect(p3.equals2D(p4), true);
-      expect(p3.equals3D(p4), false);
+      expect(p3.equals3D(p4), true);
       expect(p4.equals2D(p5), true);
       expect(p4.equals3D(p5), true);
     });
@@ -651,15 +651,15 @@ class _TestXYZM implements Projected {
   @override
   bool equals2D(
     Position other, {
-    double toleranceHoriz = doublePrecisionEpsilon,
+    double toleranceHoriz = defaultEpsilon,
   }) =>
       Position.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
 
   @override
   bool equals3D(
     Position other, {
-    double toleranceHoriz = doublePrecisionEpsilon,
-    double toleranceVert = doublePrecisionEpsilon,
+    double toleranceHoriz = defaultEpsilon,
+    double toleranceVert = defaultEpsilon,
   }) =>
       Position.testEquals3D(
         this,

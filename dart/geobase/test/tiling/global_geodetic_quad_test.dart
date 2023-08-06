@@ -93,7 +93,7 @@ void main() {
         north: maxLatitude,
       );
       expect(
-        crs84.mapBounds().equals2D(expected, toleranceHoriz: 0.000000001),
+        crs84.mapBounds().equals2D(expected),
         true,
       );
     });

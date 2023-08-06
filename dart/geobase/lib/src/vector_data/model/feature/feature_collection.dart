@@ -202,7 +202,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   /// Tolerance values must be positive (>= 0.0).
   bool equals2D(
     FeatureCollection other, {
-    double toleranceHoriz = doublePrecisionEpsilon,
+    double toleranceHoriz = defaultEpsilon,
     bool ignoreCustomGeometries = false,
   }) {
     assertTolerance(toleranceHoriz);
@@ -252,8 +252,8 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   /// Tolerance values must be positive (>= 0.0).
   bool equals3D(
     FeatureCollection other, {
-    double toleranceHoriz = doublePrecisionEpsilon,
-    double toleranceVert = doublePrecisionEpsilon,
+    double toleranceHoriz = defaultEpsilon,
+    double toleranceVert = defaultEpsilon,
     bool ignoreCustomGeometries = false,
   }) {
     assertTolerance(toleranceHoriz);

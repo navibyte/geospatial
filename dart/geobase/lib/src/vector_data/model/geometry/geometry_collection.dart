@@ -153,7 +153,7 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   @override
   bool equals2D(
     Geometry other, {
-    double toleranceHoriz = doublePrecisionEpsilon,
+    double toleranceHoriz = defaultEpsilon,
   }) {
     assertTolerance(toleranceHoriz);
     if (other is! GeometryCollection) return false;
@@ -186,8 +186,8 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   @override
   bool equals3D(
     Geometry other, {
-    double toleranceHoriz = doublePrecisionEpsilon,
-    double toleranceVert = doublePrecisionEpsilon,
+    double toleranceHoriz = defaultEpsilon,
+    double toleranceVert = defaultEpsilon,
   }) {
     assertTolerance(toleranceHoriz);
     assertTolerance(toleranceVert);

@@ -170,7 +170,7 @@ class MultiPoint extends SimpleGeometry {
   @override
   bool equals2D(
     Geometry other, {
-    double toleranceHoriz = doublePrecisionEpsilon,
+    double toleranceHoriz = defaultEpsilon,
   }) {
     assertTolerance(toleranceHoriz);
     if (other is! MultiPoint) return false;
@@ -203,8 +203,8 @@ class MultiPoint extends SimpleGeometry {
   @override
   bool equals3D(
     Geometry other, {
-    double toleranceHoriz = doublePrecisionEpsilon,
-    double toleranceVert = doublePrecisionEpsilon,
+    double toleranceHoriz = defaultEpsilon,
+    double toleranceVert = defaultEpsilon,
   }) {
     assertTolerance(toleranceHoriz);
     assertTolerance(toleranceVert);

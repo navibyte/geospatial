@@ -260,7 +260,7 @@ class Feature<T extends Geometry> extends FeatureObject {
   /// Tolerance values must be positive (>= 0.0).
   bool equals2D(
     Feature other, {
-    double toleranceHoriz = doublePrecisionEpsilon,
+    double toleranceHoriz = defaultEpsilon,
     bool ignoreCustomGeometries = false,
   }) {
     assertTolerance(toleranceHoriz);
@@ -330,8 +330,8 @@ class Feature<T extends Geometry> extends FeatureObject {
   /// Tolerance values must be positive (>= 0.0).
   bool equals3D(
     Feature other, {
-    double toleranceHoriz = doublePrecisionEpsilon,
-    double toleranceVert = doublePrecisionEpsilon,
+    double toleranceHoriz = defaultEpsilon,
+    double toleranceVert = defaultEpsilon,
     bool ignoreCustomGeometries = false,
   }) {
     assertTolerance(toleranceHoriz);
