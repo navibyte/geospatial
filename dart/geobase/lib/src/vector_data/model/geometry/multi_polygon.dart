@@ -9,10 +9,12 @@ import 'dart:typed_data';
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/constants/epsilon.dart';
 import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/coord_arrays_from_json.dart';
+import '/src/utils/tolerance.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
@@ -207,6 +209,93 @@ class MultiPolygon extends SimpleGeometry {
         );
 
   // NOTE: coordinates as raw data
+
+  @override
+  bool equals2D(
+    Geometry other, {
+    double toleranceHoriz = doublePrecisionEpsilon,
+  }) {
+    assertTolerance(toleranceHoriz);
+    if (other is! MultiPolygon) return false;
+    if (isEmpty || other.isEmpty) return false;
+    if (bounds != null &&
+        other.bounds != null &&
+        !bounds!.equals2D(
+          other.bounds!,
+          toleranceHoriz: toleranceHoriz,
+        )) {
+      // both geometries has bound boxes and boxes do not equal in 2D
+      return false;
+    }
+    // ensure both multi polygons has same amount of arrays of ring data
+    final arr1 = ringArrays;
+    final arr2 = other.ringArrays;
+    if (arr1.length != arr2.length) return false;
+    // loop all arrays of ring data
+    for (var j = 0; j < arr1.length; j++) {
+      // get linear ring lists from arrays by index j
+      final r1 = arr1[j];
+      final r2 = arr2[j];
+      // ensure r1 and r2 has same amount of linear rings
+      if (r1.length != r2.length) return false;
+      // loop all linear rings and test 2D coordinates
+      for (var i = 0; i < r1.length; i++) {
+        if (!r1[i].data.equals2D(
+              r2[i].data,
+              toleranceHoriz: toleranceHoriz,
+            )) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  @override
+  bool equals3D(
+    Geometry other, {
+    double toleranceHoriz = doublePrecisionEpsilon,
+    double toleranceVert = doublePrecisionEpsilon,
+  }) {
+    assertTolerance(toleranceHoriz);
+    assertTolerance(toleranceVert);
+    if (other is! MultiPolygon) return false;
+    if (isEmpty || other.isEmpty) return false;
+    if (!coordType.is3D || !other.coordType.is3D) return false;
+    if (bounds != null &&
+        other.bounds != null &&
+        !bounds!.equals3D(
+          other.bounds!,
+          toleranceHoriz: toleranceHoriz,
+          toleranceVert: toleranceVert,
+        )) {
+      // both geometries has bound boxes and boxes do not equal in 3D
+      return false;
+    }
+    // ensure both multi polygons has same amount of arrays of ring data
+    final arr1 = ringArrays;
+    final arr2 = other.ringArrays;
+    if (arr1.length != arr2.length) return false;
+    // loop all arrays of ring data
+    for (var j = 0; j < arr1.length; j++) {
+      // get linear ring lists from arrays by index j
+      final r1 = arr1[j];
+      final r2 = arr2[j];
+      // ensure r1 and r2 has same amount of linear rings
+      if (r1.length != r2.length) return false;
+      // loop all linear rings and test 2D coordinates
+      for (var i = 0; i < r1.length; i++) {
+        if (!r1[i].data.equals3D(
+              r2[i].data,
+              toleranceHoriz: toleranceHoriz,
+              toleranceVert: toleranceVert,
+            )) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
 
   @override
   bool operator ==(Object other) =>

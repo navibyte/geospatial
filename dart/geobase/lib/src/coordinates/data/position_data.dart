@@ -7,6 +7,7 @@
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/base/positionable.dart';
+import '/src/utils/tolerance.dart';
 
 /// A fixed-length and random-access view to positions with coordinate values.
 ///
@@ -110,6 +111,67 @@ mixin PositionData<E extends Position, C extends num> implements Positionable {
       return this[0].equals2D(this[len - 1], toleranceHoriz: toleranceHoriz);
     }
     return false;
+  }
+
+  /// True if this position data view equals with [other] by testing 2D
+  /// coordinates of all positions (that must be in same order in both views).
+  ///
+  /// Returns false if this or [other] is empty ([isEmpty] is true).
+  ///
+  /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
+  /// this and [other] must be within [toleranceHoriz].
+  ///
+  /// Tolerance values must be positive (>= 0.0).
+  bool equals2D(
+    PositionData<E, C> other, {
+    double toleranceHoriz = doublePrecisionEpsilon,
+  }) {
+    assertTolerance(toleranceHoriz);
+    if (isEmpty || other.isEmpty) return false;
+    if (length != other.length) return false;
+
+    for (var i = 0; i < length; i++) {
+      if ((x(i) - other.x(i)).abs() > toleranceHoriz ||
+          (y(i) - other.y(i)).abs() > toleranceHoriz) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /// True if this position data view equals with [other] by testing 3D
+  /// coordinates of all positions (that must be in same order in both views).
+  ///
+  /// Returns false if this or [other] is empty ([isEmpty] is true).
+  ///
+  /// Returns false if this or [other] do not contain 3D coordinates.
+  ///
+  /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
+  /// this and [other] must be within [toleranceHoriz].
+  ///
+  /// Differences on vertical coordinate values (ie. z or elev) between
+  /// this and [other] must be within [toleranceVert].
+  ///
+  /// Tolerance values must be positive (>= 0.0).
+  bool equals3D(
+    PositionData other, {
+    double toleranceHoriz = doublePrecisionEpsilon,
+    double toleranceVert = doublePrecisionEpsilon,
+  }) {
+    assertTolerance(toleranceHoriz);
+    assertTolerance(toleranceVert);
+    if (!is3D || !other.is3D) return false;
+    if (isEmpty || other.isEmpty) return false;
+    if (length != other.length) return false;
+
+    for (var i = 0; i < length; i++) {
+      if ((x(i) - other.x(i)).abs() > toleranceHoriz ||
+          (y(i) - other.y(i)).abs() > toleranceHoriz ||
+          (z(i) - other.z(i)).abs() > toleranceVert) {
+        return false;
+      }
+    }
+    return true;
   }
 
   /// Coordinate values in this view to an iterable of [E] objects.

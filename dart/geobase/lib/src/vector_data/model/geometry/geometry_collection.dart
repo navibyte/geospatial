@@ -7,9 +7,11 @@
 import 'dart:typed_data';
 
 import '/src/codes/geom.dart';
+import '/src/constants/epsilon.dart';
 import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/utils/coord_arrays.dart';
+import '/src/utils/tolerance.dart';
 import '/src/vector/content/geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
@@ -147,6 +149,76 @@ class GeometryCollection<E extends Geometry> extends Geometry {
           },
           bounds: bounds,
         );
+
+  @override
+  bool equals2D(
+    Geometry other, {
+    double toleranceHoriz = doublePrecisionEpsilon,
+  }) {
+    assertTolerance(toleranceHoriz);
+    if (other is! GeometryCollection) return false;
+    if (isEmpty || other.isEmpty) return false;
+    if (bounds != null &&
+        other.bounds != null &&
+        !bounds!.equals2D(
+          other.bounds!,
+          toleranceHoriz: toleranceHoriz,
+        )) {
+      // both geometries has bound boxes and boxes do not equal in 2D
+      return false;
+    }
+    // ensure both collections has same amount of geometries
+    final g1 = geometries;
+    final g2 = other.geometries;
+    if (g1.length != g2.length) return false;
+    // loop all geometries and test 2D coordinates
+    for (var i = 0; i < g1.length; i++) {
+      if (!g1[i].equals2D(
+        g2[i],
+        toleranceHoriz: toleranceHoriz,
+      )) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  @override
+  bool equals3D(
+    Geometry other, {
+    double toleranceHoriz = doublePrecisionEpsilon,
+    double toleranceVert = doublePrecisionEpsilon,
+  }) {
+    assertTolerance(toleranceHoriz);
+    assertTolerance(toleranceVert);
+    if (other is! GeometryCollection) return false;
+    if (isEmpty || other.isEmpty) return false;
+    if (bounds != null &&
+        other.bounds != null &&
+        !bounds!.equals3D(
+          other.bounds!,
+          toleranceHoriz: toleranceHoriz,
+          toleranceVert: toleranceVert,
+        )) {
+      // both geometries has bound boxes and boxes do not equal in 3D
+      return false;
+    }
+    // ensure both collections has same amount of geometries
+    final g1 = geometries;
+    final g2 = other.geometries;
+    if (g1.length != g2.length) return false;
+    // loop all geometries and test 3D coordinates
+    for (var i = 0; i < g1.length; i++) {
+      if (!g1[i].equals3D(
+        g2[i],
+        toleranceHoriz: toleranceHoriz,
+        toleranceVert: toleranceVert,
+      )) {
+        return false;
+      }
+    }
+    return true;
+  }
 
   @override
   bool operator ==(Object other) =>

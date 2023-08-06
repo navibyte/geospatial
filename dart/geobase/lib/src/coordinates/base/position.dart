@@ -183,7 +183,7 @@ abstract class Position extends Positionable {
   /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
   /// this and [other] must be within [toleranceHoriz].
   ///
-  /// Tolerance values must be positive (>= 0).
+  /// Tolerance values must be positive (>= 0.0).
   bool equals2D(
     Position other, {
     double toleranceHoriz = doublePrecisionEpsilon,
@@ -197,10 +197,10 @@ abstract class Position extends Positionable {
   /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
   /// this and [other] must be within [toleranceHoriz].
   ///
-  /// Differences on for vertical coordinate values (ie. z or elev) between
+  /// Differences on vertical coordinate values (ie. z or elev) between
   /// this and [other] must be within [toleranceVert].
   ///
-  /// Tolerance values must be null or positive (>= 0).
+  /// Tolerance values must be positive (>= 0.0).
   bool equals3D(
     Position other, {
     double toleranceHoriz = doublePrecisionEpsilon,

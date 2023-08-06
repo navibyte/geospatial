@@ -10,6 +10,7 @@ import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/constants/epsilon.dart';
 import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/vector/content/geometry_content.dart';
@@ -98,6 +99,44 @@ abstract class Geometry extends Bounded {
     writeTo(encoder.writer);
     return encoder.toBytes();
   }
+
+  /// True if this geometry equals with [other] by testing 2D coordinates of all
+  /// positions (that must be in same order in both geometries).
+  ///
+  /// Returns false if this and [other] are not of the same geometry type.
+  ///
+  /// Returns false if this or [other] is an "empty geometry" ([isEmpty] true).
+  /// 
+  /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
+  /// this and [other] must be within [toleranceHoriz].
+  ///
+  /// Tolerance values must be positive (>= 0.0).
+  bool equals2D(
+    Geometry other, {
+    double toleranceHoriz = doublePrecisionEpsilon,
+  });
+
+  /// True if this geometry equals with [other] by testing 3D coordinates of all
+  /// positions (that must be in same order in both geometries).
+  ///
+  /// Returns false if this and [other] are not of the same geometry type.
+  ///
+  /// Returns false if this or [other] is an "empty geometry" ([isEmpty] true).
+  /// 
+  /// Returns false if this or [other] do not contain 3D coordinates.
+  ///
+  /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
+  /// this and [other] must be within [toleranceHoriz].
+  ///
+  /// Differences on vertical coordinate values (ie. z or elev) between
+  /// this and [other] must be within [toleranceVert].
+  ///
+  /// Tolerance values must be positive (>= 0.0).
+  bool equals3D(
+    Geometry other, {
+    double toleranceHoriz = doublePrecisionEpsilon,
+    double toleranceVert = doublePrecisionEpsilon,
+  });
 
   /// The string representation of this geometry object as specified by
   /// [GeoJSON].

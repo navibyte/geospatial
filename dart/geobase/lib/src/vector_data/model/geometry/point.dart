@@ -9,6 +9,7 @@ import 'dart:typed_data';
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/constants/epsilon.dart';
 import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/utils/coord_arrays.dart';
@@ -183,6 +184,34 @@ class Point implements SimpleGeometry {
     writeTo(encoder.writer);
     return encoder.toBytes();
   }
+
+  @override
+  bool equals2D(
+    Geometry other, {
+    double toleranceHoriz = doublePrecisionEpsilon,
+  }) =>
+      other is Point &&
+      !isEmpty &&
+      !other.isEmpty &&
+      position.equals2D(
+        other.position,
+        toleranceHoriz: toleranceHoriz,
+      );
+
+  @override
+  bool equals3D(
+    Geometry other, {
+    double toleranceHoriz = doublePrecisionEpsilon,
+    double toleranceVert = doublePrecisionEpsilon,
+  }) =>
+      other is Point &&
+      !isEmpty &&
+      !other.isEmpty &&
+      position.equals3D(
+        other.position,
+        toleranceHoriz: toleranceHoriz,
+        toleranceVert: toleranceVert,
+      );
 
   @override
   String toString() => toText();

@@ -9,10 +9,12 @@ import 'dart:typed_data';
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/constants/epsilon.dart';
 import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/coord_arrays_from_json.dart';
+import '/src/utils/tolerance.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
@@ -164,6 +166,77 @@ class MultiPoint extends SimpleGeometry {
       : writer.multiPoint(_points, type: coordType, name: name, bounds: bounds);
 
   // NOTE: coordinates as raw data
+
+  @override
+  bool equals2D(
+    Geometry other, {
+    double toleranceHoriz = doublePrecisionEpsilon,
+  }) {
+    assertTolerance(toleranceHoriz);
+    if (other is! MultiPoint) return false;
+    if (isEmpty || other.isEmpty) return false;
+    if (bounds != null &&
+        other.bounds != null &&
+        !bounds!.equals2D(
+          other.bounds!,
+          toleranceHoriz: toleranceHoriz,
+        )) {
+      // both geometries has bound boxes and boxes do not equal in 2D
+      return false;
+    }
+    // ensure both multi points has same amount of positions
+    final p1 = positions;
+    final p2 = other.positions;
+    if (p1.length != p2.length) return false;
+    // loop all positions and test 2D coordinates
+    for (var i = 0; i < p1.length; i++) {
+      if (!p1[i].equals2D(
+        p2[i],
+        toleranceHoriz: toleranceHoriz,
+      )) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  @override
+  bool equals3D(
+    Geometry other, {
+    double toleranceHoriz = doublePrecisionEpsilon,
+    double toleranceVert = doublePrecisionEpsilon,
+  }) {
+    assertTolerance(toleranceHoriz);
+    assertTolerance(toleranceVert);
+    if (other is! MultiPoint) return false;
+    if (isEmpty || other.isEmpty) return false;
+    if (!coordType.is3D || !other.coordType.is3D) return false;
+    if (bounds != null &&
+        other.bounds != null &&
+        !bounds!.equals3D(
+          other.bounds!,
+          toleranceHoriz: toleranceHoriz,
+          toleranceVert: toleranceVert,
+        )) {
+      // both geometries has bound boxes and boxes do not equal in 3D
+      return false;
+    }
+    // ensure both multi points has same amount of positions
+    final p1 = positions;
+    final p2 = other.positions;
+    if (p1.length != p2.length) return false;
+    // loop all positions and test 3D coordinates
+    for (var i = 0; i < p1.length; i++) {
+      if (!p1[i].equals3D(
+        p2[i],
+        toleranceHoriz: toleranceHoriz,
+        toleranceVert: toleranceVert,
+      )) {
+        return false;
+      }
+    }
+    return true;
+  }
 
   @override
   bool operator ==(Object other) =>
