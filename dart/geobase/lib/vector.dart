@@ -7,9 +7,10 @@
 /// Text and binary formats for vector data (features, geometries, coordinates).
 ///
 /// Key features:
-/// * text format encoders for features, geometries, coordinates, properties:
+/// * text format writers and parsers for features, geometries, coordinates,
+///   properties:
 ///   * supported formats: [GeoJSON](https://geojson.org/)
-/// * text format encoders for geometries and coordinates:
+/// * text format writers and parsers for geometries and coordinates:
 ///   * supported formats: [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)
 /// * binary format encoders and decoders for geometries:
 ///   * supported formats: [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary)

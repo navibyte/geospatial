@@ -1593,8 +1593,8 @@ used to import only a certain subset instead of the whole **geobase** package:
 
 Package                | Description 
 ---------------------- | ----------- 
-**codes**              | Enums (codes) for geospatial coordinate, geometry types, canvas origin, cardinal direction and DMS type.
-**constants**          | Geodetic and screen related constants.
+**codes**              | Enums (codes) for geospatial coordinate, geometry types, canvas origin, cardinal direction, DMS type and axis order.
+**constants**          | Epsilon, geodetic and screen related constants.
 **coordinates**        | Geographic (longitude-latitude) and projected positions and bounding boxes.
 **geodesy**            | Spherical geodesy functions for *great circle* and *rhumb line* paths.
 **meta**               | Temporal data structures (instant, interval) and spatial extents.
