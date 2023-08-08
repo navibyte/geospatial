@@ -19,7 +19,7 @@
 library vector_data;
 
 export 'src/vector_data/array/coordinates.dart';
-export 'src/vector_data/array/list_coordinate_extension.dart';
+export 'src/vector_data/array/coordinates_extensions.dart';
 export 'src/vector_data/coords/lonlat.dart';
 export 'src/vector_data/coords/xy.dart';
 export 'src/vector_data/model/bounded/bounded.dart';

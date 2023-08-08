@@ -10,6 +10,8 @@ import 'dart:typed_data';
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
+import '/src/coordinates/base/box.dart';
+import '/src/coordinates/base/position.dart';
 import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/utils/coord_arrays.dart';
@@ -22,6 +24,7 @@ import '/src/vector/formats/geojson/default_format.dart';
 import '/src/vector/formats/geojson/geojson_format.dart';
 import '/src/vector/formats/wkb/wkb_format.dart';
 import '/src/vector_data/array/coordinates.dart';
+import '/src/vector_data/array/coordinates_extensions.dart';
 
 import 'geometry.dart';
 import 'geometry_builder.dart';
@@ -36,7 +39,7 @@ class MultiPolygon extends SimpleGeometry {
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry.
   ///
-  /// Each polygon is represented by `List<PositionArray>` instances containing
+  /// Each polygon is represented by a `List<PositionArray>` instance containing
   /// one exterior and 0 to N interior rings. The first element is the exterior
   /// ring, and any other rings are interior rings (or holes). All rings must be
   /// closed linear rings. As specified by GeoJSON, they should "follow the
@@ -48,6 +51,30 @@ class MultiPolygon extends SimpleGeometry {
   const MultiPolygon._(this._polygons, {super.bounds, Coords? type})
       : _type = type;
 
+  /// A multi polygon with an array of [polygons] (each with an array of rings).
+  ///
+  /// An optional [bounds] can used set a minimum bounding box for a geometry.
+  ///
+  /// Each polygon is represented by a `Iterable<Iterable<Position>>` instance
+  /// containing one exterior and 0 to N interior rings. The first element is
+  /// the exterior ring, and any other rings are interior rings (or holes). All
+  /// rings must be closed linear rings. As specified by GeoJSON, they should
+  /// "follow the right-hand rule with respect to the area it bounds, i.e.,
+  /// exterior rings are counterclockwise, and holes are clockwise".
+  factory MultiPolygon.from(
+    Iterable<Iterable<Iterable<Position>>> polygons, {
+    Box? bounds,
+  }) =>
+      MultiPolygon._(
+        polygons
+            .map(
+              (polygon) =>
+                  polygon.map((ring) => ring.array()).toList(growable: false),
+            )
+            .toList(growable: false),
+        bounds: bounds?.coords(),
+      );
+
   /// Builds a multi polygon from an array of [polygons] (each with an array of
   /// rings).
   ///
@@ -56,15 +83,15 @@ class MultiPolygon extends SimpleGeometry {
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry.
   ///
-  /// Each polygon is represented by `Iterable<Iterable<double>>` instances
+  /// Each polygon is represented by a `Iterable<Iterable<double>>` instance
   /// containing one exterior and 0 to N interior rings. The first element is
   /// the exterior ring, and any other rings are interior rings (or holes). All
   /// rings must be closed linear rings. As specified by GeoJSON, they should
   /// "follow the right-hand rule with respect to the area it bounds, i.e.,
   /// exterior rings are counterclockwise, and holes are clockwise".
   ///
-  /// Each ring in the polygon is represented by `Iterable<double>` arrays. Such
-  /// arrays contain coordinate values as a flat structure. For example for
+  /// Each ring in the polygon is represented by an `Iterable<double>` array.
+  /// Such arrays contain coordinate values as a flat structure. For example for
   /// `Coords.xyz` the first three coordinate values are x, y and z of the first
   /// position, the next three coordinate values are x, y and z of the second
   /// position, and so on.

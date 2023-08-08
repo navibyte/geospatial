@@ -260,8 +260,8 @@ void main() {
       expect(xyz.equals2D(xyz), true);
       expect(xyz.equals3D(xyz), true);
 
-      final xy1 = Point.build([23.1, 34.3]);
-      final xy2 = Point.build([23.1, 34.4]);
+      final xy1 = Point.build(const Projected(x: 23.1, y: 34.3).coords());
+      final xy2 = Point.from(const Projected(x: 23.1, y: 34.4));
       expect(xy.equals2D(xy1, toleranceHoriz: e), true);
       expect(xy.equals2D(xy2, toleranceHoriz: e), false);
       expect(xy.equals3D(xy1, toleranceHoriz: e, toleranceVert: e), false);
@@ -284,8 +284,16 @@ void main() {
       expect(xyz.equals2D(xyz), true);
       expect(xyz.equals3D(xyz), true);
 
-      final xy1 = LineString.build(const [23.1, 34.3, 1, 2]);
-      final xy2 = LineString.build(const [23.1, 34.4, 1, 2]);
+      final xy1 = LineString.build(
+        [
+          const Projected(x: 23.1, y: 34.3),
+          const Projected(x: 1, y: 2),
+        ].array(),
+      );
+      final xy2 = LineString.from(const [
+        Projected(x: 23.1, y: 34.4),
+        Projected(x: 1, y: 2),
+      ]);
       expect(xy.equals2D(xy1, toleranceHoriz: e), true);
       expect(xy.equals2D(xy2, toleranceHoriz: e), false);
       expect(xy.equals3D(xy1, toleranceHoriz: e, toleranceVert: e), false);
@@ -446,6 +454,79 @@ void main() {
       expect(MultiPolygon.parse(multiPolygon).toText(), multiPolygon);
       expect(
         MultiPolygon.parseCoords(multiPolygonCoords).toText(),
+        multiPolygon,
+      );
+    });
+
+    test('Simple geometries from positions', () {
+      expect(Point.from(const Projected(x: 1.5, y: 2.5)).toText(), point);
+      expect(
+        LineString.from(const [
+          Projected(x: -1.1, y: -1.1),
+          Projected(x: 2.1, y: -2.5),
+          Projected(x: 3.5, y: -3.49),
+        ]).toText(),
+        lineString,
+      );
+      expect(
+        Polygon.from(const [
+          [
+            Projected(x: 10.1, y: 10.1),
+            Projected(x: 5.0, y: 9.0),
+            Projected(x: 12.0, y: 4.0),
+            Projected(x: 10.1, y: 10.1),
+          ],
+          [
+            Projected(x: 11.1, y: 11.1),
+            Projected(x: 6.0, y: 9.9),
+            Projected(x: 13.0, y: 4.9),
+            Projected(x: 11.1, y: 11.1),
+          ],
+        ]).toText(),
+        polygon,
+      );
+      expect(
+        MultiPoint.from(const [
+          Projected(x: -1.1, y: -1.1, z: -1.1, m: -1.1),
+          Projected(x: 2.1, y: -2.5, z: 2.3, m: 0.1),
+          Projected(x: 3.5, y: -3.49, z: 11.3, m: 0.23),
+        ]).toText(),
+        multiPoint,
+      );
+      expect(
+        MultiLineString.from(const [
+          [
+            Projected(x: 10.1, y: 10.1),
+            Projected(x: 5.0, y: 9.0),
+            Projected(x: 12.0, y: 4.0),
+            Projected(x: 10.1, y: 10.1),
+          ],
+          [
+            Projected(x: 11.1, y: 11.1),
+            Projected(x: 6.0, y: 9.9),
+            Projected(x: 13.0, y: 4.9),
+            Projected(x: 11.1, y: 11.1),
+          ],
+        ]).toText(),
+        multiLineString,
+      );
+      expect(
+        MultiPolygon.from(const [
+          [
+            [
+              Projected(x: 10.1, y: 10.1),
+              Projected(x: 5.0, y: 9.0),
+              Projected(x: 12.0, y: 4.0),
+              Projected(x: 10.1, y: 10.1),
+            ],
+            [
+              Projected(x: 11.1, y: 11.1),
+              Projected(x: 6.0, y: 9.9),
+              Projected(x: 13.0, y: 4.9),
+              Projected(x: 11.1, y: 11.1),
+            ],
+          ]
+        ]).toText(),
         multiPolygon,
       );
     });

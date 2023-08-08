@@ -22,11 +22,26 @@ void main() {
         '1.1,1.2,1.3,2.1,2.2,2.3,3.1,3.2,3.3',
         type: type,
       );
+      final positions3 = type == Coords.xyz
+          ? [
+              const Projected(x: 1.1, y: 1.2, z: 1.3),
+              const Projected(x: 2.1, y: 2.2, z: 2.3),
+              const Projected(x: 3.1, y: 3.2, z: 3.3),
+            ]
+          : [
+              const Projected(x: 1.1, y: 1.2, m: 1.3),
+              const Projected(x: 2.1, y: 2.2, m: 2.3),
+              const Projected(x: 3.1, y: 3.2, m: 3.3),
+            ];
+      final array3FromPositions = positions3.array();
 
       test('Creating position arrays', () {
         expect(array3, data3);
         expect(array3FromText, array3);
+        expect(array3FromPositions, array3);
         expect(array3.type, type);
+        expect(array3FromText.type, type);
+        expect(array3FromPositions.type, type);
       });
 
       test('Access positions as PositionData', () {

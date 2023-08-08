@@ -10,6 +10,8 @@ import 'dart:typed_data';
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
+import '/src/coordinates/base/box.dart';
+import '/src/coordinates/base/position.dart';
 import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/utils/coord_arrays.dart';
@@ -22,6 +24,7 @@ import '/src/vector/formats/geojson/default_format.dart';
 import '/src/vector/formats/geojson/geojson_format.dart';
 import '/src/vector/formats/wkb/wkb_format.dart';
 import '/src/vector_data/array/coordinates.dart';
+import '/src/vector_data/array/coordinates_extensions.dart';
 
 import 'geometry.dart';
 import 'geometry_builder.dart';
@@ -36,11 +39,22 @@ class MultiPoint extends SimpleGeometry {
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry.
   ///
-  /// Each point is represented by [PositionCoords] instances.
+  /// Each point is represented by a [PositionCoords] instance.
   const MultiPoint(List<PositionCoords> points, {BoxCoords? bounds})
       : this._(points, bounds: bounds);
 
   const MultiPoint._(this._points, {super.bounds, Coords? type}) : _type = type;
+
+  /// A multi point geometry from an iterable of `Position` objects in [points].
+  ///
+  /// An optional [bounds] can used set a minimum bounding box for a geometry.
+  ///
+  /// Each point is represented by a [Position] instance.
+  factory MultiPoint.from(Iterable<Position> points, {Box? bounds}) =>
+      MultiPoint._(
+        points.map((p) => p.coords()).toList(growable: false),
+        bounds: bounds?.coords(),
+      );
 
   /// Builds a multi point geometry from an array of [points] (each with a
   /// position).
@@ -50,7 +64,7 @@ class MultiPoint extends SimpleGeometry {
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry.
   ///
-  /// Each point is represented by `Iterable<double>` instances. Supported
+  /// Each point is represented by an `Iterable<double>` instance. Supported
   /// coordinate value combinations for positions are: (x, y), (x, y, z),
   /// (x, y, m) and (x, y, z, m).
   ///

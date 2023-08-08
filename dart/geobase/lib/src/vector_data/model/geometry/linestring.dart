@@ -10,6 +10,8 @@ import 'dart:typed_data';
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
+import '/src/coordinates/base/box.dart';
+import '/src/coordinates/base/position.dart';
 import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/utils/coord_arrays.dart';
@@ -22,6 +24,7 @@ import '/src/vector/formats/geojson/default_format.dart';
 import '/src/vector/formats/geojson/geojson_format.dart';
 import '/src/vector/formats/wkb/wkb_format.dart';
 import '/src/vector_data/array/coordinates.dart';
+import '/src/vector_data/array/coordinates_extensions.dart';
 
 import 'geometry.dart';
 import 'geometry_builder.dart';
@@ -32,13 +35,19 @@ class LineString extends SimpleGeometry {
 
   /// A line string geometry with a [chain] of positions and optional [bounds].
   ///
-  /// The [chain] array must contain at least two positions.
+  /// The [chain] array must contain at least two positions (or be empty).
   const LineString(PositionArray chain, {super.bounds})
       : _chain = chain,
         assert(
           chain.length == 0 || chain.length >= 2,
           'Chain must contain at least two positions (or be empty)',
         );
+
+  /// A line string geometry from a [chain] of positions and optional [bounds].
+  ///
+  /// The [chain] iterable must contain at least two positions (or be empty).
+  factory LineString.from(Iterable<Position> chain, {Box? bounds}) =>
+      LineString(chain.array(), bounds: bounds?.coords());
 
   /// Builds a line string geometry from a [chain] of positions.
   ///
@@ -47,11 +56,11 @@ class LineString extends SimpleGeometry {
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry.
   ///
-  /// The [chain] array must contain at least two positions. It contains
-  /// coordinate values of chain positions as a flat structure. For example for
-  /// `Coords.xyz` the first three coordinate values are x, y and z of the first
-  /// position, the next three coordinate values are x, y and z of the second
-  /// position, and so on.
+  /// The [chain] array must contain at least two positions (or be empty). It
+  /// contains coordinate values of chain positions as a flat structure. For
+  /// example for `Coords.xyz` the first three coordinate values are x, y and z
+  /// of the first position, the next three coordinate values are x, y and z of
+  /// the second position, and so on.
   ///
   /// An example to build a line string with 3 points:
   /// ```dart
