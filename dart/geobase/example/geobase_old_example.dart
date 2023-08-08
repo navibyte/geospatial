@@ -78,7 +78,7 @@ void _wktPointGeometryWithZM() {
   // prints:
   //    POINT ZM(10.123 20.25 -30.95 -1.999)
   encoder.writer.point(
-    LonLatElevM(10.123, 20.25, -30.95, -1.999),
+    [10.123, 20.25, -30.95, -1.999].xyzm,
     type: Coords.xyzm,
   );
   print(encoder.toText());

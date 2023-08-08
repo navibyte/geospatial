@@ -1552,25 +1552,6 @@ used in places requiring the `Iterable<double>` type. At the same time, for
 example `PositionCoords` is also a valid `Position` and `BoxCoords` is a valid
 `Box`.
 
-There are also specialized sub classes of `PositionCoords` for projected 
-coordinates (enabling more compact code when creating instances):
-
-Class  | 2D/3D | Coords | Values   | x | y | z | m
------- | ----- | ------ | -------- | - | - | - | -
-`XY`   | 2D    | 2      | `double` | + | + |   |
-`XYZ`  | 3D    | 3      | `double` | + | + | + |
-`XYM`  | 2D    | 3      | `double` | + | + |   | +
-`XYZM` | 3D    | 4      | `double` | + | + | + | +
-
-And similar classes for geographic coordinates:
-
-Class         | 2D/3D | Coords | Values   | lon (x) | lat (y) | elev (z) | m
-------------- | ----- | ------ | -------- | ------- | ------- | -------- | -
-`LonLat`      | 2D    | 2      | `double` |    +    |    +    |          |
-`LonLatElev`  | 3D    | 3      | `double` |    +    |    +    |    +     |
-`LonLatM`     | 2D    | 3      | `double` |    +    |    +    |          | +
-`LonLatElevM` | 3D    | 4      | `double` |    +    |    +    |    +     | +
-
 As described above, `PositionArray` represents coordinate values of 0 to N
 positions as a flat structure. That is, there is no array of positions with 
 each having an array of coordinate values, but a single flat array of coordinate
@@ -1608,6 +1589,33 @@ Type          | Projected values | Geographic values
 `Coords.xyz`  | x, y, z          | lon, lat, elev
 `Coords.xym`  | x, y, m          | lon, lat, m
 `Coords.xyzm` | x, y, z, m       | lon, lat, elev, m
+
+See also specialized extension methods or getters on `List<double>`:
+
+Method/getter | Created object   | Description
+------------- | ---------------- | -----------
+`positions()` | `PositionArray`  | An array of 0 to N positions as a flat structure. 
+`position`    | `PositionCoords` | A single position.
+`box`         | `BoxCoords`      | A single bounding box.
+
+For single positions there are also some more extension getters on
+`List<double>` to create instances of `PositionCoords`:
+
+Getter  | 2D/3D | Coords | Values   | x | y | z | m
+------  | ----- | ------ | -------- | - | - | - | -
+`.xy`   | 2D    | 2      | `double` | + | + |   |
+`.xyz`  | 3D    | 3      | `double` | + | + | + |
+`.xym`  | 2D    | 3      | `double` | + | + |   | +
+`.xyzm` | 3D    | 4      | `double` | + | + | + | +
+
+For geographic coordinates same getters on `List<double>` are used:
+
+Getter  | 2D/3D | Coords | Values   | lon (x) | lat (y) | elev (z) | m
+------- | ----- | ------ | -------- | ------- | ------- | -------- | -
+`.xy`   | 2D    | 2      | `double` |    +    |    +    |          |
+`.xyz`  | 3D    | 3      | `double` |    +    |    +    |    +     |
+`.xym`  | 2D    | 3      | `double` |    +    |    +    |          | +
+`.xyzm` | 3D    | 4      | `double` |    +    |    +    |    +     | +
 
 ### Content interfaces
 

@@ -19,8 +19,8 @@ void main() {
       const xymData = [15.0, 30.1, 60.3];
 
       // positions from data
-      final xyzPos = XYZ.view(xyzData);
-      final xymPos = XYM.view(xymData);
+      final xyzPos = xyzData.xyz;
+      final xymPos = xymData.xym;
 
       // positions as lists equals to their representive iterable representation
       expect(xyzPos.toList(), xyzData);
@@ -35,7 +35,7 @@ void main() {
       expect(xymPos, isNot(xyzData));
 
       // then we create "XYZ" position from "XYM" data
-      final xyzPosFromXym = XYZ.view(xymData);
+      final xyzPosFromXym = xymData.xyz;
 
       // xym and xyz positions from same data are not equal
       expect(xymPos == xyzPosFromXym, false);
@@ -120,10 +120,10 @@ void main() {
     });
 
     test('Coordinate access and factories', () {
-      final p1 = XY.create(x: 1.0, y: 2.0);
-      final p2 = XYZ.create(x: 1.0, y: 2.0, z: 3.0);
-      final p3 = XYM.create(x: 1.0, y: 2.0, m: 4.0);
-      final p4 = XYZM.create(x: 1.0, y: 2.0, z: 3.0, m: 4.0);
+      final p1 = [1.0, 2.0].xy;
+      final p2 = [1.0, 2.0, 3.0].xyz;
+      final p3 = [1.0, 2.0, 4.0].xym;
+      final p4 = [1.0, 2.0, 3.0, 4.0].xyzm;
       expect([p1.x, p1.y], p1.values);
       expect([p2.x, p2.y, p2.z], p2.values);
       expect([p3.x, p3.y, p3.m], p3.values);
@@ -147,12 +147,7 @@ void main() {
       expect(PositionCoords.parse('1.0,2.0,3.0'), p2);
       expect(PositionCoords.parse('1.0,2.0,4.0', type: Coords.xym), p3);
       expect(PositionCoords.parse('1.0,2.0,3.0,4.0'), p4);
-
-      expect(XY.parse(p1.toString()), p1);
-      expect(XYZ.parse(p2.toString()), p2);
-      expect(XYM.parse(p3.toString()), p3);
-      expect(XYZM.parse(p4.toString()), p4);
-      expect(XYZM.parse('1.0 2.0 3.0 4.0', delimiter: ' '), p4);
+      expect(PositionCoords.parse('1.0 2.0 3.0 4.0', delimiter: ' '), p4);
 
       expect(() => PositionCoords.view([1.0]).y, throwsRangeError);
       expect(() => PositionCoords.parse('1.0'), throwsFormatException);
@@ -166,9 +161,9 @@ void main() {
       // test Position itself
       final one = 1.0;
       final two = 2.0;
-      final p1 = XYZM(1.0, 2.0, 3.0, 4.0);
-      final p2 = XYZM(one, 2.0, 3.0, 4.0);
-      final p3 = XYZM(two, 2.0, 3.0, 4.0);
+      final p1 = [1.0, 2.0, 3.0, 4.0].xyzm;
+      final p2 = [one, 2.0, 3.0, 4.0].xyzm;
+      final p3 = [two, 2.0, 3.0, 4.0].xyzm;
       expect(p1, p2);
       expect(p1, isNot(p3));
       expect(p1.hashCode, p2.hashCode);
@@ -192,7 +187,7 @@ void main() {
       expect(p5, p6);
       expect(p6, isNot(p7));
 
-      final p8 = XY.create(x: 1.0, y: 2.0);
+      final p8 = [1.0, 2.0].xy;
       expect(p1.equals2D(p8), true);
       expect(p1.equals3D(p8), false);
     });
@@ -218,16 +213,16 @@ void main() {
 
     test('Copy with', () {
       expect(
-        XY.create(x: 1, y: 1).copyWith(),
-        XY.create(x: 1, y: 1),
+        [1.0, 1.0].xy.copyWith(),
+        [1.0, 1.0].xy,
       );
       expect(
-        XY.create(x: 1, y: 1).copyWith(y: 2),
-        XY.create(x: 1, y: 2),
+        [1.0, 1.0].xy.copyWith(y: 2.0),
+        [1.0, 2.0].xy,
       );
       expect(
-        XY.create(x: 1, y: 1).copyWith(z: 2),
-        XY.create(x: 1, y: 1),
+        [1.0, 1.0].xy.copyWith(z: 2.0),
+        [1.0, 1.0, 2.0].xyz,
       );
     });
   });

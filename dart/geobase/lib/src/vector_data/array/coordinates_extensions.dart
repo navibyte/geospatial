@@ -10,6 +10,13 @@ import '/src/coordinates/base/position.dart';
 
 import 'coordinates.dart';
 
+List<double> _requireLen(List<double> list, int len) {
+  if (list.length != len) {
+    throw FormatException('double list lenght must be $len');
+  }
+  return list;
+}
+
 /// A helper extension on `List<double>` to handle coordinate values.
 ///
 /// See [Coordinates] for more information.
@@ -25,13 +32,61 @@ extension ListCoordinateExtension on List<double> {
   BoxCoords get box =>
       BoxCoords.view(this, type: Coords.fromDimension(length ~/ 2));
 
-  /// A geospatial position with coordinate values as a view backed by `this`.
+  /// A position with coordinate values as a view backed by `this`.
   ///
   /// Supported values combinations: (x, y), (x, y, z) and (x, y, z, m).
   ///
+  /// Or for geographic coordinates (lon, lat), (lon, lat, elev) and
+  /// (lon, lat, elev, m).
+  ///
   /// See [PositionCoords.view] for more information.
+  ///
+  /// See also [xy], [xyz], [xym] and [xyzm].
   PositionCoords get position =>
       PositionCoords.view(this, type: Coords.fromDimension(length));
+
+  /// A position with x and y coordinates as a view backed by `this`.
+  ///
+  /// The double list represented by `this` must contain `x, y` values in
+  /// this order (or `lon, lat` for geographic coordinates).
+  ///
+  /// See [PositionCoords.view] for more information. See also [position].
+  ///
+  /// Throws FormatException if this does not contain exactly 2 values.
+  PositionCoords get xy => PositionCoords.view(_requireLen(this, 2));
+
+  /// A position with x, y and z coordinates as a view backed by `this`.
+  ///
+  /// The double list represented by `this` must contain `x, y, z` values in
+  /// this order (or `lon, lat, elev` for geographic coordinates).
+  ///
+  /// See [PositionCoords.view] for more information. See also [position].
+  ///
+  /// Throws FormatException if this does not contain exactly 2 values.
+  PositionCoords get xyz =>
+      PositionCoords.view(_requireLen(this, 3), type: Coords.xyz);
+
+  /// A position with x, y and m coordinates as a view backed by `this`.
+  ///
+  /// The double list represented by `this` must contain `x, y, m` values in
+  /// this order (or `lon, lat, m` for geographic coordinates).
+  ///
+  /// See [PositionCoords.view] for more information. See also [position].
+  ///
+  /// Throws FormatException if this does not contain exactly 2 values.
+  PositionCoords get xym =>
+      PositionCoords.view(_requireLen(this, 3), type: Coords.xym);
+
+  /// A position with x, y, z and m coordinates as a view backed by `this`.
+  ///
+  /// The double list represented by `this` must contain `x, y, z, m` values in
+  /// this order (or `lon, lat, elev, m` for geographic coordinates).
+  ///
+  /// See [PositionCoords.view] for more information. See also [position].
+  ///
+  /// Throws FormatException if this does not contain exactly 2 values.
+  PositionCoords get xyzm =>
+      PositionCoords.view(_requireLen(this, 4), type: Coords.xyzm);
 
   /// Coordinate values of geospatial positions as a view backed by `this`.
   ///

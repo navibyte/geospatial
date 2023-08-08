@@ -52,9 +52,9 @@ void main() {
         final tests = type == Coords.xyz
             ? [
                 [
-                  XYZ(1.1, 1.2, 1.3),
-                  XYZ(2.1, 2.2, 2.3),
-                  XYZ(3.1, 3.2, 3.3),
+                  [1.1, 1.2, 1.3].xyz,
+                  [2.1, 2.2, 2.3].xyz,
+                  [3.1, 3.2, 3.3].xyz,
                 ],
                 [
                   const Projected(x: 1.1, y: 1.2, z: 1.3),
@@ -64,9 +64,9 @@ void main() {
               ]
             : [
                 [
-                  XYM(1.1, 1.2, 1.3),
-                  XYM(2.1, 2.2, 2.3),
-                  XYM(3.1, 3.2, 3.3),
+                  [1.1, 1.2, 1.3].xym,
+                  [2.1, 2.2, 2.3].xym,
+                  [3.1, 3.2, 3.3].xym,
                 ],
                 [
                   const Projected(x: 1.1, y: 1.2, m: 1.3),
@@ -104,9 +104,9 @@ void main() {
         final tests = type == Coords.xyz
             ? [
                 [
-                  LonLatElev(1.1, 1.2, 1.3),
-                  LonLatElev(2.1, 2.2, 2.3),
-                  LonLatElev(3.1, 3.2, 3.3),
+                  [1.1, 1.2, 1.3].xyz,
+                  [2.1, 2.2, 2.3].xyz,
+                  [3.1, 3.2, 3.3].xyz,
                 ],
                 [
                   const Geographic(lon: 1.1, lat: 1.2, elev: 1.3),
@@ -116,9 +116,9 @@ void main() {
               ]
             : [
                 [
-                  LonLatM(1.1, 1.2, 1.3),
-                  LonLatM(2.1, 2.2, 2.3),
-                  LonLatM(3.1, 3.2, 3.3),
+                  [1.1, 1.2, 1.3].xym,
+                  [2.1, 2.2, 2.3].xym,
+                  [3.1, 3.2, 3.3].xym,
                 ],
                 [
                   const Geographic(lon: 1.1, lat: 1.2, m: 1.3),
@@ -139,10 +139,10 @@ void main() {
               geographic.get(index, to: Projected.create),
               tests[1][index],
             );
-            expect(geographic[index].lon, test[index].lon);
-            expect(geographic[index].lat, test[index].lat);
-            expect(geographic[index].elev, test[index].elev);
-            expect(geographic[index].optElev, test[index].optElev);
+            expect(geographic[index].lon, test[index].x);
+            expect(geographic[index].lat, test[index].y);
+            expect(geographic[index].elev, test[index].z);
+            expect(geographic[index].optElev, test[index].optZ);
             expect(geographic[index].m, test[index].m);
             expect(geographic[index].optM, test[index].optM);
           }
@@ -170,9 +170,9 @@ void main() {
 
       final tests = [
         [
-          XY(1.1, 1.2),
-          XY(2.1, 2.2),
-          XY(3.1, 3.2),
+          [1.1, 1.2].xy,
+          [2.1, 2.2].xy,
+          [3.1, 3.2].xy,
         ],
         [
           const Projected(x: 1.1, y: 1.2),
@@ -236,9 +236,9 @@ void main() {
 
       final tests = [
         [
-          XYZM(1.1, 1.2, 1.3, 1.4),
-          XYZM(2.1, 2.2, 2.3, 2.4),
-          XYZM(3.1, 3.2, 3.3, 3.4),
+          [1.1, 1.2, 1.3, 1.4].xyzm,
+          [2.1, 2.2, 2.3, 2.4].xyzm,
+          [3.1, 3.2, 3.3, 3.4].xyzm,
         ],
         [
           const Projected(x: 1.1, y: 1.2, z: 1.3, m: 1.4),

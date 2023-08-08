@@ -10,6 +10,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:geobase/codes.dart';
+import 'package:geobase/coordinates.dart';
 import 'package:geobase/src/utils/byte_writer.dart';
 import 'package:geobase/vector.dart';
 import 'package:geobase/vector_data.dart';
@@ -31,8 +32,9 @@ void main() {
             ..writeFloat64(4.0, endian), // y
           [
             // three different ways to write POINT(2.0 4.0)
-            (writer) => writer.point(XY(2.0, 4.0)),
-            (writer) => writer.point(LonLat(2.0, 4.0)),
+            (writer) => writer.point([2.0, 4.0].xy),
+            (writer) =>
+                writer.point(const Geographic(lon: 2.0, lat: 4.0).coords()),
             (writer) => writer.point([2.0, 4.0])
           ],
         );
@@ -46,8 +48,10 @@ void main() {
             ..writeFloat64(-double.nan, endian), // y
           [
             // four different ways to write empty point
-            (writer) => writer.point(XY(double.nan, double.nan)),
-            (writer) => writer.point(LonLat(double.nan, double.nan)),
+            (writer) => writer.point([double.nan, double.nan].xy),
+            (writer) => writer.point(
+                  const Geographic(lon: double.nan, lat: double.nan).coords(),
+                ),
             (writer) => writer.point([double.nan, double.nan]),
             (writer) => writer.emptyGeometry(Geom.point),
           ],
@@ -60,8 +64,9 @@ void main() {
           'POINT(2.1 -3.4)',
           [
             // three different ways to write POINT(2.1 -3.4)
-            (writer) => writer.point(XY(2.1, -3.4)),
-            (writer) => writer.point(LonLat(2.1, -3.4)),
+            (writer) => writer.point([2.1, -3.4].xy),
+            (writer) =>
+                writer.point(const Geographic(lon: 2.1, lat: -3.4).coords()),
             (writer) => writer.point([2.1, -3.4])
           ],
         );

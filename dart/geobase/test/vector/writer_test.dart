@@ -296,7 +296,7 @@ void main() {
       _testAllWriters<GeometryContent>(
         [
           (output) => output.point([10.123, 20.25]),
-          (output) => output.point(XY(10.123, 20.25)),
+          (output) => output.point([10.123, 20.25].xy),
         ],
         def: '10.123,20.25',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25]}',
@@ -306,7 +306,7 @@ void main() {
       _testAllWriters<GeometryContent>(
         [
           (output) => output.point([10.123, 20.25, -30.95]),
-          (output) => output.point(XYZ(10.123, 20.25, -30.95)),
+          (output) => output.point([10.123, 20.25, -30.95].xyz),
         ],
         def: '10.123,20.25,-30.95',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
@@ -317,7 +317,7 @@ void main() {
         [
           (output) => output.point([10.123, 20.25, -1.999], type: Coords.xym),
           (output) => output.point(
-                XYM(10.123, 20.25, -1.999),
+                [10.123, 20.25, -1.999].xym,
                 type: Coords.xym,
               ),
         ],
@@ -330,7 +330,7 @@ void main() {
       _testAllWriters<GeometryContent>(
         [
           (output) => output.point([10.123, 20.25, -30.95, -1.999]),
-          (output) => output.point(XYZM(10.123, 20.25, -30.95, -1.999)),
+          (output) => output.point([10.123, 20.25, -30.95, -1.999].xyzm),
         ],
         def: '10.123,20.25,-30.95,-1.999',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,-30.95,-1.999]}',
@@ -345,7 +345,7 @@ void main() {
                 [10.123, 20.25, -30.95],
                 type: Coords.xyz,
               ),
-          (output) => output.point(XYZ(10.123, 20.25, -30.95)),
+          (output) => output.point([10.123, 20.25, -30.95].xyz),
         ],
         def: '10.123,20.25,-30.95',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,-30.95]}',
@@ -359,7 +359,7 @@ void main() {
                 type: Coords.xyz,
               ),
           (output) => output.point(
-                XYZM(10.123, 20.25, -30.95, -1.999),
+                [10.123, 20.25, -30.95, -1.999].xyzm,
                 type: Coords.xyz,
               ),
         ],
@@ -375,7 +375,7 @@ void main() {
                 type: Coords.xy,
               ),
           (output) => output.point(
-                XYZ(10.123, 20.25, -30.95),
+                [10.123, 20.25, -30.95].xyz,
                 type: Coords.xy,
               ),
         ],
@@ -391,7 +391,7 @@ void main() {
                 type: Coords.xyz,
               ),
           (output) => output.point(
-                XY(10.123, 20.25),
+                [10.123, 20.25].xy,
                 type: Coords.xyz,
               ),
         ],
@@ -407,7 +407,7 @@ void main() {
                 type: Coords.xym,
               ),
           (output) => output.point(
-                XYM(10.123, 20.25, -1.999),
+                [10.123, 20.25, -1.999].xym,
                 type: Coords.xym,
               ),
         ],
@@ -424,7 +424,7 @@ void main() {
                 type: Coords.xyzm,
               ),
           (output) => output.point(
-                XYZM(10.123, 20.25, -30.95, -1.999),
+                [10.123, 20.25, -30.95, -1.999].xyzm,
                 type: Coords.xyzm,
               ),
         ],
@@ -456,8 +456,8 @@ void main() {
               ),
           (output) => output.multiPoint(
                 [
-                  XY(10.123, 20.25),
-                  XY(5.98, -3.47),
+                  [10.123, 20.25].xy,
+                  [5.98, -3.47].xy,
                 ],
                 type: Coords.xy,
               ),
@@ -657,7 +657,7 @@ void main() {
       _testGeoJsonWriters<FeatureContent>(
         (output) => output.feature(
           id: 'fid-1',
-          geometry: (geom) => geom.point(XY(10.123, 20.25)),
+          geometry: (geom) => geom.point([10.123, 20.25].xy),
           properties: {
             'foo': 100,
             'bar': 'this is property value',
@@ -670,7 +670,7 @@ void main() {
       );
       _testGeoJsonWriters<FeatureContent>(
         (output) => output.feature(
-          geometry: (geom) => geom.point(XY(10.123, 20.25)),
+          geometry: (geom) => geom.point([10.123, 20.25].xy),
           properties: {
             'foo': {
               'bar': 'this is property value',
@@ -685,8 +685,8 @@ void main() {
       _testGeoJsonWriters<FeatureContent>(
         (output) => output.feature(
           geometry: (geom) => geom
-            ..point(XY(10.123, 20.25))
-            ..point(XYZM(1, 2, 3, 4), name: 'geom1'),
+            ..point([10.123, 20.25].xy)
+            ..point([1.0, 2.0, 3.0, 4.0].xyzm, name: 'geom1'),
           custom: (props) => props.properties('extra', {
             'foo': {
               'bar': 'this is property value',
@@ -710,7 +710,7 @@ void main() {
           (features) => features
             ..feature(
               id: 'fid-1',
-              geometry: (geom) => geom.point(XY(10.123, 20.25)),
+              geometry: (geom) => geom.point([10.123, 20.25].xy),
               properties: {
                 'foo': 100,
                 'bar': 'this is property value',
@@ -815,7 +815,7 @@ void main() {
           count: 2,
           (features) => features
             ..feature(
-              geometry: (geom) => geom.point(XY(1, 2)),
+              geometry: (geom) => geom.point([1.0, 2.0].xy),
               properties: {'test1': null},
             )
             ..feature(

@@ -6,7 +6,7 @@
 
 part of 'coordinates.dart';
 
-/// A geospatial position as an iterable collection of coordinate values.
+/// A position as an iterable collection of coordinate values.
 ///
 /// Such position is a valid [Position] implementation and represents
 /// coordinate values also as a collection of `Iterable<double>` (containing 2,
@@ -17,23 +17,24 @@ part of 'coordinates.dart';
 ///
 /// See [Position] for description about supported coordinate values.
 ///
-/// See also specialized sub classes for projected coordinates:
+/// See also specialized extension getters on `List<double>` to create instances
+/// of `PositionCoords`:
 ///
-/// Class  | 2D/3D | Coords | Values   | x | y | z | m
-/// ------ | ----- | ------ | -------- | - | - | - | -
-/// `XY`   | 2D    | 2      | `double` | + | + |   |
-/// `XYZ`  | 3D    | 3      | `double` | + | + | + |
-/// `XYM`  | 2D    | 3      | `double` | + | + |   | +
-/// `XYZM` | 3D    | 4      | `double` | + | + | + | +
+/// Getter  | 2D/3D | Coords | Values   | x | y | z | m
+/// ------  | ----- | ------ | -------- | - | - | - | -
+/// `.xy`   | 2D    | 2      | `double` | + | + |   |
+/// `.xyz`  | 3D    | 3      | `double` | + | + | + |
+/// `.xym`  | 2D    | 3      | `double` | + | + |   | +
+/// `.xyzm` | 3D    | 4      | `double` | + | + | + | +
 ///
-/// And there are also specialized sub classes for geographic coordinates:
+/// For geographic coordinates same getters on `List<double>` are used:
 ///
-/// Class         | 2D/3D | Coords | Values   | lon (x) | lat (y) | elev (z) | m
-/// ------------- | ----- | ------ | -------- | ------- | ------- | -------- | -
-/// `LonLat`      | 2D    | 2      | `double` |    +    |    +    |          |
-/// `LonLatElev`  | 3D    | 3      | `double` |    +    |    +    |    +     |
-/// `LonLatM`     | 2D    | 3      | `double` |    +    |    +    |          | +
-/// `LonLatElevM` | 3D    | 4      | `double` |    +    |    +    |    +     | +
+/// Getter  | 2D/3D | Coords | Values   | lon (x) | lat (y) | elev (z) | m
+/// ------- | ----- | ------ | -------- | ------- | ------- | -------- | -
+/// `.xy`   | 2D    | 2      | `double` |    +    |    +    |          |
+/// `.xyz`  | 3D    | 3      | `double` |    +    |    +    |    +     |
+/// `.xym`  | 2D    | 3      | `double` |    +    |    +    |          | +
+/// `.xyzm` | 3D    | 4      | `double` |    +    |    +    |    +     | +
 abstract class PositionCoords extends Position with _CoordinatesMixin {
   @override
   final Iterable<double> _data;
@@ -46,7 +47,7 @@ abstract class PositionCoords extends Position with _CoordinatesMixin {
       : _data = source,
         _type = type;
 
-  /// A geospatial position with coordinate values as a view backed by [source].
+  /// A position with coordinate values as a view backed by [source].
   ///
   /// An iterable collection of [source] may be represented by a [List] or any
   /// [Iterable] with efficient `length` and `elementAt` implementations.
@@ -72,7 +73,7 @@ abstract class PositionCoords extends Position with _CoordinatesMixin {
   factory PositionCoords.view(Iterable<double> source, {Coords type}) =
       _PositionCoordsImpl.view;
 
-  /// A geospatial position as an iterable collection of [x], [y], and optional
+  /// A position as an iterable collection of [x], [y], and optional
   /// [z] and [m] values.
   ///
   /// This factory is compatible with `CreatePosition` function type.
@@ -90,7 +91,7 @@ abstract class PositionCoords extends Position with _CoordinatesMixin {
         m: m,
       );
 
-  /// Parses a geospatial position as an iterable collection parsed from [text].
+  /// Parses a position as an iterable collection parsed from [text].
   ///
   /// Coordinate values in [text] are separated by [delimiter].
   ///
@@ -201,10 +202,10 @@ abstract class PositionCoords extends Position with _CoordinatesMixin {
   int get length;
 }
 
-/// A geospatial position as an iterable collection of coordinate values.
+/// A position as an iterable collection of coordinate values.
 @immutable
 class _PositionCoordsImpl extends PositionCoords {
-  /// A geospatial position with coordinate values as a view backed by `source`.
+  /// A position with coordinate values as a view backed by `source`.
   const _PositionCoordsImpl.view(super.source, {super.type = Coords.xy})
       : super();
 
