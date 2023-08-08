@@ -386,7 +386,7 @@ class DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
   /// Configuration options for GeoJSON and GeoJSON like formats.
   final GeoJsonConf conf;
 
-  bool get _crsRequiresToSwapXY => crs?.swapXY ?? false;
+  bool get _crsRequiresToSwapXY => crs?.swapXY(logic: conf.crsLogic) ?? false;
 
   @override
   void _startObjectArray({int? count}) {

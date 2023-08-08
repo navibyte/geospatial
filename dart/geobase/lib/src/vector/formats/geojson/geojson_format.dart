@@ -11,6 +11,7 @@ import 'dart:typed_data';
 import 'package:equatable/equatable.dart';
 
 import '/src/codes/coords.dart';
+import '/src/codes/geo_representation.dart';
 import '/src/codes/geom.dart';
 import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/utils/coord_arrays_from_json.dart';
@@ -27,6 +28,10 @@ part 'geojson_decoder.dart';
 
 /// Optional configuration parameters for formatting GeoJSON.
 class GeoJsonConf with EquatableMixin {
+  /// Use this to set logic whether coordinate axis order should be
+  /// authority-based (the default) or always lon-lat order.
+  final GeoRepresentation? crsLogic;
+
   /// When [ignoreMeasured] is set to true, then M coordinates are ignored from
   /// formatting.
   final bool ignoreMeasured;
@@ -46,13 +51,19 @@ class GeoJsonConf with EquatableMixin {
 
   /// Optional configuration parameters for formatting GeoJSON.
   const GeoJsonConf({
+    this.crsLogic,
     this.ignoreMeasured = false,
     this.ignoreForeignMembers = false,
     this.printNonDefaultCrs = false,
   });
 
   @override
-  List<Object?> get props => [ignoreMeasured, ignoreForeignMembers];
+  List<Object?> get props => [
+        crsLogic,
+        ignoreMeasured,
+        ignoreForeignMembers,
+        printNonDefaultCrs,
+      ];
 }
 
 /// The GeoJSON text format for [coordinate], [geometry] and [feature] objects.
@@ -176,6 +187,7 @@ class _GeoJsonGeometryTextFormat with TextFormat<GeometryContent> {
         builder,
         crs: crs,
         options: options,
+        conf: conf,
       );
 
   @override
@@ -208,6 +220,7 @@ class _GeoJsonFeatureTextFormat with TextFormat<FeatureContent> {
         builder,
         crs: crs,
         options: options,
+        conf: conf,
       );
 
   @override

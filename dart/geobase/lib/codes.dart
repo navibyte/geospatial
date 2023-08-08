@@ -5,7 +5,7 @@
 // Docs: https://github.com/navibyte/geospatial
 
 /// Enums (codes) for geospatial coordinate, geometry types, canvas origin,
-/// cardinal direction, DMS type and axis order.
+/// cardinal direction, DMS type, geo representation and axis order.
 ///
 /// This libary exports a subset of `package:geobase/geobase.dart`.
 ///
@@ -17,4 +17,5 @@ export 'src/codes/canvas_origin.dart';
 export 'src/codes/cardinal_precision.dart';
 export 'src/codes/coords.dart';
 export 'src/codes/dms_type.dart';
+export 'src/codes/geo_representation.dart';
 export 'src/codes/geom.dart';

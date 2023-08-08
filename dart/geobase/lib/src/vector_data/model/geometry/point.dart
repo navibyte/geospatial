@@ -8,6 +8,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import '/src/codes/coords.dart';
+import '/src/codes/geo_representation.dart';
 import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/position.dart';
@@ -99,12 +100,17 @@ class Point implements SimpleGeometry {
 
   /// Parses a point geometry from [coordinates] conforming to [DefaultFormat].
   ///
-  /// Use [crs] to give hints (like axis order, and whether x and y must
-  /// be swapped when read in) about coordinate reference system in text input.
-  factory Point.parseCoords(String coordinates, {CoordRefSys? crs}) {
+  /// Use [crs] and [crsLogic] to give hints (like axis order, and whether x
+  /// and y must be swapped when read in) about coordinate reference system in
+  /// text input.
+  factory Point.parseCoords(
+    String coordinates, {
+    CoordRefSys? crs,
+    GeoRepresentation? crsLogic,
+  }) {
     final pos = requirePositionDouble(
       json.decode('[$coordinates]'),
-      crs,
+      swapXY: crs?.swapXY(logic: crsLogic) ?? false,
     );
     if (pos.isEmpty) {
       return Point.build(const [double.nan, double.nan]);

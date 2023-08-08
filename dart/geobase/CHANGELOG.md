@@ -16,6 +16,7 @@ NOTE: Version 0.5.0 currently [under development](https://github.com/navibyte/ge
 * [WKT decoder on geobase #159](https://github.com/navibyte/geospatial/issues/159)
 * [Consistent equals, equals2D, equals3D (and equalsBy) for coordinates, geometries and features #146](https://github.com/navibyte/geospatial/issues/146)
 * [Geometry objects instantiated from instances or iterables of Position objects #171](https://github.com/navibyte/geospatial/issues/171)
+* [Alternative logics to resolve axis order #182](https://github.com/navibyte/geospatial/issues/182)
 
 🛠 Refactoring:
 * [Enforce "geometry" under "Feature" when encoding GeoJSON text output #91](https://github.com/navibyte/geospatial/issues/91)

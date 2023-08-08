@@ -14,6 +14,7 @@ NOTE: Version 0.12.0 currently [under development](https://github.com/navibyte/g
 * [Map HTTP status codes to feature service exception (OGC API Features) #68](https://github.com/navibyte/geospatial/issues/68)
 * [Add initial support for OGC API - Features - Part 3: Filtering #180](https://github.com/navibyte/geospatial/issues/180)
 * [Cache metadata object in OGC API Features clients for short periods #181](https://github.com/navibyte/geospatial/issues/181)
+* [Alternative logics to resolve axis order #182](https://github.com/navibyte/geospatial/issues/182)
 
 🛠 Maintenance:
 * Removed extra internal export files and made internal imports more excplicit.

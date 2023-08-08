@@ -8,6 +8,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import '/src/codes/coords.dart';
+import '/src/codes/geo_representation.dart';
 import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/box.dart';
@@ -137,11 +138,13 @@ class MultiLineString extends SimpleGeometry {
   /// Parses a multi line string geometry from [coordinates] conforming to
   /// [DefaultFormat].
   ///
-  /// Use [crs] to give hints (like axis order, and whether x and y must
-  /// be swapped when read in) about coordinate reference system in text input.
+  /// Use [crs] and [crsLogic] to give hints (like axis order, and whether x
+  /// and y must be swapped when read in) about coordinate reference system in
+  /// text input.
   factory MultiLineString.parseCoords(
     String coordinates, {
     CoordRefSys? crs,
+    GeoRepresentation? crsLogic,
   }) {
     final array = json.decode('[$coordinates]') as List<dynamic>;
     if (array.isEmpty) {
@@ -149,7 +152,11 @@ class MultiLineString extends SimpleGeometry {
     }
     final coordType = resolveCoordType(array, positionLevel: 2);
     return MultiLineString.build(
-      createFlatPositionArrayArrayDouble(array, coordType, crs),
+      createFlatPositionArrayArrayDouble(
+        array,
+        coordType,
+        swapXY: crs?.swapXY(logic: crsLogic) ?? false,
+      ),
       type: coordType,
     );
   }

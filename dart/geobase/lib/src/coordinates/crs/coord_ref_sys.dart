@@ -9,6 +9,7 @@
 import 'package:meta/meta.dart';
 
 import '/src/codes/axis_order.dart';
+import '/src/codes/geo_representation.dart';
 
 import 'coord_ref_sys_resolver.dart';
 
@@ -78,20 +79,22 @@ class CoordRefSys {
   bool isGeographic({bool? wgs84, AxisOrder? order}) =>
       CoordRefSysResolver.registry.isGeographic(id, wgs84: wgs84, order: order);
 
-  /// Try to resolve an axis order of coordinate values in position and point
-  /// representations for this coordinate reference system identified and
-  /// specified by [id].
+  /// Try to resolve the axis order (as a CRS authority has specified it) of
+  /// coordinate values in position and point representations for this
+  /// coordinate reference system identified by [id].
   ///
   /// The `null` return value is interpreted as "the axis order is not known".
   AxisOrder? get axisOrder => CoordRefSysResolver.registry.axisOrder(id);
 
-  /// Whether x and y coordinates read from external data containing coordinates
-  /// according to this coordinate reference system should be swapped before
-  /// storing to the internal representation of coordinates in this package.
+  /// Whether x and y coordinates read from (or written to) external data
+  /// representation should be swapped for the coordinate reference system
+  /// identified by [id] before using in internal data structures of this
+  /// package.
   ///
-  /// The default implementation returns true if an optional [axisOrder] equals
-  /// to `AxisOrder.yx`.
-  bool get swapXY => axisOrder == AxisOrder.yx;
+  /// Use [logic] to give general guidelines how a result is to be resolved.
+  /// When not given `GeoRepresentation.crsAuthority` is used as a default.
+  bool swapXY({GeoRepresentation? logic}) =>
+      CoordRefSysResolver.registry.swapXY(id, logic: logic);
 
   /// Returns an EPSG identifier according to the common `EPSG:{code}` template
   /// for [id] if the coordinate reference system is recognized by the

@@ -12,8 +12,14 @@ class _GeoJsonGeometryTextDecoder implements ContentDecoder {
   final GeometryContent builder;
   final CoordRefSys? crs;
   final Map<String, dynamic>? options;
+  final GeoJsonConf? conf;
 
-  _GeoJsonGeometryTextDecoder(this.builder, {this.crs, this.options});
+  _GeoJsonGeometryTextDecoder(
+    this.builder, {
+    this.crs,
+    this.options,
+    this.conf,
+  });
 
   @override
   void decodeBytes(Uint8List source) => decodeText(utf8.decode(source));
@@ -27,8 +33,11 @@ class _GeoJsonGeometryTextDecoder implements ContentDecoder {
       // expect source as an object tree (JSON Object)
       final root = source as Map<String, dynamic>;
 
+      // swap x and y if CRS has y-x (lat-lon) order (and logic is auth based)
+      final swapXY = crs?.swapXY(logic: conf?.crsLogic) ?? false;
+
       // decode the geometry object at root
-      _decodeGeometry(root, builder, crs);
+      _decodeGeometry(root, builder, swapXY);
     } on FormatException {
       rethrow;
     } catch (err) {
@@ -43,8 +52,14 @@ class _GeoJsonFeatureTextDecoder implements ContentDecoder {
   final FeatureContent builder;
   final CoordRefSys? crs;
   final Map<String, dynamic>? options;
+  final GeoJsonConf? conf;
 
-  _GeoJsonFeatureTextDecoder(this.builder, {this.crs, this.options});
+  _GeoJsonFeatureTextDecoder(
+    this.builder, {
+    this.crs,
+    this.options,
+    this.conf,
+  });
 
   @override
   void decodeBytes(Uint8List source) => decodeText(utf8.decode(source));
@@ -58,10 +73,13 @@ class _GeoJsonFeatureTextDecoder implements ContentDecoder {
       // expect source as an object tree (JSON Object)
       final root = source as Map<String, dynamic>;
 
+      // swap x and y if CRS has y-x (lat-lon) order (and logic is auth based)
+      final swapXY = crs?.swapXY(logic: conf?.crsLogic) ?? false;
+
       // check for GeoJSON types and decode as supported types found
       switch (root['type']) {
         case 'Feature':
-          _decodeFeature(root, builder, crs);
+          _decodeFeature(root, builder, swapXY);
           return;
         case 'FeatureCollection':
           final opt = options;
@@ -70,7 +88,7 @@ class _GeoJsonFeatureTextDecoder implements ContentDecoder {
           _decodeFeatureCollection(
             root,
             builder,
-            crs,
+            swapXY,
             itemOffset: itemOffset,
             itemLimit: itemLimit,
           );
@@ -91,7 +109,7 @@ class _GeoJsonFeatureTextDecoder implements ContentDecoder {
 void _decodeGeometry(
   Map<String, dynamic> geometry,
   GeometryContent builder,
-  CoordRefSys? crs,
+  bool swapXY,
 ) {
   // NOTE : coord type from conf
   // NOTE: read custom or foreign members
@@ -99,7 +117,8 @@ void _decodeGeometry(
   // check for GeoJSON types and decode as supported types found
   switch (geometry['type']) {
     case 'Point':
-      final pos = requirePositionDouble(geometry['coordinates'], crs);
+      final pos =
+          requirePositionDouble(geometry['coordinates'], swapXY: swapXY);
       if (pos.isEmpty) {
         builder.emptyGeometry(Geom.point);
       } else {
@@ -115,9 +134,9 @@ void _decodeGeometry(
         final coordType = resolveCoordType(array, positionLevel: 1);
         // NOTE: validate line string (at least two points)
         builder.lineString(
-          createFlatPositionArrayDouble(array, coordType, crs),
+          createFlatPositionArrayDouble(array, coordType, swapXY: swapXY),
           type: coordType,
-          bounds: _getBboxOpt(geometry, crs),
+          bounds: _getBboxOpt(geometry, swapXY),
         );
       }
       break;
@@ -129,14 +148,17 @@ void _decodeGeometry(
         final coordType = resolveCoordType(array, positionLevel: 2);
         // NOTE: validate polygon (at least one ring)
         builder.polygon(
-          createFlatPositionArrayArrayDouble(array, coordType, crs),
+          createFlatPositionArrayArrayDouble(array, coordType, swapXY: swapXY),
           type: coordType,
-          bounds: _getBboxOpt(geometry, crs),
+          bounds: _getBboxOpt(geometry, swapXY),
         );
       }
       break;
     case 'MultiPoint':
-      final array = requirePositionArrayDouble(geometry['coordinates'], crs);
+      final array = requirePositionArrayDouble(
+        geometry['coordinates'],
+        swapXY: swapXY,
+      );
       if (array.isEmpty) {
         builder.emptyGeometry(Geom.multiPoint);
       } else {
@@ -144,7 +166,7 @@ void _decodeGeometry(
         builder.multiPoint(
           array,
           type: coordType,
-          bounds: _getBboxOpt(geometry, crs),
+          bounds: _getBboxOpt(geometry, swapXY),
         );
       }
       break;
@@ -155,9 +177,9 @@ void _decodeGeometry(
       } else {
         final coordType = resolveCoordType(array, positionLevel: 2);
         builder.multiLineString(
-          createFlatPositionArrayArrayDouble(array, coordType, crs),
+          createFlatPositionArrayArrayDouble(array, coordType, swapXY: swapXY),
           type: coordType,
-          bounds: _getBboxOpt(geometry, crs),
+          bounds: _getBboxOpt(geometry, swapXY),
         );
       }
       break;
@@ -168,9 +190,13 @@ void _decodeGeometry(
       } else {
         final coordType = resolveCoordType(array, positionLevel: 3);
         builder.multiPolygon(
-          createFlatPositionArrayArrayArrayDouble(array, coordType, crs),
+          createFlatPositionArrayArrayArrayDouble(
+            array,
+            coordType,
+            swapXY: swapXY,
+          ),
           type: coordType,
-          bounds: _getBboxOpt(geometry, crs),
+          bounds: _getBboxOpt(geometry, swapXY),
         );
       }
       break;
@@ -185,12 +211,12 @@ void _decodeGeometry(
               _decodeGeometry(
                 geometry as Map<String, dynamic>,
                 geometryBuilder,
-                crs,
+                swapXY,
               );
             }
           },
           count: geometries.length,
-          bounds: _getBboxOpt(geometry, crs),
+          bounds: _getBboxOpt(geometry, swapXY),
         );
       }
       break;
@@ -202,7 +228,7 @@ void _decodeGeometry(
 void _decodeFeature(
   Map<String, dynamic> feature,
   FeatureContent builder,
-  CoordRefSys? crs,
+  bool swapXY,
 ) {
   // feature has an optional primary geometry in "geometry" field
   final geom = feature['geometry'] as Map<String, dynamic>?;
@@ -215,16 +241,16 @@ void _decodeFeature(
     id: _optStringOrNumber(feature['id']),
     properties: feature['properties'] as Map<String, dynamic>?,
     geometry: geom != null
-        ? (geometryBuilder) => _decodeGeometry(geom, geometryBuilder, crs)
+        ? (geometryBuilder) => _decodeGeometry(geom, geometryBuilder, swapXY)
         : null,
-    bounds: _getBboxOpt(feature, crs),
+    bounds: _getBboxOpt(feature, swapXY),
   );
 }
 
 void _decodeFeatureCollection(
   Map<String, dynamic> collection,
   FeatureContent builder,
-  CoordRefSys? crs, {
+  bool swapXY, {
   int? itemOffset,
   int? itemLimit,
 }) {
@@ -252,12 +278,12 @@ void _decodeFeatureCollection(
           _decodeFeature(
             feature as Map<String, dynamic>,
             featureBuilder,
-            crs,
+            swapXY,
           );
         }
       },
       count: count,
-      bounds: _getBboxOpt(collection, crs),
+      bounds: _getBboxOpt(collection, swapXY),
     );
   } else {
     // all feature items on a collection are requested
@@ -267,22 +293,19 @@ void _decodeFeatureCollection(
           _decodeFeature(
             feature as Map<String, dynamic>,
             featureBuilder,
-            crs,
+            swapXY,
           );
         }
       },
       count: features.length,
-      bounds: _getBboxOpt(collection, crs),
+      bounds: _getBboxOpt(collection, swapXY),
     );
   }
 }
 
-List<double>? _getBboxOpt(Map<String, dynamic> object, CoordRefSys? crs) {
+List<double>? _getBboxOpt(Map<String, dynamic> object, bool swapXY) {
   final data = object['bbox'];
   if (data == null) return null;
-
-  // swap x and y if coordinate reference system has y-x (lat-lon) order
-  final swapXY = crs?.swapXY ?? false;
 
   // expect source to be list
   final source = data as List<dynamic>;

@@ -8,6 +8,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import '/src/codes/coords.dart';
+import '/src/codes/geo_representation.dart';
 import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/box.dart';
@@ -115,14 +116,18 @@ class MultiPoint extends SimpleGeometry {
   /// Parses a multi point geometry from [coordinates] conforming to
   /// [DefaultFormat].
   ///
-  /// Use [crs] to give hints (like axis order, and whether x and y must
-  /// be swapped when read in) about coordinate reference system in text input.
+  /// Use [crs] and [crsLogic] to give hints (like axis order, and whether x
+  /// and y must be swapped when read in) about coordinate reference system in
+  /// text input.
   factory MultiPoint.parseCoords(
     String coordinates, {
     CoordRefSys? crs,
+    GeoRepresentation? crsLogic,
   }) {
-    final array =
-        requirePositionArrayDouble(json.decode('[$coordinates]'), crs);
+    final array = requirePositionArrayDouble(
+      json.decode('[$coordinates]'),
+      swapXY: crs?.swapXY(logic: crsLogic) ?? false,
+    );
     if (array.isEmpty) {
       return MultiPoint.build(const []);
     }

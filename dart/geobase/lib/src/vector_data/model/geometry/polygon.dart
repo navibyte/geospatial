@@ -8,6 +8,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import '/src/codes/coords.dart';
+import '/src/codes/geo_representation.dart';
 import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/box.dart';
@@ -162,11 +163,13 @@ class Polygon extends SimpleGeometry {
   /// Parses a polygon geometry from [coordinates] conforming to
   /// [DefaultFormat].
   ///
-  /// Use [crs] to give hints (like axis order, and whether x and y must
-  /// be swapped when read in) about coordinate reference system in text input.
+  /// Use [crs] and [crsLogic] to give hints (like axis order, and whether x
+  /// and y must be swapped when read in) about coordinate reference system in
+  /// text input.
   factory Polygon.parseCoords(
     String coordinates, {
     CoordRefSys? crs,
+    GeoRepresentation? crsLogic,
   }) {
     final array = json.decode('[$coordinates]') as List<dynamic>;
     if (array.isEmpty) {
@@ -174,7 +177,11 @@ class Polygon extends SimpleGeometry {
     }
     final coordType = resolveCoordType(array, positionLevel: 2);
     return Polygon.build(
-      createFlatPositionArrayArrayDouble(array, coordType, crs),
+      createFlatPositionArrayArrayDouble(
+        array,
+        coordType,
+        swapXY: crs?.swapXY(logic: crsLogic) ?? false,
+      ),
       type: coordType,
     );
   }

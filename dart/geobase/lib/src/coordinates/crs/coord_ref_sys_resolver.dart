@@ -5,6 +5,7 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import '/src/codes/axis_order.dart';
+import '/src/codes/geo_representation.dart';
 
 /// An abstract class for resolving coordinate reference system information.
 ///
@@ -39,14 +40,28 @@ abstract class CoordRefSysResolver {
   /// that geographic coordinates are based on the WGS 84 datum.
   bool isGeographic(String id, {bool? wgs84, AxisOrder? order});
 
-  /// Try to resolve an axis order of coordinate values in position and point
-  /// representations for this coordinate reference system identified and
-  /// specified by [id].
+  /// Try to resolve the axis order (as a CRS authority has specified it) of
+  /// coordinate values in position and point representations for this
+  /// coordinate reference system identified by [id].
   ///
   /// The `null` return value is interpreted as "the axis order is not known".
   ///
   /// The axis order logic depends on the resolver of [registry].
   AxisOrder? axisOrder(String id);
+
+  /// Whether x and y coordinates read from (or written to) external data
+  /// representation should be swapped for the coordinate reference system
+  /// identified by [id] before using in internal data structures of this
+  /// package.
+  ///
+  /// Use [logic] to give general guidelines how a result is to be resolved.
+  /// When not given `GeoRepresentation.crsAuthority` is used as a default.
+  ///
+  /// The default implementation (when
+  /// `logic == GeoRepresentation.crsAuthority`) returns true if
+  /// `axisOrder(id) == AxisOrder.yx`. This logic can be changed by custom
+  /// implementations.
+  bool swapXY(String id, {GeoRepresentation? logic});
 
   /// Returns an EPSG identifier according to the common `EPSG:{code}` template
   /// for [id] if the coordinate reference system is recognized by the
@@ -159,6 +174,21 @@ class _BasicCoordRefSysRegistry implements CoordRefSysResolver {
         return AxisOrder.xy;
     }
     return null; // do not know
+  }
+
+  @override
+  bool swapXY(String id, {GeoRepresentation? logic}) {
+    switch (logic ?? GeoRepresentation.crsAuthority) {
+      case GeoRepresentation.crsAuthority:
+        // external geospatial data (like GeoJSON) in axis order specified by
+        // authority => swap when external data in lat-lon or northing-easting
+        // order
+        return axisOrder(id) == AxisOrder.yx;
+      case GeoRepresentation.geoJsonStrict:
+        // external GeoJSON data always in lon-lat or easting-northing order
+        // => no need to swap
+        return false;
+    }
   }
 
   @override

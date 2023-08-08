@@ -359,7 +359,17 @@ The following example demonstrates these capabilities (see the full sample at
   // create an OGC API Features client for the open ldproxy demo service
   // (see https://demo.ldproxy.net/zoomstack for more info)
   final client = OGCAPIFeatures.http(
+    // an URI to the landing page of the service
     endpoint: Uri.parse('https://demo.ldproxy.net/zoomstack'),
+
+    // customize GeoJSON format
+    format: GeoJSON.featureFormat(
+      conf: const GeoJsonConf(
+        // specify that CRS authorities should be respected for axis order in
+        // GeoJSON data (actually this is the default - here for demonstration)
+        crsLogic: GeoRepresentation.crsAuthority,
+      ),
+    ),
   );
 
   // get service description and attribution info

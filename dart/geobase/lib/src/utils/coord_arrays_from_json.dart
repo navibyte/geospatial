@@ -5,17 +5,13 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import '/src/codes/coords.dart';
-import '/src/coordinates/crs/coord_ref_sys.dart';
 
 import 'format_validation.dart';
 
 /// Utility to convert expected `List<dynamic> data to `List<double>`.
 ///
-/// Swaps x and y for the result if `crs?.swapXY` is true.
-List<double> requirePositionDouble(dynamic data, CoordRefSys? crs) {
-  // swap x and y if coordinate reference system has y-x (lat-lon) order
-  final swapXY = crs?.swapXY ?? false;
-
+/// Swaps x and y for the result if `swapXY` is true.
+List<double> requirePositionDouble(dynamic data, {bool swapXY = false}) {
   // expect source to be list
   final source = data as List<dynamic>;
 
@@ -33,11 +29,14 @@ List<double> requirePositionDouble(dynamic data, CoordRefSys? crs) {
 
 /// Utility to convert expect `List<dynamic> data to `List<List<double>>`.
 ///
-/// Swaps x and y for the result if `crs?.swapXY` is true.
-List<List<double>> requirePositionArrayDouble(dynamic data, CoordRefSys? crs) =>
+/// Swaps x and y for the result if `swapXY` is true.
+List<List<double>> requirePositionArrayDouble(
+  dynamic data, {
+  bool swapXY = false,
+}) =>
     (data as List<dynamic>)
         .map<List<double>>(
-          (pos) => requirePositionDouble(pos, crs),
+          (pos) => requirePositionDouble(pos, swapXY: swapXY),
         )
         .toList(growable: false);
 
@@ -62,18 +61,15 @@ Coords resolveCoordType(List<dynamic> array, {required int positionLevel}) {
 
 /// Utility to create flat `List<double>` (1 dim) from `List<dynamic>`(2 dims).
 ///
-/// Swaps x and y for the result if `crs?.swapXY` is true.
+/// Swaps x and y for the result if `swapXY` is true.
 List<double> createFlatPositionArrayDouble(
   List<dynamic> source,
-  Coords coordType,
-  CoordRefSys? crs,
-) {
+  Coords coordType, {
+  bool swapXY = false,
+}) {
   if (source.isEmpty) {
     return List<double>.empty();
   }
-
-  // swap x and y if coordinate reference system has y-x (lat-lon) order
-  final swapXY = crs?.swapXY ?? false;
 
   final dim = coordType.coordinateDimension;
   final positionCount = source.length;
@@ -109,12 +105,12 @@ List<double> createFlatPositionArrayDouble(
 /// Utility to create flat `List<List<double>>` (2 dims) from
 /// `List<dynamic>`(3 dims).
 ///
-/// Swaps x and y for the result if `crs?.swapXY` is true.
+/// Swaps x and y for the result if `swapXY` is true.
 List<List<double>> createFlatPositionArrayArrayDouble(
   List<dynamic> source,
-  Coords coordType,
-  CoordRefSys? crs,
-) =>
+  Coords coordType, {
+  bool swapXY = false,
+}) =>
     source.isEmpty
         ? List<List<double>>.empty()
         : source
@@ -122,7 +118,7 @@ List<List<double>> createFlatPositionArrayArrayDouble(
               (e) => createFlatPositionArrayDouble(
                 e as List<dynamic>,
                 coordType,
-                crs,
+                swapXY: swapXY,
               ),
             )
             .toList(growable: false);
@@ -130,12 +126,12 @@ List<List<double>> createFlatPositionArrayArrayDouble(
 /// Utility to create flat `List<List<List<double>>>` (3 dims) from
 /// `List<dynamic>`(4 dims).
 ///
-/// Swaps x and y for the result if `crs?.swapXY` is true.
+/// Swaps x and y for the result if `swapXY` is true.
 List<List<List<double>>> createFlatPositionArrayArrayArrayDouble(
   List<dynamic> source,
-  Coords coordType,
-  CoordRefSys? crs,
-) =>
+  Coords coordType, {
+  bool swapXY = false,
+}) =>
     source.isEmpty
         ? List<List<List<double>>>.empty()
         : source
@@ -143,7 +139,7 @@ List<List<List<double>>> createFlatPositionArrayArrayArrayDouble(
               (e) => createFlatPositionArrayArrayDouble(
                 e as List<dynamic>,
                 coordType,
-                crs,
+                swapXY: swapXY,
               ),
             )
             .toList(growable: false);

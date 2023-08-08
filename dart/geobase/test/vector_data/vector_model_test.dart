@@ -531,6 +531,42 @@ void main() {
       );
     });
 
+    test('Simple geometries with crs geo representation logic', () {
+      final geoJsonAuth = GeoJSON.geometryFormat();
+      final geoJsonLonLatAlways = GeoJSON.geometryFormat(
+        conf: const GeoJsonConf(crsLogic: GeoRepresentation.geoJsonStrict),
+      );
+      const crsLonLatOrder = CoordRefSys.CRS84;
+      const crsLatLonOrder = CoordRefSys.EPSG_4326;
+
+      expect(
+        Point.parse(point, format: geoJsonAuth, crs: crsLonLatOrder)
+            .toText(format: geoJsonAuth, crs: crsLonLatOrder),
+        point,
+      );
+      expect(
+        Point.parse(pointYX, format: geoJsonAuth, crs: crsLatLonOrder)
+            .toText(format: geoJsonAuth, crs: crsLatLonOrder),
+        pointYX,
+      );
+
+      expect(
+        Point.parse(point, format: geoJsonLonLatAlways, crs: crsLonLatOrder)
+            .toText(format: geoJsonLonLatAlways, crs: crsLonLatOrder),
+        point,
+      );
+      expect(
+        Point.parse(point, format: geoJsonLonLatAlways, crs: crsLatLonOrder)
+            .toText(format: geoJsonLonLatAlways, crs: crsLatLonOrder),
+        point,
+      );
+      expect(
+        Point.parse(pointYX, format: geoJsonAuth, crs: crsLatLonOrder)
+            .toText(format: geoJsonLonLatAlways, crs: crsLatLonOrder),
+        point,
+      );
+    });
+
     test('Simple geometries with crs with AxisOrder.yx input', () {
       const crsDataList = [
         [CoordRefSys.CRS84, AxisOrder.xy],

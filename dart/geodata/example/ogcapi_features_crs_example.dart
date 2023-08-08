@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, avoid_redundant_argument_values
 
 /*
 To test run this from command line: 
@@ -12,6 +12,7 @@ To test run this from command line:
 */
 
 import 'package:geobase/coordinates.dart';
+import 'package:geobase/vector.dart';
 import 'package:geobase/vector_data.dart';
 import 'package:geodata/ogcapi_features_client.dart';
 
@@ -29,7 +30,17 @@ Future<void> main(List<String> args) async {
   // create an OGC API Features client for the open ldproxy demo service
   // (see https://demo.ldproxy.net/zoomstack for more info)
   final client = OGCAPIFeatures.http(
+    // an URI to the landing page of the service
     endpoint: Uri.parse('https://demo.ldproxy.net/zoomstack'),
+
+    // customize GeoJSON format
+    format: GeoJSON.featureFormat(
+      conf: const GeoJsonConf(
+        // specify that CRS authorities should be respected for axis order in
+        // GeoJSON data (actually this is the default - here for demonstration)
+        crsLogic: GeoRepresentation.crsAuthority,
+      ),
+    ),
   );
 
   // get service description and attribution info
