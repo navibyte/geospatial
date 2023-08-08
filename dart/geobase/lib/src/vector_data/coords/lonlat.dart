@@ -22,12 +22,14 @@ import '/src/vector_data/array/coordinates.dart';
 /// `Iterable<double>` with exactly 2 items.
 ///
 /// See [Geographic] for description about supported coordinate values.
+@Deprecated('Use Geographic or ListCoordinateExtension instead.')
 @immutable
 class LonLat extends PositionCoords implements Geographic {
   /// A geographic position as an iterable collection of [lon] and [lat] values.
   ///
   /// Longitude is normalized using `wrapLongitude` and latitude is clipped
   /// using `clipLatitude` before storing values.
+  @Deprecated('Use Geographic or ListCoordinateExtension instead.')
   factory LonLat(double lon, double lat) {
     // create a fixed list of 2 items
     final list = List<double>.filled(2, 0);
@@ -44,8 +46,15 @@ class LonLat extends PositionCoords implements Geographic {
   /// Parameters `z` and `m` are ignored.
   ///
   /// This factory is compatible with `CreatePosition` function type.
-  // ignore: avoid_unused_constructor_parameters
-  factory LonLat.create({required num x, required num y, num? z, num? m}) =>
+  @Deprecated('Use Geographic or ListCoordinateExtension instead.')
+  factory LonLat.create({
+    required num x,
+    required num y,
+    // ignore: avoid_unused_constructor_parameters
+    num? z,
+    // ignore: avoid_unused_constructor_parameters
+    num? m,
+  }) =>
       LonLat(
         x.toDouble(),
         y.toDouble(),
@@ -56,10 +65,12 @@ class LonLat extends PositionCoords implements Geographic {
   /// The `source` collection must have exactly 2 coordinate values and it may
   /// be represented by a [List] or any [Iterable] with efficient `length` and
   /// `elementAt` implementations.
+  @Deprecated('Use Geographic or ListCoordinateExtension instead.')
   const LonLat.view(super.source)
       : assert(source.length == 2, 'LonLat must have exactly 2 values'),
         super();
 
+  @Deprecated('Use Geographic or ListCoordinateExtension instead.')
   const LonLat._(super.source) : super();
 
   /// Parses a geographic position as an iterable collection from [text].
@@ -67,6 +78,7 @@ class LonLat extends PositionCoords implements Geographic {
   /// Coordinate values (lon, lat) in [text] are separated by [delimiter].
   ///
   /// Throws FormatException if coordinates are invalid.
+  @Deprecated('Use Geographic or ListCoordinateExtension instead.')
   factory LonLat.parse(
     String text, {
     Pattern? delimiter = ',',
@@ -186,12 +198,14 @@ class LonLat extends PositionCoords implements Geographic {
 /// `Iterable<double>` with exactly 3 items.
 ///
 /// See [Geographic] for description about supported coordinate values.
+@Deprecated('Use Geographic or ListCoordinateExtension instead.')
 class LonLatElev extends LonLat {
   /// A geographic position as an iterable collection of [lon], [lat] and [elev]
   /// values.
   ///
   /// Longitude is normalized using `wrapLongitude` and latitude is clipped
   /// using `clipLatitude` before storing values.
+  @Deprecated('Use Geographic or ListCoordinateExtension instead.')
   factory LonLatElev(double lon, double lat, double elev) {
     // create a fixed list of 3 items
     final list = List<double>.filled(3, 0);
@@ -212,8 +226,15 @@ class LonLatElev extends LonLat {
   /// The parameter `m` is ignored.
   ///
   /// This factory is compatible with `CreatePosition` function type.
-  // ignore: avoid_unused_constructor_parameters
-  factory LonLatElev.create({required num x, required num y, num? z, num? m}) =>
+  @Deprecated('Use Geographic or ListCoordinateExtension instead.')
+  factory LonLatElev.create({
+    required num x,
+    required num y,
+    // ignore: avoid_unused_constructor_parameters
+    num? z,
+    // ignore: avoid_unused_constructor_parameters
+    num? m,
+  }) =>
       LonLatElev(
         x.toDouble(),
         y.toDouble(),
@@ -226,10 +247,12 @@ class LonLatElev extends LonLat {
   /// The `source` collection must have exactly 3 coordinate values and it may
   /// be represented by a [List] or any [Iterable] with efficient `length` and
   /// `elementAt` implementations.
+  @Deprecated('Use Geographic or ListCoordinateExtension instead.')
   const LonLatElev.view(super.source)
       : assert(source.length == 3, 'LonLatElev must have exactly 3 values'),
         super._();
 
+  @Deprecated('Use Geographic or ListCoordinateExtension instead.')
   const LonLatElev._(super.source) : super._();
 
   /// Parses a geographic position as an iterable collection from [text].
@@ -237,6 +260,7 @@ class LonLatElev extends LonLat {
   /// Coordinate values (lon, lat, elev) in [text] are separated by [delimiter].
   ///
   /// Throws FormatException if coordinates are invalid.
+  @Deprecated('Use Geographic or ListCoordinateExtension instead.')
   factory LonLatElev.parse(
     String text, {
     Pattern? delimiter = ',',
@@ -288,12 +312,14 @@ class LonLatElev extends LonLat {
 /// `Iterable<double>` with exactly 3 items.
 ///
 /// See [Geographic] for description about supported coordinate values.
+@Deprecated('Use Geographic or ListCoordinateExtension instead.')
 class LonLatM extends LonLat {
   /// A geographic position as an iterable collection of [lon], [lat] and [m]
   /// values.
   ///
   /// Longitude is normalized using `wrapLongitude` and latitude is clipped
   /// using `clipLatitude` before storing values.
+  @Deprecated('Use Geographic or ListCoordinateExtension instead.')
   factory LonLatM(double lon, double lat, double m) {
     // create a fixed list of 3 items
     final list = List<double>.filled(3, 0);
@@ -313,8 +339,14 @@ class LonLatM extends LonLat {
   /// The parameter `z` is ignored.
   ///
   /// This factory is compatible with `CreatePosition` function type.
-  // ignore: avoid_unused_constructor_parameters
-  factory LonLatM.create({required num x, required num y, num? z, num? m}) =>
+  @Deprecated('Use Geographic or ListCoordinateExtension instead.')
+  factory LonLatM.create({
+    required num x,
+    required num y,
+    // ignore: avoid_unused_constructor_parameters
+    num? z,
+    num? m,
+  }) =>
       LonLatM(
         x.toDouble(),
         y.toDouble(),
@@ -326,6 +358,7 @@ class LonLatM extends LonLat {
   /// The `source` collection must have exactly 3 coordinate values and it may
   /// be represented by a [List] or any [Iterable] with efficient `length` and
   /// `elementAt` implementations.
+  @Deprecated('Use Geographic or ListCoordinateExtension instead.')
   const LonLatM.view(super.source)
       : assert(source.length == 3, 'LonLatM must have exactly 3 values'),
         super._();
@@ -335,6 +368,7 @@ class LonLatM extends LonLat {
   /// Coordinate values (lon, lat, m) in [text] are separated by [delimiter].
   ///
   /// Throws FormatException if coordinates are invalid.
+  @Deprecated('Use Geographic or ListCoordinateExtension instead.')
   factory LonLatM.parse(
     String text, {
     Pattern? delimiter = ',',
@@ -384,12 +418,14 @@ class LonLatM extends LonLat {
 /// `Iterable<double>` with exactly 4 items.
 ///
 /// See [Geographic] for description about supported coordinate values.
+@Deprecated('Use Geographic or ListCoordinateExtension instead.')
 class LonLatElevM extends LonLatElev {
   /// A geographic position as an iterable collection of [lon], [lat], [elev]
   /// and [m] values.
   ///
   /// Longitude is normalized using `wrapLongitude` and latitude is clipped
   /// using `clipLatitude` before storing values.
+  @Deprecated('Use Geographic or ListCoordinateExtension instead.')
   factory LonLatElevM(double lon, double lat, double elev, double m) {
     // create a fixed list of 4 items
     final list = List<double>.filled(4, 0);
@@ -409,6 +445,7 @@ class LonLatElevM extends LonLatElev {
   /// The default value for `elev` and `m` is `0.0`.
   ///
   /// This factory is compatible with `CreatePosition` function type.
+  @Deprecated('Use Geographic or ListCoordinateExtension instead.')
   factory LonLatElevM.create({
     required num x,
     required num y,
@@ -428,6 +465,7 @@ class LonLatElevM extends LonLatElev {
   /// The `source` collection must have exactly 4 coordinate values and it may
   /// be represented by a [List] or any [Iterable] with efficient `length` and
   /// `elementAt` implementations.
+  @Deprecated('Use Geographic or ListCoordinateExtension instead.')
   const LonLatElevM.view(super.source)
       : assert(source.length == 4, 'LonLatElevM must have exactly 4 values'),
         super._();
@@ -438,6 +476,7 @@ class LonLatElevM extends LonLatElev {
   /// [delimiter].
   ///
   /// Throws FormatException if coordinates are invalid.
+  @Deprecated('Use Geographic or ListCoordinateExtension instead.')
   factory LonLatElevM.parse(
     String text, {
     Pattern? delimiter = ',',

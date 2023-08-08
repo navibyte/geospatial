@@ -20,9 +20,11 @@ import '/src/vector_data/array/coordinates.dart';
 /// `Iterable<double>` with exactly 2 items.
 ///
 /// See [Projected] for description about supported coordinate values.
+@Deprecated('Use Projected or ListCoordinateExtension instead.')
 @immutable
 class XY extends PositionCoords implements Projected {
   /// A projected position as an iterable collection of [x] and [y] values.
+  @Deprecated('Use Projected or ListCoordinateExtension instead.')
   factory XY(double x, double y) {
     // create a fixed list of 2 items
     final list = List<double>.filled(2, 0);
@@ -34,8 +36,16 @@ class XY extends PositionCoords implements Projected {
   /// A projected position as an iterable collection of [x] and [y] values.
   ///
   /// This factory is compatible with `CreatePosition` function type.
-  // ignore: avoid_unused_constructor_parameters
-  factory XY.create({required num x, required num y, num? z, num? m}) => XY(
+  @Deprecated('Use Projected or ListCoordinateExtension instead.')
+  factory XY.create({
+    required num x,
+    required num y,
+    // ignore: avoid_unused_constructor_parameters
+    num? z,
+    // ignore: avoid_unused_constructor_parameters
+    num? m,
+  }) =>
+      XY(
         x.toDouble(),
         y.toDouble(),
       );
@@ -45,10 +55,12 @@ class XY extends PositionCoords implements Projected {
   /// The `source` collection must have exactly 2 coordinate values and it may
   /// be represented by a [List] or any [Iterable] with efficient `length` and
   /// `elementAt` implementations.
+  @Deprecated('Use Projected or ListCoordinateExtension instead.')
   const XY.view(super.source)
       : assert(source.length == 2, 'XY must have exactly 2 values'),
         super();
 
+  @Deprecated('Use Projected or ListCoordinateExtension instead.')
   const XY._(super.source) : super();
 
   /// Parses a projected position as an iterable collection from [text].
@@ -56,6 +68,7 @@ class XY extends PositionCoords implements Projected {
   /// Coordinate values (x, y) in [text] are separated by [delimiter].
   ///
   /// Throws FormatException if coordinates are invalid.
+  @Deprecated('Use Projected or ListCoordinateExtension instead.')
   factory XY.parse(
     String text, {
     Pattern? delimiter = ',',
@@ -134,8 +147,10 @@ class XY extends PositionCoords implements Projected {
 /// `Iterable<double>` with exactly 3 items.
 ///
 /// See [Projected] for description about supported coordinate values.
+@Deprecated('Use Projected or ListCoordinateExtension instead.')
 class XYZ extends XY {
   /// A projected position as an iterable collection of [x], [y] and [z] values.
+  @Deprecated('Use Projected or ListCoordinateExtension instead.')
   factory XYZ(double x, double y, double z) {
     // create a fixed list of 3 items
     final list = List<double>.filled(3, 0);
@@ -151,7 +166,15 @@ class XYZ extends XY {
   ///
   /// This factory is compatible with `CreatePosition` function type.
   // ignore: avoid_unused_constructor_parameters
-  factory XYZ.create({required num x, required num y, num? z, num? m}) => XYZ(
+  @Deprecated('Use Projected or ListCoordinateExtension instead.')
+  factory XYZ.create({
+    required num x,
+    required num y,
+    num? z,
+    // ignore: avoid_unused_constructor_parameters
+    num? m,
+  }) =>
+      XYZ(
         x.toDouble(),
         y.toDouble(),
         z?.toDouble() ?? 0.0,
@@ -162,10 +185,12 @@ class XYZ extends XY {
   /// The `source` collection must have exactly 3 coordinate values and it may
   /// be represented by a [List] or any [Iterable] with efficient `length` and
   /// `elementAt` implementations.
+  @Deprecated('Use Projected or ListCoordinateExtension instead.')
   const XYZ.view(super.source)
       : assert(source.length == 3, 'XYZ must have exactly 3 values'),
         super._();
 
+  @Deprecated('Use Projected or ListCoordinateExtension instead.')
   const XYZ._(super.source) : super._();
 
   /// Parses a projected position as an iterable collection from [text].
@@ -173,6 +198,7 @@ class XYZ extends XY {
   /// Coordinate values (x, y, z) in [text] are separated by [delimiter].
   ///
   /// Throws FormatException if coordinates are invalid.
+  @Deprecated('Use Projected or ListCoordinateExtension instead.')
   factory XYZ.parse(
     String text, {
     Pattern? delimiter = ',',
@@ -224,8 +250,10 @@ class XYZ extends XY {
 /// `Iterable<double>` with exactly 3 items.
 ///
 /// See [Projected] for description about supported coordinate values.
+@Deprecated('Use Projected or ListCoordinateExtension instead.')
 class XYM extends XY {
   /// A projected position as an iterable collection of [x], [y] and [m] values.
+  @Deprecated('Use Projected or ListCoordinateExtension instead.')
   factory XYM(double x, double y, double m) {
     // create a fixed list of 3 items
     final list = List<double>.filled(3, 0);
@@ -241,7 +269,15 @@ class XYM extends XY {
   ///
   /// This factory is compatible with `CreatePosition` function type.
   // ignore: avoid_unused_constructor_parameters
-  factory XYM.create({required num x, required num y, num? z, num? m}) => XYM(
+  @Deprecated('Use Projected or ListCoordinateExtension instead.')
+  factory XYM.create({
+    required num x,
+    required num y,
+    // ignore: avoid_unused_constructor_parameters
+    num? z,
+    num? m,
+  }) =>
+      XYM(
         x.toDouble(),
         y.toDouble(),
         m?.toDouble() ?? 0.0,
@@ -252,6 +288,7 @@ class XYM extends XY {
   /// The `source` collection must have exactly 3 coordinate values and it may
   /// be represented by a [List] or any [Iterable] with efficient `length` and
   /// `elementAt` implementations.
+  @Deprecated('Use Projected or ListCoordinateExtension instead.')
   const XYM.view(super.source)
       : assert(source.length == 3, 'XYM must have exactly 3 values'),
         super._();
@@ -261,6 +298,7 @@ class XYM extends XY {
   /// Coordinate values (x, y, m) in [text] are separated by [delimiter].
   ///
   /// Throws FormatException if coordinates are invalid.
+  @Deprecated('Use Projected or ListCoordinateExtension instead.')
   factory XYM.parse(
     String text, {
     Pattern? delimiter = ',',
@@ -309,9 +347,11 @@ class XYM extends XY {
 /// `Iterable<double>` with exactly 4 items.
 ///
 /// See [Projected] for description about supported coordinate values.
+@Deprecated('Use Projected or ListCoordinateExtension instead.')
 class XYZM extends XYZ {
   /// A projected position as an iterable collection of [x], [y], [z] and [m]
   /// values.
+  @Deprecated('Use Projected or ListCoordinateExtension instead.')
   factory XYZM(double x, double y, double z, double m) {
     // create a fixed list of 4 items
     final list = List<double>.filled(4, 0);
@@ -328,6 +368,7 @@ class XYZM extends XYZ {
   /// The default value for [z] and [m] is `0.0`.
   ///
   /// This factory is compatible with `CreatePosition` function type.
+  @Deprecated('Use Projected or ListCoordinateExtension instead.')
   factory XYZM.create({required num x, required num y, num? z, num? m}) => XYZM(
         x.toDouble(),
         y.toDouble(),
@@ -340,6 +381,7 @@ class XYZM extends XYZ {
   /// The `source` collection must have exactly 4 coordinate values and it may
   /// be represented by a [List] or any [Iterable] with efficient `length` and
   /// `elementAt` implementations.
+  @Deprecated('Use Projected or ListCoordinateExtension instead.')
   const XYZM.view(super.source)
       : assert(source.length == 4, 'XYZM must have exactly 4 values'),
         super._();
@@ -349,6 +391,7 @@ class XYZM extends XYZ {
   /// Coordinate values (x, y, z, m) in [text] are separated by [delimiter].
   ///
   /// Throws FormatException if coordinates are invalid.
+  @Deprecated('Use Projected or ListCoordinateExtension instead.')
   factory XYZM.parse(
     String text, {
     Pattern? delimiter = ',',

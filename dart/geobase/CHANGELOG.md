@@ -19,6 +19,7 @@ NOTE: Version 0.5.0 currently [under development](https://github.com/navibyte/ge
 
 🛠 Refactoring:
 * [Enforce "geometry" under "Feature" when encoding GeoJSON text output #91](https://github.com/navibyte/geospatial/issues/91)
+* Deprecate XY, XYZ, XYM, XYZM, LonLat, LonLatElev, LonLatM, LonLatElevM special classes extending PositionCoords - to be removed for version 1.0 of the package.
 
 🐛 Bugs fixed:
 * [Clipping when projection WGS 84 to Web Mercator metric coordinates #123](https://github.com/navibyte/geospatial/issues/123)
