@@ -4,6 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import '/src/codes/coords.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/vector_data/array/coordinates.dart';
 
@@ -14,23 +15,50 @@ abstract class Bounded {
   /// A bounded object with an optional [bounds].
   const Bounded({BoxCoords? bounds}) : _bounds = bounds;
 
-  /// The bounding box for this object, if available.
+  /// Resolves the coordinate type for this bounded object.
   ///
-  /// Accessing this should never trigger extensive calculations.
+  /// Accessing this may need looping through sub items.
+  Coords resolveCoordType();
+
+  /// An optional bounding box explicitely set (or otherwise directly available)
+  /// for this object.
+  ///
+  /// Accessing this never triggers extensive calculations.
+  ///
+  /// To ensure bounds is populated [bounded] can be called returning
+  /// potentially a new object containing this property with a value.
   BoxCoords? get bounds => _bounds;
 
-/* 
-  /// The bounding box for this object (calculated if not available).
+  /// Calculate a bounding box for this object.
   ///
-  /// Please note that in some cases bounds could be pre-calculated but it's
-  /// possible that accessing this property may cause extensive calculations.
-  BoxCoords get requireBounds;
-*/
+  /// This method calculates a value regardless whether [bounds] is populated or
+  /// not.
+  ///
+  /// May return null if bounds cannot be calculated (for example in the case of
+  /// an empty geometry).
+  BoxCoords? calculateBounds();
+
+  /// Returns a bounded object with a bounding box populated in [bounds] (and
+  /// in any subitem bounding boxes too). Other properties are left intact.
+  ///
+  /// The returned subtype must be the same as the type of this.
+  ///
+  /// The [recalculate] parameter:
+  /// * false: `bounds` for a returned object is calculated if [bounds] is null
+  /// * true: `bounds` for a returned object is always recalculated
+  ///
+  /// When a calculated bounding box equals to the current bounds of this (or
+  /// bounds cannot be calculated), it's allowed for implementations to return
+  /// `this`.
+  ///
+  /// The `bounds` in returned bounded object may still be null, if bounds
+  /// cannot be calculated (for example in the case of an empty geometry).
+  Bounded bounded({bool recalculate = false});
 
   /// Returns a new bounded object with all geometries projected using
-  /// [projection].
+  /// [projection] and other properties left intact.
   ///
-  /// The returned sub type must be the same as the type of this.
+  /// The returned subtype must be the same as the type of this.
   ///
   /// Note that any available [bounds] object on this is not projected (that is
   /// the bounds for a returned object is null).

@@ -18,6 +18,8 @@ import '/src/vector_data/model/bounded/bounded.dart';
 
 /// A common base interface for geospatial feature objects (`Feature` and
 /// `FeatureCollection`).
+///
+/// Feature object classes (including all subtypes) are immutable.
 @immutable
 abstract class FeatureObject extends Bounded {
   /// A feature object with an optional [bounds].

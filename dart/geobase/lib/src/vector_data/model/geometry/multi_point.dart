@@ -15,6 +15,7 @@ import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/coordinates/projection/projection.dart';
+import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/coord_arrays_from_json.dart';
 import '/src/utils/tolerance.dart';
@@ -170,6 +171,32 @@ class MultiPoint extends SimpleGeometry {
 
   /// All points as a lazy iterable of [Point] geometries.
   Iterable<Point> get points => positions.map<Point>(Point.new);
+
+  @override
+  BoxCoords? calculateBounds() => BoundsBuilder.calculateBounds(
+        positions: _points,
+        type: coordType,
+      );
+
+  @override
+  MultiPoint bounded({bool recalculate = false}) {
+    if (isEmpty) return this;
+
+    if (recalculate || bounds == null) {
+      // return a new MultiPoint (positions kept intact) with populated bounds
+      return MultiPoint._(
+        _points,
+        type: _type,
+        bounds: BoundsBuilder.calculateBounds(
+          positions: _points,
+          type: coordType,
+        ),
+      );
+    } else {
+      // bounds was already populated and not asked to recalculate
+      return this;
+    }
+  }
 
   @override
   MultiPoint project(Projection projection) => MultiPoint._(

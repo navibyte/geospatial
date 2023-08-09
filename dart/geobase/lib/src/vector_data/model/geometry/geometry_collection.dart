@@ -6,17 +6,21 @@
 
 import 'dart:typed_data';
 
+import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/coordinates/projection/projection.dart';
+import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_arrays.dart';
+import '/src/utils/coord_type.dart';
 import '/src/utils/tolerance.dart';
 import '/src/vector/content/geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
 import '/src/vector/formats/geojson/geojson_format.dart';
 import '/src/vector/formats/wkb/wkb_format.dart';
+import '/src/vector_data/array/coordinates.dart';
 
 import 'geometry.dart';
 import 'geometry_builder.dart';
@@ -128,6 +132,40 @@ class GeometryCollection<E extends Geometry> extends Geometry {
 
   /// All geometry items in this geometry collection.
   List<E> get geometries => _geometries;
+
+  @override
+  Coords resolveCoordType() => resolveCoordTypeFrom(collection: _geometries);
+
+  @override
+  BoxCoords? calculateBounds() => BoundsBuilder.calculateBounds(
+        collection: _geometries,
+        type: resolveCoordType(),
+        calculateChilds: true,
+      );
+
+  @override
+  GeometryCollection<E> bounded({bool recalculate = false}) {
+    if (isEmpty) return this;
+
+    // ensure all geometries contained are processed first
+    final collection = _geometries
+        .map<E>(
+          (geometry) => geometry.bounded(recalculate: recalculate) as E,
+        )
+        .toList(growable: false);
+
+    // return a new collection with processed geometries and populated bounds
+    return GeometryCollection<E>(
+      collection,
+      bounds: recalculate || bounds == null
+          ? BoundsBuilder.calculateBounds(
+              collection: collection,
+              type: resolveCoordTypeFrom(collection: collection),
+              calculateChilds: false,
+            )
+          : bounds,
+    );
+  }
 
   @override
   GeometryCollection<E> project(Projection projection) => GeometryCollection<E>(

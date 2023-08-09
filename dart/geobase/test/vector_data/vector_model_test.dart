@@ -458,6 +458,42 @@ void main() {
       );
     });
 
+    test('Simple geometries as bounded', () {
+      final po = Point.parse(point);
+      final pob = po.bounded();
+      expect(pob.toText(), point);
+      expect(pob.bounds.toText(), '1.5,2.5,1.5,2.5');
+      expect(po.calculateBounds().toText(), '1.5,2.5,1.5,2.5');
+
+      final ls = LineString.parse(lineString);
+      final lsb = ls.bounded();
+      expect(lsb.bounds?.toText(), '-1.1,-3.49,3.5,-1.1');
+      expect(ls.calculateBounds()?.toText(), '-1.1,-3.49,3.5,-1.1');
+
+      final pg = Polygon.parse(polygon);
+      final pgb = pg.bounded();
+      expect(pgb.bounds?.toText(), '5.0,4.0,13.0,11.1');
+      expect(pg.calculateBounds()?.toText(), '5.0,4.0,13.0,11.1');
+
+      final mpo = MultiPoint.parse(multiPoint);
+      final mpob = mpo.bounded();
+      expect(mpob.bounds?.toText(), '-1.1,-3.49,-1.1,-1.1,3.5,-1.1,11.3,0.23');
+      expect(
+        mpo.calculateBounds()?.toText(),
+        '-1.1,-3.49,-1.1,-1.1,3.5,-1.1,11.3,0.23',
+      );
+
+      final mls = MultiLineString.parse(multiLineString);
+      final mlsb = mls.bounded();
+      expect(mlsb.bounds?.toText(), '5.0,4.0,13.0,11.1');
+      expect(mls.calculateBounds()?.toText(), '5.0,4.0,13.0,11.1');
+
+      final mpg = MultiPolygon.parse(multiPolygon);
+      final mpgb = mpg.bounded();
+      expect(mpgb.bounds?.toText(), '5.0,4.0,13.0,11.1');
+      expect(mpg.calculateBounds()?.toText(), '5.0,4.0,13.0,11.1');
+    });
+
     test('Simple geometries from positions', () {
       expect(Point.from(const Projected(x: 1.5, y: 2.5)).toText(), point);
       expect(
@@ -824,6 +860,18 @@ void main() {
       expect(feat.toText(), lineStringFeat);
     });
 
+    test('Feature with non-typed geometry (bounded)', () {
+      final pof = Feature.parse(pointFeat);
+      final pofb = pof.bounded();
+      expect(pofb.bounds?.toText(), '1.5,2.5,1.5,2.5');
+      expect(pof.calculateBounds()?.toText(), '1.5,2.5,1.5,2.5');
+
+      final lsf = Feature.parse(lineStringFeat);
+      final lsfb = lsf.bounded();
+      expect(lsfb.bounds?.toText(), '-1.1,-3.49,3.5,-1.1');
+      expect(lsf.calculateBounds()?.toText(), '-1.1,-3.49,3.5,-1.1');
+    });
+
     test('Feature with non-typed geometry (swapped)', () {
       expect(Feature.parse(pointFeatYX, crs: epsg4326).toText(), pointFeat);
       expect(
@@ -857,6 +905,18 @@ void main() {
       expect(FeatureCollection.parse(featColl).toText(), featColl);
       final coll = FeatureCollection.parse(featCollPoints);
       expect(coll.toText(), featCollPoints);
+    });
+
+    test('Feature collection with non-typed geometry (bounded)', () {
+      final fc = FeatureCollection.parse(featColl);
+      final fcb = fc.bounded();
+      expect(fcb.bounds?.toText(), '-1.1,-3.49,3.5,2.5');
+      expect(fcb.calculateBounds()?.toText(), '-1.1,-3.49,3.5,2.5');
+
+      final fcpo = FeatureCollection.parse(featCollPoints);
+      final fcpob = fcpo.bounded();
+      expect(fcpob.bounds?.toText(), '1.5,2.5,1.5,2.5');
+      expect(fcpo.calculateBounds()?.toText(), '1.5,2.5,1.5,2.5');
     });
 
     test('Feature collection with non-typed geometry (swapped)', () {

@@ -15,6 +15,7 @@ import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/coordinates/projection/projection.dart';
+import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/coord_arrays_from_json.dart';
 import '/src/utils/tolerance.dart';
@@ -226,6 +227,32 @@ class Polygon extends SimpleGeometry {
 
   /// The interior rings (or holes) of this polygon, allowed to be empty.
   Iterable<PositionArray> get interior => rings.skip(1);
+
+  @override
+  BoxCoords? calculateBounds() => BoundsBuilder.calculateBounds(
+        arrays: _rings,
+        type: coordType,
+      );
+
+  @override
+  Polygon bounded({bool recalculate = false}) {
+    if (isEmpty) return this;
+
+    if (recalculate || bounds == null) {
+      // return a new Polygon (rings kept intact) with populated bounds
+      return Polygon._(
+        _rings,
+        type: _type,
+        bounds: BoundsBuilder.calculateBounds(
+          arrays: _rings,
+          type: coordType,
+        ),
+      );
+    } else {
+      // bounds was already populated and not asked to recalculate
+      return this;
+    }
+  }
 
   @override
   Polygon project(Projection projection) => Polygon._(

@@ -4,18 +4,20 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:meta/meta.dart';
-
+import '/src/codes/coords.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/coordinates/projection/projection.dart';
+import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_arrays.dart';
+import '/src/utils/coord_type.dart';
 import '/src/utils/property_builder.dart';
 import '/src/utils/tolerance.dart';
 import '/src/vector/content/feature_content.dart';
 import '/src/vector/content/property_content.dart';
 import '/src/vector/encoding/text_format.dart';
 import '/src/vector/formats/geojson/geojson_format.dart';
+import '/src/vector_data/array/coordinates.dart';
 import '/src/vector_data/model/geometry/geometry.dart';
 
 import 'feature.dart';
@@ -31,7 +33,6 @@ import 'feature_object.dart';
 /// feature collection is "a set of related features managed as a group".
 ///
 /// Supports representing data from GeoJSON (https://geojson.org/) features.
-@immutable
 class FeatureCollection<E extends Feature> extends FeatureObject {
   final List<E> _features;
   final Map<String, dynamic>? _custom;
@@ -159,6 +160,40 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
 
   @override
   Map<String, dynamic>? get custom => _custom;
+
+  @override
+  Coords resolveCoordType() => resolveCoordTypeFrom(collection: features);
+
+  @override
+  BoxCoords? calculateBounds() => BoundsBuilder.calculateBounds(
+        collection: features,
+        type: resolveCoordType(),
+        calculateChilds: true,
+      );
+
+  @override
+  FeatureCollection<E> bounded({bool recalculate = false}) {
+    if (features.isEmpty) return this;
+
+    // ensure all features contained are processed first
+    final collection = features
+        .map<E>(
+          (feature) => feature.bounded(recalculate: recalculate) as E,
+        )
+        .toList(growable: false);
+
+    // return a new collection with processed features and populated bounds
+    return FeatureCollection<E>(
+      collection,
+      bounds: recalculate || bounds == null
+          ? BoundsBuilder.calculateBounds(
+              collection: collection,
+              type: resolveCoordTypeFrom(collection: collection),
+              calculateChilds: false,
+            )
+          : bounds,
+    );
+  }
 
   @override
   FeatureCollection<E> project(Projection projection) => FeatureCollection<E>._(

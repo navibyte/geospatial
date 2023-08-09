@@ -142,15 +142,27 @@ class Point implements SimpleGeometry {
   @override
   Coords get coordType => _position.type;
 
+  /// The coordinate type for this geometry.
+  ///
+  /// For a [Point] object this method call equals to calling [coordType].
+  @override
+  Coords resolveCoordType() => coordType;
+
   @override
   bool get isEmpty => _position.x.isNaN && _position.y.isNaN;
 
   /// The position in this point geometry.
   PositionCoords get position => _position;
 
-  /// The bounding box for this point, mix and max with the same point position.
+  /// The bounding box for this point, min and max with the same point position.
+  ///
+  /// Uses [calculateBounds] to return value as bounds can be accessed directly.
   @override
-  BoxCoords get bounds => BoxCoords.create(
+  BoxCoords get bounds => calculateBounds();
+
+  /// The bounding box for this point, min and max with the same point position.
+  @override
+  BoxCoords calculateBounds() => BoxCoords.create(
         minX: position.x,
         minY: position.y,
         minZ: position.optZ,
@@ -160,6 +172,10 @@ class Point implements SimpleGeometry {
         maxZ: position.optZ,
         maxM: position.optM,
       );
+
+  /// Returns this [Point] object without any calculations.
+  @override
+  Point bounded({bool recalculate = false}) => this;
 
   @override
   Point project(Projection projection) =>

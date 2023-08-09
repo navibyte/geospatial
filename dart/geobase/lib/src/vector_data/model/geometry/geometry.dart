@@ -22,6 +22,8 @@ import '/src/vector/formats/wkb/wkb_format.dart';
 import '/src/vector_data/model/bounded/bounded.dart';
 
 /// A base interface for geometry classes.
+///
+/// Geometry classes (including all subtypes) are immutable.
 @immutable
 abstract class Geometry extends Bounded {
   /// A geometry with an optional [bounds].
@@ -153,6 +155,12 @@ abstract class SimpleGeometry extends Geometry {
 
   /// The coordinate type for this geometry.
   Coords get coordType;
+
+  /// The coordinate type for this geometry.
+  ///
+  /// For simple geometries this method call equals to calling [coordType].
+  @override
+  Coords resolveCoordType() => coordType;
 
   @override
   void writeTo(SimpleGeometryContent writer, {String? name});

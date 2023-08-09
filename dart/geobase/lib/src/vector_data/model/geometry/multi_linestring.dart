@@ -15,6 +15,7 @@ import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/coordinates/projection/projection.dart';
+import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/coord_arrays_from_json.dart';
 import '/src/utils/tolerance.dart';
@@ -194,6 +195,32 @@ class MultiLineString extends SimpleGeometry {
   /// All line strings as a lazy iterable of [LineString] geometries.
   Iterable<LineString> get lineStrings =>
       chains.map<LineString>(LineString.new);
+
+  @override
+  BoxCoords? calculateBounds() => BoundsBuilder.calculateBounds(
+        arrays: _lineStrings,
+        type: coordType,
+      );
+
+  @override
+  MultiLineString bounded({bool recalculate = false}) {
+    if (isEmpty) return this;
+
+    if (recalculate || bounds == null) {
+      // return a new MultiLineString (chains kept intact) with populated bounds
+      return MultiLineString._(
+        _lineStrings,
+        type: _type,
+        bounds: BoundsBuilder.calculateBounds(
+          arrays: _lineStrings,
+          type: coordType,
+        ),
+      );
+    } else {
+      // bounds was already populated and not asked to recalculate
+      return this;
+    }
+  }
 
   @override
   MultiLineString project(Projection projection) => MultiLineString._(

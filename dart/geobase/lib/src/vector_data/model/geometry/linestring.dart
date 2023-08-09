@@ -15,6 +15,7 @@ import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/coordinates/projection/projection.dart';
+import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/coord_arrays_from_json.dart';
 import '/src/utils/tolerance.dart';
@@ -162,6 +163,31 @@ class LineString extends SimpleGeometry {
 
   /// The chain of positions in this line string geometry.
   PositionArray get chain => _chain;
+
+  @override
+  BoxCoords? calculateBounds() => BoundsBuilder.calculateBounds(
+        array: _chain,
+        type: coordType,
+      );
+
+  @override
+  LineString bounded({bool recalculate = false}) {
+    if (isEmpty) return this;
+
+    if (recalculate || bounds == null) {
+      // return a new linestring (chain kept intact) with populated bounds
+      return LineString(
+        _chain,
+        bounds: BoundsBuilder.calculateBounds(
+          array: _chain,
+          type: coordType,
+        ),
+      );
+    } else {
+      // bounds was already populated and not asked to recalculate
+      return this;
+    }
+  }
 
   @override
   LineString project(Projection projection) =>

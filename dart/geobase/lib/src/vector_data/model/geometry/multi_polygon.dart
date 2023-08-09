@@ -15,6 +15,7 @@ import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/coordinates/projection/projection.dart';
+import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/coord_arrays_from_json.dart';
 import '/src/utils/tolerance.dart';
@@ -219,6 +220,40 @@ class MultiPolygon extends SimpleGeometry {
 
   /// All polygons as a lazy iterable of [Polygon] geometries.
   Iterable<Polygon> get polygons => ringArrays.map<Polygon>(Polygon.new);
+
+  Iterable<PositionArray> get _allRings {
+    Iterable<PositionArray>? iter;
+    for (final rings in _polygons) {
+      iter = iter == null ? rings : iter.followedBy(rings);
+    }
+    return iter ?? [];
+  }
+
+  @override
+  BoxCoords? calculateBounds() => BoundsBuilder.calculateBounds(
+        arrays: _allRings,
+        type: coordType,
+      );
+
+  @override
+  MultiPolygon bounded({bool recalculate = false}) {
+    if (isEmpty) return this;
+
+    if (recalculate || bounds == null) {
+      // a new MultiPolygon (rings array kept intact) with populated bounds
+      return MultiPolygon._(
+        _polygons,
+        type: _type,
+        bounds: BoundsBuilder.calculateBounds(
+          arrays: _allRings,
+          type: coordType,
+        ),
+      );
+    } else {
+      // bounds was already populated and not asked to recalculate
+      return this;
+    }
+  }
 
   @override
   MultiPolygon project(Projection projection) => MultiPolygon._(

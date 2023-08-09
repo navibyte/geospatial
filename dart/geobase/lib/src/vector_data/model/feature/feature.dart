@@ -4,12 +4,13 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:meta/meta.dart';
-
+import '/src/codes/coords.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/coordinates/projection/projection.dart';
+import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_arrays.dart';
+import '/src/utils/coord_type.dart';
 import '/src/utils/property_builder.dart';
 import '/src/utils/tolerance.dart';
 import '/src/vector/content/feature_content.dart';
@@ -17,6 +18,7 @@ import '/src/vector/content/geometry_content.dart';
 import '/src/vector/content/property_content.dart';
 import '/src/vector/encoding/text_format.dart';
 import '/src/vector/formats/geojson/geojson_format.dart';
+import '/src/vector_data/array/coordinates.dart';
 import '/src/vector_data/model/geometry/geometry.dart';
 import '/src/vector_data/model/geometry/geometry_builder.dart';
 
@@ -40,7 +42,6 @@ import 'feature_object.dart';
 /// pipelines, oil spill, and so on".
 ///
 /// Supports representing data from GeoJSON (https://geojson.org/) features.
-@immutable
 class Feature<T extends Geometry> extends FeatureObject {
   final Object? _id;
   final T? _geometry;
@@ -226,6 +227,43 @@ class Feature<T extends Geometry> extends FeatureObject {
   ///
   /// See also [custom] for non-geometry custom or "foreign member" properties.
   Map<String, Geometry>? get customGeometries => null;
+
+  @override
+  Coords resolveCoordType() => resolveCoordTypeFrom(
+        item: geometry, // the main geometry of Feature
+        collection: customGeometries?.values, // other geoms of CustomFeature
+      );
+
+  @override
+  BoxCoords? calculateBounds() => BoundsBuilder.calculateBounds(
+        item: geometry, // the main geometry of Feature
+        collection: customGeometries?.values, // other geoms of CustomFeature
+        type: resolveCoordType(),
+        calculateChilds: true,
+      );
+
+  @override
+  Feature<T> bounded({bool recalculate = false}) {
+    final currGeom = _geometry;
+    if (currGeom == null || currGeom.isEmpty) return this;
+
+    // ensure geometry is processed first
+    final geom = currGeom.bounded(recalculate: recalculate) as T;
+
+    // return a new feature with processed geometry and populated bounds
+    return Feature<T>(
+      id: _id,
+      geometry: geom,
+      properties: _properties,
+      bounds: recalculate || bounds == null
+          ? BoundsBuilder.calculateBounds(
+              item: geom,
+              type: resolveCoordTypeFrom(item: geom),
+              calculateChilds: false,
+            )
+          : bounds,
+    );
+  }
 
   @override
   Feature<T> project(Projection projection) => Feature<T>(
@@ -444,6 +482,43 @@ class _CustomFeature<T extends Geometry> extends Feature<T> {
 
   @override
   Map<String, Geometry>? get customGeometries => _customGeometries;
+
+  @override
+  Feature<T> bounded({bool recalculate = false}) {
+    final currGeom = _geometry;
+    final currCustGeoms = _customGeometries;
+    if ((currGeom == null || currGeom.isEmpty) &&
+        (currCustGeoms == null || currCustGeoms.isEmpty)) return this;
+
+    // ensure main geometry is processed first
+    final geom = currGeom?.bounded(recalculate: recalculate) as T?;
+
+    // ensure also custom geometries are processed
+    final custGeom = currCustGeoms?.map<String, Geometry>(
+      (key, value) =>
+          MapEntry(key, value.bounded(recalculate: recalculate) as Geometry),
+    );
+
+    // return a new feature with processed geometries and populated bounds
+    return _CustomFeature<T>(
+      id: _id,
+      geometry: geom,
+      properties: _properties,
+      custom: _custom,
+      customGeometries: custGeom,
+      bounds: recalculate || bounds == null
+          ? BoundsBuilder.calculateBounds(
+              item: geom,
+              collection: custGeom?.values,
+              type: resolveCoordTypeFrom(
+                item: geom,
+                collection: custGeom?.values,
+              ),
+              calculateChilds: false,
+            )
+          : bounds,
+    );
+  }
 
   @override
   Feature<T> project(Projection projection) => _CustomFeature<T>(
