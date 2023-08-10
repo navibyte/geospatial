@@ -8,6 +8,8 @@ import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
 import '/src/coordinates/base/position.dart';
+import '/src/coordinates/projected/projected.dart';
+import '/src/coordinates/projection/projection.dart';
 
 import 'dms.dart';
 
@@ -191,6 +193,12 @@ class Geographic extends Position {
         elev: (z ?? _elev)?.toDouble(),
         m: (m ?? _m)?.toDouble(),
       );
+
+  /// Projects this geographic position to a projected position using
+  /// the forward [projection].
+  @override
+  Projected project(Projection projection) =>
+      projection.project(this, to: Projected.create);
 
   @override
   Geographic transform(TransformPosition transform) => transform.call(this);

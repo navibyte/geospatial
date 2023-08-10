@@ -223,6 +223,10 @@ class _PositionCoordsImpl extends PositionCoords {
       );
 
   @override
+  PositionCoords project(Projection projection) =>
+      projection.project(this, to: PositionCoords.create);
+
+  @override
   _PositionCoordsImpl transform(TransformPosition transform) =>
       transform.call(this);
 

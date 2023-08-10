@@ -11,9 +11,12 @@ import '/src/coordinates/base/position.dart';
 import '/src/coordinates/geographic/dms.dart';
 import '/src/coordinates/geographic/geographic.dart';
 import '/src/coordinates/geographic/geographic_functions.dart';
+import '/src/coordinates/projection/projection.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 import '/src/vector_data/array/coordinates.dart';
+
+import 'xy.dart';
 
 /// A geographic position as an iterable collection of lon and lat values.
 ///
@@ -96,6 +99,9 @@ class LonLat extends PositionCoords implements Geographic {
         x?.toDouble() ?? lon,
         y?.toDouble() ?? lat,
       );
+
+  @override
+  XY project(Projection projection) => projection.project(this, to: XY.create);
 
   @override
   LonLat transform(TransformPosition transform) => transform.call(this);
@@ -281,6 +287,10 @@ class LonLatElev extends LonLat {
       );
 
   @override
+  XYZ project(Projection projection) =>
+      projection.project(this, to: XYZ.create);
+
+  @override
   LonLatElev transform(TransformPosition transform) => transform.call(this);
 
   @override
@@ -387,6 +397,10 @@ class LonLatM extends LonLat {
         y?.toDouble() ?? lat,
         m?.toDouble() ?? this.m,
       );
+
+  @override
+  XYM project(Projection projection) =>
+      projection.project(this, to: XYM.create);
 
   @override
   LonLatM transform(TransformPosition transform) => transform.call(this);
@@ -496,6 +510,10 @@ class LonLatElevM extends LonLatElev {
         z?.toDouble() ?? elev,
         m?.toDouble() ?? this.m,
       );
+
+  @override
+  XYZM project(Projection projection) =>
+      projection.project(this, to: XYZM.create);
 
   @override
   LonLatElevM transform(TransformPosition transform) => transform.call(this);

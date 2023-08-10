@@ -160,7 +160,7 @@ void main() {
     test('Testing equality', () {
       expect(xy1, xy2);
       expect(xy1 == xy2, false);
-     
+
       expect(xy2, xy3);
       expect(xy2 == xy3, true);
     });

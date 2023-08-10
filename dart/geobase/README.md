@@ -1279,22 +1279,16 @@ Here projected coordinates are metric coordinates with both x and y values
 having the valid value range of (-20037508.34, 20037508.34).
 
 ```dart
-  // Built-in coordinate projections (currently only between WGS 84 and
-  // Web Mercator)
+  // Sample point as geographic coordinates.
+  const geographic = Geographic(lon: -0.0014, lat: 51.4778);
 
-  // Geographic (WGS 84 longitude-latitude) to Projected (WGS 84 Web Mercator)
+  // Geographic (WGS 84 longitude-latitude) to Projected (WGS 84 Web Mercator).
   final forward = WGS84.webMercator.forward;
-  final projected = forward.project(
-    const Geographic(lon: -0.0014, lat: 51.4778),
-    to: Projected.create,
-  );
+  final projected = geographic.project(forward);
 
-  // Projected (WGS 84 Web Mercator) to Geographic (WGS 84 longitude-latitude)
+  // Projected (WGS 84 Web Mercator) to Geographic (WGS 84 longitude-latitude).
   final inverse = WGS84.webMercator.inverse;
-  final unprojected = inverse.project(
-    projected,
-    to: Geographic.create,
-  );
+  final unprojected = projected.project(inverse);
 
   print('$unprojected <=> $projected');
 ```

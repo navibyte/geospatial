@@ -19,6 +19,7 @@ NOTE: Version 0.5.0 currently [under development](https://github.com/navibyte/ge
 * [Geometry objects instantiated from instances or iterables of Position objects #171](https://github.com/navibyte/geospatial/issues/171)
 * [Alternative logics to resolve axis order #182](https://github.com/navibyte/geospatial/issues/182)
 * [Handle explicit and implicit bounds in geometries and features on geobase #141](https://github.com/navibyte/geospatial/issues/141)
+* [Add project method for Position class #184](https://github.com/navibyte/geospatial/issues/184)
 
 🛠 Refactoring:
 * [Enforce "geometry" under "Feature" when encoding GeoJSON text output #91](https://github.com/navibyte/geospatial/issues/91)

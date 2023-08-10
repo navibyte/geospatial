@@ -582,6 +582,10 @@ class _TestXYZM implements Projected {
       );
 
   @override
+  Geographic project(Projection projection) =>
+      projection.project(this, to: Geographic.create);
+
+  @override
   Projected transform(TransformPosition transform) => transform(this);
 
   @override

@@ -54,7 +54,8 @@ void main() {
   _wkbSample2();
 
   // projections
-  _wgs84ToWebMercator();
+  _wgs84ToWebMercatorViaPositions();
+  _wgs84ToWebMercatorViaProjections();
   // see also separate file "geobase_with_proj4d_example.dart"
 
   // tiling schemes
@@ -910,7 +911,26 @@ void _geospatialExtents() {
   );
 }
 
-void _wgs84ToWebMercator() {
+void _wgs84ToWebMercatorViaPositions() {
+  // Built-in coordinate projections (currently only between WGS 84 and
+  // Web Mercator)
+
+  // Sample point as geographic coordinates.
+  const geographic = Geographic(lon: -0.0014, lat: 51.4778);
+
+  // Geographic (WGS 84 longitude-latitude) to Projected (WGS 84 Web Mercator).
+  final forward = WGS84.webMercator.forward;
+  final projected = geographic.project(forward);
+
+  // Projected (WGS 84 Web Mercator) to Geographic (WGS 84 longitude-latitude).
+  final inverse = WGS84.webMercator.inverse;
+  final unprojected = projected.project(inverse);
+
+  print('${unprojected.toText(decimals: 5)}'
+      ' <=> ${projected.toText(decimals: 5)}');
+}
+
+void _wgs84ToWebMercatorViaProjections() {
   // Built-in coordinate projections (currently only between WGS 84 and
   // Web Mercator)
 

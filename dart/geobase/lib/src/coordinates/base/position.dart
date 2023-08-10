@@ -8,6 +8,7 @@ import 'dart:math' as math;
 
 import '/src/codes/coords.dart';
 import '/src/constants/epsilon.dart';
+import '/src/coordinates/projection/projection.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 import '/src/utils/tolerance.dart';
@@ -175,7 +176,16 @@ abstract class Position extends Positionable {
   /// measured position.
   Position copyWith({num? x, num? y, num? z, num? m});
 
+  /// Projects this position to another position using the [projection].
+  ///
+  /// Subtypes may specify a more accurate position type for the returned object
+  /// (for example a *geographic* position would return a *projected* position
+  /// when forward-projecting, and other way when inverse-projecting).
+  Position project(Projection projection);
+
   /// Returns a position with all points transformed using [transform].
+  /// 
+  /// The returned object should be of the same type as this object has.
   Position transform(TransformPosition transform);
 
   /// True if this position equals with [other] by testing 2D coordinates only.

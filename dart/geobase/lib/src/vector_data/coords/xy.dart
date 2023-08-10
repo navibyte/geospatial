@@ -9,9 +9,12 @@ import 'package:meta/meta.dart';
 import '/src/codes/coords.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/projected/projected.dart';
+import '/src/coordinates/projection/projection.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 import '/src/vector_data/array/coordinates.dart';
+
+import 'lonlat.dart';
 
 /// A projected position as an iterable collection of x and y values.
 ///
@@ -86,6 +89,10 @@ class XY extends PositionCoords implements Projected {
         x?.toDouble() ?? this.x,
         y?.toDouble() ?? this.y,
       );
+
+  @override
+  LonLat project(Projection projection) =>
+      projection.project(this, to: LonLat.create);
 
   @override
   XY transform(TransformPosition transform) => transform.call(this);
@@ -219,6 +226,10 @@ class XYZ extends XY {
       );
 
   @override
+  LonLatElev project(Projection projection) =>
+      projection.project(this, to: LonLatElev.create);
+
+  @override
   XYZ transform(TransformPosition transform) => transform.call(this);
 
   @override
@@ -319,6 +330,10 @@ class XYM extends XY {
       );
 
   @override
+  LonLatM project(Projection projection) =>
+      projection.project(this, to: LonLatM.create);
+
+  @override
   XYM transform(TransformPosition transform) => transform.call(this);
 
   @override
@@ -411,6 +426,10 @@ class XYZM extends XYZ {
         z?.toDouble() ?? this.z,
         m?.toDouble() ?? this.m,
       );
+
+  @override
+  LonLatElevM project(Projection projection) =>
+      projection.project(this, to: LonLatElevM.create);
 
   @override
   XYZM transform(TransformPosition transform) => transform.call(this);

@@ -19,7 +19,7 @@ void main() {
         final point2 = Projected(x: coords[2], y: coords[3]);
         final geoPoint2 = Geographic(lon: coords[0], lat: coords[1]);
         expectPosition(
-          toWgs84.project(point2, to: Geographic.create),
+          point2.project(toWgs84),
           geoPoint2,
         );
         expectPosition(
@@ -41,6 +41,11 @@ void main() {
       for (final coords in wgs84ToWebMercatorData) {
         final geoPoint3 = Geographic(lon: coords[0], lat: coords[1]);
         final point3 = Projected(x: coords[2], y: coords[3]);
+        expectPosition(
+          geoPoint3.project(toWebMercator),
+          point3,
+          0.01,
+        );
         expectPosition(
           toWebMercator.project(geoPoint3, to: Projected.create),
           point3,

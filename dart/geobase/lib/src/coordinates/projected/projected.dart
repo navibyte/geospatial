@@ -8,6 +8,8 @@ import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
 import '/src/coordinates/base/position.dart';
+import '/src/coordinates/geographic/geographic.dart';
+import '/src/coordinates/projection/projection.dart';
 
 /// A projected position with [x], [y], and optional [z] and [m] coordinates.
 ///
@@ -159,6 +161,12 @@ class Projected extends Position {
         z: z ?? _z,
         m: m ?? _m,
       );
+
+  /// Unprojects this projected position to a geographic position using
+  /// the inverse [projection].
+  @override
+  Geographic project(Projection projection) =>
+      projection.project(this, to: Geographic.create);
 
   @override
   Projected transform(TransformPosition transform) => transform.call(this);
