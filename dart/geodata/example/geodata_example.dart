@@ -136,7 +136,7 @@ Future<void> main(List<String> args) async {
   // - `parameters` sets queryable properties as a query parameter filter (#)
   //
   // (*) supported by services conforming to Part 2: CRS
-  // (*) supported by services conforming to Part 3: Filtering
+  // (#) supported by services conforming to Part 3: Filtering
 
   // `itemsPaged` is used for paginated access on filtered queries
   // (not demostrated here, see `itemsAllPaged` sample above about paggination)

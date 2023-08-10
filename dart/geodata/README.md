@@ -324,7 +324,7 @@ Future<void> main(List<String> args) async {
   // - `parameters` sets queryable properties as a query parameter filter (#)
   //
   // (*) supported by services conforming to Part 2: CRS
-  // (*) supported by services conforming to Part 3: Filtering
+  // (#) supported by services conforming to Part 3: Filtering
 
   // `itemsPaged` is used for paginated access on filtered queries
   // (not demostrated here, see `itemsAllPaged` sample above about paggination)
@@ -545,6 +545,9 @@ The feature source returned by `collection()` provides following methods:
   /// An identifier should be an integer number (int or BigInt) or a string.
   Future<OGCFeatureItem> itemById(Object id);
 
+  /// Fetches a single feature by id (set in [query]) from this source.
+  Future<OGCFeatureItem> item(ItemQuery query);
+  
   /// Fetches all features items from this source.
   ///
   /// An optional [limit] sets maximum number of items returned. If given, it
@@ -563,9 +566,6 @@ The feature source returned by `collection()` provides following methods:
   /// can be limited), with a link to an optional next set of feature items.
   Future<Paged<OGCFeatureItems>> itemsAllPaged({int? limit});
 
-  /// Fetches a single feature by id (set in [query]) from this source.
-  Future<OGCFeatureItem> item(ItemQuery query);
-
   /// Fetches features matching [query] (and an optional [cql] query) from this
   /// source.
   ///
@@ -574,7 +574,6 @@ The feature source returned by `collection()` provides following methods:
   ///
   /// This call accesses only one set of feature items (number of returned items
   /// can be limited).
-  @override
   Future<OGCFeatureItems> items(
     BoundedItemsQuery query, {
     CQLQuery? cql,
@@ -588,7 +587,6 @@ The feature source returned by `collection()` provides following methods:
   ///
   /// This call returns a first set of feature items (number of returned items
   /// can be limited), with a link to an optional next set of feature items.
-  @override
   Future<Paged<OGCFeatureItems>> itemsPaged(
     BoundedItemsQuery query, {
     CQLQuery? cql,

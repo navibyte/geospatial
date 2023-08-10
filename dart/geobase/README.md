@@ -523,7 +523,7 @@ is *a coordinate-based local, regional or global system used to locate
 geographical entities*. 
 
 Coordinate reference systems are identified by `String` identifiers. Such ids
-specified by registries like [The EPSG dataset](https://epsg.org/).
+are specified by registries like [The EPSG dataset](https://epsg.org/).
 
 The package also contains `CoordRefSys` class that has constant instaces for:
 
@@ -542,7 +542,8 @@ Identifiers using the common `EPSG:{code}` template are normalized also to it
 when instantiating with the `CoordRefSys.normalized()` constructor.
 
 Please note that `CRS84` and `EPSG:4326` both refer to the WGS 84 geographic
-coordinate system, but in external data representation their axis order differs.
+coordinate system, but in external data representations their axis order
+differs.
 
 To customize identifier normalization and axis order resolving algorithm you
 should create a custom class implementing `CoordRefSysResolver` and register
@@ -1002,7 +1003,7 @@ other axis order when representing geometries in external data formats.
 
 The `CoordRefSys` class introduced in the section about
 [coordinate reference systems](#coordinate-reference-systems) has the `swapXY`
-getter that tells how axis order should be handled for a certain coordinate
+method that tells how axis order should be handled for a certain coordinate
 reference system when dealing with external data representations (like the
 current specification of GeoJSON) that do not specify a generic axis order for
 alternative coordinate reference systems.
