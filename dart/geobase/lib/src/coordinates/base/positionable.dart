@@ -6,14 +6,12 @@
 
 import '/src/codes/coords.dart';
 
-import 'measurable.dart';
-
 /// A positionable object has (geospatial) coordinate values available.
 ///
 /// This interface is extended at least by `Position` (representing a single
 /// position), `PositionData` (representing a series of positions) and `Box`
 /// (representing a single bounding box with minimum and maximum coordinates).
-abstract class Positionable extends Measurable {
+abstract class Positionable {
   /// Default `const` constructor to allow extending this abstract class.
   const Positionable();
 
@@ -40,6 +38,9 @@ abstract class Positionable extends Measurable {
 
   /// True for 3D positions (with z or elevation coordinate).
   bool get is3D;
+
+  /// True if a measure value is available (or the m coordinate for a position).
+  bool get isMeasured;
 
 /*
   // Note: removed at version 0.3.0 to make code consistent. Later remove fully.

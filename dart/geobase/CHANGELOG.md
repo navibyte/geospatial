@@ -8,6 +8,7 @@ NOTE: Version 0.5.0 currently [under development](https://github.com/navibyte/ge
 * The `WkbConf` class removed, added `buildEmptyGeometries` for WKB decoder.
 * `Position` and `Box`: tolerance type from `num?` to `double` (see #146).
 * [Remove inheritance of Scalable2i from Projected #183](https://github.com/navibyte/geospatial/issues/183)
+* `Measurable` abstract class removed, `isMeasured` defined in `Positionable`.
 
 🧩 Features:
 * [Add common geospatial and geodesy functions #106](https://github.com/navibyte/geospatial/issues/106)

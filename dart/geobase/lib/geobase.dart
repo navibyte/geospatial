@@ -39,7 +39,6 @@ export 'src/constants/screen_ppi.dart';
 // coordinates
 export 'src/coordinates/base/aligned.dart';
 export 'src/coordinates/base/box.dart';
-export 'src/coordinates/base/measurable.dart';
 export 'src/coordinates/base/position.dart';
 export 'src/coordinates/base/positionable.dart';
 export 'src/coordinates/crs/coord_ref_sys.dart';
