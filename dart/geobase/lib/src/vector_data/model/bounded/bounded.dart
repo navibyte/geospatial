@@ -60,9 +60,8 @@ abstract class Bounded {
   ///
   /// The returned subtype must be the same as the type of this.
   ///
-  /// Note that any available [bounds] object on this is not projected (that is
-  /// the bounds for a returned object is null).
+  /// If [bounds] object is available on this, it's recalculated after
+  /// projecting geometries. If [bounds] is null, then it's null after
+  /// projecting too.
   Bounded project(Projection projection);
-
-  // NOTE: add an optional param to "project" to ask calcuting bounds after op
 }

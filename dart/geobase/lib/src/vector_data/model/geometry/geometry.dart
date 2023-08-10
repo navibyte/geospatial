@@ -48,8 +48,9 @@ abstract class Geometry extends Bounded {
   ///
   /// The returned geometry sub type must be the same as the type of this.
   ///
-  /// Note that any available [bounds] object on this is not projected (that is
-  /// the bounds for a returned geometry is null).
+  /// If [bounds] object is available on this, it's recalculated after
+  /// projecting geometries. If [bounds] is null, then it's null after
+  /// projecting too.
   @override
   Geometry project(Projection projection);
 

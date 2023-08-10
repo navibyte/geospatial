@@ -84,6 +84,7 @@ void main() {
           source,
           0.01,
         );
+
         final sourceLineString = LineString(sourceArray);
         final targetLineString = LineString(targetArray);
         expectCoords(
@@ -95,6 +96,23 @@ void main() {
           targetLineString.project(inverse).chain.toList(),
           source,
           0.01,
+        );
+
+        expect(
+          sourceLineString.bounded().bounds?.toText(),
+          wgs84ToWebMercatorDataBounds[dim - 2][0],
+        );
+        expect(
+          targetLineString.bounded().bounds?.toText(decimals: 2),
+          wgs84ToWebMercatorDataBounds[dim - 2][1],
+        );
+        expect(
+          sourceLineString
+              .bounded()
+              .project(forward)
+              .bounds
+              ?.toText(decimals: 2),
+          wgs84ToWebMercatorDataBounds[dim - 2][1],
         );
       }
     });

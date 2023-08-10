@@ -33,8 +33,9 @@ abstract class FeatureObject extends Bounded {
   /// Any custom data or properties (other than geometries) are not projected,
   /// just copied (by references).
   ///
-  /// Note that any available [bounds] object on this is not projected (that is
-  /// the bounds for a returned feature object is null).
+  /// If [bounds] object is available on this, it's recalculated after
+  /// projecting geometries. If [bounds] is null, then it's null after
+  /// projecting too.
   @override
   FeatureObject project(Projection projection);
 

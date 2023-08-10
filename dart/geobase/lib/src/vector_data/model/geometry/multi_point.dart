@@ -199,12 +199,24 @@ class MultiPoint extends SimpleGeometry {
   }
 
   @override
-  MultiPoint project(Projection projection) => MultiPoint._(
-        _points
-            .map((pos) => projection.project(pos, to: PositionCoords.create))
-            .toList(growable: false),
-        type: _type,
-      );
+  MultiPoint project(Projection projection) {
+    final projected = _points
+        .map((pos) => projection.project(pos, to: PositionCoords.create))
+        .toList(growable: false);
+
+    return MultiPoint._(
+      projected,
+      type: _type,
+
+      // bounds calculated from projected geometry if there was bounds before
+      bounds: bounds != null
+          ? BoundsBuilder.calculateBounds(
+              positions: projected,
+              type: coordType,
+            )
+          : null,
+    );
+  }
 
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) => isEmpty

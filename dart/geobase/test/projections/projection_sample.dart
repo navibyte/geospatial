@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, lines_longer_than_80_chars
 
 import 'package:geobase/geobase.dart';
 
@@ -58,6 +58,21 @@ const wgs84ToWebMercatorData = [
   [120.39284, -87.0, 13402069.64, -23232576.780082427],
   [0.0, -89.9, 0.0, -44927335.42709685],
   [179.9999999, 89.9, 20037508.33, 44927335.42709685],
+];
+
+const wgs84ToWebMercatorDataBounds = [
+  [
+    '-180.0,-89.9,179.9999999,89.9',
+    '-20037508.34,-44927335.43,20037508.33,44927335.43',
+  ],
+  [
+    '-180.0,-89.9,10.0,179.9999999,89.9,10.0',
+    '-20037508.34,-44927335.43,10,20037508.33,44927335.43,10',
+  ],
+  [
+    '-180.0,-89.9,10.0,10.0,179.9999999,89.9,10.0,10.0',
+    '-20037508.34,-44927335.43,10,10,20037508.33,44927335.43,10,10'
+  ],
 ];
 
 Iterable<Geographic> testWgs84Points() => wgs84ToWebMercatorData

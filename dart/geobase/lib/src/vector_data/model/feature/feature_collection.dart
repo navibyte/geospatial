@@ -168,7 +168,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   BoxCoords? calculateBounds() => BoundsBuilder.calculateBounds(
         collection: features,
         type: resolveCoordType(),
-        calculateChilds: true,
+        recalculateChilds: true,
       );
 
   @override
@@ -189,19 +189,32 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
           ? BoundsBuilder.calculateBounds(
               collection: collection,
               type: resolveCoordTypeFrom(collection: collection),
-              calculateChilds: false,
+              recalculateChilds: false,
             )
           : bounds,
     );
   }
 
   @override
-  FeatureCollection<E> project(Projection projection) => FeatureCollection<E>._(
-        _features
-            .map<E>((feature) => feature.project(projection) as E)
-            .toList(growable: false),
-        _custom,
-      );
+  FeatureCollection<E> project(Projection projection) {
+    final projected = _features
+        .map<E>((feature) => feature.project(projection) as E)
+        .toList(growable: false);
+
+    return FeatureCollection<E>._(
+      projected,
+      _custom,
+
+      // bounds calculated from projected collection if there was bounds before
+      bounds: bounds != null
+          ? BoundsBuilder.calculateBounds(
+              collection: projected,
+              type: resolveCoordTypeFrom(collection: projected),
+              recalculateChilds: false,
+            )
+          : null,
+    );
+  }
 
   @override
   void writeTo(FeatureContent writer) {

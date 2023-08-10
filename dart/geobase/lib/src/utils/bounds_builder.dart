@@ -38,7 +38,7 @@ class BoundsBuilder {
     Iterable<PositionArray>? arrays,
     Iterable<Position>? positions,
     required Coords type,
-    bool calculateChilds = false,
+    bool recalculateChilds = false,
   }) {
     if (item == null &&
         (collection == null || collection.isEmpty) &&
@@ -50,7 +50,9 @@ class BoundsBuilder {
     final builder = BoundsBuilder(type);
 
     if (item != null) {
-      final bounds = calculateChilds ? item.calculateBounds() : item.bounds;
+      final bounds = recalculateChilds || item.bounds == null
+          ? item.calculateBounds()
+          : item.bounds;
       if (bounds != null) {
         builder.addBounds(bounds);
       }
@@ -58,7 +60,9 @@ class BoundsBuilder {
 
     if (collection != null) {
       for (final elem in collection) {
-        final bounds = calculateChilds ? elem.calculateBounds() : elem.bounds;
+        final bounds = recalculateChilds || elem.bounds == null
+            ? elem.calculateBounds()
+            : elem.bounds;
         if (bounds != null) {
           builder.addBounds(bounds);
         }

@@ -223,12 +223,24 @@ class MultiLineString extends SimpleGeometry {
   }
 
   @override
-  MultiLineString project(Projection projection) => MultiLineString._(
-        _lineStrings
-            .map((chain) => chain.project(projection))
-            .toList(growable: false),
-        type: _type,
-      );
+  MultiLineString project(Projection projection) {
+    final projected = _lineStrings
+        .map((chain) => chain.project(projection))
+        .toList(growable: false);
+
+    return MultiLineString._(
+      projected,
+      type: _type,
+
+      // bounds calculated from projected geometry if there was bounds before
+      bounds: bounds != null
+          ? BoundsBuilder.calculateBounds(
+              arrays: projected,
+              type: coordType,
+            )
+          : null,
+    );
+  }
 
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) => isEmpty

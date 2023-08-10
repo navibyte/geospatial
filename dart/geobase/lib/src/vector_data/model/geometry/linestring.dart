@@ -190,8 +190,21 @@ class LineString extends SimpleGeometry {
   }
 
   @override
-  LineString project(Projection projection) =>
-      LineString(_chain.project(projection));
+  LineString project(Projection projection) {
+    final projected = _chain.project(projection);
+
+    return LineString(
+      projected,
+
+      // bounds calculated from projected chain if there was bounds before
+      bounds: bounds != null
+          ? BoundsBuilder.calculateBounds(
+              array: projected,
+              type: coordType,
+            )
+          : null,
+    );
+  }
 
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) => isEmpty

@@ -239,7 +239,7 @@ class Feature<T extends Geometry> extends FeatureObject {
         item: geometry, // the main geometry of Feature
         collection: customGeometries?.values, // other geoms of CustomFeature
         type: resolveCoordType(),
-        calculateChilds: true,
+        recalculateChilds: true,
       );
 
   @override
@@ -259,18 +259,31 @@ class Feature<T extends Geometry> extends FeatureObject {
           ? BoundsBuilder.calculateBounds(
               item: geom,
               type: resolveCoordTypeFrom(item: geom),
-              calculateChilds: false,
+              recalculateChilds: false,
             )
           : bounds,
     );
   }
 
   @override
-  Feature<T> project(Projection projection) => Feature<T>(
-        id: _id,
-        geometry: _geometry?.project(projection) as T?,
-        properties: _properties,
-      );
+  Feature<T> project(Projection projection) {
+    final projectedGeom = _geometry?.project(projection) as T?;
+
+    return Feature<T>(
+      id: _id,
+      geometry: projectedGeom,
+      properties: _properties,
+
+      // bounds calculated from projected geometry if there was bounds before
+      bounds: bounds != null && projectedGeom != null
+          ? BoundsBuilder.calculateBounds(
+              item: projectedGeom,
+              type: resolveCoordTypeFrom(item: projectedGeom),
+              recalculateChilds: false,
+            )
+          : null,
+    );
+  }
 
   @override
   void writeTo(FeatureContent writer) {
@@ -514,22 +527,41 @@ class _CustomFeature<T extends Geometry> extends Feature<T> {
                 item: geom,
                 collection: custGeom?.values,
               ),
-              calculateChilds: false,
+              recalculateChilds: false,
             )
           : bounds,
     );
   }
 
   @override
-  Feature<T> project(Projection projection) => _CustomFeature<T>(
-        id: _id,
-        geometry: _geometry?.project(projection) as T?,
-        properties: _properties,
-        custom: _custom,
-        customGeometries: _customGeometries?.map<String, Geometry>(
-          (key, geom) => MapEntry(key, geom.project(projection)),
-        ),
-      );
+  Feature<T> project(Projection projection) {
+    final projectedGeom = _geometry?.project(projection) as T?;
+    final projectedCustGeom = _customGeometries?.map<String, Geometry>(
+      (key, geom) => MapEntry(key, geom.project(projection)),
+    );
+
+    return _CustomFeature<T>(
+      id: _id,
+      geometry: projectedGeom,
+      properties: _properties,
+      custom: _custom,
+      customGeometries: projectedCustGeom,
+
+      // bounds calculated from projected geometries if there was bounds before
+      bounds:
+          bounds != null && (projectedGeom != null || projectedCustGeom != null)
+              ? BoundsBuilder.calculateBounds(
+                  item: projectedGeom,
+                  collection: projectedCustGeom?.values,
+                  type: resolveCoordTypeFrom(
+                    item: projectedGeom,
+                    collection: projectedCustGeom?.values,
+                  ),
+                  recalculateChilds: false,
+                )
+              : null,
+    );
+  }
 
   @override
   void writeTo(FeatureContent writer) {

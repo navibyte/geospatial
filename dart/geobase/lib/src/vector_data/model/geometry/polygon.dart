@@ -255,10 +255,23 @@ class Polygon extends SimpleGeometry {
   }
 
   @override
-  Polygon project(Projection projection) => Polygon._(
-        _rings.map((ring) => ring.project(projection)).toList(growable: false),
-        type: _type,
-      );
+  Polygon project(Projection projection) {
+    final projected =
+        _rings.map((ring) => ring.project(projection)).toList(growable: false);
+
+    return Polygon._(
+      projected,
+      type: _type,
+
+      // bounds calculated from projected geometry if there was bounds before
+      bounds: bounds != null
+          ? BoundsBuilder.calculateBounds(
+              arrays: projected,
+              type: coordType,
+            )
+          : null,
+    );
+  }
 
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) => isEmpty

@@ -221,9 +221,11 @@ class MultiPolygon extends SimpleGeometry {
   /// All polygons as a lazy iterable of [Polygon] geometries.
   Iterable<Polygon> get polygons => ringArrays.map<Polygon>(Polygon.new);
 
-  Iterable<PositionArray> get _allRings {
+  static Iterable<PositionArray> _allRings(
+    List<List<PositionArray>> ringArrays,
+  ) {
     Iterable<PositionArray>? iter;
-    for (final rings in _polygons) {
+    for (final rings in ringArrays) {
       iter = iter == null ? rings : iter.followedBy(rings);
     }
     return iter ?? [];
@@ -231,7 +233,7 @@ class MultiPolygon extends SimpleGeometry {
 
   @override
   BoxCoords? calculateBounds() => BoundsBuilder.calculateBounds(
-        arrays: _allRings,
+        arrays: _allRings(_polygons),
         type: coordType,
       );
 
@@ -245,7 +247,7 @@ class MultiPolygon extends SimpleGeometry {
         _polygons,
         type: _type,
         bounds: BoundsBuilder.calculateBounds(
-          arrays: _allRings,
+          arrays: _allRings(_polygons),
           type: coordType,
         ),
       );
@@ -256,16 +258,28 @@ class MultiPolygon extends SimpleGeometry {
   }
 
   @override
-  MultiPolygon project(Projection projection) => MultiPolygon._(
-        _polygons
-            .map<List<PositionArray>>(
-              (rings) => rings
-                  .map<PositionArray>((ring) => ring.project(projection))
-                  .toList(growable: false),
+  MultiPolygon project(Projection projection) {
+    final projected = _polygons
+        .map<List<PositionArray>>(
+          (rings) => rings
+              .map<PositionArray>((ring) => ring.project(projection))
+              .toList(growable: false),
+        )
+        .toList(growable: false);
+
+    return MultiPolygon._(
+      projected,
+      type: _type,
+
+      // bounds calculated from projected geometry if there was bounds before
+      bounds: bounds != null
+          ? BoundsBuilder.calculateBounds(
+              arrays: _allRings(projected),
+              type: coordType,
             )
-            .toList(growable: false),
-        type: _type,
-      );
+          : null,
+    );
+  }
 
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) => isEmpty

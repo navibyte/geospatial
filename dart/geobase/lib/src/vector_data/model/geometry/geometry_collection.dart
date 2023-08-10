@@ -140,7 +140,7 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   BoxCoords? calculateBounds() => BoundsBuilder.calculateBounds(
         collection: _geometries,
         type: resolveCoordType(),
-        calculateChilds: true,
+        recalculateChilds: true,
       );
 
   @override
@@ -161,18 +161,31 @@ class GeometryCollection<E extends Geometry> extends Geometry {
           ? BoundsBuilder.calculateBounds(
               collection: collection,
               type: resolveCoordTypeFrom(collection: collection),
-              calculateChilds: false,
+              recalculateChilds: false,
             )
           : bounds,
     );
   }
 
   @override
-  GeometryCollection<E> project(Projection projection) => GeometryCollection<E>(
-        _geometries
-            .map<E>((geometry) => geometry.project(projection) as E)
-            .toList(growable: false),
-      );
+  GeometryCollection<E> project(Projection projection) {
+    final projected = _geometries
+        .map<E>((geometry) => geometry.project(projection) as E)
+        .toList(growable: false);
+
+    return GeometryCollection<E>(
+      projected,
+
+      // bounds calculated from projected collection if there was bounds before
+      bounds: bounds != null
+          ? BoundsBuilder.calculateBounds(
+              collection: projected,
+              type: resolveCoordTypeFrom(collection: projected),
+              recalculateChilds: false,
+            )
+          : null,
+    );
+  }
 
   @override
   void writeTo(GeometryContent writer, {String? name}) => isEmpty
