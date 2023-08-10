@@ -94,6 +94,12 @@ abstract class BoxCoords extends Box with _CoordinatesMixin {
     return BoxCoords.view(list, type: type);
   }
 
+  /// A minimum bounding box calculated from [positions].
+  ///
+  /// Throws FormatException if cannot create (ie. [positions] is empty).
+  factory BoxCoords.from(Iterable<Position> positions) =>
+      Box.createBoxFrom(positions, BoxCoords.create);
+
   /// Parses a bounding box with coordinate values parsed from [text].
   ///
   /// Coordinate values in [text] are separated by [delimiter].
@@ -176,6 +182,20 @@ class _BoxCoordsImpl extends BoxCoords {
   @override
   Iterable<Position> get corners2D =>
       Box.createCorners2D(this, Projected.create);
+
+  /// Projects this bounding box to another box using [projection].
+  @override
+  BoxCoords project(Projection projection) {
+    // get distinct corners (one, two or four) in 2D for the bounding bbox
+    final corners = corners2D;
+
+    // project all corner positions (using the projection)
+    final projected = corners.map((pos) => pos.project(projection));
+
+    // create a new bounding bbox
+    // (calculating min and max coords in all axes from corner positions)
+    return BoxCoords.from(projected);
+  }
 
   @override
   PositionCoords get min => _doCreateRange(

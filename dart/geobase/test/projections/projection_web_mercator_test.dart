@@ -13,8 +13,10 @@ import 'projection_sample.dart';
 
 void main() {
   group('Test projections between WGS84 and Web Mercator', () {
+    final toWebMercator = WGS84.webMercator.forward;
+    final toWgs84 = WGS84.webMercator.inverse;
+
     test('webMercatorToWgs84(Projected to Geographic)', () {
-      final toWgs84 = WGS84.webMercator.inverse;
       for (final coords in wgs84ToWebMercatorData) {
         final point2 = Projected(x: coords[2], y: coords[3]);
         final geoPoint2 = Geographic(lon: coords[0], lat: coords[1]);
@@ -37,7 +39,6 @@ void main() {
     });
 
     test('wgs84ToWebMercator(Geographic to Projected)', () {
-      final toWebMercator = WGS84.webMercator.forward;
       for (final coords in wgs84ToWebMercatorData) {
         final geoPoint3 = Geographic(lon: coords[0], lat: coords[1]);
         final point3 = Projected(x: coords[2], y: coords[3]);
@@ -52,6 +53,19 @@ void main() {
           0.01,
         );
       }
+    });
+
+    test('project bbox between GeoBox and ProjBox', () {
+      const gb = GeoBox(
+        west: 10.19238847,
+        south: -11.349348834,
+        east: 15.23095884,
+        north: 21.094852974,
+      );
+      final wm = gb.project(toWebMercator);
+      final gb2 = wm.project(toWgs84);
+      expect(gb.toText(decimals: 8), gb2.toText(decimals: 8));
+      expect(gb.equals2D(gb2), true);
     });
   });
 

@@ -9,6 +9,8 @@ import 'package:meta/meta.dart';
 import '/src/codes/coords.dart';
 import '/src/coordinates/base/aligned.dart';
 import '/src/coordinates/base/box.dart';
+import '/src/coordinates/geographic/geobox.dart';
+import '/src/coordinates/projection/projection.dart';
 
 import 'projected.dart';
 
@@ -194,6 +196,21 @@ class ProjBox extends Box {
   @override
   Iterable<Projected> get corners2D =>
       Box.createCorners2D(this, Projected.create);
+
+  /// Projects this projected bounding box to a geographic box using
+  /// the inverse [projection].
+  @override
+  GeoBox project(Projection projection) {
+    // get distinct corners (one, two or four) in 2D for the projected bbox
+    final corners = corners2D;
+
+    // unproject all corner positions (using the inverse projection)
+    final unprojected = corners.map((pos) => pos.project(projection));
+
+    // create an unprojected (geographic) bbox
+    // (calculating min and max coords in all axes from corner positions)
+    return GeoBox.from(unprojected);
+  }
 
   @override
   int get spatialDimension => type.spatialDimension;

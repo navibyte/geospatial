@@ -176,7 +176,7 @@ abstract class Position extends Positionable {
   /// measured position.
   Position copyWith({num? x, num? y, num? z, num? m});
 
-  /// Projects this position to another position using the [projection].
+  /// Projects this position to another position using [projection].
   ///
   /// Subtypes may specify a more accurate position type for the returned object
   /// (for example a *geographic* position would return a *projected* position

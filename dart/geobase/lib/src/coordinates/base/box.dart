@@ -10,6 +10,7 @@ import 'dart:math' as math;
 
 import '/src/codes/coords.dart';
 import '/src/constants/epsilon.dart';
+import '/src/coordinates/projection/projection.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 import '/src/utils/tolerance.dart';
@@ -160,6 +161,13 @@ abstract class Box extends Positionable {
   /// May return 1 (when `min == max`), 2 (when either or both 2D coordinates
   /// equals between min and max) or 4 positions (otherwise).
   Iterable<Position> get corners2D;
+
+  /// Projects this bounding box to another box using [projection].
+  ///
+  /// Subtypes may specify a more accurate bounding box type for the returned
+  /// object (for example a *geographic* bounding box would return a *projected*
+  /// box when forward-projecting, and other way when inverse-projecting).
+  Box project(Projection projection);
 
   /// True if this box equals with [other] by testing 2D coordinates only.
   ///
