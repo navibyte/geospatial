@@ -151,6 +151,21 @@ void main() {
     }
   });
 
+  group('Position array equality', () {
+    final xy1 = PositionArray.parse('1.1,1.2,2.1,2.2,3.1,3.2');
+    final arr = [1.1, 1.2, 2.1, 2.2, 3.1, 3.2];
+    final xy2 = PositionArray.view(arr);
+    final xy3 = PositionArray.view(arr);
+
+    test('Testing equality', () {
+      expect(xy1, xy2);
+      expect(xy1 == xy2, false);
+     
+      expect(xy2, xy3);
+      expect(xy2 == xy3, true);
+    });
+  });
+
   group('Position array (XY positions) as flat coordinate values', () {
     // array of 3 positions with xy coordinates
     const xyData3 = [1.1, 1.2, 2.1, 2.2, 3.1, 3.2];
