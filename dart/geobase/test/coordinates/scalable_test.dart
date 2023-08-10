@@ -21,6 +21,16 @@ void main() {
       expect(Scalable2i.factory(zoom: 9).call(x: 23, y: 10), ref9);
     });
 
+    test('Test Scalable2i coordinates (output)', () {
+      expect(Scalable2i.build(const [9, 23, 10]).toText(), '9,23,10');
+      expect(Scalable2i.parse('9;23;10', delimiter: ';').values, [9, 23, 10]);
+
+      final s2i = Scalable2i.factory(zoom: 9).call(x: 23, y: 10);
+      expect(s2i[0], 9);
+      expect(s2i[1], 23);
+      expect(s2i[2], 10);
+    });
+
     test('Test Scalable2i zoomIn and zoomOut', () {
       expect(ref0.zoomIn(), const Scalable2i(zoom: 1, x: 2, y: 0));
       expect(ref0.zoomOut(), const Scalable2i(zoom: 0, x: 1, y: 0));

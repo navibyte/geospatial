@@ -29,4 +29,9 @@ abstract class Scalable {
 
   /// Zooms to the [zoom] level (a positive number).
   Scalable zoomTo(covariant num zoom);
+
+  /// A string representation of coordinate values separated by [delimiter].
+  String toText({
+    String delimiter = ',',
+  });
 }

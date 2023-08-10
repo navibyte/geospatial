@@ -9,8 +9,6 @@ import 'package:test/test.dart';
 
 import '../projections/projection_sample.dart';
 
-import 'tiling_samples.dart';
-
 const _samples = [
   [
     Geographic(lon: -87.65, lat: 41.85),
@@ -47,11 +45,11 @@ void main() {
         final tileBounds = sample[4] as GeoBox;
 
         expectPosition(crs84.positionToWorld(pos), world, 0.000001);
-        expectScaled2i(crs84.positionToPixel(pos, zoom: pixel.zoom), pixel);
-        expectScaled2i(crs84.positionToTile(pos, zoom: tile.zoom), tile);
+        expect(crs84.positionToPixel(pos, zoom: pixel.zoom), pixel);
+        expect(crs84.positionToTile(pos, zoom: tile.zoom), tile);
         expectPosition(crs84.worldToPosition(world), pos, 0.0000001);
-        expectScaled2i(crs84.worldToPixel(world, zoom: pixel.zoom), pixel);
-        expectScaled2i(crs84.worldToTile(world, zoom: tile.zoom), tile);
+        expect(crs84.worldToPixel(world, zoom: pixel.zoom), pixel);
+        expect(crs84.worldToTile(world, zoom: tile.zoom), tile);
         expectPosition(crs84.pixelToPosition(pixel), pos, 0.2);
         expectPosition(crs84.pixelToWorld(pixel), world, 0.3);
         expect(crs84.tileToBounds(tile), tileBounds);

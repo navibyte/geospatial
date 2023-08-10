@@ -13,8 +13,6 @@ import 'package:test/test.dart';
 
 import '../projections/projection_sample.dart';
 
-import 'tiling_samples.dart';
-
 const _samples = [
   Geographic(lon: 0.0, lat: 0.0),
   Geographic(lon: -87.65, lat: 41.85),
@@ -98,10 +96,7 @@ void main() {
           // geographic position to pixel
           final pixel = webMercator.positionToPixel(pos, zoom: zoom);
           final pixelRef = _refToPixel(pos, zoom);
-          expectScaled2i(
-            pixel,
-            pixelRef,
-          );
+          expect(pixel, pixelRef);
 
           // calculated pixel back to geographic position (not accurate anymore)
           final unprojectedPos = webMercator.pixelToPosition(pixel);
@@ -114,22 +109,19 @@ void main() {
           // and again to pixel
           final pixel2 =
               webMercator.positionToPixel(unprojectedPos, zoom: zoom);
-          expectScaled2i(pixel2, pixelRef);
+          expect(pixel2, pixelRef);
 
           // geographic position to tile
           final tile = webMercator.positionToTile(pos, zoom: zoom);
           final tileRef = _refToTile(pos, zoom);
-          expectScaled2i(tile, tileRef);
+          expect(tile, tileRef);
 
           // pixel to tile
-          expectScaled2i(webMercator.pixelToTile(pixel), tileRef);
+          expect(webMercator.pixelToTile(pixel), tileRef);
 
           // world to pixel
           final pixel3 = webMercator.worldToPixel(world, zoom: zoom);
-          expectScaled2i(
-            pixel3,
-            pixelRef,
-          );
+          expect(pixel3, pixelRef);
 
           // pixel to world
           expectPosition(webMercator.pixelToWorld(pixel), world, 0.5);
@@ -137,7 +129,7 @@ void main() {
           expectPosition(webMercator.pixelToWorld(pixel3), world, 0.5);
 
           // world to tile
-          expectScaled2i(webMercator.worldToTile(world, zoom: zoom), tileRef);
+          expect(webMercator.worldToTile(world, zoom: zoom), tileRef);
         }
       }
     });
