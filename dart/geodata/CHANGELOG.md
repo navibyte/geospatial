@@ -1,6 +1,6 @@
 ## 0.12.0
 
-NOTE: Version 0.12.0 currently [under development](https://github.com/navibyte/geospatial/issues/177) (0.12.0-dev.1).
+[geodata version 0.12.0 #177](https://github.com/navibyte/geospatial/issues/177)
 
 ✨ New (2023-07): better client-side support for OGC API Features (Part 1 and 2).
 
@@ -17,6 +17,7 @@ NOTE: Version 0.12.0 currently [under development](https://github.com/navibyte/g
 * [Alternative logics to resolve axis order #182](https://github.com/navibyte/geospatial/issues/182)
 
 🛠 Maintenance:
+* Uses the latest `geobase` version 0.5.0
 * Removed extra internal export files and made internal imports more excplicit.
 * A new library `package:geodata/formats.dart` with OpenAPI document and Common Query Language (CQL2) formats (partial support).
 
