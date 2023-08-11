@@ -18,7 +18,7 @@ schemes, vector data models and formats, and gespatial Web APIs.
 
 Code           | Package | Description 
 -------------- | --------| -----------
-:globe_with_meridians: [geobase](dart/geobase) | [![pub package](https://img.shields.io/pub/v/geobase.svg)](https://pub.dev/packages/geobase) | Geospatial data structures (coordinates, geometries, features, metadata), projections and tiling schemes. Vector data format support for [GeoJSON](https://geojson.org/), [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) and [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary).
+:globe_with_meridians: [geobase](dart/geobase) | [![pub package](https://img.shields.io/pub/v/geobase.svg)](https://pub.dev/packages/geobase) | Geospatial data structures (coordinates, geometries, features, metadata), spherical geodesy, projections and tiling schemes. Vector data format support for [GeoJSON](https://geojson.org/), [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) and [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary).
 :earth_americas: [geodata](dart/geodata) | [![pub package](https://img.shields.io/pub/v/geodata.svg)](https://pub.dev/packages/geodata) | Geospatial feature service Web APIs with support for [GeoJSON](https://geojson.org/) and [OGC API Features](https://ogcapi.ogc.org/features/) clients.
 
 ## :sparkles: Features
@@ -47,6 +47,7 @@ Standard part | Support in this package
 ------------- | -----------------------
 [OGC API - Features - Part 1: Core](https://docs.ogc.org/is/17-069r4/17-069r4.html) | Supported for accessing metadata and GeoJSON feature collections.
 [OGC API - Features - Part 2: Coordinate Reference Systems by Reference](https://docs.ogc.org/is/18-058r1/18-058r1.html) | Supported.
+OGC API - Features - Part 3: Filtering (draft) | Partially supported (conformance classes, queryables, features filter).
 
 ## :keyboard: Sample code
 
@@ -119,7 +120,7 @@ Geospatial feature and feature collections can be instantiated easily too:
   ]);
 ```
 
-GeoJSON and WKB formats are supported as input and output (WKT only output):
+GeoJSON, WKT and WKB formats are supported as input and output:
 
 ```dart
   // Parse a geometry from GeoJSON text.
