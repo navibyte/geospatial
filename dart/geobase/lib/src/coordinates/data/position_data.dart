@@ -12,7 +12,7 @@ import '/src/utils/tolerance.dart';
 /// A fixed-length and random-access view to positions with coordinate values.
 ///
 /// See [Position] for description about supported coordinate values.
-mixin PositionData<E extends Position, C extends num> implements Positionable {
+mixin PositionData<E extends Position> implements Positionable {
   /// The number of positions in this view.
   int get length;
 
@@ -46,14 +46,14 @@ mixin PositionData<E extends Position, C extends num> implements Positionable {
   /// For geographic coordinates x represents *longitude*.
   ///
   /// The index must be a valid index in this view; `0 <= index < length`.
-  C x(int index);
+  double x(int index);
 
   /// The `y` coordinate of the position at the given index.
   ///
   /// For geographic coordinates y represents *latitude*.
   ///
   /// The index must be a valid index in this view; `0 <= index < length`.
-  C y(int index);
+  double y(int index);
 
   /// The `z` coordinate of the position at the given index.
   ///
@@ -63,7 +63,7 @@ mixin PositionData<E extends Position, C extends num> implements Positionable {
   /// For geographic coordinates z represents *elevation* or *altitude*.
   ///
   /// The index must be a valid index in this view; `0 <= index < length`.
-  C z(int index);
+  double z(int index);
 
   /// The `z` coordinate of the position at the given index.
   ///
@@ -72,7 +72,7 @@ mixin PositionData<E extends Position, C extends num> implements Positionable {
   /// For geographic coordinates z represents *elevation* or *altitude*.
   ///
   /// The index must be a valid index in this view; `0 <= index < length`.
-  C? optZ(int index);
+  double? optZ(int index);
 
   /// The `m` coordinate of the position at the given index.
   ///
@@ -83,7 +83,7 @@ mixin PositionData<E extends Position, C extends num> implements Positionable {
   /// (like time).
   ///
   /// The index must be a valid index in this view; `0 <= index < length`.
-  C m(int index);
+  double m(int index);
 
   /// The `m` coordinate of the position at the given index.
   ///
@@ -93,7 +93,7 @@ mixin PositionData<E extends Position, C extends num> implements Positionable {
   /// (like time).
   ///
   /// The index must be a valid index in this view; `0 <= index < length`.
-  C? optM(int index);
+  double? optM(int index);
 
   /// True if the first and last position equals in 2D.
   bool get isClosed {
@@ -123,7 +123,7 @@ mixin PositionData<E extends Position, C extends num> implements Positionable {
   ///
   /// Tolerance values must be positive (>= 0.0).
   bool equals2D(
-    PositionData<E, C> other, {
+    PositionData<E> other, {
     double toleranceHoriz = defaultEpsilon,
   }) {
     assertTolerance(toleranceHoriz);

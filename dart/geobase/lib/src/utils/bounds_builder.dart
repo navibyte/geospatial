@@ -132,7 +132,7 @@ class BoundsBuilder {
       );
 
   /// Adds position [data] to be used on bounds calculation.
-  void addPositions(PositionData<Position, double> data) {
+  void addPositions(PositionData data) {
     switch (type) {
       case Coords.xy:
         for (var i = 0; i < data.length; i++) {

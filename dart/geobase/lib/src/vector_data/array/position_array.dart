@@ -68,13 +68,13 @@ abstract class PositionArray with _CoordinatesMixin {
   /// Access coordinate values of positions.
   ///
   /// See [Position] for description about supported coordinate values.
-  PositionData<PositionCoords, double> get data =>
+  PositionData<PositionCoords> get data =>
       _PositionArrayData<PositionCoords>(_data, _type, PositionCoords.view);
 
   /// Access positions as custom type of [T].
   ///
   /// The [factory] is used to create instances of [T] as needed.
-  PositionData<T, double> dataTo<T extends Position>(
+  PositionData<T> dataTo<T extends Position>(
     CreatePosition<T> factory,
   ) =>
       _PositionArrayData<T>(_data, _type, _adapt(factory));
@@ -86,11 +86,11 @@ abstract class PositionArray with _CoordinatesMixin {
   }
 
   /// Access position array as a [PositionData] containing projected positions.
-  PositionData<Projected, double> get toProjected =>
+  PositionData<Projected> get toProjected =>
       _PositionArrayData<Projected>(_data, _type, Projected.build);
 
   /// Access position array as a [PositionData] containing geographic positions.
-  PositionData<Geographic, double> get toGeographic =>
+  PositionData<Geographic> get toGeographic =>
       _PositionArrayData<Geographic>(_data, _type, Geographic.build);
 
   /// Access position array as an iterable of projected positions.
@@ -141,7 +141,7 @@ class _PositionArrayImpl extends PositionArray {
   // hash might then have performance issues too.
 }
 
-class _PositionArrayData<E extends Position> with PositionData<E, double> {
+class _PositionArrayData<E extends Position> with PositionData<E> {
   final Iterable<double> data;
 
   @override
