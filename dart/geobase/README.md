@@ -463,8 +463,8 @@ Projected *bounding boxes*:
 
 ### Scalable coordinates
 
-*Scalable* coordinates are *projected* coordinates associated with
-a *level of detail* (LOD) or a `zoom` level. They are used for example by
+*Scalable* coordinates are coordinates associated with a *level of detail* (LOD)
+or a `zoom` level. They are used for example by
 [tiling schemes](#tiling-schemes) to represent *pixels* or *tiles* in tile
 matrices.
 
@@ -483,29 +483,37 @@ level, with all values as integers.
 
 ### Coordinates summary 
 
-Classes representing *projected*, *geographic* and *scalable* coordinates:
+Classes representing *position*, *bounding box* and *scalable* coordinates:
 
 <img src="https://raw.githubusercontent.com/navibyte/geospatial/main/dart/geobase/assets/diagrams/position_box_scalable.svg" width="100%" title="Position, Box and Scalable classes" />
 
-The summary of coordinate values in *position* classes:
+Coordinate values in *position* classes (*projected* and *geographic*):
 
-Class         | Required coordinates      | Optional coordinates
-------------- | ------------------------- | ------------------------------------
-`Projected`   | x, y                      | z, m
-`Geographic`  | lon, lat                  | elev, m
-`Scalable2i`  | zoom, x, y                |
+Class         | Required coordinates      | Optional coordinates  | Values
+------------- | ------------------------- | --------------------- | ------
+`Projected`   | x, y                      | z, m                  | double
+`Geographic`  | lon, lat                  | elev, m               | double
 
-The summary of coordinate values in *bounding box* classes:
+Coordinate values in *bounding box* classes (*projected* and *geographic*):
 
-Class         | Required coordinates      | Optional coordinates
-------------- | ------------------------- | ------------------------------------
-`ProjBox`     | minX, minY, maxX, maxY    | minZ, minM, maxZ, maxM
-`GeoBox`      | west, south, east, north  | minElev, minM, maxElev, maxM
+Class         | Required coordinates      | Optional coordinates         | Values
+------------- | ------------------------- | ---------------------------- | ------
+`ProjBox`     | minX, minY, maxX, maxY    | minZ, minM, maxZ, maxM       | double
+`GeoBox`      | west, south, east, north  | minElev, minM, maxElev, maxM | double
+
+Ccoordinate values in *scalable* classes:
+
+Class         | Required coordinates      | Optional coordinates  | Values
+------------- | ------------------------- | --------------------- | ------
+`Scalable2i`  | zoom, x, y                |                       | int
 
 In some interfaces, for example for positions, coordinate values are referenced
 only by x, y, z and m property names. So in such a case and in the context of
 this package, for geographic coordinates x represents *longitude*, y represents
 *latitude*, and z represents *elevation* (or height or altitude).
+
+Coordinates are stored as `double` values in all position and bounding box
+classes but `Scalable2i` uses `int` coordinate values. 
 
 The `Position` interface is a super type for `Projected` and `Geographic`, and
 the `Box` interface is a super type for `ProjBox` and `GeoBox`. Please see more
