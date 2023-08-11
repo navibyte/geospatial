@@ -13,9 +13,9 @@ dependencies:
   http: ^0.13.0
   meta: ^1.7.0
 
-  #geobase: ^0.5.0-dev.2
-  geobase: 
-    path: ../geobase
+  geobase: ^0.5.0
+  #geobase: 
+  #  path: ../geobase
 
 dev_dependencies:
   test: ^1.21.1
