@@ -69,8 +69,8 @@ abstract class GeoTileMatrixSet extends TileMatrixSet {
       lat: converter.fromScaledY(py, height: height),
 
       // optional z and m are copied
-      elev: world.optZ?.toDouble(),
-      m: world.optM?.toDouble(),
+      elev: world.optZ,
+      m: world.optM,
     );
   }
 

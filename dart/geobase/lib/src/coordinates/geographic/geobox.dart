@@ -84,23 +84,23 @@ class GeoBox extends Box {
         _maxM = maxM;
 
   /// A bounding box from parameters compatible with `CreateBox` function type.
-  GeoBox.create({
-    required num minX,
-    required num minY,
-    num? minZ,
-    num? minM,
-    required num maxX,
-    required num maxY,
-    num? maxZ,
-    num? maxM,
-  })  : _west = minX.toDouble(),
-        _south = minY.toDouble(),
-        _minElev = minZ?.toDouble(),
-        _minM = minM?.toDouble(),
-        _east = maxX.toDouble(),
-        _north = maxY.toDouble(),
-        _maxElev = maxZ?.toDouble(),
-        _maxM = maxM?.toDouble();
+  const GeoBox.create({
+    required double minX,
+    required double minY,
+    double? minZ,
+    double? minM,
+    required double maxX,
+    required double maxY,
+    double? maxZ,
+    double? maxM,
+  })  : _west = minX,
+        _south = minY,
+        _minElev = minZ,
+        _minM = minM,
+        _east = maxX,
+        _north = maxY,
+        _maxElev = maxZ,
+        _maxM = maxM;
 
   /// A minimum bounding box calculated from [positions].
   ///
@@ -197,22 +197,22 @@ class GeoBox extends Box {
   double? get maxM => _maxM;
 
   @override
-  num get minX => _west;
+  double get minX => _west;
 
   @override
-  num get minY => _south;
+  double get minY => _south;
 
   @override
-  num? get minZ => _minElev;
+  double? get minZ => _minElev;
 
   @override
-  num get maxX => _east;
+  double get maxX => _east;
 
   @override
-  num get maxY => _north;
+  double get maxY => _north;
 
   @override
-  num? get maxZ => _maxElev;
+  double? get maxZ => _maxElev;
 
   /// The "west-south" geographic position of this bounding box.
   ///
@@ -244,10 +244,10 @@ class GeoBox extends Box {
       );
 
   @override
-  num get width => east - west;
+  double get width => east - west;
 
   @override
-  num get height => north - south;
+  double get height => north - south;
 
   @override
   Geographic aligned2D([Aligned align = Aligned.center]) =>

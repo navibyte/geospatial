@@ -31,14 +31,14 @@ import 'positionable.dart';
 /// `minX` => `west`, `minY` => `south`, `minZ` => `minElev`, `minM` => `minM`,
 /// `maxX` => `east`, `maxY` => `north`, `maxZ` => `maxElev`, `maxM` => `maxM`
 typedef CreateBox<T extends Box> = T Function({
-  required num minX,
-  required num minY,
-  num? minZ,
-  num? minM,
-  required num maxX,
-  required num maxY,
-  num? maxZ,
-  num? maxM,
+  required double minX,
+  required double minY,
+  double? minZ,
+  double? minM,
+  required double maxX,
+  required double maxY,
+  double? maxZ,
+  double? maxM,
 });
 
 /// A base interface for axis-aligned bounding boxes with min & max coordinates.
@@ -88,46 +88,46 @@ abstract class Box extends Positionable {
   /// The minimum x (or west) coordinate.
   ///
   /// For geographic coordinates minX represents *west* longitude.
-  num get minX;
+  double get minX;
 
   /// The minimum y (or south) coordinate.
   ///
   /// For geographic coordinates minY represents *south* latitude.
-  num get minY;
+  double get minY;
 
   /// The minimum z coordinate optionally. Returns null if not available.
   ///
   /// For geographic coordinates minZ represents minimum elevation or altitude.
   ///
   /// You can also use [is3D] to check whether z coordinate available.
-  num? get minZ;
+  double? get minZ;
 
   /// The minimum m coordinate optionally. Returns null if not available.
   ///
   /// You can also use [isMeasured] to check whether m coordinate is available.
-  num? get minM;
+  double? get minM;
 
   /// The maximum x (or east) coordinate.
   ///
   /// For geographic coordinates maxX represents *east* longitude.
-  num get maxX;
+  double get maxX;
 
   /// The maximum y (or north) coordinate.
   ///
   /// For geographic coordinates maxY represents *north* latitude.
-  num get maxY;
+  double get maxY;
 
   /// The maximum z coordinate optionally. Returns null if not available.
   ///
   /// For geographic coordinates maxZ represents maximum elevation or altitude.
   ///
   /// You can also use [is3D] to check whether z coordinate available.
-  num? get maxZ;
+  double? get maxZ;
 
   /// The maximum m coordinate optionally. Returns null if not available.
   ///
   /// You can also use [isMeasured] to check whether m coordinate is available.
-  num? get maxM;
+  double? get maxM;
 
   /// The minimum position (or west-south) of this bounding box.
   Position get min;
@@ -148,10 +148,10 @@ abstract class Box extends Positionable {
       );
 
   /// The width of the bounding box, equals to `maxX - minX`.
-  num get width;
+  double get width;
 
   /// The height of the bounding box, equals to `maxY - minY`.
-  num get height;
+  double get height;
 
   /// Returns an aligned 2D position relative to this box.
   Position aligned2D([Aligned align = Aligned.center]);
@@ -361,14 +361,14 @@ abstract class Box extends Positionable {
       }
       final mIndex = coordsType.indexForM;
       return to.call(
-        minX: coords[offset],
-        minY: coords[offset + 1],
-        minZ: coordsType.is3D ? coords[offset + 2] : null,
-        minM: mIndex != null ? coords[offset + mIndex] : null,
-        maxX: coords[offset + dim],
-        maxY: coords[offset + dim + 1],
-        maxZ: coordsType.is3D ? coords[offset + dim + 2] : null,
-        maxM: mIndex != null ? coords[offset + dim + mIndex] : null,
+        minX: coords[offset].toDouble(),
+        minY: coords[offset + 1].toDouble(),
+        minZ: coordsType.is3D ? coords[offset + 2].toDouble() : null,
+        minM: mIndex != null ? coords[offset + mIndex].toDouble() : null,
+        maxX: coords[offset + dim].toDouble(),
+        maxY: coords[offset + dim + 1].toDouble(),
+        maxZ: coordsType.is3D ? coords[offset + dim + 2].toDouble() : null,
+        maxM: mIndex != null ? coords[offset + dim + mIndex].toDouble() : null,
       );
     } else {
       // resolve iterator for source coordinates
@@ -396,7 +396,12 @@ abstract class Box extends Positionable {
 
       // if xy coordinates (4 items), then return already now
       if (type == Coords.xy || (c4 == null && type == null)) {
-        return to.call(minX: c0, minY: c1, maxX: c2, maxY: c3);
+        return to.call(
+          minX: c0.toDouble(),
+          minY: c1.toDouble(),
+          maxX: c2.toDouble(),
+          maxY: c3.toDouble(),
+        );
       }
 
       // then get also last 3 of the optional
@@ -422,44 +427,49 @@ abstract class Box extends Positionable {
       switch (coordType) {
         case Coords.xy:
           if (c4 == null) {
-            return to.call(minX: c0, minY: c1, maxX: c2, maxY: c3);
+            return to.call(
+              minX: c0.toDouble(),
+              minY: c1.toDouble(),
+              maxX: c2.toDouble(),
+              maxY: c3.toDouble(),
+            );
           }
           break;
         case Coords.xyz:
           if (c4 != null && c5 != null && c6 == null) {
             return to.call(
-              minX: c0,
-              minY: c1,
-              minZ: c2,
-              maxX: c3,
-              maxY: c4,
-              maxZ: c5,
+              minX: c0.toDouble(),
+              minY: c1.toDouble(),
+              minZ: c2.toDouble(),
+              maxX: c3.toDouble(),
+              maxY: c4.toDouble(),
+              maxZ: c5.toDouble(),
             );
           }
           break;
         case Coords.xym:
           if (c4 != null && c5 != null && c6 == null) {
             return to.call(
-              minX: c0,
-              minY: c1,
-              minM: c2,
-              maxX: c3,
-              maxY: c4,
-              maxM: c5,
+              minX: c0.toDouble(),
+              minY: c1.toDouble(),
+              minM: c2.toDouble(),
+              maxX: c3.toDouble(),
+              maxY: c4.toDouble(),
+              maxM: c5.toDouble(),
             );
           }
           break;
         case Coords.xyzm:
           if (c4 != null && c5 != null && c6 != null && c7 != null) {
             return to.call(
-              minX: c0,
-              minY: c1,
-              minZ: c2,
-              minM: c3,
-              maxX: c4,
-              maxY: c5,
-              maxZ: c6,
-              maxM: c7,
+              minX: c0.toDouble(),
+              minY: c1.toDouble(),
+              minZ: c2.toDouble(),
+              minM: c3.toDouble(),
+              maxX: c4.toDouble(),
+              maxY: c5.toDouble(),
+              maxZ: c6.toDouble(),
+              maxM: c7.toDouble(),
             );
           }
           break;
@@ -493,7 +503,7 @@ abstract class Box extends Positionable {
     Pattern? delimiter = ',',
     Coords? type,
   }) {
-    final coords = parseNumValues(text, delimiter: delimiter);
+    final coords = parseDoubleValues(text, delimiter: delimiter);
     return buildBox(coords, to: to, type: type);
   }
 
@@ -544,8 +554,8 @@ abstract class Box extends Positionable {
     CreateBox<R> factory,
   ) {
     // calculate mininum and maximum coordinates
-    num? minX, minY, minZ, minM;
-    num? maxX, maxY, maxZ, maxM;
+    double? minX, minY, minZ, minM;
+    double? maxX, maxY, maxZ, maxM;
     var isFirst = true;
     for (final cp in positions) {
       if (isFirst) {
@@ -603,35 +613,35 @@ abstract class Box extends Positionable {
 
   /// Coordinate values of Box as a double list of 4, 6 or 8 items.
   static List<double> getDoubleListFrom({
-    required num minX,
-    required num minY,
-    num? minZ,
-    num? minM,
-    required num maxX,
-    required num maxY,
-    num? maxZ,
-    num? maxM,
+    required double minX,
+    required double minY,
+    double? minZ,
+    double? minM,
+    required double maxX,
+    required double maxY,
+    double? maxZ,
+    double? maxM,
   }) {
     final is3D = minZ != null && maxZ != null;
     final isMeasured = minM != null && maxM != null;
     final type = Coords.select(is3D: is3D, isMeasured: isMeasured);
     final list = List<double>.filled(2 * type.coordinateDimension, 0);
     var i = 0;
-    list[i++] = minX.toDouble();
-    list[i++] = minY.toDouble();
+    list[i++] = minX;
+    list[i++] = minY;
     if (is3D) {
-      list[i++] = minZ.toDouble();
+      list[i++] = minZ;
     }
     if (isMeasured) {
-      list[i++] = minM.toDouble();
+      list[i++] = minM;
     }
-    list[i++] = maxX.toDouble();
-    list[i++] = maxY.toDouble();
+    list[i++] = maxX;
+    list[i++] = maxY;
     if (is3D) {
-      list[i++] = maxZ.toDouble();
+      list[i++] = maxZ;
     }
     if (isMeasured) {
-      list[i++] = maxM.toDouble();
+      list[i++] = maxM;
     }
     return list;
   }

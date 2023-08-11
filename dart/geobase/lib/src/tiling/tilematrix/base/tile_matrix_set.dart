@@ -117,8 +117,8 @@ abstract class TileMatrixSet {
 
     return Projected(
       // x and y coordinates projected to world coordinates
-      x: px.clamp(0.0, width),
-      y: py.clamp(0.0, height),
+      x: px.clamp(0.0, width).toDouble(),
+      y: py.clamp(0.0, height).toDouble(),
 
       // optional z and m are copied
       z: position.optZ,
@@ -262,8 +262,8 @@ abstract class TileMatrixSet {
 
     return Projected(
       // x and y coordinates projected to world coordinates
-      x: x.clamp(0.0, width),
-      y: y.clamp(0.0, height),
+      x: x.clamp(0.0, width).toDouble(),
+      y: y.clamp(0.0, height).toDouble(),
     );
   }
 
@@ -335,8 +335,8 @@ abstract class TileMatrixSet {
 
     return Projected(
       // x and y coordinates projected to world coordinates
-      x: x.clamp(0.0, width),
-      y: y.clamp(0.0, height),
+      x: x.clamp(0.0, width).toDouble(),
+      y: y.clamp(0.0, height).toDouble(),
     );
   }
 

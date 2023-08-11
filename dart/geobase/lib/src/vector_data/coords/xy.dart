@@ -41,17 +41,14 @@ class XY extends PositionCoords implements Projected {
   /// This factory is compatible with `CreatePosition` function type.
   @Deprecated('Use Projected or ListCoordinateExtension instead.')
   factory XY.create({
-    required num x,
-    required num y,
+    required double x,
+    required double y,
     // ignore: avoid_unused_constructor_parameters
-    num? z,
+    double? z,
     // ignore: avoid_unused_constructor_parameters
-    num? m,
+    double? m,
   }) =>
-      XY(
-        x.toDouble(),
-        y.toDouble(),
-      );
+      XY(x, y);
 
   /// A projected position as an iterable collection of x and y values.
   ///
@@ -85,9 +82,9 @@ class XY extends PositionCoords implements Projected {
   }
 
   @override
-  XY copyWith({num? x, num? y, num? z, num? m}) => XY(
-        x?.toDouble() ?? this.x,
-        y?.toDouble() ?? this.y,
+  XY copyWith({double? x, double? y, double? z, double? m}) => XY(
+        x ?? this.x,
+        y ?? this.y,
       );
 
   @override
@@ -175,16 +172,16 @@ class XYZ extends XY {
   // ignore: avoid_unused_constructor_parameters
   @Deprecated('Use Projected or ListCoordinateExtension instead.')
   factory XYZ.create({
-    required num x,
-    required num y,
-    num? z,
+    required double x,
+    required double y,
+    double? z,
     // ignore: avoid_unused_constructor_parameters
-    num? m,
+    double? m,
   }) =>
       XYZ(
-        x.toDouble(),
-        y.toDouble(),
-        z?.toDouble() ?? 0.0,
+        x,
+        y,
+        z ?? 0.0,
       );
 
   /// A projected position as an iterable collection of x, y and z values.
@@ -219,10 +216,10 @@ class XYZ extends XY {
   }
 
   @override
-  XYZ copyWith({num? x, num? y, num? z, num? m}) => XYZ(
-        x?.toDouble() ?? this.x,
-        y?.toDouble() ?? this.y,
-        z?.toDouble() ?? this.z,
+  XYZ copyWith({double? x, double? y, double? z, double? m}) => XYZ(
+        x ?? this.x,
+        y ?? this.y,
+        z ?? this.z,
       );
 
   @override
@@ -282,16 +279,16 @@ class XYM extends XY {
   // ignore: avoid_unused_constructor_parameters
   @Deprecated('Use Projected or ListCoordinateExtension instead.')
   factory XYM.create({
-    required num x,
-    required num y,
+    required double x,
+    required double y,
     // ignore: avoid_unused_constructor_parameters
-    num? z,
-    num? m,
+    double? z,
+    double? m,
   }) =>
       XYM(
-        x.toDouble(),
-        y.toDouble(),
-        m?.toDouble() ?? 0.0,
+        x,
+        y,
+        m ?? 0.0,
       );
 
   /// A projected position as an iterable collection of x, y and m values.
@@ -323,10 +320,10 @@ class XYM extends XY {
   }
 
   @override
-  XYM copyWith({num? x, num? y, num? z, num? m}) => XYM(
-        x?.toDouble() ?? this.x,
-        y?.toDouble() ?? this.y,
-        m?.toDouble() ?? this.m,
+  XYM copyWith({double? x, double? y, double? z, double? m}) => XYM(
+        x ?? this.x,
+        y ?? this.y,
+        m ?? this.m,
       );
 
   @override
@@ -384,11 +381,17 @@ class XYZM extends XYZ {
   ///
   /// This factory is compatible with `CreatePosition` function type.
   @Deprecated('Use Projected or ListCoordinateExtension instead.')
-  factory XYZM.create({required num x, required num y, num? z, num? m}) => XYZM(
-        x.toDouble(),
-        y.toDouble(),
-        z?.toDouble() ?? 0.0,
-        m?.toDouble() ?? 0.0,
+  factory XYZM.create({
+    required double x,
+    required double y,
+    double? z,
+    double? m,
+  }) =>
+      XYZM(
+        x,
+        y,
+        z ?? 0.0,
+        m ?? 0.0,
       );
 
   /// A projected position as an iterable collection of x, y, z and m values.
@@ -420,11 +423,11 @@ class XYZM extends XYZ {
   }
 
   @override
-  XYZM copyWith({num? x, num? y, num? z, num? m}) => XYZM(
-        x?.toDouble() ?? this.x,
-        y?.toDouble() ?? this.y,
-        z?.toDouble() ?? this.z,
-        m?.toDouble() ?? this.m,
+  XYZM copyWith({double? x, double? y, double? z, double? m}) => XYZM(
+        x ?? this.x,
+        y ?? this.y,
+        z ?? this.z,
+        m ?? this.m,
       );
 
   @override

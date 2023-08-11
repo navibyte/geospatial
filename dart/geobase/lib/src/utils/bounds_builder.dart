@@ -125,10 +125,10 @@ class BoundsBuilder {
 
   /// Adds a [point] to be used on bounds calculation.
   void addPosition(Position point) => addPoint(
-        x: point.x.toDouble(),
-        y: point.y.toDouble(),
-        z: point.optZ?.toDouble(),
-        m: point.optM?.toDouble(),
+        x: point.x,
+        y: point.y,
+        z: point.optZ,
+        m: point.optM,
       );
 
   /// Adds position [data] to be used on bounds calculation.
@@ -160,16 +160,16 @@ class BoundsBuilder {
   /// Adds a [bounds] to be used on bounds calculation.
   void addBounds(Box bounds) {
     addPoint(
-      x: bounds.minX.toDouble(),
-      y: bounds.minY.toDouble(),
-      z: bounds.minZ?.toDouble(),
-      m: bounds.minM?.toDouble(),
+      x: bounds.minX,
+      y: bounds.minY,
+      z: bounds.minZ,
+      m: bounds.minM,
     );
     addPoint(
-      x: bounds.maxX.toDouble(),
-      y: bounds.maxY.toDouble(),
-      z: bounds.maxZ?.toDouble(),
-      m: bounds.maxM?.toDouble(),
+      x: bounds.maxX,
+      y: bounds.maxY,
+      z: bounds.maxZ,
+      m: bounds.maxM,
     );
   }
 

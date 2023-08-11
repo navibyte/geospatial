@@ -29,28 +29,28 @@ import 'projected.dart';
 /// xyzm | minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
 @immutable
 class ProjBox extends Box {
-  final num _minX;
-  final num _minY;
-  final num? _minZ;
-  final num? _minM;
-  final num _maxX;
-  final num _maxY;
-  final num? _maxZ;
-  final num? _maxM;
+  final double _minX;
+  final double _minY;
+  final double? _minZ;
+  final double? _minM;
+  final double _maxX;
+  final double _maxY;
+  final double? _maxZ;
+  final double? _maxM;
 
   /// A bounding box with [minX], [minY], [maxX] and [maxY] coordinates.
   ///
   /// Optional [minZ] and [maxZ] for 3D boxes, and [minM] and [maxM] for
   /// measured boxes can be provided too.
   const ProjBox({
-    required num minX,
-    required num minY,
-    num? minZ,
-    num? minM,
-    required num maxX,
-    required num maxY,
-    num? maxZ,
-    num? maxM,
+    required double minX,
+    required double minY,
+    double? minZ,
+    double? minM,
+    required double maxX,
+    required double maxY,
+    double? maxZ,
+    double? maxM,
   })  : _minX = minX,
         _minY = minY,
         _minZ = minZ,
@@ -62,14 +62,14 @@ class ProjBox extends Box {
 
   /// A bounding box from parameters compatible with `CreateBox` function type.
   const ProjBox.create({
-    required num minX,
-    required num minY,
-    num? minZ,
-    num? minM,
-    required num maxX,
-    required num maxY,
-    num? maxZ,
-    num? maxM,
+    required double minX,
+    required double minY,
+    double? minZ,
+    double? minM,
+    required double maxX,
+    required double maxY,
+    double? maxZ,
+    double? maxM,
   })  : _minX = minX,
         _minY = minY,
         _minZ = minZ,
@@ -142,28 +142,28 @@ class ProjBox extends Box {
       );
 
   @override
-  num get minX => _minX;
+  double get minX => _minX;
 
   @override
-  num get minY => _minY;
+  double get minY => _minY;
 
   @override
-  num? get minZ => _minZ;
+  double? get minZ => _minZ;
 
   @override
-  num? get minM => _minM;
+  double? get minM => _minM;
 
   @override
-  num get maxX => _maxX;
+  double get maxX => _maxX;
 
   @override
-  num get maxY => _maxY;
+  double get maxY => _maxY;
 
   @override
-  num? get maxZ => _maxZ;
+  double? get maxZ => _maxZ;
 
   @override
-  num? get maxM => _maxM;
+  double? get maxM => _maxM;
 
   /// The minimum position (or west-south) of this bounding box.
   @override
@@ -184,10 +184,10 @@ class ProjBox extends Box {
       );
 
   @override
-  num get width => maxX - minX;
+  double get width => maxX - minX;
 
   @override
-  num get height => maxY - minY;
+  double get height => maxY - minY;
 
   @override
   Projected aligned2D([Aligned align = Aligned.center]) =>

@@ -176,13 +176,13 @@ class _ProjectionProxy with Projection {
     final hasZ = source.is3D;
     final point = hasZ
         ? p4d.Point.withZ(
-            x: source.x.toDouble(),
-            y: source.y.toDouble(),
-            z: source.z.toDouble(),
+            x: source.x,
+            y: source.y,
+            z: source.z,
           )
         : p4d.Point(
-            x: source.x.toDouble(),
-            y: source.y.toDouble(),
+            x: source.x,
+            y: source.y,
           );
 
     // project using forward or inverse projection of the tuple

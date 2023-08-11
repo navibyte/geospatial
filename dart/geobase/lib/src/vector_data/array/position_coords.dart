@@ -78,10 +78,10 @@ abstract class PositionCoords extends Position with _CoordinatesMixin {
   ///
   /// This factory is compatible with `CreatePosition` function type.
   factory PositionCoords.create({
-    required num x,
-    required num y,
-    num? z,
-    num? m,
+    required double x,
+    required double y,
+    double? z,
+    double? m,
   }) =>
       _doCreate(
         to: _PositionCoordsImpl.view,
@@ -213,7 +213,8 @@ class _PositionCoordsImpl extends PositionCoords {
   Iterable<double> get values => _data;
 
   @override
-  _PositionCoordsImpl copyWith({num? x, num? y, num? z, num? m}) => _doCopyWith(
+  _PositionCoordsImpl copyWith({double? x, double? y, double? z, double? m}) =>
+      _doCopyWith(
         from: this,
         to: _PositionCoordsImpl.view,
         x: x,
@@ -240,27 +241,27 @@ class _PositionCoordsImpl extends PositionCoords {
 
 T _doCreate<T extends PositionCoords>({
   required _CreateAt<T> to,
-  required num x,
-  required num y,
-  num? z,
-  num? m,
+  required double x,
+  required double y,
+  double? z,
+  double? m,
 }) {
   if (z != null) {
     // 3D coordinates
     if (m != null) {
       // 3D and measured coordinates
       final list = List<double>.filled(4, 0);
-      list[0] = x.toDouble();
-      list[1] = y.toDouble();
-      list[2] = z.toDouble();
-      list[3] = m.toDouble();
+      list[0] = x;
+      list[1] = y;
+      list[2] = z;
+      list[3] = m;
       return to.call(list, type: Coords.xyzm);
     } else {
       // 3D coordinates (not measured)
       final list = List<double>.filled(3, 0);
-      list[0] = x.toDouble();
-      list[1] = y.toDouble();
-      list[2] = z.toDouble();
+      list[0] = x;
+      list[1] = y;
+      list[2] = z;
       return to.call(list, type: Coords.xyz);
     }
   } else {
@@ -268,15 +269,15 @@ T _doCreate<T extends PositionCoords>({
     if (m != null) {
       // 2D and measured coordinates
       final list = List<double>.filled(3, 0);
-      list[0] = x.toDouble();
-      list[1] = y.toDouble();
-      list[2] = m.toDouble();
+      list[0] = x;
+      list[1] = y;
+      list[2] = m;
       return to.call(list, type: Coords.xym);
     } else {
       // 2D coordinates (not measured)
       final list = List<double>.filled(2, 0);
-      list[0] = x.toDouble();
-      list[1] = y.toDouble();
+      list[0] = x;
+      list[1] = y;
       return to.call(list, type: Coords.xy);
     }
   }
@@ -304,10 +305,10 @@ T _doParse<T extends PositionCoords>(
 T _doCopyWith<T extends PositionCoords>({
   required T from,
   required _CreateAt<T> to,
-  num? x,
-  num? y,
-  num? z,
-  num? m,
+  double? x,
+  double? y,
+  double? z,
+  double? m,
 }) {
   var size = 2;
   final newIs3D = from.is3D || z != null;
@@ -317,13 +318,13 @@ T _doCopyWith<T extends PositionCoords>({
   final newType = Coords.select(is3D: newIs3D, isMeasured: newIsMeasured);
 
   final list = List<double>.filled(size, 0);
-  list[0] = x?.toDouble() ?? from.x;
-  list[1] = y?.toDouble() ?? from.y;
+  list[0] = x ?? from.x;
+  list[1] = y ?? from.y;
   if (newIs3D) {
-    list[2] = z?.toDouble() ?? from.z;
+    list[2] = z ?? from.z;
   }
   if (newIsMeasured) {
-    list[newType.indexForM!] = m?.toDouble() ?? from.m;
+    list[newType.indexForM!] = m ?? from.m;
   }
 
   return to.call(

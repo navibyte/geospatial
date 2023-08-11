@@ -61,35 +61,35 @@ abstract class BoxCoords extends Box with _CoordinatesMixin {
   ///
   /// This factory is compatible with `CreateBox` function type.
   factory BoxCoords.create({
-    required num minX,
-    required num minY,
-    num? minZ,
-    num? minM,
-    required num maxX,
-    required num maxY,
-    num? maxZ,
-    num? maxM,
+    required double minX,
+    required double minY,
+    double? minZ,
+    double? minM,
+    required double maxX,
+    required double maxY,
+    double? maxZ,
+    double? maxM,
   }) {
     final is3D = minZ != null && maxZ != null;
     final isMeasured = minM != null && maxM != null;
     final type = Coords.select(is3D: is3D, isMeasured: isMeasured);
     final list = List<double>.filled(2 * type.coordinateDimension, 0);
     var i = 0;
-    list[i++] = minX.toDouble();
-    list[i++] = minY.toDouble();
+    list[i++] = minX;
+    list[i++] = minY;
     if (is3D) {
-      list[i++] = minZ.toDouble();
+      list[i++] = minZ;
     }
     if (isMeasured) {
-      list[i++] = minM.toDouble();
+      list[i++] = minM;
     }
-    list[i++] = maxX.toDouble();
-    list[i++] = maxY.toDouble();
+    list[i++] = maxX;
+    list[i++] = maxY;
     if (is3D) {
-      list[i++] = maxZ.toDouble();
+      list[i++] = maxZ;
     }
     if (isMeasured) {
-      list[i++] = maxM.toDouble();
+      list[i++] = maxM;
     }
     return BoxCoords.view(list, type: type);
   }
@@ -170,10 +170,10 @@ class _BoxCoordsImpl extends BoxCoords {
   const _BoxCoordsImpl.view(super.source, {super.type = Coords.xy}) : super();
 
   @override
-  num get width => maxX - minX;
+  double get width => maxX - minX;
 
   @override
-  num get height => maxY - minY;
+  double get height => maxY - minY;
 
   @override
   Position aligned2D([Aligned align = Aligned.center]) =>

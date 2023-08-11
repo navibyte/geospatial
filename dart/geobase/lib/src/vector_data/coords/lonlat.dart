@@ -51,17 +51,14 @@ class LonLat extends PositionCoords implements Geographic {
   /// This factory is compatible with `CreatePosition` function type.
   @Deprecated('Use Geographic or ListCoordinateExtension instead.')
   factory LonLat.create({
-    required num x,
-    required num y,
+    required double x,
+    required double y,
     // ignore: avoid_unused_constructor_parameters
-    num? z,
+    double? z,
     // ignore: avoid_unused_constructor_parameters
-    num? m,
+    double? m,
   }) =>
-      LonLat(
-        x.toDouble(),
-        y.toDouble(),
-      );
+      LonLat(x, y);
 
   /// A geographic position as an iterable collection of lon and lat values.
   ///
@@ -95,9 +92,9 @@ class LonLat extends PositionCoords implements Geographic {
   }
 
   @override
-  LonLat copyWith({num? x, num? y, num? z, num? m}) => LonLat(
-        x?.toDouble() ?? lon,
-        y?.toDouble() ?? lat,
+  LonLat copyWith({double? x, double? y, double? z, double? m}) => LonLat(
+        x ?? lon,
+        y ?? lat,
       );
 
   @override
@@ -234,17 +231,17 @@ class LonLatElev extends LonLat {
   /// This factory is compatible with `CreatePosition` function type.
   @Deprecated('Use Geographic or ListCoordinateExtension instead.')
   factory LonLatElev.create({
-    required num x,
-    required num y,
+    required double x,
+    required double y,
     // ignore: avoid_unused_constructor_parameters
-    num? z,
+    double? z,
     // ignore: avoid_unused_constructor_parameters
-    num? m,
+    double? m,
   }) =>
       LonLatElev(
-        x.toDouble(),
-        y.toDouble(),
-        (z ?? 0.0).toDouble(),
+        x,
+        y,
+        z ?? 0.0,
       );
 
   /// A geographic position as an iterable collection of lon, lat and elev
@@ -280,10 +277,11 @@ class LonLatElev extends LonLat {
   }
 
   @override
-  LonLatElev copyWith({num? x, num? y, num? z, num? m}) => LonLatElev(
-        x?.toDouble() ?? lon,
-        y?.toDouble() ?? lat,
-        z?.toDouble() ?? elev,
+  LonLatElev copyWith({double? x, double? y, double? z, double? m}) =>
+      LonLatElev(
+        x ?? lon,
+        y ?? lat,
+        z ?? elev,
       );
 
   @override
@@ -351,16 +349,16 @@ class LonLatM extends LonLat {
   /// This factory is compatible with `CreatePosition` function type.
   @Deprecated('Use Geographic or ListCoordinateExtension instead.')
   factory LonLatM.create({
-    required num x,
-    required num y,
+    required double x,
+    required double y,
     // ignore: avoid_unused_constructor_parameters
-    num? z,
-    num? m,
+    double? z,
+    double? m,
   }) =>
       LonLatM(
-        x.toDouble(),
-        y.toDouble(),
-        (m ?? 0.0).toDouble(),
+        x,
+        y,
+        m ?? 0.0,
       );
 
   /// A geographic position as an iterable collection of lon, lat and m values.
@@ -392,10 +390,10 @@ class LonLatM extends LonLat {
   }
 
   @override
-  LonLatM copyWith({num? x, num? y, num? z, num? m}) => LonLatM(
-        x?.toDouble() ?? lon,
-        y?.toDouble() ?? lat,
-        m?.toDouble() ?? this.m,
+  LonLatM copyWith({double? x, double? y, double? z, double? m}) => LonLatM(
+        x ?? lon,
+        y ?? lat,
+        m ?? this.m,
       );
 
   @override
@@ -461,16 +459,16 @@ class LonLatElevM extends LonLatElev {
   /// This factory is compatible with `CreatePosition` function type.
   @Deprecated('Use Geographic or ListCoordinateExtension instead.')
   factory LonLatElevM.create({
-    required num x,
-    required num y,
-    num? z,
-    num? m,
+    required double x,
+    required double y,
+    double? z,
+    double? m,
   }) =>
       LonLatElevM(
-        x.toDouble(),
-        y.toDouble(),
-        (z ?? 0.0).toDouble(),
-        (m ?? 0.0).toDouble(),
+        x,
+        y,
+        z ?? 0.0,
+        m ?? 0.0,
       );
 
   /// A geographic position as an iterable collection of lon, lat, elev and m
@@ -504,11 +502,12 @@ class LonLatElevM extends LonLatElev {
   }
 
   @override
-  LonLatElevM copyWith({num? x, num? y, num? z, num? m}) => LonLatElevM(
-        x?.toDouble() ?? lon,
-        y?.toDouble() ?? lat,
-        z?.toDouble() ?? elev,
-        m?.toDouble() ?? this.m,
+  LonLatElevM copyWith({double? x, double? y, double? z, double? m}) =>
+      LonLatElevM(
+        x ?? lon,
+        y ?? lat,
+        z ?? elev,
+        m ?? this.m,
       );
 
   @override

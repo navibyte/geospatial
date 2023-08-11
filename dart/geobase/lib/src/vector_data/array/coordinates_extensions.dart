@@ -119,7 +119,7 @@ extension PositionIterableCoordinatesExtension on Iterable<Position> {
     var posIndex = 0;
     for (final pos in this) {
       for (var coordIndex = 0; coordIndex < dim; coordIndex++) {
-        data[posIndex * dim + coordIndex] = pos[coordIndex].toDouble();
+        data[posIndex * dim + coordIndex] = pos[coordIndex];
       }
       posIndex++;
     }

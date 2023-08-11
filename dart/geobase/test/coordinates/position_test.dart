@@ -566,15 +566,19 @@ class _TestXYZM implements Projected {
     required this.m,
   });
 
-  const _TestXYZM.create({required num x, required num y, num? z, num? m})
-      : this(x: x, y: y, z: z ?? 0, m: m ?? 0);
+  const _TestXYZM.create({
+    required double x,
+    required double y,
+    double? z,
+    double? m,
+  }) : this(x: x, y: y, z: z ?? 0, m: m ?? 0);
 
   @override
   R copyTo<R extends Position>(CreatePosition<R> factory) =>
       factory.call(x: x, y: y, z: z, m: m);
 
   @override
-  Projected copyWith({num? x, num? y, num? z, num? m}) => _TestXYZM(
+  Projected copyWith({double? x, double? y, double? z, double? m}) => _TestXYZM(
         x: x ?? this.x,
         y: y ?? this.y,
         z: z ?? this.z,
@@ -589,25 +593,25 @@ class _TestXYZM implements Projected {
   Projected transform(TransformPosition transform) => transform(this);
 
   @override
-  num operator [](int i) => Position.getValue(this, i);
+  double operator [](int i) => Position.getValue(this, i);
 
   @override
-  Iterable<num> get values => Position.getValues(this);
+  Iterable<double> get values => Position.getValues(this);
 
   @override
-  final num x;
+  final double x;
   @override
-  final num y;
+  final double y;
   @override
-  final num z;
+  final double z;
   @override
-  final num m;
+  final double m;
 
   @override
-  num? get optZ => z;
+  double? get optZ => z;
 
   @override
-  num? get optM => m;
+  double? get optM => m;
 
   @override
   int get spatialDimension => type.spatialDimension;

@@ -75,13 +75,12 @@ class Geographic extends Position {
   ///
   /// Coordinate values from parameters are copied as geographic coordinates:
   /// `x` => `lon`, `y` => `lat`, `z` => `elev`, `m` => `m`
-  Geographic.create({required num x, required num y, num? z, num? m})
-      : this(
-          lon: x.toDouble(),
-          lat: y.toDouble(),
-          elev: z?.toDouble(),
-          m: m?.toDouble(),
-        );
+  const Geographic.create({
+    required double x,
+    required double y,
+    double? z,
+    double? m,
+  }) : this(lon: x, lat: y, elev: z, m: m);
 
   /// Builds a geographic position from [coords] starting from [offset].
   ///
@@ -157,16 +156,16 @@ class Geographic extends Position {
   double? get optM => _m;
 
   @override
-  num get x => _lon;
+  double get x => _lon;
 
   @override
-  num get y => _lat;
+  double get y => _lat;
 
   @override
-  num get z => _elev ?? 0;
+  double get z => _elev ?? 0;
 
   @override
-  num? get optZ => _elev;
+  double? get optZ => _elev;
 
   @override
   double operator [](int index) => Geographic.getValue(this, index);
@@ -179,19 +178,20 @@ class Geographic extends Position {
   /// When copying `Geographic` then coordinates has correspondence:
   /// `x` => `lon`, `y` => `lat`, `z` => `elev`, `m` => `m`
   ///
-  /// For example:
-  /// `Geographic(lon: 1, lat: 1).copyWith(y: 2) == Geographic(lon: 1, lat: 2)`
+  /// For example `Geographic(lon: 1.0, lat: 2.0)` equals to
+  /// `Geographic(lon: 1.0, lat: 1.0).copyWith(y: 2.0)`
   ///
   /// Some sub classes may ignore a non-null z parameter value if a position is
   /// not a 3D position, and a non-null m parameter if a position is not a
   /// measured position. However [Geographic] itself supports changing the
   /// coordinate type.
   @override
-  Geographic copyWith({num? x, num? y, num? z, num? m}) => Geographic(
-        lon: (x ?? _lon).toDouble(),
-        lat: (y ?? _lat).toDouble(),
-        elev: (z ?? _elev)?.toDouble(),
-        m: (m ?? _m)?.toDouble(),
+  Geographic copyWith({double? x, double? y, double? z, double? m}) =>
+      Geographic(
+        lon: x ?? _lon,
+        lat: y ?? _lat,
+        elev: z ?? _elev,
+        m: m ?? _m,
       );
 
   /// Projects this geographic position to a projected position using

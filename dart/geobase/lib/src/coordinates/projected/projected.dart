@@ -47,21 +47,25 @@ import '/src/coordinates/projection/projection.dart';
 /// 3     | m
 @immutable
 class Projected extends Position {
-  final num _x;
-  final num _y;
-  final num? _z;
-  final num? _m;
+  final double _x;
+  final double _y;
+  final double? _z;
+  final double? _m;
 
   /// A projected position with [x], [y], and optional [z] and [m] coordinates.
-  const Projected({required num x, required num y, num? z, num? m})
+  const Projected({required double x, required double y, double? z, double? m})
       : _x = x,
         _y = y,
         _z = z,
         _m = m;
 
   /// A position from parameters compatible with `CreatePosition` function type.
-  const Projected.create({required num x, required num y, num? z, num? m})
-      : _x = x,
+  const Projected.create({
+    required double x,
+    required double y,
+    double? z,
+    double? m,
+  })  : _x = x,
         _y = y,
         _z = z,
         _m = m;
@@ -111,22 +115,22 @@ class Projected extends Position {
       );
 
   @override
-  num get x => _x;
+  double get x => _x;
 
   @override
-  num get y => _y;
+  double get y => _y;
 
   @override
-  num get z => _z ?? 0;
+  double get z => _z ?? 0;
 
   @override
-  num? get optZ => _z;
+  double? get optZ => _z;
 
   @override
-  num get m => _m ?? 0;
+  double get m => _m ?? 0;
 
   @override
-  num? get optM => _m;
+  double? get optM => _m;
 
   /// A coordinate value by the coordinate axis [index].
   ///
@@ -135,27 +139,27 @@ class Projected extends Position {
   /// For projected or cartesian coordinates, the coordinate ordering is:
   /// (x, y), (x, y, m), (x, y, z) or (x, y, z, m).
   @override
-  num operator [](int index) => Position.getValue(this, index);
+  double operator [](int index) => Position.getValue(this, index);
 
   /// Coordinate values of this position as an iterable of 2, 3 or 4 items.
   ///
   /// For projected or cartesian coordinates, the coordinate ordering is:
   /// (x, y), (x, y, m), (x, y, z) or (x, y, z, m).
   @override
-  Iterable<num> get values => Position.getValues(this);
+  Iterable<double> get values => Position.getValues(this);
 
   /// Copies the position with optional [x], [y], [z] and [m] overriding values.
   ///
-  /// For example:
-  /// `Projected(x: 1, y: 1).copyWith(y: 2) == Projected(x: 1, y: 2)`
-  /// `Projected(x: 1, y: 1).copyWith(z: 2) == Projected(x: 1, y: 1, z: 2)`
+  /// For example when `const pos = Projected(x: 1.0, y: 1.0)` then
+  /// * `pos.copyWith(y: 2.0) == Projected(x: 1.0, y: 2.0)`
+  /// * `pos.copyWith(z: 2.0) == Projected(x: 1.0, y: 1.0, z: 2.0)`
   ///
   /// Some sub classes may ignore a non-null z parameter value if a position is
   /// not a 3D position, and a non-null m parameter if a position is not a
   /// measured position. However [Projected] itself supports changing the
   /// coordinate type.
   @override
-  Projected copyWith({num? x, num? y, num? z, num? m}) => Projected(
+  Projected copyWith({double? x, double? y, double? z, double? m}) => Projected(
         x: x ?? _x,
         y: y ?? _y,
         z: z ?? _z,

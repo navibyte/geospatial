@@ -23,10 +23,10 @@ import 'positionable.dart';
 /// For geographic positions (`Geographic`), coordinates are applied as:
 /// `x` => `lon`, `y` => `lat`, `z` => `elev`, `m` => `m`
 typedef CreatePosition<T extends Position> = T Function({
-  required num x,
-  required num y,
-  num? z,
-  num? m,
+  required double x,
+  required double y,
+  double? z,
+  double? m,
 });
 
 /// A function to transform the [source] position of `T` to a position of `T`.
@@ -92,12 +92,12 @@ abstract class Position extends Positionable {
   /// The x coordinate value.
   ///
   /// For geographic coordinates x represents *longitude*.
-  num get x;
+  double get x;
 
   /// The y coordinate value.
   ///
   /// For geographic coordinates y represents *latitude*.
-  num get y;
+  double get y;
 
   /// The z coordinate value. Returns zero if not available.
   ///
@@ -105,14 +105,14 @@ abstract class Position extends Positionable {
   /// [optZ] returns z coordinate as a nullable value.
   ///
   /// For geographic coordinates z represents *elevation* or *altitude*.
-  num get z;
+  double get z;
 
   /// The z coordinate value optionally. Returns null if not available.
   ///
   /// You can also use [is3D] to check whether z coordinate is available.
   ///
   /// For geographic coordinates z represents *elevation* or *altitude*.
-  num? get optZ;
+  double? get optZ;
 
   /// The m ("measure") coordinate value. Returns zero if not available.
   ///
@@ -121,7 +121,7 @@ abstract class Position extends Positionable {
   ///
   /// [m] represents a measurement or a value on a linear referencing system
   /// (like time).
-  num get m;
+  double get m;
 
   /// The m ("measure") coordinate optionally. Returns null if not available.
   ///
@@ -129,7 +129,7 @@ abstract class Position extends Positionable {
   ///
   /// [m] represents a measurement or a value on a linear referencing system
   /// (like time).
-  num? get optM;
+  double? get optM;
 
   /// A coordinate value by the coordinate axis [index].
   ///
@@ -151,7 +151,7 @@ abstract class Position extends Positionable {
   /// 1     | y         | lat
   /// 2     | z         | elev
   /// 3     | m         | m
-  num operator [](int index);
+  double operator [](int index);
 
   /// Coordinate values of this position as an iterable of 2, 3 or 4 items.
   ///
@@ -160,7 +160,7 @@ abstract class Position extends Positionable {
   ///
   /// For geographic coordinates, the coordinate ordering is:
   /// (lon, lat), (lon, lat, elev), (lon, lat, m) or (lon, lat, elev, m).
-  Iterable<num> get values;
+  Iterable<double> get values;
 
   /// Copies this position to a new position created by the [factory].
   R copyTo<R extends Position>(CreatePosition<R> factory) =>
@@ -174,7 +174,7 @@ abstract class Position extends Positionable {
   /// Some sub classes may ignore a non-null z parameter value if a position is
   /// not a 3D position, and a non-null m parameter if a position is not a
   /// measured position.
-  Position copyWith({num? x, num? y, num? z, num? m});
+  Position copyWith({double? x, double? y, double? z, double? m});
 
   /// Projects this position to another position using [projection].
   ///
@@ -184,7 +184,7 @@ abstract class Position extends Positionable {
   Position project(Projection projection);
 
   /// Returns a position with all points transformed using [transform].
-  /// 
+  ///
   /// The returned object should be of the same type as this object has.
   Position transform(TransformPosition transform);
 
@@ -341,10 +341,14 @@ abstract class Position extends Positionable {
         throw invalidCoordinates;
       }
       return to.call(
-        x: coords[offset],
-        y: coords[offset + 1],
-        z: coordsType.is3D ? (len > 2 ? coords[offset + 2] : 0) : null,
-        m: mIndex != null ? (len > mIndex ? coords[offset + mIndex] : 0) : null,
+        x: coords[offset].toDouble(),
+        y: coords[offset + 1].toDouble(),
+        z: coordsType.is3D
+            ? (len > 2 ? coords[offset + 2] : 0.0).toDouble()
+            : null,
+        m: mIndex != null
+            ? (len > mIndex ? coords[offset + mIndex] : 0.0).toDouble()
+            : null,
       );
     } else {
       // resolve iterator for source coordinates
@@ -363,7 +367,7 @@ abstract class Position extends Positionable {
 
       // XY was asked
       if (type == Coords.xy) {
-        return to.call(x: x, y: y);
+        return to.call(x: x.toDouble(), y: y.toDouble());
       }
 
       // iterate optional z and m
@@ -372,7 +376,7 @@ abstract class Position extends Positionable {
         if (iter.moveNext()) {
           optZ = iter.current;
         } else {
-          optZ = type?.is3D ?? false ? 0 : null;
+          optZ = type?.is3D ?? false ? 0.0 : null;
         }
       } else {
         optZ = null;
@@ -382,14 +386,19 @@ abstract class Position extends Positionable {
         if (iter.moveNext()) {
           optM = iter.current;
         } else {
-          optM = type?.isMeasured ?? false ? 0 : null;
+          optM = type?.isMeasured ?? false ? 0.0 : null;
         }
       } else {
         optM = null;
       }
 
       // finally create a position object
-      return to.call(x: x, y: y, z: optZ, m: optM);
+      return to.call(
+        x: x.toDouble(),
+        y: y.toDouble(),
+        z: optZ?.toDouble(),
+        m: optM?.toDouble(),
+      );
     }
   }
 
@@ -412,7 +421,7 @@ abstract class Position extends Positionable {
     Pattern? delimiter = ',',
     Coords? type,
   }) {
-    final coords = parseNumValues(text, delimiter: delimiter);
+    final coords = parseDoubleValues(text, delimiter: delimiter);
     return buildPosition(coords, to: to, type: type);
   }
 
@@ -436,7 +445,7 @@ abstract class Position extends Positionable {
   /// 1     | y         | lat
   /// 2     | z         | elev
   /// 3     | m         | m
-  static num getValue(Position position, int index) {
+  static double getValue(Position position, int index) {
     if (position.is3D) {
       switch (index) {
         case 0:
@@ -471,7 +480,7 @@ abstract class Position extends Positionable {
   ///
   /// For geographic coordinates, the coordinate ordering is:
   /// (lon, lat), (lon, lat, elev), (lon, lat, m) or (lon, lat, elev, m).
-  static Iterable<num> getValues(Position position) sync* {
+  static Iterable<double> getValues(Position position) sync* {
     yield position.x;
     yield position.y;
     if (position.is3D) {
@@ -492,16 +501,16 @@ abstract class Position extends Positionable {
   static List<double> getDoubleList(Position position) {
     final type = position.type;
     final list = List<double>.filled(type.coordinateDimension, 0);
-    list[0] = position.x.toDouble();
-    list[1] = position.y.toDouble();
+    list[0] = position.x;
+    list[1] = position.y;
     if (type.is3D) {
-      list[2] = position.z.toDouble();
+      list[2] = position.z;
       if (type.isMeasured) {
-        list[3] = position.m.toDouble();
+        list[3] = position.m;
       }
     } else {
       if (type.isMeasured) {
-        list[2] = position.m.toDouble();
+        list[2] = position.m;
       }
     }
     return list;

@@ -330,10 +330,10 @@ abstract class _BaseTextWriter<T extends Object>
   }
 
   void _coordPoint({
-    required num x,
-    required num y,
-    num? z,
-    num? m,
+    required double x,
+    required double y,
+    double? z,
+    double? m,
   });
 
   @override
@@ -455,10 +455,10 @@ class DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
 
   @override
   void _coordPoint({
-    required num x,
-    required num y,
-    num? z,
-    num? m,
+    required double x,
+    required double y,
+    double? z,
+    double? m,
   }) {
     if (_markItem()) {
       _buffer.write(',');
@@ -474,10 +474,10 @@ class DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
   }
 
   void _printPoint(
-    num x,
-    num y,
-    num? z,
-    num? m,
+    double x,
+    double y,
+    double? z,
+    double? m,
   ) {
     // whether to swap x and y
     final swapXY = _crsRequiresToSwapXY;
@@ -492,7 +492,7 @@ class DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
     // - explicitely asked
     // - Z exists and not explicitely denied
     final printZ = printM || (coordType?.is3D ?? z != null);
-    final zValue = coordType?.is3D ?? true ? z ?? 0 : 0;
+    final zValue = coordType?.is3D ?? true ? z ?? 0.0 : 0.0;
     final dec = decimals;
     if (dec != null) {
       _buffer
@@ -507,7 +507,7 @@ class DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
       if (printM) {
         _buffer
           ..write(',')
-          ..write(toStringAsFixedWhenDecimals(m ?? 0, dec));
+          ..write(toStringAsFixedWhenDecimals(m ?? 0.0, dec));
       }
     } else {
       _buffer
@@ -522,7 +522,7 @@ class DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
       if (printM) {
         _buffer
           ..write(',')
-          ..write(m ?? 0);
+          ..write(m ?? 0.0);
       }
     }
   }
@@ -903,10 +903,10 @@ class WktLikeTextWriter<T extends Object> extends _BaseTextWriter<T> {
 
   @override
   void _coordPoint({
-    required num x,
-    required num y,
-    num? z,
-    num? m,
+    required double x,
+    required double y,
+    double? z,
+    double? m,
   }) {
     if (_markItem()) {
       _buffer.write(',');
@@ -922,10 +922,10 @@ class WktLikeTextWriter<T extends Object> extends _BaseTextWriter<T> {
   }
 
   void _printPoint(
-    num x,
-    num y,
-    num? z,
-    num? m,
+    double x,
+    double y,
+    double? z,
+    double? m,
   ) {
     // check optional expected coordinate type
     final coordType = _coordTypes.isNotEmpty ? _coordTypes.last : null;
@@ -938,7 +938,7 @@ class WktLikeTextWriter<T extends Object> extends _BaseTextWriter<T> {
       // check whether explicitely asked printing
       printZ = coordType.is3D;
       printM = coordType.isMeasured;
-      zValue = z ?? 0;
+      zValue = z ?? 0.0;
     } else {
       // coordinate type unspecified (z is 3rd if exists, m is 4th if exists)
       // (this is similar rule to GeoJSON format)
@@ -952,7 +952,7 @@ class WktLikeTextWriter<T extends Object> extends _BaseTextWriter<T> {
       // - explicitely asked
       // - Z exists and not explicitely denied
       printZ = printM || (coordType?.is3D ?? z != null);
-      zValue = coordType?.is3D ?? true ? z ?? 0 : 0;
+      zValue = coordType?.is3D ?? true ? z ?? 0.0 : 0.0;
     }
     final dec = decimals;
     if (dec != null) {
@@ -968,7 +968,7 @@ class WktLikeTextWriter<T extends Object> extends _BaseTextWriter<T> {
       if (printM) {
         _buffer
           ..write(' ')
-          ..write(toStringAsFixedWhenDecimals(m ?? 0, dec));
+          ..write(toStringAsFixedWhenDecimals(m ?? 0.0, dec));
       }
     } else {
       _buffer
@@ -983,7 +983,7 @@ class WktLikeTextWriter<T extends Object> extends _BaseTextWriter<T> {
       if (printM) {
         _buffer
           ..write(' ')
-          ..write(m ?? 0);
+          ..write(m ?? 0.0);
       }
     }
   }

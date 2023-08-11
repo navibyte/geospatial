@@ -397,7 +397,7 @@ void main() {
             Scalable2i(zoom: zoom, x: s[7].toInt(), y: s[8].toInt());
         final pixelNotClamped =
             Scalable2i(zoom: zoom, x: s[9].toInt(), y: s[10].toInt());
-        final world = Projected(x: s[5], y: s[6]);
+        final world = Projected(x: s[5].toDouble(), y: s[6].toDouble());
         final alignX = s[3].toDouble();
         final alignY = s[4].toDouble();
         final align = Aligned(x: alignX, y: alignY);
