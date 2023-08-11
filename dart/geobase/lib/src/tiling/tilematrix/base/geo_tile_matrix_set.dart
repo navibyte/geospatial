@@ -51,7 +51,7 @@ abstract class GeoTileMatrixSet extends TileMatrixSet {
 
     // world coordinates
     final px = world.x;
-    final num py;
+    final double py;
 
     // handle origin variations
     switch (origin) {
