@@ -53,8 +53,6 @@ OGC API - Features - Part 3: Filtering (draft) | Partially supported (conformanc
 
 ### Geodesy functions with geobase
 
-🛠 *under development since [geobase 0.5.0-dev.0](https://github.com/navibyte/geospatial/issues/174)*.
-
 Spherical geodesy functions for *great circle* (shown below) and *rhumb line*
 paths:
 
@@ -197,6 +195,12 @@ Code          | Description
 [earthquake_map](https://github.com/navibyte/geospatial_demos/tree/main/earthquake_map) | Shows earthquakes fetched from the [USGS web service](https://earthquake.usgs.gov/earthquakes/feed/) on a basic map view. The demo uses both [geobase](https://pub.dev/packages/geobase) and [geodata](https://pub.dev/packages/geodata) packages for geospatial data accesss. Discusses also state management based on [Riverpod](https://riverpod.dev/). The map UI is based on the [Google Maps Flutter](https://pub.dev/packages/google_maps_flutter) plugin.
 
 ## :newspaper_roll: News
+
+2023-08-11
+* [geobase version 0.5.0](https://github.com/navibyte/geospatial/issues/174)
+  * ✨ Spherical geodesy functions (distance, bearing, destination point, etc.) for *great circle* and *rhumb line* paths.
+* [geodata version 0.12.0](https://github.com/navibyte/geospatial/issues/177)
+  * ✨ Better client-side support for OGC API Features (Part 1 and 2).
 
 2023-03-19
 * ✨ New: Updated docs with class and flow diagrams:
