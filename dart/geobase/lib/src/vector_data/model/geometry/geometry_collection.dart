@@ -202,6 +202,24 @@ class GeometryCollection<E extends Geometry> extends Geometry {
         );
 
   @override
+  bool equalsCoords(Geometry other) {
+    if (other is! GeometryCollection) return false;
+    if (identical(this, other)) return true;
+    if (bounds != null && other.bounds != null && !(bounds! == other.bounds!)) {
+      // both geometries has bound boxes and boxes do not equal
+      return false;
+    }
+
+    final g1 = geometries;
+    final g2 = other.geometries;
+    if (g1.length != g2.length) return false;
+    for (var i = 0; i < g1.length; i++) {
+      if (!g1[i].equalsCoords(g2[i])) return false;
+    }
+    return true;
+  }
+
+  @override
   bool equals2D(
     Geometry other, {
     double toleranceHoriz = defaultEpsilon,

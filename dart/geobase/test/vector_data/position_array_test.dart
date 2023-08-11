@@ -42,6 +42,9 @@ void main() {
         expect(array3.type, type);
         expect(array3FromText.type, type);
         expect(array3FromPositions.type, type);
+
+        expect(array3FromText.equalsCoords(array3), true);
+        expect(array3FromPositions.equalsCoords(array3), true);
       });
 
       test('Access positions as PositionData', () {
@@ -160,9 +163,49 @@ void main() {
     test('Testing equality', () {
       expect(xy1, xy2);
       expect(xy1 == xy2, false);
+      expect(xy1.equalsCoords(xy2), true);
 
       expect(xy2, xy3);
       expect(xy2 == xy3, true);
+      expect(xy2.equalsCoords(xy3), true);
+    });
+
+    test('Test equalsCoords', () {
+      final iter = arr.map((e) => e * 10.0);
+      final xyIter2 = PositionArray.view(iter);
+      final xyIter3 = PositionArray.view(iter);
+
+      expect(xy1.equalsCoords(xyIter2), false);
+      expect(xyIter3.equalsCoords(xyIter2), true);
+
+      expect(
+        PositionArray.view([]).equalsCoords(PositionArray.view([])),
+        true,
+      );
+      expect(
+        PositionArray.view([1, 2, 3, 4]).equalsCoords(PositionArray.view([])),
+        false,
+      );
+      expect(
+        PositionArray.view([1, 2, 3, 4])
+            .equalsCoords(PositionArray.view([1, 2, 3, 4])),
+        true,
+      );
+      expect(
+        PositionArray.view([1, 2, 3.000000000001, 4])
+            .equalsCoords(PositionArray.view([1, 2, 3, 4])),
+        false,
+      );
+      expect(
+        PositionArray.parse('1,2,3', type: Coords.xyz)
+            .equalsCoords(PositionArray.view([1, 2, 3], type: Coords.xyz)),
+        true,
+      );
+      expect(
+        PositionArray.parse('1,2,3', type: Coords.xym)
+            .equalsCoords(PositionArray.view([1, 2, 3], type: Coords.xyz)),
+        false,
+      );
     });
   });
 

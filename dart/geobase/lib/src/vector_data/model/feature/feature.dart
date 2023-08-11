@@ -296,6 +296,51 @@ class Feature<T extends Geometry> extends FeatureObject {
     );
   }
 
+  /// Returns true if this and [other] contain exactly same coordinate values
+  /// (or both are empty) in the same order and with the same coordinate type.
+  ///
+  /// If [ignoreCustomGeometries] is true, then [customGeometries] are ignored
+  /// in testing.
+  bool equalsCoords(
+    Feature other, {
+    bool ignoreCustomGeometries = false,
+  }) {
+    if (identical(this, other)) return true;
+
+    if (bounds != null && other.bounds != null && !(bounds! == other.bounds!)) {
+      // both feature collections has bound boxes and boxes do not equal
+      return false;
+    }
+
+    // test main geometry
+    final mg1 = geometry;
+    final mg2 = other.geometry;
+    if (mg1 != null) {
+      if (mg2 == null) return false;
+      if (!mg1.equalsCoords(mg2)) return false;
+    } else {
+      if (mg2 != null) return false;
+    }
+
+    // test custom geometries unless they should be ignored
+    if (!ignoreCustomGeometries) {
+      final cg1 = customGeometries;
+      final cg2 = other.customGeometries;
+      if (cg1 != null) {
+        if (cg2 == null || cg1.length != cg2.length) return false;
+        for (final cg1entry in cg1.entries) {
+          final cg2value = cg2[cg1entry.key];
+          if (cg2value == null) return false;
+          if (!cg1entry.value.equalsCoords(cg2value)) return false;
+        }
+      } else {
+        if (cg2 != null) return false;
+      }
+    }
+
+    return true;
+  }
+
   /// True if this feature equals with [other] by testing 2D coordinates of the
   /// [geometry] object (and any [customGeometries] possibly contained).
   ///
@@ -323,7 +368,7 @@ class Feature<T extends Geometry> extends FeatureObject {
           other.bounds!,
           toleranceHoriz: toleranceHoriz,
         )) {
-      // both geometries has bound boxes and boxes do not equal in 2D
+      // both features has bound boxes and boxes do not equal in 2D
       return false;
     }
 
@@ -396,7 +441,7 @@ class Feature<T extends Geometry> extends FeatureObject {
           toleranceHoriz: toleranceHoriz,
           toleranceVert: toleranceVert,
         )) {
-      // both geometries has bound boxes and boxes do not equal in 3D
+      // both features has bound boxes and boxes do not equal in 3D
       return false;
     }
 

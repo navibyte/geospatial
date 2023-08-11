@@ -281,6 +281,24 @@ class Polygon extends SimpleGeometry {
   // NOTE: coordinates as raw data
 
   @override
+  bool equalsCoords(Geometry other) {
+    if (other is! Polygon) return false;
+    if (identical(this, other)) return true;
+    if (bounds != null && other.bounds != null && !(bounds! == other.bounds!)) {
+      // both geometries has bound boxes and boxes do not equal
+      return false;
+    }
+
+    final r1 = rings;
+    final r2 = other.rings;
+    if (r1.length != r2.length) return false;
+    for (var i = 0; i < r1.length; i++) {
+      if (!r1[i].equalsCoords(r2[i])) return false;
+    }
+    return true;
+  }
+
+  @override
   bool equals2D(
     Geometry other, {
     double toleranceHoriz = defaultEpsilon,

@@ -213,6 +213,10 @@ class Point implements SimpleGeometry {
   }
 
   @override
+  bool equalsCoords(Geometry other) =>
+      other is Point && position == other.position;
+
+  @override
   bool equals2D(
     Geometry other, {
     double toleranceHoriz = defaultEpsilon,

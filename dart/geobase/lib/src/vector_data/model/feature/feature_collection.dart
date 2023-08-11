@@ -237,6 +237,36 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
     );
   }
 
+  /// Returns true if this and [other] contain exactly same coordinate values
+  /// (or both are empty) in the same order and with the same coordinate type.
+  ///
+  /// If [ignoreCustomGeometries] is true, then `customGeometries` of features
+  /// are ignored in testing.
+  bool equalsCoords(
+    FeatureCollection other, {
+    bool ignoreCustomGeometries = false,
+  }) {
+    if (identical(this, other)) return true;
+
+    if (bounds != null && other.bounds != null && !(bounds! == other.bounds!)) {
+      // both feature collections has bound boxes and boxes do not equal
+      return false;
+    }
+
+    final fc1 = features;
+    final fc2 = other.features;
+    if (fc1.length != fc2.length) return false;
+    for (var i = 0; i < fc1.length; i++) {
+      if (!fc1[i].equalsCoords(
+        fc2[i],
+        ignoreCustomGeometries: ignoreCustomGeometries,
+      )) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   /// True if this feature collection equals with [other] by testing 2D
   /// coordinates of geometries of [features] (that must be in same order in
   /// both collections) contained.
@@ -262,7 +292,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
           other.bounds!,
           toleranceHoriz: toleranceHoriz,
         )) {
-      // both geometries has bound boxes and boxes do not equal in 2D
+      // both feature collections has bound boxes and boxes do not equal in 2D
       return false;
     }
 
@@ -315,7 +345,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
           toleranceHoriz: toleranceHoriz,
           toleranceVert: toleranceVert,
         )) {
-      // both geometries has bound boxes and boxes do not equal in 3D
+      // both feature collections has bound boxes and boxes do not equal in 3D
       return false;
     }
 

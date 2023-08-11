@@ -103,6 +103,10 @@ abstract class Geometry extends Bounded {
     return encoder.toBytes();
   }
 
+  /// Returns true if this and [other] contain exactly same coordinate values
+  /// (or both are empty) in the same order and with the same coordinate type.
+  bool equalsCoords(Geometry other);
+
   /// True if this geometry equals with [other] by testing 2D coordinates of all
   /// positions (that must be in same order in both geometries).
   ///

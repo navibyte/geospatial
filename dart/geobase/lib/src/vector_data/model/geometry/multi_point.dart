@@ -226,6 +226,24 @@ class MultiPoint extends SimpleGeometry {
   // NOTE: coordinates as raw data
 
   @override
+  bool equalsCoords(Geometry other) {
+    if (other is! MultiPoint) return false;
+    if (identical(this, other)) return true;
+    if (bounds != null && other.bounds != null && !(bounds! == other.bounds!)) {
+      // both geometries has bound boxes and boxes do not equal
+      return false;
+    }
+
+    final p1 = positions;
+    final p2 = other.positions;
+    if (p1.length != p2.length) return false;
+    for (var i = 0; i < p1.length; i++) {
+      if (p1[i] != p2[i]) return false;
+    }
+    return true;
+  }
+
+  @override
   bool equals2D(
     Geometry other, {
     double toleranceHoriz = defaultEpsilon,

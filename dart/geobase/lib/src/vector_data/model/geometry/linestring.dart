@@ -214,6 +214,18 @@ class LineString extends SimpleGeometry {
   // NOTE: coordinates as raw data
 
   @override
+  bool equalsCoords(Geometry other) {
+    if (other is! LineString) return false;
+    if (identical(this, other)) return true;
+    if (bounds != null && other.bounds != null && !(bounds! == other.bounds!)) {
+      // both geometries has bound boxes and boxes do not equal
+      return false;
+    }
+
+    return chain.equalsCoords(other.chain);
+  }
+
+  @override
   bool equals2D(
     Geometry other, {
     double toleranceHoriz = defaultEpsilon,

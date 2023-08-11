@@ -248,6 +248,53 @@ void main() {
     });
   });
 
+  group('Testing equalsCoords in geometries', () {
+    test('Point', () {
+      expect(
+        Point.parseCoords('23.1,34.2')
+            .equalsCoords(Point.parseCoords('23.1,34.2')),
+        true,
+      );
+      expect(
+        Point.parseCoords('23.1, 34.2, 45.3')
+            .equalsCoords(Point.parseCoords('23.1, 34.2')),
+        false,
+      );
+      expect(
+        Point.parseCoords('23.1, 34.2, 45.3')
+            .equalsCoords(Point.build([23.1, 34.2, 45.3])),
+        true,
+      );
+    });
+
+    test('LineString', () {
+      const coords1 = '23.1, 34.2, 45.3, 1.0, 2.0, 3.0';
+      const coords2 = '23.1, 34.2, 45.3, 1.0, 2.0, 3.0000003';
+      expect(
+        LineString(PositionArray.parse(coords1))
+            .equalsCoords(LineString(PositionArray.parse(coords1))),
+        true,
+      );
+      expect(
+        LineString(PositionArray.parse(coords1))
+            .equalsCoords(LineString(PositionArray.parse(coords2))),
+        false,
+      );
+      expect(
+        LineString(PositionArray.parse(coords2, type: Coords.xyz)).equalsCoords(
+          LineString(PositionArray.parse(coords2, type: Coords.xyz)),
+        ),
+        true,
+      );
+      expect(
+        LineString(PositionArray.parse(coords2, type: Coords.xyz)).equalsCoords(
+          LineString(PositionArray.parse(coords2, type: Coords.xym)),
+        ),
+        false,
+      );
+    });
+  });
+
   group('Testing equals2D and equals3D in geometries', () {
     const e = 0.1 + 10 * defaultEpsilon;
     const t3d = Coords.xyz;
@@ -335,6 +382,8 @@ void main() {
       expect(xy.equals3D(xyz), false);
       expect(xyz.equals2D(xyz), true);
       expect(xyz.equals3D(xyz), true);
+      expect(fc.equalsCoords(fcz), false);
+      expect(fc.equalsCoords(FeatureCollection([xy, xyz])), true);
       expect(fc.equals2D(fc), true);
       expect(fc.equals3D(fc), false);
       expect(fc.equals2D(fcz), false);

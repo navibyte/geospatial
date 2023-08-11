@@ -255,6 +255,24 @@ class MultiLineString extends SimpleGeometry {
   // NOTE: coordinates as raw data
 
   @override
+  bool equalsCoords(Geometry other) {
+    if (other is! MultiLineString) return false;
+    if (identical(this, other)) return true;
+    if (bounds != null && other.bounds != null && !(bounds! == other.bounds!)) {
+      // both geometries has bound boxes and boxes do not equal
+      return false;
+    }
+
+    final c1 = chains;
+    final c2 = other.chains;
+    if (c1.length != c2.length) return false;
+    for (var i = 0; i < c1.length; i++) {
+      if (!c1[i].equalsCoords(c2[i])) return false;
+    }
+    return true;
+  }
+
+  @override
   bool equals2D(
     Geometry other, {
     double toleranceHoriz = defaultEpsilon,

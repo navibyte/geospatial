@@ -294,6 +294,33 @@ class MultiPolygon extends SimpleGeometry {
   // NOTE: coordinates as raw data
 
   @override
+  bool equalsCoords(Geometry other) {
+    if (other is! MultiPolygon) return false;
+    if (identical(this, other)) return true;
+    if (bounds != null && other.bounds != null && !(bounds! == other.bounds!)) {
+      // both geometries has bound boxes and boxes do not equal
+      return false;
+    }
+
+    final arr1 = ringArrays;
+    final arr2 = other.ringArrays;
+    if (arr1.length != arr2.length) return false;
+    // loop all arrays of ring data
+    for (var j = 0; j < arr1.length; j++) {
+      // get linear ring lists from arrays by index j
+      final r1 = arr1[j];
+      final r2 = arr2[j];
+      // ensure r1 and r2 has same amount of linear rings
+      if (r1.length != r2.length) return false;
+      // loop all linear rings and test coordinates
+      for (var i = 0; i < r1.length; i++) {
+        if (!r1[i].equalsCoords(r2[i])) return false;
+      }
+    }
+    return true;
+  }
+
+  @override
   bool equals2D(
     Geometry other, {
     double toleranceHoriz = defaultEpsilon,

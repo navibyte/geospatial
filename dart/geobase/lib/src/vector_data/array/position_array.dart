@@ -107,6 +107,10 @@ abstract class PositionArray with _CoordinatesMixin {
         projection.projectCoords(_data, type: _type),
         type: _type,
       );
+
+  /// Returns true if this and [other] contain exactly same coordinate values
+  /// (or both are empty) in the same order and with the same coordinate type.
+  bool equalsCoords(PositionArray other);
 }
 
 @immutable
@@ -139,6 +143,33 @@ class _PositionArrayImpl extends PositionArray {
   //
   // Anyway, a position array might be really large, so calculating equality and
   // hash might then have performance issues too.
+
+  @override
+  bool equalsCoords(PositionArray other) {
+    if (_type != other.type) return false;
+
+    final coords1 = _data;
+    final coords2 = other is _PositionArrayImpl ? other._data : other;
+    final len = coords1.length;
+    if (len != coords2.length) return false;
+
+    if (identical(coords1, coords2)) return true;
+
+    if (coords1 is List<double> && coords2 is List<double>) {
+      for (var i = 0; i < len; i++) {
+        if (coords1[i] != coords2[i]) return false;
+      }
+    } else {
+      final iter1 = coords1.iterator;
+      final iter2 = coords2.iterator;
+      while (iter1.moveNext()) {
+        if (!iter2.moveNext()) return false;
+        if (iter1.current != iter2.current) return false;
+      }
+    }
+
+    return true;
+  }
 }
 
 class _PositionArrayData<E extends Position> with PositionData<E> {
