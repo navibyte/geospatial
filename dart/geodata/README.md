@@ -34,7 +34,7 @@ both provided by OGC (The Open Geospatial Consortium) itself.
 The following diagram describes a decision flowchart to select a client class
 and a feature source to access GeoJSON feature collections and feature items:
 
-<img src="https://raw.githubusercontent.com/navibyte/geospatial/main/dart/geodata/assets/diagrams/decision_flowchart.svg" width="100%" title="Decision flowchart to select a client class to access GeoJSON resources" />
+<img src="https://raw.githubusercontent.com/navibyte/geospatial/v0.12.0/dart/geodata/assets/diagrams/decision_flowchart.svg" width="100%" title="Decision flowchart to select a client class to access GeoJSON resources" />
 
 Below you can find few step-by-step instructions how to get started in scenarios
 represented in the decision flowchart.
@@ -505,7 +505,7 @@ A diagram describing the most important interfaces and classes needed when
 interacting with API services compliant with the
 [OGC API Features](https://ogcapi.ogc.org/features/) standard:
 
-<img src="https://raw.githubusercontent.com/navibyte/geospatial/main/dart/geodata/assets/diagrams/feature_data_interfaces.svg" width="100%" title="Feature data interfaces in the geodata package" />
+<img src="https://raw.githubusercontent.com/navibyte/geospatial/v0.12.0/dart/geodata/assets/diagrams/feature_data_interfaces.svg" width="100%" title="Feature data interfaces in the geodata package" />
 
 The OGC API Features client created by `OGCAPIFeatures.http()` for some endpoint
 has the following signature:

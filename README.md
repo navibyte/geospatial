@@ -146,7 +146,7 @@ The [geodata](https://pub.dev/packages/geodata) package has the following
 diagram describing a decision flowchart how to select a client class to access
 GeoJSON features:
 
-<img src="https://raw.githubusercontent.com/navibyte/geospatial/main/dart/geodata/assets/diagrams/decision_flowchart.svg" width="100%" title="Decision flowchart to select a client class to access GeoJSON resources" />
+<img src="https://raw.githubusercontent.com/navibyte/geospatial/v0.12.0/dart/geodata/assets/diagrams/decision_flowchart.svg" width="100%" title="Decision flowchart to select a client class to access GeoJSON resources" />
 
 Quick start code to access a Web API service conforming to OGC API Features:
 
