@@ -1,3 +1,7 @@
+## 0.5.1
+
+Small document fixes (readme links to assets), no code changes.
+
 ## 0.5.0
 
 [geobase version 0.5.0 #161](https://github.com/navibyte/geospatial/issues/174)
