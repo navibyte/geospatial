@@ -1,3 +1,7 @@
+## 0.12.1
+
+Small document fixes (readme links to assets), no code changes.
+
 ## 0.12.0
 
 [geodata version 0.12.0 #177](https://github.com/navibyte/geospatial/issues/177)
