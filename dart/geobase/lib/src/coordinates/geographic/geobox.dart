@@ -250,6 +250,28 @@ class GeoBox extends Box {
   double get height => north - south;
 
   @override
+  GeoBox copyWith({
+    double? minX,
+    double? minY,
+    double? minZ,
+    double? minM,
+    double? maxX,
+    double? maxY,
+    double? maxZ,
+    double? maxM,
+  }) =>
+      GeoBox(
+        west: minX ?? _west,
+        south: minY ?? _south,
+        minElev: minZ ?? _minElev,
+        minM: minM ?? _minM,
+        east: maxX ?? _east,
+        north: maxY ?? _north,
+        maxElev: maxZ ?? _maxElev,
+        maxM: maxM ?? _maxM,
+      );
+
+  @override
   Geographic aligned2D([Aligned align = Aligned.center]) =>
       Box.createAligned2D(this, Geographic.create, align: align);
 

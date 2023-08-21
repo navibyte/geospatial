@@ -147,6 +147,24 @@ abstract class Box extends Positionable {
         maxM: maxM,
       );
 
+  /// Copies this box with optional attributes overriding values.
+  ///
+  /// When copying `GeoBox` then coordinates has correspondence:
+  /// `minX` => `west`, `maxX` => `east`, 
+  /// `minY` => `south`, `maxY` => `north`,
+  /// `minZ` => `minElev`, `maxElev` => `maxElev`,
+  /// `minM` => `minM`, `maxM` => `maxM`
+  Box copyWith({
+    double? minX,
+    double? minY,
+    double? minZ,
+    double? minM,
+    double? maxX,
+    double? maxY,
+    double? maxZ,
+    double? maxM,
+  });
+
   /// The width of the bounding box, equals to `maxX - minX`.
   double get width;
 

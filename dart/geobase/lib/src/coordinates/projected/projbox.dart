@@ -190,6 +190,28 @@ class ProjBox extends Box {
   double get height => maxY - minY;
 
   @override
+  ProjBox copyWith({
+    double? minX,
+    double? minY,
+    double? minZ,
+    double? minM,
+    double? maxX,
+    double? maxY,
+    double? maxZ,
+    double? maxM,
+  }) =>
+      ProjBox(
+        minX: minX ?? _minX,
+        minY: minY ?? _minY,
+        minZ: minZ ?? _minZ,
+        minM: minM ?? _minM,
+        maxX: maxX ?? _maxX,
+        maxY: maxY ?? _maxY,
+        maxZ: maxZ ?? _maxZ,
+        maxM: maxM ?? _maxM,
+      );
+
+  @override
   Projected aligned2D([Aligned align = Aligned.center]) =>
       Box.createAligned2D(this, Projected.create, align: align);
 

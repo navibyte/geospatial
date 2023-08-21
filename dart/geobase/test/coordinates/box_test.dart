@@ -65,6 +65,9 @@ void main() {
           ProjBox.build(const [1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.3, 2.4]), box4);
       expect(ProjBox.parse('1.1,1.2,1.3,1.4,2.1,2.2,2.3,2.4'), box4);
       expect(ProjBox.parse(box4.toString()), box4);
+
+      expect(box1.copyWith(minX: 10.0),
+          const ProjBox(minX: 10, minY: 1.2, maxX: 2.1, maxY: 2.2));
     });
 
     test('Equals with tolerance', () {
@@ -331,6 +334,9 @@ void main() {
           GeoBox.build(const [1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.3, 2.4]), box4);
       expect(GeoBox.parse('1.1,1.2,1.3,1.4,2.1,2.2,2.3,2.4'), box4);
       expect(GeoBox.parse(box4.toString()), box4);
+
+      expect(box1.copyWith(minY: 10.0),
+          const GeoBox(west: 1.1, south: 10.0, east: 2.1, north: 2.2));
     });
 
     test('Equals with tolerance', () {

@@ -150,6 +150,28 @@ abstract class BoxCoords extends Box with _CoordinatesMixin {
         : null;
   }
 
+  @override
+  BoxCoords copyWith({
+    double? minX,
+    double? minY,
+    double? minZ,
+    double? minM,
+    double? maxX,
+    double? maxY,
+    double? maxZ,
+    double? maxM,
+  }) =>
+      BoxCoords.create(
+        minX: minX ?? this.minX,
+        minY: minY ?? this.minY,
+        minZ: minZ ?? this.minZ,
+        minM: minM ?? this.minM,
+        maxX: maxX ?? this.maxX,
+        maxY: maxY ?? this.maxY,
+        maxZ: maxZ ?? this.maxZ,
+        maxM: maxM ?? this.maxM,
+      );
+
   /// Returns this box typed as a projected bounding box.
   ///
   /// If this position implements [ProjBox], then this may be returned.
