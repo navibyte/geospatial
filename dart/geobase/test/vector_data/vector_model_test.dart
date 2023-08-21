@@ -909,6 +909,31 @@ void main() {
       expect(feat.toText(), lineStringFeat);
     });
 
+    test('Feature with non-typed geometry (copyWith)', () {
+      final po = Feature.parse(pointFeat);
+      expect(
+        po.copyWith(id: 'foo').toText(),
+        '{"type":"Feature","id":"foo","geometry":{"type":"Point","coordinates":[1.5,2.5]},"properties":{"foo":1,"bar":"baz"}}',
+      );
+      expect(
+        po.copyWith(
+          properties: {
+            'a': 1,
+            'b': [1, 2]
+          },
+        ).toText(),
+        '{"type":"Feature","geometry":{"type":"Point","coordinates":[1.5,2.5]},"properties":{"a":1,"b":[1,2]}}',
+      );
+      expect(
+        po
+            .copyWith(
+              geometry: Point.from(const Geographic(lat: 10.0, lon: 20.0)),
+            )
+            .toText(),
+        '{"type":"Feature","geometry":{"type":"Point","coordinates":[20.0,10.0]},"properties":{"foo":1,"bar":"baz"}}',
+      );
+    });
+
     test('Feature with non-typed geometry (bounded)', () {
       final pof = Feature.parse(pointFeat);
       final pofb = pof.bounded();

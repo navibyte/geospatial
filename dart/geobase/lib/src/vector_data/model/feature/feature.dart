@@ -228,6 +228,32 @@ class Feature<T extends Geometry> extends FeatureObject {
   /// See also [custom] for non-geometry custom or "foreign member" properties.
   Map<String, Geometry>? get customGeometries => null;
 
+  /// Copy this feature with optional [id], [geometry] and [properties].
+  /// 
+  /// If [bounds] object is available on this, it's recalculated from the new
+  /// geometry. If [bounds] is null (or new geometry is null), then [bounds] is
+  /// null on copied feature.
+  Feature<T> copyWith({
+    Object? id,
+    T? geometry,
+    Map<String, dynamic>? properties,
+  }) {
+    return Feature(
+      id: id ?? _id,
+      geometry: geometry ?? _geometry,
+      properties: properties ?? _properties,
+
+      // bounds calculated from new geometry if there was bounds before
+      bounds: bounds != null && geometry != null
+          ? BoundsBuilder.calculateBounds(
+              item: geometry,
+              type: resolveCoordTypeFrom(item: geometry),
+              recalculateChilds: false,
+            )
+          : null,
+    );
+  }
+
   @override
   Coords resolveCoordType() => resolveCoordTypeFrom(
         item: geometry, // the main geometry of Feature
@@ -540,6 +566,38 @@ class _CustomFeature<T extends Geometry> extends Feature<T> {
 
   @override
   Map<String, Geometry>? get customGeometries => _customGeometries;
+
+  @override
+  Feature<T> copyWith({
+    Object? id,
+    T? geometry,
+    Map<String, dynamic>? properties,
+  }) {
+    final newGeom = geometry ?? _geometry;
+    final newCustGeom = _customGeometries;
+
+    return _CustomFeature(
+      id: id ?? _id,
+      geometry: newGeom,
+      properties: properties ?? _properties,
+      custom: _custom,
+      customGeometries: newCustGeom,
+
+      // bounds calculated from new geometry if there was bounds before
+      bounds:
+          bounds != null && (newGeom != null || newCustGeom != null)
+              ? BoundsBuilder.calculateBounds(
+                  item: newGeom,
+                  collection: newCustGeom?.values,
+                  type: resolveCoordTypeFrom(
+                    item: newGeom,
+                    collection: newCustGeom?.values,
+                  ),
+                  recalculateChilds: false,
+                )
+              : null,
+    );
+  }
 
   @override
   Feature<T> bounded({bool recalculate = false}) {
