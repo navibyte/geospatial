@@ -288,6 +288,32 @@ class Dms extends DmsFormat {
         _prime = '',
         _doublePrime = '';
 
+  /// Copy a new formatter from this with given attributes changed.
+  ///
+  /// See documentation for parameters from the default constructor.
+  Dms copyWith({
+    DmsType? type,
+    String? separator,
+    int? decimals,
+    bool? signedDegrees,
+    bool? zeroPadDegrees,
+    bool? zeroPadMinSec,
+    String? degree,
+    String? prime,
+    String? doublePrime,
+  }) =>
+      Dms(
+        type: type ?? _type,
+        separator: separator ?? _separator,
+        decimals: decimals ?? _decimals,
+        signedDegrees: signedDegrees ?? _signedDegrees,
+        zeroPadDegrees: zeroPadDegrees ?? _zeroPadDegrees,
+        zeroPadMinSec: zeroPadMinSec ?? _zeroPadMinSec,
+        degree: degree ?? _degree,
+        prime: prime ?? _prime,
+        doublePrime: doublePrime ?? _doublePrime,
+      );
+
   /// Parses a string [dms] representing degrees/minutes/seconds into a numeric
   /// degree value (ie. latitude, longitude or bearing).
   ///

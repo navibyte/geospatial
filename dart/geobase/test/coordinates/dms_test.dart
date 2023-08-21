@@ -24,6 +24,10 @@ void main() {
         '051.4779°',
       );
       expect(
+        Dms().copyWith(decimals: 5, zeroPadDegrees: true).format(51.477881),
+        '051.47788°',
+      );
+      expect(
         Dms(decimals: 2).format(51.477881),
         '51.48°',
       );
