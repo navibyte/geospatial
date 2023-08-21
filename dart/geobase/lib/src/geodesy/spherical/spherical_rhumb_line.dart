@@ -53,6 +53,10 @@ class SphericalRhumbLine extends Geodetic {
   /// (loxodromic) rhumb line paths with [position] as the current position.
   const SphericalRhumbLine(super.position);
 
+  @override
+  SphericalRhumbLine copyWith({Geographic? position}) =>
+      position != null ? SphericalRhumbLine(position) : this;
+
   /// Returns the distance from the current [position] to [destination] along a
   /// rhumb line.
   ///

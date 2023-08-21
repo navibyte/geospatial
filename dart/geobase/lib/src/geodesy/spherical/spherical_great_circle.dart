@@ -62,6 +62,10 @@ class SphericalGreatCircle extends Geodetic {
   /// (orthodromic) great-circle paths with [position] as the current position.
   const SphericalGreatCircle(super.position);
 
+  @override
+  SphericalGreatCircle copyWith({Geographic? position}) =>
+      position != null ? SphericalGreatCircle(position) : this;
+
   /// Returns the distance along the surface of the earth from the current
   /// [position] to [destination].
   ///

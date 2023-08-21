@@ -39,6 +39,9 @@ abstract class Geodetic {
   /// a geographic [position] as the current position.
   const Geodetic(this.position);
 
+  /// Copy this geodetic object with an optional [position] changed.
+  Geodetic copyWith({Geographic? position});
+
   /// Returns the distance along the surface of the earth from the current
   /// [position] to [destination].
   ///
