@@ -82,6 +82,17 @@ class GeoExtent {
   /// An optional temporal extent with time intervals.
   TemporalExtent? get temporal => _temporal;
 
+  /// Copy this geo extent with optional [spatial] and/or [temporal] parts
+  /// changed.
+  GeoExtent copyWith({
+    SpatialExtent<GeoBox>? spatial,
+    TemporalExtent? temporal,
+  }) =>
+      GeoExtent(
+        spatial: spatial ?? _spatial,
+        temporal: temporal ?? _temporal,
+      );
+
   @override
   String toString() {
     final buf = StringBuffer()

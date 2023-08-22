@@ -47,6 +47,23 @@ class TemporalExtent {
   /// The temporal reference system for intervals of this extent.
   String get trs => _trs;
 
+  /// Copy this temporal extent with optional [interval] and/or [trs]
+  /// parameters changed.
+  TemporalExtent copyWith({Interval? interval, String? trs}) {
+    if (interval != null) {
+      return TemporalExtent.single(interval, trs: trs ?? _trs);
+    } else {
+      if (trs != null) {
+        return _intervals != null
+            ? TemporalExtent.multi(_intervals!, trs: trs)
+            : TemporalExtent.single(_first, trs: trs);
+      } else {
+        // ignore: avoid_returning_this
+        return this;
+      }
+    }
+  }
+
   @override
   String toString() {
     final buf = StringBuffer()..write(trs);

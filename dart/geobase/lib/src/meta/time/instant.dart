@@ -36,6 +36,9 @@ class Instant extends Temporal {
   /// The time stamp of this instant.
   DateTime get time => _time;
 
+  /// Copy this instant with an optional [time] changed.
+  Instant copyWith({DateTime? time}) => time != null ? Instant(time) : this;
+
   @override
   bool get isUtc => time.isUtc;
 

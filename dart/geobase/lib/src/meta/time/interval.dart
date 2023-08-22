@@ -124,6 +124,10 @@ class Interval extends Temporal {
   /// True if the interval is closed (both `start` and `end` are non null).
   bool get isClosed => startTime != null && endTime != null;
 
+  /// Copy this inteval with optional [start] and/or [end] instants changed.
+  Interval copyWith({Instant? start, Instant? end}) =>
+      Interval(start ?? _start, end ?? _end);
+
   @override
   bool get isUtc {
     final s = start;

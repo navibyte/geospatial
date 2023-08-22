@@ -83,6 +83,23 @@ class SpatialExtent<T extends Box> {
   @Deprecated('Use coordRefSys.id or coordRefSys.epsg instead.')
   String get crs => _coordRefSys.id;
 
+  /// Copy this spatial extent with optional [bbox] and/or [coordRefSys]
+  /// parameters changed.
+  SpatialExtent<T> copyWith({T? bbox, CoordRefSys? coordRefSys}) {
+    if (bbox != null) {
+      return SpatialExtent(bbox, coordRefSys: coordRefSys ?? _coordRefSys);
+    } else {
+      if (coordRefSys != null) {
+        return _boxes != null
+            ? SpatialExtent.multi(_boxes!, coordRefSys: coordRefSys)
+            : SpatialExtent(_first, coordRefSys: coordRefSys);
+      } else {
+        // ignore: avoid_returning_this
+        return this;
+      }
+    }
+  }
+
   @override
   String toString() {
     final buf = StringBuffer()..write(coordRefSys);
