@@ -239,9 +239,9 @@ class Feature<T extends Geometry> extends FeatureObject {
     Map<String, dynamic>? properties,
   }) {
     return Feature(
-      id: id ?? _id,
-      geometry: geometry ?? _geometry,
-      properties: properties ?? _properties,
+      id: id ?? this.id,
+      geometry: geometry ?? this.geometry,
+      properties: properties ?? this.properties,
 
       // bounds calculated from new geometry if there was bounds before
       bounds: bounds != null && geometry != null
@@ -270,7 +270,7 @@ class Feature<T extends Geometry> extends FeatureObject {
 
   @override
   Feature<T> bounded({bool recalculate = false}) {
-    final currGeom = _geometry;
+    final currGeom = geometry;
     if (currGeom == null || currGeom.isEmpty) return this;
 
     // ensure geometry is processed first
@@ -278,9 +278,9 @@ class Feature<T extends Geometry> extends FeatureObject {
 
     // return a new feature with processed geometry and populated bounds
     return Feature<T>(
-      id: _id,
+      id: id,
       geometry: geom,
-      properties: _properties,
+      properties: properties,
       bounds: recalculate || bounds == null
           ? BoundsBuilder.calculateBounds(
               item: geom,
@@ -293,12 +293,12 @@ class Feature<T extends Geometry> extends FeatureObject {
 
   @override
   Feature<T> project(Projection projection) {
-    final projectedGeom = _geometry?.project(projection) as T?;
+    final projectedGeom = geometry?.project(projection) as T?;
 
     return Feature<T>(
-      id: _id,
+      id: id,
       geometry: projectedGeom,
-      properties: _properties,
+      properties: properties,
 
       // bounds calculated from projected geometry if there was bounds before
       bounds: bounds != null && projectedGeom != null
@@ -313,11 +313,11 @@ class Feature<T extends Geometry> extends FeatureObject {
 
   @override
   void writeTo(FeatureContent writer) {
-    final geom = _geometry;
+    final geom = geometry;
     writer.feature(
-      id: _id,
+      id: id,
       geometry: geom?.writeTo,
-      properties: _properties,
+      properties: properties,
       bounds: bounds,
     );
   }
@@ -573,14 +573,14 @@ class _CustomFeature<T extends Geometry> extends Feature<T> {
     T? geometry,
     Map<String, dynamic>? properties,
   }) {
-    final newGeom = geometry ?? _geometry;
-    final newCustGeom = _customGeometries;
+    final newGeom = geometry ?? this.geometry;
+    final newCustGeom = customGeometries;
 
     return _CustomFeature(
-      id: id ?? _id,
+      id: id ?? this.id,
       geometry: newGeom,
-      properties: properties ?? _properties,
-      custom: _custom,
+      properties: properties ?? this.properties,
+      custom: custom,
       customGeometries: newCustGeom,
 
       // bounds calculated from new geometry if there was bounds before
@@ -601,8 +601,8 @@ class _CustomFeature<T extends Geometry> extends Feature<T> {
 
   @override
   Feature<T> bounded({bool recalculate = false}) {
-    final currGeom = _geometry;
-    final currCustGeoms = _customGeometries;
+    final currGeom = geometry;
+    final currCustGeoms = customGeometries;
     if ((currGeom == null || currGeom.isEmpty) &&
         (currCustGeoms == null || currCustGeoms.isEmpty)) return this;
 
@@ -617,10 +617,10 @@ class _CustomFeature<T extends Geometry> extends Feature<T> {
 
     // return a new feature with processed geometries and populated bounds
     return _CustomFeature<T>(
-      id: _id,
+      id: id,
       geometry: geom,
-      properties: _properties,
-      custom: _custom,
+      properties: properties,
+      custom: custom,
       customGeometries: custGeom,
       bounds: recalculate || bounds == null
           ? BoundsBuilder.calculateBounds(
@@ -638,16 +638,16 @@ class _CustomFeature<T extends Geometry> extends Feature<T> {
 
   @override
   Feature<T> project(Projection projection) {
-    final projectedGeom = _geometry?.project(projection) as T?;
-    final projectedCustGeom = _customGeometries?.map<String, Geometry>(
+    final projectedGeom = geometry?.project(projection) as T?;
+    final projectedCustGeom = customGeometries?.map<String, Geometry>(
       (key, geom) => MapEntry(key, geom.project(projection)),
     );
 
     return _CustomFeature<T>(
-      id: _id,
+      id: id,
       geometry: projectedGeom,
-      properties: _properties,
-      custom: _custom,
+      properties: properties,
+      custom: custom,
       customGeometries: projectedCustGeom,
 
       // bounds calculated from projected geometries if there was bounds before
@@ -668,11 +668,11 @@ class _CustomFeature<T extends Geometry> extends Feature<T> {
 
   @override
   void writeTo(FeatureContent writer) {
-    final geom = _geometry;
+    final geom = geometry;
     final custGeom = customGeometries;
     final cust = custom;
     writer.feature(
-      id: _id,
+      id: id,
       geometry: geom != null || custGeom != null
           ? (output) {
               if (geom != null) {
@@ -685,7 +685,7 @@ class _CustomFeature<T extends Geometry> extends Feature<T> {
               }
             }
           : null,
-      properties: _properties,
+      properties: properties,
       custom: cust != null
           ? (props) {
               cust.forEach((name, value) {

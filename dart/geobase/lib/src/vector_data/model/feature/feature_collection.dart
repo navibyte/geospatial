@@ -91,7 +91,8 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
     // NOTE: use optional count to create a list in right size at build start
 
     // build any feature items on a list
-    final list = FeatureBuilder.buildList<Feature<T>, T>(features);
+    final list =
+        FeatureBuilder.buildList<Feature<T>, T>(features, count: count);
 
     // build any custom properties on a map
     final builtCustom =
@@ -183,8 +184,9 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
         .toList(growable: false);
 
     // return a new collection with processed features and populated bounds
-    return FeatureCollection<E>(
+    return FeatureCollection<E>._(
       collection,
+      custom,
       bounds: recalculate || bounds == null
           ? BoundsBuilder.calculateBounds(
               collection: collection,
@@ -197,13 +199,13 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
 
   @override
   FeatureCollection<E> project(Projection projection) {
-    final projected = _features
+    final projected = features
         .map<E>((feature) => feature.project(projection) as E)
         .toList(growable: false);
 
     return FeatureCollection<E>._(
       projected,
-      _custom,
+      custom,
 
       // bounds calculated from projected collection if there was bounds before
       bounds: bounds != null
