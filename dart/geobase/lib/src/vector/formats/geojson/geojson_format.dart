@@ -26,7 +26,7 @@ import '/src/vector/encoding/text_format.dart';
 
 part 'geojson_decoder.dart';
 
-/// Optional configuration parameters for formatting GeoJSON.
+/// Optional configuration parameters for formatting (and parsing) GeoJSON.
 class GeoJsonConf with EquatableMixin {
   /// Use this to set logic whether coordinate axis order should be
   /// authority-based (the default) or always lon-lat order.

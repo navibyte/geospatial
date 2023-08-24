@@ -37,10 +37,13 @@ const geoJsonFeatures = [
   '{"type":"Feature","geometry":null,"properties":{}}',
   '{"type":"Feature","id":123,"geometry":null,"properties":{"sub":{"param1":1,"param2":2}}}',
   '{"type":"Feature","id":"fid-1","geometry":{"type":"Point","coordinates":[10.123,20.25]},"properties":{"foo":100,"bar":"this is property value","baz":true}}',
+  '{"type":"Feature","bbox":[-1.1,-3.49,3.5,-1.1],"geometry":{"type":"LineString","coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]},"properties":{}}',
+  '{"type":"Feature","id":321,"geometry":{"type":"Polygon","coordinates":[[[10.1,10.1],[5.0,9.0],[12.0,4.0],[10.1,10.1]]]},"properties":{"a":1},"custom1":2,"custom2":{"foo":3,"bar":"custom"}}',
 ];
 
 const geoJsonFeatureCollections = [
   '{"type":"FeatureCollection","features":[]}',
+  '{"type":"FeatureCollection","features":[],"custom1":{"some":"meta"},"custom2":[1.0,2.0,3.0]}',
   '{"type":"FeatureCollection","features":[{"type":"Feature","id":"fid-1","geometry":{"type":"Point","coordinates":[10.123,20.25]},"properties":{"foo":100,"bar":"this is property value"}},{"type":"Feature","geometry":{"type":"LineString","coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]},"properties":{}}]}',
   '{"type":"FeatureCollection","bbox":[-1.1,-3.49,10.123,20.25],"features":[{"type":"Feature","id":"fid-1","geometry":{"type":"Point","coordinates":[10.123,20.25]},"properties":{"foo":100,"bar":"this is property value"}},{"type":"Feature","geometry":{"type":"LineString","bbox":[-1.1,-3.49,3.5,-1.1],"coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]},"properties":{}}]}',
 ];

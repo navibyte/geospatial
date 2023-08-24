@@ -37,7 +37,7 @@ class _GeoJsonGeometryTextDecoder implements ContentDecoder {
       final swapXY = crs?.swapXY(logic: conf?.crsLogic) ?? false;
 
       // decode the geometry object at root
-      _decodeGeometry(root, builder, swapXY);
+      _decodeGeometry(root, builder, swapXY: swapXY);
     } on FormatException {
       rethrow;
     } catch (err) {
@@ -76,10 +76,19 @@ class _GeoJsonFeatureTextDecoder implements ContentDecoder {
       // swap x and y if CRS has y-x (lat-lon) order (and logic is auth based)
       final swapXY = crs?.swapXY(logic: conf?.crsLogic) ?? false;
 
+      // whether to ignore custom (or foreign) members on Features or
+      // FeatureCollections
+      final ignoreCustom = conf?.ignoreForeignMembers ?? false;
+
       // check for GeoJSON types and decode as supported types found
       switch (root['type']) {
         case 'Feature':
-          _decodeFeature(root, builder, swapXY);
+          _decodeFeature(
+            root,
+            builder,
+            swapXY: swapXY,
+            ignoreCustom: ignoreCustom,
+          );
           return;
         case 'FeatureCollection':
           final opt = options;
@@ -88,7 +97,8 @@ class _GeoJsonFeatureTextDecoder implements ContentDecoder {
           _decodeFeatureCollection(
             root,
             builder,
-            swapXY,
+            swapXY: swapXY,
+            ignoreCustom: ignoreCustom,
             itemOffset: itemOffset,
             itemLimit: itemLimit,
           );
@@ -108,9 +118,9 @@ class _GeoJsonFeatureTextDecoder implements ContentDecoder {
 
 void _decodeGeometry(
   Map<String, dynamic> geometry,
-  GeometryContent builder,
-  bool swapXY,
-) {
+  GeometryContent builder, {
+  required bool swapXY,
+}) {
   // NOTE : coord type from conf
   // NOTE: read custom or foreign members
 
@@ -211,7 +221,7 @@ void _decodeGeometry(
               _decodeGeometry(
                 geometry as Map<String, dynamic>,
                 geometryBuilder,
-                swapXY,
+                swapXY: swapXY,
               );
             }
           },
@@ -227,36 +237,74 @@ void _decodeGeometry(
 
 void _decodeFeature(
   Map<String, dynamic> feature,
-  FeatureContent builder,
-  bool swapXY,
-) {
+  FeatureContent builder, {
+  required bool swapXY,
+  required bool ignoreCustom,
+}) {
   // feature has an optional primary geometry in "geometry" field
   final geom = feature['geometry'] as Map<String, dynamic>?;
 
-  // NOTE: check if feature has other geometry objects as childs, and hanlde em'
-  // NOTE: read custom or foreign members
+  // read custom or foreign members (other fields than "type", "id", "bbox",
+  // "geometry" or "properties")
+  Map<String, dynamic>? custom;
+  if (!ignoreCustom) {
+    for (final entry in feature.entries) {
+      final key = entry.key;
+      if (key != 'type' &&
+          key != 'id' &&
+          key != 'bbox' &&
+          key != 'geometry' &&
+          key != 'properties') {
+        custom ??= {};
+        custom[entry.key] = entry.value;
+      }
+    }
+  }
 
   // build feature
   builder.feature(
     id: _optStringOrNumber(feature['id']),
     properties: feature['properties'] as Map<String, dynamic>?,
     geometry: geom != null
-        ? (geometryBuilder) => _decodeGeometry(geom, geometryBuilder, swapXY)
+        ? (geometryBuilder) => _decodeGeometry(
+              geom,
+              geometryBuilder,
+              swapXY: swapXY,
+            )
         : null,
     bounds: _getBboxOpt(feature, swapXY),
+    custom: custom != null
+        ? (props) {
+            custom!.forEach((name, value) {
+              props.property(name, value);
+            });
+          }
+        : null,
   );
 }
 
 void _decodeFeatureCollection(
   Map<String, dynamic> collection,
-  FeatureContent builder,
-  bool swapXY, {
+  FeatureContent builder, {
+  required bool swapXY,
+  required bool ignoreCustom,
   int? itemOffset,
   int? itemLimit,
 }) {
   final features = collection['features'] as List<dynamic>;
 
-  // NOTE: read custom or foreign members
+  // read custom or foreign members (other fields than "type", "bbox" or
+  // "features")
+  Map<String, dynamic>? custom;
+  if (!ignoreCustom) {
+    for (final entry in collection.entries) {
+      final key = entry.key;
+      if (key != 'type' && key != 'bbox' && key != 'features') {
+        custom ??= {};
+        custom[entry.key] = entry.value;
+      }
+    }
+  }
 
   if (itemOffset != null || itemLimit != null) {
     // a range of feature items on a collection is requested
@@ -278,12 +326,20 @@ void _decodeFeatureCollection(
           _decodeFeature(
             feature as Map<String, dynamic>,
             featureBuilder,
-            swapXY,
+            swapXY: swapXY,
+            ignoreCustom: ignoreCustom,
           );
         }
       },
       count: count,
       bounds: _getBboxOpt(collection, swapXY),
+      custom: custom != null
+          ? (props) {
+              custom!.forEach((name, value) {
+                props.property(name, value);
+              });
+            }
+          : null,
     );
   } else {
     // all feature items on a collection are requested
@@ -293,12 +349,20 @@ void _decodeFeatureCollection(
           _decodeFeature(
             feature as Map<String, dynamic>,
             featureBuilder,
-            swapXY,
+            swapXY: swapXY,
+            ignoreCustom: ignoreCustom,
           );
         }
       },
       count: features.length,
       bounds: _getBboxOpt(collection, swapXY),
+      custom: custom != null
+          ? (props) {
+              custom!.forEach((name, value) {
+                props.property(name, value);
+              });
+            }
+          : null,
     );
   }
 }
