@@ -229,7 +229,7 @@ class Feature<T extends Geometry> extends FeatureObject {
   Map<String, Geometry>? get customGeometries => null;
 
   /// Copy this feature with optional [id], [geometry] and [properties].
-  /// 
+  ///
   /// If [bounds] object is available on this, it's recalculated from the new
   /// geometry. If [bounds] is null (or new geometry is null), then [bounds] is
   /// null on copied feature.
@@ -584,18 +584,17 @@ class _CustomFeature<T extends Geometry> extends Feature<T> {
       customGeometries: newCustGeom,
 
       // bounds calculated from new geometry if there was bounds before
-      bounds:
-          bounds != null && (newGeom != null || newCustGeom != null)
-              ? BoundsBuilder.calculateBounds(
-                  item: newGeom,
-                  collection: newCustGeom?.values,
-                  type: resolveCoordTypeFrom(
-                    item: newGeom,
-                    collection: newCustGeom?.values,
-                  ),
-                  recalculateChilds: false,
-                )
-              : null,
+      bounds: bounds != null && (newGeom != null || newCustGeom != null)
+          ? BoundsBuilder.calculateBounds(
+              item: newGeom,
+              collection: newCustGeom?.values,
+              type: resolveCoordTypeFrom(
+                item: newGeom,
+                collection: newCustGeom?.values,
+              ),
+              recalculateChilds: false,
+            )
+          : null,
     );
   }
 

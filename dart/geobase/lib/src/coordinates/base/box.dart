@@ -150,7 +150,7 @@ abstract class Box extends Positionable {
   /// Copies this box with optional attributes overriding values.
   ///
   /// When copying `GeoBox` then coordinates has correspondence:
-  /// `minX` => `west`, `maxX` => `east`, 
+  /// `minX` => `west`, `maxX` => `east`,
   /// `minY` => `south`, `maxY` => `north`,
   /// `minZ` => `minElev`, `maxElev` => `maxElev`,
   /// `minM` => `minM`, `maxM` => `maxM`
