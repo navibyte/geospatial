@@ -326,16 +326,12 @@ class _OGCFeatureSourceHttp implements OGCFeatureSource {
           crs: contentCrs ?? queryCrs,
         );
 
-        // meta as Map<String, dynamic> by removing Feature geometry and props
-        final meta = Map.of(data)
-          ..remove('type')
-          ..remove('id')
-          ..remove('geometry')
-          ..remove('properties');
+        // Use custom properties (foreign members) as metadata.
+        final meta = feature.custom;
 
         return OGCFeatureItem(
           feature,
-          meta: meta.isNotEmpty ? Map.unmodifiable(meta) : null,
+          meta: meta != null && meta.isNotEmpty ? meta : null,
           contentCrs: contentCrs,
         );
       },
@@ -452,10 +448,10 @@ class _OGCPagedFeaturesItems with Paged<OGCFeatureItems> {
           crs: contentCrs ?? queryCrs,
         );
 
-        // meta as Map<String, dynamic> by removing features
-        final meta = Map.of(data)
-          ..remove('type')
-          ..remove('features');
+        // Use custom properties (foreign members) as metadata.
+        // FeatureCollection objects in OGC API Features metadata possible:
+        // "timeStamp", "numberReturned", "numberMatched"
+        final meta = collection.custom;
 
         // parse feature items (meta + actual features), return a paged result
         return _OGCPagedFeaturesItems(
@@ -463,7 +459,7 @@ class _OGCPagedFeaturesItems with Paged<OGCFeatureItems> {
           query,
           OGCFeatureItems(
             collection,
-            meta: meta.isNotEmpty ? Map.unmodifiable(meta) : null,
+            meta: meta != null && meta.isNotEmpty ? meta : null,
             contentCrs: contentCrs,
           ),
           nextURL: nextURL,
