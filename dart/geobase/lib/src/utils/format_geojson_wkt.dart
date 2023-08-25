@@ -23,7 +23,6 @@ import '/src/utils/num.dart';
 import '/src/vector/content/coordinates_content.dart';
 import '/src/vector/content/feature_content.dart';
 import '/src/vector/content/geometry_content.dart';
-import '/src/vector/content/property_content.dart';
 import '/src/vector/encoding/content_encoder.dart';
 import '/src/vector/formats/geojson/geojson_format.dart';
 
@@ -538,7 +537,7 @@ class DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
 /// `_printPoint()` according to getter `_crsRequiresToSwapXY`.
 @internal
 class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
-    with FeatureContent, PropertyContent {
+    with FeatureContent {
   /// A feature writer for GeoJSON text output.
   GeoJsonTextWriter({
     super.buffer,
@@ -661,7 +660,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     WriteFeatures features, {
     int? count,
     Iterable<double>? bounds,
-    WriteProperties? custom,
+    Map<String, dynamic>? custom,
   }) {
     if (_atFeatureCollection) {
       return;
@@ -692,8 +691,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     features.call(this);
     _endObjectArray();
     if (!conf.ignoreForeignMembers && custom != null) {
-      _markItem();
-      custom.call(this);
+      _printCustom(custom);
     }
     _buffer.write('}');
     _endContainer();
@@ -705,7 +703,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     WriteGeometries? geometry,
     Map<String, dynamic>? properties,
     Iterable<double>? bounds,
-    WriteProperties? custom,
+    Map<String, dynamic>? custom,
   }) {
     if (_markItem()) {
       _buffer.write(',');
@@ -742,26 +740,33 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
       properties ?? const <String, Object?>{},
     );
     if (!conf.ignoreForeignMembers && custom != null) {
-      custom.call(this);
+      _printCustom(custom);
     }
     _buffer.write('}');
     _endContainer();
   }
 
-  @override
-  void properties(String name, Map<String, dynamic> map) {
-    if (_atFeature && name == 'properties') {
-      return;
-    }
-    _printMapEntryRecursive(name, map);
-  }
+  void _printCustom(Map<String, dynamic> custom) {
+    for (final entry in custom.entries) {
+      final name = entry.key;
 
-  @override
-  void property(String name, Object? value) {
-    if (_atFeature && name == 'properties') {
-      return;
+      // check that custom field name is not one of the GeoJSON standard names
+      var isStandardField = name == 'type' ||
+          name == 'bbox' ||
+          name == 'features' ||
+          name == 'properties' ||
+          name == 'geometry' ||
+          name == 'coordinates' ||
+          name == 'geometries';
+      if (_atFeature) {
+        isStandardField |= name == 'id';
+      }
+
+      if (!isStandardField) {
+        _markItem();
+        _printMapEntryRecursive(name, entry.value);
+      }
     }
-    _printMapEntryRecursive(name, value);
   }
 
   void _printMapEntryRecursive(String name, Object? value) {

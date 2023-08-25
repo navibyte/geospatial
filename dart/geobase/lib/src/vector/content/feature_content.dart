@@ -5,7 +5,6 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import 'geometry_content.dart';
-import 'property_content.dart';
 
 /// A function to write geospatial feature objects to [output].
 ///
@@ -76,7 +75,7 @@ mixin FeatureContent {
     WriteFeatures features, {
     int? count,
     Iterable<double>? bounds,
-    WriteProperties? custom,
+    Map<String, dynamic>? custom,
   });
 
   /// Writes a feature with [id], [geometry] and [properties].
@@ -118,6 +117,39 @@ mixin FeatureContent {
     WriteGeometries? geometry,
     Map<String, dynamic>? properties,
     Iterable<double>? bounds,
-    WriteProperties? custom,
+    Map<String, dynamic>? custom,
   });
 }
+
+/*
+// NOTE: removed as a separate interface for defining custom properties
+//       (saved here just for references)
+
+/// A function to write properties to [output].
+typedef WriteProperties = void Function(PropertyContent output);
+
+/// An interface to write properties to format encoders and object builders.
+mixin PropertyContent {
+  /// Writes a property map named by [name] and with contents in [map].
+  ///
+  /// An example:
+  /// ```dart
+  ///  content.properties('someProps', {
+  ///             'foo': 100,
+  ///             'bar': 'this is property value',
+  ///             'baz': true,
+  ///         });
+  /// ```
+  void properties(String name, Map<String, dynamic> map);
+
+  /// Writes a property named by [name] and with [value].
+  ///
+  /// An example:
+  /// ```dart
+  ///   content..property('foo', 100)
+  ///          ..property('bar', 'this is property value')
+  ///          ..property('baz', true);
+  /// ```
+  void property(String name, Object? value);
+}
+*/

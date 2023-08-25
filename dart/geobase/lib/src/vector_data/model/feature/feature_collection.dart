@@ -11,10 +11,8 @@ import '/src/coordinates/projection/projection.dart';
 import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/coord_type.dart';
-import '/src/utils/property_builder.dart';
 import '/src/utils/tolerance.dart';
 import '/src/vector/content/feature_content.dart';
-import '/src/vector/content/property_content.dart';
 import '/src/vector/encoding/text_format.dart';
 import '/src/vector/formats/geojson/geojson_format.dart';
 import '/src/vector_data/array/coordinates.dart';
@@ -86,7 +84,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
     WriteFeatures features, {
     int? count,
     Iterable<double>? bounds,
-    WriteProperties? custom,
+    Map<String, dynamic>? custom,
   }) {
     // NOTE: use optional count to create a list in right size at build start
 
@@ -94,14 +92,10 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
     final list =
         FeatureBuilder.buildList<Feature<T>, T>(features, count: count);
 
-    // build any custom properties on a map
-    final builtCustom =
-        custom != null ? PropertyBuilder.buildMap(custom) : null;
-
     // create a feature collection with features and optional custom props
     return FeatureCollection<Feature<T>>._(
       list,
-      builtCustom,
+      custom,
       bounds: buildBoxCoordsOpt(bounds),
     );
   }
@@ -220,7 +214,6 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
 
   @override
   void writeTo(FeatureContent writer) {
-    final cust = custom;
     writer.featureCollection(
       (feat) {
         for (final item in features) {
@@ -229,13 +222,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
       },
       count: features.length,
       bounds: bounds,
-      custom: cust != null
-          ? (props) {
-              cust.forEach((name, value) {
-                props.property(name, value);
-              });
-            }
-          : null,
+      custom: custom,
     );
   }
 

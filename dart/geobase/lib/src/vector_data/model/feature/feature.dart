@@ -11,11 +11,9 @@ import '/src/coordinates/projection/projection.dart';
 import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/coord_type.dart';
-import '/src/utils/property_builder.dart';
 import '/src/utils/tolerance.dart';
 import '/src/vector/content/feature_content.dart';
 import '/src/vector/content/geometry_content.dart';
-import '/src/vector/content/property_content.dart';
 import '/src/vector/encoding/text_format.dart';
 import '/src/vector/formats/geojson/geojson_format.dart';
 import '/src/vector_data/array/coordinates.dart';
@@ -105,11 +103,10 @@ class Feature<T extends Geometry> extends FeatureObject {
     WriteGeometries? geometry,
     Map<String, dynamic>? properties,
     Iterable<double>? bounds,
-    WriteProperties? custom,
+    Map<String, dynamic>? custom,
   }) {
     // optional data to be built as necessary
     T? primaryGeometry;
-    Map<String, dynamic>? builtCustom;
     Map<String, Geometry>? builtCustomGeom;
 
     // use geometry builder to build any geometry (primary + foreign) objects
@@ -139,20 +136,14 @@ class Feature<T extends Geometry> extends FeatureObject {
       );
     }
 
-    // use property builder to build any foreign property objects
-    if (custom != null) {
-      builtCustom ??= {};
-      PropertyBuilder.buildTo(custom, to: builtCustom);
-    }
-
     // create a custom feature with "foreign members" OR a standard feature
-    return builtCustom != null || builtCustomGeom != null
+    return custom != null || builtCustomGeom != null
         ? _CustomFeature(
             id: id,
             geometry: primaryGeometry,
             properties: properties,
             bounds: buildBoxCoordsOpt(bounds),
-            custom: builtCustom,
+            custom: custom,
             customGeometries: builtCustomGeom,
           )
         : Feature(
@@ -669,7 +660,6 @@ class _CustomFeature<T extends Geometry> extends Feature<T> {
   void writeTo(FeatureContent writer) {
     final geom = geometry;
     final custGeom = customGeometries;
-    final cust = custom;
     writer.feature(
       id: id,
       geometry: geom != null || custGeom != null
@@ -685,13 +675,7 @@ class _CustomFeature<T extends Geometry> extends Feature<T> {
             }
           : null,
       properties: properties,
-      custom: cust != null
-          ? (props) {
-              cust.forEach((name, value) {
-                props.property(name, value);
-              });
-            }
-          : null,
+      custom: custom,
     );
   }
 }

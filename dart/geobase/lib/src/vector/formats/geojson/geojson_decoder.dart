@@ -273,13 +273,7 @@ void _decodeFeature(
             )
         : null,
     bounds: _getBboxOpt(feature, swapXY),
-    custom: custom != null
-        ? (props) {
-            custom!.forEach((name, value) {
-              props.property(name, value);
-            });
-          }
-        : null,
+    custom: custom,
   );
 }
 
@@ -333,13 +327,7 @@ void _decodeFeatureCollection(
       },
       count: count,
       bounds: _getBboxOpt(collection, swapXY),
-      custom: custom != null
-          ? (props) {
-              custom!.forEach((name, value) {
-                props.property(name, value);
-              });
-            }
-          : null,
+      custom: custom,
     );
   } else {
     // all feature items on a collection are requested
@@ -356,13 +344,7 @@ void _decodeFeatureCollection(
       },
       count: features.length,
       bounds: _getBboxOpt(collection, swapXY),
-      custom: custom != null
-          ? (props) {
-              custom!.forEach((name, value) {
-                props.property(name, value);
-              });
-            }
-          : null,
+      custom: custom,
     );
   }
 }

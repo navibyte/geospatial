@@ -5,7 +5,7 @@ NOTE: Version 0.6.0 currently [under development](https://github.com/navibyte/ge
 🧩 Features:
 * [Add copyWith (and map) methods to coordinate, meta, feature and geometry classes #189](https://github.com/navibyte/geospatial/issues/189)
 
-🛠 Refactoring:
+⚠️ Breaking changes:
 * [Simplify Feature and FeatureCollection types #195](https://github.com/navibyte/geospatial/issues/195)
 
 ## 0.5.1

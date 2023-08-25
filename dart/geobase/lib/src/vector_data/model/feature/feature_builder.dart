@@ -9,7 +9,6 @@
 import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/vector/content/feature_content.dart';
 import '/src/vector/content/geometry_content.dart';
-import '/src/vector/content/property_content.dart';
 import '/src/vector/encoding/text_format.dart';
 import '/src/vector/formats/geojson/geojson_format.dart';
 import '/src/vector_data/model/geometry/geometry.dart';
@@ -165,7 +164,7 @@ class FeatureBuilder<T extends FeatureObject, E extends Geometry>
     WriteGeometries? geometry,
     Map<String, dynamic>? properties,
     Iterable<double>? bounds,
-    WriteProperties? custom,
+    Map<String, dynamic>? custom,
   }) {
     _add(
       Feature<E>.build(
@@ -183,7 +182,7 @@ class FeatureBuilder<T extends FeatureObject, E extends Geometry>
     WriteFeatures features, {
     int? count,
     Iterable<double>? bounds,
-    WriteProperties? custom,
+    Map<String, dynamic>? custom,
   }) {
     _add(
       FeatureCollection.build<E>(

@@ -24,7 +24,6 @@ export 'src/codes/geom.dart';
 export 'src/vector/content/coordinates_content.dart';
 export 'src/vector/content/feature_content.dart';
 export 'src/vector/content/geometry_content.dart';
-export 'src/vector/content/property_content.dart';
 export 'src/vector/content/simple_geometry_content.dart';
 export 'src/vector/encoding/binary_format.dart';
 export 'src/vector/encoding/content_decoder.dart';

@@ -1631,7 +1631,6 @@ representations.
 Content interface       | Description
 ----------------------- | ----------- 
 `CoordinateContent`     | Write coordinate data to format encoders and object builders.
-`PropertyContent`       | Write properties to format encoders and object builders.
 `SimpleGeometryContent` | Write simple geometry data to format encoders and object builders.
 `GeometryContent`       | Write geometry (both simple and collection geometries) data to format encoders and object builders.
 `FeatureContent`        | Write geospatial feature objects to format encoders and object builders.
