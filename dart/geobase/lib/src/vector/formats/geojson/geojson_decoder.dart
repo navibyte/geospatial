@@ -36,7 +36,7 @@ class _GeoJsonGeometryTextDecoder implements ContentDecoder {
       // swap x and y if CRS has y-x (lat-lon) order (and logic is auth based)
       final swapXY = crs?.swapXY(logic: conf?.crsLogic) ?? false;
 
-      // decode the geometry object at root
+      // decode the geometry object at root (without name geometry name)
       _decodeGeometry(root, builder, swapXY: swapXY);
     } on FormatException {
       rethrow;
@@ -120,6 +120,7 @@ void _decodeGeometry(
   Map<String, dynamic> geometry,
   GeometryContent builder, {
   required bool swapXY,
+  String? name,
 }) {
   // NOTE : coord type from conf
   // NOTE: read custom or foreign members
@@ -130,16 +131,16 @@ void _decodeGeometry(
       final pos =
           requirePositionDouble(geometry['coordinates'], swapXY: swapXY);
       if (pos.isEmpty) {
-        builder.emptyGeometry(Geom.point);
+        builder.emptyGeometry(Geom.point, name: name);
       } else {
         final coordType = Coords.fromDimension(pos.length);
-        builder.point(pos, type: coordType);
+        builder.point(pos, type: coordType, name: name);
       }
       break;
     case 'LineString':
       final array = geometry['coordinates'] as List<dynamic>;
       if (array.isEmpty) {
-        builder.emptyGeometry(Geom.lineString);
+        builder.emptyGeometry(Geom.lineString, name: name);
       } else {
         final coordType = resolveCoordType(array, positionLevel: 1);
         // NOTE: validate line string (at least two points)
@@ -147,13 +148,14 @@ void _decodeGeometry(
           createFlatPositionArrayDouble(array, coordType, swapXY: swapXY),
           type: coordType,
           bounds: _getBboxOpt(geometry, swapXY),
+          name: name,
         );
       }
       break;
     case 'Polygon':
       final array = geometry['coordinates'] as List<dynamic>;
       if (array.isEmpty) {
-        builder.emptyGeometry(Geom.polygon);
+        builder.emptyGeometry(Geom.polygon, name: name);
       } else {
         final coordType = resolveCoordType(array, positionLevel: 2);
         // NOTE: validate polygon (at least one ring)
@@ -161,6 +163,7 @@ void _decodeGeometry(
           createFlatPositionArrayArrayDouble(array, coordType, swapXY: swapXY),
           type: coordType,
           bounds: _getBboxOpt(geometry, swapXY),
+          name: name,
         );
       }
       break;
@@ -170,33 +173,35 @@ void _decodeGeometry(
         swapXY: swapXY,
       );
       if (array.isEmpty) {
-        builder.emptyGeometry(Geom.multiPoint);
+        builder.emptyGeometry(Geom.multiPoint, name: name);
       } else {
         final coordType = resolveCoordType(array, positionLevel: 1);
         builder.multiPoint(
           array,
           type: coordType,
           bounds: _getBboxOpt(geometry, swapXY),
+          name: name,
         );
       }
       break;
     case 'MultiLineString':
       final array = geometry['coordinates'] as List<dynamic>;
       if (array.isEmpty) {
-        builder.emptyGeometry(Geom.multiLineString);
+        builder.emptyGeometry(Geom.multiLineString, name: name);
       } else {
         final coordType = resolveCoordType(array, positionLevel: 2);
         builder.multiLineString(
           createFlatPositionArrayArrayDouble(array, coordType, swapXY: swapXY),
           type: coordType,
           bounds: _getBboxOpt(geometry, swapXY),
+          name: name,
         );
       }
       break;
     case 'MultiPolygon':
       final array = geometry['coordinates'] as List<dynamic>;
       if (array.isEmpty) {
-        builder.emptyGeometry(Geom.multiPolygon);
+        builder.emptyGeometry(Geom.multiPolygon, name: name);
       } else {
         final coordType = resolveCoordType(array, positionLevel: 3);
         builder.multiPolygon(
@@ -207,13 +212,14 @@ void _decodeGeometry(
           ),
           type: coordType,
           bounds: _getBboxOpt(geometry, swapXY),
+          name: name,
         );
       }
       break;
     case 'GeometryCollection':
       final geometries = geometry['geometries'] as List<dynamic>;
       if (geometries.isEmpty) {
-        builder.emptyGeometry(Geom.geometryCollection);
+        builder.emptyGeometry(Geom.geometryCollection, name: name);
       } else {
         builder.geometryCollection(
           (geometryBuilder) {
@@ -227,6 +233,7 @@ void _decodeGeometry(
           },
           count: geometries.length,
           bounds: _getBboxOpt(geometry, swapXY),
+          name: name,
         );
       }
       break;
@@ -270,6 +277,9 @@ void _decodeFeature(
               geom,
               geometryBuilder,
               swapXY: swapXY,
+
+              // GeoJSON => a primary geometry of a Feature is named "geometry"
+              name: 'geometry',
             )
         : null,
     bounds: _getBboxOpt(feature, swapXY),
