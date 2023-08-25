@@ -24,6 +24,9 @@ import 'feature_object.dart';
 
 /// A feature collection contains an array of [Feature] items.
 ///
+/// Feature collection are `bounded` objects with optional [bounds] defining a
+/// minimum bounding box for a feature collection.
+///
 /// Some implementations may contain also [custom] data or "foreign members"
 /// containing property objects.
 ///
@@ -33,14 +36,11 @@ import 'feature_object.dart';
 /// Supports representing data from GeoJSON (https://geojson.org/) features.
 class FeatureCollection<E extends Feature> extends FeatureObject {
   final List<E> _features;
-  final Map<String, dynamic>? _custom;
 
-  /// A feature collection with an array of [features] and optional [bounds].
-  const FeatureCollection(List<E> features, {super.bounds})
-      : _features = features,
-        _custom = null;
-
-  const FeatureCollection._(this._features, this._custom, {super.bounds});
+  /// A feature collection with an array of [features] with optional [bounds]
+  /// and [custom] properties.
+  const FeatureCollection(List<E> features, {super.bounds, super.custom})
+      : _features = features;
 
   /// Builds a feature collection from the content provided by [features].
   ///
@@ -93,9 +93,9 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
         FeatureBuilder.buildList<Feature<T>, T>(features, count: count);
 
     // create a feature collection with features and optional custom props
-    return FeatureCollection<Feature<T>>._(
+    return FeatureCollection<Feature<T>>(
       list,
-      custom,
+      custom: custom,
       bounds: buildBoxCoordsOpt(bounds),
     );
   }
@@ -154,9 +154,6 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   List<E> get features => _features;
 
   @override
-  Map<String, dynamic>? get custom => _custom;
-
-  @override
   Coords resolveCoordType() => resolveCoordTypeFrom(collection: features);
 
   @override
@@ -178,9 +175,9 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
         .toList(growable: false);
 
     // return a new collection with processed features and populated bounds
-    return FeatureCollection<E>._(
+    return FeatureCollection<E>(
       collection,
-      custom,
+      custom: custom,
       bounds: recalculate || bounds == null
           ? BoundsBuilder.calculateBounds(
               collection: collection,
@@ -197,9 +194,9 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
         .map<E>((feature) => feature.project(projection) as E)
         .toList(growable: false);
 
-    return FeatureCollection<E>._(
+    return FeatureCollection<E>(
       projected,
-      custom,
+      custom: custom,
 
       // bounds calculated from projected collection if there was bounds before
       bounds: bounds != null
@@ -228,13 +225,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
 
   /// Returns true if this and [other] contain exactly same coordinate values
   /// (or both are empty) in the same order and with the same coordinate type.
-  ///
-  /// If [ignoreCustomGeometries] is true, then `customGeometries` of features
-  /// are ignored in testing.
-  bool equalsCoords(
-    FeatureCollection other, {
-    bool ignoreCustomGeometries = false,
-  }) {
+  bool equalsCoords(FeatureCollection other) {
     if (identical(this, other)) return true;
 
     if (bounds != null && other.bounds != null && !(bounds! == other.bounds!)) {
@@ -246,10 +237,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
     final fc2 = other.features;
     if (fc1.length != fc2.length) return false;
     for (var i = 0; i < fc1.length; i++) {
-      if (!fc1[i].equalsCoords(
-        fc2[i],
-        ignoreCustomGeometries: ignoreCustomGeometries,
-      )) {
+      if (!fc1[i].equalsCoords(fc2[i])) {
         return false;
       }
     }
@@ -260,9 +248,6 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   /// coordinates of geometries of [features] (that must be in same order in
   /// both collections) contained.
   ///
-  /// If [ignoreCustomGeometries] is true, then `customGeometries` of features
-  /// are ignored in testing.
-  ///
   /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
   /// this and [other] must be within [toleranceHoriz].
   ///
@@ -270,7 +255,6 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   bool equals2D(
     FeatureCollection other, {
     double toleranceHoriz = defaultEpsilon,
-    bool ignoreCustomGeometries = false,
   }) {
     assertTolerance(toleranceHoriz);
 
@@ -293,7 +277,6 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
       if (!fc1[i].equals2D(
         fc2[i],
         toleranceHoriz: toleranceHoriz,
-        ignoreCustomGeometries: ignoreCustomGeometries,
       )) {
         return false;
       }
@@ -307,9 +290,6 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   /// coordinates of geometries of [features] (that must be in same order in
   /// both collections) contained.
   ///
-  /// If [ignoreCustomGeometries] is true, then `customGeometries` of features
-  /// are ignored in testing.
-  ///
   /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
   /// this and [other] must be within [toleranceHoriz].
   ///
@@ -321,7 +301,6 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
     FeatureCollection other, {
     double toleranceHoriz = defaultEpsilon,
     double toleranceVert = defaultEpsilon,
-    bool ignoreCustomGeometries = false,
   }) {
     assertTolerance(toleranceHoriz);
     assertTolerance(toleranceVert);
@@ -347,7 +326,6 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
         fc2[i],
         toleranceHoriz: toleranceHoriz,
         toleranceVert: toleranceVert,
-        ignoreCustomGeometries: ignoreCustomGeometries,
       )) {
         return false;
       }

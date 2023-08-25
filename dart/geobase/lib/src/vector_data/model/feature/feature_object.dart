@@ -22,8 +22,11 @@ import '/src/vector_data/model/bounded/bounded.dart';
 /// Feature object classes (including all subtypes) are immutable.
 @immutable
 abstract class FeatureObject extends Bounded {
-  /// A feature object with an optional [bounds].
-  const FeatureObject({super.bounds});
+  final Map<String, dynamic>? _custom;
+
+  /// A feature object with optional [bounds] and [custom] properties.
+  const FeatureObject({super.bounds, Map<String, dynamic>? custom})
+      : _custom = custom;
 
   /// Returns a new feature obect with all geometries projected using
   /// [projection].
@@ -40,7 +43,7 @@ abstract class FeatureObject extends Bounded {
   FeatureObject project(Projection projection);
 
   /// Optional custom or "foreign member" properties as a map.
-  Map<String, dynamic>? get custom => null;
+  Map<String, dynamic>? get custom => _custom;
 
   /// Writes this feature object to [writer].
   void writeTo(FeatureContent writer);

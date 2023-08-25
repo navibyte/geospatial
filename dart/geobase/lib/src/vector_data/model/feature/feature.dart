@@ -25,9 +25,11 @@ import 'feature_object.dart';
 
 /// A feature is a geospatial entity with [id], [properties] and [geometry].
 ///
+/// Features are `bounded` objects with optional [bounds] defining a minimum
+/// bounding box for a feature.
+///
 /// Some implementations may also contain "foreign members", like [custom] data
-/// containing property objects and [customGeometries] containing geometry
-/// objects.
+/// containing property objects.
 ///
 /// Feature objects have an optional primary [geometry] of [T].
 ///
@@ -45,8 +47,7 @@ class Feature<T extends Geometry> extends FeatureObject {
   final T? _geometry;
   final Map<String, dynamic> _properties;
 
-  /// A feature of optional [id], [geometry] and [properties] and optional
-  /// [bounds].
+  /// A feature of [id], [geometry] and [properties].
   ///
   /// An optional [id], when given, should be either a string or an integer
   /// number.
@@ -56,17 +57,22 @@ class Feature<T extends Geometry> extends FeatureObject {
   ///
   /// An optional [properties] defines feature properties as a map with data
   /// similar to a JSON Object.
+  ///
+  /// An optional [bounds] can used set a minimum bounding box for a feature.
+  ///
+  /// Use an optional [custom] parameter to set any custom or "foreign member"
+  /// properties.
   const Feature({
     Object? id,
     T? geometry,
     Map<String, dynamic>? properties,
     super.bounds,
+    super.custom,
   })  : _id = id,
         _properties = properties ?? const {},
         _geometry = geometry;
 
-  /// Builds a feature from optional [id], [geometry], [properties], [bounds]
-  /// and [custom].
+  /// Builds a feature from [id], [geometry] and [properties].
   ///
   /// An optional [id], when given, should be either a string or an integer
   /// number.
@@ -74,7 +80,7 @@ class Feature<T extends Geometry> extends FeatureObject {
   /// An optional [geometry] is a callback function providing the content of
   /// geometry objects. The geometry of [T] named "geometry" or the first
   /// geometry of [T] without name is stored as the primary geometry. Any other
-  /// geometries are stored as "foreign members" in `customGeometries`.
+  /// geometries are ignored (in this Feature implementation).
   ///
   /// An optional [properties] defines feature properties as a map with data
   /// similar to a JSON Object.
@@ -105,53 +111,43 @@ class Feature<T extends Geometry> extends FeatureObject {
     Iterable<double>? bounds,
     Map<String, dynamic>? custom,
   }) {
-    // optional data to be built as necessary
+    // optional geometry to be built
     T? primaryGeometry;
-    Map<String, Geometry>? builtCustomGeom;
 
-    // use geometry builder to build any geometry (primary + foreign) objects
+    // use geometry builder to build primary geometry
     if (geometry != null) {
-      var index = 0;
+      // first try to get first geometry named "geometry"
       GeometryBuilder.build(
         geometry,
         to: (Geometry geometry, {String? name}) {
           if (name == 'geometry' && geometry is T) {
-            // there was already one geometry as "primary", move it to custom
-            if (primaryGeometry != null) {
-              (builtCustomGeom ??= {})['#geometry$index'] = primaryGeometry!;
-              index++;
-            }
-
-            // use the geometry of T named 'geometry' as the primary geometry
-            primaryGeometry = geometry;
-          } else if (name == null && primaryGeometry == null && geometry is T) {
-            // OR the first geometry of T without name as the primary geometry
-            primaryGeometry = geometry;
-          } else {
-            // a geometry with name, add to the custom map
-            (builtCustomGeom ??= {})[name ?? '#geometry$index'] = geometry;
-            index++;
+            // set "primary" geometry if not yet set
+            primaryGeometry ??= geometry;
           }
         },
       );
+      // if not found, then try to get first unnamed geometry
+      if (primaryGeometry == null) {
+        GeometryBuilder.build(
+          geometry,
+          to: (Geometry geometry, {String? name}) {
+            if (name == null && geometry is T) {
+              // set "primary" geometry if not yet set
+              primaryGeometry ??= geometry;
+            }
+          },
+        );
+      }
     }
 
-    // create a custom feature with "foreign members" OR a standard feature
-    return custom != null || builtCustomGeom != null
-        ? _CustomFeature(
-            id: id,
-            geometry: primaryGeometry,
-            properties: properties,
-            bounds: buildBoxCoordsOpt(bounds),
-            custom: custom,
-            customGeometries: builtCustomGeom,
-          )
-        : Feature(
-            id: id,
-            geometry: primaryGeometry,
-            properties: properties,
-            bounds: buildBoxCoordsOpt(bounds),
-          );
+    // create a feature
+    return Feature(
+      id: id,
+      geometry: primaryGeometry,
+      properties: properties,
+      bounds: buildBoxCoordsOpt(bounds),
+      custom: custom,
+    );
   }
 
   /// Parses a feature with the geometry of [T] from [text] conforming to
@@ -211,15 +207,8 @@ class Feature<T extends Geometry> extends FeatureObject {
   /// Required properties for this feature (allowed to be empty).
   Map<String, dynamic> get properties => _properties;
 
-  /// Optional custom or "foreign member" geometries as a map.
-  ///
-  /// The primary geometry is via [geometry]. However any custom geometry data
-  /// outside the primary geometry is stored in this member.
-  ///
-  /// See also [custom] for non-geometry custom or "foreign member" properties.
-  Map<String, Geometry>? get customGeometries => null;
-
-  /// Copy this feature with optional [id], [geometry] and [properties].
+  /// Copy this feature with optional [id], [geometry], [properties] and
+  /// [custom] properties.
   ///
   /// If [bounds] object is available on this, it's recalculated from the new
   /// geometry. If [bounds] is null (or new geometry is null), then [bounds] is
@@ -228,33 +217,30 @@ class Feature<T extends Geometry> extends FeatureObject {
     Object? id,
     T? geometry,
     Map<String, dynamic>? properties,
-  }) {
-    return Feature(
-      id: id ?? this.id,
-      geometry: geometry ?? this.geometry,
-      properties: properties ?? this.properties,
+    Map<String, dynamic>? custom,
+  }) =>
+      Feature(
+        id: id ?? this.id,
+        geometry: geometry ?? this.geometry,
+        properties: properties ?? this.properties,
+        custom: custom ?? this.custom,
 
-      // bounds calculated from new geometry if there was bounds before
-      bounds: bounds != null && geometry != null
-          ? BoundsBuilder.calculateBounds(
-              item: geometry,
-              type: resolveCoordTypeFrom(item: geometry),
-              recalculateChilds: false,
-            )
-          : null,
-    );
-  }
-
-  @override
-  Coords resolveCoordType() => resolveCoordTypeFrom(
-        item: geometry, // the main geometry of Feature
-        collection: customGeometries?.values, // other geoms of CustomFeature
+        // bounds calculated from new geometry if there was bounds before
+        bounds: bounds != null && geometry != null
+            ? BoundsBuilder.calculateBounds(
+                item: geometry,
+                type: resolveCoordTypeFrom(item: geometry),
+                recalculateChilds: false,
+              )
+            : null,
       );
 
   @override
+  Coords resolveCoordType() => resolveCoordTypeFrom(item: geometry);
+
+  @override
   BoxCoords? calculateBounds() => BoundsBuilder.calculateBounds(
-        item: geometry, // the main geometry of Feature
-        collection: customGeometries?.values, // other geoms of CustomFeature
+        item: geometry,
         type: resolveCoordType(),
         recalculateChilds: true,
       );
@@ -272,6 +258,7 @@ class Feature<T extends Geometry> extends FeatureObject {
       id: id,
       geometry: geom,
       properties: properties,
+      custom: custom,
       bounds: recalculate || bounds == null
           ? BoundsBuilder.calculateBounds(
               item: geom,
@@ -290,6 +277,7 @@ class Feature<T extends Geometry> extends FeatureObject {
       id: id,
       geometry: projectedGeom,
       properties: properties,
+      custom: custom,
 
       // bounds calculated from projected geometry if there was bounds before
       bounds: bounds != null && projectedGeom != null
@@ -310,18 +298,13 @@ class Feature<T extends Geometry> extends FeatureObject {
       geometry: geom?.writeTo,
       properties: properties,
       bounds: bounds,
+      custom: custom,
     );
   }
 
   /// Returns true if this and [other] contain exactly same coordinate values
   /// (or both are empty) in the same order and with the same coordinate type.
-  ///
-  /// If [ignoreCustomGeometries] is true, then [customGeometries] are ignored
-  /// in testing.
-  bool equalsCoords(
-    Feature other, {
-    bool ignoreCustomGeometries = false,
-  }) {
+  bool equalsCoords(Feature other) {
     if (identical(this, other)) return true;
 
     if (bounds != null && other.bounds != null && !(bounds! == other.bounds!)) {
@@ -339,30 +322,11 @@ class Feature<T extends Geometry> extends FeatureObject {
       if (mg2 != null) return false;
     }
 
-    // test custom geometries unless they should be ignored
-    if (!ignoreCustomGeometries) {
-      final cg1 = customGeometries;
-      final cg2 = other.customGeometries;
-      if (cg1 != null) {
-        if (cg2 == null || cg1.length != cg2.length) return false;
-        for (final cg1entry in cg1.entries) {
-          final cg2value = cg2[cg1entry.key];
-          if (cg2value == null) return false;
-          if (!cg1entry.value.equalsCoords(cg2value)) return false;
-        }
-      } else {
-        if (cg2 != null) return false;
-      }
-    }
-
     return true;
   }
 
   /// True if this feature equals with [other] by testing 2D coordinates of the
-  /// [geometry] object (and any [customGeometries] possibly contained).
-  ///
-  /// If [ignoreCustomGeometries] is true, then [customGeometries] are ignored
-  /// in testing.
+  /// [geometry].
   ///
   /// Returns false if this or [other] contain a null or "empty" geometry object
   /// in `geometry`.
@@ -374,7 +338,6 @@ class Feature<T extends Geometry> extends FeatureObject {
   bool equals2D(
     Feature other, {
     double toleranceHoriz = defaultEpsilon,
-    bool ignoreCustomGeometries = false,
   }) {
     assertTolerance(toleranceHoriz);
 
@@ -400,36 +363,12 @@ class Feature<T extends Geometry> extends FeatureObject {
       return false;
     }
 
-    // test custom geometries unless they should be ignored
-    if (!ignoreCustomGeometries) {
-      final cg1 = customGeometries;
-      final cg2 = other.customGeometries;
-      if (cg1 != null) {
-        if (cg2 == null || cg1.length != cg2.length) return false;
-        for (final cg1entry in cg1.entries) {
-          final cg2value = cg2[cg1entry.key];
-          if (cg2value == null) return false;
-          if (!cg1entry.value.equals2D(
-            cg2value,
-            toleranceHoriz: toleranceHoriz,
-          )) {
-            return false;
-          }
-        }
-      } else {
-        if (cg2 != null) return false;
-      }
-    }
-
     // got here, features equals in 2D
     return true;
   }
 
   /// True if this feature equals with [other] by testing 3D coordinates of the
-  /// [geometry] object (and any [customGeometries] possibly contained).
-  ///
-  /// If [ignoreCustomGeometries] is true, then [customGeometries] are ignored
-  /// in testing.
+  /// [geometry] object.
   ///
   /// Returns false if this or [other] contain a null, "empty" or non-3D
   /// geometry object in `geometry`.
@@ -445,7 +384,6 @@ class Feature<T extends Geometry> extends FeatureObject {
     Feature other, {
     double toleranceHoriz = defaultEpsilon,
     double toleranceVert = defaultEpsilon,
-    bool ignoreCustomGeometries = false,
   }) {
     assertTolerance(toleranceHoriz);
     assertTolerance(toleranceVert);
@@ -474,28 +412,6 @@ class Feature<T extends Geometry> extends FeatureObject {
       return false;
     }
 
-    // test custom geometries unless they should be ignored
-    if (!ignoreCustomGeometries) {
-      final cg1 = customGeometries;
-      final cg2 = other.customGeometries;
-      if (cg1 != null) {
-        if (cg2 == null || cg1.length != cg2.length) return false;
-        for (final cg1entry in cg1.entries) {
-          final cg2value = cg2[cg1entry.key];
-          if (cg2value == null) return false;
-          if (!cg1entry.value.equals3D(
-            cg2value,
-            toleranceHoriz: toleranceHoriz,
-            toleranceVert: toleranceVert,
-          )) {
-            return false;
-          }
-        }
-      } else {
-        if (cg2 != null) return false;
-      }
-    }
-
     // got here, features equals in 3D
     return true;
   }
@@ -507,8 +423,7 @@ class Feature<T extends Geometry> extends FeatureObject {
       properties == other.properties &&
       bounds == other.bounds &&
       geometry == other.geometry &&
-      custom == other.custom &&
-      customGeometries == other.customGeometries;
+      custom == other.custom;
 
   @override
   int get hashCode => Object.hash(
@@ -517,165 +432,5 @@ class Feature<T extends Geometry> extends FeatureObject {
         bounds,
         geometry,
         custom,
-        customGeometries,
       );
-}
-
-class _CustomFeature<T extends Geometry> extends Feature<T> {
-  final Map<String, dynamic>? _custom;
-  final Map<String, Geometry>? _customGeometries;
-
-  /// A feature of optional [id], [geometry], [properties], [bounds], [custom]
-  /// and [customGeometries].
-  ///
-  /// An optional [id], when given, should be either a string or an integer
-  /// number.
-  ///
-  /// An optional [geometry] of [T], when given, is the primary geometry of the
-  /// feature.
-  ///
-  /// An optional [properties] defines feature properties as a map with data
-  /// similar to a JSON Object.
-  ///
-  /// Use an optional [custom] parameter to set any "foreign member" properties
-  /// as a map.
-  ///
-  /// Use an optional [customGeometries] parameter to set any "foreign member"
-  /// geometries as a map.
-  const _CustomFeature({
-    super.id,
-    super.geometry,
-    super.properties,
-    super.bounds,
-    Map<String, dynamic>? custom,
-    Map<String, Geometry>? customGeometries,
-  })  : _custom = custom,
-        _customGeometries = customGeometries;
-
-  @override
-  Map<String, dynamic>? get custom => _custom;
-
-  @override
-  Map<String, Geometry>? get customGeometries => _customGeometries;
-
-  @override
-  Feature<T> copyWith({
-    Object? id,
-    T? geometry,
-    Map<String, dynamic>? properties,
-  }) {
-    final newGeom = geometry ?? this.geometry;
-    final newCustGeom = customGeometries;
-
-    return _CustomFeature(
-      id: id ?? this.id,
-      geometry: newGeom,
-      properties: properties ?? this.properties,
-      custom: custom,
-      customGeometries: newCustGeom,
-
-      // bounds calculated from new geometry if there was bounds before
-      bounds: bounds != null && (newGeom != null || newCustGeom != null)
-          ? BoundsBuilder.calculateBounds(
-              item: newGeom,
-              collection: newCustGeom?.values,
-              type: resolveCoordTypeFrom(
-                item: newGeom,
-                collection: newCustGeom?.values,
-              ),
-              recalculateChilds: false,
-            )
-          : null,
-    );
-  }
-
-  @override
-  Feature<T> bounded({bool recalculate = false}) {
-    final currGeom = geometry;
-    final currCustGeoms = customGeometries;
-    if ((currGeom == null || currGeom.isEmpty) &&
-        (currCustGeoms == null || currCustGeoms.isEmpty)) return this;
-
-    // ensure main geometry is processed first
-    final geom = currGeom?.bounded(recalculate: recalculate) as T?;
-
-    // ensure also custom geometries are processed
-    final custGeom = currCustGeoms?.map<String, Geometry>(
-      (key, value) =>
-          MapEntry(key, value.bounded(recalculate: recalculate) as Geometry),
-    );
-
-    // return a new feature with processed geometries and populated bounds
-    return _CustomFeature<T>(
-      id: id,
-      geometry: geom,
-      properties: properties,
-      custom: custom,
-      customGeometries: custGeom,
-      bounds: recalculate || bounds == null
-          ? BoundsBuilder.calculateBounds(
-              item: geom,
-              collection: custGeom?.values,
-              type: resolveCoordTypeFrom(
-                item: geom,
-                collection: custGeom?.values,
-              ),
-              recalculateChilds: false,
-            )
-          : bounds,
-    );
-  }
-
-  @override
-  Feature<T> project(Projection projection) {
-    final projectedGeom = geometry?.project(projection) as T?;
-    final projectedCustGeom = customGeometries?.map<String, Geometry>(
-      (key, geom) => MapEntry(key, geom.project(projection)),
-    );
-
-    return _CustomFeature<T>(
-      id: id,
-      geometry: projectedGeom,
-      properties: properties,
-      custom: custom,
-      customGeometries: projectedCustGeom,
-
-      // bounds calculated from projected geometries if there was bounds before
-      bounds:
-          bounds != null && (projectedGeom != null || projectedCustGeom != null)
-              ? BoundsBuilder.calculateBounds(
-                  item: projectedGeom,
-                  collection: projectedCustGeom?.values,
-                  type: resolveCoordTypeFrom(
-                    item: projectedGeom,
-                    collection: projectedCustGeom?.values,
-                  ),
-                  recalculateChilds: false,
-                )
-              : null,
-    );
-  }
-
-  @override
-  void writeTo(FeatureContent writer) {
-    final geom = geometry;
-    final custGeom = customGeometries;
-    writer.feature(
-      id: id,
-      geometry: geom != null || custGeom != null
-          ? (output) {
-              if (geom != null) {
-                geom.writeTo(output);
-              }
-              if (custGeom != null) {
-                custGeom.forEach((name, value) {
-                  value.writeTo(output, name: name);
-                });
-              }
-            }
-          : null,
-      properties: properties,
-      custom: custom,
-    );
-  }
 }
