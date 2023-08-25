@@ -892,14 +892,14 @@ void _temporalData() {
 void _geospatialExtents() {
   // An extent with spatial (WGS 84 longitude-latitude) and temporal parts.
   GeoExtent.single(
-    coordRefSys: CoordRefSys.CRS84,
+    crs: CoordRefSys.CRS84,
     bbox: GeoBox(west: -20.0, south: 50.0, east: 20.0, north: 60.0),
     interval: Interval.parse('../2020-10-31'),
   );
 
   // An extent with multiple spatial bounds and temporal interval segments.
   GeoExtent.multi(
-    coordRefSys: CoordRefSys.CRS84,
+    crs: CoordRefSys.CRS84,
     boxes: [
       GeoBox(west: -20.0, south: 50.0, east: 20.0, north: 60.0),
       GeoBox(west: 40.0, south: 50.0, east: 60.0, north: 60.0),

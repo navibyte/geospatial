@@ -24,7 +24,7 @@ void main() {
       expect(spatialSingle, spatialMulti1);
       expect(spatialSingle, isNot(spatialMulti2));
       expect(spatialMulti3, isNot(spatialMulti2));
-      expect(spatialSingle.coordRefSys, spatialMulti1.coordRefSys);
+      expect(spatialSingle.crs, spatialMulti1.crs);
       expect(spatialSingle.first, spatialMulti1.first);
       expect(spatialSingle.first, spatialMulti2.first);
       expect(spatialSingle.first, isNot(spatialMulti3.first));
@@ -59,7 +59,7 @@ void main() {
         GeoBox(west: -19.2, south: -4.5, east: 12.2, north: 24.5),
       );
       expect(
-        extent1.spatial.coordRefSys.toString(),
+        extent1.spatial.crs.toString(),
         'http://www.opengis.net/def/crs/OGC/1.3/CRS84',
       );
       expect(extent1.temporal!.first, interval1);

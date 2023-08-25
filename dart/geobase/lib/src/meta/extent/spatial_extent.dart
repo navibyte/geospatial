@@ -14,50 +14,25 @@ import '/src/coordinates/crs/coord_ref_sys.dart';
 class SpatialExtent<T extends Box> {
   final T _first;
   final Iterable<T>? _boxes;
-  final CoordRefSys _coordRefSys;
+  final CoordRefSys _crs;
 
-  /// A spatial extent of one [bbox] (coordinate reference system in
-  /// [coordRefSys]).
-  const SpatialExtent(
+  /// A spatial extent of one [bbox] with coordinate reference system specified
+  /// by [crs].
+  const SpatialExtent.single(
     T bbox, {
-    CoordRefSys coordRefSys = CoordRefSys.CRS84,
+    CoordRefSys crs = CoordRefSys.CRS84,
   })  : _first = bbox,
         _boxes = null,
-        _coordRefSys = coordRefSys;
+        _crs = crs;
 
-  /// A spatial extent of one [bbox].
-  ///
-  /// The coordinate reference system is resolved in this order:
-  /// 1. [coordRefSys] if it's non-null
-  /// 2. otherwise `CoordRefSys.normalized(crs)` if [crs] is non-null
-  /// 3. otherwise `CoordRefSys.CRS84`
-  SpatialExtent.single(
-    T bbox, {
-    CoordRefSys? coordRefSys,
-    String? crs,
-  })  : _first = bbox,
-        _boxes = null,
-        _coordRefSys = CoordRefSys.from(
-          coordRefSys: coordRefSys,
-          crs: crs,
-        );
-
-  /// A spatial extent of [boxes].
-  ///
-  /// The coordinate reference system is resolved in this order:
-  /// 1. [coordRefSys] if it's non-null
-  /// 2. otherwise `CoordRefSys.normalized(crs)` if [crs] is non-null
-  /// 3. otherwise `CoordRefSys.CRS84`
+  /// A spatial extent of [boxes] with coordinate reference system specified
+  /// by [crs].
   SpatialExtent.multi(
     Iterable<T> boxes, {
-    CoordRefSys? coordRefSys,
-    String? crs,
+    CoordRefSys crs = CoordRefSys.CRS84,
   })  : _boxes = _validate(boxes),
         _first = boxes.first,
-        _coordRefSys = CoordRefSys.from(
-          coordRefSys: coordRefSys,
-          crs: crs,
-        );
+        _crs = crs;
 
   static Iterable<T> _validate<T extends Box>(Iterable<T> boxes) {
     if (boxes.isEmpty) {
@@ -73,18 +48,18 @@ class SpatialExtent<T extends Box> {
   Iterable<T> get boxes => _boxes ?? [_first];
 
   /// The coordinate reference system for bounding boxes of this extent.
-  CoordRefSys get coordRefSys => _coordRefSys;
+  CoordRefSys get crs => _crs;
 
-  /// Copy this spatial extent with optional [bbox] and/or [coordRefSys]
-  /// parameters changed.
-  SpatialExtent<T> copyWith({T? bbox, CoordRefSys? coordRefSys}) {
-    if (bbox != null) {
-      return SpatialExtent(bbox, coordRefSys: coordRefSys ?? _coordRefSys);
+  /// Copy this spatial extent with optional [boxes] and/or [crs] parameters
+  /// changed.
+  SpatialExtent<T> copyWith({Iterable<T>? boxes, CoordRefSys? crs}) {
+    if (boxes != null) {
+      return SpatialExtent.multi(boxes, crs: crs ?? _crs);
     } else {
-      if (coordRefSys != null) {
+      if (crs != null) {
         return _boxes != null
-            ? SpatialExtent.multi(_boxes!, coordRefSys: coordRefSys)
-            : SpatialExtent(_first, coordRefSys: coordRefSys);
+            ? SpatialExtent.multi(_boxes!, crs: crs)
+            : SpatialExtent.single(_first, crs: crs);
       } else {
         // ignore: avoid_returning_this
         return this;
@@ -94,7 +69,7 @@ class SpatialExtent<T extends Box> {
 
   @override
   String toString() {
-    final buf = StringBuffer()..write(coordRefSys);
+    final buf = StringBuffer()..write(crs);
     for (final item in boxes) {
       buf
         ..write(',[')
@@ -106,7 +81,7 @@ class SpatialExtent<T extends Box> {
 
   @override
   bool operator ==(Object other) {
-    if (other is SpatialExtent<T> && coordRefSys == other.coordRefSys) {
+    if (other is SpatialExtent<T> && crs == other.crs) {
       final items1 = boxes;
       final items2 = other.boxes;
       if (items1.length == items2.length) {
@@ -123,5 +98,5 @@ class SpatialExtent<T extends Box> {
   }
 
   @override
-  int get hashCode => Object.hash(coordRefSys, Object.hashAll(boxes));
+  int get hashCode => Object.hash(crs, Object.hashAll(boxes));
 }

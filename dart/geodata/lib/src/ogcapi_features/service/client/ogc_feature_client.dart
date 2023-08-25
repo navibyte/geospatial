@@ -587,18 +587,17 @@ OGCCollectionMeta _collectionFromJson(
 GeoExtent _extentFromJson(Map<String, dynamic> data) {
   final spatial = data['spatial'];
   final spatialIsMap = spatial is Map<String, dynamic>;
-  final crs = (spatialIsMap ? spatial['crs'] as String? : null) ??
-      'http://www.opengis.net/def/crs/OGC/1.3/CRS84';
+  final crs = (spatialIsMap ? spatial['crs'] as String? : null);
 
   // try to parse bboxes
   SpatialExtent<GeoBox> spatialExtent;
   final bbox = spatialIsMap ? spatial['bbox'] as Iterable<dynamic>? : null;
   if (bbox != null) {
     // by standard: "bbox" is a list of bboxes
-    spatialExtent = SpatialExtent.multi(
-      bbox.map((e) => _bboxFromJson(e! as List<dynamic>)),
-      crs: crs,
-    );
+    final b = bbox.map((e) => _bboxFromJson(e! as List<dynamic>));
+    spatialExtent = crs != null
+        ? SpatialExtent.multi(b, crs: CoordRefSys.normalized(crs))
+        : SpatialExtent.multi(b);
   } else {
     // not standard: assume "spatial" as one bbox
     try {
@@ -606,7 +605,7 @@ GeoExtent _extentFromJson(Map<String, dynamic> data) {
           SpatialExtent.single(_bboxFromJson(spatial! as List<dynamic>));
     } catch (_) {
       // fallback (world extent)
-      spatialExtent = const SpatialExtent(
+      spatialExtent = const SpatialExtent.single(
         GeoBox(west: -180.0, south: -90.0, east: 180.0, north: 90.0),
       );
     }

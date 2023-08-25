@@ -61,7 +61,7 @@ Future<void> main(List<String> args) async {
   final airportsMeta = await airports.meta();
   final extent = airportsMeta.extent?.spatial;
   if (extent != null) {
-    final crs = extent.coordRefSys;
+    final crs = extent.crs;
     print('Spatial bbox list (crs: $crs):');
     for (final box in extent.boxes) {
       print('  $box');
