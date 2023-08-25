@@ -37,14 +37,6 @@ class GeospatialQuery with EquatableMixin {
   Map<String, String>? get queryablesAsParameters =>
       parameters?.map((key, value) => MapEntry(key, value.toString()));
 
-  /// Optional query parameters for queries as a map of named parameters.
-  @Deprecated('Use parameters instead.')
-  Map<String, dynamic>? get extra => parameters;
-
-  /// Optional query parameters for queries with values mapped to `String`.
-  @Deprecated('Use queryablesAsParameters instead.')
-  Map<String, String>? get extraParams => queryablesAsParameters;
-
   @override
   List<Object?> get props => [crs, parameters];
 }
