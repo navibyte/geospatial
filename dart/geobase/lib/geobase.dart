@@ -41,8 +41,6 @@ export 'src/coordinates/base/aligned.dart';
 export 'src/coordinates/base/box.dart';
 export 'src/coordinates/base/position.dart';
 export 'src/coordinates/base/positionable.dart';
-export 'src/coordinates/crs/coord_ref_sys.dart';
-export 'src/coordinates/crs/coord_ref_sys_resolver.dart';
 export 'src/coordinates/data/position_data.dart';
 export 'src/coordinates/geographic/dms.dart';
 export 'src/coordinates/geographic/geobox.dart';
@@ -52,6 +50,8 @@ export 'src/coordinates/projected/projbox.dart';
 export 'src/coordinates/projected/projected.dart';
 export 'src/coordinates/projection/projection.dart';
 export 'src/coordinates/projection/projection_adapter.dart';
+export 'src/coordinates/reference/coord_ref_sys.dart';
+export 'src/coordinates/reference/coord_ref_sys_resolver.dart';
 export 'src/coordinates/scalable/scalable.dart';
 export 'src/coordinates/scalable/scalable2i.dart';
 

@@ -6,7 +6,7 @@
 
 import 'package:meta/meta.dart';
 
-import '/src/coordinates/crs/coord_ref_sys.dart';
+import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/vector/encoding/content_encoder.dart';
 import '/src/vector/encoding/text_format.dart';
 

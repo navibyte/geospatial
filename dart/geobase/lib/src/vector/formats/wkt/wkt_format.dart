@@ -9,7 +9,7 @@ import 'dart:typed_data';
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
-import '/src/coordinates/crs/coord_ref_sys.dart';
+import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/format_geojson_wkt.dart';
 import '/src/utils/format_impl.dart';
 import '/src/vector/content/coordinates_content.dart';

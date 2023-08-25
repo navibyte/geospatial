@@ -16,7 +16,7 @@ import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
-import '/src/coordinates/crs/coord_ref_sys.dart';
+import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';

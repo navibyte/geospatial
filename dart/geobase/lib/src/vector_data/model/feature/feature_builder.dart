@@ -6,7 +6,7 @@
 
 // ignore_for_file: cascade_invocations
 
-import '/src/coordinates/crs/coord_ref_sys.dart';
+import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/vector/content/feature_content.dart';
 import '/src/vector/content/geometry_content.dart';
 import '/src/vector/encoding/text_format.dart';

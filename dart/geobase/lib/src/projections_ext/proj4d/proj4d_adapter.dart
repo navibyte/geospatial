@@ -8,9 +8,9 @@ import 'package:proj4dart/proj4dart.dart' as p4d;
 
 import '/src/codes/coords.dart';
 import '/src/coordinates/base/position.dart';
-import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/projection/projection_adapter.dart';
+import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/format_validation.dart';
 
 /// A projection adapter based on the Proj4dart package.

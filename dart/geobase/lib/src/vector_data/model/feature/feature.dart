@@ -6,8 +6,8 @@
 
 import '/src/codes/coords.dart';
 import '/src/constants/epsilon.dart';
-import '/src/coordinates/crs/coord_ref_sys.dart';
 import '/src/coordinates/projection/projection.dart';
+import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/coord_type.dart';
