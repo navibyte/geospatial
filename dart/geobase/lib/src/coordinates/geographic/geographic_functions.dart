@@ -117,18 +117,3 @@ extension DoubleAngleExtension on double {
       ? minLatitudeWebMercator
       : (this > maxLatitudeWebMercator ? maxLatitudeWebMercator : this);
 }
-
-/// Returns a normalized longitude in the range `[-180.0, 180.0[` by using the
-/// formula `(lon + 180.0) % 360.0 - 180.0` (if outside the range).
-///
-/// As a special case if [lon] is `double.nan` then `double.nan` is returned.
-@Deprecated('Use DoubleAngleExtension.wrapLongitude instead.')
-double normalizeLongitude(double lon) =>
-    lon >= -180.0 && lon < 180.0 ? lon : (lon + 180.0) % 360.0 - 180.0;
-
-/// Returns a clipped latitude in the range `[-90.0, 90.0]`.
-///
-/// As a special case if [lat] is `double.nan` then `double.nan` is returned.
-@Deprecated('Use DoubleAngleExtension.clipLatitude instead.')
-double clampLatitude(double lat) =>
-    lat < minLatitude ? minLatitude : (lat > maxLatitude ? maxLatitude : lat);

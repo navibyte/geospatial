@@ -14,21 +14,9 @@ mixin ProjectionAdapter {
   /// `CoordRefSys.CRS84`.
   CoordRefSys get sourceCrs;
 
-  /// The EPSG code or other identifier of the source coordinate reference
-  /// system (or projection), ie. "EPSG:4326" or
-  /// "http://www.opengis.net/def/crs/OGC/1.3/CRS84".
-  ///
-  @Deprecated('Use sourceCrs.epsg or sourceCrs.id instead')
-  String get fromCrs => sourceCrs.epsg ?? sourceCrs.id;
-
   /// The target coordinate reference system (or projection), ie.
   /// `CoordRefSys.EPSG_3857`.
   CoordRefSys get targetCrs;
-
-  /// The EPSG code or other identifier of the target coordinate reference
-  /// system (or projection), ie. "EPSG:3857".
-  @Deprecated('Use targetCrs.epsg or targetCrs.id instead')
-  String get toCrs => targetCrs.epsg ?? targetCrs.id;
 
   /// Returns a projection that projects from [sourceCrs] to
   /// [targetCrs].

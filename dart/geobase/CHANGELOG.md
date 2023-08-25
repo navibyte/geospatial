@@ -7,6 +7,7 @@ NOTE: Version 0.6.0 currently [under development](https://github.com/navibyte/ge
 
 ⚠️ Breaking changes:
 * [Simplify Feature and FeatureCollection types #195](https://github.com/navibyte/geospatial/issues/195)
+* [Remove deprecated types in geobase version 0.6.0 #194](https://github.com/navibyte/geospatial/issues/194)
 
 ## 0.5.1
 

@@ -85,56 +85,6 @@ class Proj4d with ProjectionAdapter {
     }
   }
 
-  /// Resolves a projection adapter between [fromCode] and [toCode].
-  ///
-  /// As based on the Proj4dart package, it has built-in support for following
-  /// crs codes: "EPSG:4326" (with alias "WGS84"), "EPSG:4269", "EPSG:3857"
-  /// (with aliases "EPSG:3785", "GOOGLE", "EPSG:900913", "EPSG:102113").
-  ///
-  /// For all other crs codes, also a projection definition must be given via
-  /// [fromDef] or [toDef]. Proj4 definition strings, OGC WKT definitions and
-  /// ESRI WKT definitions are supported. More info from the Proj4dart package.
-  ///
-  /// Throws FormatException if projections could not be resolved.
-  @Deprecated('Use Proj4d.init() instead.')
-  factory Proj4d.resolve(
-    String fromCode,
-    String toCode, {
-    String? fromDef,
-    String? toDef,
-  }) =>
-      Proj4d.init(
-        CoordRefSys.normalized(fromCode),
-        CoordRefSys.normalized(toCode),
-        sourceDef: fromDef,
-        targetDef: toDef,
-      );
-
-  /// Resolves a projection adapter between [fromCode] and [toCode].
-  ///
-  /// As based on the Proj4dart package, it has built-in support for following
-  /// crs codes: "EPSG:4326" (with alias "WGS84"), "EPSG:4269", "EPSG:3857"
-  /// (with aliases "EPSG:3785", "GOOGLE", "EPSG:900913", "EPSG:102113").
-  ///
-  /// For all other crs codes, also a projection definition must be given via
-  /// [fromDef] or [toDef]. Proj4 definition strings, OGC WKT definitions and
-  /// ESRI WKT definitions are supported. More info from the Proj4dart package.
-  ///
-  /// Returns null if projections could not be resolved.
-  @Deprecated('Use Proj4d.tryInit() instead.')
-  static Proj4d? tryResolve(
-    String fromCode,
-    String toCode, {
-    String? fromDef,
-    String? toDef,
-  }) =>
-      Proj4d.tryInit(
-        CoordRefSys.normalized(fromCode),
-        CoordRefSys.normalized(toCode),
-        sourceDef: fromDef,
-        targetDef: toDef,
-      );
-
   /// A projection tuple contains source and target projections.
   final p4d.ProjectionTuple tuple;
 

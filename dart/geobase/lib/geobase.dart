@@ -56,7 +56,6 @@ export 'src/coordinates/scalable/scalable.dart';
 export 'src/coordinates/scalable/scalable2i.dart';
 
 // geodesy
-export 'src/geodesy/spherical/distance_haversine.dart';
 export 'src/geodesy/spherical/spherical_great_circle.dart';
 export 'src/geodesy/spherical/spherical_rhumb_line.dart';
 
@@ -96,8 +95,6 @@ export 'src/vector/formats/wkt/wkt_like_format.dart';
 // vector_data
 export 'src/vector_data/array/coordinates.dart';
 export 'src/vector_data/array/coordinates_extensions.dart';
-export 'src/vector_data/coords/lonlat.dart';
-export 'src/vector_data/coords/xy.dart';
 export 'src/vector_data/model/bounded/bounded.dart';
 export 'src/vector_data/model/feature/feature.dart';
 export 'src/vector_data/model/feature/feature_builder.dart';

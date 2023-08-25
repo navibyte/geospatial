@@ -75,14 +75,6 @@ class SpatialExtent<T extends Box> {
   /// The coordinate reference system for bounding boxes of this extent.
   CoordRefSys get coordRefSys => _coordRefSys;
 
-  /// The identifier of the coordinate reference system for bounding boxes of
-  /// this extent.
-  ///
-  /// See also [coordRefSys] that returns metadata about a coordinate reference
-  /// system identified by [crs].
-  @Deprecated('Use coordRefSys.id or coordRefSys.epsg instead.')
-  String get crs => _coordRefSys.id;
-
   /// Copy this spatial extent with optional [bbox] and/or [coordRefSys]
   /// parameters changed.
   SpatialExtent<T> copyWith({T? bbox, CoordRefSys? coordRefSys}) {
