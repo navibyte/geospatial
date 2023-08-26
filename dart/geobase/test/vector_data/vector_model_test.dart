@@ -493,8 +493,17 @@ void main() {
       expect(LineString.parseCoords(lineStringCoords).toText(), lineString);
       expect(Polygon.parse(polygon).toText(), polygon);
       expect(Polygon.parseCoords(polygonCoords).toText(), polygon);
-      expect(MultiPoint.parse(multiPoint).toText(), multiPoint);
+
+      final mpo1 = MultiPoint.parse(multiPoint);
+      expect(mpo1.toText(), multiPoint);
       expect(MultiPoint.parseCoords(multiPointCoords).toText(), multiPoint);
+      final mpo2 = MultiPoint.from([
+        Projected.parse('-1.1,-1.1,-1.1,-1.1'),
+        Projected.parse('2.1,-2.5,2.3,0.1'),
+        Projected.parse('3.5,-3.49,11.3,0.23'),
+      ]);
+      expect(mpo1.toText(), mpo2.toText());
+
       expect(MultiLineString.parse(multiLineString).toText(), multiLineString);
       expect(
         MultiLineString.parseCoords(multiLineStringCoords).toText(),

@@ -34,15 +34,15 @@ import 'point.dart';
 
 /// A multi point geometry with an array of points (each with a position).
 class MultiPoint extends SimpleGeometry {
-  final List<PositionCoords> _points;
+  final List<Position> _points;
   final Coords? _type;
 
   /// A multi point geometry with an array of [points] (each with a position).
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry.
   ///
-  /// Each point is represented by a [PositionCoords] instance.
-  const MultiPoint(List<PositionCoords> points, {BoxCoords? bounds})
+  /// Each point is represented by a [Position] instance.
+  const MultiPoint(List<Position> points, {BoxCoords? bounds})
       : this._(points, bounds: bounds);
 
   const MultiPoint._(this._points, {super.bounds, Coords? type}) : _type = type;
@@ -54,7 +54,9 @@ class MultiPoint extends SimpleGeometry {
   /// Each point is represented by a [Position] instance.
   factory MultiPoint.from(Iterable<Position> points, {Box? bounds}) =>
       MultiPoint._(
-        points.map((p) => p.coords).toList(growable: false),
+        points is List<Position>
+            ? points
+            : points.map((p) => p.coords).toList(growable: false),
         bounds: bounds?.coords(),
       );
 
@@ -167,14 +169,23 @@ class MultiPoint extends SimpleGeometry {
   bool get isEmpty => _points.isEmpty;
 
   /// The positions of all points.
-  List<PositionCoords> get positions => _points;
+  /// 
+  /// List items can be any [Position] objects, like `Projected`, `Geographic`
+  /// or `PositionCoords`.
+  ///
+  /// Position items accessed from the list can be typed using extension
+  /// methods:
+  /// * `asProjected`: a position as a `Projected` position
+  /// * `asGeographic`: a position as a `Geographic` position
+  /// * `coords`: a position as a `PositionCoords` position
+  List<Position> get positions => _points;
 
   /// All points as a lazy iterable of [Point] geometries.
   Iterable<Point> get points => positions.map<Point>(Point.new);
 
   @override
   BoxCoords? calculateBounds() => BoundsBuilder.calculateBounds(
-        positions: _points,
+        positions: positions,
         type: coordType,
       );
 
@@ -221,7 +232,12 @@ class MultiPoint extends SimpleGeometry {
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) => isEmpty
       ? writer.emptyGeometry(Geom.multiPoint, name: name)
-      : writer.multiPoint(_points, type: coordType, name: name, bounds: bounds);
+      : writer.multiPoint(
+          _points.map((e) => e.values),
+          type: coordType,
+          name: name,
+          bounds: bounds,
+        );
 
   // NOTE: coordinates as raw data
 
