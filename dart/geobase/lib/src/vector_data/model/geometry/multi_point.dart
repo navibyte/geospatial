@@ -57,7 +57,7 @@ class MultiPoint extends SimpleGeometry {
         points is List<Position>
             ? points
             : points.map((p) => p.coords).toList(growable: false),
-        bounds: bounds?.coords(),
+        bounds: bounds?.coords,
       );
 
   /// Builds a multi point geometry from an array of [points] (each with a
@@ -169,7 +169,7 @@ class MultiPoint extends SimpleGeometry {
   bool get isEmpty => _points.isEmpty;
 
   /// The positions of all points.
-  /// 
+  ///
   /// List items can be any [Position] objects, like `Projected`, `Geographic`
   /// or `PositionCoords`.
   ///

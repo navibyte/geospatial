@@ -11,8 +11,9 @@ part of 'coordinates.dart';
 /// Such box is a valid [Box] implementation and represents coordinate values
 /// also as a collection of `Iterable<double>` (containing 4, 6, or 8 items).
 ///
-/// The bounding box can be typed as a projected box using [asProjected], and
-/// as a geographic box using [asGeographic].
+/// An instance of [BoxCoords] can be typed using extension methods:
+/// * `asProjected`: returned as a `ProjBox` bounding box
+/// * `asGeographic`: returned as a `Geographic` bounding box
 ///
 /// See [Box] for description about supported coordinate values.
 abstract class BoxCoords extends Box with _CoordinatesMixin {
@@ -171,20 +172,6 @@ abstract class BoxCoords extends Box with _CoordinatesMixin {
         maxZ: maxZ ?? this.maxZ,
         maxM: maxM ?? this.maxM,
       );
-
-  /// Returns this box typed as a projected bounding box.
-  ///
-  /// If this position implements [ProjBox], then this may be returned.
-  /// Otherwise a new instance with copied coordinate values is created.
-  ProjBox get asProjected =>
-      this is ProjBox ? this as ProjBox : copyTo(ProjBox.create);
-
-  /// Returns this box typed as a geographic bounding box.
-  ///
-  /// If this position implements [GeoBox], then this may be returned.
-  /// Otherwise a new instance with copied coordinate values is created.
-  GeoBox get asGeographic =>
-      this is GeoBox ? this as GeoBox : copyTo(GeoBox.create);
 }
 
 @immutable

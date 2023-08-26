@@ -7,7 +7,9 @@
 import '/src/codes/coords.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
+import '/src/coordinates/geographic/geobox.dart';
 import '/src/coordinates/geographic/geographic.dart';
+import '/src/coordinates/projected/projbox.dart';
 import '/src/coordinates/projected/projected.dart';
 
 import 'coordinates.dart';
@@ -166,20 +168,39 @@ extension PositionCoordinatesExtension on Position {
   }
 }
 
-/// A helper extension on [Box] to convert data as [BoxCoords].
+/// A helper extension on [Box] to convert position objects between
+/// subtypes like [ProjBox], [GeoBox] and [BoxCoords].
 extension BoxCoordinatesExtension on Box {
-  /// Returns this `Box` as an instance of `BoxCoords` with the same coordinate
-  /// type as this has.
-  BoxCoords coords() => this is BoxCoords
-      ? this as BoxCoords
-      : BoxCoords.create(
-          minX: minX,
-          minY: minY,
-          minZ: minZ,
-          minM: minM,
-          maxX: maxX,
-          maxY: maxY,
-          maxZ: maxZ,
-          maxM: maxM,
-        );
+  /// Returns this bounding box as an instance of [BoxCoords].
+  ///
+  /// The coordinate type defined by [type] is preserved.
+  ///
+  /// If the type of the box is [BoxCoords], then this is returned.
+  /// Otherwise a new instance with copied coordinate values is created.
+  BoxCoords get coords {
+    final box = this;
+    return box is BoxCoords ? box : box.copyTo(BoxCoords.create);
+  }
+
+  /// Returns this bounding box as an instance of [ProjBox].
+  ///
+  /// The coordinate type defined by [type] is preserved.
+  ///
+  /// If the type of the box is [ProjBox], then this is returned.
+  /// Otherwise a new instance with copied coordinate values is created.
+  ProjBox get asProjected {
+    final box = this;
+    return box is ProjBox ? box : box.copyTo(ProjBox.create);
+  }
+
+  /// Returns this bounding box as an instance of [GeoBox].
+  ///
+  /// The coordinate type defined by [type] is preserved.
+  ///
+  /// If the type of the box is [GeoBox], then this is returned.
+  /// Otherwise a new instance with copied coordinate values is created.
+  GeoBox get asGeographic {
+    final box = this;
+    return box is GeoBox ? box : box.copyTo(GeoBox.create);
+  }
 }

@@ -64,7 +64,7 @@ class MultiLineString extends SimpleGeometry {
   }) =>
       MultiLineString._(
         lineStrings.map((chain) => chain.array()).toList(growable: false),
-        bounds: bounds?.coords(),
+        bounds: bounds?.coords,
       );
 
   /// Builds a multi line string from an array of [lineStrings] (each with a

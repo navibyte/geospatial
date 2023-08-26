@@ -12,9 +12,9 @@ part of 'coordinates.dart';
 /// coordinate values also as a collection of `Iterable<double>` (containing 2,
 /// 3, or 4 items).
 ///
-/// The returned position can be typed using extension methods:
-/// * `asProjected`: the position as a `Projected` position
-/// * `asGeographic`: the position as a `Geographic` position
+/// An instance of [PositionCoords] can be typed using extension methods:
+/// * `asProjected`: returned as a `Projected` position
+/// * `asGeographic`: returned as a `Geographic` position
 ///
 /// See [Position] for description about supported coordinate values.
 ///

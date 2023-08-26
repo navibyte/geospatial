@@ -86,7 +86,7 @@ class Polygon extends SimpleGeometry {
   }) =>
       Polygon._(
         rings.map((ring) => ring.array()).toList(growable: false),
-        bounds: bounds?.coords(),
+        bounds: bounds?.coords,
       );
 
   /// Builds a polygon geometry from one exterior and 0 to N interior [rings].

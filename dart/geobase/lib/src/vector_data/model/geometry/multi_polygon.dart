@@ -74,7 +74,7 @@ class MultiPolygon extends SimpleGeometry {
                   polygon.map((ring) => ring.array()).toList(growable: false),
             )
             .toList(growable: false),
-        bounds: bounds?.coords(),
+        bounds: bounds?.coords,
       );
 
   /// Builds a multi polygon from an array of [polygons] (each with an array of
