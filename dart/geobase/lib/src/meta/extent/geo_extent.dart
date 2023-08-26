@@ -8,6 +8,7 @@ import 'package:meta/meta.dart';
 
 import '/src/coordinates/geographic/geobox.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
+import '/src/coordinates/reference/temporal_ref_sys.dart';
 import '/src/meta/time/interval.dart';
 
 import 'spatial_extent.dart';
@@ -31,12 +32,12 @@ class GeoExtent {
   /// A geospatial extent of one [bbox] and optional [interval].
   ///
   /// A coordinate reference system can be specified by [crs], and a
-  /// temporal reference system by [trs].
+  /// temporal coordinate reference system by [trs].
   GeoExtent.single({
     required GeoBox bbox,
     Interval? interval,
     CoordRefSys crs = CoordRefSys.CRS84,
-    String trs = 'http://www.opengis.net/def/uom/ISO-8601/0/Gregorian',
+    TemporalRefSys trs = TemporalRefSys.gregorian,
   })  : _spatial = SpatialExtent<GeoBox>.single(
           bbox,
           crs: crs,
@@ -51,12 +52,12 @@ class GeoExtent {
   /// A geospatial extent of [boxes] and optional [intervals].
   ///
   /// A coordinate reference system can be specified by [crs], and a
-  /// temporal reference system by [trs].
+  /// temporal coordinate reference system by [trs].
   GeoExtent.multi({
     required Iterable<GeoBox> boxes,
     Iterable<Interval>? intervals,
     CoordRefSys crs = CoordRefSys.CRS84,
-    String trs = 'http://www.opengis.net/def/uom/ISO-8601/0/Gregorian',
+    TemporalRefSys trs = TemporalRefSys.gregorian,
   })  : _spatial = SpatialExtent<GeoBox>.multi(
           boxes,
           crs: crs,

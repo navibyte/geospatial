@@ -14,13 +14,13 @@ import '/src/codes/geo_representation.dart';
 /// custom instance using [register]).
 ///
 /// NOTE: The current version of this resolver class provides only methods
-/// [normalizeId], [axisOrder] and [epsg]. In future other methods might be
-/// added.
+/// [normalizeId], [isGeographic], [axisOrder], [swapXY] and [epsg]. In future
+/// other methods might be added.
 abstract class CoordRefSysResolver {
   const CoordRefSysResolver._();
 
   /// Normalizes the coordinate reference system identifier to the template
-  /// `http://www.opengis.net/def/crs/EPSG/0/4326`.
+  /// `http://www.opengis.net/def/crs/{authority}/{version}/{code}`.
   ///
   /// Examples:
   /// * `http://www.opengis.net/def/crs/EPSG/0/4326`

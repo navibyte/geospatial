@@ -6,27 +6,31 @@
 
 import 'package:meta/meta.dart';
 
+import '/src/coordinates/reference/temporal_ref_sys.dart';
 import '/src/meta/time/interval.dart';
 
-/// An extent with 1 to N intervals in defined temporal reference system.
+/// An extent with 1 to N intervals in defined temporal coordinate reference
+/// system.
 @immutable
 class TemporalExtent {
   final Interval _first;
   final Iterable<Interval>? _intervals;
-  final String _trs;
+  final TemporalRefSys _trs;
 
-  /// A temporal extent of one [interval] (temporal reference system in [trs]).
+  /// A temporal extent of one [interval] (temporal coordinate reference system
+  /// in [trs]).
   const TemporalExtent.single(
     Interval interval, {
-    String trs = 'http://www.opengis.net/def/uom/ISO-8601/0/Gregorian',
+    TemporalRefSys trs = TemporalRefSys.gregorian,
   })  : _first = interval,
         _intervals = null,
         _trs = trs;
 
-  /// A temporal extent of [intervals] (temporal reference system in [trs]).
+  /// A temporal extent of [intervals] (temporal coordinate reference system in
+  /// [trs]).
   TemporalExtent.multi(
     Iterable<Interval> intervals, {
-    String trs = 'http://www.opengis.net/def/uom/ISO-8601/0/Gregorian',
+    TemporalRefSys trs = TemporalRefSys.gregorian,
   })  : _intervals = _validate(intervals),
         _first = intervals.first,
         _trs = trs;
@@ -44,12 +48,12 @@ class TemporalExtent {
   /// All intervals for this extent.
   Iterable<Interval> get intervals => _intervals ?? [_first];
 
-  /// The temporal reference system for intervals of this extent.
-  String get trs => _trs;
+  /// The temporal coordinate reference system for intervals of this extent.
+  TemporalRefSys get trs => _trs;
 
   /// Copy this temporal extent with optional [interval] and/or [trs]
   /// parameters changed.
-  TemporalExtent copyWith({Interval? interval, String? trs}) {
+  TemporalExtent copyWith({Interval? interval, TemporalRefSys? trs}) {
     if (interval != null) {
       return TemporalExtent.single(interval, trs: trs ?? _trs);
     } else {

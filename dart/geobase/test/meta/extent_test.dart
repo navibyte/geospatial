@@ -64,7 +64,7 @@ void main() {
       );
       expect(extent1.temporal!.first, interval1);
       expect(
-        extent1.temporal!.trs,
+        extent1.temporal!.trs.toString(),
         'http://www.opengis.net/def/uom/ISO-8601/0/Gregorian',
       );
       expect(

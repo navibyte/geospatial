@@ -35,5 +35,7 @@ export 'src/coordinates/projection/projection.dart';
 export 'src/coordinates/projection/projection_adapter.dart';
 export 'src/coordinates/reference/coord_ref_sys.dart';
 export 'src/coordinates/reference/coord_ref_sys_resolver.dart';
+export 'src/coordinates/reference/temporal_ref_sys.dart';
+export 'src/coordinates/reference/temporal_ref_sys_resolver.dart';
 export 'src/coordinates/scalable/scalable.dart';
 export 'src/coordinates/scalable/scalable2i.dart';
