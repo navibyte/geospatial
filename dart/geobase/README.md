@@ -250,7 +250,7 @@ Temporal instants and intervals, and geospatial extents:
 
   // An extent with spatial (WGS 84 longitude-latitude) and temporal parts.
   GeoExtent.single(
-    coordRefSys: CoordRefSys.CRS84,
+    crs: CoordRefSys.CRS84,
     bbox: GeoBox(west: -20.0, south: 50.0, east: 20.0, north: 60.0),
     interval: Interval.parse('../2020-10-31'),
   );
@@ -556,6 +556,18 @@ differs.
 To customize identifier normalization and axis order resolving algorithm you
 should create a custom class implementing `CoordRefSysResolver` and register
 it's global instance using `CoordRefSysResolver.register()`.
+
+## Temporal coordinate reference systems
+
+There is also a type `TemporalRefSys` for specifying a temporal coordinate
+reference system. A custom logic can be registered using
+`TemporalRefSysResolver.register()`.
+
+Currently there is only one constant identifier defined by `TemporalRefSys`:
+
+Constant    | Description
+----------- | -----------
+`gregorian` | References temporal coordinates, dates or timestamps, that are in the Gregorian calendar and conform to [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339.html).
 
 ## Spherical geodesy
 
@@ -1254,14 +1266,14 @@ useful in metadata structures for geospatial data sources.
 ```dart
   // An extent with spatial (WGS 84 longitude-latitude) and temporal parts.
   GeoExtent.single(
-    coordRefSys: CoordRefSys.CRS84,
+    crs: CoordRefSys.CRS84,
     bbox: GeoBox(west: -20.0, south: 50.0, east: 20.0, north: 60.0),
     interval: Interval.parse('../2020-10-31'),
   );
 
   // An extent with multiple spatial bounds and temporal interval segments.
   GeoExtent.multi(
-    coordRefSys: CoordRefSys.CRS84,
+    crs: CoordRefSys.CRS84,
     boxes: [
       GeoBox(west: -20.0, south: 50.0, east: 20.0, north: 60.0),
       GeoBox(west: 40.0, south: 50.0, east: 60.0, north: 60.0),
