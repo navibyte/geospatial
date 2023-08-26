@@ -133,6 +133,20 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   /// All geometry items in this geometry collection.
   List<E> get geometries => _geometries;
 
+  /// Returns a new geometry collection with all geometries mapped using
+  /// [toGeometry].
+  ///
+  /// If [bounds] object is available on this, it's recalculated after
+  /// mapping geometries. If [bounds] is null, then it's null after mapping too.
+  GeometryCollection<E> map(E Function(E geometry) toGeometry) {
+    final mapped = geometries.map<E>(toGeometry).toList(growable: false);
+
+    return GeometryCollection<E>(
+      mapped,
+      bounds: bounds != null ? _buildBoundsFrom(mapped) : null,
+    );
+  }
+
   @override
   Coords resolveCoordType() => resolveCoordTypeFrom(collection: _geometries);
 
@@ -157,13 +171,8 @@ class GeometryCollection<E extends Geometry> extends Geometry {
     // return a new collection with processed geometries and populated bounds
     return GeometryCollection<E>(
       collection,
-      bounds: recalculate || bounds == null
-          ? BoundsBuilder.calculateBounds(
-              collection: collection,
-              type: resolveCoordTypeFrom(collection: collection),
-              recalculateChilds: false,
-            )
-          : bounds,
+      bounds:
+          recalculate || bounds == null ? _buildBoundsFrom(collection) : bounds,
     );
   }
 
@@ -177,13 +186,7 @@ class GeometryCollection<E extends Geometry> extends Geometry {
       projected,
 
       // bounds calculated from projected collection if there was bounds before
-      bounds: bounds != null
-          ? BoundsBuilder.calculateBounds(
-              collection: projected,
-              type: resolveCoordTypeFrom(collection: projected),
-              recalculateChilds: false,
-            )
-          : null,
+      bounds: bounds != null ? _buildBoundsFrom(projected) : null,
     );
   }
 
@@ -298,3 +301,11 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   @override
   int get hashCode => Object.hash(bounds, geometries);
 }
+
+/// Returns bounds calculated from a geometry collection.
+BoxCoords? _buildBoundsFrom(Iterable<Geometry> geometries) =>
+    BoundsBuilder.calculateBounds(
+      collection: geometries,
+      type: resolveCoordTypeFrom(collection: geometries),
+      recalculateChilds: false,
+    );

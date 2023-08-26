@@ -861,6 +861,19 @@ void main() {
       );
     });
 
+    test('Geometry collection with non-typed geometry (mapped)', () {
+      expect(
+        GeometryCollection.parse(geomCollPoints).map((g) => g).toText(),
+        geomCollPoints,
+      );
+      expect(
+        GeometryCollection.parse<Point>(geomCollPoints)
+            .map((g) => Point.from(g.position.copyWith(x: 0.0)))
+            .toText(),
+        '{"type":"GeometryCollection","geometries":[{"type":"Point","coordinates":[0.0,2.5]},{"type":"Point","coordinates":[0.0,2.5]}]}',
+      );
+    });
+
     test('Geometry collection with non-typed geometry (swapped)', () {
       expect(
         GeometryCollection.parse(geomCollYX, crs: epsg4326).toText(),
