@@ -307,8 +307,8 @@ void main() {
       expect(xyz.equals2D(xyz), true);
       expect(xyz.equals3D(xyz), true);
 
-      final xy1 = Point.build(const Projected(x: 23.1, y: 34.3).coords());
-      final xy2 = Point.from(const Projected(x: 23.1, y: 34.4));
+      final xy1 = Point.build(const Projected(x: 23.1, y: 34.3).coords);
+      const xy2 = Point(Projected(x: 23.1, y: 34.4));
       expect(xy.equals2D(xy1, toleranceHoriz: e), true);
       expect(xy.equals2D(xy2, toleranceHoriz: e), false);
       expect(xy.equals3D(xy1, toleranceHoriz: e, toleranceVert: e), false);
@@ -544,7 +544,7 @@ void main() {
     });
 
     test('Simple geometries from positions', () {
-      expect(Point.from(const Projected(x: 1.5, y: 2.5)).toText(), point);
+      expect(const Point(Projected(x: 1.5, y: 2.5)).toText(), point);
       expect(
         LineString.from(const [
           Projected(x: -1.1, y: -1.1),
@@ -868,7 +868,7 @@ void main() {
       );
       expect(
         GeometryCollection.parse<Point>(geomCollPoints)
-            .map((g) => Point.from(g.position.copyWith(x: 0.0)))
+            .map((g) => Point(g.position.copyWith(x: 0.0)))
             .toText(),
         '{"type":"GeometryCollection","geometries":[{"type":"Point","coordinates":[0.0,2.5]},{"type":"Point","coordinates":[0.0,2.5]}]}',
       );
@@ -940,7 +940,7 @@ void main() {
       expect(
         po
             .copyWith(
-              geometry: Point.from(const Geographic(lat: 10.0, lon: 20.0)),
+              geometry: const Point(Geographic(lat: 10.0, lon: 20.0)),
             )
             .toText(),
         '{"type":"Feature","geometry":{"type":"Point","coordinates":[20.0,10.0]},"properties":{"foo":1,"bar":"baz"}}',

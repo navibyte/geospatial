@@ -23,20 +23,20 @@ import '/src/vector/formats/geojson/default_format.dart';
 import '/src/vector/formats/geojson/geojson_format.dart';
 import '/src/vector/formats/wkb/wkb_format.dart';
 import '/src/vector_data/array/coordinates.dart';
-import '/src/vector_data/array/coordinates_extensions.dart';
 
 import 'geometry.dart';
 import 'geometry_builder.dart';
 
 /// A point geometry with a position.
 class Point implements SimpleGeometry {
-  final PositionCoords _position;
+  final Position _position;
 
   /// A point geometry with [position].
-  const Point(PositionCoords position) : _position = position;
+  const Point(Position position) : _position = position;
 
   /// A point geometry from [position].
-  factory Point.from(Position position) => Point(position.coords());
+  @Deprecated('Use the default constructor instead')
+  const Point.from(Position position) : _position = position;
 
   /// Builds a point geometry from a [position].
   ///
@@ -140,7 +140,7 @@ class Point implements SimpleGeometry {
   Geom get geomType => Geom.point;
 
   @override
-  Coords get coordType => _position.type;
+  Coords get coordType => position.type;
 
   /// The coordinate type for this geometry.
   ///
@@ -149,10 +149,19 @@ class Point implements SimpleGeometry {
   Coords resolveCoordType() => coordType;
 
   @override
-  bool get isEmpty => _position.x.isNaN && _position.y.isNaN;
+  bool get isEmpty => position.x.isNaN && position.y.isNaN;
 
-  /// The position in this point geometry.
-  PositionCoords get position => _position;
+  /// The position of this point geometry.
+  ///
+  /// The returned object is of the type used for storing a position in this
+  /// point geometry. That is, it can be any [Position] object, like
+  /// `Projected`, `Geographic` or `PositionCoords`.
+  ///
+  /// The returned position can be typed using extension methods:
+  /// * `asProjected`: the position as a `Projected` position
+  /// * `asGeographic`: the position as a `Geographic` position
+  /// * `coords`: the position as a `PositionCoords` position
+  Position get position => _position;
 
   /// The bounding box for this point, min and max with the same point position.
   ///
@@ -184,7 +193,7 @@ class Point implements SimpleGeometry {
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) => isEmpty
       ? writer.emptyGeometry(Geom.point, name: name)
-      : writer.point(_position, type: coordType, name: name);
+      : writer.point(position.values, type: coordType, name: name);
 
   // NOTE: coordinates as raw data
 

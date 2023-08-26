@@ -100,22 +100,22 @@ void main() {
       const xymData = [15.0, 30.1, 60.3];
       const xyzmData = [15.0, 30.1, 45.2, 60.3];
 
-      expect(PositionCoords.view(xyData), Projected.build(xyData).coords());
+      expect(PositionCoords.view(xyData), Projected.build(xyData).coords);
       expect(
         PositionCoords.view(xyzData, type: Coords.xyz),
-        Projected.build(xyzData).coords(),
+        Projected.build(xyzData).coords,
       );
       expect(
         PositionCoords.view(xyzData, type: Coords.xyz),
-        Projected.build(xyzData, type: Coords.xyz).coords(),
+        Projected.build(xyzData, type: Coords.xyz).coords,
       );
       expect(
         PositionCoords.view(xymData, type: Coords.xym),
-        Projected.build(xymData, type: Coords.xym).coords(),
+        Projected.build(xymData, type: Coords.xym).coords,
       );
       expect(
         PositionCoords.view(xyzmData, type: Coords.xyzm),
-        Projected.build(xyzmData, type: Coords.xyzm).coords(),
+        Projected.build(xyzmData, type: Coords.xyzm).coords,
       );
     });
 

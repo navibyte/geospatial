@@ -7,6 +7,8 @@
 import '/src/codes/coords.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
+import '/src/coordinates/geographic/geographic.dart';
+import '/src/coordinates/projected/projected.dart';
 
 import 'coordinates.dart';
 
@@ -127,13 +129,41 @@ extension PositionIterableCoordinatesExtension on Iterable<Position> {
   }
 }
 
-/// A helper extension on [Position] to convert data as [PositionCoords].
+/// A helper extension on [Position] to convert position objects between
+/// subtypes like [Projected], [Geographic] and [PositionCoords].
 extension PositionCoordinatesExtension on Position {
-  /// Returns this `Position` as an instance of `PositionCoords` with the same
-  /// coordinate type as this has.
-  PositionCoords coords() => this is PositionCoords
-      ? this as PositionCoords
-      : PositionCoords.create(x: x, y: y, z: optZ, m: optM);
+  /// Returns this position as an instance of [PositionCoords].
+  ///
+  /// The coordinate type defined by [type] is preserved.
+  ///
+  /// If the type of the position is [PositionCoords], then this is returned.
+  /// Otherwise a new instance with copied coordinate values is created.
+  PositionCoords get coords {
+    final pos = this;
+    return pos is PositionCoords ? pos : pos.copyTo(PositionCoords.create);
+  }
+
+  /// Returns this position as an instance of [Projected].
+  ///
+  /// The coordinate type defined by [type] is preserved.
+  ///
+  /// If the type of the position is [Projected], then this is returned.
+  /// Otherwise a new instance with copied coordinate values is created.
+  Projected get asProjected {
+    final pos = this;
+    return pos is Projected ? pos : pos.copyTo(Projected.create);
+  }
+
+  /// Returns this position as an instance of [Geographic].
+  ///
+  /// The coordinate type defined by [type] is preserved.
+  ///
+  /// If the type of the position is [Geographic], then this is returned.
+  /// Otherwise a new instance with copied coordinate values is created.
+  Geographic get asGeographic {
+    final pos = this;
+    return pos is Geographic ? pos : pos.copyTo(Geographic.create);
+  }
 }
 
 /// A helper extension on [Box] to convert data as [BoxCoords].

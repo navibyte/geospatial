@@ -254,9 +254,7 @@ class Feature<T extends Geometry> extends FeatureObject {
       geometry: geom,
       properties: properties,
       custom: custom,
-      bounds: recalculate || bounds == null
-          ? _buildBoundsFrom(geom)
-          : bounds,
+      bounds: recalculate || bounds == null ? _buildBoundsFrom(geom) : bounds,
     );
   }
 

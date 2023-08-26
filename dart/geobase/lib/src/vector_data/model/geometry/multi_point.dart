@@ -54,7 +54,7 @@ class MultiPoint extends SimpleGeometry {
   /// Each point is represented by a [Position] instance.
   factory MultiPoint.from(Iterable<Position> points, {Box? bounds}) =>
       MultiPoint._(
-        points.map((p) => p.coords()).toList(growable: false),
+        points.map((p) => p.coords).toList(growable: false),
         bounds: bounds?.coords(),
       );
 

@@ -12,8 +12,9 @@ part of 'coordinates.dart';
 /// coordinate values also as a collection of `Iterable<double>` (containing 2,
 /// 3, or 4 items).
 ///
-/// The position can be typed as a projected position using [asProjected], and
-/// as a geographic position using [asGeographic].
+/// The returned position can be typed using extension methods:
+/// * `asProjected`: the position as a `Projected` position
+/// * `asGeographic`: the position as a `Geographic` position
 ///
 /// See [Position] for description about supported coordinate values.
 ///
@@ -141,20 +142,6 @@ abstract class PositionCoords extends Position with _CoordinatesMixin {
   @override
   double operator [](int index) =>
       index >= 0 && index < coordinateDimension ? _data.elementAt(index) : 0.0;
-
-  /// Returns this position typed as a projected position.
-  ///
-  /// If this position implements [Projected], then this may be returned.
-  /// Otherwise a new instance with copied coordinate values is created.
-  Projected get asProjected =>
-      this is Projected ? this as Projected : copyTo(Projected.create);
-
-  /// Returns this position typed as a geographic position.
-  ///
-  /// If this position implements [Geographic], then this may be returned.
-  /// Otherwise a new instance with copied coordinate values is created.
-  Geographic get asGeographic =>
-      this is Geographic ? this as Geographic : copyTo(Geographic.create);
 
   // ---------------------------------------------------------------------------
   // Iterable<double> documentation overrides
