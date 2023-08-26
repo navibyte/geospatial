@@ -932,6 +932,10 @@ void main() {
             .toText(),
         '{"type":"Feature","geometry":{"type":"Point","coordinates":[20.0,10.0]},"properties":{"foo":1,"bar":"baz"}}',
       );
+      expect(
+        po.copyWith(custom: {'a': 1}).toText(),
+        '{"type":"Feature","geometry":{"type":"Point","coordinates":[1.5,2.5]},"properties":{"foo":1,"bar":"baz"},"a":1}',
+      );
     });
 
     test('Feature with non-typed geometry (bounded)', () {
@@ -979,6 +983,24 @@ void main() {
       expect(FeatureCollection.parse(featColl).toText(), featColl);
       final coll = FeatureCollection.parse(featCollPoints);
       expect(coll.toText(), featCollPoints);
+    });
+
+    test('Feature collection with non-typed geometry (copyWith and map)', () {
+      final fc = FeatureCollection.parse(featColl);
+      expect(
+        fc.copyWith(
+          custom: {
+            'a': 1,
+            'b': [2, 3]
+          },
+        ).toText(),
+        '${featColl.substring(0, featColl.length - 1)},"a":1,"b":[2,3]}',
+      );
+      expect(fc.map((f) => f).toText(), featColl);
+      expect(
+        fc.map((f) => f.copyWith(properties: {'m': true})).toText(),
+        '{"type":"FeatureCollection","features":[{"type":"Feature","geometry":$point,"properties":{"m":true}},{"type":"Feature","geometry":$lineString,"properties":{"m":true}}]}',
+      );
     });
 
     test('Feature collection with non-typed geometry (bounded)', () {

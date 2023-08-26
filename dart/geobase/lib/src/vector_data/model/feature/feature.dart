@@ -210,9 +210,8 @@ class Feature<T extends Geometry> extends FeatureObject {
   /// Copy this feature with optional [id], [geometry], [properties] and
   /// [custom] properties.
   ///
-  /// If [bounds] object is available on this, it's recalculated from the new
-  /// geometry. If [bounds] is null (or new geometry is null), then [bounds] is
-  /// null on copied feature.
+  /// If [bounds] object is available on this, it's recalculated for a new
+  /// feature when [geometry] is given.
   Feature<T> copyWith({
     Object? id,
     T? geometry,
@@ -227,12 +226,8 @@ class Feature<T extends Geometry> extends FeatureObject {
 
         // bounds calculated from new geometry if there was bounds before
         bounds: bounds != null && geometry != null
-            ? BoundsBuilder.calculateBounds(
-                item: geometry,
-                type: resolveCoordTypeFrom(item: geometry),
-                recalculateChilds: false,
-              )
-            : null,
+            ? _buildBoundsFrom(geometry)
+            : bounds,
       );
 
   @override
@@ -260,11 +255,7 @@ class Feature<T extends Geometry> extends FeatureObject {
       properties: properties,
       custom: custom,
       bounds: recalculate || bounds == null
-          ? BoundsBuilder.calculateBounds(
-              item: geom,
-              type: resolveCoordTypeFrom(item: geom),
-              recalculateChilds: false,
-            )
+          ? _buildBoundsFrom(geom)
           : bounds,
     );
   }
@@ -281,11 +272,7 @@ class Feature<T extends Geometry> extends FeatureObject {
 
       // bounds calculated from projected geometry if there was bounds before
       bounds: bounds != null && projectedGeom != null
-          ? BoundsBuilder.calculateBounds(
-              item: projectedGeom,
-              type: resolveCoordTypeFrom(item: projectedGeom),
-              recalculateChilds: false,
-            )
+          ? _buildBoundsFrom(projectedGeom)
           : null,
     );
   }
@@ -434,3 +421,10 @@ class Feature<T extends Geometry> extends FeatureObject {
         custom,
       );
 }
+
+/// Returns bounds calculated from a collection of features.
+BoxCoords? _buildBoundsFrom(Geometry geometry) => BoundsBuilder.calculateBounds(
+      item: geometry,
+      type: resolveCoordTypeFrom(item: geometry),
+      recalculateChilds: false,
+    );
