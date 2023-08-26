@@ -6,6 +6,7 @@
 
 import '/src/codes/coords.dart';
 import '/src/constants/epsilon.dart';
+import '/src/coordinates/base/box.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounds_builder.dart';
@@ -15,7 +16,7 @@ import '/src/utils/tolerance.dart';
 import '/src/vector/content/feature_content.dart';
 import '/src/vector/encoding/text_format.dart';
 import '/src/vector/formats/geojson/geojson_format.dart';
-import '/src/vector_data/array/coordinates.dart';
+import '/src/vector_data/array/coordinates_extensions.dart';
 import '/src/vector_data/model/geometry/geometry.dart';
 
 import 'feature.dart';
@@ -194,7 +195,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   Coords resolveCoordType() => resolveCoordTypeFrom(collection: features);
 
   @override
-  BoxCoords? calculateBounds() => BoundsBuilder.calculateBounds(
+  Box? calculateBounds() => BoundsBuilder.calculateBounds(
         collection: features,
         type: resolveCoordType(),
         recalculateChilds: true,
@@ -242,7 +243,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
         }
       },
       count: features.length,
-      bounds: bounds,
+      bounds: bounds?.coords,
       custom: custom,
     );
   }
@@ -371,7 +372,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
 }
 
 /// Returns bounds calculated from a collection of features.
-BoxCoords? _buildBoundsFrom(Iterable<Feature> features) =>
+Box? _buildBoundsFrom(Iterable<Feature> features) =>
     BoundsBuilder.calculateBounds(
       collection: features,
       type: resolveCoordTypeFrom(collection: features),

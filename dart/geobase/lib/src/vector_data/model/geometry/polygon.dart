@@ -52,7 +52,7 @@ class Polygon extends SimpleGeometry {
   /// they should "follow the right-hand rule with respect to the area it
   /// bounds, i.e., exterior rings are counterclockwise, and holes are
   /// clockwise".
-  const Polygon(List<PositionArray> rings, {BoxCoords? bounds})
+  const Polygon(List<PositionArray> rings, {Box? bounds})
       : this._(rings, bounds: bounds);
 
   const Polygon._(this._rings, {super.bounds, Coords? type}) : _type = type;
@@ -86,7 +86,7 @@ class Polygon extends SimpleGeometry {
   }) =>
       Polygon._(
         rings.map((ring) => ring.array()).toList(growable: false),
-        bounds: bounds?.coords,
+        bounds: bounds,
       );
 
   /// Builds a polygon geometry from one exterior and 0 to N interior [rings].
@@ -229,7 +229,7 @@ class Polygon extends SimpleGeometry {
   Iterable<PositionArray> get interior => rings.skip(1);
 
   @override
-  BoxCoords? calculateBounds() => BoundsBuilder.calculateBounds(
+  Box? calculateBounds() => BoundsBuilder.calculateBounds(
         arrays: _rings,
         type: coordType,
       );
@@ -276,7 +276,12 @@ class Polygon extends SimpleGeometry {
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) => isEmpty
       ? writer.emptyGeometry(Geom.polygon, name: name)
-      : writer.polygon(_rings, type: coordType, name: name, bounds: bounds);
+      : writer.polygon(
+          _rings,
+          type: coordType,
+          name: name,
+          bounds: bounds?.coords,
+        );
 
   // NOTE: coordinates as raw data
 

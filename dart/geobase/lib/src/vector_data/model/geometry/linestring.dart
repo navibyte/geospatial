@@ -49,7 +49,7 @@ class LineString extends SimpleGeometry {
   ///
   /// The [chain] iterable must contain at least two positions (or be empty).
   factory LineString.from(Iterable<Position> chain, {Box? bounds}) =>
-      LineString(chain.array(), bounds: bounds?.coords);
+      LineString(chain.array(), bounds: bounds);
 
   /// Builds a line string geometry from a [chain] of positions.
   ///
@@ -165,7 +165,7 @@ class LineString extends SimpleGeometry {
   PositionArray get chain => _chain;
 
   @override
-  BoxCoords? calculateBounds() => BoundsBuilder.calculateBounds(
+  Box? calculateBounds() => BoundsBuilder.calculateBounds(
         array: _chain,
         type: coordType,
       );
@@ -209,7 +209,12 @@ class LineString extends SimpleGeometry {
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) => isEmpty
       ? writer.emptyGeometry(Geom.lineString, name: name)
-      : writer.lineString(_chain, type: coordType, name: name, bounds: bounds);
+      : writer.lineString(
+          _chain,
+          type: coordType,
+          name: name,
+          bounds: bounds?.coords,
+        );
 
   // NOTE: coordinates as raw data
 

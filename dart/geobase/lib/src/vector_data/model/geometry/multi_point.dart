@@ -42,7 +42,7 @@ class MultiPoint extends SimpleGeometry {
   /// An optional [bounds] can used set a minimum bounding box for a geometry.
   ///
   /// Each point is represented by a [Position] instance.
-  const MultiPoint(List<Position> points, {BoxCoords? bounds})
+  const MultiPoint(List<Position> points, {Box? bounds})
       : this._(points, bounds: bounds);
 
   const MultiPoint._(this._points, {super.bounds, Coords? type}) : _type = type;
@@ -57,7 +57,7 @@ class MultiPoint extends SimpleGeometry {
         points is List<Position>
             ? points
             : points.map((p) => p.coords).toList(growable: false),
-        bounds: bounds?.coords,
+        bounds: bounds,
       );
 
   /// Builds a multi point geometry from an array of [points] (each with a
@@ -184,7 +184,7 @@ class MultiPoint extends SimpleGeometry {
   Iterable<Point> get points => positions.map<Point>(Point.new);
 
   @override
-  BoxCoords? calculateBounds() => BoundsBuilder.calculateBounds(
+  Box? calculateBounds() => BoundsBuilder.calculateBounds(
         positions: positions,
         type: coordType,
       );
@@ -236,7 +236,7 @@ class MultiPoint extends SimpleGeometry {
           _points.map((e) => e.values),
           type: coordType,
           name: name,
-          bounds: bounds,
+          bounds: bounds?.coords,
         );
 
   // NOTE: coordinates as raw data

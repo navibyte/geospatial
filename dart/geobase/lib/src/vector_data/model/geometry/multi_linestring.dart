@@ -45,7 +45,7 @@ class MultiLineString extends SimpleGeometry {
   ///
   /// Each line string or a chain of positions is represented by a
   /// [PositionArray] instance.
-  const MultiLineString(List<PositionArray> lineStrings, {BoxCoords? bounds})
+  const MultiLineString(List<PositionArray> lineStrings, {Box? bounds})
       : this._(lineStrings, bounds: bounds);
 
   const MultiLineString._(this._lineStrings, {super.bounds, Coords? type})
@@ -64,7 +64,7 @@ class MultiLineString extends SimpleGeometry {
   }) =>
       MultiLineString._(
         lineStrings.map((chain) => chain.array()).toList(growable: false),
-        bounds: bounds?.coords,
+        bounds: bounds,
       );
 
   /// Builds a multi line string from an array of [lineStrings] (each with a
@@ -197,7 +197,7 @@ class MultiLineString extends SimpleGeometry {
       chains.map<LineString>(LineString.new);
 
   @override
-  BoxCoords? calculateBounds() => BoundsBuilder.calculateBounds(
+  Box? calculateBounds() => BoundsBuilder.calculateBounds(
         arrays: _lineStrings,
         type: coordType,
       );
@@ -249,7 +249,7 @@ class MultiLineString extends SimpleGeometry {
           _lineStrings,
           type: coordType,
           name: name,
-          bounds: bounds,
+          bounds: bounds?.coords,
         );
 
   // NOTE: coordinates as raw data

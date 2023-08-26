@@ -47,7 +47,7 @@ class MultiPolygon extends SimpleGeometry {
   /// closed linear rings. As specified by GeoJSON, they should "follow the
   /// right-hand rule with respect to the area it bounds, i.e., exterior rings
   /// are counterclockwise, and holes are clockwise".
-  const MultiPolygon(List<List<PositionArray>> polygons, {BoxCoords? bounds})
+  const MultiPolygon(List<List<PositionArray>> polygons, {Box? bounds})
       : this._(polygons, bounds: bounds);
 
   const MultiPolygon._(this._polygons, {super.bounds, Coords? type})
@@ -74,7 +74,7 @@ class MultiPolygon extends SimpleGeometry {
                   polygon.map((ring) => ring.array()).toList(growable: false),
             )
             .toList(growable: false),
-        bounds: bounds?.coords,
+        bounds: bounds,
       );
 
   /// Builds a multi polygon from an array of [polygons] (each with an array of
@@ -232,7 +232,7 @@ class MultiPolygon extends SimpleGeometry {
   }
 
   @override
-  BoxCoords? calculateBounds() => BoundsBuilder.calculateBounds(
+  Box? calculateBounds() => BoundsBuilder.calculateBounds(
         arrays: _allRings(_polygons),
         type: coordType,
       );
@@ -288,7 +288,7 @@ class MultiPolygon extends SimpleGeometry {
           _polygons,
           type: coordType,
           name: name,
-          bounds: bounds,
+          bounds: bounds?.coords,
         );
 
   // NOTE: coordinates as raw data

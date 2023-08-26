@@ -31,7 +31,7 @@ class BoundsBuilder {
 
   /// Calculates bounds for [item] and/or [collection] and/or [array] and/or
   /// [arrays] and/or [positions] using the builder.
-  static BoxCoords? calculateBounds<E extends Bounded>({
+  static Box? calculateBounds<E extends Bounded>({
     E? item,
     Iterable<E>? collection,
     PositionArray? array,

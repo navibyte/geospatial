@@ -5,15 +5,15 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import '/src/codes/coords.dart';
+import '/src/coordinates/base/box.dart';
 import '/src/coordinates/projection/projection.dart';
-import '/src/vector_data/array/coordinates.dart';
 
 /// A base interface for classes that know their bounding boxes.
 abstract class Bounded {
-  final BoxCoords? _bounds;
+  final Box? _bounds;
 
   /// A bounded object with an optional [bounds].
-  const Bounded({BoxCoords? bounds}) : _bounds = bounds;
+  const Bounded({Box? bounds}) : _bounds = bounds;
 
   /// Resolves the coordinate type for this bounded object.
   ///
@@ -27,7 +27,7 @@ abstract class Bounded {
   ///
   /// To ensure bounds is populated [bounded] can be called returning
   /// potentially a new object containing this property with a value.
-  BoxCoords? get bounds => _bounds;
+  Box? get bounds => _bounds;
 
   /// Calculate a bounding box for this object.
   ///
@@ -36,7 +36,7 @@ abstract class Bounded {
   ///
   /// May return null if bounds cannot be calculated (for example in the case of
   /// an empty geometry).
-  BoxCoords? calculateBounds();
+  Box? calculateBounds();
 
   /// Returns a bounded object with a bounding box populated in [bounds] (and
   /// in any subitem bounding boxes too). Other properties are left intact.

@@ -9,6 +9,7 @@ import 'dart:typed_data';
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
+import '/src/coordinates/base/box.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounds_builder.dart';
@@ -20,7 +21,7 @@ import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
 import '/src/vector/formats/geojson/geojson_format.dart';
 import '/src/vector/formats/wkb/wkb_format.dart';
-import '/src/vector_data/array/coordinates.dart';
+import '/src/vector_data/array/coordinates_extensions.dart';
 
 import 'geometry.dart';
 import 'geometry_builder.dart';
@@ -151,7 +152,7 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   Coords resolveCoordType() => resolveCoordTypeFrom(collection: _geometries);
 
   @override
-  BoxCoords? calculateBounds() => BoundsBuilder.calculateBounds(
+  Box? calculateBounds() => BoundsBuilder.calculateBounds(
         collection: _geometries,
         type: resolveCoordType(),
         recalculateChilds: true,
@@ -201,7 +202,7 @@ class GeometryCollection<E extends Geometry> extends Geometry {
               geom.writeTo(output);
             }
           },
-          bounds: bounds,
+          bounds: bounds?.coords,
         );
 
   @override
@@ -303,7 +304,7 @@ class GeometryCollection<E extends Geometry> extends Geometry {
 }
 
 /// Returns bounds calculated from a geometry collection.
-BoxCoords? _buildBoundsFrom(Iterable<Geometry> geometries) =>
+Box? _buildBoundsFrom(Iterable<Geometry> geometries) =>
     BoundsBuilder.calculateBounds(
       collection: geometries,
       type: resolveCoordTypeFrom(collection: geometries),
