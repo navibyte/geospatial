@@ -207,6 +207,9 @@ class Feature<T extends Geometry> extends FeatureObject {
   /// Required properties for this feature (allowed to be empty).
   Map<String, dynamic> get properties => _properties;
 
+  @override
+  Coords get coordType => geometry?.coordType ?? Coords.xy;
+
   /// Copy this feature with optional [id], [geometry], [properties] and
   /// [custom] properties.
   ///
@@ -231,14 +234,7 @@ class Feature<T extends Geometry> extends FeatureObject {
       );
 
   @override
-  Coords resolveCoordType() => resolveCoordTypeFrom(item: geometry);
-
-  @override
-  Box? calculateBounds() => BoundsBuilder.calculateBounds(
-        item: geometry,
-        type: resolveCoordType(),
-        recalculateChilds: true,
-      );
+  Box? calculateBounds() => geometry?.calculateBounds();
 
   @override
   Feature<T> bounded({bool recalculate = false}) {

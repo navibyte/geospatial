@@ -19,14 +19,14 @@ Coords resolveCoordTypeFrom<E extends Bounded>({
   var isMeasured = false;
 
   if (item != null) {
-    final type = item.resolveCoordType();
+    final type = item.coordType;
     is3D |= type.is3D;
     isMeasured |= type.isMeasured;
   }
 
   if (collection != null) {
     for (final elem in collection) {
-      final type = elem.resolveCoordType();
+      final type = elem.coordType;
       is3D |= type.is3D;
       isMeasured |= type.isMeasured;
       if (is3D && isMeasured) break;

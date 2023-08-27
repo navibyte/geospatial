@@ -15,10 +15,8 @@ abstract class Bounded {
   /// A bounded object with an optional [bounds].
   const Bounded({Box? bounds}) : _bounds = bounds;
 
-  /// Resolves the coordinate type for this bounded object.
-  ///
-  /// Accessing this may need looping through sub items.
-  Coords resolveCoordType();
+  /// The coordinate type for this bounded object.
+  Coords get coordType;
 
   /// An optional bounding box explicitely set (or otherwise directly available)
   /// for this object.

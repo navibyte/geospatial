@@ -8,7 +8,6 @@ import 'dart:typed_data';
 
 import 'package:meta/meta.dart';
 
-import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/projection/projection.dart';
@@ -154,18 +153,17 @@ abstract class Geometry extends Bounded {
 }
 
 /// A base interface for "simple" geometry classes.
+///
+/// This package provides following "simple" geometry classes based on the
+/// [Simple Feature Access - Part 1: Common Architecture](https://www.ogc.org/standards/sfa)
+/// standard by [The Open Geospatial Consortium](https://www.ogc.org/): `Point`,
+/// `LineString`, `Polygon`, `MultiPoint`, `MultiLineString` and `MultiPolygon`.
+/// It the context of this package the type `GeometryCollection` is not consider
+/// "simple". It's possible that in future versions other geometry types are
+/// added.
 abstract class SimpleGeometry extends Geometry {
   /// A "simple" geometry with an optional [bounds].
   const SimpleGeometry({super.bounds});
-
-  /// The coordinate type for this geometry.
-  Coords get coordType;
-
-  /// The coordinate type for this geometry.
-  ///
-  /// For simple geometries this method call equals to calling [coordType].
-  @override
-  Coords resolveCoordType() => coordType;
 
   @override
   void writeTo(SimpleGeometryContent writer, {String? name});

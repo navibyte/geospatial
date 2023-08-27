@@ -35,7 +35,6 @@ import 'polygon.dart';
 /// A multi polygon with an array of polygons (each with an array of rings).
 class MultiPolygon extends SimpleGeometry {
   final List<List<PositionArray>> _polygons;
-  final Coords? _type;
 
   /// A multi polygon with an array of [polygons] (each with an array of rings).
   ///
@@ -47,11 +46,8 @@ class MultiPolygon extends SimpleGeometry {
   /// closed linear rings. As specified by GeoJSON, they should "follow the
   /// right-hand rule with respect to the area it bounds, i.e., exterior rings
   /// are counterclockwise, and holes are clockwise".
-  const MultiPolygon(List<List<PositionArray>> polygons, {Box? bounds})
-      : this._(polygons, bounds: bounds);
-
-  const MultiPolygon._(this._polygons, {super.bounds, Coords? type})
-      : _type = type;
+  const MultiPolygon(List<List<PositionArray>> polygons, {super.bounds})
+      : _polygons = polygons;
 
   /// A multi polygon with an array of [polygons] (each with an array of rings).
   ///
@@ -63,11 +59,13 @@ class MultiPolygon extends SimpleGeometry {
   /// rings must be closed linear rings. As specified by GeoJSON, they should
   /// "follow the right-hand rule with respect to the area it bounds, i.e.,
   /// exterior rings are counterclockwise, and holes are clockwise".
+  ///
+  /// The coordinate type of all positions in rings should be the same.
   factory MultiPolygon.from(
     Iterable<Iterable<Iterable<Position>>> polygons, {
     Box? bounds,
   }) =>
-      MultiPolygon._(
+      MultiPolygon(
         polygons
             .map(
               (polygon) =>
@@ -131,9 +129,8 @@ class MultiPolygon extends SimpleGeometry {
     Coords type = Coords.xy,
     Iterable<double>? bounds,
   }) =>
-      MultiPolygon._(
+      MultiPolygon(
         buildListOfListOfPositionArrays(polygons, type: type),
-        type: type,
         bounds: buildBoxCoordsOpt(bounds, type: type),
       );
 
@@ -206,11 +203,9 @@ class MultiPolygon extends SimpleGeometry {
   Geom get geomType => Geom.multiPolygon;
 
   @override
-  Coords get coordType =>
-      _type ??
-      (_polygons.isNotEmpty && _polygons.first.isNotEmpty
-          ? _polygons.first.first.type
-          : Coords.xy);
+  Coords get coordType => _polygons.isNotEmpty && _polygons.first.isNotEmpty
+      ? _polygons.first.first.type
+      : Coords.xy;
 
   @override
   bool get isEmpty => _polygons.isEmpty;
@@ -243,9 +238,8 @@ class MultiPolygon extends SimpleGeometry {
 
     if (recalculate || bounds == null) {
       // a new MultiPolygon (rings array kept intact) with populated bounds
-      return MultiPolygon._(
+      return MultiPolygon(
         _polygons,
-        type: _type,
         bounds: BoundsBuilder.calculateBounds(
           arrays: _allRings(_polygons),
           type: coordType,
@@ -267,9 +261,8 @@ class MultiPolygon extends SimpleGeometry {
         )
         .toList(growable: false);
 
-    return MultiPolygon._(
+    return MultiPolygon(
       projected,
-      type: _type,
 
       // bounds calculated from projected geometry if there was bounds before
       bounds: bounds != null

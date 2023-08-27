@@ -36,11 +36,20 @@ import 'feature_object.dart';
 /// Supports representing data from GeoJSON (https://geojson.org/) features.
 class FeatureCollection<E extends Feature> extends FeatureObject {
   final List<E> _features;
+  final Coords _coordType;
 
   /// A feature collection with an array of [features] with optional [bounds]
   /// and [custom] properties.
-  const FeatureCollection(List<E> features, {super.bounds, super.custom})
-      : _features = features;
+  FeatureCollection(List<E> features, {super.bounds, super.custom})
+      : _features = features,
+        _coordType = resolveCoordTypeFrom(collection: features);
+
+  const FeatureCollection._(
+    this._features,
+    this._coordType, {
+    super.bounds,
+    super.custom,
+  });
 
   /// Builds a feature collection from the content provided by [features].
   ///
@@ -153,6 +162,9 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   /// All feature items in this feature collection.
   List<E> get features => _features;
 
+  @override
+  Coords get coordType => _coordType;
+
   /// Copy this feature collection with optional [features] and [custom]
   /// properties.
   ///
@@ -161,16 +173,29 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   FeatureCollection<E> copyWith({
     List<E>? features,
     Map<String, dynamic>? custom,
-  }) =>
-      FeatureCollection<E>(
-        features ?? this.features,
+  }) {
+    if (features != null) {
+      final type = resolveCoordTypeFrom(collection: features);
+      return FeatureCollection<E>._(
+        features,
+        type,
         custom: custom ?? this.custom,
 
         // bounds calculated from new features if there was bounds before
-        bounds: bounds != null && features != null
-            ? _buildBoundsFrom(features)
-            : bounds,
+        bounds: bounds != null ? _buildBoundsFrom(features, type) : null,
       );
+    } else if (custom != null) {
+      return FeatureCollection<E>._(
+        this.features,
+        this.coordType,
+        custom: custom,
+        bounds: bounds,
+      );
+    } else {
+      // ignore: avoid_returning_this
+      return this;
+    }
+  }
 
   /// Returns a new feature collection with all features mapped using
   /// [toFeature].
@@ -182,21 +207,20 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   /// mapping features. If [bounds] is null, then it's null after mapping too.
   FeatureCollection<E> map(E Function(E feature) toFeature) {
     final mapped = features.map<E>(toFeature).toList(growable: false);
+    final type = resolveCoordTypeFrom(collection: mapped);
 
-    return FeatureCollection<E>(
+    return FeatureCollection<E>._(
       mapped,
+      type,
       custom: custom,
-      bounds: bounds != null ? _buildBoundsFrom(mapped) : null,
+      bounds: bounds != null ? _buildBoundsFrom(mapped, type) : null,
     );
   }
 
   @override
-  Coords resolveCoordType() => resolveCoordTypeFrom(collection: features);
-
-  @override
   Box? calculateBounds() => BoundsBuilder.calculateBounds(
         collection: features,
-        type: resolveCoordType(),
+        type: coordType,
         recalculateChilds: true,
       );
 
@@ -210,13 +234,16 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
           (feature) => feature.bounded(recalculate: recalculate) as E,
         )
         .toList(growable: false);
+    final type = resolveCoordTypeFrom(collection: collection);
 
     // return a new collection with processed features and populated bounds
-    return FeatureCollection<E>(
+    return FeatureCollection<E>._(
       collection,
+      type,
       custom: custom,
-      bounds:
-          recalculate || bounds == null ? _buildBoundsFrom(collection) : bounds,
+      bounds: recalculate || bounds == null
+          ? _buildBoundsFrom(collection, type)
+          : bounds,
     );
   }
 
@@ -225,11 +252,13 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
     final projected = features
         .map<E>((feature) => feature.project(projection) as E)
         .toList(growable: false);
+    final type = resolveCoordTypeFrom(collection: projected);
 
-    return FeatureCollection<E>(
+    return FeatureCollection<E>._(
       projected,
+      type,
       custom: custom,
-      bounds: bounds != null ? _buildBoundsFrom(projected) : null,
+      bounds: bounds != null ? _buildBoundsFrom(projected, type) : null,
     );
   }
 
@@ -371,9 +400,9 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
 }
 
 /// Returns bounds calculated from a collection of features.
-Box? _buildBoundsFrom(Iterable<Feature> features) =>
+Box? _buildBoundsFrom(Iterable<Feature> features, Coords type) =>
     BoundsBuilder.calculateBounds(
       collection: features,
-      type: resolveCoordTypeFrom(collection: features),
+      type: type,
       recalculateChilds: false,
     );

@@ -36,7 +36,6 @@ import 'linestring.dart';
 /// positions).
 class MultiLineString extends SimpleGeometry {
   final List<PositionArray> _lineStrings;
-  final Coords? _type;
 
   /// A multi line string with an array of [lineStrings] (each with a chain of
   /// positions).
@@ -45,11 +44,8 @@ class MultiLineString extends SimpleGeometry {
   ///
   /// Each line string or a chain of positions is represented by a
   /// [PositionArray] instance.
-  const MultiLineString(List<PositionArray> lineStrings, {Box? bounds})
-      : this._(lineStrings, bounds: bounds);
-
-  const MultiLineString._(this._lineStrings, {super.bounds, Coords? type})
-      : _type = type;
+  const MultiLineString(List<PositionArray> lineStrings, {super.bounds})
+      : _lineStrings = lineStrings;
 
   /// A multi line string from an iterable of [lineStrings] (each a chain as an
   /// iterable of positions).
@@ -57,12 +53,13 @@ class MultiLineString extends SimpleGeometry {
   /// An optional [bounds] can used set a minimum bounding box for a geometry.
   ///
   /// Each line string or a chain of positions is represented by an
-  /// `Iterable<Position>` instance.
+  /// `Iterable<Position>` instance. The coordinate type of all positions in
+  /// all chains should be the same.
   factory MultiLineString.from(
     Iterable<Iterable<Position>> lineStrings, {
     Box? bounds,
   }) =>
-      MultiLineString._(
+      MultiLineString(
         lineStrings.map((chain) => chain.array()).toList(growable: false),
         bounds: bounds,
       );
@@ -108,9 +105,8 @@ class MultiLineString extends SimpleGeometry {
     Coords type = Coords.xy,
     Iterable<double>? bounds,
   }) =>
-      MultiLineString._(
+      MultiLineString(
         buildListOfPositionArrays(lineStrings, type: type),
-        type: type,
         bounds: buildBoxCoordsOpt(bounds, type: type),
       );
 
@@ -184,7 +180,7 @@ class MultiLineString extends SimpleGeometry {
 
   @override
   Coords get coordType =>
-      _type ?? (_lineStrings.isNotEmpty ? _lineStrings.first.type : Coords.xy);
+      _lineStrings.isNotEmpty ? _lineStrings.first.type : Coords.xy;
 
   @override
   bool get isEmpty => _lineStrings.isEmpty;
@@ -208,9 +204,8 @@ class MultiLineString extends SimpleGeometry {
 
     if (recalculate || bounds == null) {
       // return a new MultiLineString (chains kept intact) with populated bounds
-      return MultiLineString._(
+      return MultiLineString(
         _lineStrings,
-        type: _type,
         bounds: BoundsBuilder.calculateBounds(
           arrays: _lineStrings,
           type: coordType,
@@ -228,9 +223,8 @@ class MultiLineString extends SimpleGeometry {
         .map((chain) => chain.project(projection))
         .toList(growable: false);
 
-    return MultiLineString._(
+    return MultiLineString(
       projected,
-      type: _type,
 
       // bounds calculated from projected geometry if there was bounds before
       bounds: bounds != null

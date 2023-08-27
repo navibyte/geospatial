@@ -143,12 +143,6 @@ class Point implements SimpleGeometry {
   @override
   Coords get coordType => position.type;
 
-  /// The coordinate type for this geometry.
-  ///
-  /// For a [Point] object this method call equals to calling [coordType].
-  @override
-  Coords resolveCoordType() => coordType;
-
   @override
   bool get isEmpty => position.x.isNaN && position.y.isNaN;
 

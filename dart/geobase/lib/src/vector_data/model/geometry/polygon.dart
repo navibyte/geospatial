@@ -36,7 +36,6 @@ import 'geometry_builder.dart';
 /// An empty polygon has no rings.
 class Polygon extends SimpleGeometry {
   final List<PositionArray> _rings;
-  final Coords? _type;
 
   /// A polygon geometry with one exterior and 0 to N interior [rings].
   ///
@@ -52,18 +51,7 @@ class Polygon extends SimpleGeometry {
   /// they should "follow the right-hand rule with respect to the area it
   /// bounds, i.e., exterior rings are counterclockwise, and holes are
   /// clockwise".
-  const Polygon(List<PositionArray> rings, {Box? bounds})
-      : this._(rings, bounds: bounds);
-
-  const Polygon._(this._rings, {super.bounds, Coords? type}) : _type = type;
-
-  /*
-  // NOTE: changed so that no assert - empty polygon do not have any rings
-        assert(
-          _rings.length > 0,
-          'Polygon must contain at least the exterior ring',
-        );
-        */
+  const Polygon(List<PositionArray> rings, {super.bounds}) : _rings = rings;
 
   /// A polygon geometry with one exterior and 0 to N interior [rings].
   ///
@@ -84,7 +72,7 @@ class Polygon extends SimpleGeometry {
     Iterable<Iterable<Position>> rings, {
     Box? bounds,
   }) =>
-      Polygon._(
+      Polygon(
         rings.map((ring) => ring.array()).toList(growable: false),
         bounds: bounds,
       );
@@ -133,9 +121,8 @@ class Polygon extends SimpleGeometry {
     Coords type = Coords.xy,
     Iterable<double>? bounds,
   }) =>
-      Polygon._(
+      Polygon(
         buildListOfPositionArrays(rings, type: type),
-        type: type,
         bounds: buildBoxCoordsOpt(bounds, type: type),
       );
 
@@ -208,7 +195,7 @@ class Polygon extends SimpleGeometry {
   Geom get geomType => Geom.polygon;
 
   @override
-  Coords get coordType => _type ?? exterior?.type ?? Coords.xy;
+  Coords get coordType => exterior?.type ?? Coords.xy;
 
   @override
   bool get isEmpty => _rings.isEmpty;
@@ -240,9 +227,8 @@ class Polygon extends SimpleGeometry {
 
     if (recalculate || bounds == null) {
       // return a new Polygon (rings kept intact) with populated bounds
-      return Polygon._(
+      return Polygon(
         _rings,
-        type: _type,
         bounds: BoundsBuilder.calculateBounds(
           arrays: _rings,
           type: coordType,
@@ -259,9 +245,8 @@ class Polygon extends SimpleGeometry {
     final projected =
         _rings.map((ring) => ring.project(projection)).toList(growable: false);
 
-    return Polygon._(
+    return Polygon(
       projected,
-      type: _type,
 
       // bounds calculated from projected geometry if there was bounds before
       bounds: bounds != null

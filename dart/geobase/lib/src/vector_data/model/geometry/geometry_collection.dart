@@ -28,10 +28,14 @@ import 'geometry_builder.dart';
 /// A geometry collection with geometries.
 class GeometryCollection<E extends Geometry> extends Geometry {
   final List<E> _geometries;
+  final Coords _coordType;
 
   /// A geometry collection with [geometries] and optional [bounds].
-  const GeometryCollection(List<E> geometries, {super.bounds})
-      : _geometries = geometries;
+  GeometryCollection(List<E> geometries, {super.bounds})
+      : _geometries = geometries,
+        _coordType = resolveCoordTypeFrom(collection: geometries);
+
+  const GeometryCollection._(this._geometries, this._coordType, {super.bounds});
 
   /// Builds a geometry collection from the content provided by [geometries].
   ///
@@ -128,6 +132,9 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   Geom get geomType => Geom.geometryCollection;
 
   @override
+  Coords get coordType => _coordType;
+
+  @override
   bool get isEmpty => _geometries.isEmpty;
 
   /// All geometry items in this geometry collection.
@@ -140,20 +147,19 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   /// mapping geometries. If [bounds] is null, then it's null after mapping too.
   GeometryCollection<E> map(E Function(E geometry) toGeometry) {
     final mapped = geometries.map<E>(toGeometry).toList(growable: false);
+    final type = resolveCoordTypeFrom(collection: mapped);
 
-    return GeometryCollection<E>(
+    return GeometryCollection<E>._(
       mapped,
-      bounds: bounds != null ? _buildBoundsFrom(mapped) : null,
+      type,
+      bounds: bounds != null ? _buildBoundsFrom(mapped, type) : null,
     );
   }
 
   @override
-  Coords resolveCoordType() => resolveCoordTypeFrom(collection: _geometries);
-
-  @override
   Box? calculateBounds() => BoundsBuilder.calculateBounds(
         collection: _geometries,
-        type: resolveCoordType(),
+        type: coordType,
         recalculateChilds: true,
       );
 
@@ -167,12 +173,15 @@ class GeometryCollection<E extends Geometry> extends Geometry {
           (geometry) => geometry.bounded(recalculate: recalculate) as E,
         )
         .toList(growable: false);
+    final type = resolveCoordTypeFrom(collection: collection);
 
     // return a new collection with processed geometries and populated bounds
-    return GeometryCollection<E>(
+    return GeometryCollection<E>._(
       collection,
-      bounds:
-          recalculate || bounds == null ? _buildBoundsFrom(collection) : bounds,
+      type,
+      bounds: recalculate || bounds == null
+          ? _buildBoundsFrom(collection, type)
+          : bounds,
     );
   }
 
@@ -181,12 +190,14 @@ class GeometryCollection<E extends Geometry> extends Geometry {
     final projected = _geometries
         .map<E>((geometry) => geometry.project(projection) as E)
         .toList(growable: false);
+    final type = resolveCoordTypeFrom(collection: projected);
 
-    return GeometryCollection<E>(
+    return GeometryCollection<E>._(
       projected,
+      type,
 
       // bounds calculated from projected collection if there was bounds before
-      bounds: bounds != null ? _buildBoundsFrom(projected) : null,
+      bounds: bounds != null ? _buildBoundsFrom(projected, type) : null,
     );
   }
 
@@ -303,9 +314,9 @@ class GeometryCollection<E extends Geometry> extends Geometry {
 }
 
 /// Returns bounds calculated from a geometry collection.
-Box? _buildBoundsFrom(Iterable<Geometry> geometries) =>
+Box? _buildBoundsFrom(Iterable<Geometry> geometries, Coords type) =>
     BoundsBuilder.calculateBounds(
       collection: geometries,
-      type: resolveCoordTypeFrom(collection: geometries),
+      type: type,
       recalculateChilds: false,
     );

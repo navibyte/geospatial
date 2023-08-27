@@ -48,6 +48,8 @@ class LineString extends SimpleGeometry {
   /// A line string geometry from a [chain] of positions and optional [bounds].
   ///
   /// The [chain] iterable must contain at least two positions (or be empty).
+  ///
+  /// The coordinate type of all positions in a chain should be the same.
   factory LineString.from(Iterable<Position> chain, {Box? bounds}) =>
       LineString(chain.array(), bounds: bounds);
 

@@ -35,25 +35,21 @@ import 'point.dart';
 /// A multi point geometry with an array of points (each with a position).
 class MultiPoint extends SimpleGeometry {
   final List<Position> _points;
-  final Coords? _type;
 
   /// A multi point geometry with an array of [points] (each with a position).
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry.
   ///
   /// Each point is represented by a [Position] instance.
-  const MultiPoint(List<Position> points, {Box? bounds})
-      : this._(points, bounds: bounds);
-
-  const MultiPoint._(this._points, {super.bounds, Coords? type}) : _type = type;
+  const MultiPoint(List<Position> points, {super.bounds}) : _points = points;
 
   /// A multi point geometry from an iterable of `Position` objects in [points].
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry.
   ///
-  /// Each point is represented by a [Position] instance.
+  /// The coordinate type of all points should be the same.
   factory MultiPoint.from(Iterable<Position> points, {Box? bounds}) =>
-      MultiPoint._(
+      MultiPoint(
         points is List<Position>
             ? points
             : points.map((p) => p.coords).toList(growable: false),
@@ -88,9 +84,8 @@ class MultiPoint extends SimpleGeometry {
     Coords type = Coords.xy,
     Iterable<double>? bounds,
   }) =>
-      MultiPoint._(
+      MultiPoint(
         buildListOfPositionsCoords(points, type: type),
-        type: type,
         bounds: buildBoxCoordsOpt(bounds, type: type),
       );
 
@@ -162,8 +157,7 @@ class MultiPoint extends SimpleGeometry {
   Geom get geomType => Geom.multiPoint;
 
   @override
-  Coords get coordType =>
-      _type ?? (_points.isNotEmpty ? _points.first.type : Coords.xy);
+  Coords get coordType => _points.isNotEmpty ? _points.first.type : Coords.xy;
 
   @override
   bool get isEmpty => _points.isEmpty;
@@ -195,9 +189,8 @@ class MultiPoint extends SimpleGeometry {
 
     if (recalculate || bounds == null) {
       // return a new MultiPoint (positions kept intact) with populated bounds
-      return MultiPoint._(
+      return MultiPoint(
         _points,
-        type: _type,
         bounds: BoundsBuilder.calculateBounds(
           positions: _points,
           type: coordType,
@@ -215,9 +208,8 @@ class MultiPoint extends SimpleGeometry {
         .map((pos) => projection.project(pos, to: PositionCoords.create))
         .toList(growable: false);
 
-    return MultiPoint._(
+    return MultiPoint(
       projected,
-      type: _type,
 
       // bounds calculated from projected geometry if there was bounds before
       bounds: bounds != null
