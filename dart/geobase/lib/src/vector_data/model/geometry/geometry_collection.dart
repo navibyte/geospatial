@@ -13,7 +13,6 @@ import '/src/coordinates/base/box.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounds_builder.dart';
-import '/src/utils/coord_arrays.dart';
 import '/src/utils/coord_type.dart';
 import '/src/utils/tolerance.dart';
 import '/src/vector/content/geometry_content.dart';
@@ -80,11 +79,11 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   factory GeometryCollection.build(
     WriteGeometries geometries, {
     int? count,
-    Iterable<double>? bounds,
+    Box? bounds,
   }) =>
       GeometryCollection<E>(
         GeometryBuilder.buildList<E>(geometries, count: count),
-        bounds: buildBoxCoordsOpt(bounds),
+        bounds: bounds,
       );
 
   /// Parses a geometry collection with elements of [T] from [text] conforming
@@ -212,7 +211,7 @@ class GeometryCollection<E extends Geometry> extends Geometry {
               geom.writeTo(output);
             }
           },
-          bounds: bounds?.valuesByType(coordType),
+          bounds: bounds,
         );
 
   @override

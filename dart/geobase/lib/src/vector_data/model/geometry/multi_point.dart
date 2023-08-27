@@ -82,11 +82,11 @@ class MultiPoint extends SimpleGeometry {
   factory MultiPoint.build(
     Iterable<Iterable<double>> points, {
     Coords type = Coords.xy,
-    Iterable<double>? bounds,
+    Box? bounds,
   }) =>
       MultiPoint(
         buildListOfPositionsCoords(points, type: type),
-        bounds: buildBoxCoordsOpt(bounds, type: type),
+        bounds: bounds,
       );
 
   /// Parses a multi point geometry from [text] conforming to [format].
@@ -228,7 +228,7 @@ class MultiPoint extends SimpleGeometry {
           _points.map((e) => e.values),
           type: coordType,
           name: name,
-          bounds: bounds?.valuesByType(coordType),
+          bounds: bounds,
         );
 
   // NOTE: coordinates as raw data

@@ -127,11 +127,11 @@ class MultiPolygon extends SimpleGeometry {
   factory MultiPolygon.build(
     Iterable<Iterable<Iterable<double>>> polygons, {
     Coords type = Coords.xy,
-    Iterable<double>? bounds,
+    Box? bounds,
   }) =>
       MultiPolygon(
         buildListOfListOfPositionArrays(polygons, type: type),
-        bounds: buildBoxCoordsOpt(bounds, type: type),
+        bounds: bounds,
       );
 
   /// Parses a multi polygon geometry from [text] conforming to [format].
@@ -281,7 +281,7 @@ class MultiPolygon extends SimpleGeometry {
           _polygons,
           type: coordType,
           name: name,
-          bounds: bounds?.valuesByType(coordType),
+          bounds: bounds,
         );
 
   // NOTE: coordinates as raw data

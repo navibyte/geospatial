@@ -119,11 +119,11 @@ class Polygon extends SimpleGeometry {
   factory Polygon.build(
     Iterable<Iterable<double>> rings, {
     Coords type = Coords.xy,
-    Iterable<double>? bounds,
+    Box? bounds,
   }) =>
       Polygon(
         buildListOfPositionArrays(rings, type: type),
-        bounds: buildBoxCoordsOpt(bounds, type: type),
+        bounds: bounds,
       );
 
   /// Parses a polygon geometry from [text] conforming to [format].
@@ -265,7 +265,7 @@ class Polygon extends SimpleGeometry {
           _rings,
           type: coordType,
           name: name,
-          bounds: bounds?.valuesByType(coordType),
+          bounds: bounds,
         );
 
   // NOTE: coordinates as raw data

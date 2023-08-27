@@ -143,7 +143,7 @@ void _geoJsonLineStringGeometryWithBbox() {
   encoder.writer.lineString(
     [-1.1, -1.1, 2.1, -2.5, 3.5, -3.49],
     type: Coords.xy,
-    bounds: [-1.1, -3.49, 3.5, -1.1],
+    bounds: [-1.1, -3.49, 3.5, -1.1].box,
   );
   print(encoder.toText());
 }
@@ -219,7 +219,7 @@ void _geoJsonFeatureCollection() {
   //         "properties":{}}]}
   encoder.writer.featureCollection(
     // bbox covering the whole feature collection
-    bounds: [-1.1, -3.49, 10.123, 20.25],
+    bounds: [-1.1, -3.49, 10.123, 20.25].box,
     count: 2, // expected feature count
     (features) => features // writing to FeatureContent
       ..feature(
@@ -234,7 +234,7 @@ void _geoJsonFeatureCollection() {
         geometry: (geom) => geom.lineString(
           [-1.1, -1.1, 2.1, -2.5, 3.5, -3.49],
           type: Coords.xy,
-          bounds: [-1.1, -3.49, 3.5, -1.1],
+          bounds: [-1.1, -3.49, 3.5, -1.1].box,
         ),
       ),
   );

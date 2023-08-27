@@ -103,11 +103,11 @@ class MultiLineString extends SimpleGeometry {
   factory MultiLineString.build(
     Iterable<Iterable<double>> lineStrings, {
     Coords type = Coords.xy,
-    Iterable<double>? bounds,
+    Box? bounds,
   }) =>
       MultiLineString(
         buildListOfPositionArrays(lineStrings, type: type),
-        bounds: buildBoxCoordsOpt(bounds, type: type),
+        bounds: bounds,
       );
 
   /// Parses a multi line string geometry from [text] conforming to [format].
@@ -243,7 +243,7 @@ class MultiLineString extends SimpleGeometry {
           _lineStrings,
           type: coordType,
           name: name,
-          bounds: bounds?.valuesByType(coordType),
+          bounds: bounds,
         );
 
   // NOTE: coordinates as raw data

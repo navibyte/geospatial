@@ -6,6 +6,7 @@
 
 // ignore_for_file: cascade_invocations
 
+import '/src/coordinates/base/box.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/vector/content/feature_content.dart';
 import '/src/vector/content/geometry_content.dart';
@@ -163,7 +164,7 @@ class FeatureBuilder<T extends FeatureObject, E extends Geometry>
     Object? id,
     WriteGeometries? geometry,
     Map<String, dynamic>? properties,
-    Iterable<double>? bounds,
+    Box? bounds,
     Map<String, dynamic>? custom,
   }) {
     _add(
@@ -181,7 +182,7 @@ class FeatureBuilder<T extends FeatureObject, E extends Geometry>
   void featureCollection(
     WriteFeatures features, {
     int? count,
-    Iterable<double>? bounds,
+    Box? bounds,
     Map<String, dynamic>? custom,
   }) {
     _add(

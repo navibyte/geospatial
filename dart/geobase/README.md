@@ -923,7 +923,7 @@ This package supports encoding GeoJSON text from geometry and feature objects:
   final lineString = LineString.build(
     [-1.1, -1.1, 2.1, -2.5, 3.5, -3.49],
     type: Coords.xy,
-    bounds: [-1.1, -3.49, 3.5, -1.1],
+    bounds: [-1.1, -3.49, 3.5, -1.1].box,
   );
 
   // ... and print it as GeoJSON text:

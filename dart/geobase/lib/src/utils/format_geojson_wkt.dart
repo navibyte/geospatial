@@ -17,7 +17,6 @@ import '/src/codes/geom.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
-import '/src/utils/coord_arrays.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 import '/src/vector/content/coordinates_content.dart';
@@ -128,7 +127,7 @@ abstract class _BaseTextWriter<T extends Object>
     required Geom geomType,
     String? name,
     Coords? coordType,
-    Iterable<double>? bounds,
+    Box? bounds,
   }) {
     _startCoordType(coordType);
     return true;
@@ -163,7 +162,7 @@ abstract class _BaseTextWriter<T extends Object>
     Iterable<double> chain, {
     required Coords type,
     String? name,
-    Iterable<double>? bounds,
+    Box? bounds,
   }) {
     if (_geometryBeforeCoordinates(
       geomType: Geom.lineString,
@@ -181,7 +180,7 @@ abstract class _BaseTextWriter<T extends Object>
     Iterable<Iterable<double>> rings, {
     required Coords type,
     String? name,
-    Iterable<double>? bounds,
+    Box? bounds,
   }) {
     if (_geometryBeforeCoordinates(
       geomType: Geom.polygon,
@@ -203,7 +202,7 @@ abstract class _BaseTextWriter<T extends Object>
     Iterable<Iterable<double>> points, {
     required Coords type,
     String? name,
-    Iterable<double>? bounds,
+    Box? bounds,
   }) {
     if (_geometryBeforeCoordinates(
       geomType: Geom.multiPoint,
@@ -225,7 +224,7 @@ abstract class _BaseTextWriter<T extends Object>
     Iterable<Iterable<double>> lineStrings, {
     required Coords type,
     String? name,
-    Iterable<double>? bounds,
+    Box? bounds,
   }) {
     if (_geometryBeforeCoordinates(
       geomType: Geom.multiLineString,
@@ -247,7 +246,7 @@ abstract class _BaseTextWriter<T extends Object>
     Iterable<Iterable<Iterable<double>>> polygons, {
     required Coords type,
     String? name,
-    Iterable<double>? bounds,
+    Box? bounds,
   }) {
     if (_geometryBeforeCoordinates(
       geomType: Geom.multiPolygon,
@@ -274,7 +273,7 @@ abstract class _BaseTextWriter<T extends Object>
     //Coords? type,
     int? count,
     String? name,
-    Iterable<double>? bounds,
+    Box? bounds,
   }) {
     //_startCoordType(type);
     _startObjectArray(count: count);
@@ -558,7 +557,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     required Geom geomType,
     String? name,
     Coords? coordType,
-    Iterable<double>? bounds,
+    Box? bounds,
   }) {
     if (conf.ignoreForeignMembers &&
         _atFeature &&
@@ -579,7 +578,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
       ..write('"');
     if (bounds != null) {
       _buffer.write(',"bbox":[');
-      _subWriter().bounds(buildBoxCoords(bounds, type: coordType));
+      _subWriter().bounds(bounds);
       _buffer.write(']');
     }
     _buffer.write(',"coordinates":');
@@ -599,7 +598,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     //Coords? type,
     int? count,
     String? name,
-    Iterable<double>? bounds,
+    Box? bounds,
   }) {
     if (conf.ignoreForeignMembers &&
         _atFeature &&
@@ -617,7 +616,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     _buffer.write('{"type":"GeometryCollection"');
     if (bounds != null) {
       _buffer.write(',"bbox":[');
-      _subWriter().bounds(buildBoxCoords(bounds));
+      _subWriter().bounds(bounds);
       _buffer.write(']');
     }
     _buffer.write(',"geometries":');
@@ -659,7 +658,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
   void featureCollection(
     WriteFeatures features, {
     int? count,
-    Iterable<double>? bounds,
+    Box? bounds,
     Map<String, dynamic>? custom,
   }) {
     if (_atFeatureCollection) {
@@ -683,7 +682,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     }
     if (bounds != null) {
       _buffer.write(',"bbox":[');
-      _subWriter().bounds(buildBoxCoords(bounds));
+      _subWriter().bounds(bounds);
       _buffer.write(']');
     }
     _buffer.write(',"features":');
@@ -702,7 +701,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     Object? id,
     WriteGeometries? geometry,
     Map<String, dynamic>? properties,
-    Iterable<double>? bounds,
+    Box? bounds,
     Map<String, dynamic>? custom,
   }) {
     if (_markItem()) {
@@ -725,7 +724,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     _markItem();
     if (bounds != null) {
       _buffer.write(',"bbox":[');
-      _subWriter().bounds(buildBoxCoords(bounds));
+      _subWriter().bounds(bounds);
       _buffer.write(']');
     }
     if (geometry != null) {
@@ -1008,7 +1007,7 @@ class WktTextWriter<T extends Object> extends WktLikeTextWriter<T> {
     required Geom geomType,
     String? name,
     Coords? coordType,
-    Iterable<double>? bounds,
+    Box? bounds,
   }) {
     if (_markItem()) {
       _buffer.write(',');
@@ -1037,7 +1036,7 @@ class WktTextWriter<T extends Object> extends WktLikeTextWriter<T> {
     //Coords? type,
     int? count,
     String? name,
-    Iterable<double>? bounds,
+    Box? bounds,
   }) {
     if (_markItem()) {
       _buffer.write(',');

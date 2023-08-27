@@ -81,11 +81,11 @@ class LineString extends SimpleGeometry {
   factory LineString.build(
     Iterable<double> chain, {
     Coords type = Coords.xy,
-    Iterable<double>? bounds,
+    Box? bounds,
   }) =>
       LineString(
         buildPositionArray(chain, type: type),
-        bounds: buildBoxCoordsOpt(bounds, type: type),
+        bounds: bounds,
       );
 
   /// Parses a line string geometry from [text] conforming to [format].
@@ -215,7 +215,7 @@ class LineString extends SimpleGeometry {
           _chain,
           type: coordType,
           name: name,
-          bounds: bounds?.valuesByType(coordType),
+          bounds: bounds,
         );
 
   // NOTE: coordinates as raw data

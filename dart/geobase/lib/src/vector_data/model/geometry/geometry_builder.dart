@@ -10,6 +10,7 @@ import 'dart:typed_data';
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/coordinates/base/box.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/vector/content/geometry_content.dart';
 import '/src/vector/content/simple_geometry_content.dart';
@@ -282,7 +283,7 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
     Iterable<double> chain, {
     required Coords type,
     String? name,
-    Iterable<double>? bounds,
+    Box? bounds,
   }) {
     if (chain.length < 2) {
       // note: ignore empty geometries for this implementation
@@ -298,7 +299,7 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
     Iterable<Iterable<double>> rings, {
     required Coords type,
     String? name,
-    Iterable<double>? bounds,
+    Box? bounds,
   }) {
     if (rings.isEmpty) {
       // note: ignore empty geometries for this implementation
@@ -314,7 +315,7 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
     Iterable<Iterable<double>> points, {
     required Coords type,
     String? name,
-    Iterable<double>? bounds,
+    Box? bounds,
   }) {
     _add(
       MultiPoint.build(points, type: type, bounds: bounds),
@@ -327,7 +328,7 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
     Iterable<Iterable<double>> lineStrings, {
     required Coords type,
     String? name,
-    Iterable<double>? bounds,
+    Box? bounds,
   }) {
     _add(
       MultiLineString.build(lineStrings, type: type, bounds: bounds),
@@ -340,7 +341,7 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
     Iterable<Iterable<Iterable<double>>> polygons, {
     required Coords type,
     String? name,
-    Iterable<double>? bounds,
+    Box? bounds,
   }) {
     _add(
       MultiPolygon.build(polygons, type: type, bounds: bounds),
@@ -353,7 +354,7 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
     WriteGeometries geometries, {
     int? count,
     String? name,
-    Iterable<double>? bounds,
+    Box? bounds,
   }) {
     _add(
       GeometryCollection<E>.build(geometries, count: count, bounds: bounds),

@@ -4,9 +4,9 @@ NOTE: Version 0.6.0 currently [under development](https://github.com/navibyte/ge
 
 🧩 Features:
 * [Add copyWith (and map) methods to coordinate, meta, feature and geometry classes #189](https://github.com/navibyte/geospatial/issues/189)
-* [Allow a position stored as "Position" in Point, and a bounding box as "Box" in Geometry classes #192](https://github.com/navibyte/geospatial/issues/192)
 
 ⚠️ Breaking changes:
+* [Allow a position stored as "Position" in Point, and a bounding box as "Box" in Geometry classes #192](https://github.com/navibyte/geospatial/issues/192)
 * [Simplify Feature and FeatureCollection types #195](https://github.com/navibyte/geospatial/issues/195)
 * [Remove deprecated types in geobase version 0.6.0 #194](https://github.com/navibyte/geospatial/issues/194)
 * [Consistent crs and trs references in meta classes #196](https://github.com/navibyte/geospatial/issues/196)

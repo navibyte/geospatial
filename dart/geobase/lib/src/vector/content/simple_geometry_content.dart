@@ -6,6 +6,7 @@
 
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
+import '/src/coordinates/base/box.dart';
 
 /// A function to write simple geometry data to [output].
 typedef WriteSimpleGeometries = void Function(SimpleGeometryContent output);
@@ -21,8 +22,8 @@ typedef WriteSimpleGeometries = void Function(SimpleGeometryContent output);
 /// "simple", see `GeometryContent` for it's implementation. It's possible that
 /// in future versions other geometry types are added.
 ///
-/// Coordinate positions, position arrays and bounding boxes are represented as
-/// coordinate value arrays of `Iterable<double>`.
+/// Coordinate positions and position arrays are represented as coordinate value
+/// arrays of `Iterable<double>`.
 abstract class SimpleGeometryContent {
   /// Writes a point geometry with [position].
   ///
@@ -76,15 +77,7 @@ abstract class SimpleGeometryContent {
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry
-  /// written. A writer implementation may use it or ignore it. Supported
-  /// coordinate value combinations by coordinate type:
-  ///
-  /// Type | Expected values
-  /// ---- | ---------------
-  /// xy   | minX, minY, maxX, maxY
-  /// xyz  | minX, minY, minZ, maxX, maxY, maxZ
-  /// xym  | minX, minY, minM, maxX, maxY, maxM
-  /// xyzm | minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  /// written. A writer implementation may use it or ignore it.
   ///
   /// An example to write a line string with 3 points and a bounding box:
   /// ```dart
@@ -96,14 +89,14 @@ abstract class SimpleGeometryContent {
   ///            3.5, -3.49,
   ///       ],
   ///       type: Coords.xy,
-  ///       bounds: [-1.1, -3.49, 3.5, -1.1],
+  ///       bounds: [-1.1, -3.49, 3.5, -1.1].box,
   ///   );
   /// ```
   void lineString(
     Iterable<double> chain, {
     required Coords type,
     String? name,
-    Iterable<double>? bounds,
+    Box? bounds,
   });
 
   /// Writes a polygon geometry with one exterior and 0 to N interior [rings].
@@ -125,15 +118,7 @@ abstract class SimpleGeometryContent {
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry
-  /// written. A writer implementation may use it or ignore it. Supported
-  /// coordinate value combinations by coordinate type:
-  ///
-  /// Type | Expected values
-  /// ---- | ---------------
-  /// xy   | minX, minY, maxX, maxY
-  /// xyz  | minX, minY, minZ, maxX, maxY, maxZ
-  /// xym  | minX, minY, minM, maxX, maxY, maxM
-  /// xyzm | minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  /// written. A writer implementation may use it or ignore it.
   ///
   /// An example to write a polygon geometry with one linear ring containing
   /// 4 points:
@@ -156,7 +141,7 @@ abstract class SimpleGeometryContent {
     Iterable<Iterable<double>> rings, {
     required Coords type,
     String? name,
-    Iterable<double>? bounds,
+    Box? bounds,
   });
 
   /// Writes a multi point geometry with an array of [points] (each with a
@@ -171,15 +156,7 @@ abstract class SimpleGeometryContent {
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry
-  /// written. A writer implementation may use it or ignore it. Supported
-  /// coordinate value combinations by coordinate type:
-  ///
-  /// Type | Expected values
-  /// ---- | ---------------
-  /// xy   | minX, minY, maxX, maxY
-  /// xyz  | minX, minY, minZ, maxX, maxY, maxZ
-  /// xym  | minX, minY, minM, maxX, maxY, maxM
-  /// xyzm | minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  /// written. A writer implementation may use it or ignore it.
   ///
   /// An example to write a multi point geometry with 3 points:
   /// ```dart
@@ -196,7 +173,7 @@ abstract class SimpleGeometryContent {
     Iterable<Iterable<double>> points, {
     required Coords type,
     String? name,
-    Iterable<double>? bounds,
+    Box? bounds,
   });
 
   /// Writes a multi line string with an array of [lineStrings] (each with a
@@ -213,15 +190,7 @@ abstract class SimpleGeometryContent {
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry
-  /// written. A writer implementation may use it or ignore it. Supported
-  /// coordinate value combinations by coordinate type:
-  ///
-  /// Type | Expected values
-  /// ---- | ---------------
-  /// xy   | minX, minY, maxX, maxY
-  /// xyz  | minX, minY, minZ, maxX, maxY, maxZ
-  /// xym  | minX, minY, minM, maxX, maxY, maxM
-  /// xyzm | minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  /// written. A writer implementation may use it or ignore it.
   ///
   /// An example to write a multi line string with two line strings:
   /// ```dart
@@ -249,7 +218,7 @@ abstract class SimpleGeometryContent {
     Iterable<Iterable<double>> lineStrings, {
     required Coords type,
     String? name,
-    Iterable<double>? bounds,
+    Box? bounds,
   });
 
   /// Writes a multi polygon with an array of [polygons] (each with an array of
@@ -273,15 +242,7 @@ abstract class SimpleGeometryContent {
   /// Use an optional [name] to specify a name for a geometry (when applicable).
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry
-  /// written. A writer implementation may use it or ignore it. Supported
-  /// coordinate value combinations by coordinate type:
-  ///
-  /// Type | Expected values
-  /// ---- | ---------------
-  /// xy   | minX, minY, maxX, maxY
-  /// xyz  | minX, minY, minZ, maxX, maxY, maxZ
-  /// xym  | minX, minY, minM, maxX, maxY, maxM
-  /// xyzm | minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  /// written. A writer implementation may use it or ignore it.
   ///
   /// An example to write a multi polygon geometry with two polygons:
   /// ```dart
@@ -315,7 +276,7 @@ abstract class SimpleGeometryContent {
     Iterable<Iterable<Iterable<double>>> polygons, {
     required Coords type,
     String? name,
-    Iterable<double>? bounds,
+    Box? bounds,
   });
 
   /// Writes an empty geometry of [type].

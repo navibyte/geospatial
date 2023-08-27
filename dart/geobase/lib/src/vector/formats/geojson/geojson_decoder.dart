@@ -147,7 +147,7 @@ void _decodeGeometry(
         builder.lineString(
           createFlatPositionArrayDouble(array, coordType, swapXY: swapXY),
           type: coordType,
-          bounds: _getBboxOpt(geometry, swapXY),
+          bounds: _buildBboxOpt(geometry, swapXY),
           name: name,
         );
       }
@@ -162,7 +162,7 @@ void _decodeGeometry(
         builder.polygon(
           createFlatPositionArrayArrayDouble(array, coordType, swapXY: swapXY),
           type: coordType,
-          bounds: _getBboxOpt(geometry, swapXY),
+          bounds: _buildBboxOpt(geometry, swapXY),
           name: name,
         );
       }
@@ -179,7 +179,7 @@ void _decodeGeometry(
         builder.multiPoint(
           array,
           type: coordType,
-          bounds: _getBboxOpt(geometry, swapXY),
+          bounds: _buildBboxOpt(geometry, swapXY),
           name: name,
         );
       }
@@ -193,7 +193,7 @@ void _decodeGeometry(
         builder.multiLineString(
           createFlatPositionArrayArrayDouble(array, coordType, swapXY: swapXY),
           type: coordType,
-          bounds: _getBboxOpt(geometry, swapXY),
+          bounds: _buildBboxOpt(geometry, swapXY),
           name: name,
         );
       }
@@ -211,7 +211,7 @@ void _decodeGeometry(
             swapXY: swapXY,
           ),
           type: coordType,
-          bounds: _getBboxOpt(geometry, swapXY),
+          bounds: _buildBboxOpt(geometry, swapXY),
           name: name,
         );
       }
@@ -232,7 +232,7 @@ void _decodeGeometry(
             }
           },
           count: geometries.length,
-          bounds: _getBboxOpt(geometry, swapXY),
+          bounds: _buildBboxOpt(geometry, swapXY),
           name: name,
         );
       }
@@ -282,7 +282,7 @@ void _decodeFeature(
               name: 'geometry',
             )
         : null,
-    bounds: _getBboxOpt(feature, swapXY),
+    bounds: _buildBboxOpt(feature, swapXY),
     custom: custom,
   );
 }
@@ -336,7 +336,7 @@ void _decodeFeatureCollection(
         }
       },
       count: count,
-      bounds: _getBboxOpt(collection, swapXY),
+      bounds: _buildBboxOpt(collection, swapXY),
       custom: custom,
     );
   } else {
@@ -353,11 +353,14 @@ void _decodeFeatureCollection(
         }
       },
       count: features.length,
-      bounds: _getBboxOpt(collection, swapXY),
+      bounds: _buildBboxOpt(collection, swapXY),
       custom: custom,
     );
   }
 }
+
+Box? _buildBboxOpt(Map<String, dynamic> object, bool swapXY) =>
+    buildBoxCoordsOpt(_getBboxOpt(object, swapXY));
 
 List<double>? _getBboxOpt(Map<String, dynamic> object, bool swapXY) {
   final data = object['bbox'];

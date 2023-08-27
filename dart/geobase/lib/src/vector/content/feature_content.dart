@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import '/src/coordinates/base/box.dart';
+
 import 'geometry_content.dart';
 
 /// A function to write geospatial feature objects to [output].
@@ -39,15 +41,7 @@ mixin FeatureContent {
   /// in a collection. Note that when given the count MUST be exact.
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry
-  /// written. A writer implementation may use it or ignore it. Supported
-  /// coordinate value combinations by coordinate type:
-  ///
-  /// Type | Expected values
-  /// ---- | ---------------
-  /// xy   | minX, minY, maxX, maxY
-  /// xyz  | minX, minY, minZ, maxX, maxY, maxZ
-  /// xym  | minX, minY, minM, maxX, maxY, maxM
-  /// xyzm | minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  /// written. A writer implementation may use it or ignore it.
   ///
   /// Use [custom] to write any custom or "foreign member" properties.
   ///
@@ -74,7 +68,7 @@ mixin FeatureContent {
   void featureCollection(
     WriteFeatures features, {
     int? count,
-    Iterable<double>? bounds,
+    Box? bounds,
     Map<String, dynamic>? custom,
   });
 
@@ -87,15 +81,7 @@ mixin FeatureContent {
   /// recommended to use the `name` argument when writing those other.
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry
-  /// written. A writer implementation may use it or ignore it. Supported
-  /// coordinate value combinations by coordinate type:
-  ///
-  /// Type | Expected values
-  /// ---- | ---------------
-  /// xy   | minX, minY, maxX, maxY
-  /// xyz  | minX, minY, minZ, maxX, maxY, maxZ
-  /// xym  | minX, minY, minM, maxX, maxY, maxM
-  /// xyzm | minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  /// written. A writer implementation may use it or ignore it.
   ///
   /// Use [custom] to write any custom or "foreign member" properties along with
   /// those set by [properties].
@@ -116,7 +102,7 @@ mixin FeatureContent {
     Object? id,
     WriteGeometries? geometry,
     Map<String, dynamic>? properties,
-    Iterable<double>? bounds,
+    Box? bounds,
     Map<String, dynamic>? custom,
   });
 }

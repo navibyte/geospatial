@@ -10,7 +10,6 @@ import '/src/coordinates/base/box.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounds_builder.dart';
-import '/src/utils/coord_arrays.dart';
 import '/src/utils/coord_type.dart';
 import '/src/utils/tolerance.dart';
 import '/src/vector/content/feature_content.dart';
@@ -108,7 +107,7 @@ class Feature<T extends Geometry> extends FeatureObject {
     Object? id,
     WriteGeometries? geometry,
     Map<String, dynamic>? properties,
-    Iterable<double>? bounds,
+    Box? bounds,
     Map<String, dynamic>? custom,
   }) {
     // optional geometry to be built
@@ -145,7 +144,7 @@ class Feature<T extends Geometry> extends FeatureObject {
       id: id,
       geometry: primaryGeometry,
       properties: properties,
-      bounds: buildBoxCoordsOpt(bounds),
+      bounds: bounds,
       custom: custom,
     );
   }
@@ -278,7 +277,7 @@ class Feature<T extends Geometry> extends FeatureObject {
       id: id,
       geometry: geom?.writeTo,
       properties: properties,
-      bounds: bounds?.valuesByType(coordType),
+      bounds: bounds,
       custom: custom,
     );
   }
