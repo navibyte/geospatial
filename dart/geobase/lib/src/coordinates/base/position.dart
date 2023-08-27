@@ -151,7 +151,7 @@ abstract class Position extends Positionable {
   /// 1     | y         | lat
   /// 2     | z         | elev
   /// 3     | m         | m
-  double operator [](int index);
+  double operator [](int index) => Position.getValue(this, index);
 
   /// Coordinate values of this position as an iterable of 2, 3 or 4 items.
   ///
@@ -160,7 +160,19 @@ abstract class Position extends Positionable {
   ///
   /// For geographic coordinates, the coordinate ordering is:
   /// (lon, lat), (lon, lat, elev), (lon, lat, m) or (lon, lat, elev, m).
-  Iterable<double> get values;
+  ///
+  /// See also [valuesByType] that returns coordinate values according to a
+  /// given coordinate type.
+  // ignore: unnecessary_this
+  Iterable<double> get values => Position.getValues(this, type: this.type);
+
+  /// Coordinate values of this position as an iterable of 2, 3 or 4 items
+  /// according to the given [type].
+  ///
+  /// See [values] (that returns coordinate values according to the coordinate
+  /// type of this bounding box) for description of possible return values.
+  Iterable<double> valuesByType(Coords type) =>
+      Position.getValues(this, type: type);
 
   /// Copies this position to a new position created by the [factory].
   R copyTo<R extends Position>(CreatePosition<R> factory) =>
@@ -480,13 +492,16 @@ abstract class Position extends Positionable {
   ///
   /// For geographic coordinates, the coordinate ordering is:
   /// (lon, lat), (lon, lat, elev), (lon, lat, m) or (lon, lat, elev, m).
-  static Iterable<double> getValues(Position position) sync* {
+  static Iterable<double> getValues(
+    Position position, {
+    required Coords type,
+  }) sync* {
     yield position.x;
     yield position.y;
-    if (position.is3D) {
+    if (type.is3D) {
       yield position.z;
     }
-    if (position.isMeasured) {
+    if (type.isMeasured) {
       yield position.m;
     }
   }

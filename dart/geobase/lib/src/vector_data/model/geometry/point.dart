@@ -188,7 +188,11 @@ class Point implements SimpleGeometry {
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) => isEmpty
       ? writer.emptyGeometry(Geom.point, name: name)
-      : writer.point(position.values, type: coordType, name: name);
+      : writer.point(
+          position.valuesByType(coordType),
+          type: coordType,
+          name: name,
+        );
 
   // NOTE: coordinates as raw data
 

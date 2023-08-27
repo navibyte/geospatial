@@ -154,7 +154,18 @@ abstract class Box extends Positionable {
   /// xyz  | west, south, minElev, east, north, maxElev
   /// xym  | west, south, minM, east, north, maxM
   /// xyzm | west, south, minElev, minM, east, north, maxElev, maxM
-  Iterable<double> get values;
+  ///
+  /// See also [valuesByType] that returns coordinate values according to a
+  /// given coordinate type.
+  // ignore: unnecessary_this
+  Iterable<double> get values => Box.getValues(this, type: this.type);
+
+  /// Coordinate values of this bounding box as an iterable of 4, 6 or 8 items
+  /// according to the given [type].
+  ///
+  /// See [values] (that returns coordinate values according to the coordinate
+  /// type of this bounding box) for description of possible return values.
+  Iterable<double> valuesByType(Coords type) => Box.getValues(this, type: type);
 
   /// Copies this box to a new box created by the [factory].
   R copyTo<R extends Box>(CreateBox<R> factory) => factory.call(
@@ -636,9 +647,9 @@ abstract class Box extends Positionable {
     );
   }
 
-  /// Coordinate values of this bounding box as an iterable of 4, 6 or 8 items.
-  static Iterable<double> getValues(Box box) sync* {
-    final type = box.type;
+  /// Coordinate values of this bounding box as an iterable of 4, 6 or 8 items
+  /// according to [type].
+  static Iterable<double> getValues(Box box, {required Coords type}) sync* {
     yield box.minX;
     yield box.minY;
     if (type.is3D) {

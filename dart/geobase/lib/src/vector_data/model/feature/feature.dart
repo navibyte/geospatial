@@ -278,7 +278,7 @@ class Feature<T extends Geometry> extends FeatureObject {
       id: id,
       geometry: geom?.writeTo,
       properties: properties,
-      bounds: bounds?.values,
+      bounds: bounds?.valuesByType(coordType),
       custom: custom,
     );
   }

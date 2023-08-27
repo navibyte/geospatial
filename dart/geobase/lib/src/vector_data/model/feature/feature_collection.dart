@@ -271,7 +271,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
         }
       },
       count: features.length,
-      bounds: bounds?.values,
+      bounds: bounds?.valuesByType(coordType),
       custom: custom,
     );
   }

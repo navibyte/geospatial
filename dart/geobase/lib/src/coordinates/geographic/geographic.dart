@@ -167,12 +167,6 @@ class Geographic extends Position {
   @override
   double? get optZ => _elev;
 
-  @override
-  double operator [](int index) => Geographic.getValue(this, index);
-
-  @override
-  Iterable<double> get values => Geographic.getValues(this);
-
   /// Copies the position with optional [x], [y], [z] and [m] overriding values.
   ///
   /// When copying `Geographic` then coordinates has correspondence:
@@ -382,72 +376,6 @@ class Geographic extends Position {
         ..write(separator)
         ..write(m.toStringAsFixed(mDecimals))
         ..write(mUnits);
-    }
-  }
-
-  // ---------------------------------------------------------------------------
-  // Static methods with default logic, used by Geographic itself too.
-
-  /// A coordinate value of [position] by the coordinate axis [index].
-  ///
-  /// Returns zero when a coordinate axis is not available.
-  ///
-  /// For 2D coordinates the coordinate axis indexes are:
-  ///
-  /// Index | Geographic
-  /// ----- | ----------
-  /// 0     | lon
-  /// 1     | lat
-  /// 2     | m
-  ///
-  /// For 3D coordinates the coordinate axis indexes are:
-  ///
-  /// Index | Geographic
-  /// ----- | ----------
-  /// 0     | lon
-  /// 1     | lat
-  /// 2     | elev
-  /// 3     | m
-  static double getValue(Geographic position, int index) {
-    if (position.is3D) {
-      switch (index) {
-        case 0:
-          return position.lon;
-        case 1:
-          return position.lat;
-        case 2:
-          return position.elev;
-        case 3:
-          return position.m; // returns m or 0
-        default:
-          return 0.0;
-      }
-    } else {
-      switch (index) {
-        case 0:
-          return position.lon;
-        case 1:
-          return position.lat;
-        case 2:
-          return position.m; // returns m or 0
-        default:
-          return 0.0;
-      }
-    }
-  }
-
-  /// Coordinate values of [position] as an iterable of 2, 3 or 4 items.
-  ///
-  /// For geographic coordinates, the coordinate ordering is:
-  /// (lon, lat), (lon, lat, elev), (lon, lat, m) or (lon, lat, elev, m).
-  static Iterable<double> getValues(Geographic position) sync* {
-    yield position.lon;
-    yield position.lat;
-    if (position.is3D) {
-      yield position.elev;
-    }
-    if (position.isMeasured) {
-      yield position.m;
     }
   }
 }

@@ -132,22 +132,6 @@ class Projected extends Position {
   @override
   double? get optM => _m;
 
-  /// A coordinate value by the coordinate axis [index].
-  ///
-  /// Returns zero when a coordinate axis is not available.
-  ///
-  /// For projected or cartesian coordinates, the coordinate ordering is:
-  /// (x, y), (x, y, m), (x, y, z) or (x, y, z, m).
-  @override
-  double operator [](int index) => Position.getValue(this, index);
-
-  /// Coordinate values of this position as an iterable of 2, 3 or 4 items.
-  ///
-  /// For projected or cartesian coordinates, the coordinate ordering is:
-  /// (x, y), (x, y, m), (x, y, z) or (x, y, z, m).
-  @override
-  Iterable<double> get values => Position.getValues(this);
-
   /// Copies the position with optional [x], [y], [z] and [m] overriding values.
   ///
   /// For example when `const pos = Projected(x: 1.0, y: 1.0)` then

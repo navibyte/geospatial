@@ -250,9 +250,6 @@ class GeoBox extends Box {
   double get height => north - south;
 
   @override
-  Iterable<double> get values => Box.getValues(this);
-
-  @override
   GeoBox copyWith({
     double? minX,
     double? minY,

@@ -212,7 +212,7 @@ class GeometryCollection<E extends Geometry> extends Geometry {
               geom.writeTo(output);
             }
           },
-          bounds: bounds?.values,
+          bounds: bounds?.valuesByType(coordType),
         );
 
   @override

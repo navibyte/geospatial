@@ -200,6 +200,10 @@ class _PositionCoordsImpl extends PositionCoords {
   Iterable<double> get values => _data;
 
   @override
+  Iterable<double> valuesByType(Coords type) =>
+      type == this.type ? _data : Position.getValues(this, type: type);
+
+  @override
   _PositionCoordsImpl copyWith({double? x, double? y, double? z, double? m}) =>
       _doCopyWith(
         from: this,

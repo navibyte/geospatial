@@ -182,6 +182,10 @@ class _BoxCoordsImpl extends BoxCoords {
   Iterable<double> get values => _data;
 
   @override
+  Iterable<double> valuesByType(Coords type) =>
+      type == this.type ? _data : Box.getValues(this, type: type);
+
+  @override
   double get width => maxX - minX;
 
   @override

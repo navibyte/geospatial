@@ -228,7 +228,7 @@ class MultiPoint extends SimpleGeometry {
           _points.map((e) => e.values),
           type: coordType,
           name: name,
-          bounds: bounds?.values,
+          bounds: bounds?.valuesByType(coordType),
         );
 
   // NOTE: coordinates as raw data
