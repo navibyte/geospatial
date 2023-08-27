@@ -42,16 +42,6 @@ abstract class Positionable {
   /// True if a measure value is available (or the m coordinate for a position).
   bool get isMeasured;
 
-/*
-  // Note: removed at version 0.3.0 to make code consistent. Later remove fully.
-
-  /// True for geographic coordinates (with longitude and latitude).
-  ///
-  /// If false is returned, then coordinates are projected or cartesian (with
-  /// x and y).
-  bool get isGeographic;
-*/
-
   /// The coordinate type.
   Coords get type => Coords.select(
         is3D: is3D,

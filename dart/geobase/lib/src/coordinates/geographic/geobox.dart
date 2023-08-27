@@ -303,11 +303,6 @@ class GeoBox extends Box {
   @override
   int get coordinateDimension => type.coordinateDimension;
 
-/*
-  @override
-  bool get isGeographic => true;
-*/
-
   @override
   bool get is3D => _minElev != null;
 

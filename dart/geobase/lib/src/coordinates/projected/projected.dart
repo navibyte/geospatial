@@ -175,11 +175,6 @@ class Projected extends Position {
   @override
   Projected transform(TransformPosition transform) => transform.call(this);
 
-/*
-  @override
-  bool get isGeographic => false;
-*/
-
   @override
   bool get is3D => _z != null;
 

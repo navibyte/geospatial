@@ -243,11 +243,6 @@ class ProjBox extends Box {
   @override
   int get coordinateDimension => type.coordinateDimension;
 
-/*
-  @override
-  bool get isGeographic => false;
-*/
-
   @override
   bool get is3D => _minZ != null;
 

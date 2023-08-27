@@ -203,11 +203,6 @@ class Geographic extends Position {
   @override
   Geographic transform(TransformPosition transform) => transform.call(this);
 
-/*
-  @override
-  bool get isGeographic => true;
-*/
-
   @override
   bool get is3D => _elev != null;
 
