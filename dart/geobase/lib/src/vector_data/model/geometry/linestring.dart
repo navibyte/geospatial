@@ -213,7 +213,7 @@ class LineString extends SimpleGeometry {
           _chain,
           type: coordType,
           name: name,
-          bounds: bounds?.coords,
+          bounds: bounds?.values,
         );
 
   // NOTE: coordinates as raw data

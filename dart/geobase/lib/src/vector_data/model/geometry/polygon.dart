@@ -280,7 +280,7 @@ class Polygon extends SimpleGeometry {
           _rings,
           type: coordType,
           name: name,
-          bounds: bounds?.coords,
+          bounds: bounds?.values,
         );
 
   // NOTE: coordinates as raw data

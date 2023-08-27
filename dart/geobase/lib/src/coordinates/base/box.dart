@@ -135,6 +135,27 @@ abstract class Box extends Positionable {
   /// The maximum position (or east-north) of this bounding box.
   Position get max;
 
+  /// Coordinate values of this bounding box as an iterable of 4, 6 or 8 items.
+  ///
+  /// For projected or cartesian coordinates, values are:
+  ///
+  /// Type | Returned values
+  /// ---- | ---------------
+  /// xy   | minX, minY, maxX, maxY
+  /// xyz  | minX, minY, minZ, maxX, maxY, maxZ
+  /// xym  | minX, minY, minM, maxX, maxY, maxM
+  /// xyzm | minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  ///
+  /// For geographic coordinates, values are:
+  ///
+  /// Type | Returned values
+  /// ---- | ---------------
+  /// xy   | west, south, east, north
+  /// xyz  | west, south, minElev, east, north, maxElev
+  /// xym  | west, south, minM, east, north, maxM
+  /// xyzm | west, south, minElev, minM, east, north, maxElev, maxM
+  Iterable<double> get values;
+
   /// Copies this box to a new box created by the [factory].
   R copyTo<R extends Box>(CreateBox<R> factory) => factory.call(
         minX: minX,
@@ -615,53 +636,25 @@ abstract class Box extends Positionable {
     );
   }
 
-  /// Coordinate values of [box] as a double list of 4, 6 or 8 items.
-  static List<double> getDoubleList(Box box) {
-    return getDoubleListFrom(
-      minX: box.minX,
-      minY: box.minY,
-      minZ: box.minZ,
-      minM: box.minM,
-      maxX: box.maxX,
-      maxY: box.maxY,
-      maxZ: box.maxZ,
-      maxM: box.maxM,
-    );
-  }
-
-  /// Coordinate values of Box as a double list of 4, 6 or 8 items.
-  static List<double> getDoubleListFrom({
-    required double minX,
-    required double minY,
-    double? minZ,
-    double? minM,
-    required double maxX,
-    required double maxY,
-    double? maxZ,
-    double? maxM,
-  }) {
-    final is3D = minZ != null && maxZ != null;
-    final isMeasured = minM != null && maxM != null;
-    final type = Coords.select(is3D: is3D, isMeasured: isMeasured);
-    final list = List<double>.filled(2 * type.coordinateDimension, 0);
-    var i = 0;
-    list[i++] = minX;
-    list[i++] = minY;
-    if (is3D) {
-      list[i++] = minZ;
+  /// Coordinate values of this bounding box as an iterable of 4, 6 or 8 items.
+  static Iterable<double> getValues(Box box) sync* {
+    final type = box.type;
+    yield box.minX;
+    yield box.minY;
+    if (type.is3D) {
+      yield box.minZ ?? 0.0;
     }
-    if (isMeasured) {
-      list[i++] = minM;
+    if (type.isMeasured) {
+      yield box.minM ?? 0.0;
     }
-    list[i++] = maxX;
-    list[i++] = maxY;
-    if (is3D) {
-      list[i++] = maxZ;
+    yield box.maxX;
+    yield box.maxY;
+    if (type.is3D) {
+      yield box.maxZ ?? 0.0;
     }
-    if (isMeasured) {
-      list[i++] = maxM;
+    if (type.isMeasured) {
+      yield box.maxM ?? 0.0;
     }
-    return list;
   }
 
   /// Writes coordinate values of [box] to [buffer] separated by [delimiter].

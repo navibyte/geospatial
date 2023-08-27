@@ -17,7 +17,6 @@ import '/src/vector/content/feature_content.dart';
 import '/src/vector/content/geometry_content.dart';
 import '/src/vector/encoding/text_format.dart';
 import '/src/vector/formats/geojson/geojson_format.dart';
-import '/src/vector_data/array/coordinates_extensions.dart';
 import '/src/vector_data/model/geometry/geometry.dart';
 import '/src/vector_data/model/geometry/geometry_builder.dart';
 
@@ -283,7 +282,7 @@ class Feature<T extends Geometry> extends FeatureObject {
       id: id,
       geometry: geom?.writeTo,
       properties: properties,
-      bounds: bounds?.coords,
+      bounds: bounds?.values,
       custom: custom,
     );
   }

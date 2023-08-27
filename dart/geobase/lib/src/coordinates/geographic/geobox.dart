@@ -143,10 +143,10 @@ class GeoBox extends Box {
   ///
   /// Type | Expected values
   /// ---- | ---------------
-  /// xy   | minX, minY, maxX, maxY
-  /// xyz  | minX, minY, minZ, maxX, maxY, maxZ
-  /// xym  | minX, minY, minM, maxX, maxY, maxM
-  /// xyzm | minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  /// xy   | west, south, east, north
+  /// xyz  | west, south, minElev, east, north, maxElev
+  /// xym  | west, south, minM, east, north, maxM
+  /// xyzm | west, south, minElev, minM, east, north, maxElev, maxM
   ///
   /// Use an optional [type] to explicitely set the coordinate type. If not
   /// provided and [text] has 6 items, then xyz coordinates are assumed.
@@ -248,6 +248,9 @@ class GeoBox extends Box {
 
   @override
   double get height => north - south;
+
+  @override
+  Iterable<double> get values => Box.getValues(this);
 
   @override
   GeoBox copyWith({

@@ -16,7 +16,6 @@ import '/src/utils/tolerance.dart';
 import '/src/vector/content/feature_content.dart';
 import '/src/vector/encoding/text_format.dart';
 import '/src/vector/formats/geojson/geojson_format.dart';
-import '/src/vector_data/array/coordinates_extensions.dart';
 import '/src/vector_data/model/geometry/geometry.dart';
 
 import 'feature.dart';
@@ -243,7 +242,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
         }
       },
       count: features.length,
-      bounds: bounds?.coords,
+      bounds: bounds?.values,
       custom: custom,
     );
   }

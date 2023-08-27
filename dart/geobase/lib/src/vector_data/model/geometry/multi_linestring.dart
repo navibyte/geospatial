@@ -249,7 +249,7 @@ class MultiLineString extends SimpleGeometry {
           _lineStrings,
           type: coordType,
           name: name,
-          bounds: bounds?.coords,
+          bounds: bounds?.values,
         );
 
   // NOTE: coordinates as raw data

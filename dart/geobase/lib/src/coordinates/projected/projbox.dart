@@ -190,6 +190,9 @@ class ProjBox extends Box {
   double get height => maxY - minY;
 
   @override
+  Iterable<double> get values => Box.getValues(this);
+
+  @override
   ProjBox copyWith({
     double? minX,
     double? minY,

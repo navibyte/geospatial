@@ -491,31 +491,6 @@ abstract class Position extends Positionable {
     }
   }
 
-  /// Coordinate values of [position] as a double list of 2, 3 or 4 items.
-  ///
-  /// For projected or cartesian coordinates, the coordinate ordering is:
-  /// (x, y), (x, y, z), (x, y, m) or (x, y, z, m).
-  ///
-  /// For geographic coordinates, the coordinate ordering is:
-  /// (lon, lat), (lon, lat, elev), (lon, lat, m) or (lon, lat, elev, m).
-  static List<double> getDoubleList(Position position) {
-    final type = position.type;
-    final list = List<double>.filled(type.coordinateDimension, 0);
-    list[0] = position.x;
-    list[1] = position.y;
-    if (type.is3D) {
-      list[2] = position.z;
-      if (type.isMeasured) {
-        list[3] = position.m;
-      }
-    } else {
-      if (type.isMeasured) {
-        list[2] = position.m;
-      }
-    }
-    return list;
-  }
-
   /// Writes coordinate values of [position] to [buffer] separated by
   /// [delimiter].
   ///

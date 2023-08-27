@@ -288,7 +288,7 @@ class MultiPolygon extends SimpleGeometry {
           _polygons,
           type: coordType,
           name: name,
-          bounds: bounds?.coords,
+          bounds: bounds?.values,
         );
 
   // NOTE: coordinates as raw data

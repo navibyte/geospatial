@@ -179,6 +179,9 @@ class _BoxCoordsImpl extends BoxCoords {
   const _BoxCoordsImpl.view(super.source, {super.type = Coords.xy}) : super();
 
   @override
+  Iterable<double> get values => _data;
+
+  @override
   double get width => maxX - minX;
 
   @override

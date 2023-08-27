@@ -21,7 +21,6 @@ import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
 import '/src/vector/formats/geojson/geojson_format.dart';
 import '/src/vector/formats/wkb/wkb_format.dart';
-import '/src/vector_data/array/coordinates_extensions.dart';
 
 import 'geometry.dart';
 import 'geometry_builder.dart';
@@ -202,7 +201,7 @@ class GeometryCollection<E extends Geometry> extends Geometry {
               geom.writeTo(output);
             }
           },
-          bounds: bounds?.coords,
+          bounds: bounds?.values,
         );
 
   @override
