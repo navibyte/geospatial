@@ -6,6 +6,7 @@
 
 import 'dart:typed_data';
 
+import 'package:geobase/vector_data.dart';
 import 'package:meta/meta.dart';
 
 import '/src/coordinates/projection/projection.dart';
@@ -27,6 +28,18 @@ abstract class FeatureObject extends Bounded {
   /// A feature object with optional [bounds] and [custom] properties.
   const FeatureObject({super.bounds, Map<String, dynamic>? custom})
       : _custom = custom;
+
+  @override
+  FeatureObject populated({
+    bool traverse = false,
+    bool onBounds = true,
+  });
+
+  @override
+  FeatureObject unpopulated({
+    bool traverse = false,
+    bool onBounds = true,
+  });
 
   /// Returns a new feature obect with all geometries projected using
   /// [projection].

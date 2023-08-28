@@ -190,9 +190,9 @@ class MultiPoint extends SimpleGeometry {
     if (recalculate || bounds == null) {
       // return a new MultiPoint (positions kept intact) with populated bounds
       return MultiPoint(
-        _points,
+        positions,
         bounds: BoundsBuilder.calculateBounds(
-          positions: _points,
+          positions: positions,
           type: coordType,
         ),
       );
@@ -200,6 +200,40 @@ class MultiPoint extends SimpleGeometry {
       // bounds was already populated and not asked to recalculate
       return this;
     }
+  }
+
+  @override
+  MultiPoint populated({
+    bool traverse = false,
+    bool onBounds = true,
+  }) {
+    if (onBounds) {
+      // create a new geometry if bounds was unpopulated and geometry not empty
+      if (bounds == null && !isEmpty) {
+        return MultiPoint(
+          positions,
+          bounds: BoundsBuilder.calculateBounds(
+            positions: positions,
+            type: coordType,
+          ),
+        );
+      }
+    }
+    return this;
+  }
+
+  @override
+  MultiPoint unpopulated({
+    bool traverse = false,
+    bool onBounds = true,
+  }) {
+    if (onBounds) {
+      // create a new geometry if bounds was populated
+      if (bounds != null) {
+        return MultiPoint(positions);
+      }
+    }
+    return this;
   }
 
   @override

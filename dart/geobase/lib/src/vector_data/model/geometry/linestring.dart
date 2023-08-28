@@ -179,9 +179,9 @@ class LineString extends SimpleGeometry {
     if (recalculate || bounds == null) {
       // return a new linestring (chain kept intact) with populated bounds
       return LineString(
-        _chain,
+        chain,
         bounds: BoundsBuilder.calculateBounds(
-          array: _chain,
+          array: chain,
           type: coordType,
         ),
       );
@@ -189,6 +189,40 @@ class LineString extends SimpleGeometry {
       // bounds was already populated and not asked to recalculate
       return this;
     }
+  }
+
+  @override
+  LineString populated({
+    bool traverse = false,
+    bool onBounds = true,
+  }) {
+    if (onBounds) {
+      // create a new geometry if bounds was unpopulated and geometry not empty
+      if (bounds == null && !isEmpty) {
+        return LineString(
+          chain,
+          bounds: BoundsBuilder.calculateBounds(
+            array: chain,
+            type: coordType,
+          ),
+        );
+      }
+    }
+    return this;
+  }
+
+  @override
+  LineString unpopulated({
+    bool traverse = false,
+    bool onBounds = true,
+  }) {
+    if (onBounds) {
+      // create a new geometry if bounds was populated
+      if (bounds != null) {
+        return LineString(chain);
+      }
+    }
+    return this;
   }
 
   @override

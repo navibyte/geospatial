@@ -43,6 +43,18 @@ abstract class Geometry extends Bounded {
   /// * `GeometryCollection` has no geometries.
   bool get isEmpty;
 
+  @override
+  Geometry populated({
+    bool traverse = false,
+    bool onBounds = true,
+  });
+
+  @override
+  Geometry unpopulated({
+    bool traverse = false,
+    bool onBounds = true,
+  });
+
   /// Returns a new geometry projected using [projection].
   ///
   /// The returned geometry sub type must be the same as the type of this.

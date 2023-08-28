@@ -53,6 +53,36 @@ abstract class Bounded {
   /// cannot be calculated (for example in the case of an empty geometry).
   Bounded bounded({bool recalculate = false});
 
+  /// Returns a bounded object of the same subtype as this with certain data
+  /// members populated.
+  ///
+  /// If nothing is populated then `this` is returned.
+  ///
+  /// If [onBounds] is true (as by default):
+  /// * The `bounds` in a returned bounded object is ensured to be populated
+  ///   (expect when cannot be calculated, for example in the case of an empty
+  ///   geometry).
+  /// * If [traverse] is true, then also bounding boxes of any child bounded
+  ///   objects are populated.
+  Bounded populated({
+    bool traverse = false,
+    bool onBounds = true,
+  });
+
+  /// Returns a bounded object of the same subtype as this with certain data
+  /// members unpopulated (or cleared).
+  ///
+  /// If nothing is unpopulated then `this` is returned.
+  ///
+  /// If [onBounds] is true (as by default):
+  /// * The `bounds` in a returned bounded object is ensured to be unpopulated.
+  /// * If [traverse] is true, then also bounding boxes of any child bounded
+  ///   objects are unpopulated.
+  Bounded unpopulated({
+    bool traverse = false,
+    bool onBounds = true,
+  });
+
   /// Returns a new bounded object with all geometries projected using
   /// [projection] and other properties left intact.
   ///

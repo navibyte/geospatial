@@ -247,6 +247,62 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   }
 
   @override
+  FeatureCollection populated({
+    bool traverse = false,
+    bool onBounds = true,
+  }) {
+    if (onBounds) {
+      // populate features when traversing is asked
+      final coll = traverse && features.isNotEmpty
+          ? features
+              .map<E>(
+                (f) => f.populated(traverse: traverse, onBounds: onBounds) as E,
+              )
+              .toList(growable: false)
+          : features;
+
+      // create a new collection if features changed or bounds was unpopulated
+      if (coll != features || (bounds == null && coll.isNotEmpty)) {
+        return FeatureCollection<E>._(
+          coll,
+          coordType,
+          bounds: _buildBoundsFrom(coll, coordType),
+          custom: custom,
+        );
+      }
+    }
+    return this;
+  }
+
+  @override
+  FeatureCollection unpopulated({
+    bool traverse = false,
+    bool onBounds = true,
+  }) {
+    if (onBounds) {
+      // unpopulate features when traversing is asked
+      final coll = traverse && features.isNotEmpty
+          ? features
+              .map<E>(
+                (f) =>
+                    f.unpopulated(traverse: traverse, onBounds: onBounds) as E,
+              )
+              .toList(growable: false)
+          : features;
+
+      // create a new collection if features changed or bounds was populated
+      if (coll != features || bounds != null) {
+        return FeatureCollection<E>._(
+          coll,
+          coordType,
+          custom: custom,
+        );
+      }
+    }
+    return this;
+  }
+
+  @override
   FeatureCollection<E> project(Projection projection) {
     final projected = features
         .map<E>((feature) => feature.project(projection) as E)

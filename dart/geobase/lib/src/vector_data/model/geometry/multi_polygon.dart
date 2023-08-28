@@ -239,9 +239,9 @@ class MultiPolygon extends SimpleGeometry {
     if (recalculate || bounds == null) {
       // a new MultiPolygon (rings array kept intact) with populated bounds
       return MultiPolygon(
-        _polygons,
+        ringArrays,
         bounds: BoundsBuilder.calculateBounds(
-          arrays: _allRings(_polygons),
+          arrays: _allRings(ringArrays),
           type: coordType,
         ),
       );
@@ -249,6 +249,40 @@ class MultiPolygon extends SimpleGeometry {
       // bounds was already populated and not asked to recalculate
       return this;
     }
+  }
+
+  @override
+  MultiPolygon populated({
+    bool traverse = false,
+    bool onBounds = true,
+  }) {
+    if (onBounds) {
+      // create a new geometry if bounds was unpopulated and geometry not empty
+      if (bounds == null && !isEmpty) {
+        return MultiPolygon(
+          ringArrays,
+          bounds: BoundsBuilder.calculateBounds(
+            arrays: _allRings(ringArrays),
+            type: coordType,
+          ),
+        );
+      }
+    }
+    return this;
+  }
+
+  @override
+  MultiPolygon unpopulated({
+    bool traverse = false,
+    bool onBounds = true,
+  }) {
+    if (onBounds) {
+      // create a new geometry if bounds was populated
+      if (bounds != null) {
+        return MultiPolygon(ringArrays);
+      }
+    }
+    return this;
   }
 
   @override

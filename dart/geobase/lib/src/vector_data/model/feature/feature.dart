@@ -254,6 +254,55 @@ class Feature<T extends Geometry> extends FeatureObject {
   }
 
   @override
+  Feature populated({
+    bool traverse = false,
+    bool onBounds = true,
+  }) {
+    if (onBounds) {
+      // populate a geometry when traversing is asked
+      final geom = traverse
+          ? geometry?.populated(traverse: traverse, onBounds: onBounds)
+          : geometry;
+
+      // create a new feature if geometry changed or bounds was unpopulated
+      if (geom != geometry || (bounds == null && geom != null)) {
+        return Feature(
+          id: id,
+          geometry: geom,
+          properties: properties,
+          bounds: geom != null ? _buildBoundsFrom(geom) : null,
+          custom: custom,
+        );
+      }
+    }
+    return this;
+  }
+
+  @override
+  Feature unpopulated({
+    bool traverse = false,
+    bool onBounds = true,
+  }) {
+    if (onBounds) {
+      // unpopulate a geometry when traversing is asked
+      final geom = traverse
+          ? geometry?.unpopulated(traverse: traverse, onBounds: onBounds)
+          : geometry;
+
+      // create a new feature if geometry changed or bounds was populated
+      if (geom != geometry || bounds != null) {
+        return Feature(
+          id: id,
+          geometry: geom,
+          properties: properties,
+          custom: custom,
+        );
+      }
+    }
+    return this;
+  }
+
+  @override
   Feature<T> project(Projection projection) {
     final projectedGeom = geometry?.project(projection) as T?;
 

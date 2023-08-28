@@ -228,9 +228,9 @@ class Polygon extends SimpleGeometry {
     if (recalculate || bounds == null) {
       // return a new Polygon (rings kept intact) with populated bounds
       return Polygon(
-        _rings,
+        rings,
         bounds: BoundsBuilder.calculateBounds(
-          arrays: _rings,
+          arrays: rings,
           type: coordType,
         ),
       );
@@ -238,6 +238,40 @@ class Polygon extends SimpleGeometry {
       // bounds was already populated and not asked to recalculate
       return this;
     }
+  }
+
+  @override
+  Polygon populated({
+    bool traverse = false,
+    bool onBounds = true,
+  }) {
+    if (onBounds) {
+      // create a new geometry if bounds was unpopulated and geometry not empty
+      if (bounds == null && !isEmpty) {
+        return Polygon(
+          rings,
+          bounds: BoundsBuilder.calculateBounds(
+            arrays: rings,
+            type: coordType,
+          ),
+        );
+      }
+    }
+    return this;
+  }
+
+  @override
+  Polygon unpopulated({
+    bool traverse = false,
+    bool onBounds = true,
+  }) {
+    if (onBounds) {
+      // create a new geometry if bounds was populated
+      if (bounds != null) {
+        return Polygon(rings);
+      }
+    }
+    return this;
   }
 
   @override

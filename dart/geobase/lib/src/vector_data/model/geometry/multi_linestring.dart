@@ -205,9 +205,9 @@ class MultiLineString extends SimpleGeometry {
     if (recalculate || bounds == null) {
       // return a new MultiLineString (chains kept intact) with populated bounds
       return MultiLineString(
-        _lineStrings,
+        chains,
         bounds: BoundsBuilder.calculateBounds(
-          arrays: _lineStrings,
+          arrays: chains,
           type: coordType,
         ),
       );
@@ -215,6 +215,40 @@ class MultiLineString extends SimpleGeometry {
       // bounds was already populated and not asked to recalculate
       return this;
     }
+  }
+
+  @override
+  MultiLineString populated({
+    bool traverse = false,
+    bool onBounds = true,
+  }) {
+    if (onBounds) {
+      // create a new geometry if bounds was unpopulated and geometry not empty
+      if (bounds == null && !isEmpty) {
+        return MultiLineString(
+          chains,
+          bounds: BoundsBuilder.calculateBounds(
+            arrays: chains,
+            type: coordType,
+          ),
+        );
+      }
+    }
+    return this;
+  }
+
+  @override
+  MultiLineString unpopulated({
+    bool traverse = false,
+    bool onBounds = true,
+  }) {
+    if (onBounds) {
+      // create a new geometry if bounds was populated
+      if (bounds != null) {
+        return MultiLineString(chains);
+      }
+    }
+    return this;
   }
 
   @override

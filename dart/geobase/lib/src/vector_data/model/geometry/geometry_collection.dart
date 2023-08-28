@@ -185,6 +185,57 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   }
 
   @override
+  GeometryCollection populated({
+    bool traverse = false,
+    bool onBounds = true,
+  }) {
+    if (onBounds) {
+      // populate geometries when traversing is asked
+      final coll = traverse && geometries.isNotEmpty
+          ? geometries
+              .map<E>(
+                (f) => f.populated(traverse: traverse, onBounds: onBounds) as E,
+              )
+              .toList(growable: false)
+          : geometries;
+
+      // create a new collection if geometries changed or bounds was unpopulated
+      if (coll != geometries || (bounds == null && coll.isNotEmpty)) {
+        return GeometryCollection<E>._(
+          coll,
+          coordType,
+          bounds: _buildBoundsFrom(coll, coordType),
+        );
+      }
+    }
+    return this;
+  }
+
+  @override
+  GeometryCollection unpopulated({
+    bool traverse = false,
+    bool onBounds = true,
+  }) {
+    if (onBounds) {
+      // unpopulate geometries when traversing is asked
+      final coll = traverse && geometries.isNotEmpty
+          ? geometries
+              .map<E>(
+                (f) =>
+                    f.unpopulated(traverse: traverse, onBounds: onBounds) as E,
+              )
+              .toList(growable: false)
+          : geometries;
+
+      // create a new collection if geometries changed or bounds was populated
+      if (coll != geometries || bounds != null) {
+        return GeometryCollection<E>._(coll, coordType);
+      }
+    }
+    return this;
+  }
+
+  @override
   GeometryCollection<E> project(Projection projection) {
     final projected = _geometries
         .map<E>((geometry) => geometry.project(projection) as E)

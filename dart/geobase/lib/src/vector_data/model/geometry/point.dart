@@ -177,9 +177,25 @@ class Point implements SimpleGeometry {
         maxM: position.optM,
       );
 
-  /// Returns this [Point] object without any calculations.
+  /// Returns this [Point] object without any modifications.
   @override
   Point bounded({bool recalculate = false}) => this;
+
+  /// Returns this [Point] object without any modifications.
+  @override
+  Point populated({
+    bool traverse = false,
+    bool onBounds = true,
+  }) =>
+      this;
+
+  /// Returns this [Point] object without any modifications.
+  @override
+  Point unpopulated({
+    bool traverse = false,
+    bool onBounds = true,
+  }) =>
+      this;
 
   @override
   Point project(Projection projection) =>
