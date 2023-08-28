@@ -31,13 +31,13 @@ abstract class FeatureObject extends Bounded {
 
   @override
   FeatureObject populated({
-    bool traverse = false,
+    int traverse = 0,
     bool onBounds = true,
   });
 
   @override
   FeatureObject unpopulated({
-    bool traverse = false,
+    int traverse = 0,
     bool onBounds = true,
   });
 

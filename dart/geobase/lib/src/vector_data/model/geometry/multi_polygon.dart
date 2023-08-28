@@ -254,7 +254,7 @@ class MultiPolygon extends SimpleGeometry {
 
   @override
   MultiPolygon populated({
-    bool traverse = false,
+    int traverse = 0,
     bool onBounds = true,
   }) {
     if (onBounds) {
@@ -274,7 +274,7 @@ class MultiPolygon extends SimpleGeometry {
 
   @override
   MultiPolygon unpopulated({
-    bool traverse = false,
+    int traverse = 0,
     bool onBounds = true,
   }) {
     if (onBounds) {

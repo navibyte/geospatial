@@ -220,7 +220,7 @@ class MultiLineString extends SimpleGeometry {
 
   @override
   MultiLineString populated({
-    bool traverse = false,
+    int traverse = 0,
     bool onBounds = true,
   }) {
     if (onBounds) {
@@ -240,7 +240,7 @@ class MultiLineString extends SimpleGeometry {
 
   @override
   MultiLineString unpopulated({
-    bool traverse = false,
+    int traverse = 0,
     bool onBounds = true,
   }) {
     if (onBounds) {

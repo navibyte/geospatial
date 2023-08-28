@@ -1034,7 +1034,13 @@ void main() {
       expect(fcb.features[0].geometry?.bounds?.toText(), '1.5,2.5,1.5,2.5');
       expect(fcb.features[1].geometry?.bounds, isNull);
       expect(fcb.calculateBounds()?.toText(), '-1.1,-3.49,3.5,2.5');
-      final fcb2 = fc.populated(traverse: true);
+      final fcb1 = fc.populated(traverse: 1);
+      expect(fcb1.bounds?.toText(), '-1.1,-3.49,3.5,2.5');
+      expect(fcb1.features[0].bounds?.toText(), '1.5,2.5,1.5,2.5');
+      expect(fcb1.features[1].bounds?.toText(), '-1.1,-3.49,3.5,-1.1');
+      expect(fcb1.features[0].geometry?.bounds?.toText(), '1.5,2.5,1.5,2.5');
+      expect(fcb1.features[1].geometry?.bounds, isNull);
+      final fcb2 = fc.populated(traverse: 2);
       expect(fcb2.bounds?.toText(), '-1.1,-3.49,3.5,2.5');
       expect(fcb2.features[0].bounds?.toText(), '1.5,2.5,1.5,2.5');
       expect(fcb2.features[1].bounds?.toText(), '-1.1,-3.49,3.5,-1.1');

@@ -45,13 +45,13 @@ abstract class Geometry extends Bounded {
 
   @override
   Geometry populated({
-    bool traverse = false,
+    int traverse = 0,
     bool onBounds = true,
   });
 
   @override
   Geometry unpopulated({
-    bool traverse = false,
+    int traverse = 0,
     bool onBounds = true,
   });
 

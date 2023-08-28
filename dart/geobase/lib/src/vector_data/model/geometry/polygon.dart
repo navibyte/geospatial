@@ -243,7 +243,7 @@ class Polygon extends SimpleGeometry {
 
   @override
   Polygon populated({
-    bool traverse = false,
+    int traverse = 0,
     bool onBounds = true,
   }) {
     if (onBounds) {
@@ -263,7 +263,7 @@ class Polygon extends SimpleGeometry {
 
   @override
   Polygon unpopulated({
-    bool traverse = false,
+    int traverse = 0,
     bool onBounds = true,
   }) {
     if (onBounds) {

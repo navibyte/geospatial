@@ -188,15 +188,16 @@ class GeometryCollection<E extends Geometry> extends Geometry {
 
   @override
   GeometryCollection populated({
-    bool traverse = false,
+    int traverse = 0,
     bool onBounds = true,
   }) {
     if (onBounds) {
       // populate geometries when traversing is asked
-      final coll = traverse && geometries.isNotEmpty
+      final coll = traverse > 0 && geometries.isNotEmpty
           ? geometries
               .map<E>(
-                (f) => f.populated(traverse: traverse, onBounds: onBounds) as E,
+                (f) => f.populated(traverse: traverse - 1, onBounds: onBounds)
+                    as E,
               )
               .toList(growable: false)
           : geometries;
@@ -215,16 +216,16 @@ class GeometryCollection<E extends Geometry> extends Geometry {
 
   @override
   GeometryCollection unpopulated({
-    bool traverse = false,
+    int traverse = 0,
     bool onBounds = true,
   }) {
     if (onBounds) {
       // unpopulate geometries when traversing is asked
-      final coll = traverse && geometries.isNotEmpty
+      final coll = traverse > 0 && geometries.isNotEmpty
           ? geometries
               .map<E>(
-                (f) =>
-                    f.unpopulated(traverse: traverse, onBounds: onBounds) as E,
+                (f) => f.unpopulated(traverse: traverse - 1, onBounds: onBounds)
+                    as E,
               )
               .toList(growable: false)
           : geometries;

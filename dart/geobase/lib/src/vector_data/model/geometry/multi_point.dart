@@ -205,7 +205,7 @@ class MultiPoint extends SimpleGeometry {
 
   @override
   MultiPoint populated({
-    bool traverse = false,
+    int traverse = 0,
     bool onBounds = true,
   }) {
     if (onBounds) {
@@ -225,7 +225,7 @@ class MultiPoint extends SimpleGeometry {
 
   @override
   MultiPoint unpopulated({
-    bool traverse = false,
+    int traverse = 0,
     bool onBounds = true,
   }) {
     if (onBounds) {

@@ -249,15 +249,16 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
 
   @override
   FeatureCollection populated({
-    bool traverse = false,
+    int traverse = 0,
     bool onBounds = true,
   }) {
     if (onBounds) {
       // populate features when traversing is asked
-      final coll = traverse && features.isNotEmpty
+      final coll = traverse > 0 && features.isNotEmpty
           ? features
               .map<E>(
-                (f) => f.populated(traverse: traverse, onBounds: onBounds) as E,
+                (f) => f.populated(traverse: traverse - 1, onBounds: onBounds)
+                    as E,
               )
               .toList(growable: false)
           : features;
@@ -277,16 +278,16 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
 
   @override
   FeatureCollection unpopulated({
-    bool traverse = false,
+    int traverse = 0,
     bool onBounds = true,
   }) {
     if (onBounds) {
       // unpopulate features when traversing is asked
-      final coll = traverse && features.isNotEmpty
+      final coll = traverse > 0 && features.isNotEmpty
           ? features
               .map<E>(
-                (f) =>
-                    f.unpopulated(traverse: traverse, onBounds: onBounds) as E,
+                (f) => f.unpopulated(traverse: traverse - 1, onBounds: onBounds)
+                    as E,
               )
               .toList(growable: false)
           : features;

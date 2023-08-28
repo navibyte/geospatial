@@ -257,13 +257,13 @@ class Feature<T extends Geometry> extends FeatureObject {
 
   @override
   Feature populated({
-    bool traverse = false,
+    int traverse = 0,
     bool onBounds = true,
   }) {
     if (onBounds) {
       // populate a geometry when traversing is asked
-      final geom = traverse
-          ? geometry?.populated(traverse: traverse, onBounds: onBounds)
+      final geom = traverse > 0
+          ? geometry?.populated(traverse: traverse - 1, onBounds: onBounds)
           : geometry;
 
       // create a new feature if geometry changed or bounds was unpopulated
@@ -282,13 +282,13 @@ class Feature<T extends Geometry> extends FeatureObject {
 
   @override
   Feature unpopulated({
-    bool traverse = false,
+    int traverse = 0,
     bool onBounds = true,
   }) {
     if (onBounds) {
       // unpopulate a geometry when traversing is asked
-      final geom = traverse
-          ? geometry?.unpopulated(traverse: traverse, onBounds: onBounds)
+      final geom = traverse > 0
+          ? geometry?.unpopulated(traverse: traverse - 1, onBounds: onBounds)
           : geometry;
 
       // create a new feature if geometry changed or bounds was populated

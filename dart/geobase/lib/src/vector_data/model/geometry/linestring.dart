@@ -194,7 +194,7 @@ class LineString extends SimpleGeometry {
 
   @override
   LineString populated({
-    bool traverse = false,
+    int traverse = 0,
     bool onBounds = true,
   }) {
     if (onBounds) {
@@ -214,7 +214,7 @@ class LineString extends SimpleGeometry {
 
   @override
   LineString unpopulated({
-    bool traverse = false,
+    int traverse = 0,
     bool onBounds = true,
   }) {
     if (onBounds) {

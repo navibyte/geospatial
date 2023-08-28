@@ -185,7 +185,7 @@ class Point implements SimpleGeometry {
   /// Returns this [Point] object without any modifications.
   @override
   Point populated({
-    bool traverse = false,
+    int traverse = 0,
     bool onBounds = true,
   }) =>
       this;
@@ -193,7 +193,7 @@ class Point implements SimpleGeometry {
   /// Returns this [Point] object without any modifications.
   @override
   Point unpopulated({
-    bool traverse = false,
+    int traverse = 0,
     bool onBounds = true,
   }) =>
       this;
