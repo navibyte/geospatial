@@ -224,6 +224,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
       );
 
   @override
+  @Deprecated('Use populated or unpopulated instead.')
   FeatureCollection<E> bounded({bool recalculate = false}) {
     if (features.isEmpty) return this;
 

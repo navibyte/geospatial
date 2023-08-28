@@ -222,6 +222,7 @@ class Polygon extends SimpleGeometry {
       );
 
   @override
+  @Deprecated('Use populated or unpopulated instead.')
   Polygon bounded({bool recalculate = false}) {
     if (isEmpty) return this;
 

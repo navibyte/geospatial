@@ -516,25 +516,25 @@ void main() {
       );
     });
 
-    test('Simple geometries as bounded', () {
+    test('Simple geometries as populated', () {
       final po = Point.parse(point);
-      final pob = po.bounded();
+      final pob = po.populated();
       expect(pob.toText(), point);
       expect(pob.bounds.toText(), '1.5,2.5,1.5,2.5');
       expect(po.calculateBounds().toText(), '1.5,2.5,1.5,2.5');
 
       final ls = LineString.parse(lineString);
-      final lsb = ls.bounded();
+      final lsb = ls.populated();
       expect(lsb.bounds?.toText(), '-1.1,-3.49,3.5,-1.1');
       expect(ls.calculateBounds()?.toText(), '-1.1,-3.49,3.5,-1.1');
 
       final pg = Polygon.parse(polygon);
-      final pgb = pg.bounded();
+      final pgb = pg.populated();
       expect(pgb.bounds?.toText(), '5.0,4.0,13.0,11.1');
       expect(pg.calculateBounds()?.toText(), '5.0,4.0,13.0,11.1');
 
       final mpo = MultiPoint.parse(multiPoint);
-      final mpob = mpo.bounded();
+      final mpob = mpo.populated();
       expect(mpob.bounds?.toText(), '-1.1,-3.49,-1.1,-1.1,3.5,-1.1,11.3,0.23');
       expect(
         mpo.calculateBounds()?.toText(),
@@ -542,12 +542,12 @@ void main() {
       );
 
       final mls = MultiLineString.parse(multiLineString);
-      final mlsb = mls.bounded();
+      final mlsb = mls.populated();
       expect(mlsb.bounds?.toText(), '5.0,4.0,13.0,11.1');
       expect(mls.calculateBounds()?.toText(), '5.0,4.0,13.0,11.1');
 
       final mpg = MultiPolygon.parse(multiPolygon);
-      final mpgb = mpg.bounded();
+      final mpgb = mpg.populated();
       expect(mpgb.bounds?.toText(), '5.0,4.0,13.0,11.1');
       expect(mpg.calculateBounds()?.toText(), '5.0,4.0,13.0,11.1');
     });
@@ -960,14 +960,14 @@ void main() {
       );
     });
 
-    test('Feature with non-typed geometry (bounded)', () {
+    test('Feature with non-typed geometry (populated)', () {
       final pof = Feature.parse(pointFeat);
-      final pofb = pof.bounded();
+      final pofb = pof.populated();
       expect(pofb.bounds?.toText(), '1.5,2.5,1.5,2.5');
       expect(pof.calculateBounds()?.toText(), '1.5,2.5,1.5,2.5');
 
       final lsf = Feature.parse(lineStringFeat);
-      final lsfb = lsf.bounded();
+      final lsfb = lsf.populated();
       expect(lsfb.bounds?.toText(), '-1.1,-3.49,3.5,-1.1');
       expect(lsf.calculateBounds()?.toText(), '-1.1,-3.49,3.5,-1.1');
     });
@@ -1025,14 +1025,27 @@ void main() {
       );
     });
 
-    test('Feature collection with non-typed geometry (bounded)', () {
+    test('Feature collection with non-typed geometry (populated)', () {
       final fc = FeatureCollection.parse(featColl);
-      final fcb = fc.bounded();
+      final fcb = fc.populated();
       expect(fcb.bounds?.toText(), '-1.1,-3.49,3.5,2.5');
+      expect(fcb.features[0].bounds, isNull);
+      expect(fcb.features[1].bounds, isNull);
+      expect(fcb.features[0].geometry?.bounds?.toText(), '1.5,2.5,1.5,2.5');
+      expect(fcb.features[1].geometry?.bounds, isNull);
       expect(fcb.calculateBounds()?.toText(), '-1.1,-3.49,3.5,2.5');
+      final fcb2 = fc.populated(traverse: true);
+      expect(fcb2.bounds?.toText(), '-1.1,-3.49,3.5,2.5');
+      expect(fcb2.features[0].bounds?.toText(), '1.5,2.5,1.5,2.5');
+      expect(fcb2.features[1].bounds?.toText(), '-1.1,-3.49,3.5,-1.1');
+      expect(fcb2.features[0].geometry?.bounds?.toText(), '1.5,2.5,1.5,2.5');
+      expect(
+        fcb2.features[1].geometry?.bounds?.toText(),
+        '-1.1,-3.49,3.5,-1.1',
+      );
 
       final fcpo = FeatureCollection.parse(featCollPoints);
-      final fcpob = fcpo.bounded();
+      final fcpob = fcpo.populated();
       expect(fcpob.bounds?.toText(), '1.5,2.5,1.5,2.5');
       expect(fcpo.calculateBounds()?.toText(), '1.5,2.5,1.5,2.5');
     });

@@ -173,6 +173,7 @@ class LineString extends SimpleGeometry {
       );
 
   @override
+  @Deprecated('Use populated or unpopulated instead.')
   LineString bounded({bool recalculate = false}) {
     if (isEmpty) return this;
 

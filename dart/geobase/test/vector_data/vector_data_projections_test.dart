@@ -99,16 +99,16 @@ void main() {
         );
 
         expect(
-          sourceLineString.bounded().bounds?.toText(),
+          sourceLineString.populated().bounds?.toText(),
           wgs84ToWebMercatorDataBounds[dim - 2][0],
         );
         expect(
-          targetLineString.bounded().bounds?.toText(decimals: 2),
+          targetLineString.populated().bounds?.toText(decimals: 2),
           wgs84ToWebMercatorDataBounds[dim - 2][1],
         );
         expect(
           sourceLineString
-              .bounded()
+              .populated()
               .project(forward)
               .bounds
               ?.toText(decimals: 2),

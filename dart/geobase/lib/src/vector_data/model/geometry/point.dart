@@ -179,6 +179,7 @@ class Point implements SimpleGeometry {
 
   /// Returns this [Point] object without any modifications.
   @override
+  @Deprecated('Use populated or unpopulated instead.')
   Point bounded({bool recalculate = false}) => this;
 
   /// Returns this [Point] object without any modifications.

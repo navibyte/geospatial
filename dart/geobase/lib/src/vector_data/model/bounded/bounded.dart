@@ -23,8 +23,9 @@ abstract class Bounded {
   ///
   /// Accessing this never triggers extensive calculations.
   ///
-  /// To ensure bounds is populated [bounded] can be called returning
-  /// potentially a new object containing this property with a value.
+  /// To ensure bounds is populated [populated] (with `onBounds` set true) can
+  /// be called returning potentially a new object containing this property with
+  /// a value.
   Box? get bounds => _bounds;
 
   /// Calculate a bounding box for this object.
@@ -51,6 +52,7 @@ abstract class Bounded {
   ///
   /// The `bounds` in returned bounded object may still be null, if bounds
   /// cannot be calculated (for example in the case of an empty geometry).
+  @Deprecated('Use populated or unpopulated instead.')
   Bounded bounded({bool recalculate = false});
 
   /// Returns a bounded object of the same subtype as this with certain data

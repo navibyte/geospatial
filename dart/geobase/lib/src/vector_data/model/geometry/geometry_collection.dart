@@ -163,12 +163,14 @@ class GeometryCollection<E extends Geometry> extends Geometry {
       );
 
   @override
+  @Deprecated('Use populated or unpopulated instead.')
   GeometryCollection<E> bounded({bool recalculate = false}) {
     if (isEmpty) return this;
 
     // ensure all geometries contained are processed first
     final collection = _geometries
         .map<E>(
+          // ignore: deprecated_member_use_from_same_package
           (geometry) => geometry.bounded(recalculate: recalculate) as E,
         )
         .toList(growable: false);

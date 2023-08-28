@@ -184,6 +184,7 @@ class MultiPoint extends SimpleGeometry {
       );
 
   @override
+  @Deprecated('Use populated or unpopulated instead.')
   MultiPoint bounded({bool recalculate = false}) {
     if (isEmpty) return this;
 

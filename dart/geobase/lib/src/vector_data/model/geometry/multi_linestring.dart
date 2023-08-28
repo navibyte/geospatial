@@ -199,6 +199,7 @@ class MultiLineString extends SimpleGeometry {
       );
 
   @override
+  @Deprecated('Use populated or unpopulated instead.')
   MultiLineString bounded({bool recalculate = false}) {
     if (isEmpty) return this;
 
