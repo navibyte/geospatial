@@ -66,6 +66,8 @@ abstract class Bounded {
   ///   geometry).
   /// * If [traverse] is true, then also bounding boxes of any child bounded
   ///   objects are populated.
+  /// 
+  /// See also [unpopulated].
   Bounded populated({
     bool traverse = false,
     bool onBounds = true,
@@ -77,9 +79,13 @@ abstract class Bounded {
   /// If nothing is unpopulated then `this` is returned.
   ///
   /// If [onBounds] is true (as by default):
-  /// * The `bounds` in a returned bounded object is ensured to be unpopulated.
+  /// * The `bounds` in a returned bounded object is ensured to be unpopulated
+  ///   (expect when `bounds` is always available, for example in the case of a
+  ///    point geometry).
   /// * If [traverse] is true, then also bounding boxes of any child bounded
   ///   objects are unpopulated.
+  /// 
+  /// See also [populated].
   Bounded unpopulated({
     bool traverse = false,
     bool onBounds = true,
