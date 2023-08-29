@@ -19,14 +19,14 @@ import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/coord_arrays_from_json.dart';
 import '/src/utils/tolerance.dart';
+import '/src/vector/array/coordinates.dart';
+import '/src/vector/array/coordinates_extensions.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
 import '/src/vector/formats/geojson/default_format.dart';
 import '/src/vector/formats/geojson/geojson_format.dart';
 import '/src/vector/formats/wkb/wkb_format.dart';
-import '/src/vector_data/array/coordinates.dart';
-import '/src/vector_data/array/coordinates_extensions.dart';
 
 import 'geometry.dart';
 import 'geometry_builder.dart';

@@ -13,7 +13,6 @@ import 'package:geobase/codes.dart';
 import 'package:geobase/coordinates.dart';
 import 'package:geobase/src/utils/byte_writer.dart';
 import 'package:geobase/vector.dart';
-import 'package:geobase/vector_data.dart';
 
 import 'package:test/test.dart';
 

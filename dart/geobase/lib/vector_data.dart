@@ -6,11 +6,12 @@
 
 // ignore_for_file: lines_longer_than_80_chars
 
-/// Data structures for positions, geometries, features and feature collections.
+/// Data structures for geometries, geometry collections, features and feature
+/// collections.
 ///
 /// Key features:
-/// * positions and position arrays based on coordinate arrays
-/// * simple geometries (point, line string, polygon, multi point, multi line string, multi polygon, geometry collection)
+/// * simple geometries (point, line string, polygon, multi point, multi line
+///   string, multi polygon) and geometry collections
 /// * features (with id, properties and geometry) and feature collections
 ///
 /// This libary exports a subset of `package:geobase/geobase.dart`.
@@ -18,8 +19,6 @@
 /// Usage: import `package:geobase/vector_data.dart`
 library vector_data;
 
-export 'src/vector_data/array/coordinates.dart';
-export 'src/vector_data/array/coordinates_extensions.dart';
 export 'src/vector_data/model/bounded/bounded.dart';
 export 'src/vector_data/model/feature/feature.dart';
 export 'src/vector_data/model/feature/feature_builder.dart';

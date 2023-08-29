@@ -7,7 +7,7 @@
 import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
-import '/src/vector_data/array/coordinates.dart';
+import '/src/vector/array/coordinates.dart';
 
 /// Builds a bounding box from [coords] if it's non-null.
 ///

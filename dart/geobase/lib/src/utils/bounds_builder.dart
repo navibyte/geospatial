@@ -12,7 +12,7 @@ import '/src/codes/coords.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/data/position_data.dart';
-import '/src/vector_data/array/coordinates.dart';
+import '/src/vector/array/coordinates.dart';
 import '/src/vector_data/model/bounded/bounded.dart';
 
 /// A helper class to calculate bounds for a set of points and other bounds.

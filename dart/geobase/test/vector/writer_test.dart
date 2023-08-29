@@ -8,7 +8,6 @@
 
 import 'package:geobase/coordinates.dart';
 import 'package:geobase/vector.dart';
-import 'package:geobase/vector_data.dart';
 
 import 'package:test/test.dart';
 

@@ -1665,7 +1665,7 @@ Package                | Description
 **projections_proj4d** | Projections provided by the external [proj4dart](https://pub.dev/packages/proj4dart) package.
 **tiling**             | Tiling schemes and tile matrix sets (web mercator, global geodetic).
 **vector**             | Text and binary formats for vector data (features, geometries, coordinates).
-**vector_data**        | Data structures for positions, geometries, features and feature collections.
+**vector_data**        | Data structures for geometries, features and feature collections.
 
 External packages `geobase` is depending on:
 * [equatable](https://pub.dev/packages/equatable) for equality and hash utils
