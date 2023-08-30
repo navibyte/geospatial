@@ -161,6 +161,15 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   /// All feature items in this feature collection.
   List<E> get features => _features;
 
+  /// Returns true if this feature collection do not contain any features.
+  ///
+  /// The specification from [Bounded]:
+  /// "Returns true if this bounded object is considered empty (that is it do
+  /// not contain any geometry directly or on child objects, or geometry
+  /// contained is empty)".
+  @override
+  bool get isEmptyByGeometry => features.isEmpty;
+
   @override
   Coords get coordType => _coordType;
 

@@ -15,6 +15,11 @@ abstract class Bounded {
   /// A bounded object with an optional [bounds].
   const Bounded({Box? bounds}) : _bounds = bounds;
 
+  /// Returns true if this bounded object is considered empty (that is it do
+  /// not contain any geometry directly or on child objects, or geometry
+  /// contained is empty).
+  bool get isEmptyByGeometry;
+
   /// The coordinate type for this bounded object.
   Coords get coordType;
 

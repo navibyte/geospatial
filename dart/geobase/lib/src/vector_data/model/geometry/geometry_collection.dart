@@ -134,7 +134,7 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   Coords get coordType => _coordType;
 
   @override
-  bool get isEmpty => _geometries.isEmpty;
+  bool get isEmptyByGeometry => _geometries.isEmpty;
 
   /// All geometry items in this geometry collection.
   List<E> get geometries => _geometries;
@@ -165,7 +165,7 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   @override
   @Deprecated('Use populated or unpopulated instead.')
   GeometryCollection<E> bounded({bool recalculate = false}) {
-    if (isEmpty) return this;
+    if (isEmptyByGeometry) return this;
 
     // ensure all geometries contained are processed first
     final collection = _geometries
@@ -255,7 +255,7 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   }
 
   @override
-  void writeTo(GeometryContent writer, {String? name}) => isEmpty
+  void writeTo(GeometryContent writer, {String? name}) => isEmptyByGeometry
       ? writer.emptyGeometry(Geom.geometryCollection, name: name)
       : writer.geometryCollection(
           count: _geometries.length,
@@ -293,7 +293,7 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   }) {
     assertTolerance(toleranceHoriz);
     if (other is! GeometryCollection) return false;
-    if (isEmpty || other.isEmpty) return false;
+    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
     if (bounds != null &&
         other.bounds != null &&
         !bounds!.equals2D(
@@ -328,7 +328,7 @@ class GeometryCollection<E extends Geometry> extends Geometry {
     assertTolerance(toleranceHoriz);
     assertTolerance(toleranceVert);
     if (other is! GeometryCollection) return false;
-    if (isEmpty || other.isEmpty) return false;
+    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
     if (bounds != null &&
         other.bounds != null &&
         !bounds!.equals3D(

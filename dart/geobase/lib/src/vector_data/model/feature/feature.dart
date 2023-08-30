@@ -206,6 +206,17 @@ class Feature<T extends Geometry> extends FeatureObject {
   /// Required properties for this feature (allowed to be empty).
   Map<String, dynamic> get properties => _properties;
 
+  /// Returns true if this feature do not contain any geometry or geometry is
+  /// empty.
+  ///
+  /// Note that if geometry is null but the feature contains properties, this is
+  /// still considered empty according to specification from [Bounded]:
+  /// "Returns true if this bounded object is considered empty (that is it do
+  /// not contain any geometry directly or on child objects, or geometry
+  /// contained is empty)".
+  @override
+  bool get isEmptyByGeometry => geometry == null || geometry!.isEmptyByGeometry;
+
   @override
   Coords get coordType => geometry?.coordType ?? Coords.xy;
 
@@ -239,7 +250,7 @@ class Feature<T extends Geometry> extends FeatureObject {
   @Deprecated('Use populated or unpopulated instead.')
   Feature<T> bounded({bool recalculate = false}) {
     final currGeom = geometry;
-    if (currGeom == null || currGeom.isEmpty) return this;
+    if (currGeom == null || currGeom.isEmptyByGeometry) return this;
 
     // ensure geometry is processed first
     // ignore: deprecated_member_use_from_same_package
@@ -386,7 +397,10 @@ class Feature<T extends Geometry> extends FeatureObject {
     // test main geometry
     final mg1 = geometry;
     final mg2 = other.geometry;
-    if (mg1 == null || mg2 == null || mg1.isEmpty || mg2.isEmpty) return false;
+    if (mg1 == null ||
+        mg2 == null ||
+        mg1.isEmptyByGeometry ||
+        mg2.isEmptyByGeometry) return false;
     if (!mg1.equals2D(
       mg2,
       toleranceHoriz: toleranceHoriz,
@@ -434,7 +448,10 @@ class Feature<T extends Geometry> extends FeatureObject {
     // test main geometry
     final mg1 = geometry;
     final mg2 = other.geometry;
-    if (mg1 == null || mg2 == null || mg1.isEmpty || mg2.isEmpty) return false;
+    if (mg1 == null ||
+        mg2 == null ||
+        mg1.isEmptyByGeometry ||
+        mg2.isEmptyByGeometry) return false;
     if (!mg1.equals3D(
       mg2,
       toleranceHoriz: toleranceHoriz,

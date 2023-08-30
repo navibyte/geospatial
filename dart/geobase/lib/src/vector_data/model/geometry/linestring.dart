@@ -161,7 +161,7 @@ class LineString extends SimpleGeometry {
   Coords get coordType => _chain.type;
 
   @override
-  bool get isEmpty => _chain.isEmpty;
+  bool get isEmptyByGeometry => _chain.isEmpty;
 
   /// The chain of positions in this line string geometry.
   PositionArray get chain => _chain;
@@ -175,7 +175,7 @@ class LineString extends SimpleGeometry {
   @override
   @Deprecated('Use populated or unpopulated instead.')
   LineString bounded({bool recalculate = false}) {
-    if (isEmpty) return this;
+    if (isEmptyByGeometry) return this;
 
     if (recalculate || bounds == null) {
       // return a new linestring (chain kept intact) with populated bounds
@@ -199,7 +199,7 @@ class LineString extends SimpleGeometry {
   }) {
     if (onBounds) {
       // create a new geometry if bounds was unpopulated and geometry not empty
-      if (bounds == null && !isEmpty) {
+      if (bounds == null && !isEmptyByGeometry) {
         return LineString(
           chain,
           bounds: BoundsBuilder.calculateBounds(
@@ -244,14 +244,15 @@ class LineString extends SimpleGeometry {
   }
 
   @override
-  void writeTo(SimpleGeometryContent writer, {String? name}) => isEmpty
-      ? writer.emptyGeometry(Geom.lineString, name: name)
-      : writer.lineString(
-          _chain,
-          type: coordType,
-          name: name,
-          bounds: bounds,
-        );
+  void writeTo(SimpleGeometryContent writer, {String? name}) =>
+      isEmptyByGeometry
+          ? writer.emptyGeometry(Geom.lineString, name: name)
+          : writer.lineString(
+              _chain,
+              type: coordType,
+              name: name,
+              bounds: bounds,
+            );
 
   // NOTE: coordinates as raw data
 
@@ -274,7 +275,7 @@ class LineString extends SimpleGeometry {
   }) {
     assertTolerance(toleranceHoriz);
     if (other is! LineString) return false;
-    if (isEmpty || other.isEmpty) return false;
+    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
     if (bounds != null &&
         other.bounds != null &&
         !bounds!.equals2D(
@@ -300,7 +301,7 @@ class LineString extends SimpleGeometry {
     assertTolerance(toleranceHoriz);
     assertTolerance(toleranceVert);
     if (other is! LineString) return false;
-    if (isEmpty || other.isEmpty) return false;
+    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
     if (!coordType.is3D || !other.coordType.is3D) return false;
     if (bounds != null &&
         other.bounds != null &&

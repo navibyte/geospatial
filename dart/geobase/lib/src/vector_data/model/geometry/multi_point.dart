@@ -160,7 +160,7 @@ class MultiPoint extends SimpleGeometry {
   Coords get coordType => _points.isNotEmpty ? _points.first.type : Coords.xy;
 
   @override
-  bool get isEmpty => _points.isEmpty;
+  bool get isEmptyByGeometry => _points.isEmpty;
 
   /// The positions of all points.
   ///
@@ -186,7 +186,7 @@ class MultiPoint extends SimpleGeometry {
   @override
   @Deprecated('Use populated or unpopulated instead.')
   MultiPoint bounded({bool recalculate = false}) {
-    if (isEmpty) return this;
+    if (isEmptyByGeometry) return this;
 
     if (recalculate || bounds == null) {
       // return a new MultiPoint (positions kept intact) with populated bounds
@@ -210,7 +210,7 @@ class MultiPoint extends SimpleGeometry {
   }) {
     if (onBounds) {
       // create a new geometry if bounds was unpopulated and geometry not empty
-      if (bounds == null && !isEmpty) {
+      if (bounds == null && !isEmptyByGeometry) {
         return MultiPoint(
           positions,
           bounds: BoundsBuilder.calculateBounds(
@@ -257,14 +257,15 @@ class MultiPoint extends SimpleGeometry {
   }
 
   @override
-  void writeTo(SimpleGeometryContent writer, {String? name}) => isEmpty
-      ? writer.emptyGeometry(Geom.multiPoint, name: name)
-      : writer.multiPoint(
-          _points.map((e) => e.values),
-          type: coordType,
-          name: name,
-          bounds: bounds,
-        );
+  void writeTo(SimpleGeometryContent writer, {String? name}) =>
+      isEmptyByGeometry
+          ? writer.emptyGeometry(Geom.multiPoint, name: name)
+          : writer.multiPoint(
+              _points.map((e) => e.values),
+              type: coordType,
+              name: name,
+              bounds: bounds,
+            );
 
   // NOTE: coordinates as raw data
 
@@ -293,7 +294,7 @@ class MultiPoint extends SimpleGeometry {
   }) {
     assertTolerance(toleranceHoriz);
     if (other is! MultiPoint) return false;
-    if (isEmpty || other.isEmpty) return false;
+    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
     if (bounds != null &&
         other.bounds != null &&
         !bounds!.equals2D(
@@ -328,7 +329,7 @@ class MultiPoint extends SimpleGeometry {
     assertTolerance(toleranceHoriz);
     assertTolerance(toleranceVert);
     if (other is! MultiPoint) return false;
-    if (isEmpty || other.isEmpty) return false;
+    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
     if (!coordType.is3D || !other.coordType.is3D) return false;
     if (bounds != null &&
         other.bounds != null &&

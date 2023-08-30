@@ -198,7 +198,7 @@ class Polygon extends SimpleGeometry {
   Coords get coordType => exterior?.type ?? Coords.xy;
 
   @override
-  bool get isEmpty => _rings.isEmpty;
+  bool get isEmptyByGeometry => _rings.isEmpty;
 
   /// The rings (exterior + interior) of this polygon.
   ///
@@ -224,7 +224,7 @@ class Polygon extends SimpleGeometry {
   @override
   @Deprecated('Use populated or unpopulated instead.')
   Polygon bounded({bool recalculate = false}) {
-    if (isEmpty) return this;
+    if (isEmptyByGeometry) return this;
 
     if (recalculate || bounds == null) {
       // return a new Polygon (rings kept intact) with populated bounds
@@ -248,7 +248,7 @@ class Polygon extends SimpleGeometry {
   }) {
     if (onBounds) {
       // create a new geometry if bounds was unpopulated and geometry not empty
-      if (bounds == null && !isEmpty) {
+      if (bounds == null && !isEmptyByGeometry) {
         return Polygon(
           rings,
           bounds: BoundsBuilder.calculateBounds(
@@ -294,14 +294,15 @@ class Polygon extends SimpleGeometry {
   }
 
   @override
-  void writeTo(SimpleGeometryContent writer, {String? name}) => isEmpty
-      ? writer.emptyGeometry(Geom.polygon, name: name)
-      : writer.polygon(
-          _rings,
-          type: coordType,
-          name: name,
-          bounds: bounds,
-        );
+  void writeTo(SimpleGeometryContent writer, {String? name}) =>
+      isEmptyByGeometry
+          ? writer.emptyGeometry(Geom.polygon, name: name)
+          : writer.polygon(
+              _rings,
+              type: coordType,
+              name: name,
+              bounds: bounds,
+            );
 
   // NOTE: coordinates as raw data
 
@@ -330,7 +331,7 @@ class Polygon extends SimpleGeometry {
   }) {
     assertTolerance(toleranceHoriz);
     if (other is! Polygon) return false;
-    if (isEmpty || other.isEmpty) return false;
+    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
     if (bounds != null &&
         other.bounds != null &&
         !bounds!.equals2D(
@@ -365,7 +366,7 @@ class Polygon extends SimpleGeometry {
     assertTolerance(toleranceHoriz);
     assertTolerance(toleranceVert);
     if (other is! Polygon) return false;
-    if (isEmpty || other.isEmpty) return false;
+    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
     if (!coordType.is3D || !other.coordType.is3D) return false;
     if (bounds != null &&
         other.bounds != null &&

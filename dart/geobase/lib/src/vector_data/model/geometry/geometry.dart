@@ -41,7 +41,26 @@ abstract class Geometry extends Bounded {
   /// * `MultiLineString` has no line strings.
   /// * `MultiPolygon` has no polygons.
   /// * `GeometryCollection` has no geometries.
-  bool get isEmpty;
+  @Deprecated('Use isEmptyByGeometry instead.')
+  bool get isEmpty => isEmptyByGeometry;
+
+  /// Returns true if this geometry is considered empty.
+  ///
+  /// Emptiness in the context of this classes extending Geometry is defined:
+  /// * `Point` has x and y coordinates with value `double.nan`.
+  /// * `LineString` has an empty chain of points.
+  /// * `Polygon` has an empty list of linear rings.
+  /// * `MultiPoint` has no points.
+  /// * `MultiLineString` has no line strings.
+  /// * `MultiPolygon` has no polygons.
+  /// * `GeometryCollection` has no geometries.
+  ///
+  /// The specification from [Bounded]:
+  /// "Returns true if this bounded object is considered empty (that is it do
+  /// not contain any geometry directly or on child objects, or geometry
+  /// contained is empty)".
+  @override
+  bool get isEmptyByGeometry;
 
   @override
   Geometry populated({
@@ -123,7 +142,8 @@ abstract class Geometry extends Bounded {
   ///
   /// Returns false if this and [other] are not of the same geometry type.
   ///
-  /// Returns false if this or [other] is an "empty geometry" ([isEmpty] true).
+  /// Returns false if this or [other] is an "empty geometry"
+  /// ([isEmptyByGeometry] true).
   ///
   /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
   /// this and [other] must be within [toleranceHoriz].
@@ -139,7 +159,8 @@ abstract class Geometry extends Bounded {
   ///
   /// Returns false if this and [other] are not of the same geometry type.
   ///
-  /// Returns false if this or [other] is an "empty geometry" ([isEmpty] true).
+  /// Returns false if this or [other] is an "empty geometry"
+  /// ([isEmptyByGeometry] true).
   ///
   /// Returns false if this or [other] do not contain 3D coordinates.
   ///

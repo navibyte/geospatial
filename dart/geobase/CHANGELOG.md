@@ -12,6 +12,9 @@ NOTE: Version 0.6.0 currently [under development](https://github.com/navibyte/ge
 * [Remove deprecated types in geobase version 0.6.0 #194](https://github.com/navibyte/geospatial/issues/194)
 * [Consistent crs and trs references in meta classes #196](https://github.com/navibyte/geospatial/issues/196)
 
+🛠 Refactoring:
+* isEmptyByGeometry on Bounded (and feature objects too, not only geometries)
+
 🛠 Maintenance:
 * PositionArray, PositionCoords and BoxCoords moved from vector_data to vector.
 

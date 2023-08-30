@@ -208,7 +208,7 @@ class MultiPolygon extends SimpleGeometry {
       : Coords.xy;
 
   @override
-  bool get isEmpty => _polygons.isEmpty;
+  bool get isEmptyByGeometry => _polygons.isEmpty;
 
   /// The ring arrays of all polygons.
   List<List<PositionArray>> get ringArrays => _polygons;
@@ -235,7 +235,7 @@ class MultiPolygon extends SimpleGeometry {
   @override
   @Deprecated('Use populated or unpopulated instead.')
   MultiPolygon bounded({bool recalculate = false}) {
-    if (isEmpty) return this;
+    if (isEmptyByGeometry) return this;
 
     if (recalculate || bounds == null) {
       // a new MultiPolygon (rings array kept intact) with populated bounds
@@ -259,7 +259,7 @@ class MultiPolygon extends SimpleGeometry {
   }) {
     if (onBounds) {
       // create a new geometry if bounds was unpopulated and geometry not empty
-      if (bounds == null && !isEmpty) {
+      if (bounds == null && !isEmptyByGeometry) {
         return MultiPolygon(
           ringArrays,
           bounds: BoundsBuilder.calculateBounds(
@@ -310,14 +310,15 @@ class MultiPolygon extends SimpleGeometry {
   }
 
   @override
-  void writeTo(SimpleGeometryContent writer, {String? name}) => isEmpty
-      ? writer.emptyGeometry(Geom.multiPolygon, name: name)
-      : writer.multiPolygon(
-          _polygons,
-          type: coordType,
-          name: name,
-          bounds: bounds,
-        );
+  void writeTo(SimpleGeometryContent writer, {String? name}) =>
+      isEmptyByGeometry
+          ? writer.emptyGeometry(Geom.multiPolygon, name: name)
+          : writer.multiPolygon(
+              _polygons,
+              type: coordType,
+              name: name,
+              bounds: bounds,
+            );
 
   // NOTE: coordinates as raw data
 
@@ -355,7 +356,7 @@ class MultiPolygon extends SimpleGeometry {
   }) {
     assertTolerance(toleranceHoriz);
     if (other is! MultiPolygon) return false;
-    if (isEmpty || other.isEmpty) return false;
+    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
     if (bounds != null &&
         other.bounds != null &&
         !bounds!.equals2D(
@@ -398,7 +399,7 @@ class MultiPolygon extends SimpleGeometry {
     assertTolerance(toleranceHoriz);
     assertTolerance(toleranceVert);
     if (other is! MultiPolygon) return false;
-    if (isEmpty || other.isEmpty) return false;
+    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
     if (!coordType.is3D || !other.coordType.is3D) return false;
     if (bounds != null &&
         other.bounds != null &&

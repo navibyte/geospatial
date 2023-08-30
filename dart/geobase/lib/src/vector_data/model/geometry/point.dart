@@ -144,7 +144,10 @@ class Point implements SimpleGeometry {
   Coords get coordType => position.type;
 
   @override
-  bool get isEmpty => position.x.isNaN && position.y.isNaN;
+  bool get isEmpty => isEmptyByGeometry;
+
+  @override
+  bool get isEmptyByGeometry => position.x.isNaN && position.y.isNaN;
 
   /// The position of this point geometry.
   ///
@@ -203,13 +206,14 @@ class Point implements SimpleGeometry {
       Point(projection.project(_position, to: PositionCoords.create));
 
   @override
-  void writeTo(SimpleGeometryContent writer, {String? name}) => isEmpty
-      ? writer.emptyGeometry(Geom.point, name: name)
-      : writer.point(
-          position.valuesByType(coordType),
-          type: coordType,
-          name: name,
-        );
+  void writeTo(SimpleGeometryContent writer, {String? name}) =>
+      isEmptyByGeometry
+          ? writer.emptyGeometry(Geom.point, name: name)
+          : writer.point(
+              position.valuesByType(coordType),
+              type: coordType,
+              name: name,
+            );
 
   // NOTE: coordinates as raw data
 
@@ -247,8 +251,8 @@ class Point implements SimpleGeometry {
     double toleranceHoriz = defaultEpsilon,
   }) =>
       other is Point &&
-      !isEmpty &&
-      !other.isEmpty &&
+      !isEmptyByGeometry &&
+      !other.isEmptyByGeometry &&
       position.equals2D(
         other.position,
         toleranceHoriz: toleranceHoriz,
@@ -261,8 +265,8 @@ class Point implements SimpleGeometry {
     double toleranceVert = defaultEpsilon,
   }) =>
       other is Point &&
-      !isEmpty &&
-      !other.isEmpty &&
+      !isEmptyByGeometry &&
+      !other.isEmptyByGeometry &&
       position.equals3D(
         other.position,
         toleranceHoriz: toleranceHoriz,

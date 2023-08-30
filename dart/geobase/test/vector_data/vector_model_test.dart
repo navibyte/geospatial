@@ -110,7 +110,7 @@ void main() {
       const def = DefaultFormat.geometry;
 
       final emptyPoint = Point.parse('POINT EMPTY', format: wkt);
-      expect(emptyPoint.isEmpty, true);
+      expect(emptyPoint.isEmptyByGeometry, true);
       expect(emptyPoint.toText(format: wkt), 'POINT EMPTY');
       expect(emptyPoint.toText(), '{"type":"Point","coordinates":[]}');
       expect(
@@ -124,7 +124,7 @@ void main() {
       expect(Point.decode(emptyPoint.toBytes()).toText(), emptyPoint.toText());
 
       final emptyLineString = LineString.parse('LINESTRING EMPTY', format: wkt);
-      expect(emptyLineString.isEmpty, true);
+      expect(emptyLineString.isEmptyByGeometry, true);
       expect(emptyLineString.toText(format: wkt), 'LINESTRING EMPTY');
       expect(
         LineString.parseCoords('').toText(format: def),
@@ -145,7 +145,7 @@ void main() {
       );
 
       final emptyPolygon = Polygon.parse('POLYGON EMPTY', format: wkt);
-      expect(emptyPolygon.isEmpty, true);
+      expect(emptyPolygon.isEmptyByGeometry, true);
       expect(emptyPolygon.toText(format: wkt), 'POLYGON EMPTY');
       expect(emptyPolygon.toText(), '{"type":"Polygon","coordinates":[]}');
       expect(
@@ -163,7 +163,7 @@ void main() {
       );
 
       final emptyMultiPoint = MultiPoint.parse('MULTIPOINT EMPTY', format: wkt);
-      expect(emptyMultiPoint.isEmpty, true);
+      expect(emptyMultiPoint.isEmptyByGeometry, true);
       expect(emptyMultiPoint.toText(format: wkt), 'MULTIPOINT EMPTY');
       expect(
         emptyMultiPoint.toText(),
@@ -185,7 +185,7 @@ void main() {
 
       final emptyMultiLineString =
           MultiLineString.parse('MULTILINESTRING EMPTY', format: wkt);
-      expect(emptyMultiLineString.isEmpty, true);
+      expect(emptyMultiLineString.isEmptyByGeometry, true);
       expect(emptyMultiLineString.toText(format: wkt), 'MULTILINESTRING EMPTY');
       expect(
         MultiLineString.parseCoords('').toText(format: def),
@@ -207,7 +207,7 @@ void main() {
 
       final emptyMultiPolygon =
           MultiPolygon.parse('MULTIPOLYGON EMPTY', format: wkt);
-      expect(emptyMultiPolygon.isEmpty, true);
+      expect(emptyMultiPolygon.isEmptyByGeometry, true);
       expect(emptyMultiPolygon.toText(format: wkt), 'MULTIPOLYGON EMPTY');
       expect(
         MultiPolygon.parseCoords('').toText(format: def),
@@ -229,7 +229,7 @@ void main() {
 
       final emptyGeomColl =
           GeometryCollection.parse('GEOMETRYCOLLECTION EMPTY', format: wkt);
-      expect(emptyGeomColl.isEmpty, true);
+      expect(emptyGeomColl.isEmptyByGeometry, true);
       expect(emptyGeomColl.toText(format: wkt), 'GEOMETRYCOLLECTION EMPTY');
       expect(
         emptyGeomColl.toText(),
@@ -1166,61 +1166,82 @@ void _testDecodeGeometryAndEncodeToText(
     case Geom.point:
       final parsed = Point.parse(geometryAsText, format: format);
       expect(parsed.toText(format: format), geometryAsText);
-      expect(geometry.equals2D(parsed, toleranceHoriz: eps), !parsed.isEmpty);
+      expect(
+        geometry.equals2D(parsed, toleranceHoriz: eps),
+        !parsed.isEmptyByGeometry,
+      );
       expect(
         geometry.equals3D(parsed, toleranceHoriz: eps, toleranceVert: eps),
-        parsed.coordType.is3D && !parsed.isEmpty,
+        parsed.coordType.is3D && !parsed.isEmptyByGeometry,
       );
       break;
     case Geom.lineString:
       final parsed = LineString.parse(geometryAsText, format: format);
       expect(parsed.toText(format: format), geometryAsText);
-      expect(geometry.equals2D(parsed, toleranceHoriz: eps), !parsed.isEmpty);
+      expect(
+        geometry.equals2D(parsed, toleranceHoriz: eps),
+        !parsed.isEmptyByGeometry,
+      );
       expect(
         geometry.equals3D(parsed, toleranceHoriz: eps, toleranceVert: eps),
-        parsed.coordType.is3D && !parsed.isEmpty,
+        parsed.coordType.is3D && !parsed.isEmptyByGeometry,
       );
       break;
     case Geom.polygon:
       final parsed = Polygon.parse(geometryAsText, format: format);
       expect(parsed.toText(format: format), geometryAsText);
-      expect(geometry.equals2D(parsed, toleranceHoriz: eps), !parsed.isEmpty);
+      expect(
+        geometry.equals2D(parsed, toleranceHoriz: eps),
+        !parsed.isEmptyByGeometry,
+      );
       expect(
         geometry.equals3D(parsed, toleranceHoriz: eps, toleranceVert: eps),
-        parsed.coordType.is3D && !parsed.isEmpty,
+        parsed.coordType.is3D && !parsed.isEmptyByGeometry,
       );
       break;
     case Geom.multiPoint:
       final parsed = MultiPoint.parse(geometryAsText, format: format);
       expect(parsed.toText(format: format), geometryAsText);
-      expect(geometry.equals2D(parsed, toleranceHoriz: eps), !parsed.isEmpty);
+      expect(
+        geometry.equals2D(parsed, toleranceHoriz: eps),
+        !parsed.isEmptyByGeometry,
+      );
       expect(
         geometry.equals3D(parsed, toleranceHoriz: eps, toleranceVert: eps),
-        parsed.coordType.is3D && !parsed.isEmpty,
+        parsed.coordType.is3D && !parsed.isEmptyByGeometry,
       );
       break;
     case Geom.multiLineString:
       final parsed = MultiLineString.parse(geometryAsText, format: format);
       expect(parsed.toText(format: format), geometryAsText);
-      expect(geometry.equals2D(parsed, toleranceHoriz: eps), !parsed.isEmpty);
+      expect(
+        geometry.equals2D(parsed, toleranceHoriz: eps),
+        !parsed.isEmptyByGeometry,
+      );
       expect(
         geometry.equals3D(parsed, toleranceHoriz: eps, toleranceVert: eps),
-        parsed.coordType.is3D && !parsed.isEmpty,
+        parsed.coordType.is3D && !parsed.isEmptyByGeometry,
       );
       break;
     case Geom.multiPolygon:
       final parsed = MultiPolygon.parse(geometryAsText, format: format);
       expect(parsed.toText(format: format), geometryAsText);
-      expect(geometry.equals2D(parsed, toleranceHoriz: eps), !parsed.isEmpty);
+      expect(
+        geometry.equals2D(parsed, toleranceHoriz: eps),
+        !parsed.isEmptyByGeometry,
+      );
       expect(
         geometry.equals3D(parsed, toleranceHoriz: eps, toleranceVert: eps),
-        parsed.coordType.is3D && !parsed.isEmpty,
+        parsed.coordType.is3D && !parsed.isEmptyByGeometry,
       );
       break;
     case Geom.geometryCollection:
       final parsed = GeometryCollection.parse(geometryAsText, format: format);
       expect(parsed.toText(format: format), geometryAsText);
-      expect(geometry.equals2D(parsed, toleranceHoriz: eps), !parsed.isEmpty);
+      expect(
+        geometry.equals2D(parsed, toleranceHoriz: eps),
+        !parsed.isEmptyByGeometry,
+      );
       break;
   }
 }
@@ -1257,61 +1278,82 @@ void _testDecodeGeometryAndEncodeToWKB(
     case Geom.point:
       final parsed = Point.decode(bytes);
       expect(parsed.toText(format: textFormat), geometryAsText);
-      expect(geometry.equals2D(parsed, toleranceHoriz: eps), !parsed.isEmpty);
+      expect(
+        geometry.equals2D(parsed, toleranceHoriz: eps),
+        !parsed.isEmptyByGeometry,
+      );
       expect(
         geometry.equals3D(parsed, toleranceHoriz: eps, toleranceVert: eps),
-        parsed.coordType.is3D && !parsed.isEmpty,
+        parsed.coordType.is3D && !parsed.isEmptyByGeometry,
       );
       break;
     case Geom.lineString:
       final parsed = LineString.decode(bytes);
       expect(parsed.toText(format: textFormat), geometryAsText);
-      expect(geometry.equals2D(parsed, toleranceHoriz: eps), !parsed.isEmpty);
+      expect(
+        geometry.equals2D(parsed, toleranceHoriz: eps),
+        !parsed.isEmptyByGeometry,
+      );
       expect(
         geometry.equals3D(parsed, toleranceHoriz: eps, toleranceVert: eps),
-        parsed.coordType.is3D && !parsed.isEmpty,
+        parsed.coordType.is3D && !parsed.isEmptyByGeometry,
       );
       break;
     case Geom.polygon:
       final parsed = Polygon.decode(bytes);
       expect(parsed.toText(format: textFormat), geometryAsText);
-      expect(geometry.equals2D(parsed, toleranceHoriz: eps), !parsed.isEmpty);
+      expect(
+        geometry.equals2D(parsed, toleranceHoriz: eps),
+        !parsed.isEmptyByGeometry,
+      );
       expect(
         geometry.equals3D(parsed, toleranceHoriz: eps, toleranceVert: eps),
-        parsed.coordType.is3D && !parsed.isEmpty,
+        parsed.coordType.is3D && !parsed.isEmptyByGeometry,
       );
       break;
     case Geom.multiPoint:
       final parsed = MultiPoint.decode(bytes);
       expect(parsed.toText(format: textFormat), geometryAsText);
-      expect(geometry.equals2D(parsed, toleranceHoriz: eps), !parsed.isEmpty);
+      expect(
+        geometry.equals2D(parsed, toleranceHoriz: eps),
+        !parsed.isEmptyByGeometry,
+      );
       expect(
         geometry.equals3D(parsed, toleranceHoriz: eps, toleranceVert: eps),
-        parsed.coordType.is3D && !parsed.isEmpty,
+        parsed.coordType.is3D && !parsed.isEmptyByGeometry,
       );
       break;
     case Geom.multiLineString:
       final parsed = MultiLineString.decode(bytes);
       expect(parsed.toText(format: textFormat), geometryAsText);
-      expect(geometry.equals2D(parsed, toleranceHoriz: eps), !parsed.isEmpty);
+      expect(
+        geometry.equals2D(parsed, toleranceHoriz: eps),
+        !parsed.isEmptyByGeometry,
+      );
       expect(
         geometry.equals3D(parsed, toleranceHoriz: eps, toleranceVert: eps),
-        parsed.coordType.is3D && !parsed.isEmpty,
+        parsed.coordType.is3D && !parsed.isEmptyByGeometry,
       );
       break;
     case Geom.multiPolygon:
       final parsed = MultiPolygon.decode(bytes);
       expect(parsed.toText(format: textFormat), geometryAsText);
-      expect(geometry.equals2D(parsed, toleranceHoriz: eps), !parsed.isEmpty);
+      expect(
+        geometry.equals2D(parsed, toleranceHoriz: eps),
+        !parsed.isEmptyByGeometry,
+      );
       expect(
         geometry.equals3D(parsed, toleranceHoriz: eps, toleranceVert: eps),
-        parsed.coordType.is3D && !parsed.isEmpty,
+        parsed.coordType.is3D && !parsed.isEmptyByGeometry,
       );
       break;
     case Geom.geometryCollection:
       final parsed = GeometryCollection.decode(bytes);
       expect(parsed.toText(format: textFormat), geometryAsText);
-      expect(geometry.equals2D(parsed, toleranceHoriz: eps), !parsed.isEmpty);
+      expect(
+        geometry.equals2D(parsed, toleranceHoriz: eps),
+        !parsed.isEmptyByGeometry,
+      );
       break;
   }
 }
@@ -1352,7 +1394,7 @@ void _testDecodeFeatureObjectAndEncodeToGeoJSON(
     expect(parsed.toText(), geoJsonText);
     expect(
       object.equals2D(parsed, toleranceHoriz: eps),
-      !(parsed.geometry?.isEmpty ?? true),
+      !(parsed.geometry?.isEmptyByGeometry ?? true),
     );
   } else if (object is FeatureCollection) {
     final parsed = FeatureCollection.parse(geoJsonText);
