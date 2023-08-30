@@ -27,6 +27,7 @@ import '/src/vector/encoding/text_format.dart';
 import '/src/vector/formats/geojson/default_format.dart';
 import '/src/vector/formats/geojson/geojson_format.dart';
 import '/src/vector/formats/wkb/wkb_format.dart';
+import '/src/vector_data/model/bounded/bounded.dart';
 
 import 'geometry.dart';
 import 'geometry_builder.dart';
@@ -307,7 +308,7 @@ class Polygon extends SimpleGeometry {
   // NOTE: coordinates as raw data
 
   @override
-  bool equalsCoords(Geometry other) {
+  bool equalsCoords(Bounded other) {
     if (other is! Polygon) return false;
     if (identical(this, other)) return true;
     if (bounds != null && other.bounds != null && !(bounds! == other.bounds!)) {
@@ -326,7 +327,7 @@ class Polygon extends SimpleGeometry {
 
   @override
   bool equals2D(
-    Geometry other, {
+    Bounded other, {
     double toleranceHoriz = defaultEpsilon,
   }) {
     assertTolerance(toleranceHoriz);
@@ -359,7 +360,7 @@ class Polygon extends SimpleGeometry {
 
   @override
   bool equals3D(
-    Geometry other, {
+    Bounded other, {
     double toleranceHoriz = defaultEpsilon,
     double toleranceVert = defaultEpsilon,
   }) {

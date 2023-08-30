@@ -20,6 +20,7 @@ import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
 import '/src/vector/formats/geojson/geojson_format.dart';
 import '/src/vector/formats/wkb/wkb_format.dart';
+import '/src/vector_data/model/bounded/bounded.dart';
 
 import 'geometry.dart';
 import 'geometry_builder.dart';
@@ -269,7 +270,7 @@ class GeometryCollection<E extends Geometry> extends Geometry {
         );
 
   @override
-  bool equalsCoords(Geometry other) {
+  bool equalsCoords(Bounded other) {
     if (other is! GeometryCollection) return false;
     if (identical(this, other)) return true;
     if (bounds != null && other.bounds != null && !(bounds! == other.bounds!)) {
@@ -288,7 +289,7 @@ class GeometryCollection<E extends Geometry> extends Geometry {
 
   @override
   bool equals2D(
-    Geometry other, {
+    Bounded other, {
     double toleranceHoriz = defaultEpsilon,
   }) {
     assertTolerance(toleranceHoriz);
@@ -321,7 +322,7 @@ class GeometryCollection<E extends Geometry> extends Geometry {
 
   @override
   bool equals3D(
-    Geometry other, {
+    Bounded other, {
     double toleranceHoriz = defaultEpsilon,
     double toleranceVert = defaultEpsilon,
   }) {

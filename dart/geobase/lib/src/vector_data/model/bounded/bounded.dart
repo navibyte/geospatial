@@ -5,6 +5,7 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import '/src/codes/coords.dart';
+import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/projection/projection.dart';
 
@@ -107,4 +108,50 @@ abstract class Bounded {
   /// projecting geometries. If [bounds] is null, then it's null after
   /// projecting too.
   Bounded project(Projection projection);
+
+  /// Returns true if this and [other] contain exactly same coordinate values
+  /// (or both are empty) in the same order and with the same coordinate type.
+  bool equalsCoords(Bounded other);
+
+  /// True if this bounded object equals with [other] by testing 2D coordinates
+  /// of all geometries (that must be in same order in both objects) contained
+  /// directly or by child objects.
+  ///
+  /// Returns false if this and [other] are not of the same bounded object type.
+  ///
+  /// Returns false if this or [other] contain "empty geometry"
+  /// ([isEmptyByGeometry] true).
+  ///
+  /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
+  /// this and [other] must be within [toleranceHoriz].
+  ///
+  /// Tolerance values must be positive (>= 0.0).
+  bool equals2D(
+    Bounded other, {
+    double toleranceHoriz = defaultEpsilon,
+  });
+
+  /// True if this bounded object equals with [other] by testing 3D coordinates
+  /// of all geometries (that must be in same order in both objects) contained
+  /// directly or by child objects.
+  ///
+  /// Returns false if this and [other] are not of the same bounded object type.
+  ///
+  /// Returns false if this or [other] contain "empty geometry"
+  /// ([isEmptyByGeometry] true).
+  ///
+  /// Returns false if this or [other] do not contain 3D coordinates.
+  ///
+  /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
+  /// this and [other] must be within [toleranceHoriz].
+  ///
+  /// Differences on vertical coordinate values (ie. z or elev) between
+  /// this and [other] must be within [toleranceVert].
+  ///
+  /// Tolerance values must be positive (>= 0.0).
+  bool equals3D(
+    Bounded other, {
+    double toleranceHoriz = defaultEpsilon,
+    double toleranceVert = defaultEpsilon,
+  });
 }

@@ -15,6 +15,7 @@ import '/src/utils/tolerance.dart';
 import '/src/vector/content/feature_content.dart';
 import '/src/vector/encoding/text_format.dart';
 import '/src/vector/formats/geojson/geojson_format.dart';
+import '/src/vector_data/model/bounded/bounded.dart';
 import '/src/vector_data/model/geometry/geometry.dart';
 
 import 'feature.dart';
@@ -342,9 +343,9 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
     );
   }
 
-  /// Returns true if this and [other] contain exactly same coordinate values
-  /// (or both are empty) in the same order and with the same coordinate type.
-  bool equalsCoords(FeatureCollection other) {
+  @override
+  bool equalsCoords(Bounded other) {
+    if (other is! FeatureCollection) return false;
     if (identical(this, other)) return true;
 
     if (bounds != null && other.bounds != null && !(bounds! == other.bounds!)) {
@@ -363,19 +364,14 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
     return true;
   }
 
-  /// True if this feature collection equals with [other] by testing 2D
-  /// coordinates of geometries of [features] (that must be in same order in
-  /// both collections) contained.
-  ///
-  /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
-  /// this and [other] must be within [toleranceHoriz].
-  ///
-  /// Tolerance values must be positive (>= 0.0).
+  @override
   bool equals2D(
-    FeatureCollection other, {
+    Bounded other, {
     double toleranceHoriz = defaultEpsilon,
   }) {
     assertTolerance(toleranceHoriz);
+    if (other is! FeatureCollection) return false;
+    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
 
     // test bounding boxes if both have it
     if (bounds != null &&
@@ -405,24 +401,16 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
     return true;
   }
 
-  /// True if this feature collection equals with [other] by testing 3D
-  /// coordinates of geometries of [features] (that must be in same order in
-  /// both collections) contained.
-  ///
-  /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
-  /// this and [other] must be within [toleranceHoriz].
-  ///
-  /// Differences on vertical coordinate values (ie. z or elev) between
-  /// this and [other] must be within [toleranceVert].
-  ///
-  /// Tolerance values must be positive (>= 0.0).
+  @override
   bool equals3D(
-    FeatureCollection other, {
+    Bounded other, {
     double toleranceHoriz = defaultEpsilon,
     double toleranceVert = defaultEpsilon,
   }) {
     assertTolerance(toleranceHoriz);
     assertTolerance(toleranceVert);
+    if (other is! FeatureCollection) return false;
+    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
 
     // test bounding boxes if both have it
     if (bounds != null &&

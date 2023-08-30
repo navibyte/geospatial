@@ -24,6 +24,7 @@ import '/src/vector/encoding/text_format.dart';
 import '/src/vector/formats/geojson/default_format.dart';
 import '/src/vector/formats/geojson/geojson_format.dart';
 import '/src/vector/formats/wkb/wkb_format.dart';
+import '/src/vector_data/model/bounded/bounded.dart';
 
 import 'geometry.dart';
 import 'geometry_builder.dart';
@@ -242,12 +243,12 @@ class Point implements SimpleGeometry {
   }
 
   @override
-  bool equalsCoords(Geometry other) =>
+  bool equalsCoords(Bounded other) =>
       other is Point && position == other.position;
 
   @override
   bool equals2D(
-    Geometry other, {
+    Bounded other, {
     double toleranceHoriz = defaultEpsilon,
   }) =>
       other is Point &&
@@ -260,7 +261,7 @@ class Point implements SimpleGeometry {
 
   @override
   bool equals3D(
-    Geometry other, {
+    Bounded other, {
     double toleranceHoriz = defaultEpsilon,
     double toleranceVert = defaultEpsilon,
   }) =>
