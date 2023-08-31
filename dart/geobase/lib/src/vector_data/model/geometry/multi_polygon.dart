@@ -15,10 +15,10 @@ import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
+import '/src/utils/bounded_utils.dart';
 import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/coord_arrays_from_json.dart';
-import '/src/utils/tolerance.dart';
 import '/src/vector/array/coordinates.dart';
 import '/src/vector/array/coordinates_extensions.dart';
 import '/src/vector/content/simple_geometry_content.dart';
@@ -324,118 +324,56 @@ class MultiPolygon extends SimpleGeometry {
   // NOTE: coordinates as raw data
 
   @override
-  bool equalsCoords(Bounded other) {
-    if (other is! MultiPolygon) return false;
-    if (identical(this, other)) return true;
-    if (bounds != null && other.bounds != null && !(bounds! == other.bounds!)) {
-      // both geometries has bound boxes and boxes do not equal
-      return false;
-    }
-
-    final arr1 = ringArrays;
-    final arr2 = other.ringArrays;
-    if (arr1.length != arr2.length) return false;
-    // loop all arrays of ring data
-    for (var j = 0; j < arr1.length; j++) {
-      // get linear ring lists from arrays by index j
-      final r1 = arr1[j];
-      final r2 = arr2[j];
-      // ensure r1 and r2 has same amount of linear rings
-      if (r1.length != r2.length) return false;
-      // loop all linear rings and test coordinates
-      for (var i = 0; i < r1.length; i++) {
-        if (!r1[i].equalsCoords(r2[i])) return false;
-      }
-    }
-    return true;
-  }
+  bool equalsCoords(Bounded other) => testEqualsCoords<MultiPolygon>(
+        this,
+        other,
+        (mp1, mp2) => _testMultiPolygons(
+          mp1,
+          mp2,
+          (posArray1, posArray2) => posArray1.equalsCoords(posArray2),
+        ),
+      );
 
   @override
   bool equals2D(
     Bounded other, {
     double toleranceHoriz = defaultEpsilon,
-  }) {
-    assertTolerance(toleranceHoriz);
-    if (other is! MultiPolygon) return false;
-    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
-    if (bounds != null &&
-        other.bounds != null &&
-        !bounds!.equals2D(
-          other.bounds!,
-          toleranceHoriz: toleranceHoriz,
-        )) {
-      // both geometries has bound boxes and boxes do not equal in 2D
-      return false;
-    }
-    // ensure both multi polygons has same amount of arrays of ring data
-    final arr1 = ringArrays;
-    final arr2 = other.ringArrays;
-    if (arr1.length != arr2.length) return false;
-    // loop all arrays of ring data
-    for (var j = 0; j < arr1.length; j++) {
-      // get linear ring lists from arrays by index j
-      final r1 = arr1[j];
-      final r2 = arr2[j];
-      // ensure r1 and r2 has same amount of linear rings
-      if (r1.length != r2.length) return false;
-      // loop all linear rings and test 2D coordinates
-      for (var i = 0; i < r1.length; i++) {
-        if (!r1[i].data.equals2D(
-              r2[i].data,
-              toleranceHoriz: toleranceHoriz,
-            )) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
+  }) =>
+      testEquals2D<MultiPolygon>(
+        this,
+        other,
+        (mp1, mp2) => _testMultiPolygons(
+          mp1,
+          mp2,
+          (posArray1, posArray2) => posArray1.data.equals2D(
+            posArray2.data,
+            toleranceHoriz: toleranceHoriz,
+          ),
+        ),
+        toleranceHoriz: toleranceHoriz,
+      );
 
   @override
   bool equals3D(
     Bounded other, {
     double toleranceHoriz = defaultEpsilon,
     double toleranceVert = defaultEpsilon,
-  }) {
-    assertTolerance(toleranceHoriz);
-    assertTolerance(toleranceVert);
-    if (other is! MultiPolygon) return false;
-    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
-    if (!coordType.is3D || !other.coordType.is3D) return false;
-    if (bounds != null &&
-        other.bounds != null &&
-        !bounds!.equals3D(
-          other.bounds!,
-          toleranceHoriz: toleranceHoriz,
-          toleranceVert: toleranceVert,
-        )) {
-      // both geometries has bound boxes and boxes do not equal in 3D
-      return false;
-    }
-    // ensure both multi polygons has same amount of arrays of ring data
-    final arr1 = ringArrays;
-    final arr2 = other.ringArrays;
-    if (arr1.length != arr2.length) return false;
-    // loop all arrays of ring data
-    for (var j = 0; j < arr1.length; j++) {
-      // get linear ring lists from arrays by index j
-      final r1 = arr1[j];
-      final r2 = arr2[j];
-      // ensure r1 and r2 has same amount of linear rings
-      if (r1.length != r2.length) return false;
-      // loop all linear rings and test 2D coordinates
-      for (var i = 0; i < r1.length; i++) {
-        if (!r1[i].data.equals3D(
-              r2[i].data,
-              toleranceHoriz: toleranceHoriz,
-              toleranceVert: toleranceVert,
-            )) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
+  }) =>
+      testEquals3D<MultiPolygon>(
+        this,
+        other,
+        (mp1, mp2) => _testMultiPolygons(
+          mp1,
+          mp2,
+          (posArray1, posArray2) => posArray1.data.equals3D(
+            posArray2.data,
+            toleranceHoriz: toleranceHoriz,
+            toleranceVert: toleranceVert,
+          ),
+        ),
+        toleranceHoriz: toleranceHoriz,
+        toleranceVert: toleranceVert,
+      );
 
   @override
   bool operator ==(Object other) =>
@@ -445,4 +383,30 @@ class MultiPolygon extends SimpleGeometry {
 
   @override
   int get hashCode => Object.hash(bounds, ringArrays);
+}
+
+bool _testMultiPolygons(
+  MultiPolygon mp1,
+  MultiPolygon mp2,
+  bool Function(PositionArray, PositionArray) testPositionArrays,
+) {
+  // ensure both multi polygons has same amount of arrays of ring data
+  final arr1 = mp1.ringArrays;
+  final arr2 = mp2.ringArrays;
+  if (arr1.length != arr2.length) return false;
+  // loop all arrays of ring data
+  for (var j = 0; j < arr1.length; j++) {
+    // get linear ring lists from arrays by index j
+    final r1 = arr1[j];
+    final r2 = arr2[j];
+    // ensure r1 and r2 has same amount of linear rings
+    if (r1.length != r2.length) return false;
+    // loop all linear rings and test coordinates
+    for (var i = 0; i < r1.length; i++) {
+      if (!testPositionArrays.call(r1[i], r2[i])) {
+        return false;
+      }
+    }
+  }
+  return true;
 }

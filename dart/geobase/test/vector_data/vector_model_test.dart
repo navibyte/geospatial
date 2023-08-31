@@ -1394,11 +1394,14 @@ void _testDecodeFeatureObjectAndEncodeToGeoJSON(
     expect(parsed.toText(), geoJsonText);
     expect(
       object.equals2D(parsed, toleranceHoriz: eps),
-      !(parsed.geometry?.isEmptyByGeometry ?? true),
+      !parsed.isEmptyByGeometry,
     );
   } else if (object is FeatureCollection) {
     final parsed = FeatureCollection.parse(geoJsonText);
     expect(parsed.toText(), geoJsonText);
-    expect(object.equals2D(parsed, toleranceHoriz: eps), true);
+    expect(
+      object.equals2D(parsed, toleranceHoriz: eps),
+      !parsed.isEmptyByGeometry,
+    );
   }
 }

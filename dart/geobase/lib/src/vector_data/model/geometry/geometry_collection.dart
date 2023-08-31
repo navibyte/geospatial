@@ -12,9 +12,9 @@ import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
+import '/src/utils/bounded_utils.dart';
 import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_type.dart';
-import '/src/utils/tolerance.dart';
 import '/src/vector/content/geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
@@ -270,92 +270,56 @@ class GeometryCollection<E extends Geometry> extends Geometry {
         );
 
   @override
-  bool equalsCoords(Bounded other) {
-    if (other is! GeometryCollection) return false;
-    if (identical(this, other)) return true;
-    if (bounds != null && other.bounds != null && !(bounds! == other.bounds!)) {
-      // both geometries has bound boxes and boxes do not equal
-      return false;
-    }
-
-    final g1 = geometries;
-    final g2 = other.geometries;
-    if (g1.length != g2.length) return false;
-    for (var i = 0; i < g1.length; i++) {
-      if (!g1[i].equalsCoords(g2[i])) return false;
-    }
-    return true;
-  }
+  bool equalsCoords(Bounded other) => testEqualsCoords<GeometryCollection<E>>(
+        this,
+        other,
+        (collection1, collection2) => _testGeometryCollections<E>(
+          collection1,
+          collection2,
+          (geometry1, geometry2) => geometry1.equalsCoords(geometry2),
+        ),
+      );
 
   @override
   bool equals2D(
     Bounded other, {
     double toleranceHoriz = defaultEpsilon,
-  }) {
-    assertTolerance(toleranceHoriz);
-    if (other is! GeometryCollection) return false;
-    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
-    if (bounds != null &&
-        other.bounds != null &&
-        !bounds!.equals2D(
-          other.bounds!,
-          toleranceHoriz: toleranceHoriz,
-        )) {
-      // both geometries has bound boxes and boxes do not equal in 2D
-      return false;
-    }
-    // ensure both collections has same amount of geometries
-    final g1 = geometries;
-    final g2 = other.geometries;
-    if (g1.length != g2.length) return false;
-    // loop all geometries and test 2D coordinates
-    for (var i = 0; i < g1.length; i++) {
-      if (!g1[i].equals2D(
-        g2[i],
+  }) =>
+      testEquals2D<GeometryCollection<E>>(
+        this,
+        other,
+        (collection1, collection2) => _testGeometryCollections<E>(
+          collection1,
+          collection2,
+          (geometry1, geometry2) => geometry1.equals2D(
+            geometry2,
+            toleranceHoriz: toleranceHoriz,
+          ),
+        ),
         toleranceHoriz: toleranceHoriz,
-      )) {
-        return false;
-      }
-    }
-    return true;
-  }
+      );
 
   @override
   bool equals3D(
     Bounded other, {
     double toleranceHoriz = defaultEpsilon,
     double toleranceVert = defaultEpsilon,
-  }) {
-    assertTolerance(toleranceHoriz);
-    assertTolerance(toleranceVert);
-    if (other is! GeometryCollection) return false;
-    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
-    if (bounds != null &&
-        other.bounds != null &&
-        !bounds!.equals3D(
-          other.bounds!,
-          toleranceHoriz: toleranceHoriz,
-          toleranceVert: toleranceVert,
-        )) {
-      // both geometries has bound boxes and boxes do not equal in 3D
-      return false;
-    }
-    // ensure both collections has same amount of geometries
-    final g1 = geometries;
-    final g2 = other.geometries;
-    if (g1.length != g2.length) return false;
-    // loop all geometries and test 3D coordinates
-    for (var i = 0; i < g1.length; i++) {
-      if (!g1[i].equals3D(
-        g2[i],
+  }) =>
+      testEquals3D<GeometryCollection<E>>(
+        this,
+        other,
+        (collection1, collection2) => _testGeometryCollections<E>(
+          collection1,
+          collection2,
+          (geometry1, geometry2) => geometry1.equals3D(
+            geometry2,
+            toleranceHoriz: toleranceHoriz,
+            toleranceVert: toleranceVert,
+          ),
+        ),
         toleranceHoriz: toleranceHoriz,
         toleranceVert: toleranceVert,
-      )) {
-        return false;
-      }
-    }
-    return true;
-  }
+      );
 
   @override
   bool operator ==(Object other) =>
@@ -374,3 +338,24 @@ Box? _buildBoundsFrom(Iterable<Geometry> geometries, Coords type) =>
       type: type,
       recalculateChilds: false,
     );
+
+bool _testGeometryCollections<E extends Geometry>(
+  GeometryCollection<E> collection1,
+  GeometryCollection<E> collection2,
+  bool Function(E, E) testGeometries,
+) {
+  // test geometries contained
+  final geoms1 = collection1.geometries;
+  final geoms2 = collection2.geometries;
+  if (geoms1.length != geoms2.length) return false;
+  for (var i = 0; i < geoms1.length; i++) {
+    // use given function to test geometries by index from both
+    // collections
+    if (!testGeometries(geoms1[i], geoms2[i])) {
+      return false;
+    }
+  }
+
+  // got here, geometries equals by coordinates
+  return true;
+}

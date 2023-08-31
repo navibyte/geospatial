@@ -9,9 +9,9 @@ import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
+import '/src/utils/bounded_utils.dart';
 import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_type.dart';
-import '/src/utils/tolerance.dart';
 import '/src/vector/content/feature_content.dart';
 import '/src/vector/content/geometry_content.dart';
 import '/src/vector/encoding/text_format.dart';
@@ -346,107 +346,56 @@ class Feature<T extends Geometry> extends FeatureObject {
   }
 
   @override
-  bool equalsCoords(Bounded other) {
-    if (other is! Feature) return false;
-    if (identical(this, other)) return true;
-
-    if (bounds != null && other.bounds != null && !(bounds! == other.bounds!)) {
-      // both feature collections has bound boxes and boxes do not equal
-      return false;
-    }
-
-    // test main geometry
-    final mg1 = geometry;
-    final mg2 = other.geometry;
-    if (mg1 != null) {
-      if (mg2 == null) return false;
-      if (!mg1.equalsCoords(mg2)) return false;
-    } else {
-      if (mg2 != null) return false;
-    }
-
-    return true;
-  }
+  bool equalsCoords(Bounded other) => testEqualsCoords<Feature<T>>(
+        this,
+        other,
+        (feature1, feature2) => _testFeatures<T>(
+          feature1,
+          feature2,
+          (geometry1, geometry2) => geometry1.equalsCoords(geometry2),
+        ),
+      );
 
   @override
   bool equals2D(
     Bounded other, {
     double toleranceHoriz = defaultEpsilon,
-  }) {
-    assertTolerance(toleranceHoriz);
-    if (other is! Feature) return false;
-    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
-
-    // test bounding boxes if both have it
-    if (bounds != null &&
-        other.bounds != null &&
-        !bounds!.equals2D(
-          other.bounds!,
-          toleranceHoriz: toleranceHoriz,
-        )) {
-      // both features has bound boxes and boxes do not equal in 2D
-      return false;
-    }
-
-    // test main geometry
-    final mg1 = geometry;
-    final mg2 = other.geometry;
-    if (mg1 == null ||
-        mg2 == null ||
-        mg1.isEmptyByGeometry ||
-        mg2.isEmptyByGeometry) return false;
-    if (!mg1.equals2D(
-      mg2,
-      toleranceHoriz: toleranceHoriz,
-    )) {
-      return false;
-    }
-
-    // got here, features equals in 2D
-    return true;
-  }
+  }) =>
+      testEquals2D<Feature<T>>(
+        this,
+        other,
+        (feature1, feature2) => _testFeatures<T>(
+          feature1,
+          feature2,
+          (geometry1, geometry2) => geometry1.equals2D(
+            geometry2,
+            toleranceHoriz: toleranceHoriz,
+          ),
+        ),
+        toleranceHoriz: toleranceHoriz,
+      );
 
   @override
   bool equals3D(
     Bounded other, {
     double toleranceHoriz = defaultEpsilon,
     double toleranceVert = defaultEpsilon,
-  }) {
-    assertTolerance(toleranceHoriz);
-    assertTolerance(toleranceVert);
-    if (other is! Feature) return false;
-    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
-
-    // test bounding boxes if both have it
-    if (bounds != null &&
-        other.bounds != null &&
-        !bounds!.equals3D(
-          other.bounds!,
-          toleranceHoriz: toleranceHoriz,
-          toleranceVert: toleranceVert,
-        )) {
-      // both features has bound boxes and boxes do not equal in 3D
-      return false;
-    }
-
-    // test main geometry
-    final mg1 = geometry;
-    final mg2 = other.geometry;
-    if (mg1 == null ||
-        mg2 == null ||
-        mg1.isEmptyByGeometry ||
-        mg2.isEmptyByGeometry) return false;
-    if (!mg1.equals3D(
-      mg2,
-      toleranceHoriz: toleranceHoriz,
-      toleranceVert: toleranceVert,
-    )) {
-      return false;
-    }
-
-    // got here, features equals in 3D
-    return true;
-  }
+  }) =>
+      testEquals3D<Feature<T>>(
+        this,
+        other,
+        (feature1, feature2) => _testFeatures<T>(
+          feature1,
+          feature2,
+          (geometry1, geometry2) => geometry1.equals3D(
+            geometry2,
+            toleranceHoriz: toleranceHoriz,
+            toleranceVert: toleranceVert,
+          ),
+        ),
+        toleranceHoriz: toleranceHoriz,
+        toleranceVert: toleranceVert,
+      );
 
   @override
   bool operator ==(Object other) =>
@@ -473,3 +422,21 @@ Box? _buildBoundsFrom(Geometry geometry) => BoundsBuilder.calculateBounds(
       type: resolveCoordTypeFrom(item: geometry),
       recalculateChilds: false,
     );
+
+bool _testFeatures<T extends Geometry>(
+  Feature<T> feature1,
+  Feature<T> feature2,
+  bool Function(T, T) testGeometries,
+) {
+  // test geometries contained
+  final geom1 = feature1.geometry;
+  final geom2 = feature2.geometry;
+
+  if (geom1 != null) {
+    if (geom2 == null) return false;
+    if (!testGeometries(geom1, geom2)) return false;
+  } else {
+    if (geom2 != null) return false;
+  }
+  return true;
+}

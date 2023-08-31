@@ -15,10 +15,10 @@ import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
+import '/src/utils/bounded_utils.dart';
 import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/coord_arrays_from_json.dart';
-import '/src/utils/tolerance.dart';
 import '/src/vector/array/coordinates.dart';
 import '/src/vector/array/coordinates_extensions.dart';
 import '/src/vector/content/simple_geometry_content.dart';
@@ -286,93 +286,56 @@ class MultiLineString extends SimpleGeometry {
   // NOTE: coordinates as raw data
 
   @override
-  bool equalsCoords(Bounded other) {
-    if (other is! MultiLineString) return false;
-    if (identical(this, other)) return true;
-    if (bounds != null && other.bounds != null && !(bounds! == other.bounds!)) {
-      // both geometries has bound boxes and boxes do not equal
-      return false;
-    }
-
-    final c1 = chains;
-    final c2 = other.chains;
-    if (c1.length != c2.length) return false;
-    for (var i = 0; i < c1.length; i++) {
-      if (!c1[i].equalsCoords(c2[i])) return false;
-    }
-    return true;
-  }
+  bool equalsCoords(Bounded other) => testEqualsCoords<MultiLineString>(
+        this,
+        other,
+        (mls1, mls2) => _testMultiLineStrings(
+          mls1,
+          mls2,
+          (posArray1, posArray2) => posArray1.equalsCoords(posArray2),
+        ),
+      );
 
   @override
   bool equals2D(
     Bounded other, {
     double toleranceHoriz = defaultEpsilon,
-  }) {
-    assertTolerance(toleranceHoriz);
-    if (other is! MultiLineString) return false;
-    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
-    if (bounds != null &&
-        other.bounds != null &&
-        !bounds!.equals2D(
-          other.bounds!,
-          toleranceHoriz: toleranceHoriz,
-        )) {
-      // both geometries has bound boxes and boxes do not equal in 2D
-      return false;
-    }
-    // ensure both multi line strings has same amount of chains
-    final c1 = chains;
-    final c2 = other.chains;
-    if (c1.length != c2.length) return false;
-    // loop all chains and test 2D coordinates using PositionData of chains
-    for (var i = 0; i < c1.length; i++) {
-      if (!c1[i].data.equals2D(
-            c2[i].data,
+  }) =>
+      testEquals2D<MultiLineString>(
+        this,
+        other,
+        (mls1, mls2) => _testMultiLineStrings(
+          mls1,
+          mls2,
+          (posArray1, posArray2) => posArray1.data.equals2D(
+            posArray2.data,
             toleranceHoriz: toleranceHoriz,
-          )) {
-        return false;
-      }
-    }
-    return true;
-  }
+          ),
+        ),
+        toleranceHoriz: toleranceHoriz,
+      );
 
   @override
   bool equals3D(
     Bounded other, {
     double toleranceHoriz = defaultEpsilon,
     double toleranceVert = defaultEpsilon,
-  }) {
-    assertTolerance(toleranceHoriz);
-    assertTolerance(toleranceVert);
-    if (other is! MultiLineString) return false;
-    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
-    if (!coordType.is3D || !other.coordType.is3D) return false;
-    if (bounds != null &&
-        other.bounds != null &&
-        !bounds!.equals3D(
-          other.bounds!,
-          toleranceHoriz: toleranceHoriz,
-          toleranceVert: toleranceVert,
-        )) {
-      // both geometries has bound boxes and boxes do not equal in 3D
-      return false;
-    }
-    // ensure both multi line strings has same amount of chains
-    final c1 = chains;
-    final c2 = other.chains;
-    if (c1.length != c2.length) return false;
-    // loop all chains and test 3D coordinates using PositionData of chains
-    for (var i = 0; i < c1.length; i++) {
-      if (!c1[i].data.equals3D(
-            c2[i].data,
+  }) =>
+      testEquals3D<MultiLineString>(
+        this,
+        other,
+        (mls1, mls2) => _testMultiLineStrings(
+          mls1,
+          mls2,
+          (posArray1, posArray2) => posArray1.data.equals3D(
+            posArray2.data,
             toleranceHoriz: toleranceHoriz,
             toleranceVert: toleranceVert,
-          )) {
-        return false;
-      }
-    }
-    return true;
-  }
+          ),
+        ),
+        toleranceHoriz: toleranceHoriz,
+        toleranceVert: toleranceVert,
+      );
 
   @override
   bool operator ==(Object other) =>
@@ -382,4 +345,22 @@ class MultiLineString extends SimpleGeometry {
 
   @override
   int get hashCode => Object.hash(bounds, chains);
+}
+
+bool _testMultiLineStrings(
+  MultiLineString mls1,
+  MultiLineString mls2,
+  bool Function(PositionArray, PositionArray) testPositionArrays,
+) {
+  // ensure both multi line strings has same amount of chains
+  final c1 = mls1.chains;
+  final c2 = mls2.chains;
+  if (c1.length != c2.length) return false;
+  // loop all chains and test coordinates using PositionData of chains
+  for (var i = 0; i < c1.length; i++) {
+    if (!testPositionArrays.call(c1[i], c2[i])) {
+      return false;
+    }
+  }
+  return true;
 }

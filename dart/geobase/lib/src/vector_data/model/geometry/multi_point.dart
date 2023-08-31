@@ -15,10 +15,10 @@ import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
+import '/src/utils/bounded_utils.dart';
 import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/coord_arrays_from_json.dart';
-import '/src/utils/tolerance.dart';
 import '/src/vector/array/coordinates.dart';
 import '/src/vector/array/coordinates_extensions.dart';
 import '/src/vector/content/simple_geometry_content.dart';
@@ -271,93 +271,52 @@ class MultiPoint extends SimpleGeometry {
   // NOTE: coordinates as raw data
 
   @override
-  bool equalsCoords(Bounded other) {
-    if (other is! MultiPoint) return false;
-    if (identical(this, other)) return true;
-    if (bounds != null && other.bounds != null && !(bounds! == other.bounds!)) {
-      // both geometries has bound boxes and boxes do not equal
-      return false;
-    }
-
-    final p1 = positions;
-    final p2 = other.positions;
-    if (p1.length != p2.length) return false;
-    for (var i = 0; i < p1.length; i++) {
-      if (p1[i] != p2[i]) return false;
-    }
-    return true;
-  }
+  bool equalsCoords(Bounded other) => testEqualsCoords<MultiPoint>(
+        this,
+        other,
+        (mp1, mp2) => _testMultiPoints(mp1, mp2, (pos1, pos2) => pos1 == pos2),
+      );
 
   @override
   bool equals2D(
     Bounded other, {
     double toleranceHoriz = defaultEpsilon,
-  }) {
-    assertTolerance(toleranceHoriz);
-    if (other is! MultiPoint) return false;
-    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
-    if (bounds != null &&
-        other.bounds != null &&
-        !bounds!.equals2D(
-          other.bounds!,
-          toleranceHoriz: toleranceHoriz,
-        )) {
-      // both geometries has bound boxes and boxes do not equal in 2D
-      return false;
-    }
-    // ensure both multi points has same amount of positions
-    final p1 = positions;
-    final p2 = other.positions;
-    if (p1.length != p2.length) return false;
-    // loop all positions and test 2D coordinates
-    for (var i = 0; i < p1.length; i++) {
-      if (!p1[i].equals2D(
-        p2[i],
+  }) =>
+      testEquals2D<MultiPoint>(
+        this,
+        other,
+        (mp1, mp2) => _testMultiPoints(
+          mp1,
+          mp2,
+          (pos1, pos2) => pos1.equals2D(
+            pos2,
+            toleranceHoriz: toleranceHoriz,
+          ),
+        ),
         toleranceHoriz: toleranceHoriz,
-      )) {
-        return false;
-      }
-    }
-    return true;
-  }
+      );
 
   @override
   bool equals3D(
     Bounded other, {
     double toleranceHoriz = defaultEpsilon,
     double toleranceVert = defaultEpsilon,
-  }) {
-    assertTolerance(toleranceHoriz);
-    assertTolerance(toleranceVert);
-    if (other is! MultiPoint) return false;
-    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
-    if (!coordType.is3D || !other.coordType.is3D) return false;
-    if (bounds != null &&
-        other.bounds != null &&
-        !bounds!.equals3D(
-          other.bounds!,
-          toleranceHoriz: toleranceHoriz,
-          toleranceVert: toleranceVert,
-        )) {
-      // both geometries has bound boxes and boxes do not equal in 3D
-      return false;
-    }
-    // ensure both multi points has same amount of positions
-    final p1 = positions;
-    final p2 = other.positions;
-    if (p1.length != p2.length) return false;
-    // loop all positions and test 3D coordinates
-    for (var i = 0; i < p1.length; i++) {
-      if (!p1[i].equals3D(
-        p2[i],
+  }) =>
+      testEquals3D<MultiPoint>(
+        this,
+        other,
+        (mp1, mp2) => _testMultiPoints(
+          mp1,
+          mp2,
+          (pos1, pos2) => pos1.equals3D(
+            pos2,
+            toleranceHoriz: toleranceHoriz,
+            toleranceVert: toleranceVert,
+          ),
+        ),
         toleranceHoriz: toleranceHoriz,
         toleranceVert: toleranceVert,
-      )) {
-        return false;
-      }
-    }
-    return true;
-  }
+      );
 
   @override
   bool operator ==(Object other) =>
@@ -367,4 +326,22 @@ class MultiPoint extends SimpleGeometry {
 
   @override
   int get hashCode => Object.hash(bounds, positions);
+}
+
+bool _testMultiPoints(
+  MultiPoint mp1,
+  MultiPoint mp2,
+  bool Function(Position, Position) testPositions,
+) {
+  // ensure both multi points has same amount of positions
+  final p1 = mp1.positions;
+  final p2 = mp2.positions;
+  if (p1.length != p2.length) return false;
+  // loop all positions and test coordinates
+  for (var i = 0; i < p1.length; i++) {
+    if (!testPositions.call(p1[i], p2[i])) {
+      return false;
+    }
+  }
+  return true;
 }

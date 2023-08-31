@@ -15,10 +15,10 @@ import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
+import '/src/utils/bounded_utils.dart';
 import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/coord_arrays_from_json.dart';
-import '/src/utils/tolerance.dart';
 import '/src/vector/array/coordinates.dart';
 import '/src/vector/array/coordinates_extensions.dart';
 import '/src/vector/content/simple_geometry_content.dart';
@@ -308,93 +308,56 @@ class Polygon extends SimpleGeometry {
   // NOTE: coordinates as raw data
 
   @override
-  bool equalsCoords(Bounded other) {
-    if (other is! Polygon) return false;
-    if (identical(this, other)) return true;
-    if (bounds != null && other.bounds != null && !(bounds! == other.bounds!)) {
-      // both geometries has bound boxes and boxes do not equal
-      return false;
-    }
-
-    final r1 = rings;
-    final r2 = other.rings;
-    if (r1.length != r2.length) return false;
-    for (var i = 0; i < r1.length; i++) {
-      if (!r1[i].equalsCoords(r2[i])) return false;
-    }
-    return true;
-  }
+  bool equalsCoords(Bounded other) => testEquals2D<Polygon>(
+        this,
+        other,
+        (polygon1, polygon2) => _testPolygons(
+          polygon1,
+          polygon2,
+          (posArray1, posArray2) => posArray1.equalsCoords(posArray2),
+        ),
+      );
 
   @override
   bool equals2D(
     Bounded other, {
     double toleranceHoriz = defaultEpsilon,
-  }) {
-    assertTolerance(toleranceHoriz);
-    if (other is! Polygon) return false;
-    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
-    if (bounds != null &&
-        other.bounds != null &&
-        !bounds!.equals2D(
-          other.bounds!,
-          toleranceHoriz: toleranceHoriz,
-        )) {
-      // both geometries has bound boxes and boxes do not equal in 2D
-      return false;
-    }
-    // ensure both polygons has same amount of linear rings
-    final r1 = rings;
-    final r2 = other.rings;
-    if (r1.length != r2.length) return false;
-    // loop all linear rings and test 2D coordinates using PositionData of rings
-    for (var i = 0; i < r1.length; i++) {
-      if (!r1[i].data.equals2D(
-            r2[i].data,
+  }) =>
+      testEquals2D<Polygon>(
+        this,
+        other,
+        (polygon1, polygon2) => _testPolygons(
+          polygon1,
+          polygon2,
+          (posArray1, posArray2) => posArray1.data.equals2D(
+            posArray2.data,
             toleranceHoriz: toleranceHoriz,
-          )) {
-        return false;
-      }
-    }
-    return true;
-  }
+          ),
+        ),
+        toleranceHoriz: toleranceHoriz,
+      );
 
   @override
   bool equals3D(
     Bounded other, {
     double toleranceHoriz = defaultEpsilon,
     double toleranceVert = defaultEpsilon,
-  }) {
-    assertTolerance(toleranceHoriz);
-    assertTolerance(toleranceVert);
-    if (other is! Polygon) return false;
-    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
-    if (!coordType.is3D || !other.coordType.is3D) return false;
-    if (bounds != null &&
-        other.bounds != null &&
-        !bounds!.equals3D(
-          other.bounds!,
-          toleranceHoriz: toleranceHoriz,
-          toleranceVert: toleranceVert,
-        )) {
-      // both geometries has bound boxes and boxes do not equal in 3D
-      return false;
-    }
-    // ensure both polygons has same amount of linear rings
-    final r1 = rings;
-    final r2 = other.rings;
-    if (r1.length != r2.length) return false;
-    // loop all linear rings and test 3D coordinates using PositionData of rings
-    for (var i = 0; i < r1.length; i++) {
-      if (!r1[i].data.equals3D(
-            r2[i].data,
+  }) =>
+      testEquals3D<Polygon>(
+        this,
+        other,
+        (polygon1, polygon2) => _testPolygons(
+          polygon1,
+          polygon2,
+          (posArray1, posArray2) => posArray1.data.equals3D(
+            posArray2.data,
             toleranceHoriz: toleranceHoriz,
             toleranceVert: toleranceVert,
-          )) {
-        return false;
-      }
-    }
-    return true;
-  }
+          ),
+        ),
+        toleranceHoriz: toleranceHoriz,
+        toleranceVert: toleranceVert,
+      );
 
   @override
   bool operator ==(Object other) =>
@@ -402,4 +365,22 @@ class Polygon extends SimpleGeometry {
 
   @override
   int get hashCode => Object.hash(bounds, rings);
+}
+
+bool _testPolygons(
+  Polygon polygon1,
+  Polygon polygon2,
+  bool Function(PositionArray, PositionArray) testPositionArrays,
+) {
+  // ensure both polygons has same amount of linear rings
+  final r1 = polygon1.rings;
+  final r2 = polygon2.rings;
+  if (r1.length != r2.length) return false;
+  // loop all linear rings and test coordinates using PositionData of rings
+  for (var i = 0; i < r1.length; i++) {
+    if (!testPositionArrays.call(r1[i], r2[i])) {
+      return false;
+    }
+  }
+  return true;
 }

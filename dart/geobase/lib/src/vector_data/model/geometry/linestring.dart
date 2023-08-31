@@ -15,10 +15,10 @@ import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
+import '/src/utils/bounded_utils.dart';
 import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_arrays.dart';
 import '/src/utils/coord_arrays_from_json.dart';
-import '/src/utils/tolerance.dart';
 import '/src/vector/array/coordinates.dart';
 import '/src/vector/array/coordinates_extensions.dart';
 import '/src/vector/content/simple_geometry_content.dart';
@@ -258,69 +258,46 @@ class LineString extends SimpleGeometry {
   // NOTE: coordinates as raw data
 
   @override
-  bool equalsCoords(Bounded other) {
-    if (other is! LineString) return false;
-    if (identical(this, other)) return true;
-    if (bounds != null && other.bounds != null && !(bounds! == other.bounds!)) {
-      // both geometries has bound boxes and boxes do not equal
-      return false;
-    }
-
-    return chain.equalsCoords(other.chain);
-  }
+  bool equalsCoords(Bounded other) => testEqualsCoords<LineString>(
+        this,
+        other,
+        (lineString1, lineString2) => lineString1.chain.equalsCoords(
+          lineString2.chain,
+        ),
+      );
 
   @override
   bool equals2D(
     Bounded other, {
     double toleranceHoriz = defaultEpsilon,
-  }) {
-    assertTolerance(toleranceHoriz);
-    if (other is! LineString) return false;
-    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
-    if (bounds != null &&
-        other.bounds != null &&
-        !bounds!.equals2D(
-          other.bounds!,
+  }) =>
+      testEquals2D<LineString>(
+        this,
+        other,
+        (lineString1, lineString2) => lineString1.chain.data.equals2D(
+          lineString2.chain.data,
           toleranceHoriz: toleranceHoriz,
-        )) {
-      // both geometries has bound boxes and boxes do not equal in 2D
-      return false;
-    }
-    // test 2D coordinates using PositionData of chains
-    return chain.data.equals2D(
-      other.chain.data,
-      toleranceHoriz: toleranceHoriz,
-    );
-  }
+        ),
+        toleranceHoriz: toleranceHoriz,
+      );
 
   @override
   bool equals3D(
     Bounded other, {
     double toleranceHoriz = defaultEpsilon,
     double toleranceVert = defaultEpsilon,
-  }) {
-    assertTolerance(toleranceHoriz);
-    assertTolerance(toleranceVert);
-    if (other is! LineString) return false;
-    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
-    if (!coordType.is3D || !other.coordType.is3D) return false;
-    if (bounds != null &&
-        other.bounds != null &&
-        !bounds!.equals3D(
-          other.bounds!,
+  }) =>
+      testEquals3D<LineString>(
+        this,
+        other,
+        (lineString1, lineString2) => lineString1.chain.data.equals3D(
+          lineString2.chain.data,
           toleranceHoriz: toleranceHoriz,
           toleranceVert: toleranceVert,
-        )) {
-      // both geometries has bound boxes and boxes do not equal in 3D
-      return false;
-    }
-    // test 3D coordinates using PositionData of chains
-    return chain.data.equals3D(
-      other.chain.data,
-      toleranceHoriz: toleranceHoriz,
-      toleranceVert: toleranceVert,
-    );
-  }
+        ),
+        toleranceHoriz: toleranceHoriz,
+        toleranceVert: toleranceVert,
+      );
 
   @override
   bool operator ==(Object other) =>

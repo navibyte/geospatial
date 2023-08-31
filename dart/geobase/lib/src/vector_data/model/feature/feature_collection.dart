@@ -9,9 +9,9 @@ import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
+import '/src/utils/bounded_utils.dart';
 import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_type.dart';
-import '/src/utils/tolerance.dart';
 import '/src/vector/content/feature_content.dart';
 import '/src/vector/encoding/text_format.dart';
 import '/src/vector/formats/geojson/geojson_format.dart';
@@ -344,103 +344,56 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   }
 
   @override
-  bool equalsCoords(Bounded other) {
-    if (other is! FeatureCollection) return false;
-    if (identical(this, other)) return true;
-
-    if (bounds != null && other.bounds != null && !(bounds! == other.bounds!)) {
-      // both feature collections has bound boxes and boxes do not equal
-      return false;
-    }
-
-    final fc1 = features;
-    final fc2 = other.features;
-    if (fc1.length != fc2.length) return false;
-    for (var i = 0; i < fc1.length; i++) {
-      if (!fc1[i].equalsCoords(fc2[i])) {
-        return false;
-      }
-    }
-    return true;
-  }
+  bool equalsCoords(Bounded other) => testEqualsCoords<FeatureCollection<E>>(
+        this,
+        other,
+        (collection1, collection2) => _testFeatureCollections<E>(
+          collection1,
+          collection2,
+          (feature1, feature2) => feature1.equalsCoords(feature2),
+        ),
+      );
 
   @override
   bool equals2D(
     Bounded other, {
     double toleranceHoriz = defaultEpsilon,
-  }) {
-    assertTolerance(toleranceHoriz);
-    if (other is! FeatureCollection) return false;
-    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
-
-    // test bounding boxes if both have it
-    if (bounds != null &&
-        other.bounds != null &&
-        !bounds!.equals2D(
-          other.bounds!,
-          toleranceHoriz: toleranceHoriz,
-        )) {
-      // both feature collections has bound boxes and boxes do not equal in 2D
-      return false;
-    }
-
-    // test features contained
-    final fc1 = features;
-    final fc2 = other.features;
-    if (fc1.length != fc2.length) return false;
-    for (var i = 0; i < fc1.length; i++) {
-      if (!fc1[i].equals2D(
-        fc2[i],
+  }) =>
+      testEquals2D<FeatureCollection<E>>(
+        this,
+        other,
+        (collection1, collection2) => _testFeatureCollections<E>(
+          collection1,
+          collection2,
+          (feature1, feature2) => feature1.equals2D(
+            feature2,
+            toleranceHoriz: toleranceHoriz,
+          ),
+        ),
         toleranceHoriz: toleranceHoriz,
-      )) {
-        return false;
-      }
-    }
-
-    // got here, features equals in 2D
-    return true;
-  }
+      );
 
   @override
   bool equals3D(
     Bounded other, {
     double toleranceHoriz = defaultEpsilon,
     double toleranceVert = defaultEpsilon,
-  }) {
-    assertTolerance(toleranceHoriz);
-    assertTolerance(toleranceVert);
-    if (other is! FeatureCollection) return false;
-    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
-
-    // test bounding boxes if both have it
-    if (bounds != null &&
-        other.bounds != null &&
-        !bounds!.equals3D(
-          other.bounds!,
-          toleranceHoriz: toleranceHoriz,
-          toleranceVert: toleranceVert,
-        )) {
-      // both feature collections has bound boxes and boxes do not equal in 3D
-      return false;
-    }
-
-    // test features contained
-    final fc1 = features;
-    final fc2 = other.features;
-    if (fc1.length != fc2.length) return false;
-    for (var i = 0; i < fc1.length; i++) {
-      if (!fc1[i].equals3D(
-        fc2[i],
+  }) =>
+      testEquals3D<FeatureCollection<E>>(
+        this,
+        other,
+        (collection1, collection2) => _testFeatureCollections<E>(
+          collection1,
+          collection2,
+          (feature1, feature2) => feature1.equals3D(
+            feature2,
+            toleranceHoriz: toleranceHoriz,
+            toleranceVert: toleranceVert,
+          ),
+        ),
         toleranceHoriz: toleranceHoriz,
         toleranceVert: toleranceVert,
-      )) {
-        return false;
-      }
-    }
-
-    // got here, features equals in 3D
-    return true;
-  }
+      );
 
   @override
   bool operator ==(Object other) =>
@@ -460,3 +413,23 @@ Box? _buildBoundsFrom(Iterable<Feature> features, Coords type) =>
       type: type,
       recalculateChilds: false,
     );
+
+bool _testFeatureCollections<E extends Feature>(
+  FeatureCollection<E> collection1,
+  FeatureCollection<E> collection2,
+  bool Function(E, E) testFeatures,
+) {
+  // test features contained
+  final features1 = collection1.features;
+  final features2 = collection2.features;
+  if (features1.length != features2.length) return false;
+  for (var i = 0; i < features1.length; i++) {
+    // use given function to test features by index from both collections
+    if (!testFeatures(features1[i], features2[i])) {
+      return false;
+    }
+  }
+
+  // got here, features equals by coordinates
+  return true;
+}
