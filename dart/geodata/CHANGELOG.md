@@ -1,6 +1,6 @@
 ## 0.13.0
 
-NOTE: Version 0.13.0 currently under development (0.13.0-dev.0).
+NOTE: Version 0.13.0 currently [under development](https://github.com/navibyte/geospatial/issues/198) (0.13.0-dev.0).
 
 🛠 Refactoring:
 * [Simplify Feature and FeatureCollection types #195](https://github.com/navibyte/geospatial/issues/195)
