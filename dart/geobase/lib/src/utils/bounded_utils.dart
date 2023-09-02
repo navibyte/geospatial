@@ -23,7 +23,10 @@ bool testEqualsCoords<T extends Bounded>(
   Bounded b2,
   bool Function(T, T) test,
 ) {
+  // require both bounded objects are of same type
   if (b1 is! T || b2 is! T) return false;
+
+  // check if refering to the same instance
   if (identical(b1, b2)) return true;
 
   // test bounding boxes if both bounded objects have it
@@ -34,6 +37,7 @@ bool testEqualsCoords<T extends Bounded>(
     return false;
   }
 
+  // use given test function to test actual geometries / coordinates
   return test.call(b1, b2);
 }
 
@@ -50,8 +54,13 @@ bool testEquals2D<T extends Bounded>(
   double toleranceHoriz = defaultEpsilon,
 }) {
   assertTolerance(toleranceHoriz);
+
+  // require both bounded objects are of same type, and not empty
   if (b1 is! T || b2 is! T) return false;
   if (b1.isEmptyByGeometry || b2.isEmptyByGeometry) return false;
+
+  // check if refering to the same instance
+  if (identical(b1, b2)) return true;
 
   // test bounding boxes if both bounded objects have it
   final bb1 = b1.bounds;
@@ -65,6 +74,8 @@ bool testEquals2D<T extends Bounded>(
     // both bounded objects has bounding boxes and boxes do not equal in 2D
     return false;
   }
+
+  // use given test function to test actual geometries / coordinates
   return test.call(b1, b2);
 }
 
@@ -83,9 +94,15 @@ bool testEquals3D<T extends Bounded>(
 }) {
   assertTolerance(toleranceHoriz);
   assertTolerance(toleranceVert);
+
+  // require both bounded objects are of same type, 3D coords, and not empty
   if (b1 is! T || b2 is! T) return false;
   if (b1.isEmptyByGeometry || b2.isEmptyByGeometry) return false;
   if (!b1.coordType.is3D || !b2.coordType.is3D) return false;
+
+  // check if refering to the same instance
+  // NOTE: commented out, does not work as expected, need to refine coord types
+  // if (identical(b1, b2)) return true;
 
   // test bounding boxes if both bounded objects have it
   final bb1 = b1.bounds;
@@ -100,5 +117,7 @@ bool testEquals3D<T extends Bounded>(
     // both bounded objects has bounding boxes and boxes do not equal in 3D
     return false;
   }
+
+  // use given test function to test actual geometries / coordinates
   return test.call(b1, b2);
 }
