@@ -170,7 +170,7 @@ mixin PositionData<E extends Position> implements Positionable {
   ///
   /// Tolerance values must be positive (>= 0.0).
   bool equals3D(
-    PositionData other, {
+    PositionData<E> other, {
     double toleranceHoriz = defaultEpsilon,
     double toleranceVert = defaultEpsilon,
   }) {
