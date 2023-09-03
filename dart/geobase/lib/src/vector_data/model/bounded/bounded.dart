@@ -22,6 +22,17 @@ abstract class Bounded {
   bool get isEmptyByGeometry;
 
   /// The coordinate type for this bounded object.
+  /// 
+  /// For bounded objects containing geometry data, the coordinate type is the
+  /// type indicated by data. For example for geometries containing 2D
+  /// coordinates it's `Coords.xy` or for geometries containg 3D data, it's
+  /// `Coords.xyz`. 
+  ///
+  /// For bounded objects that are containers for other bounded objects, the
+  /// returned type is such that it's valid for all items contained. For example
+  /// if a collection has items with types `Coords.xy`, `Coords.xyz` and
+  /// `Coords.xym`, then `Coords.xy` is returned. When all items are
+  /// `Coords.xyz`, then `Coords.xyz` is returned.
   Coords get coordType;
 
   /// An optional bounding box explicitely set (or otherwise directly available)

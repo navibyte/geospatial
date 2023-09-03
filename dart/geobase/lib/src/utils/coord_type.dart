@@ -10,26 +10,31 @@ import '/src/codes/coords.dart';
 import '/src/vector_data/model/bounded/bounded.dart';
 
 /// Resolves the coordinate type for [item] and/or [collection].
+///
+/// The returned type is such that it's valid for all items. For example if
+/// a collection has items with types `Coords.xy`, `Coords.xyz` and
+/// `Coords.xym`, then `Coords.xy` is returned. When all items are `Coords.xyz`,
+/// then `Coords.xyz` is returned.
 @internal
 Coords resolveCoordTypeFrom<E extends Bounded>({
   E? item,
   Iterable<E>? collection,
 }) {
-  var is3D = false;
-  var isMeasured = false;
+  var is3D = true;
+  var isMeasured = true;
 
   if (item != null) {
     final type = item.coordType;
-    is3D |= type.is3D;
-    isMeasured |= type.isMeasured;
+    is3D &= type.is3D;
+    isMeasured &= type.isMeasured;
   }
 
   if (collection != null) {
     for (final elem in collection) {
       final type = elem.coordType;
-      is3D |= type.is3D;
-      isMeasured |= type.isMeasured;
-      if (is3D && isMeasured) break;
+      is3D &= type.is3D;
+      isMeasured &= type.isMeasured;
+      if (!is3D && !isMeasured) break;
     }
   }
 

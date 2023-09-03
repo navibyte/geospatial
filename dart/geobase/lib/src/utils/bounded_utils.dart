@@ -101,8 +101,7 @@ bool testEquals3D<T extends Bounded>(
   if (!b1.coordType.is3D || !b2.coordType.is3D) return false;
 
   // check if refering to the same instance
-  // NOTE: commented out, does not work as expected, need to refine coord types
-  // if (identical(b1, b2)) return true;
+  if (identical(b1, b2)) return true;
 
   // test bounding boxes if both bounded objects have it
   final bb1 = b1.bounds;
