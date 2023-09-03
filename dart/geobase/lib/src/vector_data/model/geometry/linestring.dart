@@ -274,8 +274,8 @@ class LineString extends SimpleGeometry {
       testEquals2D<LineString>(
         this,
         other,
-        (lineString1, lineString2) => lineString1.chain.data.equals2D(
-          lineString2.chain.data,
+        (lineString1, lineString2) => lineString1.chain.equals2D(
+          lineString2.chain,
           toleranceHoriz: toleranceHoriz,
         ),
         toleranceHoriz: toleranceHoriz,
@@ -290,8 +290,8 @@ class LineString extends SimpleGeometry {
       testEquals3D<LineString>(
         this,
         other,
-        (lineString1, lineString2) => lineString1.chain.data.equals3D(
-          lineString2.chain.data,
+        (lineString1, lineString2) => lineString1.chain.equals3D(
+          lineString2.chain,
           toleranceHoriz: toleranceHoriz,
           toleranceVert: toleranceVert,
         ),

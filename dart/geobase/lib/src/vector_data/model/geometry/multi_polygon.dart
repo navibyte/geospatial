@@ -345,8 +345,8 @@ class MultiPolygon extends SimpleGeometry {
         (mp1, mp2) => _testMultiPolygons(
           mp1,
           mp2,
-          (posArray1, posArray2) => posArray1.data.equals2D(
-            posArray2.data,
+          (posArray1, posArray2) => posArray1.equals2D(
+            posArray2,
             toleranceHoriz: toleranceHoriz,
           ),
         ),
@@ -365,8 +365,8 @@ class MultiPolygon extends SimpleGeometry {
         (mp1, mp2) => _testMultiPolygons(
           mp1,
           mp2,
-          (posArray1, posArray2) => posArray1.data.equals3D(
-            posArray2.data,
+          (posArray1, posArray2) => posArray1.equals3D(
+            posArray2,
             toleranceHoriz: toleranceHoriz,
             toleranceVert: toleranceVert,
           ),

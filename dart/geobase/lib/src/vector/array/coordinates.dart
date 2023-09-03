@@ -7,6 +7,7 @@
 import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
+import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/aligned.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';

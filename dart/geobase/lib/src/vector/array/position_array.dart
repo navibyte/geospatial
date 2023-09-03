@@ -111,6 +111,40 @@ abstract class PositionArray with _CoordinatesMixin {
   /// Returns true if this and [other] contain exactly same coordinate values
   /// (or both are empty) in the same order and with the same coordinate type.
   bool equalsCoords(PositionArray other);
+
+  /// True if this position array equals with [other] by testing 2D
+  /// coordinates of all positions (that must be in same order in both views).
+  ///
+  /// Returns false if this or [other] is empty ([isEmpty] is true).
+  ///
+  /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
+  /// this and [other] must be within [toleranceHoriz].
+  ///
+  /// Tolerance values must be positive (>= 0.0).
+  bool equals2D(
+    PositionArray other, {
+    double toleranceHoriz = defaultEpsilon,
+  });
+
+  /// True if this position array equals with [other] by testing 3D
+  /// coordinates of all positions (that must be in same order in both views).
+  ///
+  /// Returns false if this or [other] is empty ([isEmpty] is true).
+  ///
+  /// Returns false if this or [other] do not contain 3D coordinates.
+  ///
+  /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
+  /// this and [other] must be within [toleranceHoriz].
+  ///
+  /// Differences on vertical coordinate values (ie. z or elev) between
+  /// this and [other] must be within [toleranceVert].
+  ///
+  /// Tolerance values must be positive (>= 0.0).
+  bool equals3D(
+    PositionArray other, {
+    double toleranceHoriz = defaultEpsilon,
+    double toleranceVert = defaultEpsilon,
+  });
 }
 
 @immutable
@@ -170,6 +204,28 @@ class _PositionArrayImpl extends PositionArray {
 
     return true;
   }
+
+  @override
+  bool equals2D(
+    PositionArray other, {
+    double toleranceHoriz = defaultEpsilon,
+  }) =>
+      data.equals2D(
+        other.data,
+        toleranceHoriz: toleranceHoriz,
+      );
+
+  @override
+  bool equals3D(
+    PositionArray other, {
+    double toleranceHoriz = defaultEpsilon,
+    double toleranceVert = defaultEpsilon,
+  }) =>
+      data.equals3D(
+        other.data,
+        toleranceHoriz: toleranceHoriz,
+        toleranceVert: toleranceVert,
+      );
 }
 
 class _PositionArrayData<E extends Position> with PositionData<E> {

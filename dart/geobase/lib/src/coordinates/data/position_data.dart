@@ -113,6 +113,21 @@ mixin PositionData<E extends Position> implements Positionable {
     return false;
   }
 
+  /// Returns true if this and [other] contain exactly same coordinate values
+  /// (or both are empty) in the same order and with the same coordinate type.
+  bool equalsCoords(PositionData<E> other) {
+    if(identical(this, other)) return true;
+    if (length != other.length) return false;
+
+    for (var i = 0; i < length; i++) {
+      if (x(i) != x(i)) return false;
+      if (y(i) != y(i)) return false;
+      if (is3D && z(i) != z(i)) return false;
+      if (isMeasured && m(i) != m(i)) return false;
+    }
+    return true;
+  }
+
   /// True if this position data view equals with [other] by testing 2D
   /// coordinates of all positions (that must be in same order in both views).
   ///
@@ -128,6 +143,7 @@ mixin PositionData<E extends Position> implements Positionable {
   }) {
     assertTolerance(toleranceHoriz);
     if (isEmpty || other.isEmpty) return false;
+    if(identical(this, other)) return true;
     if (length != other.length) return false;
 
     for (var i = 0; i < length; i++) {
@@ -162,6 +178,7 @@ mixin PositionData<E extends Position> implements Positionable {
     assertTolerance(toleranceVert);
     if (!is3D || !other.is3D) return false;
     if (isEmpty || other.isEmpty) return false;
+    if(identical(this, other)) return true;
     if (length != other.length) return false;
 
     for (var i = 0; i < length; i++) {

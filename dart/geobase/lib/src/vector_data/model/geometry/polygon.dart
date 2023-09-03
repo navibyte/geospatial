@@ -329,8 +329,8 @@ class Polygon extends SimpleGeometry {
         (polygon1, polygon2) => _testPolygons(
           polygon1,
           polygon2,
-          (posArray1, posArray2) => posArray1.data.equals2D(
-            posArray2.data,
+          (posArray1, posArray2) => posArray1.equals2D(
+            posArray2,
             toleranceHoriz: toleranceHoriz,
           ),
         ),
@@ -349,8 +349,8 @@ class Polygon extends SimpleGeometry {
         (polygon1, polygon2) => _testPolygons(
           polygon1,
           polygon2,
-          (posArray1, posArray2) => posArray1.data.equals3D(
-            posArray2.data,
+          (posArray1, posArray2) => posArray1.equals3D(
+            posArray2,
             toleranceHoriz: toleranceHoriz,
             toleranceVert: toleranceVert,
           ),

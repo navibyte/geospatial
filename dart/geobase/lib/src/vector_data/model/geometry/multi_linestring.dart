@@ -307,8 +307,8 @@ class MultiLineString extends SimpleGeometry {
         (mls1, mls2) => _testMultiLineStrings(
           mls1,
           mls2,
-          (posArray1, posArray2) => posArray1.data.equals2D(
-            posArray2.data,
+          (posArray1, posArray2) => posArray1.equals2D(
+            posArray2,
             toleranceHoriz: toleranceHoriz,
           ),
         ),
@@ -327,8 +327,8 @@ class MultiLineString extends SimpleGeometry {
         (mls1, mls2) => _testMultiLineStrings(
           mls1,
           mls2,
-          (posArray1, posArray2) => posArray1.data.equals3D(
-            posArray2.data,
+          (posArray1, posArray2) => posArray1.equals3D(
+            posArray2,
             toleranceHoriz: toleranceHoriz,
             toleranceVert: toleranceVert,
           ),
