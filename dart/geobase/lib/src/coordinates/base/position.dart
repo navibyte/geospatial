@@ -170,7 +170,7 @@ abstract class Position extends Positionable {
   /// according to the given [type].
   ///
   /// See [values] (that returns coordinate values according to the coordinate
-  /// type of this bounding box) for description of possible return values.
+  /// type of this position) for description of possible return values.
   Iterable<double> valuesByType(Coords type) =>
       Position.getValues(this, type: type);
 
