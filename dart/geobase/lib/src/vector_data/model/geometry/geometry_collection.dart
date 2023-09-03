@@ -175,14 +175,13 @@ class GeometryCollection<E extends Geometry> extends Geometry {
           (geometry) => geometry.bounded(recalculate: recalculate) as E,
         )
         .toList(growable: false);
-    final type = resolveCoordTypeFrom(collection: collection);
 
     // return a new collection with processed geometries and populated bounds
     return GeometryCollection<E>._(
       collection,
-      type,
+      coordType,
       bounds: recalculate || bounds == null
-          ? _buildBoundsFrom(collection, type)
+          ? _buildBoundsFrom(collection, coordType)
           : bounds,
     );
   }
@@ -244,14 +243,13 @@ class GeometryCollection<E extends Geometry> extends Geometry {
     final projected = _geometries
         .map<E>((geometry) => geometry.project(projection) as E)
         .toList(growable: false);
-    final type = resolveCoordTypeFrom(collection: projected);
 
     return GeometryCollection<E>._(
       projected,
-      type,
+      coordType,
 
       // bounds calculated from projected collection if there was bounds before
-      bounds: bounds != null ? _buildBoundsFrom(projected, type) : null,
+      bounds: bounds != null ? _buildBoundsFrom(projected, coordType) : null,
     );
   }
 

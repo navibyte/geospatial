@@ -11,7 +11,6 @@ import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounded_utils.dart';
 import '/src/utils/bounds_builder.dart';
-import '/src/utils/coord_type.dart';
 import '/src/vector/content/feature_content.dart';
 import '/src/vector/content/geometry_content.dart';
 import '/src/vector/encoding/text_format.dart';
@@ -419,7 +418,7 @@ class Feature<T extends Geometry> extends FeatureObject {
 /// Returns bounds calculated from a collection of features.
 Box? _buildBoundsFrom(Geometry geometry) => BoundsBuilder.calculateBounds(
       item: geometry,
-      type: resolveCoordTypeFrom(item: geometry),
+      type: geometry.coordType,
       recalculateChilds: false,
     );
 

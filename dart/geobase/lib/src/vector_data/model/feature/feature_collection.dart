@@ -244,15 +244,14 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
           (feature) => feature.bounded(recalculate: recalculate) as E,
         )
         .toList(growable: false);
-    final type = resolveCoordTypeFrom(collection: collection);
 
     // return a new collection with processed features and populated bounds
     return FeatureCollection<E>._(
       collection,
-      type,
+      coordType,
       custom: custom,
       bounds: recalculate || bounds == null
-          ? _buildBoundsFrom(collection, type)
+          ? _buildBoundsFrom(collection, coordType)
           : bounds,
     );
   }
@@ -319,13 +318,12 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
     final projected = features
         .map<E>((feature) => feature.project(projection) as E)
         .toList(growable: false);
-    final type = resolveCoordTypeFrom(collection: projected);
 
     return FeatureCollection<E>._(
       projected,
-      type,
+      coordType,
       custom: custom,
-      bounds: bounds != null ? _buildBoundsFrom(projected, type) : null,
+      bounds: bounds != null ? _buildBoundsFrom(projected, coordType) : null,
     );
   }
 
