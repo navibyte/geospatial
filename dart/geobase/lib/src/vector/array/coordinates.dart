@@ -16,6 +16,7 @@ import '/src/coordinates/data/position_data.dart';
 import '/src/coordinates/geographic/geographic.dart';
 import '/src/coordinates/projected/projected.dart';
 import '/src/coordinates/projection/projection.dart';
+import '/src/utils/coord_utils.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 
@@ -31,30 +32,3 @@ part 'position_coords.dart';
 /// * [PositionCoords]: coordinate values of a single position
 /// * [BoxCoords]: coordinate values of a single bounding box
 abstract class Coordinates extends Iterable<double> implements Positionable {}
-
-typedef _CreateAt<T> = T Function(
-  Iterable<double> coordinates, {
-  required Coords type,
-});
-
-T _doCreateRange<T>(
-  Iterable<double> coordinates, {
-  required _CreateAt<T> to,
-  required Coords type,
-  required int start,
-  required int end,
-}) {
-  if (coordinates is List<double>) {
-    // the source coordinates is a List, get range
-    return to.call(
-      coordinates.getRange(start, end),
-      type: type,
-    );
-  } else {
-    // the source is not a List, generate a new
-    return to.call(
-      coordinates.skip(start).take(end - start).toList(growable: false),
-      type: type,
-    );
-  }
-}

@@ -79,7 +79,7 @@ abstract class PositionArray with _CoordinatesMixin {
   ) =>
       _PositionArrayData<T>(_data, _type, _adapt(factory));
 
-  _CreateAt<T> _adapt<T extends Position>(CreatePosition<T> factory) {
+  CreateAt<T> _adapt<T extends Position>(CreatePosition<T> factory) {
     return (Iterable<double> coordinates, {required Coords type}) {
       return Position.buildPosition(coordinates, to: factory, type: type);
     };
@@ -234,7 +234,7 @@ class _PositionArrayData<E extends Position> with PositionData<E> {
   @override
   final Coords type;
 
-  final _CreateAt<E> factory;
+  final CreateAt<E> factory;
 
   const _PositionArrayData(this.data, this.type, this.factory);
 
@@ -246,7 +246,7 @@ class _PositionArrayData<E extends Position> with PositionData<E> {
     final dim = coordinateDimension;
     final start = index * dim;
     final end = start + dim;
-    return _doCreateRange(
+    return doCreateRange(
       data,
       to: factory,
       type: type,
@@ -313,7 +313,7 @@ class _PositionArrayData<E extends Position> with PositionData<E> {
     var start = 0;
     var end = dim;
     while (end <= len) {
-      yield _doCreateRange(
+      yield doCreateRange(
         data,
         to: factory,
         type: type,

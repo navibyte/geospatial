@@ -231,7 +231,7 @@ class _PositionCoordsImpl extends PositionCoords {
 }
 
 T _doCreate<T extends PositionCoords>({
-  required _CreateAt<T> to,
+  required CreateAt<T> to,
   required double x,
   required double y,
   double? z,
@@ -276,7 +276,7 @@ T _doCreate<T extends PositionCoords>({
 
 T _doParse<T extends PositionCoords>(
   String text, {
-  required _CreateAt<T> to,
+  required CreateAt<T> to,
   Pattern? delimiter = ',',
   Coords? type,
 }) {
@@ -295,7 +295,7 @@ T _doParse<T extends PositionCoords>(
 
 T _doCopyWith<T extends PositionCoords>({
   required T from,
-  required _CreateAt<T> to,
+  required CreateAt<T> to,
   double? x,
   double? y,
   double? z,

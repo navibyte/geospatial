@@ -214,7 +214,7 @@ class _BoxCoordsImpl extends BoxCoords {
   }
 
   @override
-  PositionCoords get min => _doCreateRange(
+  PositionCoords get min => doCreateRange(
         _data,
         to: PositionCoords.view,
         type: type,
@@ -223,7 +223,7 @@ class _BoxCoordsImpl extends BoxCoords {
       );
 
   @override
-  PositionCoords get max => _doCreateRange(
+  PositionCoords get max => doCreateRange(
         _data,
         to: PositionCoords.view,
         type: type,
