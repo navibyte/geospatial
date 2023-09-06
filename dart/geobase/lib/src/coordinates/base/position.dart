@@ -4,7 +4,11 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+// ignore_for_file: avoid_redundant_argument_values
+
 import 'dart:math' as math;
+
+import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
 import '/src/constants/epsilon.dart';
@@ -36,10 +40,14 @@ typedef CreatePosition<T extends Position> = T Function({
 /// Throws FormatException if cannot transform.
 typedef TransformPosition = T Function<T extends Position>(T source);
 
-/// A base interface for geospatial positions.
+/// A base class for geospatial positions.
 ///
-/// The known sub classes are `Projected` (with x, y, z and m coordinates) and
-/// `Geographic` (with lon, lat, elev and m coordinates).
+/// The known two instantiable sub classes are `Projected` (with x, y, z and m
+/// coordinates) and `Geographic` (with lon, lat, elev and m coordinates).
+///
+/// It's also possible to create a position using factory methods
+/// [Position.view], [Position.create] and [Position.parse] that create an
+/// instance storing coordinate values in a double array.
 ///
 /// All implementations must contain at least [x] and [y] coordinate values, but
 /// [z] and [m] coordinates are optional (getters should return zero value when
@@ -88,6 +96,108 @@ typedef TransformPosition = T Function<T extends Position>(T source);
 abstract class Position extends Positionable {
   /// Default `const` constructor to allow extending this abstract class.
   const Position();
+
+  /// A position with coordinate values as a view backed by [source].
+  ///
+  /// A double iterable of [source] may be represented by a [List] or any
+  /// [Iterable] with efficient `length` and `elementAt` implementations.
+  ///
+  /// The [source] must contain 2, 3 or 4 coordinate values. Supported
+  /// coordinate value combinations by coordinate [type] are:
+  ///
+  /// Type | Expected values
+  /// ---- | ---------------
+  /// xy   | x, y
+  /// xyz  | x, y, z
+  /// xym  | x, y, m
+  /// xyzm | x, y, z, m
+  ///
+  /// Or when data is geographic:
+  ///
+  /// Type | Expected values
+  /// ---- | ---------------
+  /// xy   | lon, lat
+  /// xyz  | lon, lat, elev
+  /// xym  | lon, lat, m
+  /// xyzm | lon, lat, elev, m
+  factory Position.view(Iterable<double> source, {Coords type}) =
+      _PositionCoords.view;
+
+  /// A position from parameters compatible with `CreatePosition` function type.
+  ///
+  /// The [Position.view] constructor is used to create a position from a double
+  /// array filled by given [x], [y], and optionally [z] and [m].
+  factory Position.create({
+    required double x,
+    required double y,
+    double? z,
+    double? m,
+  }) {
+    if (z != null) {
+      // 3D coordinates
+      if (m != null) {
+        // 3D and measured coordinates
+        final list = List<double>.filled(4, 0);
+        list[0] = x;
+        list[1] = y;
+        list[2] = z;
+        list[3] = m;
+        return Position.view(list, type: Coords.xyzm);
+      } else {
+        // 3D coordinates (not measured)
+        final list = List<double>.filled(3, 0);
+        list[0] = x;
+        list[1] = y;
+        list[2] = z;
+        return Position.view(list, type: Coords.xyz);
+      }
+    } else {
+      // 2D coordinates
+      if (m != null) {
+        // 2D and measured coordinates
+        final list = List<double>.filled(3, 0);
+        list[0] = x;
+        list[1] = y;
+        list[2] = m;
+        return Position.view(list, type: Coords.xym);
+      } else {
+        // 2D coordinates (not measured)
+        final list = List<double>.filled(2, 0);
+        list[0] = x;
+        list[1] = y;
+        return Position.view(list, type: Coords.xy);
+      }
+    }
+  }
+
+  /// Parses a position from [text].
+  ///
+  /// Coordinate values in [text] are separated by [delimiter].
+  ///
+  /// The [Position.view] constructor is used to create a position from a double
+  /// array filled by coordinate values parsed.
+  ///
+  /// Use an optional [type] to explicitely set the coordinate type. If not
+  /// provided and [text] has 3 items, then xyz coordinates are assumed.
+  ///
+  /// Throws FormatException if coordinates are invalid.
+  factory Position.parse(
+    String text, {
+    Pattern? delimiter = ',',
+    Coords? type,
+  }) {
+    final coords =
+        parseDoubleValues(text, delimiter: delimiter).toList(growable: false);
+    final len = coords.length;
+    final coordType = type ?? Coords.fromDimension(len);
+    if (len != coordType.coordinateDimension) {
+      throw invalidCoordinates;
+    }
+    return Position.view(
+      coords,
+      type: coordType,
+    );
+  }
 
   /// The x coordinate value.
   ///
@@ -603,4 +713,105 @@ abstract class Position extends Positionable {
     }
     return (p1.z - p2.z).abs() <= toleranceVert;
   }
+}
+
+// ---------------------------------------------------------------------------
+// Position from double array
+
+@immutable
+class _PositionCoords extends Position {
+  final Iterable<double> _data;
+  final Coords _type;
+
+  /// A position with coordinate values of [type] from [source].
+  const _PositionCoords.view(Iterable<double> source, {Coords type = Coords.xy})
+      : _data = source,
+        _type = type;
+
+  @override
+  int get spatialDimension => _type.spatialDimension;
+
+  @override
+  int get coordinateDimension => _type.coordinateDimension;
+
+  @override
+  bool get is3D => _type.is3D;
+
+  @override
+  bool get isMeasured => _type.isMeasured;
+
+  @override
+  Coords get type => _type;
+
+  @override
+  double get x => _data.elementAt(0);
+
+  @override
+  double get y => _data.elementAt(1);
+
+  @override
+  double get z => is3D ? _data.elementAt(2) : 0.0;
+
+  @override
+  double? get optZ => is3D ? _data.elementAt(2) : null;
+
+  @override
+  double get m {
+    final mIndex = _type.indexForM;
+    return mIndex != null ? _data.elementAt(mIndex) : 0.0;
+  }
+
+  @override
+  double? get optM {
+    final mIndex = _type.indexForM;
+    return mIndex != null ? _data.elementAt(mIndex) : null;
+  }
+
+  @override
+  double operator [](int index) =>
+      index >= 0 && index < coordinateDimension ? _data.elementAt(index) : 0.0;
+
+  @override
+  Iterable<double> get values => _data;
+
+  @override
+  Iterable<double> valuesByType(Coords type) =>
+      type == this.type ? _data : Position.getValues(this, type: type);
+
+  @override
+  Position copyWith({double? x, double? y, double? z, double? m}) {
+    final newType = Coords.select(
+      is3D: is3D || z != null,
+      isMeasured: isMeasured || m != null,
+    );
+
+    final list = List<double>.filled(newType.coordinateDimension, 0);
+    list[0] = x ?? this.x;
+    list[1] = y ?? this.y;
+    if (newType.is3D) {
+      list[2] = z ?? this.z;
+    }
+    if (newType.isMeasured) {
+      list[newType.indexForM!] = m ?? this.m;
+    }
+
+    return Position.view(
+      list,
+      type: newType,
+    );
+  }
+
+  @override
+  Position project(Projection projection) =>
+      projection.project(this, to: Position.create);
+
+  @override
+  Position transform(TransformPosition transform) => transform.call(this);
+
+  @override
+  bool operator ==(Object other) =>
+      other is Position && Position.testEquals(this, other);
+
+  @override
+  int get hashCode => Position.hash(this);
 }

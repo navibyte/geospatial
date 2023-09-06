@@ -8,9 +8,12 @@
 
 import 'dart:math' as math;
 
+import 'package:meta/meta.dart';
+
 import '/src/codes/coords.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/projection/projection.dart';
+import '/src/utils/coord_utils.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 import '/src/utils/tolerance.dart';
@@ -41,16 +44,15 @@ typedef CreateBox<T extends Box> = T Function({
   double? maxM,
 });
 
-/// A base interface for axis-aligned bounding boxes with min & max coordinates.
+/// A base class for axis-aligned bounding boxes with min & max coordinates.
 ///
-/// This interface defines min and max coordinate values only for the m axis.
-/// Sub classes define min and max coordinate values for other axes (x, y and z
-/// in projected coordinate systems, and longitude, latitude and elevation in
-/// geographic coordinate systems).
-///
-/// The known sub classes are `ProjBox` (with minX, minY, minZ, minM, maxX,
+/// The known two sub classes are `ProjBox` (with minX, minY, minZ, minM, maxX,
 /// maxY, maxZ and maxM coordinates) and `GeoBox` (with west, south, minElev,
 /// minM, east, north, maxElev and maxM coordinates).
+///
+/// It's also possible to create a bounding box using factory methods
+/// [Box.view], [Box.create], [Box.from] and [Box.parse] that create an
+/// instance storing coordinate values in a double array.
 ///
 /// Supported coordinate value combinations by coordinate type:
 ///
@@ -84,6 +86,113 @@ typedef CreateBox<T extends Box> = T Function({
 abstract class Box extends Positionable {
   /// Default `const` constructor to allow extending this abstract class.
   const Box();
+
+  /// A bounding box with coordinate values as a view backed by [source].
+  ///
+  /// A double iterable of [source] may be represented by a [List] or any
+  /// [Iterable] with efficient `length` and `elementAt` implementations.
+  ///
+  /// The [source] must contain 4, 6 or 8 coordinate values. Supported
+  /// coordinate value combinations by coordinate [type] are:
+  ///
+  /// Type | Expected values
+  /// ---- | ---------------
+  /// xy   | minX, minY, maxX, maxY
+  /// xyz  | minX, minY, minZ, maxX, maxY, maxZ
+  /// xym  | minX, minY, minM, maxX, maxY, maxM
+  /// xyzm | minX, minY, minZ, minM, maxX, maxY, maxZ, maxM
+  ///
+  /// Or when data is geographic:
+  ///
+  /// Type | Expected values
+  /// ---- | ---------------
+  /// xy   | west, south, east, north
+  /// xyz  | west, south, minElev, east, north, maxElev
+  /// xym  | west, south, minM, east, north, maxM
+  /// xyzm | west, south, minElev, minM, east, north, maxElev, maxM
+  factory Box.view(Iterable<double> source, {Coords type = Coords.xy}) {
+    if (source.length != 2 * type.coordinateDimension) {
+      throw invalidCoordinates;
+    }
+    return _BoxCoords.view(source, type: type);
+  }
+
+  /// A bounding box from parameters compatible with `CreateBox` function type.
+  ///
+  /// The [Box.view] constructor is used to create a bounding box from a double
+  /// array filled by given [minX], [minY], [maxX] and [maxY] coordinate values
+  /// (and optionally by [minZ], [minM], [maxZ] and [maxM] too).
+  factory Box.create({
+    required double minX,
+    required double minY,
+    double? minZ,
+    double? minM,
+    required double maxX,
+    required double maxY,
+    double? maxZ,
+    double? maxM,
+  }) {
+    final is3D = minZ != null && maxZ != null;
+    final isMeasured = minM != null && maxM != null;
+    final type = Coords.select(is3D: is3D, isMeasured: isMeasured);
+    final list = List<double>.filled(2 * type.coordinateDimension, 0);
+    var i = 0;
+    list[i++] = minX;
+    list[i++] = minY;
+    if (is3D) {
+      list[i++] = minZ;
+    }
+    if (isMeasured) {
+      list[i++] = minM;
+    }
+    list[i++] = maxX;
+    list[i++] = maxY;
+    if (is3D) {
+      list[i++] = maxZ;
+    }
+    if (isMeasured) {
+      list[i++] = maxM;
+    }
+    return Box.view(list, type: type);
+  }
+
+  /// A minimum bounding box calculated from [positions].
+  ///
+  /// The [Box.create] constructor is used to create a bounding box from values
+  /// representing a minimum bounding box for [positions].
+  ///
+  /// Throws FormatException if cannot create (ie. [positions] is empty).
+  factory Box.from(Iterable<Position> positions) =>
+      Box.createBoxFrom(positions, Box.create);
+
+  /// Parses a bounding box from [text].
+  ///
+  /// Coordinate values in [text] are separated by [delimiter].
+  ///
+  /// The [Box.view] constructor is used to create a bounding box from a double
+  /// array filled by coordinate values parsed.
+  ///
+  /// Use an optional [type] to explicitely set the coordinate type. If not
+  /// provided and [text] has 6 items, then xyz coordinates are assumed.
+  ///
+  /// Throws FormatException if coordinates are invalid.
+  factory Box.parse(
+    String text, {
+    Pattern? delimiter = ',',
+    Coords? type,
+  }) {
+    final coords =
+        parseDoubleValues(text, delimiter: delimiter).toList(growable: false);
+    final len = coords.length;
+    final coordType = type ?? Coords.fromDimension(len);
+    if (len != coordType.coordinateDimension) {
+      throw invalidCoordinates;
+    }
+    return Box.view(
+      coords,
+      type: coordType,
+    );
+  }
 
   /// The minimum x (or west) coordinate.
   ///
@@ -819,4 +928,145 @@ abstract class Box extends Positionable {
     }
     return true;
   }
+}
+
+// ---------------------------------------------------------------------------
+// Box from double array
+
+@immutable
+class _BoxCoords extends Box {
+  final Iterable<double> _data;
+  final Coords _type;
+
+  /// A bounding box with coordinate values of [type] from [source].
+  const _BoxCoords.view(Iterable<double> source, {Coords type = Coords.xy})
+      : _data = source,
+        _type = type;
+
+  @override
+  int get spatialDimension => _type.spatialDimension;
+
+  @override
+  int get coordinateDimension => _type.coordinateDimension;
+
+  @override
+  bool get is3D => _type.is3D;
+
+  @override
+  bool get isMeasured => _type.isMeasured;
+
+  @override
+  Coords get type => _type;
+
+  @override
+  double get minX => _data.elementAt(0);
+
+  @override
+  double get minY => _data.elementAt(1);
+
+  @override
+  double? get minZ => is3D ? _data.elementAt(2) : null;
+
+  @override
+  double? get minM {
+    final mIndex = _type.indexForM;
+    return mIndex != null ? _data.elementAt(mIndex) : null;
+  }
+
+  @override
+  double get maxX => _data.elementAt(coordinateDimension + 0);
+
+  @override
+  double get maxY => _data.elementAt(coordinateDimension + 1);
+
+  @override
+  double? get maxZ => is3D ? _data.elementAt(coordinateDimension + 2) : null;
+
+  @override
+  double? get maxM {
+    final mIndex = _type.indexForM;
+    return mIndex != null
+        ? _data.elementAt(coordinateDimension + mIndex)
+        : null;
+  }
+
+  @override
+  Box copyWith({
+    double? minX,
+    double? minY,
+    double? minZ,
+    double? minM,
+    double? maxX,
+    double? maxY,
+    double? maxZ,
+    double? maxM,
+  }) =>
+      Box.create(
+        minX: minX ?? this.minX,
+        minY: minY ?? this.minY,
+        minZ: minZ ?? this.minZ,
+        minM: minM ?? this.minM,
+        maxX: maxX ?? this.maxX,
+        maxY: maxY ?? this.maxY,
+        maxZ: maxZ ?? this.maxZ,
+        maxM: maxM ?? this.maxM,
+      );
+
+  @override
+  Iterable<double> get values => _data;
+
+  @override
+  Iterable<double> valuesByType(Coords type) =>
+      type == this.type ? _data : Box.getValues(this, type: type);
+
+  @override
+  double get width => maxX - minX;
+
+  @override
+  double get height => maxY - minY;
+
+  @override
+  Position aligned2D([Aligned align = Aligned.center]) =>
+      Box.createAligned2D(this, Position.create, align: align);
+
+  @override
+  Iterable<Position> get corners2D =>
+      Box.createCorners2D(this, Position.create);
+
+  @override
+  Box project(Projection projection) {
+    // get distinct corners (one, two or four) in 2D for the bounding bbox
+    final corners = corners2D;
+
+    // project all corner positions (using the projection)
+    final projected = corners.map((pos) => pos.project(projection));
+
+    // create a new bounding bbox
+    // (calculating min and max coords in all axes from corner positions)
+    return Box.from(projected);
+  }
+
+  @override
+  Position get min => doCreateRange(
+        _data,
+        to: Position.view,
+        type: type,
+        start: 0,
+        end: coordinateDimension,
+      );
+
+  @override
+  Position get max => doCreateRange(
+        _data,
+        to: Position.view,
+        type: type,
+        start: coordinateDimension,
+        end: 2 * coordinateDimension,
+      );
+
+  @override
+  bool operator ==(Object other) => other is Box && Box.testEquals(this, other);
+
+  @override
+  int get hashCode => Box.hash(this);
 }
