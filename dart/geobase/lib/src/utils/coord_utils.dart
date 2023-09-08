@@ -41,3 +41,46 @@ T doCreateRange<T>(
     );
   }
 }
+
+/// Coordinate values of all positions represented by [coordinates] with
+/// [sourceType]
+///
+/// Target array is structured according to [targetType].
+@internal
+Iterable<double> valuesByTypeIter(
+  Iterable<double> coordinates, {
+  required Coords sourceType,
+  required Coords targetType,
+}) sync* {
+  final iter = coordinates.iterator;
+  while (iter.moveNext()) {
+    // get source x, y and optional z, m for a position in the source array
+    final x = iter.current;
+    if (!iter.moveNext()) break;
+    final y = iter.current;
+    final double? z;
+    if (sourceType.is3D) {
+      if (!iter.moveNext()) break;
+      z = iter.current;
+    } else {
+      z = null;
+    }
+    final double? m;
+    if (sourceType.isMeasured) {
+      if (!iter.moveNext()) break;
+      m = iter.current;
+    } else {
+      m = null;
+    }
+
+    // output target position x, y and optional z, m
+    yield x;
+    yield y;
+    if (targetType.is3D) {
+      yield z ?? 0.0;
+    }
+    if (targetType.isMeasured) {
+      yield m ?? 0.0;
+    }
+  }
+}
