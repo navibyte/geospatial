@@ -31,4 +31,5 @@ part 'position_coords.dart';
 /// * [PositionArray]: coordinate values of 0 to N positions in a flat structure
 /// * [PositionCoords]: coordinate values of a single position
 /// * [BoxCoords]: coordinate values of a single bounding box
+@Deprecated('Use Position, PositionSeries or Box instead')
 abstract class Coordinates extends Iterable<double> implements Positionable {}

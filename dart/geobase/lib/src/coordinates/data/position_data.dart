@@ -12,6 +12,7 @@ import '/src/utils/tolerance.dart';
 /// A fixed-length and random-access view to positions with coordinate values.
 ///
 /// See [Position] for description about supported coordinate values.
+@Deprecated('Use PositionSeries instead')
 mixin PositionData<E extends Position> implements Positionable {
   /// The number of positions in this view.
   int get length;

@@ -6,6 +6,7 @@
 
 part of 'coordinates.dart';
 
+@Deprecated('Deprecated as Coordinates is too')
 mixin _CoordinatesMixin implements Coordinates {
   Iterable<double> get _data;
   Coords get _type;

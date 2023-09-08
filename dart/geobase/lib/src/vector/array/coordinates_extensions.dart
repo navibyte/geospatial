@@ -24,6 +24,7 @@ List<double> _requireLen(List<double> list, int len) {
 /// A helper extension on `List<double>` to handle coordinate values.
 ///
 /// See [Coordinates] for more information.
+@Deprecated('Deprecated as Coordinates is deprecated')
 extension ListCoordinateExtension on List<double> {
   /// A bounding box with coordinate values as a view backed by `this`.
   ///
@@ -103,6 +104,7 @@ extension ListCoordinateExtension on List<double> {
 
 /// A helper extension on `Iterable<Position>` to convert data as
 /// [PositionArray].
+@Deprecated('Deprecated as PositionArray is deprecated')
 extension PositionIterableCoordinatesExtension on Iterable<Position> {
   /// Returns positions of this `Position` iterable as `PositionArray`
   /// structuring coordinates a flat structure of `double` iterable.
@@ -133,6 +135,7 @@ extension PositionIterableCoordinatesExtension on Iterable<Position> {
 
 /// A helper extension on [Position] to convert position objects between
 /// subtypes like [Projected], [Geographic] and [PositionCoords].
+@Deprecated('Deprecated as PositionCoords is deprecated')
 extension PositionCoordinatesExtension on Position {
   /// Returns this position as an instance of [PositionCoords].
   ///
@@ -170,6 +173,7 @@ extension PositionCoordinatesExtension on Position {
 
 /// A helper extension on [Box] to convert position objects between
 /// subtypes like [ProjBox], [GeoBox] and [BoxCoords].
+@Deprecated('Deprecated as BoxCoords is deprecated')
 extension BoxCoordinatesExtension on Box {
   /// Returns this bounding box as an instance of [BoxCoords].
   ///

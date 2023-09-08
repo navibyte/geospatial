@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+// ignore_for_file: deprecated_member_use_from_same_package
+
 part of 'coordinates.dart';
 
 /// A position as an iterable collection of coordinate values.
@@ -36,6 +38,7 @@ part of 'coordinates.dart';
 /// `.xyz`  | 3D    | 3      | `double` |    +    |    +    |    +     |
 /// `.xym`  | 2D    | 3      | `double` |    +    |    +    |          | +
 /// `.xyzm` | 3D    | 4      | `double` |    +    |    +    |    +     | +
+@Deprecated('Use Position instead')
 abstract class PositionCoords extends Position with _CoordinatesMixin {
   @override
   final Iterable<double> _data;
@@ -44,6 +47,7 @@ abstract class PositionCoords extends Position with _CoordinatesMixin {
   final Coords _type;
 
   /// A geospatial position with coordinate values of [type] from [source].
+  @Deprecated('Use Position.view instead')
   const PositionCoords(Iterable<double> source, {Coords type = Coords.xy})
       : _data = source,
         _type = type;
@@ -71,6 +75,7 @@ abstract class PositionCoords extends Position with _CoordinatesMixin {
   /// xyz  | lon, lat, elev
   /// xym  | lon, lat, m
   /// xyzm | lon, lat, elev, m
+  @Deprecated('Use Position.view instead')
   factory PositionCoords.view(Iterable<double> source, {Coords type}) =
       _PositionCoordsImpl.view;
 
@@ -78,6 +83,7 @@ abstract class PositionCoords extends Position with _CoordinatesMixin {
   /// [z] and [m] values.
   ///
   /// This factory is compatible with `CreatePosition` function type.
+  @Deprecated('Use Position.create instead')
   factory PositionCoords.create({
     required double x,
     required double y,
@@ -103,6 +109,7 @@ abstract class PositionCoords extends Position with _CoordinatesMixin {
   /// provided and [text] has 3 items, then xyz coordinates are assumed.
   ///
   /// Throws FormatException if coordinates are invalid.
+  @Deprecated('Use Position.parse instead')
   factory PositionCoords.parse(
     String text, {
     Pattern? delimiter = ',',

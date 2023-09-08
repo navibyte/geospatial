@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+// ignore_for_file: deprecated_member_use_from_same_package
+
 part of 'coordinates.dart';
 
 /// A geospatial bounding box as an iterable collection of coordinate values.
@@ -16,6 +18,7 @@ part of 'coordinates.dart';
 /// * `asGeographic`: returned as a `Geographic` bounding box
 ///
 /// See [Box] for description about supported coordinate values.
+@Deprecated('Use Box instead')
 abstract class BoxCoords extends Box with _CoordinatesMixin {
   @override
   final Iterable<double> _data;
@@ -24,6 +27,7 @@ abstract class BoxCoords extends Box with _CoordinatesMixin {
   final Coords _type;
 
   /// A bounding box with coordinate values of [type] from [source].
+  @Deprecated('Use Box.view instead')
   const BoxCoords(Iterable<double> source, {Coords type = Coords.xy})
       : _data = source,
         _type = type;
@@ -51,6 +55,7 @@ abstract class BoxCoords extends Box with _CoordinatesMixin {
   /// xyz  | west, south, minElev, east, north, maxElev
   /// xym  | west, south, minM, east, north, maxM
   /// xyzm | west, south, minElev, minM, east, north, maxElev, maxM
+  @Deprecated('Use Box.view instead')
   factory BoxCoords.view(Iterable<double> source, {Coords type = Coords.xy}) {
     if (source.length != 2 * type.coordinateDimension) {
       throw invalidCoordinates;
@@ -61,6 +66,7 @@ abstract class BoxCoords extends Box with _CoordinatesMixin {
   /// A bounding box as an iterable collection of coordinate values.
   ///
   /// This factory is compatible with `CreateBox` function type.
+  @Deprecated('Use Box.create instead')
   factory BoxCoords.create({
     required double minX,
     required double minY,
@@ -98,6 +104,7 @@ abstract class BoxCoords extends Box with _CoordinatesMixin {
   /// A minimum bounding box calculated from [positions].
   ///
   /// Throws FormatException if cannot create (ie. [positions] is empty).
+  @Deprecated('Use Box.from instead')
   factory BoxCoords.from(Iterable<Position> positions) =>
       Box.createBoxFrom(positions, BoxCoords.create);
 
@@ -109,6 +116,7 @@ abstract class BoxCoords extends Box with _CoordinatesMixin {
   /// coordinate [type].
   ///
   /// Throws FormatException if coordinates are invalid.
+  @Deprecated('Use Box.parse instead')
   factory BoxCoords.parse(
     String text, {
     Pattern? delimiter = ',',

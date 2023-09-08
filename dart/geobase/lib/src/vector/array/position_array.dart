@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+// ignore_for_file: deprecated_member_use_from_same_package
+
 part of 'coordinates.dart';
 
 /// Coordinate values of geospatial positions as an iterable collection.
@@ -15,6 +17,7 @@ part of 'coordinates.dart';
 /// also use [dataTo] to map coordinate values to custom position types.
 ///
 /// See [Position] for description about supported coordinate values.
+@Deprecated('Use PositionSeries instead')
 abstract class PositionArray with _CoordinatesMixin {
   @override
   final Iterable<double> _data;
@@ -23,6 +26,7 @@ abstract class PositionArray with _CoordinatesMixin {
   final Coords _type;
 
   /// Positions with coordinate values of [type] from [source].
+  @Deprecated('Use PositionSeries.view instead')
   const PositionArray(Iterable<double> source, {Coords type = Coords.xy})
       : _data = source,
         _type = type;
@@ -47,6 +51,7 @@ abstract class PositionArray with _CoordinatesMixin {
   /// performance.
   ///
   /// See [Position] for description about supported coordinate values.
+  @Deprecated('Use PositionSeries.view instead')
   factory PositionArray.view(Iterable<double> source, {Coords type}) =
       _PositionArrayImpl.view;
 
@@ -55,6 +60,7 @@ abstract class PositionArray with _CoordinatesMixin {
   /// Coordinate values in [text] are separated by [delimiter].
   ///
   /// Throws FormatException if coordinates are invalid.
+  @Deprecated('Use PositionSeries.parse instead')
   factory PositionArray.parse(
     String text, {
     Pattern? delimiter = ',',
