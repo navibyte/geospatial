@@ -116,7 +116,7 @@ mixin PositionData<E extends Position> implements Positionable {
   /// Returns true if this and [other] contain exactly same coordinate values
   /// (or both are empty) in the same order and with the same coordinate type.
   bool equalsCoords(PositionData<E> other) {
-    if(identical(this, other)) return true;
+    if (identical(this, other)) return true;
     if (length != other.length) return false;
 
     for (var i = 0; i < length; i++) {
@@ -143,7 +143,7 @@ mixin PositionData<E extends Position> implements Positionable {
   }) {
     assertTolerance(toleranceHoriz);
     if (isEmpty || other.isEmpty) return false;
-    if(identical(this, other)) return true;
+    if (identical(this, other)) return true;
     if (length != other.length) return false;
 
     for (var i = 0; i < length; i++) {
@@ -178,7 +178,7 @@ mixin PositionData<E extends Position> implements Positionable {
     assertTolerance(toleranceVert);
     if (!is3D || !other.is3D) return false;
     if (isEmpty || other.isEmpty) return false;
-    if(identical(this, other)) return true;
+    if (identical(this, other)) return true;
     if (length != other.length) return false;
 
     for (var i = 0; i < length; i++) {
