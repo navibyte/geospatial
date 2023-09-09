@@ -6,6 +6,7 @@
 
 import '/src/codes/coords.dart';
 import '/src/coordinates/base/position.dart';
+import '/src/coordinates/base/position_series.dart';
 
 /// A mixin defining an interface for (geospatial) projections.
 ///
@@ -23,7 +24,7 @@ mixin Projection {
     required CreatePosition<T> to,
   });
 
-  /// Projects positions from [source] and returs a list of projected values.
+  /// Projects positions from [source] and returns a list of projected values.
   ///
   /// Use the required [type] to explicitely specify the type of coordinates.
   ///
@@ -42,4 +43,19 @@ mixin Projection {
     List<double>? target,
     required Coords type,
   });
+
+  /// Projects the [source] position to a position of [Position].
+  ///
+  /// Throws FormatException if cannot project.
+  Position projectPosition(Position source) =>
+      project(source, to: Position.create);
+
+  /// Projects positions from [source] and returns a series of projected
+  /// positions.
+  ///
+  /// Throws FormatException if cannot project.
+  PositionSeries projectSeries(PositionSeries source) => PositionSeries.view(
+        projectCoords(source.values, type: source.type),
+        type: source.type,
+      );
 }
