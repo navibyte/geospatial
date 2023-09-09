@@ -21,25 +21,25 @@ void main() {
       for (var dim = 2; dim <= 4; dim++) {
         final type = Coords.fromDimension(dim);
         for (final coords in wgs84ToWebMercatorData) {
-          final geo = PositionCoords.create(
+          final geo = Position.create(
             x: coords[0],
             y: coords[1],
             z: type.is3D ? 12.3 : null,
             m: type.isMeasured ? 3.9 : null,
           );
-          final proj = PositionCoords.create(
+          final proj = Position.create(
             x: coords[2],
             y: coords[3],
             z: type.is3D ? 12.3 : null,
             m: type.isMeasured ? 3.9 : null,
           );
           expectPosition(
-            forward.project(geo, to: PositionCoords.create),
+            forward.project(geo, to: Position.create),
             proj,
             0.01,
           );
           expectPosition(
-            inverse.project(proj, to: PositionCoords.create),
+            inverse.project(proj, to: Position.create),
             geo,
             0.01,
           );
@@ -72,15 +72,15 @@ void main() {
           target[i * dim] = sample[2];
           target[i * dim + 1] = sample[3];
         }
-        final sourceArray = PositionArray.view(source, type: type);
-        final targetArray = PositionArray.view(target, type: type);
+        final sourceArray = PositionSeries.view(source, type: type);
+        final targetArray = PositionSeries.view(target, type: type);
         expectCoords(
-          sourceArray.project(forward).toList(),
+          forward.projectSeries(sourceArray).values.toList(),
           target,
           0.01,
         );
         expectCoords(
-          targetArray.project(inverse).toList(),
+          inverse.projectSeries(targetArray).values.toList(),
           source,
           0.01,
         );
@@ -88,12 +88,12 @@ void main() {
         final sourceLineString = LineString(sourceArray);
         final targetLineString = LineString(targetArray);
         expectCoords(
-          sourceLineString.project(forward).chain.toList(),
+          sourceLineString.project(forward).chain.values.toList(),
           target,
           0.01,
         );
         expectCoords(
-          targetLineString.project(inverse).chain.toList(),
+          targetLineString.project(inverse).chain.values.toList(),
           source,
           0.01,
         );

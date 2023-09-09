@@ -13,14 +13,12 @@ import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
+import '/src/coordinates/base/position_series.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounded_utils.dart';
 import '/src/utils/bounds_builder.dart';
-import '/src/utils/coord_arrays.dart';
 import '/src/utils/coord_arrays_from_json.dart';
-import '/src/vector/array/coordinates.dart';
-import '/src/vector/array/coordinates_extensions.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
@@ -36,13 +34,13 @@ import 'geometry_builder.dart';
 ///
 /// An empty polygon has no rings.
 class Polygon extends SimpleGeometry {
-  final List<PositionArray> _rings;
+  final List<PositionSeries> _rings;
 
   /// A polygon geometry with one exterior and 0 to N interior [rings].
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry.
   ///
-  /// Each ring in the polygon is represented by a `PositionArray` instance.
+  /// Each ring in the polygon is represented by a `PositionSeries` instance.
   ///
   /// An empty polygon has no rings.
   ///
@@ -52,7 +50,7 @@ class Polygon extends SimpleGeometry {
   /// they should "follow the right-hand rule with respect to the area it
   /// bounds, i.e., exterior rings are counterclockwise, and holes are
   /// clockwise".
-  const Polygon(List<PositionArray> rings, {super.bounds}) : _rings = rings;
+  const Polygon(List<PositionSeries> rings, {super.bounds}) : _rings = rings;
 
   /// A polygon geometry with one exterior and 0 to N interior [rings].
   ///
@@ -74,7 +72,13 @@ class Polygon extends SimpleGeometry {
     Box? bounds,
   }) =>
       Polygon(
-        rings.map((ring) => ring.array()).toList(growable: false),
+        rings
+            .map(
+              (ring) => PositionSeries.from(
+                ring is List<Position> ? ring : ring.toList(growable: false),
+              ),
+            )
+            .toList(growable: false),
         bounds: bounds,
       );
 
@@ -123,7 +127,14 @@ class Polygon extends SimpleGeometry {
     Box? bounds,
   }) =>
       Polygon(
-        buildListOfPositionArrays(rings, type: type),
+        rings
+            .map(
+              (ring) => PositionSeries.view(
+                ring is List<double> ? ring : ring.toList(growable: false),
+                type: type,
+              ),
+            )
+            .toList(growable: false),
         bounds: bounds,
       );
 
@@ -206,19 +217,19 @@ class Polygon extends SimpleGeometry {
   /// For non-empty polygons the first element is the exterior ring,
   /// and any other rings are interior rings (or holes). All rings must be
   /// closed linear rings.
-  List<PositionArray> get rings => _rings;
+  List<PositionSeries> get rings => _rings;
 
   /// An exterior ring of this polygon.
   ///
   /// For empty polygon this returns null.
-  PositionArray? get exterior => _rings.isEmpty ? null : _rings[0];
+  PositionSeries? get exterior => _rings.isEmpty ? null : _rings[0];
 
   /// The interior rings (or holes) of this polygon, allowed to be empty.
-  Iterable<PositionArray> get interior => rings.skip(1);
+  Iterable<PositionSeries> get interior => rings.skip(1);
 
   @override
   Box? calculateBounds() => BoundsBuilder.calculateBounds(
-        arrays: _rings,
+        seriesArray: _rings,
         type: coordType,
       );
 
@@ -232,7 +243,7 @@ class Polygon extends SimpleGeometry {
       return Polygon(
         rings,
         bounds: BoundsBuilder.calculateBounds(
-          arrays: rings,
+          seriesArray: rings,
           type: coordType,
         ),
       );
@@ -253,7 +264,7 @@ class Polygon extends SimpleGeometry {
         return Polygon(
           rings,
           bounds: BoundsBuilder.calculateBounds(
-            arrays: rings,
+            seriesArray: rings,
             type: coordType,
           ),
         );
@@ -279,7 +290,7 @@ class Polygon extends SimpleGeometry {
   @override
   Polygon project(Projection projection) {
     final projected =
-        _rings.map((ring) => ring.project(projection)).toList(growable: false);
+        _rings.map(projection.projectSeries).toList(growable: false);
 
     return Polygon(
       projected,
@@ -287,7 +298,7 @@ class Polygon extends SimpleGeometry {
       // bounds calculated from projected geometry if there was bounds before
       bounds: bounds != null
           ? BoundsBuilder.calculateBounds(
-              arrays: projected,
+              seriesArray: projected,
               type: coordType,
             )
           : null,
@@ -295,15 +306,17 @@ class Polygon extends SimpleGeometry {
   }
 
   @override
-  void writeTo(SimpleGeometryContent writer, {String? name}) =>
-      isEmptyByGeometry
-          ? writer.emptyGeometry(Geom.polygon, name: name)
-          : writer.polygon(
-              _rings,
-              type: coordType,
-              name: name,
-              bounds: bounds,
-            );
+  void writeTo(SimpleGeometryContent writer, {String? name}) {
+    final type = coordType;
+    return isEmptyByGeometry
+        ? writer.emptyGeometry(Geom.polygon, name: name)
+        : writer.polygon(
+            _rings.map((chain) => chain.valuesByType(type)),
+            type: coordType,
+            name: name,
+            bounds: bounds,
+          );
+  }
 
   // NOTE: coordinates as raw data
 
@@ -370,7 +383,7 @@ class Polygon extends SimpleGeometry {
 bool _testPolygons(
   Polygon polygon1,
   Polygon polygon2,
-  bool Function(PositionArray, PositionArray) testPositionArrays,
+  bool Function(PositionSeries, PositionSeries) testPositionArrays,
 ) {
   // ensure both polygons has same amount of linear rings
   final r1 = polygon1.rings;

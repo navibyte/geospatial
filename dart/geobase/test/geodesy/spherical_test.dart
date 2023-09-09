@@ -110,7 +110,7 @@ void main() {
       final polygon = Polygon.build(const [linearRing]);
 
       // an exterior linear ring as an iterable of geographic positions
-      final positions = polygon.exterior!.toGeographicPositions;
+      final positions = polygon.exterior!.positionsAs(to: Geographic.create);
 
       // test area
       expect(positions.spherical.polygonArea(),

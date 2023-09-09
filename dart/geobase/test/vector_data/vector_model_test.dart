@@ -271,24 +271,26 @@ void main() {
       const coords1 = '23.1, 34.2, 45.3, 1.0, 2.0, 3.0';
       const coords2 = '23.1, 34.2, 45.3, 1.0, 2.0, 3.0000003';
       expect(
-        LineString(PositionArray.parse(coords1))
-            .equalsCoords(LineString(PositionArray.parse(coords1))),
+        LineString(PositionSeries.parse(coords1))
+            .equalsCoords(LineString(PositionSeries.parse(coords1))),
         true,
       );
       expect(
-        LineString(PositionArray.parse(coords1))
-            .equalsCoords(LineString(PositionArray.parse(coords2))),
+        LineString(PositionSeries.parse(coords1))
+            .equalsCoords(LineString(PositionSeries.parse(coords2))),
         false,
       );
       expect(
-        LineString(PositionArray.parse(coords2, type: Coords.xyz)).equalsCoords(
-          LineString(PositionArray.parse(coords2, type: Coords.xyz)),
+        LineString(PositionSeries.parse(coords2, type: Coords.xyz))
+            .equalsCoords(
+          LineString(PositionSeries.parse(coords2, type: Coords.xyz)),
         ),
         true,
       );
       expect(
-        LineString(PositionArray.parse(coords2, type: Coords.xyz)).equalsCoords(
-          LineString(PositionArray.parse(coords2, type: Coords.xym)),
+        LineString(PositionSeries.parse(coords2, type: Coords.xyz))
+            .equalsCoords(
+          LineString(PositionSeries.parse(coords2, type: Coords.xym)),
         ),
         false,
       );

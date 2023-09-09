@@ -11,14 +11,13 @@ import 'package:meta/meta.dart';
 import '/src/codes/coords.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
-import '/src/coordinates/data/position_data.dart';
-import '/src/vector/array/coordinates.dart';
+import '/src/coordinates/base/position_series.dart';
 import '/src/vector_data/model/bounded/bounded.dart';
 
 /// A helper class to calculate bounds for a set of points and other bounds.
 ///
-/// Use [addPoint], [addPosition], [addPositions] and [addBounds] methods to add
-/// geometries to be used on calculation.
+/// Use [addPoint], [addPosition], [addPositionSeries] and [addBounds] methods
+/// to add geometries to be used on calculation.
 ///
 /// Also a helper static methods [calculateBounds] helps calculating bounds for
 /// different kind of position collections.
@@ -29,21 +28,21 @@ class BoundsBuilder {
   /// Creates a new builder to calculate bounds for coordinate [type].
   BoundsBuilder(this.type);
 
-  /// Calculates bounds for [item] and/or [collection] and/or [array] and/or
-  /// [arrays] and/or [positions] using the builder.
+  /// Calculates bounds for [item] and/or [collection] and/or [series] and/or
+  /// [seriesArray] and/or [positions] using the builder.
   static Box? calculateBounds<E extends Bounded>({
     E? item,
     Iterable<E>? collection,
-    PositionArray? array,
-    Iterable<PositionArray>? arrays,
+    PositionSeries? series,
+    Iterable<PositionSeries>? seriesArray,
     Iterable<Position>? positions,
     required Coords type,
     bool recalculateChilds = false,
   }) {
     if (item == null &&
         (collection == null || collection.isEmpty) &&
-        (array == null || array.isEmpty) &&
-        (arrays == null || arrays.isEmpty) &&
+        (series == null || series.isEmpty) &&
+        (seriesArray == null || seriesArray.isEmpty) &&
         (positions == null || positions.isEmpty)) return null;
 
     // use bounds builder to calculate bounds
@@ -69,13 +68,13 @@ class BoundsBuilder {
       }
     }
 
-    if (array != null) {
-      builder.addPositions(array.data);
+    if (series != null) {
+      builder.addPositionSeries(series);
     }
 
-    if (arrays != null) {
-      for (final arr in arrays) {
-        builder.addPositions(arr.data);
+    if (seriesArray != null) {
+      for (final s in seriesArray) {
+        builder.addPositionSeries(s);
       }
     }
 
@@ -86,7 +85,7 @@ class BoundsBuilder {
     }
 
     final box = builder.boxCoords;
-    return box != null ? BoxCoords.view(box, type: type) : null;
+    return box != null ? Box.view(box, type: type) : null;
   }
 
   /// The coordinate type for geometries.
@@ -131,27 +130,32 @@ class BoundsBuilder {
         m: point.optM,
       );
 
-  /// Adds position [data] to be used on bounds calculation.
-  void addPositions(PositionData data) {
+  /// Adds position [series] to be used on bounds calculation.
+  void addPositionSeries(PositionSeries series) {
     switch (type) {
       case Coords.xy:
-        for (var i = 0; i < data.length; i++) {
-          addPoint(x: data.x(i), y: data.y(i));
+        for (var i = 0; i < series.length; i++) {
+          addPoint(x: series.x(i), y: series.y(i));
         }
         break;
       case Coords.xyz:
-        for (var i = 0; i < data.length; i++) {
-          addPoint(x: data.x(i), y: data.y(i), z: data.z(i));
+        for (var i = 0; i < series.length; i++) {
+          addPoint(x: series.x(i), y: series.y(i), z: series.z(i));
         }
         break;
       case Coords.xym:
-        for (var i = 0; i < data.length; i++) {
-          addPoint(x: data.x(i), y: data.y(i), m: data.m(i));
+        for (var i = 0; i < series.length; i++) {
+          addPoint(x: series.x(i), y: series.y(i), m: series.m(i));
         }
         break;
       case Coords.xyzm:
-        for (var i = 0; i < data.length; i++) {
-          addPoint(x: data.x(i), y: data.y(i), z: data.z(i), m: data.m(i));
+        for (var i = 0; i < series.length; i++) {
+          addPoint(
+            x: series.x(i),
+            y: series.y(i),
+            z: series.z(i),
+            m: series.m(i),
+          );
         }
         break;
     }

@@ -162,7 +162,7 @@ void _decodeGeometry(
         builder.polygon(
           createFlatPositionArrayArrayDouble(array, coordType, swapXY: swapXY),
           type: coordType,
-          bounds: _buildBboxOpt(geometry, swapXY),
+          bounds: _buildBboxOpt(geometry, swapXY, coordType),
           name: name,
         );
       }
@@ -179,7 +179,7 @@ void _decodeGeometry(
         builder.multiPoint(
           array,
           type: coordType,
-          bounds: _buildBboxOpt(geometry, swapXY),
+          bounds: _buildBboxOpt(geometry, swapXY, coordType),
           name: name,
         );
       }
@@ -193,7 +193,7 @@ void _decodeGeometry(
         builder.multiLineString(
           createFlatPositionArrayArrayDouble(array, coordType, swapXY: swapXY),
           type: coordType,
-          bounds: _buildBboxOpt(geometry, swapXY),
+          bounds: _buildBboxOpt(geometry, swapXY, coordType),
           name: name,
         );
       }
@@ -211,7 +211,7 @@ void _decodeGeometry(
             swapXY: swapXY,
           ),
           type: coordType,
-          bounds: _buildBboxOpt(geometry, swapXY),
+          bounds: _buildBboxOpt(geometry, swapXY, coordType),
           name: name,
         );
       }
@@ -359,8 +359,20 @@ void _decodeFeatureCollection(
   }
 }
 
-Box? _buildBboxOpt(Map<String, dynamic> object, bool swapXY) =>
-    buildBoxCoordsOpt(_getBboxOpt(object, swapXY));
+Box? _buildBboxOpt(Map<String, dynamic> object, bool swapXY, [Coords? type]) {
+  final coords = _getBboxOpt(object, swapXY);
+
+  if (coords != null) {
+    return Box.view(
+      // ensure list structure
+      coords,
+      // resolve type if not known
+      type: type ?? Coords.fromDimension(coords.length ~/ 2),
+    );
+  } else {
+    return null;
+  }
+}
 
 List<double>? _getBboxOpt(Map<String, dynamic> object, bool swapXY) {
   final data = object['bbox'];

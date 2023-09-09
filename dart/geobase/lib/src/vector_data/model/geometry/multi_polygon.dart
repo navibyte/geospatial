@@ -13,14 +13,12 @@ import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
+import '/src/coordinates/base/position_series.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounded_utils.dart';
 import '/src/utils/bounds_builder.dart';
-import '/src/utils/coord_arrays.dart';
 import '/src/utils/coord_arrays_from_json.dart';
-import '/src/vector/array/coordinates.dart';
-import '/src/vector/array/coordinates_extensions.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
@@ -35,19 +33,19 @@ import 'polygon.dart';
 
 /// A multi polygon with an array of polygons (each with an array of rings).
 class MultiPolygon extends SimpleGeometry {
-  final List<List<PositionArray>> _polygons;
+  final List<List<PositionSeries>> _polygons;
 
   /// A multi polygon with an array of [polygons] (each with an array of rings).
   ///
   /// An optional [bounds] can used set a minimum bounding box for a geometry.
   ///
-  /// Each polygon is represented by a `List<PositionArray>` instance containing
-  /// one exterior and 0 to N interior rings. The first element is the exterior
-  /// ring, and any other rings are interior rings (or holes). All rings must be
-  /// closed linear rings. As specified by GeoJSON, they should "follow the
-  /// right-hand rule with respect to the area it bounds, i.e., exterior rings
-  /// are counterclockwise, and holes are clockwise".
-  const MultiPolygon(List<List<PositionArray>> polygons, {super.bounds})
+  /// Each polygon is represented by a `List<PositionSeries>` instance
+  /// containing one exterior and 0 to N interior rings. The first element is
+  /// the exterior ring, and any other rings are interior rings (or holes). All
+  /// rings must be closed linear rings. As specified by GeoJSON, they should
+  /// "follow the right-hand rule with respect to the area it bounds, i.e.,
+  /// exterior rings are counterclockwise, and holes are clockwise".
+  const MultiPolygon(List<List<PositionSeries>> polygons, {super.bounds})
       : _polygons = polygons;
 
   /// A multi polygon with an array of [polygons] (each with an array of rings).
@@ -69,8 +67,15 @@ class MultiPolygon extends SimpleGeometry {
       MultiPolygon(
         polygons
             .map(
-              (polygon) =>
-                  polygon.map((ring) => ring.array()).toList(growable: false),
+              (polygon) => polygon
+                  .map(
+                    (ring) => PositionSeries.from(
+                      ring is List<Position>
+                          ? ring
+                          : ring.toList(growable: false),
+                    ),
+                  )
+                  .toList(growable: false),
             )
             .toList(growable: false),
         bounds: bounds,
@@ -131,7 +136,20 @@ class MultiPolygon extends SimpleGeometry {
     Box? bounds,
   }) =>
       MultiPolygon(
-        buildListOfListOfPositionArrays(polygons, type: type),
+        polygons
+            .map(
+              (rings) => rings
+                  .map(
+                    (ring) => PositionSeries.view(
+                      ring is List<double>
+                          ? ring
+                          : ring.toList(growable: false),
+                      type: type,
+                    ),
+                  )
+                  .toList(growable: false),
+            )
+            .toList(growable: false),
         bounds: bounds,
       );
 
@@ -212,15 +230,15 @@ class MultiPolygon extends SimpleGeometry {
   bool get isEmptyByGeometry => _polygons.isEmpty;
 
   /// The ring arrays of all polygons.
-  List<List<PositionArray>> get ringArrays => _polygons;
+  List<List<PositionSeries>> get ringArrays => _polygons;
 
   /// All polygons as a lazy iterable of [Polygon] geometries.
   Iterable<Polygon> get polygons => ringArrays.map<Polygon>(Polygon.new);
 
-  static Iterable<PositionArray> _allRings(
-    List<List<PositionArray>> ringArrays,
+  static Iterable<PositionSeries> _allRings(
+    List<List<PositionSeries>> ringArrays,
   ) {
-    Iterable<PositionArray>? iter;
+    Iterable<PositionSeries>? iter;
     for (final rings in ringArrays) {
       iter = iter == null ? rings : iter.followedBy(rings);
     }
@@ -229,7 +247,7 @@ class MultiPolygon extends SimpleGeometry {
 
   @override
   Box? calculateBounds() => BoundsBuilder.calculateBounds(
-        arrays: _allRings(_polygons),
+        seriesArray: _allRings(_polygons),
         type: coordType,
       );
 
@@ -243,7 +261,7 @@ class MultiPolygon extends SimpleGeometry {
       return MultiPolygon(
         ringArrays,
         bounds: BoundsBuilder.calculateBounds(
-          arrays: _allRings(ringArrays),
+          seriesArray: _allRings(ringArrays),
           type: coordType,
         ),
       );
@@ -264,7 +282,7 @@ class MultiPolygon extends SimpleGeometry {
         return MultiPolygon(
           ringArrays,
           bounds: BoundsBuilder.calculateBounds(
-            arrays: _allRings(ringArrays),
+            seriesArray: _allRings(ringArrays),
             type: coordType,
           ),
         );
@@ -290,9 +308,9 @@ class MultiPolygon extends SimpleGeometry {
   @override
   MultiPolygon project(Projection projection) {
     final projected = _polygons
-        .map<List<PositionArray>>(
+        .map<List<PositionSeries>>(
           (rings) => rings
-              .map<PositionArray>((ring) => ring.project(projection))
+              .map<PositionSeries>(projection.projectSeries)
               .toList(growable: false),
         )
         .toList(growable: false);
@@ -303,7 +321,7 @@ class MultiPolygon extends SimpleGeometry {
       // bounds calculated from projected geometry if there was bounds before
       bounds: bounds != null
           ? BoundsBuilder.calculateBounds(
-              arrays: _allRings(projected),
+              seriesArray: _allRings(projected),
               type: coordType,
             )
           : null,
@@ -311,15 +329,18 @@ class MultiPolygon extends SimpleGeometry {
   }
 
   @override
-  void writeTo(SimpleGeometryContent writer, {String? name}) =>
-      isEmptyByGeometry
-          ? writer.emptyGeometry(Geom.multiPolygon, name: name)
-          : writer.multiPolygon(
-              _polygons,
-              type: coordType,
-              name: name,
-              bounds: bounds,
-            );
+  void writeTo(SimpleGeometryContent writer, {String? name}) {
+    final type = coordType;
+    return isEmptyByGeometry
+        ? writer.emptyGeometry(Geom.multiPolygon, name: name)
+        : writer.multiPolygon(
+            _polygons
+                .map((rings) => rings.map((ring) => ring.valuesByType(type))),
+            type: type,
+            name: name,
+            bounds: bounds,
+          );
+  }
 
   // NOTE: coordinates as raw data
 
@@ -388,7 +409,7 @@ class MultiPolygon extends SimpleGeometry {
 bool _testMultiPolygons(
   MultiPolygon mp1,
   MultiPolygon mp2,
-  bool Function(PositionArray, PositionArray) testPositionArrays,
+  bool Function(PositionSeries, PositionSeries) testPositionArrays,
 ) {
   // ensure both multi polygons has same amount of arrays of ring data
   final arr1 = mp1.ringArrays;

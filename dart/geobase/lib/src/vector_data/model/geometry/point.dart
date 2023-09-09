@@ -15,9 +15,7 @@ import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
-import '/src/utils/coord_arrays.dart';
 import '/src/utils/coord_arrays_from_json.dart';
-import '/src/vector/array/coordinates.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
@@ -76,7 +74,16 @@ class Point implements SimpleGeometry {
     Iterable<double> position, {
     Coords? type,
   }) =>
-      Point(buildPositionCoords(position, type: type));
+      Point(
+        Position.view(
+          // ensure list structure
+          position is List<double>
+              ? position
+              : position.toList(growable: false),
+          // resolve type if not known
+          type: type ?? Coords.fromDimension(position.length),
+        ),
+      );
 
   /// Parses a point geometry from [text] conforming to [format].
   ///
@@ -170,7 +177,7 @@ class Point implements SimpleGeometry {
 
   /// The bounding box for this point, min and max with the same point position.
   @override
-  Box calculateBounds() => BoxCoords.create(
+  Box calculateBounds() => Box.create(
         minX: position.x,
         minY: position.y,
         minZ: position.optZ,
@@ -204,7 +211,7 @@ class Point implements SimpleGeometry {
 
   @override
   Point project(Projection projection) =>
-      Point(projection.project(_position, to: PositionCoords.create));
+      Point(projection.projectPosition(_position));
 
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>

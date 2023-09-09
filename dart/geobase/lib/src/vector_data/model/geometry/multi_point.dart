@@ -17,10 +17,7 @@ import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounded_utils.dart';
 import '/src/utils/bounds_builder.dart';
-import '/src/utils/coord_arrays.dart';
 import '/src/utils/coord_arrays_from_json.dart';
-import '/src/vector/array/coordinates.dart';
-import '/src/vector/array/coordinates_extensions.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
@@ -51,9 +48,7 @@ class MultiPoint extends SimpleGeometry {
   /// The coordinate type of all points should be the same.
   factory MultiPoint.from(Iterable<Position> points, {Box? bounds}) =>
       MultiPoint(
-        points is List<Position>
-            ? points
-            : points.map((p) => p.coords).toList(growable: false),
+        points is List<Position> ? points : points.toList(growable: false),
         bounds: bounds,
       );
 
@@ -86,7 +81,14 @@ class MultiPoint extends SimpleGeometry {
     Box? bounds,
   }) =>
       MultiPoint(
-        buildListOfPositionsCoords(points, type: type),
+        points
+            .map(
+              (pos) => Position.view(
+                pos is List<double> ? pos : pos.toList(growable: false),
+                type: type,
+              ),
+            )
+            .toList(growable: false),
         bounds: bounds,
       );
 
@@ -240,8 +242,8 @@ class MultiPoint extends SimpleGeometry {
 
   @override
   MultiPoint project(Projection projection) {
-    final projected = _points
-        .map((pos) => projection.project(pos, to: PositionCoords.create))
+    final projected = positions
+        .map((pos) => projection.project(pos, to: Position.create))
         .toList(growable: false);
 
     return MultiPoint(
@@ -262,7 +264,7 @@ class MultiPoint extends SimpleGeometry {
       isEmptyByGeometry
           ? writer.emptyGeometry(Geom.multiPoint, name: name)
           : writer.multiPoint(
-              _points.map((e) => e.values),
+              positions.map((e) => e.values),
               type: coordType,
               name: name,
               bounds: bounds,

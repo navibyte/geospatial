@@ -13,14 +13,12 @@ import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
+import '/src/coordinates/base/position_series.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounded_utils.dart';
 import '/src/utils/bounds_builder.dart';
-import '/src/utils/coord_arrays.dart';
 import '/src/utils/coord_arrays_from_json.dart';
-import '/src/vector/array/coordinates.dart';
-import '/src/vector/array/coordinates_extensions.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
@@ -34,12 +32,12 @@ import 'geometry_builder.dart';
 
 /// A line string geometry with a chain of positions.
 class LineString extends SimpleGeometry {
-  final PositionArray _chain;
+  final PositionSeries _chain;
 
   /// A line string geometry with a [chain] of positions and optional [bounds].
   ///
   /// The [chain] array must contain at least two positions (or be empty).
-  const LineString(PositionArray chain, {super.bounds})
+  const LineString(PositionSeries chain, {super.bounds})
       : _chain = chain,
         assert(
           chain.length == 0 || chain.length >= 2,
@@ -52,7 +50,12 @@ class LineString extends SimpleGeometry {
   ///
   /// The coordinate type of all positions in a chain should be the same.
   factory LineString.from(Iterable<Position> chain, {Box? bounds}) =>
-      LineString(chain.array(), bounds: bounds);
+      LineString(
+        PositionSeries.from(
+          chain is List<Position> ? chain : chain.toList(growable: false),
+        ),
+        bounds: bounds,
+      );
 
   /// Builds a line string geometry from a [chain] of positions.
   ///
@@ -85,7 +88,10 @@ class LineString extends SimpleGeometry {
     Box? bounds,
   }) =>
       LineString(
-        buildPositionArray(chain, type: type),
+        PositionSeries.view(
+          chain is List<double> ? chain : chain.toList(growable: false),
+          type: type,
+        ),
         bounds: bounds,
       );
 
@@ -165,11 +171,11 @@ class LineString extends SimpleGeometry {
   bool get isEmptyByGeometry => _chain.isEmpty;
 
   /// The chain of positions in this line string geometry.
-  PositionArray get chain => _chain;
+  PositionSeries get chain => _chain;
 
   @override
   Box? calculateBounds() => BoundsBuilder.calculateBounds(
-        array: _chain,
+        series: chain,
         type: coordType,
       );
 
@@ -183,7 +189,7 @@ class LineString extends SimpleGeometry {
       return LineString(
         chain,
         bounds: BoundsBuilder.calculateBounds(
-          array: chain,
+          series: chain,
           type: coordType,
         ),
       );
@@ -204,7 +210,7 @@ class LineString extends SimpleGeometry {
         return LineString(
           chain,
           bounds: BoundsBuilder.calculateBounds(
-            array: chain,
+            series: chain,
             type: coordType,
           ),
         );
@@ -229,7 +235,7 @@ class LineString extends SimpleGeometry {
 
   @override
   LineString project(Projection projection) {
-    final projected = _chain.project(projection);
+    final projected = projection.projectSeries(_chain);
 
     return LineString(
       projected,
@@ -237,7 +243,7 @@ class LineString extends SimpleGeometry {
       // bounds calculated from projected chain if there was bounds before
       bounds: bounds != null
           ? BoundsBuilder.calculateBounds(
-              array: projected,
+              series: projected,
               type: coordType,
             )
           : null,
@@ -249,7 +255,7 @@ class LineString extends SimpleGeometry {
       isEmptyByGeometry
           ? writer.emptyGeometry(Geom.lineString, name: name)
           : writer.lineString(
-              _chain,
+              chain.values,
               type: coordType,
               name: name,
               bounds: bounds,
