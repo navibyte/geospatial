@@ -9,13 +9,13 @@ import '/src/codes/coords.dart';
 /// A positionable object has (geospatial) coordinate values available.
 ///
 /// This interface is extended at least by `Position` (representing a single
-/// position), `PositionData` (representing a series of positions) and `Box`
+/// position), `PositionSeries` (representing a series of positions) and `Box`
 /// (representing a single bounding box with minimum and maximum coordinates).
 abstract class Positionable {
   /// Default `const` constructor to allow extending this abstract class.
   const Positionable();
 
-  /// The number of coordinate values (2, 3 or 4).
+  /// The number of coordinate values (2, 3 or 4) on a position.
   ///
   /// If value is 2, a position has 2D coordinates without m coordinate.
   ///
@@ -33,7 +33,8 @@ abstract class Positionable {
     }
   }
 
-  /// The number of spatial coordinate values (2 for 2D or 3 for 3D).
+  /// The number of spatial coordinate values (2 for 2D or 3 for 3D) on a
+  /// position.
   int get spatialDimension => is3D ? 3 : 2;
 
   /// True for 3D positions (with z or elevation coordinate).
