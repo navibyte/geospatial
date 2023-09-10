@@ -8,6 +8,7 @@
 
 import 'dart:typed_data';
 
+import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
@@ -369,6 +370,7 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
   @override
   void geometryCollection(
     WriteGeometries geometries, {
+    Coords? type,
     int? count,
     String? name,
     Box? bounds,

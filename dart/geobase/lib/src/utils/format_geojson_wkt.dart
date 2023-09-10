@@ -262,16 +262,16 @@ abstract class _BaseTextWriter<T extends Object>
   @override
   void geometryCollection(
     WriteGeometries geometries, {
-    //Coords? type,
+    Coords? type,
     int? count,
     String? name,
     Box? bounds,
   }) {
-    //_startCoordType(type);
+    if (type != null) _startCoordType(type);
     _startObjectArray(count: count);
     geometries.call(this);
     _endObjectArray();
-    //_endCoordType();
+    if (type != null) _endCoordType();
   }
 
   @override
@@ -568,7 +568,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
   @override
   void geometryCollection(
     WriteGeometries geometries, {
-    //Coords? type,
+    Coords? type,
     int? count,
     String? name,
     Box? bounds,
@@ -585,7 +585,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
       _buffer.write(name == null ? '"geometry":' : '"$name":');
     }
     _startContainer(_Container.geometry);
-    //_startCoordType(type);
+    if (type != null) _startCoordType(type);
     _buffer.write('{"type":"GeometryCollection"');
     if (bounds != null) {
       _buffer.write(',"bbox":[');
@@ -597,7 +597,7 @@ class GeoJsonTextWriter<T extends Object> extends DefaultTextWriter<T>
     geometries.call(this);
     _endObjectArray();
     _buffer.write('}');
-    //_endCoordType();
+    if (type != null) _endCoordType();
     _endContainer();
   }
 
@@ -1006,7 +1006,7 @@ class WktTextWriter<T extends Object> extends WktLikeTextWriter<T> {
   @override
   void geometryCollection(
     WriteGeometries geometries, {
-    //Coords? type,
+    Coords? type,
     int? count,
     String? name,
     Box? bounds,
@@ -1015,12 +1015,18 @@ class WktTextWriter<T extends Object> extends WktLikeTextWriter<T> {
       _buffer.write(',');
     }
     _startContainer(_Container.geometry);
-    //_startCoordType(type);
+    if(type != null) _startCoordType(type);
     _buffer.write('GEOMETRYCOLLECTION');
+    final specifier = type?.wktSpecifier;
+    if (specifier != null) {
+      _buffer
+        ..write(' ')
+        ..write(specifier);
+    }
     _startObjectArray(count: count);
     geometries.call(this);
     _endObjectArray();
-    //_endCoordType();
+    if(type != null) _endCoordType();
     _endContainer();
   }
 

@@ -95,7 +95,7 @@ class Feature<T extends Geometry> extends FeatureObject {
   /// ```dart
   ///   Feature<Point>.build(
   ///       id: '1',
-  ///       geometry: (geom) => geom.point([10.123, 20.25]),
+  ///       geometry: (geom) => geom.point([10.123, 20.25].xy),
   ///       properties: {
   ///          'foo': 100,
   ///          'bar': 'this is property value',

@@ -31,15 +31,21 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   final Coords _coordType;
 
   /// A geometry collection with [geometries] and optional [bounds].
-  GeometryCollection(List<E> geometries, {super.bounds})
+  ///
+  /// An optional [type] specifies the coordinate type of geometry objects in a
+  /// collection. When not provided, the type can be resolved from objects.
+  GeometryCollection(List<E> geometries, {Coords? type, super.bounds})
       : _geometries = geometries,
-        _coordType = resolveCoordTypeFrom(collection: geometries);
+        _coordType = type ?? resolveCoordTypeFrom(collection: geometries);
 
   const GeometryCollection._(this._geometries, this._coordType, {super.bounds});
 
   /// Builds a geometry collection from the content provided by [geometries].
   ///
   /// Only geometry objects of [E] are built, any other geometries are ignored.
+  ///
+  /// An optional [type] specifies the coordinate type of geometry objects in a
+  /// collection. When not provided, the type can be resolved from objects.
   ///
   /// An optional expected [count], when given, specifies the number of geometry
   /// objects in a content stream. Note that when given the count MUST be exact.
@@ -50,9 +56,10 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   /// An example to build a geometry collection with two child geometries:
   /// ```dart
   ///   GeometryCollection.build(
+  ///       type: Coords.xy,
   ///       count: 2,
   ///       (geom) => geom
-  ///         ..point([10.123, 20.25])
+  ///         ..point([10.123, 20.25].xy)
   ///         ..polygon(
   ///           [
   ///              [
@@ -60,9 +67,8 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   ///                 5.0, 9.0,
   ///                 12.0, 4.0,
   ///                 10.1, 10.1,
-  ///              ],
+  ///              ].positions(Coords.xy),
   ///           ],
-  ///           type: Coords.xy,
   ///         ),
   ///     );
   /// ```
@@ -72,19 +78,21 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   ///   GeometryCollection<Point>.build(
   ///       count: 3,
   ///       (geom) => geom
-  ///         ..point([-1.1, -1.1])
-  ///         ..point([2.1, -2.5])
-  ///         ..point([3.5, -3.49]),
+  ///         ..point([-1.1, -1.1].xy)
+  ///         ..point([2.1, -2.5].xy)
+  ///         ..point([3.5, -3.49].xy),
   ///     );
   /// ```
   factory GeometryCollection.build(
     WriteGeometries geometries, {
+    Coords? type,
     int? count,
     Box? bounds,
   }) =>
       GeometryCollection<E>(
         GeometryBuilder.buildList<E>(geometries, count: count),
         bounds: bounds,
+        type: type,
       );
 
   /// Parses a geometry collection with elements of [T] from [text] conforming
@@ -257,6 +265,7 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   void writeTo(GeometryContent writer, {String? name}) => isEmptyByGeometry
       ? writer.emptyGeometry(Geom.geometryCollection, name: name)
       : writer.geometryCollection(
+          type: coordType,
           count: _geometries.length,
           name: name,
           (output) {

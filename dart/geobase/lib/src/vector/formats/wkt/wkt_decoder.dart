@@ -123,6 +123,7 @@ void _parseGeometry(
                 case 6: // GEOMETRYCOLLECTION
                   builder.geometryCollection(
                     (geom) => _parseGeometryCollection(data, geom, crs),
+                    type: coordsType,
                   );
                   return;
               }

@@ -85,6 +85,7 @@ class _WkbGeometryBufferDecoder {
 
         // build geometry collection
         builder.geometryCollection(
+          type: coordType,
           count: numGeometries,
           // use callback content interface to build "numGeometries" to buffer
           (geom) => _WkbGeometryBufferDecoder(

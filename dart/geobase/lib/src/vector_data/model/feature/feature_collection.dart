@@ -76,7 +76,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   ///       (features) => features
   ///           ..feature(
   ///               id: '1',
-  ///               geometry: (geom) => geom.point([10.123, 20.25]),
+  ///               geometry: (geom) => geom.point([10.123, 20.25].xy),
   ///               properties: {
   ///                  'foo': 100,
   ///                  'bar': 'this is property value',
