@@ -102,6 +102,12 @@ class GeoBox extends Box {
         _maxElev = maxZ,
         _maxM = maxM;
 
+  /// Creates a geographic bounding box by copying coordinates from [source].
+  ///
+  /// If [source] is an instance of [GeoBox] then it's returned.
+  static GeoBox fromBox(Box source) =>
+      source is GeoBox ? source : source.copyTo(GeoBox.create);
+
   /// A minimum bounding box calculated from [positions].
   ///
   /// Throws FormatException if cannot create (ie. [positions] is empty).

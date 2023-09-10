@@ -18,6 +18,7 @@ import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounded_utils.dart';
 import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_arrays_from_json.dart';
+import '/src/utils/coord_type.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
@@ -160,7 +161,7 @@ class MultiPoint extends SimpleGeometry {
   Geom get geomType => Geom.multiPoint;
 
   @override
-  Coords get coordType => _points.isNotEmpty ? _points.first.type : Coords.xy;
+  Coords get coordType => positionArrayType(positions);
 
   @override
   bool get isEmptyByGeometry => _points.isEmpty;
@@ -242,9 +243,8 @@ class MultiPoint extends SimpleGeometry {
 
   @override
   MultiPoint project(Projection projection) {
-    final projected = positions
-        .map((pos) => projection.project(pos, to: Position.create))
-        .toList(growable: false);
+    final projected =
+        positions.map((pos) => pos.project(projection)).toList(growable: false);
 
     return MultiPoint(
       projected,
@@ -263,12 +263,7 @@ class MultiPoint extends SimpleGeometry {
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
       isEmptyByGeometry
           ? writer.emptyGeometry(Geom.multiPoint, name: name)
-          : writer.multiPoint(
-              positions.map((e) => e.values),
-              type: coordType,
-              name: name,
-              bounds: bounds,
-            );
+          : writer.multiPoint(positions, name: name, bounds: bounds);
 
   // NOTE: coordinates as raw data
 

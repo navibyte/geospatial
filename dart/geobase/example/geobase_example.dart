@@ -19,6 +19,7 @@ void main() {
   _intro();
 
   // coordinates
+  _positionSeries();
   _geographicCoordinates();
   _geographicCoordinatesDMS();
   _projectedCoordinates();
@@ -61,9 +62,6 @@ void main() {
   // tiling schemes
   _webMercatorQuad();
   _globalGeodeticQuad();
-
-  // coordinate arrays
-  _coordinateArrays();
 }
 
 void _intro() {
@@ -248,6 +246,35 @@ void _intro() {
     format: GeoJSON.feature,
   );
   print(feature.toText(format: GeoJSON.feature));
+}
+
+void _positionSeries() {
+  // A position series with three positions each with x and y coordinates.
+  PositionSeries.view(
+    [
+      10.0, 11.0, // (x, y) for position 0
+      20.0, 21.0, // (x, y) for position 1
+      30.0, 31.0, // (x, y) for position 2
+    ],
+    type: Coords.xy,
+  );
+
+  // A shortcut to create a position series with three positions (with x and y).
+  [
+    10.0, 11.0, // (x, y) for position 0
+    20.0, 21.0, // (x, y) for position 1
+    30.0, 31.0, // (x, y) for position 2
+  ].positions(Coords.xy);
+
+  // A position series with three positions each with x, y and z coordinates.
+  PositionSeries.view(
+    [
+      10.0, 11.0, 12.0, // (x, y, z) for position 0
+      20.0, 21.0, 22.0, // (x, y, z) for position 1
+      30.0, 31.0, 32.0, // (x, y, z) for position 2
+    ],
+    type: Coords.xyz,
+  );
 }
 
 void _geographicCoordinates() {
@@ -730,7 +757,7 @@ void _geoJsonWithAlternativeCRS() {
     // no CRS must be specified for the default coordinate reference system:
     // `CoordRefSys.CRS84` or `http://www.opengis.net/def/crs/OGC/1.3/CRS84`
   );
-  final pos1 = point1.position.asGeographic;
+  final pos1 = Geographic.from(point1.position);
   // prints: Point1: lon: 0.0014°W lat: 51.4778°N
   print('Point1: lon: ${pos1.lonDms()} lat: ${pos1.latDms()}');
 
@@ -739,7 +766,7 @@ void _geoJsonWithAlternativeCRS() {
     '{"type": "Point", "coordinates": [51.4778, -0.0014, 45.0]}',
     crs: epsg4326, // CRS must be explicitely specified
   );
-  final pos2 = point2.position.asGeographic;
+  final pos2 = Geographic.from(point2.position);
   // prints: Point2: lon: 0.0014°W lat: 51.4778°N
   print('Point2: lon: ${pos2.lonDms()} lat: ${pos2.latDms()}');
 
@@ -799,8 +826,7 @@ void _wkt() {
   // prints:
   //    POINT ZM(10.123 20.25 -30.95 -1.999)
   encoder.writer.point(
-    [10.123, 20.25, -30.95, -1.999],
-    type: Coords.xyzm,
+    [10.123, 20.25, -30.95, -1.999].xyzm,
   );
   print(encoder.toText());
 }
@@ -812,8 +838,7 @@ void _wkbSample1() {
 
   // write geometries (here only point) to content writer of the encoder
   encoder.writer.point(
-    [10.123, 20.25, -30.95, -1.999],
-    type: Coords.xyzm,
+    [10.123, 20.25, -30.95, -1.999].xyzm,
   );
 
   // get encoded bytes (Uint8List) and Base64 encoded text (String)
@@ -1134,26 +1159,4 @@ void _globalGeodeticQuad() {
 
   // inverse: zoom from scale denominator at the Equator
   print(quad.zoomFromScaleDenominator(272989.39)); // ~ 10.0 (double value)
-}
-
-void _coordinateArrays() {
-  // A position array with three positions each with x and y coordinates.
-  PositionArray.view(
-    [
-      10.0, 11.0, // (x, y) for position 0
-      20.0, 21.0, // (x, y) for position 1
-      30.0, 31.0, // (x, y) for position 2
-    ],
-    type: Coords.xy,
-  );
-
-  // A position array with three positions each with x, y and z coordinates.
-  PositionArray.view(
-    [
-      10.0, 11.0, 12.0, // (x, y, z) for position 0
-      20.0, 21.0, 22.0, // (x, y, z) for position 1
-      30.0, 31.0, 32.0, // (x, y, z) for position 2
-    ],
-    type: Coords.xyz,
-  );
 }

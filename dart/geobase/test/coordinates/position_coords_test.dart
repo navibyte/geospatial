@@ -7,7 +7,6 @@
 // ignore_for_file: unrelated_type_equality_checks, prefer_const_declarations
 
 import 'package:geobase/coordinates.dart';
-import 'package:geobase/vector.dart';
 
 import 'package:test/test.dart';
 
@@ -23,16 +22,16 @@ void main() {
       final xymPos = xymData.xym;
 
       // positions as lists equals to their representive iterable representation
-      expect(xyzPos.toList(), xyzData);
-      expect(xymPos.toList(), xymData);
+      expect(xyzPos.values, xyzData);
+      expect(xymPos.values, xymData);
 
       // positions equals to their representive iterable representation
-      expect(xyzPos, xyzData);
-      expect(xymPos, xymData);
+      expect(xyzPos.values, xyzData);
+      expect(xymPos.values, xymData);
 
       // but not vice versa, as expected
-      expect(xyzPos, isNot(xymData));
-      expect(xymPos, isNot(xyzData));
+      expect(xyzPos.values, isNot(xymData));
+      expect(xymPos.values, isNot(xyzData));
 
       // then we create "XYZ" position from "XYM" data
       final xyzPosFromXym = xymData.xyz;
@@ -59,15 +58,15 @@ void main() {
 
       // expect matches by indidually iterating, so there test are ok
       expect(xymData, xymPos.values);
-      expect(xymData, xyzPosFromXym);
+      expect(xymData, xyzPosFromXym.values);
 
       // testing by values (xymPos vs xyzPos)
       expect(xymPos[0], xyzPos[0]);
       expect(xymPos[1], xyzPos[1]);
       expect(xymPos[2], isNot(xyzPos[2]));
-      expect(xymPos.elementAt(0), xyzPos.elementAt(0));
-      expect(xymPos.elementAt(1), xyzPos.elementAt(1));
-      expect(xymPos.elementAt(2), isNot(xyzPos.elementAt(2)));
+      expect(xymPos.values.elementAt(0), xyzPos.values.elementAt(0));
+      expect(xymPos.values.elementAt(1), xyzPos.values.elementAt(1));
+      expect(xymPos.values.elementAt(2), isNot(xyzPos.values.elementAt(2)));
       expect(xymPos.x, xyzPos.x);
       expect(xymPos.y, xyzPos.y);
       expect(xymPos.z, isNot(xyzPos.z));
@@ -81,9 +80,9 @@ void main() {
       expect(xymPos[0], xyzPosFromXym[0]);
       expect(xymPos[1], xyzPosFromXym[1]);
       expect(xymPos[2], xyzPosFromXym[2]);
-      expect(xymPos.elementAt(0), xyzPosFromXym.elementAt(0));
-      expect(xymPos.elementAt(1), xyzPosFromXym.elementAt(1));
-      expect(xymPos.elementAt(2), xyzPosFromXym.elementAt(2));
+      expect(xymPos.values.elementAt(0), xyzPosFromXym.values.elementAt(0));
+      expect(xymPos.values.elementAt(1), xyzPosFromXym.values.elementAt(1));
+      expect(xymPos.values.elementAt(2), xyzPosFromXym.values.elementAt(2));
       expect(xymPos.x, xyzPosFromXym.x);
       expect(xymPos.y, xyzPosFromXym.y);
       expect(xymPos.z, isNot(xyzPosFromXym.z));
@@ -100,22 +99,23 @@ void main() {
       const xymData = [15.0, 30.1, 60.3];
       const xyzmData = [15.0, 30.1, 45.2, 60.3];
 
-      expect(PositionCoords.view(xyData), Projected.build(xyData).coords);
+      expect(Position.view(xyData), Projected.build(xyData));
+      expect(Position.view(xyData).values, Projected.build(xyData).values);
       expect(
-        PositionCoords.view(xyzData, type: Coords.xyz),
-        Projected.build(xyzData).coords,
+        Position.view(xyzData, type: Coords.xyz),
+        Projected.build(xyzData),
       );
       expect(
-        PositionCoords.view(xyzData, type: Coords.xyz),
-        Projected.build(xyzData, type: Coords.xyz).coords,
+        Position.view(xyzData, type: Coords.xyz),
+        Projected.build(xyzData, type: Coords.xyz),
       );
       expect(
-        PositionCoords.view(xymData, type: Coords.xym),
-        Projected.build(xymData, type: Coords.xym).coords,
+        Position.view(xymData, type: Coords.xym),
+        Projected.build(xymData, type: Coords.xym),
       );
       expect(
-        PositionCoords.view(xyzmData, type: Coords.xyzm),
-        Projected.build(xyzmData, type: Coords.xyzm).coords,
+        Position.view(xyzmData, type: Coords.xyzm),
+        Projected.build(xyzmData, type: Coords.xyzm),
       );
     });
 
@@ -137,22 +137,26 @@ void main() {
         [null, null, null, null],
       );
 
-      expect(PositionCoords.view([1.0, 2.0]), p1);
-      expect(PositionCoords.view([1.0, 2.0, 3.0]), p2);
-      expect(PositionCoords.view([1.0, 2.0, 4.0]) == p3, false);
-      expect(PositionCoords.view([1.0, 2.0, 4.0], type: Coords.xym), p3);
-      expect(PositionCoords.view([1.0, 2.0, 3.0, 4.0]), p4);
+      expect(Position.view([1.0, 2.0]), p1);
+      expect(Position.view([1.0, 2.0, 3.0]), p2);
+      expect(Position.view([1.0, 2.0, 4.0]) == p3, false);
+      expect(Position.view([1.0, 2.0, 4.0], type: Coords.xym), p3);
+      expect(Position.view([1.0, 2.0, 3.0, 4.0]), p4);
 
-      expect(PositionCoords.parse('1.0,2.0'), p1);
-      expect(PositionCoords.parse('1.0,2.0,3.0'), p2);
-      expect(PositionCoords.parse('1.0,2.0,4.0', type: Coords.xym), p3);
-      expect(PositionCoords.parse('1.0,2.0,3.0,4.0'), p4);
-      expect(PositionCoords.parse('1.0 2.0 3.0 4.0', delimiter: ' '), p4);
+      expect(Position.parse('1.0,2.0'), p1);
+      expect(Position.parse('1.0,2.0,3.0'), p2);
+      expect(Position.parse('1.0,2.0,4.0', type: Coords.xym), p3);
+      expect(Position.parse('1.0,2.0,3.0,4.0'), p4);
+      expect(Position.parse('1.0 2.0 3.0 4.0', delimiter: ' '), p4);
 
-      expect(() => PositionCoords.view([1.0]).y, throwsRangeError);
-      expect(() => PositionCoords.parse('1.0'), throwsFormatException);
       expect(
-        () => PositionCoords.parse('1.0,2.0,x'),
+        () => Position.view([1.0], type: Coords.xy).y,
+        throwsFormatException,
+      );
+      expect(() => Position.view([1.0]).y, throwsFormatException);
+      expect(() => Position.parse('1.0'), throwsFormatException);
+      expect(
+        () => Position.parse('1.0,2.0,x'),
         throwsFormatException,
       );
     });
@@ -174,7 +178,7 @@ void main() {
       expect(p1.equals3D(p3), false);
 
       // copy to
-      expect(p1, p1.copyTo(PositionCoords.create));
+      expect(p1, p1.copyTo(Position.create));
       expect(p1, p1.copyTo(Geographic.create));
 
       // with some coordinates missing or other type
@@ -193,8 +197,8 @@ void main() {
     });
 
     test('Equals with tolerance', () {
-      final p1 = PositionCoords.create(x: 1.0002, y: 2.0002, z: 3.002, m: 4.0);
-      final p2 = PositionCoords.create(x: 1.0003, y: 2.0003, z: 3.003, m: 4.0);
+      final p1 = Position.create(x: 1.0002, y: 2.0002, z: 3.002, m: 4.0);
+      final p2 = Position.create(x: 1.0003, y: 2.0003, z: 3.003, m: 4.0);
       expect(p1.equals2D(p2), false);
       expect(p1.equals3D(p2), false);
       expect(p1.equals2D(p2, toleranceHoriz: 0.00011), true);
@@ -256,7 +260,7 @@ void _testCoordinateOrder(
   Iterable<double> coords, [
   Coords? type,
 ]) {
-  final factories = [PositionCoords.create];
+  final factories = [Position.create];
 
   for (final factory in factories) {
     final fromCoords = Position.buildPosition(coords, to: factory, type: type);
@@ -274,7 +278,7 @@ void _testCoordinateOrder(
     );
 
     expect(
-      PositionCoords.view(
+      Position.view(
         coords,
         type: type ?? Coords.fromDimension(coords.length),
       ),

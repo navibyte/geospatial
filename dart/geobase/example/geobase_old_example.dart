@@ -41,7 +41,7 @@ void _wktPointGeometry() {
 
   // prints:
   //    POINT(10.123 20.25)
-  encoder.writer.point([10.123, 20.25]);
+  encoder.writer.point([10.123, 20.25].xy);
   print(encoder.toText());
 }
 
@@ -51,10 +51,7 @@ void _wktPointGeometryWithZ() {
 
   // prints:
   //    POINT Z(10.123 20.25 -30.95)
-  encoder.writer.point(
-    [10.123, 20.25, -30.95],
-    type: Coords.xyz,
-  );
+  encoder.writer.point([10.123, 20.25, -30.95].xyz);
   print(encoder.toText());
 }
 
@@ -64,10 +61,7 @@ void _wktPointGeometryWithM() {
 
   // prints:
   //    POINT M(10.123 20.25 -1.999)
-  encoder.writer.point(
-    [10.123, 20.25, -1.999],
-    type: Coords.xym,
-  );
+  encoder.writer.point([10.123, 20.25, -1.999].xym);
   print(encoder.toText());
 }
 
@@ -77,10 +71,7 @@ void _wktPointGeometryWithZM() {
 
   // prints:
   //    POINT ZM(10.123 20.25 -30.95 -1.999)
-  encoder.writer.point(
-    [10.123, 20.25, -30.95, -1.999].xyzm,
-    type: Coords.xyzm,
-  );
+  encoder.writer.point([10.123, 20.25, -30.95, -1.999].xyzm);
   print(encoder.toText());
 }
 
@@ -90,10 +81,7 @@ void _wktPointGeometryWithZMShortened() {
 
   // prints:
   //    POINT ZM(10.123 20.25 -30.95 -1.999)
-  encoder.writer.point(
-    [10.123, 20.25, -30.95, -1.999],
-    type: Coords.xyzm,
-  );
+  encoder.writer.point([10.123, 20.25, -30.95, -1.999].xyzm);
   print(encoder.toText());
 }
 
@@ -103,7 +91,7 @@ void _geoJsonPointGeometry() {
 
   // prints:
   //    {"type":"Point","coordinates":[10.123,20.25]}
-  encoder.writer.point([10.123, 20.25]);
+  encoder.writer.point([10.123, 20.25].xy);
   print(encoder.toText());
 }
 
@@ -113,7 +101,7 @@ void _geoJsonPointGeometryDecimals() {
 
   // prints:
   //    {"type":"Point","coordinates":[10.1,20.3]}
-  encoder.writer.point([10.123, 20.25]);
+  encoder.writer.point([10.123, 20.25].xy);
   print(encoder.toText());
 }
 
@@ -124,7 +112,7 @@ void _geoJsonPointGeometryCustomStringBuffer() {
 
   // write both directly to buffer and via geometry writer
   buf.write('{"geometry":');
-  encoder.writer.point([10.123, 20.25]);
+  encoder.writer.point([10.123, 20.25].xy);
   buf.write('}');
 
   // prints:
@@ -141,8 +129,7 @@ void _geoJsonLineStringGeometryWithBbox() {
   //     "bbox":[-1.1,-3.49,3.5,-1.1],
   //     "coordinates":[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]]}
   encoder.writer.lineString(
-    [-1.1, -1.1, 2.1, -2.5, 3.5, -3.49],
-    type: Coords.xy,
+    [-1.1, -1.1, 2.1, -2.5, 3.5, -3.49].positions(Coords.xy),
     bounds: [-1.1, -3.49, 3.5, -1.1].box,
   );
   print(encoder.toText());
@@ -166,12 +153,11 @@ void _geoJsonGeometryCollection() {
     count: 2,
     // callback function to write geometry items, geom is SimpleGeometryContent
     (geom) => geom
-      ..point([10.123, 20.25, -30.95], type: Coords.xyz)
+      ..point([10.123, 20.25, -30.95].xyz)
       ..polygon(
         [
-          [10.1, 10.1, 5, 9, 12, 4, 10.1, 10.1],
+          [10.1, 10.1, 5.0, 9.0, 12.0, 4.0, 10.1, 10.1].positions(Coords.xy),
         ],
-        type: Coords.xy,
       ),
   );
   print(encoder.toText());
@@ -190,7 +176,7 @@ void _geoJsonFeature() {
   //        {"foo":100,"bar":"this is property value","baz":true}}
   encoder.writer.feature(
     id: 'fid-1',
-    geometry: (geom) => geom.point([10.123, 20.25]),
+    geometry: (geom) => geom.point([10.123, 20.25].position),
     properties: {
       'foo': 100,
       'bar': 'this is property value',
@@ -224,7 +210,7 @@ void _geoJsonFeatureCollection() {
     (features) => features // writing to FeatureContent
       ..feature(
         id: 'fid-1',
-        geometry: (geom) => geom.point([10.123, 20.25]),
+        geometry: (geom) => geom.point([10.123, 20.25].position),
         properties: {
           'foo': 100,
           'bar': 'this is property value',
@@ -232,8 +218,7 @@ void _geoJsonFeatureCollection() {
       )
       ..feature(
         geometry: (geom) => geom.lineString(
-          [-1.1, -1.1, 2.1, -2.5, 3.5, -3.49],
-          type: Coords.xy,
+          [-1.1, -1.1, 2.1, -2.5, 3.5, -3.49].positions(Coords.xy),
           bounds: [-1.1, -3.49, 3.5, -1.1].box,
         ),
       ),

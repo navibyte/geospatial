@@ -19,6 +19,8 @@ import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounded_utils.dart';
 import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_arrays_from_json.dart';
+import '/src/utils/coord_positions.dart';
+import '/src/utils/coord_type.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
@@ -160,13 +162,12 @@ class MultiLineString extends SimpleGeometry {
       return MultiLineString.build(const []);
     }
     final coordType = resolveCoordType(array, positionLevel: 2);
-    return MultiLineString.build(
-      createFlatPositionArrayArrayDouble(
+    return MultiLineString(
+      createPositionSeriesArray(
         array,
         coordType,
         swapXY: crs?.swapXY(logic: crsLogic) ?? false,
       ),
-      type: coordType,
     );
   }
 
@@ -191,8 +192,7 @@ class MultiLineString extends SimpleGeometry {
   Geom get geomType => Geom.multiLineString;
 
   @override
-  Coords get coordType =>
-      _lineStrings.isNotEmpty ? _lineStrings.first.type : Coords.xy;
+  Coords get coordType => positionSeriesArrayType(chains);
 
   @override
   bool get isEmptyByGeometry => _lineStrings.isEmpty;
@@ -266,8 +266,9 @@ class MultiLineString extends SimpleGeometry {
 
   @override
   MultiLineString project(Projection projection) {
-    final projected =
-        _lineStrings.map(projection.projectSeries).toList(growable: false);
+    final projected = _lineStrings
+        .map((chain) => chain.project(projection))
+        .toList(growable: false);
 
     return MultiLineString(
       projected,
@@ -283,17 +284,10 @@ class MultiLineString extends SimpleGeometry {
   }
 
   @override
-  void writeTo(SimpleGeometryContent writer, {String? name}) {
-    final type = coordType;
-    isEmptyByGeometry
-        ? writer.emptyGeometry(Geom.multiLineString, name: name)
-        : writer.multiLineString(
-            chains.map((chain) => chain.valuesByType(type)),
-            type: type,
-            name: name,
-            bounds: bounds,
-          );
-  }
+  void writeTo(SimpleGeometryContent writer, {String? name}) =>
+      isEmptyByGeometry
+          ? writer.emptyGeometry(Geom.multiLineString, name: name)
+          : writer.multiLineString(chains, name: name, bounds: bounds);
 
   // NOTE: coordinates as raw data
 

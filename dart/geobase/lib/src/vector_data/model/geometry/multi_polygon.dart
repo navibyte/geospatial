@@ -19,6 +19,8 @@ import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounded_utils.dart';
 import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_arrays_from_json.dart';
+import '/src/utils/coord_positions.dart';
+import '/src/utils/coord_type.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
@@ -191,13 +193,12 @@ class MultiPolygon extends SimpleGeometry {
       return MultiPolygon.build(const []);
     }
     final coordType = resolveCoordType(array, positionLevel: 3);
-    return MultiPolygon.build(
-      createFlatPositionArrayArrayArrayDouble(
+    return MultiPolygon(
+      createPositionSeriesArrayArray(
         array,
         coordType,
         swapXY: crs?.swapXY(logic: crsLogic) ?? false,
       ),
-      type: coordType,
     );
   }
 
@@ -222,9 +223,7 @@ class MultiPolygon extends SimpleGeometry {
   Geom get geomType => Geom.multiPolygon;
 
   @override
-  Coords get coordType => _polygons.isNotEmpty && _polygons.first.isNotEmpty
-      ? _polygons.first.first.type
-      : Coords.xy;
+  Coords get coordType => positionSeriesArrayArrayType(ringArrays);
 
   @override
   bool get isEmptyByGeometry => _polygons.isEmpty;
@@ -310,7 +309,7 @@ class MultiPolygon extends SimpleGeometry {
     final projected = _polygons
         .map<List<PositionSeries>>(
           (rings) => rings
-              .map<PositionSeries>(projection.projectSeries)
+              .map<PositionSeries>((ring) => ring.project(projection))
               .toList(growable: false),
         )
         .toList(growable: false);
@@ -329,18 +328,10 @@ class MultiPolygon extends SimpleGeometry {
   }
 
   @override
-  void writeTo(SimpleGeometryContent writer, {String? name}) {
-    final type = coordType;
-    return isEmptyByGeometry
-        ? writer.emptyGeometry(Geom.multiPolygon, name: name)
-        : writer.multiPolygon(
-            _polygons
-                .map((rings) => rings.map((ring) => ring.valuesByType(type))),
-            type: type,
-            name: name,
-            bounds: bounds,
-          );
-  }
+  void writeTo(SimpleGeometryContent writer, {String? name}) =>
+      isEmptyByGeometry
+          ? writer.emptyGeometry(Geom.multiPolygon, name: name)
+          : writer.multiPolygon(ringArrays, name: name, bounds: bounds);
 
   // NOTE: coordinates as raw data
 

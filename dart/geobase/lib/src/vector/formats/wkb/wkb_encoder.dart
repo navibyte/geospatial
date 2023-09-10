@@ -35,12 +35,11 @@ class _WkbGeometryEncoder
 
   @override
   void point(
-    Iterable<double> position, {
-    Coords? type,
+    Position position, {
     String? name,
   }) {
     // type for coordinates
-    final coordType = type ?? Coords.fromDimension(position.length);
+    final coordType = position.type;
 
     // write a point geometry
     _writeGeometryHeader(Geom.point, coordType);
@@ -49,98 +48,108 @@ class _WkbGeometryEncoder
 
   @override
   void lineString(
-    Iterable<double> chain, {
-    required Coords type,
+    PositionSeries chain, {
     String? name,
     Box? bounds,
   }) {
+    // type for coordinates
+    final coordType = chain.type;
+
     // write a line string geometry
-    _writeGeometryHeader(Geom.lineString, type);
-    _writeFlatPositionArray(chain, type);
+    _writeGeometryHeader(Geom.lineString, coordType);
+    _writePositionSeries(chain, coordType);
   }
 
   @override
   void polygon(
-    Iterable<Iterable<double>> rings, {
-    required Coords type,
+    Iterable<PositionSeries> rings, {
     String? name,
     Box? bounds,
   }) {
+    // type for coordinates
+    final coordType = positionSeriesArrayType(rings);
+
     // write a polygon geometry
-    _writeGeometryHeader(Geom.polygon, type);
+    _writeGeometryHeader(Geom.polygon, coordType);
 
     // write numRings
     _buffer.writeUint32(rings.length);
 
     // write all linear rings (of polygon)
     for (final linearRing in rings) {
-      _writeFlatPositionArray(linearRing, type);
+      _writePositionSeries(linearRing, coordType);
     }
   }
 
   @override
   void multiPoint(
-    Iterable<Iterable<double>> points, {
-    required Coords type,
+    Iterable<Position> points, {
     String? name,
     Box? bounds,
   }) {
+    // type for coordinates
+    final coordType = positionArrayType(points);
+
     // write a multi point geometry
-    _writeGeometryHeader(Geom.multiPoint, type);
+    _writeGeometryHeader(Geom.multiPoint, coordType);
 
     // write numPoints
     _buffer.writeUint32(points.length);
 
     // write all points
     for (final point in points) {
-      _writeGeometryHeader(Geom.point, type);
-      _writePosition(point, type);
+      _writeGeometryHeader(Geom.point, coordType);
+      _writePosition(point, coordType);
     }
   }
 
   @override
   void multiLineString(
-    Iterable<Iterable<double>> lineStrings, {
-    required Coords type,
+    Iterable<PositionSeries> lineStrings, {
     String? name,
     Box? bounds,
   }) {
+    // type for coordinates
+    final coordType = positionSeriesArrayType(lineStrings);
+
     // write a multi line geometry
-    _writeGeometryHeader(Geom.multiLineString, type);
+    _writeGeometryHeader(Geom.multiLineString, coordType);
 
     // write numLineStrings
     _buffer.writeUint32(lineStrings.length);
 
     // write chains of all line strings
     for (final chain in lineStrings) {
-      _writeGeometryHeader(Geom.lineString, type);
-      _writeFlatPositionArray(chain, type);
+      _writeGeometryHeader(Geom.lineString, coordType);
+      _writePositionSeries(chain, coordType);
     }
   }
 
   @override
   void multiPolygon(
-    Iterable<Iterable<Iterable<double>>> polygons, {
-    required Coords type,
+    Iterable<Iterable<PositionSeries>> polygons, {
     String? name,
     Box? bounds,
   }) {
+    // type for coordinates
+    final coordType = positionSeriesArrayArrayType(polygons);
+
     // write a multi polygon geometry
-    _writeGeometryHeader(Geom.multiPolygon, type);
+    _writeGeometryHeader(Geom.multiPolygon, coordType);
 
     // write numPolygons
     _buffer.writeUint32(polygons.length);
 
     // write all rings of polygons
     for (final rings in polygons) {
-      _writeGeometryHeader(Geom.polygon, type);
+      _writeGeometryHeader(Geom.polygon, coordType);
 
       // write numRings
       _buffer.writeUint32(rings.length);
 
       // write all linear rings for a polygon
       for (final linearRing in rings) {
-        _writeFlatPositionArray(linearRing, type);
+        _writePositionSeries(linearRing, coordType);
       }
     }
   }
@@ -227,31 +236,28 @@ class _WkbGeometryEncoder
     _buffer.writeUint32(type);
   }
 
-  void _writePosition(Iterable<double> point, Coords type) {
+  void _writePosition(Position point, Coords type) {
     // at least write x and y
-    final iter = point.iterator;
     _buffer
-      ..writeFloat64(iter.moveNext() ? iter.current : throw invalidCoordinates)
-      ..writeFloat64(iter.moveNext() ? iter.current : throw invalidCoordinates);
+      ..writeFloat64(point.x)
+      ..writeFloat64(point.y);
 
     // optionally write z and m too
     if (type.is3D) {
-      _buffer.writeFloat64(iter.moveNext() ? iter.current : 0.0);
+      _buffer.writeFloat64(point.z);
     }
     if (type.isMeasured) {
-      _buffer.writeFloat64(iter.moveNext() ? iter.current : 0.0);
+      _buffer.writeFloat64(point.m);
     }
   }
 
-  void _writeFlatPositionArray(Iterable<double> coordinates, Coords type) {
-    // calculate the number of points
-    final numValues = coordinates.length;
-    final numPoints = numValues ~/ type.coordinateDimension;
+  void _writePositionSeries(PositionSeries positions, Coords type) {
+    // calculate the number of points and coordinate values
+    final numPoints = positions.length;
+    final numValues = numPoints * type.coordinateDimension;
 
-    // check the size of coordinates array
-    if (numValues != numPoints * type.coordinateDimension) {
-      throw invalidCoordinates;
-    }
+    // get coordinate values as a double iterable
+    final coordinates = positions.valuesByType(type);
 
     // write numPoints
     _buffer.writeUint32(numPoints);
@@ -259,7 +265,10 @@ class _WkbGeometryEncoder
     // NOTE: write the whole buffer at once
 
     // write all coordinate values for each point as a flat structure
+    var i = 0;
     for (final value in coordinates) {
+      if (++i > numValues) throw invalidCoordinates;
+
       _buffer.writeFloat64(value);
     }
   }
@@ -274,88 +283,96 @@ class _GeometryCollector with GeometryContent {
 
   @override
   void point(
-    Iterable<double> position, {
-    Coords? type,
+    Position position, {
     String? name,
   }) {
-    final coordType = type ?? Coords.fromDimension(position.length);
-    hasZ |= coordType.is3D;
-    hasM |= coordType.isMeasured;
+    if (!hasZ || !hasM) {
+      final type = position.type;
+      hasZ |= type.is3D;
+      hasM |= type.isMeasured;
+    }
     numGeometries++;
   }
 
   @override
   void lineString(
-    Iterable<double> chain, {
-    required Coords type,
+    PositionSeries chain, {
     String? name,
     Box? bounds,
   }) {
-    hasZ |= type.is3D;
-    hasM |= type.isMeasured;
+    if (!hasZ || !hasM) {
+      final type = chain.type;
+      hasZ |= type.is3D;
+      hasM |= type.isMeasured;
+    }
     numGeometries++;
   }
 
   @override
   void polygon(
-    Iterable<Iterable<double>> rings, {
-    required Coords type,
+    Iterable<PositionSeries> rings, {
     String? name,
     Box? bounds,
   }) {
-    hasZ |= type.is3D;
-    hasM |= type.isMeasured;
+    if (!hasZ || !hasM) {
+      final type = positionSeriesArrayType(rings);
+      hasZ |= type.is3D;
+      hasM |= type.isMeasured;
+    }
     numGeometries++;
   }
 
   @override
   void multiPoint(
-    Iterable<Iterable<double>> points, {
-    required Coords type,
+    Iterable<Position> points, {
     String? name,
     Box? bounds,
   }) {
-    hasZ |= type.is3D;
-    hasM |= type.isMeasured;
+    if (!hasZ || !hasM) {
+      final type = positionArrayType(points);
+      hasZ |= type.is3D;
+      hasM |= type.isMeasured;
+    }
     numGeometries++;
   }
 
   @override
   void multiLineString(
-    Iterable<Iterable<double>> lineStrings, {
-    required Coords type,
+    Iterable<PositionSeries> lineStrings, {
     String? name,
     Box? bounds,
   }) {
-    hasZ |= type.is3D;
-    hasM |= type.isMeasured;
+    if (!hasZ || !hasM) {
+      final type = positionSeriesArrayType(lineStrings);
+      hasZ |= type.is3D;
+      hasM |= type.isMeasured;
+    }
     numGeometries++;
   }
 
   @override
   void multiPolygon(
-    Iterable<Iterable<Iterable<double>>> polygons, {
-    required Coords type,
+    Iterable<Iterable<PositionSeries>> polygons, {
     String? name,
     Box? bounds,
   }) {
-    hasZ |= type.is3D;
-    hasM |= type.isMeasured;
+    if (!hasZ || !hasM) {
+      final type = positionSeriesArrayArrayType(polygons);
+      hasZ |= type.is3D;
+      hasM |= type.isMeasured;
+    }
     numGeometries++;
   }
 
   @override
   void geometryCollection(
     WriteGeometries geometries, {
-    Coords? type,
     int? count,
     String? name,
     Box? bounds,
   }) {
-    if (type != null) {
-      hasZ |= type.is3D;
-      hasM |= type.isMeasured;
-    }
+    // NOTE: how to check coord type from sub geometry collection?
+
     numGeometries++;
   }
 

@@ -38,7 +38,7 @@ void main() {
       _testAllWriters<CoordinateContent>(
         [
           (output) => output.position(
-                PositionCoords.view(
+                Position.view(
                   [10.123, 20.25, -1.999],
                   type: Coords.xym,
                 ),
@@ -117,7 +117,7 @@ void main() {
       _testAllWriters<CoordinateContent>(
         [
           (output) => output.bounds(
-                BoxCoords.view(
+                Box.view(
                   [10.123, 20.25, -2.9, 12.485, 25.195, -0.9],
                   type: Coords.xym,
                 ),
@@ -300,7 +300,7 @@ void main() {
     test('Point geometry', () {
       _testAllWriters<GeometryContent>(
         [
-          (output) => output.point([10.123, 20.25]),
+          (output) => output.point([10.123, 20.25].xy),
           (output) => output.point([10.123, 20.25].xy),
         ],
         def: '10.123,20.25',
@@ -310,7 +310,7 @@ void main() {
       );
       _testAllWriters<GeometryContent>(
         [
-          (output) => output.point([10.123, 20.25, -30.95]),
+          (output) => output.point([10.123, 20.25, -30.95].xyz),
           (output) => output.point([10.123, 20.25, -30.95].xyz),
         ],
         def: '10.123,20.25,-30.95',
@@ -320,10 +320,9 @@ void main() {
       );
       _testAllWriters<GeometryContent>(
         [
-          (output) => output.point([10.123, 20.25, -1.999], type: Coords.xym),
+          (output) => output.point([10.123, 20.25, -1.999].xym),
           (output) => output.point(
-                [10.123, 20.25, -1.999].xym,
-                type: Coords.xym,
+                Position.view([10.123, 20.25, -1.999], type: Coords.xym),
               ),
         ],
         def: '10.123,20.25,0.0,-1.999',
@@ -334,7 +333,7 @@ void main() {
       );
       _testAllWriters<GeometryContent>(
         [
-          (output) => output.point([10.123, 20.25, -30.95, -1.999]),
+          (output) => output.point([10.123, 20.25, -30.95, -1.999].xyzm),
           (output) => output.point([10.123, 20.25, -30.95, -1.999].xyzm),
         ],
         def: '10.123,20.25,-30.95,-1.999',
@@ -345,10 +344,9 @@ void main() {
       );
       _testAllWriters<GeometryContent>(
         [
-          (output) => output.point([10.123, 20.25, -30.95]),
+          (output) => output.point([10.123, 20.25, -30.95].position),
           (output) => output.point(
-                [10.123, 20.25, -30.95],
-                type: Coords.xyz,
+                Position.view([10.123, 20.25, -30.95], type: Coords.xyz),
               ),
           (output) => output.point([10.123, 20.25, -30.95].xyz),
         ],
@@ -360,12 +358,13 @@ void main() {
       _testAllWriters<GeometryContent>(
         [
           (output) => output.point(
-                [10.123, 20.25, -30.95, -1.999],
-                type: Coords.xyz,
+                Position.view(
+                  [10.123, 20.25, -30.95],
+                  type: Coords.xyz,
+                ),
               ),
           (output) => output.point(
-                [10.123, 20.25, -30.95, -1.999].xyzm,
-                type: Coords.xyz,
+                [10.123, 20.25, -30.95, -1.999].xyzm.copyByType(Coords.xyz),
               ),
         ],
         def: '10.123,20.25,-30.95',
@@ -375,13 +374,10 @@ void main() {
       );
       _testAllWriters<GeometryContent>(
         [
+          (output) =>
+              output.point(Position.view([10.123, 20.25], type: Coords.xy)),
           (output) => output.point(
-                [10.123, 20.25, -30.95],
-                type: Coords.xy,
-              ),
-          (output) => output.point(
-                [10.123, 20.25, -30.95].xyz,
-                type: Coords.xy,
+                [10.123, 20.25, -30.95].xyz.copyByType(Coords.xy),
               ),
         ],
         def: '10.123,20.25',
@@ -392,12 +388,10 @@ void main() {
       _testAllWriters<GeometryContent>(
         [
           (output) => output.point(
-                [10.123, 20.25],
-                type: Coords.xyz,
+                Position.view([10.123, 20.25, 0.0], type: Coords.xyz),
               ),
           (output) => output.point(
-                [10.123, 20.25].xy,
-                type: Coords.xyz,
+                [10.123, 20.25].xy.copyByType(Coords.xyz),
               ),
         ],
         def: '10.123,20.25,0.0',
@@ -408,13 +402,12 @@ void main() {
       _testAllWriters<GeometryContent>(
         [
           (output) => output.point(
-                [10.123, 20.25, -1.999],
-                type: Coords.xym,
+                Position.view(
+                  [10.123, 20.25, -1.999],
+                  type: Coords.xym,
+                ),
               ),
-          (output) => output.point(
-                [10.123, 20.25, -1.999].xym,
-                type: Coords.xym,
-              ),
+          (output) => output.point([10.123, 20.25, -1.999].xym),
         ],
         def: '10.123,20.25,0.0,-1.999',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,0.0,-1.999]}',
@@ -425,13 +418,12 @@ void main() {
       _testAllWriters<GeometryContent>(
         [
           (output) => output.point(
-                [10.123, 20.25, -30.95, -1.999],
-                type: Coords.xyzm,
+                Position.view(
+                  [10.123, 20.25, -30.95, -1.999],
+                  type: Coords.xyzm,
+                ),
               ),
-          (output) => output.point(
-                [10.123, 20.25, -30.95, -1.999].xyzm,
-                type: Coords.xyzm,
-              ),
+          (output) => output.point([10.123, 20.25, -30.95, -1.999].xyzm),
         ],
         def: '10.123,20.25,-30.95,-1.999',
         geoJson: '{"type":"Point","coordinates":[10.123,20.25,-30.95,-1.999]}',
@@ -454,17 +446,15 @@ void main() {
         [
           (output) => output.multiPoint(
                 [
-                  [10.123, 20.25],
-                  [5.98, -3.47],
+                  const Projected(x: 10.123, y: 20.25),
+                  Position.view([5.98, -3.47]),
                 ],
-                type: Coords.xy,
               ),
           (output) => output.multiPoint(
                 [
                   [10.123, 20.25].xy,
                   [5.98, -3.47].xy,
                 ],
-                type: Coords.xy,
               ),
         ],
         def: '[10.123,20.25],[5.98,-3.47]',
@@ -485,8 +475,7 @@ void main() {
                   -2.5,
                   3.5,
                   -3.49,
-                ],
-                type: Coords.xy,
+                ].positions(),
                 bounds: [-1.1, -3.49, 3.5, -1.1].box,
               ),
         ],
@@ -500,9 +489,9 @@ void main() {
       _testAllWriters<GeometryContent>(
         [
           (output) => output.lineString(
-                [-1.1, -1.1, 0.0, 2.1, -2.5, 4.99, 3.5, -3.49, 0.0],
-                type: Coords.xym,
-                bounds: BoxCoords.view(
+                [-1.1, -1.1, 0.0, 2.1, -2.5, 4.99, 3.5, -3.49, 0.0]
+                    .positions(Coords.xym),
+                bounds: Box.view(
                   [-1.1, -3.49, 0.0, 3.5, -1.1, 4.99],
                   type: Coords.xym,
                 ),
@@ -523,24 +512,26 @@ void main() {
       _testAllWriters<GeometryContent>(
         [
           (output) => output.lineString(
-                [
-                  // point 0:
-                  -1.1,
-                  -1.1,
-                  0.0,
-                  0.0,
-                  // point 1:
-                  2.1,
-                  -2.5,
-                  0.0,
-                  4.99,
-                  // point 2:
-                  3.5,
-                  -3.49,
-                  -0.5,
-                  0.0,
-                ],
-                type: Coords.xyzm,
+                PositionSeries.view(
+                  [
+                    // point 0:
+                    -1.1,
+                    -1.1,
+                    0.0,
+                    0.0,
+                    // point 1:
+                    2.1,
+                    -2.5,
+                    0.0,
+                    4.99,
+                    // point 2:
+                    3.5,
+                    -3.49,
+                    -0.5,
+                    0.0,
+                  ],
+                  type: Coords.xyzm,
+                ),
                 bounds: [-1.1, -3.49, -0.5, 0.0, 3.5, -1.1, 0.0, 4.99].box,
               ),
         ],
@@ -563,10 +554,9 @@ void main() {
         [
           (output) => output.multiLineString(
                 [
-                  [-1.1, -1.1, 2.1, -2.5, 3.5, -3.49],
-                  [38.19, 57.4, 43.9, 84.1],
+                  [-1.1, -1.1, 2.1, -2.5, 3.5, -3.49].positions(),
+                  [38.19, 57.4, 43.9, 84.1].positions(),
                 ],
-                type: Coords.xy,
               ),
         ],
         def: '[[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]],[[38.19,57.4],[43.9,84.1]]',
@@ -582,9 +572,8 @@ void main() {
         [
           (output) => output.polygon(
                 [
-                  [10.1, 10.1, 5, 9, 12, 4, 10.1, 10.1],
+                  PositionSeries.view([10.1, 10.1, 5, 9, 12, 4, 10.1, 10.1])
                 ],
-                type: Coords.xy,
               ),
         ],
         def: '[[10.1,10.1],[5.0,9.0],[12.0,4.0],[10.1,10.1]]',
@@ -600,10 +589,9 @@ void main() {
           (output) => output.multiPolygon(
                 [
                   [
-                    [10.1, 10.1, 5, 9, 12, 4, 10.1, 10.1],
+                    <double>[10.1, 10.1, 5, 9, 12, 4, 10.1, 10.1].positions(),
                   ],
                 ],
-                type: Coords.xy,
               ),
         ],
         def: '[[[10.1,10.1],[5.0,9.0],[12.0,4.0],[10.1,10.1]]]',
@@ -618,12 +606,11 @@ void main() {
         [
           (output) => output.geometryCollection(
                 (geom) => geom
-                  ..point([10.123, 20.25, -30.95], type: Coords.xyz)
+                  ..point([10.123, 20.25, -30.95].xyz)
                   ..polygon(
                     [
-                      [10.1, 10.1, 5, 9, 12, 4, 10.1, 10.1],
+                      [10.1, 10.1, 5.0, 9.0, 12.0, 4.0, 10.1, 10.1].positions(),
                     ],
-                    type: Coords.xy,
                   ),
               ),
         ],
@@ -647,8 +634,8 @@ void main() {
           id: 'fid-1',
           bounds: [-1.1, -3.49, -0.5, 0.0, 3.5, -1.1, 0.0, 4.99].box,
           geometry: (geom) => geom.lineString(
-            [-1.1, -1.1, 0.0, 0.0, 2.1, -2.5, 0.0, 4.99, 3.5, -3.49, -0.5, 0.0],
-            type: Coords.xyzm,
+            [-1.1, -1.1, 0.0, 0.0, 2.1, -2.5, 0.0, 4.99, 3.5, -3.49, -0.5, 0.0]
+                .positions(Coords.xyzm),
           ),
           properties: {
             'prop': 1,
@@ -725,8 +712,7 @@ void main() {
             )
             ..feature(
               geometry: (geom) => geom.lineString(
-                [-1.1, -1.1, 2.1, -2.5, 3.5, -3.49],
-                type: Coords.xy,
+                [-1.1, -1.1, 2.1, -2.5, 3.5, -3.49].positions(),
                 bounds: [-1.1, -3.49, 3.5, -1.1].box,
               ),
             ),

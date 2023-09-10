@@ -120,8 +120,14 @@ abstract class Position extends Positionable {
   /// xyz  | lon, lat, elev
   /// xym  | lon, lat, m
   /// xyzm | lon, lat, elev, m
-  factory Position.view(Iterable<double> source, {Coords type}) =
-      _PositionCoords.view;
+  factory Position.view(Iterable<double> source, {Coords? type}) {
+    final len = source.length;
+    final coordType = type ?? Coords.fromDimension(len);
+    if (len != coordType.coordinateDimension) {
+      throw invalidCoordinates;
+    }
+    return _PositionCoords.view(source, type: coordType);
+  }
 
   /// A position from parameters compatible with `CreatePosition` function type.
   ///
@@ -727,7 +733,7 @@ class _PositionCoords extends Position {
   final Coords _type;
 
   /// A position with coordinate values of [type] from [source].
-  const _PositionCoords.view(Iterable<double> source, {Coords type = Coords.xy})
+  const _PositionCoords.view(Iterable<double> source, {required Coords type})
       : _data = source,
         _type = type;
 

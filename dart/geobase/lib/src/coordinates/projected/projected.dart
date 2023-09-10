@@ -70,6 +70,12 @@ class Projected extends Position {
         _z = z,
         _m = m;
 
+  /// Creates a projected position by copying coordinates from [source].
+  ///
+  /// If [source] is an instance of [Projected] then it's returned.
+  static Projected from(Position source) =>
+      source is Projected ? source : source.copyTo(Projected.create);
+
   /// Builds a projected position from [coords] starting from [offset].
   ///
   /// Supported coordinate value combinations for [coords] are:

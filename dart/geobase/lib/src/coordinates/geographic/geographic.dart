@@ -82,6 +82,12 @@ class Geographic extends Position {
     double? m,
   }) : this(lon: x, lat: y, elev: z, m: m);
 
+  /// Creates a geographic position by copying coordinates from [source].
+  ///
+  /// If [source] is an instance of [Geographic] then it's returned.
+  static Geographic from(Position source) =>
+      source is Geographic ? source : source.copyTo(Geographic.create);
+
   /// Builds a geographic position from [coords] starting from [offset].
   ///
   /// Supported coordinate value combinations for [coords] are:

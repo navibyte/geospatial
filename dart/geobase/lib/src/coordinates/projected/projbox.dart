@@ -79,6 +79,12 @@ class ProjBox extends Box {
         _maxZ = maxZ,
         _maxM = maxM;
 
+  /// Creates a projected bounding box by copying coordinates from [source].
+  ///
+  /// If [source] is an instance of [ProjBox] then it's returned.
+  static ProjBox fromBox(Box source) =>
+      source is ProjBox ? source : source.copyTo(ProjBox.create);
+
   /// A minimum bounding box calculated from [positions].
   ///
   /// Throws FormatException if cannot create (ie. [positions] is empty).

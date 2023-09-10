@@ -75,12 +75,12 @@ void main() {
         final sourceArray = PositionSeries.view(source, type: type);
         final targetArray = PositionSeries.view(target, type: type);
         expectCoords(
-          forward.projectSeries(sourceArray).values.toList(),
+          sourceArray.project(forward).values.toList(),
           target,
           0.01,
         );
         expectCoords(
-          inverse.projectSeries(targetArray).values.toList(),
+          targetArray.project(inverse).values.toList(),
           source,
           0.01,
         );

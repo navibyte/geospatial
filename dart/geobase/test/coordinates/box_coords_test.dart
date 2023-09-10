@@ -6,19 +6,18 @@
 
 // ignore_for_file: unrelated_type_equality_checks, prefer_const_declarations
 
-import 'package:geobase/codes.dart';
-import 'package:geobase/vector.dart';
+import 'package:geobase/coordinates.dart';
 
 import 'package:test/test.dart';
 
 void main() {
-  group('BoxCoords with XYZM coordinates', () {
+  group('Box with XYZM coordinates', () {
     const data = [11.0, 12.0, 13.0, 14.0, 21.0, 22.0, 23.0, 24.0];
 
     test('Coordinate values as iterable', () {
-      final box = BoxCoords.view(data, type: Coords.xyzm);
+      final box = Box.view(data, type: Coords.xyzm);
 
-      for (final bb in [box, box.asProjected, box.asGeographic]) {
+      for (final bb in [box, ProjBox.fromBox(box), GeoBox.fromBox(box)]) {
         expect(bb.minX, 11.0);
         expect(bb.minY, 12.0);
         expect(bb.minZ, 13.0);
@@ -41,37 +40,36 @@ void main() {
         expect(max.m, 24.0);
       }
 
-      expect(
-        BoxCoords.create(
-          minX: 11.0,
-          minY: 12.0,
-          minZ: 13.0,
-          minM: 14.0,
-          maxX: 21.0,
-          maxY: 22.0,
-          maxZ: 23.0,
-          maxM: 24.0,
-        ),
-        box,
+      final boxCreated = Box.create(
+        minX: 11.0,
+        minY: 12.0,
+        minZ: 13.0,
+        minM: 14.0,
+        maxX: 21.0,
+        maxY: 22.0,
+        maxZ: 23.0,
+        maxM: 24.0,
       );
+      expect(boxCreated, box);
+      expect(boxCreated.values, box.values);
       expect(
-        BoxCoords.parse(
+        Box.parse(
           '11.0, 12.0, 13.0, 14.0, 21.0, 22.0, 23.0, 24.0',
           type: Coords.xyzm,
         ),
         box,
       );
-      expect(BoxCoords.parse(box.toString(), type: Coords.xyzm), box);
+      expect(Box.parse(box.toString(), type: Coords.xyzm), box);
     });
   });
 
-  group('BoxCoords with XYZ coordinates', () {
+  group('Box with XYZ coordinates', () {
     const data = [11.0, 12.0, 13.0, 21.0, 22.0, 23.0];
 
     test('Coordinate values as iterable', () {
-      final box = BoxCoords.view(data, type: Coords.xyz);
+      final box = Box.view(data, type: Coords.xyz);
 
-      for (final bb in [box, box.asProjected, box.asGeographic]) {
+      for (final bb in [box, ProjBox.fromBox(box), GeoBox.fromBox(box)]) {
         expect(bb.minX, 11.0);
         expect(bb.minY, 12.0);
         expect(bb.minZ, 13.0);
@@ -95,7 +93,7 @@ void main() {
       }
 
       expect(
-        BoxCoords.create(
+        Box.create(
           minX: 11.0,
           minY: 12.0,
           minZ: 13.0,
@@ -106,23 +104,23 @@ void main() {
         box,
       );
       expect(
-        BoxCoords.parse(
+        Box.parse(
           '11.0, 12.0, 13.0, 21.0, 22.0, 23.0',
           type: Coords.xyz,
         ),
         box,
       );
-      expect(BoxCoords.parse(box.toString(), type: Coords.xyz), box);
+      expect(Box.parse(box.toString(), type: Coords.xyz), box);
     });
   });
 
-  group('BoxCoords with XYM coordinates', () {
+  group('Box with XYM coordinates', () {
     const data = [11.0, 12.0, 14.0, 21.0, 22.0, 24.0];
 
     test('Coordinate values as iterable', () {
-      final box = BoxCoords.view(data, type: Coords.xym);
+      final box = Box.view(data, type: Coords.xym);
 
-      for (final bb in [box, box.asProjected, box.asGeographic]) {
+      for (final bb in [box, ProjBox.fromBox(box), GeoBox.fromBox(box)]) {
         expect(bb.minX, 11.0);
         expect(bb.minY, 12.0);
         expect(bb.minZ, null);
@@ -146,7 +144,7 @@ void main() {
       }
 
       expect(
-        BoxCoords.create(
+        Box.create(
           minX: 11.0,
           minY: 12.0,
           minM: 14.0,
@@ -157,23 +155,23 @@ void main() {
         box,
       );
       expect(
-        BoxCoords.parse(
+        Box.parse(
           '11.0, 12.0, 14.0, 21.0, 22.0, 24.0',
           type: Coords.xym,
         ),
         box,
       );
-      expect(BoxCoords.parse(box.toString(), type: Coords.xym), box);
+      expect(Box.parse(box.toString(), type: Coords.xym), box);
     });
   });
 
-  group('BoxCoords with XY coordinates', () {
+  group('Box with XY coordinates', () {
     const data = [11.0, 12.0, 21.0, 22.0];
 
     test('Coordinate values as iterable', () {
-      final box = BoxCoords.view(data);
+      final box = Box.view(data);
 
-      for (final bb in [box, box.asProjected, box.asGeographic]) {
+      for (final bb in [box, ProjBox.fromBox(box), GeoBox.fromBox(box)]) {
         expect(bb.minX, 11.0);
         expect(bb.minY, 12.0);
         expect(bb.minZ, null);
@@ -197,11 +195,11 @@ void main() {
       }
 
       expect(
-        BoxCoords.create(minX: 11.0, minY: 12.0, maxX: 21.0, maxY: 22.0),
+        Box.create(minX: 11.0, minY: 12.0, maxX: 21.0, maxY: 22.0),
         box,
       );
-      expect(BoxCoords.parse('11.0, 12.0, 21.0, 22.0'), box);
-      expect(BoxCoords.parse(box.toString()), box);
+      expect(Box.parse('11.0, 12.0, 21.0, 22.0'), box);
+      expect(Box.parse(box.toString()), box);
     });
   });
 }

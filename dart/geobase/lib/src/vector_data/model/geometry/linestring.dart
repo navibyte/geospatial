@@ -19,6 +19,7 @@ import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounded_utils.dart';
 import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_arrays_from_json.dart';
+import '/src/utils/coord_positions.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
@@ -130,17 +131,16 @@ class LineString extends SimpleGeometry {
   }) {
     final array = json.decode('[$coordinates]') as List<dynamic>;
     if (array.isEmpty) {
-      return LineString.build(const []);
+      return LineString(PositionSeries.empty());
     }
     final coordType = resolveCoordType(array, positionLevel: 1);
     // NOTE: validate line string (at least two points)
-    return LineString.build(
-      createFlatPositionArrayDouble(
+    return LineString(
+      createPositionSeries(
         array,
         coordType,
         swapXY: crs?.swapXY(logic: crsLogic) ?? false,
       ),
-      type: coordType,
     );
   }
 
@@ -235,7 +235,7 @@ class LineString extends SimpleGeometry {
 
   @override
   LineString project(Projection projection) {
-    final projected = projection.projectSeries(_chain);
+    final projected = chain.project(projection);
 
     return LineString(
       projected,
@@ -254,12 +254,7 @@ class LineString extends SimpleGeometry {
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
       isEmptyByGeometry
           ? writer.emptyGeometry(Geom.lineString, name: name)
-          : writer.lineString(
-              chain.values,
-              type: coordType,
-              name: name,
-              bounds: bounds,
-            );
+          : writer.lineString(chain, name: name, bounds: bounds);
 
   // NOTE: coordinates as raw data
 

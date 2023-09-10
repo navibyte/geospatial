@@ -97,31 +97,31 @@ class _WkbGeometryBufferDecoder {
   }
 
   void _buildPoint(Coords coordType, Endian endian) {
-    final point = _readPosition(coordType, endian);
-    if (point[0].isNaN && point[1].isNaN) {
+    final position = _readPosition(coordType, endian);
+    if (position.x.isNaN && position.y.isNaN) {
       // this is a special case, see => https://trac.osgeo.org/geos/ticket/1005
       //                             https://trac.osgeo.org/postgis/ticket/3181
       builder.emptyGeometry(Geom.point);
     } else {
-      builder.point(point, type: coordType);
+      builder.point(position);
     }
   }
 
   void _buildLineString(Coords coordType, Endian endian) {
-    final array = _readFlatPositionArray(coordType, endian);
-    if (array.isEmpty) {
+    final chain = _readPositionSeries(coordType, endian);
+    if (chain.isEmpty) {
       builder.emptyGeometry(Geom.lineString);
     } else {
-      builder.lineString(array, type: coordType);
+      builder.lineString(chain);
     }
   }
 
   void _buildPolygon(Coords coordType, Endian endian) {
-    final array = _readFlatLineStringArray(coordType, endian);
-    if (array.isEmpty) {
+    final rings = _readPositionSeriesArray(coordType, endian);
+    if (rings.isEmpty) {
       builder.emptyGeometry(Geom.polygon);
     } else {
-      builder.polygon(array, type: coordType);
+      builder.polygon(rings);
     }
   }
 
@@ -131,12 +131,12 @@ class _WkbGeometryBufferDecoder {
     if (array.isEmpty) {
       builder.emptyGeometry(Geom.multiPoint);
     } else {
-      builder.multiPoint(array, type: coordType);
+      builder.multiPoint(array);
     }
   }
 
   void _buildMultiLineString(Coords coordType, Endian endian) {
-    final array = _readFlatLineStringArray(
+    final array = _readPositionSeriesArray(
       coordType,
       endian,
       requireHeaderForItems: true,
@@ -144,17 +144,20 @@ class _WkbGeometryBufferDecoder {
     if (array.isEmpty) {
       builder.emptyGeometry(Geom.multiLineString);
     } else {
-      builder.multiLineString(array, type: coordType);
+      builder.multiLineString(array);
     }
   }
 
   void _buildMultiPolygon(Coords coordType, Endian endian) {
-    final array =
-        _readFlatPolygonArray(coordType, endian, requireHeaderForItems: true);
+    final array = _readPositionSeriesArrayArray(
+      coordType,
+      endian,
+      requireHeaderForItems: true,
+    );
     if (array.isEmpty) {
       builder.emptyGeometry(Geom.multiPolygon);
     } else {
-      builder.multiPolygon(array, type: coordType);
+      builder.multiPolygon(array);
     }
   }
 
@@ -188,7 +191,7 @@ class _WkbGeometryBufferDecoder {
     return Coords.fromWkbId(typeId);
   }
 
-  List<double> _readPosition(
+  Position _readPosition(
     Coords coordType,
     Endian endian, {
     Coords? outputType,
@@ -217,10 +220,10 @@ class _WkbGeometryBufferDecoder {
       list[type.indexForM!] = optM ?? 0.0;
     }
 
-    return list;
+    return Position.view(list, type: type);
   }
 
-  List<List<double>> _readPositionArray(
+  List<Position> _readPositionArray(
     Coords coordType,
     Endian endian, {
     bool requireHeaderForItems = false,
@@ -230,7 +233,7 @@ class _WkbGeometryBufferDecoder {
 
     // return a generated list of points
     if (requireHeaderForItems) {
-      return List<List<double>>.generate(
+      return List<Position>.generate(
         numPoints,
         (_) {
           // read byte order + type, expect point geom, and return coord type
@@ -249,7 +252,7 @@ class _WkbGeometryBufferDecoder {
         growable: false,
       );
     } else {
-      return List<List<double>>.generate(
+      return List<Position>.generate(
         numPoints,
         (_) {
           // read point and add it to a list to be generated
@@ -260,7 +263,7 @@ class _WkbGeometryBufferDecoder {
     }
   }
 
-  List<double> _readFlatPositionArray(
+  PositionSeries _readPositionSeries(
     Coords coordType,
     Endian endian, {
     Coords? outputType,
@@ -294,10 +297,10 @@ class _WkbGeometryBufferDecoder {
       }
     }
 
-    return list;
+    return PositionSeries.view(list, type: type);
   }
 
-  List<List<double>> _readFlatLineStringArray(
+  List<PositionSeries> _readPositionSeriesArray(
     Coords coordType,
     Endian endian, {
     bool requireHeaderForItems = false,
@@ -308,7 +311,7 @@ class _WkbGeometryBufferDecoder {
 
     // return a generated list of line strings (or linear rings)
     if (requireHeaderForItems) {
-      return List<List<double>>.generate(
+      return List<PositionSeries>.generate(
         numLineStrings,
         (_) {
           // read byte order + type, expect line string, and return coord type
@@ -319,7 +322,7 @@ class _WkbGeometryBufferDecoder {
           );
 
           // read points of line string and add it to a list to be generated
-          return _readFlatPositionArray(
+          return _readPositionSeries(
             lineStringCoordType,
             lineStringEndian,
             outputType: outputType ?? coordType,
@@ -328,11 +331,11 @@ class _WkbGeometryBufferDecoder {
         growable: false,
       );
     } else {
-      return List<List<double>>.generate(
+      return List<PositionSeries>.generate(
         numLineStrings,
         (_) {
           // read points of line string and add it to a list to be generated
-          return _readFlatPositionArray(
+          return _readPositionSeries(
             coordType,
             endian,
             outputType: outputType ?? coordType,
@@ -343,7 +346,7 @@ class _WkbGeometryBufferDecoder {
     }
   }
 
-  List<List<List<double>>> _readFlatPolygonArray(
+  List<List<PositionSeries>> _readPositionSeriesArrayArray(
     Coords coordType,
     Endian endian, {
     bool requireHeaderForItems = false,
@@ -353,7 +356,7 @@ class _WkbGeometryBufferDecoder {
 
     // return a generated list of polygons
     if (requireHeaderForItems) {
-      return List<List<List<double>>>.generate(
+      return List<List<PositionSeries>>.generate(
         numPolygons,
         (_) {
           // read byte order + type, expect polygon, and return coord type
@@ -364,7 +367,7 @@ class _WkbGeometryBufferDecoder {
           );
 
           // read linear rings of polygon + add it to a list to be generated
-          return _readFlatLineStringArray(
+          return _readPositionSeriesArray(
             polygonCoordType,
             polygonEndian,
             outputType: coordType,
@@ -373,11 +376,11 @@ class _WkbGeometryBufferDecoder {
         growable: false,
       );
     } else {
-      return List<List<List<double>>>.generate(
+      return List<List<PositionSeries>>.generate(
         numPolygons,
         (_) {
           // read linear rings of polygon + add it to a list to be generated
-          return _readFlatLineStringArray(coordType, endian);
+          return _readPositionSeriesArray(coordType, endian);
         },
         growable: false,
       );

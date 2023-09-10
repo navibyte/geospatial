@@ -7,7 +7,6 @@
 // ignore_for_file: unrelated_type_equality_checks, prefer_const_declarations
 
 import 'package:geobase/coordinates.dart';
-import 'package:geobase/vector.dart';
 
 import 'package:test/test.dart';
 
@@ -17,8 +16,8 @@ void main() {
     const data3 = [1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 3.1, 3.2, 3.3];
 
     for (final type in [Coords.xyz, Coords.xym]) {
-      final array3 = PositionArray.view(data3, type: type);
-      final array3FromText = PositionArray.parse(
+      final array3 = PositionSeries.view(data3, type: type);
+      final array3FromText = PositionSeries.parse(
         '1.1,1.2,1.3,2.1,2.2,2.3,3.1,3.2,3.3',
         type: type,
       );
@@ -33,12 +32,12 @@ void main() {
               const Projected(x: 2.1, y: 2.2, m: 2.3),
               const Projected(x: 3.1, y: 3.2, m: 3.3),
             ];
-      final array3FromPositions = positions3.array();
+      final array3FromPositions = positions3.series();
 
       test('Creating position arrays', () {
-        expect(array3, data3);
-        expect(array3FromText, array3);
-        expect(array3FromPositions, array3);
+        expect(array3.values, data3);
+        expect(array3FromText.values, array3.values);
+        expect(array3FromPositions.values, array3.values);
         expect(array3.type, type);
         expect(array3FromText.type, type);
         expect(array3FromPositions.type, type);
@@ -48,7 +47,7 @@ void main() {
       });
 
       test('Access positions as PositionData', () {
-        final positions = array3.data;
+        final positions = array3;
         expect(positions.length, 3);
         expect(positions.type, type);
 
@@ -79,11 +78,11 @@ void main() {
               ];
 
         for (final test in tests) {
-          expect(positions.all, test);
+          expect(positions.positions, test);
           for (var index = 0; index < 3; index++) {
             expect(positions[index], test[index]);
-            expect(positions[index].asProjected, test[index]);
-            expect(positions[index].asGeographic, test[index]);
+            expect(Projected.from(positions[index]), test[index]);
+            expect(Geographic.from(positions[index]), test[index]);
             expect(positions.get(index, to: Projected.create), tests[1][index]);
             expect(
               positions.get(index, to: Geographic.create),
@@ -100,9 +99,9 @@ void main() {
       });
 
       test('Access as geographic positions', () {
-        final geographic = array3.toGeographic;
+        final geographic = array3.positionsAs(to: Geographic.create).toList();
         expect(geographic.length, 3);
-        expect(geographic.type, type);
+        expect(array3.type, type);
 
         final tests = type == Coords.xyz
             ? [
@@ -131,15 +130,15 @@ void main() {
               ];
 
         for (final test in tests) {
-          expect(geographic.all, test);
+          expect(geographic, test);
           for (var index = 0; index < 3; index++) {
             expect(geographic[index], test[index]);
             expect(
-              geographic.get(index, to: Geographic.create),
+              array3.get(index, to: Geographic.create),
               tests[1][index],
             );
             expect(
-              geographic.get(index, to: Projected.create),
+              array3.get(index, to: Projected.create),
               tests[1][index],
             );
             expect(geographic[index].lon, test[index].x);
@@ -155,13 +154,13 @@ void main() {
   });
 
   group('Position array equality', () {
-    final xy1 = PositionArray.parse('1.1,1.2,2.1,2.2,3.1,3.2');
+    final xy1 = PositionSeries.parse('1.1,1.2,2.1,2.2,3.1,3.2');
     final arr = [1.1, 1.2, 2.1, 2.2, 3.1, 3.2];
-    final xy2 = PositionArray.view(arr);
-    final xy3 = PositionArray.view(arr);
+    final xy2 = PositionSeries.view(arr);
+    final xy3 = PositionSeries.view(arr);
 
     test('Testing equality', () {
-      expect(xy1, xy2);
+      expect(xy1.values, xy2.values);
       expect(xy1 == xy2, false);
       expect(xy1.equalsCoords(xy2), true);
 
@@ -172,38 +171,38 @@ void main() {
 
     test('Test equalsCoords', () {
       final iter = arr.map((e) => e * 10.0);
-      final xyIter2 = PositionArray.view(iter);
-      final xyIter3 = PositionArray.view(iter);
+      final xyIter2 = PositionSeries.view(iter);
+      final xyIter3 = PositionSeries.view(iter);
 
       expect(xy1.equalsCoords(xyIter2), false);
       expect(xyIter3.equalsCoords(xyIter2), true);
 
       expect(
-        PositionArray.view([]).equalsCoords(PositionArray.view([])),
+        PositionSeries.empty().equalsCoords(PositionSeries.empty()),
         true,
       );
       expect(
-        PositionArray.view([1, 2, 3, 4]).equalsCoords(PositionArray.view([])),
+        PositionSeries.view([1, 2, 3, 4]).equalsCoords(PositionSeries.empty()),
         false,
       );
       expect(
-        PositionArray.view([1, 2, 3, 4])
-            .equalsCoords(PositionArray.view([1, 2, 3, 4])),
+        PositionSeries.view([1, 2, 3, 4])
+            .equalsCoords(PositionSeries.view([1, 2, 3, 4])),
         true,
       );
       expect(
-        PositionArray.view([1, 2, 3.000000000001, 4])
-            .equalsCoords(PositionArray.view([1, 2, 3, 4])),
+        PositionSeries.view([1, 2, 3.000000000001, 4])
+            .equalsCoords(PositionSeries.view([1, 2, 3, 4])),
         false,
       );
       expect(
-        PositionArray.parse('1,2,3', type: Coords.xyz)
-            .equalsCoords(PositionArray.view([1, 2, 3], type: Coords.xyz)),
+        PositionSeries.parse('1,2,3', type: Coords.xyz)
+            .equalsCoords(PositionSeries.view([1, 2, 3], type: Coords.xyz)),
         true,
       );
       expect(
-        PositionArray.parse('1,2,3', type: Coords.xym)
-            .equalsCoords(PositionArray.view([1, 2, 3], type: Coords.xyz)),
+        PositionSeries.parse('1,2,3', type: Coords.xym)
+            .equalsCoords(PositionSeries.view([1, 2, 3], type: Coords.xyz)),
         false,
       );
     });
@@ -212,19 +211,19 @@ void main() {
   group('Position array (XY positions) as flat coordinate values', () {
     // array of 3 positions with xy coordinates
     const xyData3 = [1.1, 1.2, 2.1, 2.2, 3.1, 3.2];
-    final xyArray3 = PositionArray.view(xyData3);
-    final xyArray3FromText = PositionArray.parse('1.1,1.2,2.1,2.2,3.1,3.2');
+    final xyArray3 = PositionSeries.view(xyData3);
+    final xyArray3FromText = PositionSeries.parse('1.1,1.2,2.1,2.2,3.1,3.2');
 
     test('Creating position arrays', () {
-      expect(xyArray3, xyData3);
-      expect(xyArray3FromText, xyArray3);
+      expect(xyArray3.values, xyData3);
+      expect(xyArray3FromText.values, xyArray3.values);
       expect(xyArray3.type, Coords.xy);
     });
 
     test('Access as projected positions', () {
-      final projected = xyArray3.toProjected;
+      final projected = xyArray3.positionsAs(to: Projected.create).toList();
       expect(projected.length, 3);
-      expect(projected.type, Coords.xy);
+      expect(projected.first.type, Coords.xy);
 
       final tests = [
         [
@@ -240,12 +239,12 @@ void main() {
       ];
 
       for (final test in tests) {
-        expect(projected.all, test);
+        expect(projected, test);
         for (var index = 0; index < 3; index++) {
           expect(projected[index], test[index]);
-          expect(projected.get(index, to: Projected.create), tests[1][index]);
+          expect(xyArray3.get(index, to: Projected.create), tests[1][index]);
           expect(
-            projected.get(index, to: Geographic.create),
+            xyArray3.get(index, to: Geographic.create),
             tests[1][index],
           );
           expect(projected[index].x, test[index].x);
@@ -275,22 +274,22 @@ void main() {
       3.3,
       3.4,
     ];
-    final xyzmArray3 = PositionArray.view(xyzmData3, type: Coords.xyzm);
-    final xyzmArray3FromText = PositionArray.parse(
+    final xyzmArray3 = PositionSeries.view(xyzmData3, type: Coords.xyzm);
+    final xyzmArray3FromText = PositionSeries.parse(
       '1.1,1.2,1.3,1.4,2.1,2.2,2.3,2.4,3.1,3.2,3.3,3.4',
       type: Coords.xyzm,
     );
 
     test('Creating position arrays', () {
-      expect(xyzmArray3, xyzmData3);
-      expect(xyzmArray3FromText, xyzmArray3);
+      expect(xyzmArray3.values, xyzmData3);
+      expect(xyzmArray3FromText.values, xyzmArray3.values);
       expect(xyzmArray3.type, Coords.xyzm);
     });
 
     test('Access projected positions', () {
-      final projected = xyzmArray3.dataTo(Projected.create);
+      final projected = xyzmArray3.positionsAs(to: Projected.create).toList();
       expect(projected.length, 3);
-      expect(projected.type, Coords.xyzm);
+      expect(projected.first.type, Coords.xyzm);
 
       final tests = [
         [
@@ -306,12 +305,12 @@ void main() {
       ];
 
       for (final test in tests) {
-        expect(projected.all, test);
+        expect(projected, test);
         for (var index = 0; index < 3; index++) {
           expect(projected[index], test[index]);
-          expect(projected.get(index, to: Projected.create), tests[1][index]);
+          expect(projected[index].copyTo(Projected.create), tests[1][index]);
           expect(
-            projected.get(index, to: Geographic.create),
+            projected[index].copyTo(Geographic.create),
             tests[1][index],
           );
           expect(projected[index].x, test[index].x);

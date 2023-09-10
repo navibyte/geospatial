@@ -309,7 +309,7 @@ void main() {
       expect(xyz.equals2D(xyz), true);
       expect(xyz.equals3D(xyz), true);
 
-      final xy1 = Point.build(const Projected(x: 23.1, y: 34.3).coords);
+      final xy1 = Point.build(const Projected(x: 23.1, y: 34.3).values);
       const xy2 = Point(Projected(x: 23.1, y: 34.4));
       expect(xy.equals2D(xy1, toleranceHoriz: e), true);
       expect(xy.equals2D(xy2, toleranceHoriz: e), false);
@@ -333,11 +333,11 @@ void main() {
       expect(xyz.equals2D(xyz), true);
       expect(xyz.equals3D(xyz), true);
 
-      final xy1 = LineString.build(
+      final xy1 = LineString(
         [
           const Projected(x: 23.1, y: 34.3),
           const Projected(x: 1, y: 2),
-        ].array(),
+        ].series(),
       );
       final xy2 = LineString.from(const [
         Projected(x: 23.1, y: 34.4),

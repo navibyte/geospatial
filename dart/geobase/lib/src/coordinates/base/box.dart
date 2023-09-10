@@ -110,11 +110,12 @@ abstract class Box extends Positionable {
   /// xyz  | west, south, minElev, east, north, maxElev
   /// xym  | west, south, minM, east, north, maxM
   /// xyzm | west, south, minElev, minM, east, north, maxElev, maxM
-  factory Box.view(Iterable<double> source, {Coords type = Coords.xy}) {
-    if (source.length != 2 * type.coordinateDimension) {
+  factory Box.view(Iterable<double> source, {Coords? type}) {
+    final coordType = type ?? Coords.fromDimension(source.length ~/ 2);
+    if (source.length != 2 * coordType.coordinateDimension) {
       throw invalidCoordinates;
     }
-    return _BoxCoords.view(source, type: type);
+    return _BoxCoords.view(source, type: coordType);
   }
 
   /// A bounding box from parameters compatible with `CreateBox` function type.
@@ -184,8 +185,8 @@ abstract class Box extends Positionable {
     final coords =
         parseDoubleValues(text, delimiter: delimiter).toList(growable: false);
     final len = coords.length;
-    final coordType = type ?? Coords.fromDimension(len);
-    if (len != coordType.coordinateDimension) {
+    final coordType = type ?? Coords.fromDimension(len ~/ 2);
+    if (len != 2 * coordType.coordinateDimension) {
       throw invalidCoordinates;
     }
     return Box.view(

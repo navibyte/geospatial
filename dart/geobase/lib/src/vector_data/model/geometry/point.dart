@@ -210,18 +210,13 @@ class Point implements SimpleGeometry {
       this;
 
   @override
-  Point project(Projection projection) =>
-      Point(projection.projectPosition(_position));
+  Point project(Projection projection) => Point(position.project(projection));
 
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
       isEmptyByGeometry
           ? writer.emptyGeometry(Geom.point, name: name)
-          : writer.point(
-              position.valuesByType(coordType),
-              type: coordType,
-              name: name,
-            );
+          : writer.point(position, name: name);
 
   // NOTE: coordinates as raw data
 

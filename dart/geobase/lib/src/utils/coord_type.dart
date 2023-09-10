@@ -7,6 +7,8 @@
 import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
+import '/src/coordinates/base/position.dart';
+import '/src/coordinates/base/position_series.dart';
 import '/src/vector_data/model/bounded/bounded.dart';
 
 /// Resolves the coordinate type for [item] and/or [collection].
@@ -40,3 +42,20 @@ Coords resolveCoordTypeFrom<E extends Bounded>({
 
   return Coords.select(is3D: is3D, isMeasured: isMeasured);
 }
+
+/// Coordinate type from the first position in [array].
+@internal
+Coords positionArrayType(Iterable<Position> array) =>
+    array.isNotEmpty ? array.first.type : Coords.xy;
+
+/// Coordinate type from the first series of position in [array].
+@internal
+Coords positionSeriesArrayType(Iterable<PositionSeries> array) =>
+    array.isNotEmpty ? array.first.type : Coords.xy;
+
+/// Coordinate type from the first series of position in [array].
+@internal
+Coords positionSeriesArrayArrayType(Iterable<Iterable<PositionSeries>> array) =>
+    array.isNotEmpty && array.first.isNotEmpty
+        ? array.first.first.type
+        : Coords.xy;

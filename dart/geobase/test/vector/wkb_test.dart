@@ -9,7 +9,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:geobase/codes.dart';
 import 'package:geobase/coordinates.dart';
 import 'package:geobase/src/utils/byte_writer.dart';
 import 'package:geobase/vector.dart';
@@ -32,9 +31,8 @@ void main() {
           [
             // three different ways to write POINT(2.0 4.0)
             (writer) => writer.point([2.0, 4.0].xy),
-            (writer) =>
-                writer.point(const Geographic(lon: 2.0, lat: 4.0).coords),
-            (writer) => writer.point([2.0, 4.0])
+            (writer) => writer.point(const Geographic(lon: 2.0, lat: 4.0)),
+            (writer) => writer.point([2.0, 4.0].xy)
           ],
         );
 
@@ -49,9 +47,9 @@ void main() {
             // four different ways to write empty point
             (writer) => writer.point([double.nan, double.nan].xy),
             (writer) => writer.point(
-                  const Geographic(lon: double.nan, lat: double.nan).coords,
+                  const Geographic(lon: double.nan, lat: double.nan),
                 ),
-            (writer) => writer.point([double.nan, double.nan]),
+            (writer) => writer.point([double.nan, double.nan].xy),
             (writer) => writer.emptyGeometry(Geom.point),
           ],
         );
@@ -64,9 +62,8 @@ void main() {
           [
             // three different ways to write POINT(2.1 -3.4)
             (writer) => writer.point([2.1, -3.4].xy),
-            (writer) =>
-                writer.point(const Geographic(lon: 2.1, lat: -3.4).coords),
-            (writer) => writer.point([2.1, -3.4])
+            (writer) => writer.point(const Geographic(lon: 2.1, lat: -3.4)),
+            (writer) => writer.point([2.1, -3.4].xy)
           ],
         );
 
@@ -74,7 +71,7 @@ void main() {
           endian,
           'POINT Z(2.1 -3.4 34.2)',
           [
-            (writer) => writer.point([2.1, -3.4, 34.2])
+            (writer) => writer.point([2.1, -3.4, 34.2].xyz)
           ],
         );
 
@@ -82,7 +79,7 @@ void main() {
           endian,
           'POINT M(2.1 -3.4 0.2)',
           [
-            (writer) => writer.point([2.1, -3.4, 0.2], type: Coords.xym)
+            (writer) => writer.point([2.1, -3.4, 0.2].xym)
           ],
         );
 
@@ -90,7 +87,7 @@ void main() {
           endian,
           'POINT ZM(2.1 -3.4 34.2 0.2)',
           [
-            (writer) => writer.point([2.1, -3.4, 34.2, 0.2])
+            (writer) => writer.point([2.1, -3.4, 34.2, 0.2].position)
           ],
         );
 
@@ -99,23 +96,23 @@ void main() {
           'POINT(1.0 1.0),POINT(2.0 2.0)',
           [
             (writer) => writer
-              ..point([1.0, 1.0])
-              ..point([2.0, 2.0])
+              ..point([1.0, 1.0].xy)
+              ..point([2.0, 2.0].xy)
           ],
         );
 
         final points = [
-          [1.0, 1.0],
-          [2.0, 2.0]
+          [1.0, 1.0].xy,
+          [2.0, 2.0].xy
         ];
-        final pointsFlat = [1.0, 1.0, 2.0, 2.0];
+        final pointsFlat = [1.0, 1.0, 2.0, 2.0].positions();
         _testEncodeAndDecodeToWKT(
           endian,
           'LINESTRING(1.0 1.0,2.0 2.0),MULTIPOINT(1.0 1.0,2.0 2.0)',
           [
             (writer) => writer
-              ..lineString(pointsFlat, type: Coords.xy)
-              ..multiPoint(points, type: Coords.xy)
+              ..lineString(pointsFlat)
+              ..multiPoint(points)
           ],
         );
 
@@ -123,25 +120,23 @@ void main() {
           endian,
           'LINESTRING EMPTY',
           [
-            (writer) => writer.lineString([], type: Coords.xy),
+            (writer) => writer.lineString(PositionSeries.empty()),
             (writer) => writer.emptyGeometry(Geom.lineString),
           ],
         );
 
         final linestringsFlat = [
-          [10.1, 10.1, 5.0, 9.0, 12.0, 4.0, 10.1, 10.1],
+          [10.1, 10.1, 5.0, 9.0, 12.0, 4.0, 10.1, 10.1].positions(),
         ];
         _testEncodeAndDecodeToWKT(
           endian,
           'POLYGON((10.1 10.1,5.0 9.0,12.0 4.0,10.1 10.1))',
-          [(writer) => writer.polygon(linestringsFlat, type: Coords.xy)],
+          [(writer) => writer.polygon(linestringsFlat)],
         );
         _testEncodeAndDecodeToWKT(
           endian,
           'MULTILINESTRING((10.1 10.1,5.0 9.0,12.0 4.0,10.1 10.1))',
-          [
-            (writer) => writer.multiLineString(linestringsFlat, type: Coords.xy)
-          ],
+          [(writer) => writer.multiLineString(linestringsFlat)],
         );
 
         final multiPolygons = [linestringsFlat, linestringsFlat];
@@ -149,7 +144,7 @@ void main() {
           endian,
           'MULTIPOLYGON(((10.1 10.1,5.0 9.0,12.0 4.0,10.1 '
           '10.1)),((10.1 10.1,5.0 9.0,12.0 4.0,10.1 10.1)))',
-          [(writer) => writer.multiPolygon(multiPolygons, type: Coords.xy)],
+          [(writer) => writer.multiPolygon(multiPolygons)],
         );
 
         _testEncodeAndDecodeToWKT(
@@ -159,9 +154,9 @@ void main() {
           [
             (writer) => writer.geometryCollection(
                   (geom) => geom
-                    ..lineString(pointsFlat, type: Coords.xy)
-                    ..multiPoint(points, type: Coords.xy)
-                    ..point([2.1, -3.4]),
+                    ..lineString(pointsFlat)
+                    ..multiPoint(points)
+                    ..point([2.1, -3.4].xy),
                 )
           ],
         );
@@ -184,8 +179,8 @@ void main() {
         'POINT EMPTY',
         [
           (writer) => writer.emptyGeometry(Geom.point),
-          (writer) => writer.point([double.nan, double.nan]),
-          (writer) => writer.point([-double.nan, -double.nan]),
+          (writer) => writer.point([double.nan, double.nan].xy),
+          (writer) => writer.point([-double.nan, -double.nan].xy),
         ],
       );
 
@@ -195,9 +190,9 @@ void main() {
         // hex: 0103000000020000000500000000000000008041400000000000002440000000000080464000000000008046400000000000002E40000000000000444000000000000024400000000000003440000000000080414000000000000024400400000000000000000034400000000000003E40000000000080414000000000008041400000000000003E40000000000000344000000000000034400000000000003E40
         'POLYGON((35 10,45 45,15 40,10 20,35 10),(20 30,35 35,30 20,20 30))',
         [
-          (writer) => writer.polygon(type: Coords.xy, [
-                [35, 10, 45, 45, 15, 40, 10, 20, 35, 10],
-                [20, 30, 35, 35, 30, 20, 20, 30],
+          (writer) => writer.polygon([
+                <double>[35, 10, 45, 45, 15, 40, 10, 20, 35, 10].positions(),
+                <double>[20, 30, 35, 35, 30, 20, 20, 30].positions(),
               ]),
         ],
       );
@@ -213,13 +208,12 @@ void main() {
               (geom) => geom
                 ..multiPoint(
                   [
-                    [0, 0],
-                    [1, 1]
+                    [0.0, 0.0].xy,
+                    [1.0, 1.0].xy
                   ],
-                  type: Coords.xy,
                 )
-                ..point([3, 4])
-                ..lineString([2, 3, 3, 4], type: Coords.xy),
+                ..point([3.0, 4.0].xy)
+                ..lineString([2.0, 3.0, 3.0, 4.0].positions()),
             ),
         ],
       );

@@ -16,14 +16,16 @@ import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
+import '/src/coordinates/base/position_series.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
-import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 import '/src/vector/content/coordinates_content.dart';
 import '/src/vector/content/feature_content.dart';
 import '/src/vector/content/geometry_content.dart';
 import '/src/vector/encoding/content_encoder.dart';
 import '/src/vector/formats/geojson/geojson_format.dart';
+
+import 'coord_type.dart';
 
 // Base implementation for writers ---------------------------------------------
 
@@ -139,58 +141,51 @@ abstract class _BaseTextWriter<T extends Object>
 
   @override
   void point(
-    Iterable<double> position, {
-    Coords? type,
+    Position position, {
     String? name,
   }) {
-    final coordType = type ?? Coords.fromDimension(position.length);
     if (_geometryBeforeCoordinates(
       geomType: Geom.point,
       name: name,
-      coordType: coordType,
+      coordType: position.type,
     )) {
-      _coordPointFromIterator(
-        position.iterator,
-        coordType,
-      );
+      _coordPosition(position);
       _geometryAfterCoordinates();
     }
   }
 
   @override
   void lineString(
-    Iterable<double> chain, {
-    required Coords type,
+    PositionSeries chain, {
     String? name,
     Box? bounds,
   }) {
     if (_geometryBeforeCoordinates(
       geomType: Geom.lineString,
       name: name,
-      coordType: type,
+      coordType: chain.type,
       bounds: bounds,
     )) {
-      _coordPointsFromFlatArray(chain, type);
+      _coordPointsFromSeries(chain);
       _geometryAfterCoordinates();
     }
   }
 
   @override
   void polygon(
-    Iterable<Iterable<double>> rings, {
-    required Coords type,
+    Iterable<PositionSeries> rings, {
     String? name,
     Box? bounds,
   }) {
     if (_geometryBeforeCoordinates(
       geomType: Geom.polygon,
       name: name,
-      coordType: type,
+      coordType: positionSeriesArrayType(rings),
       bounds: bounds,
     )) {
       _coordArray(count: rings.length);
       for (final ring in rings) {
-        _coordPointsFromFlatArray(ring, type);
+        _coordPointsFromSeries(ring);
       }
       _coordArrayEnd();
       _geometryAfterCoordinates();
@@ -199,20 +194,19 @@ abstract class _BaseTextWriter<T extends Object>
 
   @override
   void multiPoint(
-    Iterable<Iterable<double>> points, {
-    required Coords type,
+    Iterable<Position> points, {
     String? name,
     Box? bounds,
   }) {
     if (_geometryBeforeCoordinates(
       geomType: Geom.multiPoint,
       name: name,
-      coordType: type,
+      coordType: positionArrayType(points),
       bounds: bounds,
     )) {
       _coordArray(count: points.length);
       for (final pos in points) {
-        _coordPointFromIterator(pos.iterator, type);
+        _coordPosition(pos);
       }
       _coordArrayEnd();
       _geometryAfterCoordinates();
@@ -221,20 +215,19 @@ abstract class _BaseTextWriter<T extends Object>
 
   @override
   void multiLineString(
-    Iterable<Iterable<double>> lineStrings, {
-    required Coords type,
+    Iterable<PositionSeries> lineStrings, {
     String? name,
     Box? bounds,
   }) {
     if (_geometryBeforeCoordinates(
       geomType: Geom.multiLineString,
       name: name,
-      coordType: type,
+      coordType: positionSeriesArrayType(lineStrings),
       bounds: bounds,
     )) {
       _coordArray(count: lineStrings.length);
       for (final chain in lineStrings) {
-        _coordPointsFromFlatArray(chain, type);
+        _coordPointsFromSeries(chain);
       }
       _coordArrayEnd();
       _geometryAfterCoordinates();
@@ -243,22 +236,21 @@ abstract class _BaseTextWriter<T extends Object>
 
   @override
   void multiPolygon(
-    Iterable<Iterable<Iterable<double>>> polygons, {
-    required Coords type,
+    Iterable<Iterable<PositionSeries>> polygons, {
     String? name,
     Box? bounds,
   }) {
     if (_geometryBeforeCoordinates(
       geomType: Geom.multiPolygon,
       name: name,
-      coordType: type,
+      coordType: positionSeriesArrayArrayType(polygons),
       bounds: bounds,
     )) {
       _coordArray(count: polygons.length);
       for (final rings in polygons) {
         _coordArray(count: rings.length);
         for (final ring in rings) {
-          _coordPointsFromFlatArray(ring, type);
+          _coordPointsFromSeries(ring);
         }
         _coordArrayEnd();
       }
@@ -300,31 +292,12 @@ abstract class _BaseTextWriter<T extends Object>
     );
   }
 
-  void _coordPointsFromFlatArray(Iterable<double> pointsFlat, Coords type) {
-    final dim = type.coordinateDimension;
-    final numPoints = pointsFlat.length ~/ dim;
-    _coordArray(count: numPoints);
-    final iter = pointsFlat.iterator;
-    for (var i = 0; i < numPoints; i++) {
-      _coordPointFromIterator(iter, type);
+  void _coordPointsFromSeries(PositionSeries points) {
+    _coordArray(count: points.length);
+    for (final pos in points.positions) {
+      _coordPosition(pos);
     }
     _coordArrayEnd();
-  }
-
-  void _coordPointFromIterator(Iterator<double> coords, Coords type) {
-    final x = coords.moveNext() ? coords.current : throw invalidCoordinates;
-    final y = coords.moveNext() ? coords.current : throw invalidCoordinates;
-    final optZ = type.is3D ? (coords.moveNext() ? coords.current : 0.0) : null;
-    final optM =
-        type.isMeasured ? (coords.moveNext() ? coords.current : 0.0) : null;
-
-    final outType = (_coordTypes.isNotEmpty ? _coordTypes.last : null) ?? type;
-    _coordPoint(
-      x: x,
-      y: y,
-      z: outType.is3D ? optZ : null,
-      m: outType.isMeasured ? optM : null,
-    );
   }
 
   void _coordPoint({

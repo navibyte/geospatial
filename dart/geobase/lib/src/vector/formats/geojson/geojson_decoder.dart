@@ -134,7 +134,10 @@ void _decodeGeometry(
         builder.emptyGeometry(Geom.point, name: name);
       } else {
         final coordType = Coords.fromDimension(pos.length);
-        builder.point(pos, type: coordType, name: name);
+        builder.point(
+          Position.view(pos, type: coordType),
+          name: name,
+        );
       }
       break;
     case 'LineString':
@@ -145,8 +148,7 @@ void _decodeGeometry(
         final coordType = resolveCoordType(array, positionLevel: 1);
         // NOTE: validate line string (at least two points)
         builder.lineString(
-          createFlatPositionArrayDouble(array, coordType, swapXY: swapXY),
-          type: coordType,
+          createPositionSeries(array, coordType, swapXY: swapXY),
           bounds: _buildBboxOpt(geometry, swapXY),
           name: name,
         );
@@ -160,25 +162,21 @@ void _decodeGeometry(
         final coordType = resolveCoordType(array, positionLevel: 2);
         // NOTE: validate polygon (at least one ring)
         builder.polygon(
-          createFlatPositionArrayArrayDouble(array, coordType, swapXY: swapXY),
-          type: coordType,
+          createPositionSeriesArray(array, coordType, swapXY: swapXY),
           bounds: _buildBboxOpt(geometry, swapXY, coordType),
           name: name,
         );
       }
       break;
     case 'MultiPoint':
-      final array = requirePositionArrayDouble(
-        geometry['coordinates'],
-        swapXY: swapXY,
-      );
+      final array = geometry['coordinates'] as List<dynamic>;
       if (array.isEmpty) {
         builder.emptyGeometry(Geom.multiPoint, name: name);
       } else {
-        final coordType = resolveCoordType(array, positionLevel: 1);
+        final points = requirePositionArray(array, swapXY: swapXY);
+        final coordType = points.isNotEmpty ? points.first.type : null;
         builder.multiPoint(
-          array,
-          type: coordType,
+          points,
           bounds: _buildBboxOpt(geometry, swapXY, coordType),
           name: name,
         );
@@ -191,8 +189,7 @@ void _decodeGeometry(
       } else {
         final coordType = resolveCoordType(array, positionLevel: 2);
         builder.multiLineString(
-          createFlatPositionArrayArrayDouble(array, coordType, swapXY: swapXY),
-          type: coordType,
+          createPositionSeriesArray(array, coordType, swapXY: swapXY),
           bounds: _buildBboxOpt(geometry, swapXY, coordType),
           name: name,
         );
@@ -205,12 +202,11 @@ void _decodeGeometry(
       } else {
         final coordType = resolveCoordType(array, positionLevel: 3);
         builder.multiPolygon(
-          createFlatPositionArrayArrayArrayDouble(
+          createPositionSeriesArrayArray(
             array,
             coordType,
             swapXY: swapXY,
           ),
-          type: coordType,
           bounds: _buildBboxOpt(geometry, swapXY, coordType),
           name: name,
         );

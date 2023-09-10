@@ -23,6 +23,7 @@ export 'src/constants/epsilon.dart';
 export 'src/coordinates/base/aligned.dart';
 export 'src/coordinates/base/box.dart';
 export 'src/coordinates/base/position.dart';
+export 'src/coordinates/base/position_extensions.dart';
 export 'src/coordinates/base/position_series.dart';
 export 'src/coordinates/base/positionable.dart';
 export 'src/coordinates/data/position_data.dart';

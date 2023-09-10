@@ -92,56 +92,32 @@ void _parseGeometry(
               switch (type) {
                 case 0: // POINT
                   builder.point(
-                    _parsePosition(
-                      data,
-                      coordsType.coordinateDimension,
-                    ),
-                    type: coordsType,
+                    _parsePosition(data, coordsType),
                   );
                   return;
                 case 1: // LINESTRING
                   builder.lineString(
-                    _parsePositionArray(
-                      data,
-                      coordsType.coordinateDimension,
-                    ),
-                    type: coordsType,
+                    _parsePositionSeries(data, coordsType),
                   );
                   return;
                 case 2: // POLYGON
                   builder.polygon(
-                    _parseListOfPositionArray(
-                      data,
-                      coordsType.coordinateDimension,
-                    ),
-                    type: coordsType,
+                    _parsePositionSeriesArray(data, coordsType),
                   );
                   return;
                 case 3: // MULTIPOINT
                   builder.multiPoint(
-                    _parseListOfPositions(
-                      data,
-                      coordsType.coordinateDimension,
-                    ),
-                    type: coordsType,
+                    _parsePositionArray(data, coordsType),
                   );
                   return;
                 case 4: // MULTILINESTRING
                   builder.multiLineString(
-                    _parseListOfPositionArray(
-                      data,
-                      coordsType.coordinateDimension,
-                    ),
-                    type: coordsType,
+                    _parsePositionSeriesArray(data, coordsType),
                   );
                   return;
                 case 5: // MULTIPOLYGON
                   builder.multiPolygon(
-                    _parseListOfListOfPositionArray(
-                      data,
-                      coordsType.coordinateDimension,
-                    ),
-                    type: coordsType,
+                    _parsePositionSeriesArrayArray(data, coordsType),
                   );
                   return;
                 case 6: // GEOMETRYCOLLECTION
@@ -194,17 +170,20 @@ String _omitParenthesis(String str) => str.startsWith('(') && str.endsWith(')')
     ? str.substring(1, str.length - 1)
     : str;
 
-/// Parses position coordinates from [text] with values separated by white
-/// space.
-List<double> _parsePosition(String text, int dim) {
+/// Parses a position from [text] with coordinates separated by white space.
+Position _parsePosition(String text, Coords coordsType) {
+  final dim = coordsType.coordinateDimension;
   final parts = _omitParenthesis(text.trim()).split(_splitByWhitespace);
   if (parts.length != dim) {
     throw _invalidCoords(text);
   }
-  return parts.map<double>(double.parse).toList(growable: false);
+  return Position.view(
+    parts.map<double>(double.parse).toList(growable: false),
+    type: coordsType,
+  );
 }
 
-/// Parses position coordinates from [text] with values separated by white
+/// Parses a position from [text] with coordinates separated by white
 /// space and sets position coordinates to the [target] list at [offset].
 void _parsePositionTo(String text, int dim, List<double> target, int offset) {
   final parts = _omitParenthesis(text.trim()).split(_splitByWhitespace);
@@ -216,30 +195,29 @@ void _parsePositionTo(String text, int dim, List<double> target, int offset) {
   }
 }
 
-/// Parses a list of position (each with [dim] coordinate values).
-List<List<double>> _parseListOfPositions(String text, int dim) {
+/// Parses an array of positions.
+List<Position> _parsePositionArray(String text, Coords coordsType) {
   final positions = text.split(',');
   return positions
-      .map((pos) => _parsePosition(pos, dim))
+      .map((pos) => _parsePosition(pos, coordsType))
       .toList(growable: false);
 }
 
-/// Parses a position array (0 to N positions each with [dim] coordinate
-/// values).
-List<double> _parsePositionArray(String text, int dim) {
+/// Parses a series of positions.
+PositionSeries _parsePositionSeries(String text, Coords coordsType) {
+  final dim = coordsType.coordinateDimension;
   final positions = text.split(',');
   final len = positions.length;
   final array = List<double>.filled(len * dim, 0.0);
   for (var i = 0; i < len; i++) {
     _parsePositionTo(positions[i], dim, array, i * dim);
   }
-  return array;
+  return PositionSeries.view(array, type: coordsType);
 }
 
-/// Parses a list of position arrays (0 to N positions each with [dim]
-/// coordinate values).
-List<List<double>> _parseListOfPositionArray(String text, int dim) {
-  final list = <List<double>>[];
+/// Parses an array of series of positions.
+List<PositionSeries> _parsePositionSeriesArray(String text, Coords coordsType) {
+  final list = <PositionSeries>[];
 
   var ls = 0;
   while (ls < text.length) {
@@ -249,9 +227,9 @@ List<List<double>> _parseListOfPositionArray(String text, int dim) {
         throw _invalidWkt(text);
       } else {
         list.add(
-          _parsePositionArray(
+          _parsePositionSeries(
             text.substring(ls + 1, le),
-            dim,
+            coordsType,
           ),
         );
         ls = le;
@@ -263,15 +241,17 @@ List<List<double>> _parseListOfPositionArray(String text, int dim) {
   return list;
 }
 
-/// Parses a list of lists of position arrays (0 to N positions each with [dim]
-/// coordinate values).
-List<List<List<double>>> _parseListOfListOfPositionArray(String text, int dim) {
-  final polygons = <List<List<double>>>[];
+/// Parses an array of arrays of series of positions.
+List<List<PositionSeries>> _parsePositionSeriesArrayArray(
+  String text,
+  Coords coordsType,
+) {
+  final polygons = <List<PositionSeries>>[];
 
   var ps = 0;
   while (ps < text.length) {
     if (text[ps] == '(') {
-      final lineStrings = <List<double>>[];
+      final lineStrings = <PositionSeries>[];
       var ls = ps + 1;
       while (ls < text.length) {
         if (text[ls] == ')') {
@@ -282,9 +262,9 @@ List<List<List<double>>> _parseListOfListOfPositionArray(String text, int dim) {
             throw _invalidWkt(text);
           } else {
             lineStrings.add(
-              _parsePositionArray(
+              _parsePositionSeries(
                 text.substring(ls + 1, le),
-                dim,
+                coordsType,
               ),
             );
             ls = le;

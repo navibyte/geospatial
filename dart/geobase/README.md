@@ -140,9 +140,9 @@ Primitive geometries introduced above contain geographic or projected positions:
 * `LineString` with a chain of positions (at least two positions)
 * `Polygon` with an array of linear rings (exactly one exterior and 0 to N interior rings with each ring being a closed chain of positions)
 
-Position arrays (chains of positions) are NOT modeled as iterables of position
-objects (`Geographic` or `Projected`), but as a flat structure represented by
-arrays of coordinate values, for example:
+In previous samples position data (chains of positions) is NOT modeled as
+iterables of position objects (`Geographic` or `Projected`), but as a flat
+structure represented by arrays of coordinate values, for example:
 * 2D position arrays: `[x0, y0, x1, y1, x2, y2, ...]`
 * 3D position arrays: `[x0, y0, z0, x1, y1, z1, x2, y2, z2, ...]`
 
@@ -788,13 +788,13 @@ and `Polygon` geometry classes:
 <img src="https://raw.githubusercontent.com/navibyte/geospatial/v0.12.0/dart/geobase/assets/diagrams/point_linestring_polygon.svg" width="100%" title="Point, LineString and Polygon geometry classes" />
 
 Primitive geometry classes described by the diagram:
-* `Point` with a single position represented by `PositionCoords`
-* `LineString` with a chain of positions (at least two positions) represented by `PositionArray`
+* `Point` with a single position represented by `Position`
+* `LineString` with a chain of positions (at least two positions) represented by `PositionSeries`
 * `Polygon` with an array of linear rings 
-  * exactly one `exterior` ring represented by `PositionArray`
-  * 0 to N `interior` rings (holes) with each represented by `PositionArray`
+  * exactly one `exterior` ring represented by `PositionSeries`
+  * 0 to N `interior` rings (holes) with each represented by `PositionSeries`
 
-The `PositionCoords` and `PositionArray` classes are described in the appendix
+The `PositionSeries` class is described in the appendix
 about [coordinate arrays](#coordinate-arrays) and the `SimpleGeometryContent`
 interface visible in the diagram in [content interfaces](#content-interfaces).
 The usage of `project()` method is described in the chapter about
@@ -805,7 +805,7 @@ See also the class diagram about multi and collection geometries below:
 <img src="https://raw.githubusercontent.com/navibyte/geospatial/v0.12.0/dart/geobase/assets/diagrams/multi_and_collection_geometries.svg" width="100%" title="Multi and collection geometry classes" />
 
 For example `MultiLineString` stores `chains` of positions for all line strings
-as a list of `PositionArray`. It's also possible to get a mapped iterable of
+as a list of `PositionSeries`. It's also possible to get a mapped iterable of
 `LineString` objects using the `lineStrings` getter. 
 
 ## Geospatial features
@@ -1040,7 +1040,7 @@ The sample below demonstrates the logic:
     // no CRS must be specified for the default coordinate reference system:
     // `CoordRefSys.CRS84` or `http://www.opengis.net/def/crs/OGC/1.3/CRS84`
   );
-  final pos1 = point1.position.asGeographic;
+  final pos1 = Geographic.from(point1.position);
   // prints: Point1: lon: 0.0014°W lat: 51.4778°N
   print('Point1: lon: ${pos1.lonDms()} lat: ${pos1.latDms()}');
 
@@ -1049,7 +1049,7 @@ The sample below demonstrates the logic:
     '{"type": "Point", "coordinates": [51.4778, -0.0014, 45.0]}',
     crs: epsg4326, // CRS must be explicitely specified
   );
-  final pos2 = point2.position.asGeographic;
+  final pos2 = Geographic.from(point2.position);
   // prints: Point2: lon: 0.0014°W lat: 51.4778°N
   print('Point2: lon: ${pos2.lonDms()} lat: ${pos2.latDms()}');
 
@@ -1126,8 +1126,7 @@ format, and then writing content to that encoder. See sample below:
   // prints:
   //    POINT ZM(10.123 20.25 -30.95 -1.999)
   encoder.writer.point(
-    [10.123, 20.25, -30.95, -1.999],
-    type: Coords.xyzm,
+    [10.123, 20.25, -30.95, -1.999].xyzm,
   );
   print(encoder.toText());
 ```
@@ -1162,8 +1161,7 @@ following steps:
 
   // write geometries (here only point) to content writer of the encoder
   encoder.writer.point(
-    [10.123, 20.25, -30.95, -1.999],
-    type: Coords.xyzm,
+    [10.123, 20.25, -30.95, -1.999].xyzm,
   );
 
   // get encoded bytes (Uint8List) and Base64 encoded text (String)
@@ -1551,30 +1549,20 @@ formats also, efficient array data structures for coordinate values (as
 building or writing coordinate data of geometry objects described in the
 [Geometries](#geometries) section.
 
-The following class diagram describes coordinate array data structures and their
-relationships:
+Following factory methods allow creating `PositionSeries`, `Position` and `Box`
+instances from coordinate arrays of double values.
 
-<img src="https://raw.githubusercontent.com/navibyte/geospatial/v0.12.0/dart/geobase/assets/diagrams/coordinate_arrays.svg" width="100%" title="Coordinate arrays" />
+Factory method        | Description
+--------------------  | -------------------------------------------------------------
+`PositionSeries.view` | Coordinate values of 0 to N positions as a flat structure.
+`Position.view`       | Coordinate values of a single position.
+`Box.view`            | Coordinate values of a single bounding box.
 
-Class            | Description
----------------- | -------------------------------------------------------------
-`PositionArray`  | Coordinate values of 0 to N positions as a flat structure.
-`PositionCoords` | Coordinate values of a single position.
-`BoxCoords`      | Coordinate values of a single bounding box.
-
-All these classes implement `Iterable<double>` allowing instances of them to be
-used in places requiring the `Iterable<double>` type. At the same time, for
-example `PositionCoords` is also a valid `Position` and `BoxCoords` is a valid
-`Box`.
-
-As described above, `PositionArray` represents coordinate values of 0 to N
-positions as a flat structure. That is, there is no array of positions with 
-each having an array of coordinate values, but a single flat array of coordinate
-values (double). This is best illustrated by code samples below:
+For example series of positions can be created as:
 
 ```dart
-  // A position array with three positions each with x and y coordinates.
-  PositionArray.view(
+  // A position series with three positions each with x and y coordinates.
+  PositionSeries.view(
     [
       10.0, 11.0, // (x, y) for position 0
       20.0, 21.0, // (x, y) for position 1
@@ -1583,8 +1571,15 @@ values (double). This is best illustrated by code samples below:
     type: Coords.xy,
   );
 
-  // A position array with three positions each with x, y and z coordinates.
-  PositionArray.view(
+  // A shortcut to create a position series with three positions (with x and y).
+  [
+    10.0, 11.0, // (x, y) for position 0
+    20.0, 21.0, // (x, y) for position 1
+    30.0, 31.0, // (x, y) for position 2
+  ].positions(Coords.xy);
+
+  // A position series with three positions each with x, y and z coordinates.
+  PositionSeries.view(
     [
       10.0, 11.0, 12.0, // (x, y, z) for position 0
       20.0, 21.0, 22.0, // (x, y, z) for position 1
@@ -1595,7 +1590,7 @@ values (double). This is best illustrated by code samples below:
 ```
 
 The coordinate type (using a `Coords` enum value) must be defined when creating
-position arrays. Expected coordinate values (exactly in this order) for each
+series of positions. Expected coordinate values (exactly in this order) for each
 type are described below:
 
 Type          | Projected values | Geographic values
@@ -1609,12 +1604,12 @@ See also specialized extension methods or getters on `List<double>`:
 
 Method/getter | Created object   | Description
 ------------- | ---------------- | -----------
-`positions()` | `PositionArray`  | An array of 0 to N positions as a flat structure. 
-`position`    | `PositionCoords` | A single position.
-`box`         | `BoxCoords`      | A single bounding box.
+`positions()` | `PositionSeries` | An array of 0 to N positions from a flat structure of coordinate values. 
+`position`    | `Position`       | A single position.
+`box`         | `Box`            | A single bounding box.
 
 For single positions there are also some more extension getters on
-`List<double>` to create instances of `PositionCoords`:
+`List<double>` to create instances of `Position`:
 
 Getter  | 2D/3D | Coords | Values   | x | y | z | m
 ------  | ----- | ------ | -------- | - | - | - | -

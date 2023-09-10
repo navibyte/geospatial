@@ -8,9 +8,10 @@
 
 import 'dart:typed_data';
 
-import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/coordinates/base/box.dart';
+import '/src/coordinates/base/position.dart';
+import '/src/coordinates/base/position_series.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/vector/content/geometry_content.dart';
 import '/src/vector/content/simple_geometry_content.dart';
@@ -268,20 +269,18 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
 
   @override
   void point(
-    Iterable<double> position, {
-    Coords? type,
+    Position position, {
     String? name,
   }) {
     _add(
-      Point.build(position, type: type),
+      Point(position),
       name: name,
     );
   }
 
   @override
   void lineString(
-    Iterable<double> chain, {
-    required Coords type,
+    PositionSeries chain, {
     String? name,
     Box? bounds,
   }) {
@@ -289,15 +288,14 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
       // note: ignore empty geometries for this implementation
     }
     _add(
-      LineString.build(chain, type: type, bounds: bounds),
+      LineString(chain, bounds: bounds),
       name: name,
     );
   }
 
   @override
   void polygon(
-    Iterable<Iterable<double>> rings, {
-    required Coords type,
+    Iterable<PositionSeries> rings, {
     String? name,
     Box? bounds,
   }) {
@@ -305,46 +303,65 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
       // note: ignore empty geometries for this implementation
     }
     _add(
-      Polygon.build(rings, type: type, bounds: bounds),
+      Polygon(
+        rings is List<PositionSeries> ? rings : rings.toList(growable: false),
+        bounds: bounds,
+      ),
       name: name,
     );
   }
 
   @override
   void multiPoint(
-    Iterable<Iterable<double>> points, {
-    required Coords type,
+    Iterable<Position> points, {
     String? name,
     Box? bounds,
   }) {
     _add(
-      MultiPoint.build(points, type: type, bounds: bounds),
+      MultiPoint(
+        points is List<Position> ? points : points.toList(growable: false),
+        bounds: bounds,
+      ),
       name: name,
     );
   }
 
   @override
   void multiLineString(
-    Iterable<Iterable<double>> lineStrings, {
-    required Coords type,
+    Iterable<PositionSeries> lineStrings, {
     String? name,
     Box? bounds,
   }) {
     _add(
-      MultiLineString.build(lineStrings, type: type, bounds: bounds),
+      MultiLineString(
+        lineStrings is List<PositionSeries>
+            ? lineStrings
+            : lineStrings.toList(growable: false),
+        bounds: bounds,
+      ),
       name: name,
     );
   }
 
   @override
   void multiPolygon(
-    Iterable<Iterable<Iterable<double>>> polygons, {
-    required Coords type,
+    Iterable<Iterable<PositionSeries>> polygons, {
     String? name,
     Box? bounds,
   }) {
     _add(
-      MultiPolygon.build(polygons, type: type, bounds: bounds),
+      MultiPolygon(
+        polygons is List<List<PositionSeries>>
+            ? polygons
+            : polygons
+                .map(
+                  (polygon) => polygon is List<PositionSeries>
+                      ? polygon
+                      : polygon.toList(growable: false),
+                )
+                .toList(growable: false),
+        bounds: bounds,
+      ),
       name: name,
     );
   }
@@ -369,27 +386,27 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
     switch (type) {
       case Geom.point:
         // empty point with x and y set to double.nan
-        point(const [double.nan, double.nan]);
+        point(Position.view(const [double.nan, double.nan]));
         break;
       case Geom.lineString:
         // empty linestring with empty chain of points
-        lineString([], type: Coords.xy);
+        lineString(PositionSeries.empty());
         break;
       case Geom.polygon:
         // empty polygon with empty list of liner rings
-        polygon([], type: Coords.xy);
+        polygon(const []);
         break;
       case Geom.multiPoint:
         // empty multi point without any points
-        multiPoint([], type: Coords.xy);
+        multiPoint(const []);
         break;
       case Geom.multiLineString:
         // empty multi linestring without any linestrings
-        multiLineString([], type: Coords.xy);
+        multiLineString(const []);
         break;
       case Geom.multiPolygon:
         // empty multi polygon without any polygons
-        multiPolygon([], type: Coords.xy);
+        multiPolygon(const []);
         break;
       case Geom.geometryCollection:
         // empty geometry collection without any geometries

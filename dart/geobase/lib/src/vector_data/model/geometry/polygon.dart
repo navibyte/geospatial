@@ -19,6 +19,7 @@ import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounded_utils.dart';
 import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_arrays_from_json.dart';
+import '/src/utils/coord_positions.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
@@ -176,13 +177,12 @@ class Polygon extends SimpleGeometry {
       return Polygon.build(const []);
     }
     final coordType = resolveCoordType(array, positionLevel: 2);
-    return Polygon.build(
-      createFlatPositionArrayArrayDouble(
+    return Polygon(
+      createPositionSeriesArray(
         array,
         coordType,
         swapXY: crs?.swapXY(logic: crsLogic) ?? false,
       ),
-      type: coordType,
     );
   }
 
@@ -290,7 +290,7 @@ class Polygon extends SimpleGeometry {
   @override
   Polygon project(Projection projection) {
     final projected =
-        _rings.map(projection.projectSeries).toList(growable: false);
+        rings.map((ring) => ring.project(projection)).toList(growable: false);
 
     return Polygon(
       projected,
@@ -306,17 +306,10 @@ class Polygon extends SimpleGeometry {
   }
 
   @override
-  void writeTo(SimpleGeometryContent writer, {String? name}) {
-    final type = coordType;
-    return isEmptyByGeometry
-        ? writer.emptyGeometry(Geom.polygon, name: name)
-        : writer.polygon(
-            _rings.map((chain) => chain.valuesByType(type)),
-            type: coordType,
-            name: name,
-            bounds: bounds,
-          );
-  }
+  void writeTo(SimpleGeometryContent writer, {String? name}) =>
+      isEmptyByGeometry
+          ? writer.emptyGeometry(Geom.polygon, name: name)
+          : writer.polygon(rings, name: name, bounds: bounds);
 
   // NOTE: coordinates as raw data
 
