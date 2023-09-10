@@ -180,6 +180,20 @@ abstract class BoxCoords extends Box with _CoordinatesMixin {
         maxZ: maxZ ?? this.maxZ,
         maxM: maxM ?? this.maxM,
       );
+
+  @override
+  BoxCoords copyByType(Coords type) => this.type == type
+      ? this
+      : BoxCoords.create(
+          minX: minX,
+          minY: minY,
+          minZ: type.is3D ? minZ ?? 0.0 : null,
+          minM: type.isMeasured ? minM ?? 0.0 : null,
+          maxX: maxX,
+          maxY: maxY,
+          maxZ: type.is3D ? maxZ ?? 0.0 : null,
+          maxM: type.isMeasured ? maxM ?? 0.0 : null,
+        );
 }
 
 @immutable

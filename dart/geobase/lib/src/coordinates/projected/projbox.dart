@@ -212,6 +212,20 @@ class ProjBox extends Box {
       );
 
   @override
+  ProjBox copyByType(Coords type) => this.type == type
+      ? this
+      : ProjBox.create(
+          minX: minX,
+          minY: minY,
+          minZ: type.is3D ? minZ ?? 0.0 : null,
+          minM: type.isMeasured ? minM ?? 0.0 : null,
+          maxX: maxX,
+          maxY: maxY,
+          maxZ: type.is3D ? maxZ ?? 0.0 : null,
+          maxM: type.isMeasured ? maxM ?? 0.0 : null,
+        );
+
+  @override
   Projected aligned2D([Aligned align = Aligned.center]) =>
       Box.createAligned2D(this, Projected.create, align: align);
 

@@ -272,6 +272,20 @@ class GeoBox extends Box {
       );
 
   @override
+  GeoBox copyByType(Coords type) => this.type == type
+      ? this
+      : GeoBox.create(
+          minX: minX,
+          minY: minY,
+          minZ: type.is3D ? minZ ?? 0.0 : null,
+          minM: type.isMeasured ? minM ?? 0.0 : null,
+          maxX: maxX,
+          maxY: maxY,
+          maxZ: type.is3D ? maxZ ?? 0.0 : null,
+          maxM: type.isMeasured ? maxM ?? 0.0 : null,
+        );
+
+  @override
   Geographic aligned2D([Aligned align = Aligned.center]) =>
       Box.createAligned2D(this, Geographic.create, align: align);
 

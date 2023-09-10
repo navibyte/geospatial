@@ -298,6 +298,9 @@ abstract class Position extends Positionable {
   /// measured position.
   Position copyWith({double? x, double? y, double? z, double? m});
 
+  /// Copies this position as another position by the given coordinate [type].
+  Position copyByType(Coords type);
+
   /// Projects this position to another position using [projection].
   ///
   /// Subtypes may specify a more accurate position type for the returned object
@@ -305,7 +308,7 @@ abstract class Position extends Positionable {
   /// when forward-projecting, and other way when inverse-projecting).
   Position project(Projection projection);
 
-  /// Returns a position with all points transformed using [transform].
+  /// Returns a position transformed from this position using [transform].
   ///
   /// The returned object should be of the same type as this object has.
   Position transform(TransformPosition transform);
@@ -800,6 +803,16 @@ class _PositionCoords extends Position {
       type: newType,
     );
   }
+
+  @override
+  Position copyByType(Coords type) => this.type == type
+      ? this
+      : Position.create(
+          x: x,
+          y: y,
+          z: type.is3D ? z : null,
+          m: type.isMeasured ? m : null,
+        );
 
   @override
   Position project(Projection projection) =>

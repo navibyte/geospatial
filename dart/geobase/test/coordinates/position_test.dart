@@ -586,6 +586,16 @@ class _TestXYZM implements Projected {
       );
 
   @override
+  Projected copyByType(Coords type) => this.type == type
+      ? this
+      : _TestXYZM.create(
+          x: x,
+          y: y,
+          z: type.is3D ? z : null,
+          m: type.isMeasured ? m : null,
+        );
+
+  @override
   Geographic project(Projection projection) =>
       projection.project(this, to: Geographic.create);
 

@@ -222,6 +222,16 @@ class _PositionCoordsImpl extends PositionCoords {
       );
 
   @override
+  PositionCoords copyByType(Coords type) => this.type == type
+      ? this
+      : PositionCoords.create(
+          x: x,
+          y: y,
+          z: type.is3D ? z : null,
+          m: type.isMeasured ? m : null,
+        );
+
+  @override
   PositionCoords project(Projection projection) =>
       projection.project(this, to: PositionCoords.create);
 

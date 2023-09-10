@@ -8,6 +8,7 @@ import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
 import '/src/constants/epsilon.dart';
+import '/src/coordinates/projection/projection.dart';
 import '/src/utils/coord_utils.dart';
 import '/src/utils/num.dart';
 import '/src/utils/tolerance.dart';
@@ -41,6 +42,11 @@ abstract class PositionSeries implements Positionable {
   /// Default `const` constructor to allow extending this abstract class.
   const PositionSeries();
 
+  static final _empty = PositionSeries.view(const []);
+
+  /// An empty series of positions without any positions.
+  factory PositionSeries.empty() => _empty;
+
   /// A series of positions as a view backed by [source] containing coordinate
   /// values of positions.
   ///
@@ -62,8 +68,11 @@ abstract class PositionSeries implements Positionable {
   /// performance.
   ///
   /// See [Position] for description about supported coordinate values.
-  factory PositionSeries.view(Iterable<double> source, {required Coords type}) =
-      _PositionDataCoords.view;
+  factory PositionSeries.view(
+    Iterable<double> source, {
+    Coords type = Coords.xy,
+  }) =>
+      _PositionDataCoords.view(source, type: type);
 
   /// A series of positions as a view backed by [source] containing [Position]
   /// objects.
@@ -255,6 +264,18 @@ abstract class PositionSeries implements Positionable {
   /// See [values] (that returns coordinate values according to the coordinate
   /// type of this bounding box) for description of possible return values.
   Iterable<double> valuesByType(Coords type);
+
+  /// Copies this series of positions as another series with positions mapped by
+  /// the given coordinate [type].
+  PositionSeries copyByType(Coords type);
+
+  /// Projects this series of positions to another series using [projection].
+  PositionSeries project(Projection projection);
+
+  /// Returns a position series with all points transformed using [transform].
+  ///
+  /// The returned object should be of the same type as this object has.
+  PositionSeries transform(TransformPosition transform);
 
   /// True if the first and last position equals in 2D.
   bool get isClosed {
@@ -449,6 +470,28 @@ class _PositionArray extends PositionSeries {
   }
 
   @override
+  PositionSeries copyByType(Coords type) => this.type == type
+      ? this
+      : PositionSeries.from(
+          positions.map((pos) => pos.copyByType(type)).toList(growable: false),
+          type: type,
+        );
+
+  @override
+  PositionSeries project(Projection projection) => PositionSeries.from(
+        positions.map((pos) => pos.project(projection)).toList(growable: false),
+        type: type,
+      );
+
+  @override
+  PositionSeries transform(TransformPosition transform) => PositionSeries.from(
+        positions
+            .map((pos) => pos.transform(transform))
+            .toList(growable: false),
+        type: type,
+      );
+
+  @override
   bool operator ==(Object other) =>
       other is _PositionArray && _type == other._type && _data == other._data;
 
@@ -467,7 +510,7 @@ class _PositionDataCoords extends PositionSeries {
   /// A series of positions with coordinate values of [type] from [source].
   const _PositionDataCoords.view(
     Iterable<double> source, {
-    required Coords type,
+    Coords type = Coords.xy,
   })  : _data = source,
         _type = type;
 
@@ -566,6 +609,28 @@ class _PositionDataCoords extends PositionSeries {
           sourceType: this.type,
           targetType: type,
         );
+
+  @override
+  PositionSeries copyByType(Coords type) => this.type == type
+      ? this
+      : PositionSeries.view(
+          valuesByType(type).toList(growable: false),
+          type: type,
+        );
+
+  @override
+  PositionSeries project(Projection projection) => PositionSeries.view(
+        projection.projectCoords(values, type: type),
+        type: type,
+      );
+
+  @override
+  PositionSeries transform(TransformPosition transform) => PositionSeries.from(
+        positions
+            .map((pos) => pos.transform(transform))
+            .toList(growable: false),
+        type: type,
+      );
 
   @override
   bool equalsCoords(PositionSeries other) {

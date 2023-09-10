@@ -150,6 +150,16 @@ class Projected extends Position {
         m: m ?? _m,
       );
 
+  @override
+  Projected copyByType(Coords type) => this.type == type
+      ? this
+      : Projected.create(
+          x: x,
+          y: y,
+          z: type.is3D ? z : null,
+          m: type.isMeasured ? m : null,
+        );
+
   /// Unprojects this projected position to a geographic position using
   /// the inverse [projection].
   @override

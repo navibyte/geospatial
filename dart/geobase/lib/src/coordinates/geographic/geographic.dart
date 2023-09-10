@@ -188,6 +188,16 @@ class Geographic extends Position {
         m: m ?? _m,
       );
 
+  @override
+  Geographic copyByType(Coords type) => this.type == type
+      ? this
+      : Geographic.create(
+          x: x,
+          y: y,
+          z: type.is3D ? z : null,
+          m: type.isMeasured ? m : null,
+        );
+
   /// Projects this geographic position to a projected position using
   /// the forward [projection].
   @override

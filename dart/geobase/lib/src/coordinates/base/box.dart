@@ -306,6 +306,9 @@ abstract class Box extends Positionable {
     double? maxM,
   });
 
+  /// Copies this bounding box as another box by the given coordinate [type].
+  Box copyByType(Coords type);
+
   /// The width of the bounding box, equals to `maxX - minX`.
   double get width;
 
@@ -1011,6 +1014,20 @@ class _BoxCoords extends Box {
         maxZ: maxZ ?? this.maxZ,
         maxM: maxM ?? this.maxM,
       );
+
+  @override
+  Box copyByType(Coords type) => this.type == type
+      ? this
+      : Box.create(
+          minX: minX,
+          minY: minY,
+          minZ: type.is3D ? minZ ?? 0.0 : null,
+          minM: type.isMeasured ? minM ?? 0.0 : null,
+          maxX: maxX,
+          maxY: maxY,
+          maxZ: type.is3D ? maxZ ?? 0.0 : null,
+          maxM: type.isMeasured ? maxM ?? 0.0 : null,
+        );
 
   @override
   Iterable<double> get values => _data;
