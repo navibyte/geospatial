@@ -439,7 +439,7 @@ The following example demonstrates these capabilities (see the full sample at
       final geometry = feature.geometry;
       if (geometry is Point) {
         if (crs.isGeographic()) {
-          final position = geometry.position.asGeographic;
+          final position = Geographic.from(geometry.position);
           const dms = Dms(type: DmsType.degMinSec, decimals: 3);
           print('$id $name ${position.lonDms(dms)},${position.latDms(dms)}');
         } else {

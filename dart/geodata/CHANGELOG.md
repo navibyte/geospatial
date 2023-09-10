@@ -5,6 +5,7 @@ NOTE: Version 0.13.0 currently [under development](https://github.com/navibyte/g
 🛠 Refactoring:
 * [Simplify Feature and FeatureCollection types #195](https://github.com/navibyte/geospatial/issues/195)
 * [Consistent crs and trs references in meta classes #196](https://github.com/navibyte/geospatial/issues/196)
+* Smaller refactoring due to changes on `geobase` package, for example related to [Deprecate PositionArray, PositionCoords and BoxCoords #201](https://github.com/navibyte/geospatial/issues/201) and [Refactor SimpleGeometryContent #202](https://github.com/navibyte/geospatial/issues/202).
 
 ## 0.12.1
 
