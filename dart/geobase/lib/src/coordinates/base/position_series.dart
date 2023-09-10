@@ -22,15 +22,15 @@ import 'positionable.dart';
 /// structures to store coordinate values of positions contained in a series:
 /// * A list of [Position] objects (each object contain x and y coordinates, and
 ///   optionally z and m too).
-/// * A list of [double] values as a flat structure. For example for a double
-///   list could contain coordinates like [x0, y0, z0, x1, y1, z1, x2, y2, z2]
+/// * A list of [double] values as a flat structure. For example a double list
+///   could contain coordinates like `[x0, y0, z0, x1, y1, z1, x2, y2, z2]`
 ///   that represents three positions each with x, y and z coordinates.
 ///
 /// It's also possible to create a position data instance using factory methods
 /// [PositionSeries.view] and [PositionSeries.parse] that create an instance
 /// storing coordinate values of positions in a double array. The factory
 /// [PositionSeries.from] creates an instance storing positions objects in an
-/// array.
+/// array. The factory [PositionSeries.empty] returns an empty series.
 ///
 /// See [Position] for description about supported coordinate values.
 ///
