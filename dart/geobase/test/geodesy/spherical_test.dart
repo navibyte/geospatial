@@ -109,8 +109,8 @@ void main() {
       // create a polygon object with an exterior linear ring (and no holes)
       final polygon = Polygon.build(const [linearRing]);
 
-      // an exterior linear ring as an iterable of geographic positions
-      final positions = polygon.exterior!.positionsAs(to: Geographic.create);
+      // an exterior linear ring as a position series
+      final positions = polygon.exterior!;
 
       // test area
       expect(positions.spherical.polygonArea(),

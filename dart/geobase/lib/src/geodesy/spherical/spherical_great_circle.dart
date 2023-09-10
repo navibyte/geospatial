@@ -33,6 +33,7 @@ import 'dart:math';
 import 'package:meta/meta.dart';
 
 import '/src/constants/epsilon.dart';
+import '/src/coordinates/base/position_series.dart';
 import '/src/coordinates/geographic/geographic.dart';
 import '/src/coordinates/geographic/geographic_functions.dart';
 import '/src/geodesy/base/geodetic.dart';
@@ -45,12 +46,23 @@ extension SphericalGreatCircleExtension on Geographic {
   SphericalGreatCircle get spherical => SphericalGreatCircle(this);
 }
 
-/// An extension for easier access to [SphericalGreatCircleLineString].
+/// An extension for easier access to [SphericalGreatCircleLineString] for
+/// iterables of geographic positions.
 extension SphericalGreatCircleIterableExtension on Iterable<Geographic> {
   /// Create an object providing calculations for line strings (as an iterable
   /// of geographic positions) on a spherical model earth (great-circle paths).
   SphericalGreatCircleLineString get spherical =>
       SphericalGreatCircleLineString(this);
+}
+
+/// An extension for easier access to [SphericalGreatCircleLineString] for
+/// series of positions.
+extension SphericalGreatCirclePositionSeriesExtension on PositionSeries {
+  /// Create an object providing calculations for line strings (as series of
+  /// positions that should be geographic positions) on a spherical model earth
+  /// (great-circle paths).
+  SphericalGreatCircleLineString get spherical =>
+      SphericalGreatCircleLineString(positionsAs(to: Geographic.create));
 }
 
 /// Latitude/longitude points on a spherical model earth, and methods for
