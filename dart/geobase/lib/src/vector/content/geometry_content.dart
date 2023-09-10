@@ -22,7 +22,7 @@ typedef WriteGeometries = void Function(GeometryContent output);
 /// arrays of `Iterable<double>`.
 mixin GeometryContent implements SimpleGeometryContent {
   /// Writes a geometry collection from the content provided by [geometries].
-  /// 
+  ///
   /// An optional [type] specifies the coordinate type of geometry objects in a
   /// collection. When not provided, the type can be resolved from objects.
   ///

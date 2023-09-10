@@ -1015,7 +1015,7 @@ class WktTextWriter<T extends Object> extends WktLikeTextWriter<T> {
       _buffer.write(',');
     }
     _startContainer(_Container.geometry);
-    if(type != null) _startCoordType(type);
+    if (type != null) _startCoordType(type);
     _buffer.write('GEOMETRYCOLLECTION');
     final specifier = type?.wktSpecifier;
     if (specifier != null) {
@@ -1026,7 +1026,7 @@ class WktTextWriter<T extends Object> extends WktLikeTextWriter<T> {
     _startObjectArray(count: count);
     geometries.call(this);
     _endObjectArray();
-    if(type != null) _endCoordType();
+    if (type != null) _endCoordType();
     _endContainer();
   }
 
