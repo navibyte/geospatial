@@ -16,16 +16,39 @@ import 'package:test/test.dart';
 void main() {
   group('MultiPoint', () {
     test('Create from coords', () {
-      const points33 = '[1.0,2.0,3.0],[1.2,2.2,3.2]';
-      const points23 = '[1.0,2.0],[1.2,2.2,3.2]';
-      expect(
-        MultiPoint.parseCoords(points33).toText(format: DefaultFormat.geometry),
-        points33,
-      );
-      expect(
-        () => MultiPoint.parseCoords(points23),
-        throwsFormatException,
-      );
+      const points54 = '[1.1,2.1,3.1,4.1,5.1],[1.2,2.2,3.2,4.2]';
+      const points45 = '[1.1,2.1,3.1,4.1],[1.2,2.2,3.2,4.2,5.2]';
+      const points44 = '[1.1,2.1,3.1,4.1],[1.2,2.2,3.2,4.2]';
+      const points33 = '[1.1,2.1,3.1],[1.2,2.2,3.2]';
+      const points23 = '[1.1,2.1],[1.2,2.2,3.2]';
+      const points32 = '[1.1,2.1,3.1],[1.2,2.2]';
+      const points32_0 = '[1.1,2.1,3.1],[1.2,2.2,0.0]';
+      const points22 = '[1.1,2.1],[1.2,2.2]';
+      const points12 = '[1.1],[1.2,2.2]';
+      const points21 = '[1.1,2.1],[1.2]';
+      const points20 = '[1.1,2.1],[]';
+      const points02 = '[],[1.2,2.2]';
+
+      const tests = [
+        [points54, points44],
+        [points45, points44],
+        [points44, points44],
+        [points33, points33],
+        [points23, points22],
+        [points32, points32_0],
+        [points22, points22],
+      ];
+      for (final test in tests) {
+        expect(
+          MultiPoint.parseCoords(test[0])
+              .toText(format: DefaultFormat.geometry),
+          test[1],
+        );
+      }
+      expect(() => MultiPoint.parseCoords(points12), throwsFormatException);
+      expect(() => MultiPoint.parseCoords(points21), throwsFormatException);
+      expect(() => MultiPoint.parseCoords(points20), throwsFormatException);
+      expect(() => MultiPoint.parseCoords(points02), throwsFormatException);
     });
   });
 }

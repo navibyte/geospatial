@@ -17,7 +17,7 @@ import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounded_utils.dart';
 import '/src/utils/bounds_builder.dart';
-import '/src/utils/coord_arrays_from_json.dart';
+import '/src/utils/coord_positions.dart';
 import '/src/utils/coord_type.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
@@ -126,18 +126,16 @@ class MultiPoint extends SimpleGeometry {
     CoordRefSys? crs,
     GeoRepresentation? crsLogic,
   }) {
-    final array = requirePositionArrayDouble(
-      json.decode('[$coordinates]'),
-      swapXY: crs?.swapXY(logic: crsLogic) ?? false,
-    );
-    if (array.isEmpty) {
+    final str = coordinates.trim();
+    if (str.isEmpty) {
       return MultiPoint.build(const []);
     }
-    final coordType = resolveCoordType(array, positionLevel: 1);
-    return MultiPoint.build(
+    final array = json.decode('[$str]') as List<dynamic>;
+    final points = createPositionArray(
       array,
-      type: coordType,
+      swapXY: crs?.swapXY(logic: crsLogic) ?? false,
     );
+    return MultiPoint(points);
   }
 
   /// Decodes a multi point geometry from [bytes] conforming to [format].

@@ -18,7 +18,6 @@ import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounded_utils.dart';
 import '/src/utils/bounds_builder.dart';
-import '/src/utils/coord_arrays_from_json.dart';
 import '/src/utils/coord_positions.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
@@ -172,15 +171,14 @@ class Polygon extends SimpleGeometry {
     CoordRefSys? crs,
     GeoRepresentation? crsLogic,
   }) {
-    final array = json.decode('[$coordinates]') as List<dynamic>;
-    if (array.isEmpty) {
+    final str = coordinates.trim();
+    if (str.isEmpty) {
       return Polygon.build(const []);
     }
-    final coordType = resolveCoordType(array, positionLevel: 2);
+    final array = json.decode('[$str]') as List<dynamic>;
     return Polygon(
       createPositionSeriesArray(
         array,
-        coordType,
         swapXY: crs?.swapXY(logic: crsLogic) ?? false,
       ),
     );

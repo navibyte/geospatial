@@ -4,45 +4,46 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/codes/coords.dart';
-
-import 'format_validation.dart';
+part of 'coord_positions.dart';
 
 /// Utility to convert expected `List<dynamic> data to `List<double>`.
 ///
+/// If [type] is given, then position is returned according to it.
+///
 /// Swaps x and y for the result if `swapXY` is true.
-List<double> requirePositionDouble(dynamic data, {bool swapXY = false}) {
+List<double> _requirePositionDouble(
+  dynamic data, {
+  Coords? type,
+  bool swapXY = false,
+}) {
   // expect source to be list
   final source = data as List<dynamic>;
+  final sourceLen = source.length;
+
+  // not valid position if less than 2 coordinate values
+  if (sourceLen < 2) throw invalidCoordinates;
+
+  // calculate number of coordinate values for target position
+  final targetLen =
+      type != null ? type.coordinateDimension : sourceLen.clamp(2, 4);
 
   // create a list of doubles (cast items to num and then convert to double)
   // (also swap x and y if required)
-  return List<double>.generate(
-    source.length,
-    (index) {
-      final sourceIndex = swapXY && index <= 1 ? (1 - index) : index;
-      return (source[sourceIndex] as num).toDouble();
-    },
-    growable: false,
-  );
+  final pos = List.filled(targetLen, 0.0);
+  pos[0] = (source[swapXY ? 1 : 0] as num).toDouble();
+  pos[1] = (source[swapXY ? 0 : 1] as num).toDouble();
+  if (targetLen >= 3 && sourceLen >= 3) {
+    pos[2] = (source[2] as num).toDouble();
+  }
+  if (targetLen >= 4 && sourceLen >= 4) {
+    pos[3] = (source[3] as num).toDouble();
+  }
+  return pos;
 }
-
-/// Utility to convert expect `List<dynamic> data to `List<List<double>>`.
-///
-/// Swaps x and y for the result if `swapXY` is true.
-List<List<double>> requirePositionArrayDouble(
-  dynamic data, {
-  bool swapXY = false,
-}) =>
-    (data as List<dynamic>)
-        .map<List<double>>(
-          (pos) => requirePositionDouble(pos, swapXY: swapXY),
-        )
-        .toList(growable: false);
 
 /// Resolves coordinate type from first coordinate of [array] in
 /// [positionLevel].
-Coords resolveCoordType(List<dynamic> array, {required int positionLevel}) {
+Coords _resolveCoordType(List<dynamic> array, {required int positionLevel}) {
   if (positionLevel == 0) {
     return Coords.fromDimension(array.length);
   } else {
@@ -62,7 +63,7 @@ Coords resolveCoordType(List<dynamic> array, {required int positionLevel}) {
 /// Utility to create flat `List<double>` (1 dim) from `List<dynamic>`(2 dims).
 ///
 /// Swaps x and y for the result if `swapXY` is true.
-List<double> createFlatPositionArrayDouble(
+List<double> _createFlatPositionArrayDouble(
   List<dynamic> source,
   Coords coordType, {
   bool swapXY = false,

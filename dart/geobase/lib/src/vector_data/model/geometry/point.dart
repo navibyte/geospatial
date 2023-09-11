@@ -15,7 +15,7 @@ import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
-import '/src/utils/coord_arrays_from_json.dart';
+import '/src/utils/coord_positions.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
@@ -117,15 +117,17 @@ class Point implements SimpleGeometry {
     CoordRefSys? crs,
     GeoRepresentation? crsLogic,
   }) {
-    final pos = requirePositionDouble(
-      json.decode('[$coordinates]'),
-      swapXY: crs?.swapXY(logic: crsLogic) ?? false,
-    );
-    if (pos.isEmpty) {
+    final str = coordinates.trim();
+    if (str.isEmpty) {
       return Point.build(const [double.nan, double.nan]);
     }
-    final coordType = Coords.fromDimension(pos.length);
-    return Point.build(pos, type: coordType);
+    final array = json.decode('[$str]') as List<dynamic>;
+    return Point(
+      createPosition(
+        array,
+        swapXY: crs?.swapXY(logic: crsLogic) ?? false,
+      ),
+    );
   }
 
   /// Decodes a point geometry from [bytes] conforming to [format].
