@@ -62,14 +62,9 @@ abstract class PositionSeries implements Positionable {
   /// less coordinate values than `type.coordinateDimension`, then the view is
   /// considered empty.
   ///
-  /// An iterable collection of [source] may be represented by a [List] or any
-  /// [Iterable] with efficient `length` and `elementAt` implementations. A lazy
-  /// iterable with a lot of coordinate values may produce very poor
-  /// performance.
-  ///
   /// See [Position] for description about supported coordinate values.
   factory PositionSeries.view(
-    Iterable<double> source, {
+    List<double> source, {
     Coords type = Coords.xy,
   }) =>
       _PositionDataCoords.view(source, type: type);
@@ -81,19 +76,23 @@ abstract class PositionSeries implements Positionable {
   /// resolved from those positions (a type returned is such that it's valid
   /// for all positions).
   ///
-  /// An iterable collection of [source] may be represented by a [List] or any
-  /// [Iterable] with efficient `length` and `elementAt` implementations. A lazy
-  /// iterable with a lot of position objects may produce very poor performance.
+  /// If [source] is `List<Position>` then it's used directly as a source for a
+  /// new `PositionSeries` object. If [source] is `Iterable<Position>` then
+  /// items are iterated and copied to a list that is used as a source.
   ///
   /// See [Position] for description about supported coordinate values.
   factory PositionSeries.from(Iterable<Position> source, {Coords? type}) {
+    // ensure a list data structure
+    final data =
+        source is List<Position> ? source : source.toList(growable: false);
+
     if (type != null) {
-      return _PositionArray.view(source, type: type);
+      return _PositionArray.view(data, type: type);
     } else {
       var is3D = true;
       var isMeasured = true;
 
-      for (final elem in source) {
+      for (final elem in data) {
         final type = elem.type;
         is3D &= type.is3D;
         isMeasured &= type.isMeasured;
@@ -101,7 +100,7 @@ abstract class PositionSeries implements Positionable {
       }
 
       return _PositionArray.view(
-        source,
+        data,
         type: Coords.select(is3D: is3D, isMeasured: isMeasured),
       );
     }
@@ -384,6 +383,10 @@ class _PositionArray extends PositionSeries {
   final Coords _type;
 
   /// A series of positions with positions stored in [source].
+  ///
+  /// An iterable collection of [source] may be represented by a [List] or any
+  /// [Iterable] with efficient `length` and `elementAt` implementations. A lazy
+  /// iterable with a lot of position objects may produce very poor performance.
   const _PositionArray.view(
     Iterable<Position> source, {
     required Coords type,
@@ -508,6 +511,11 @@ class _PositionDataCoords extends PositionSeries {
   final Coords _type;
 
   /// A series of positions with coordinate values of [type] from [source].
+  ///
+  /// An iterable collection of [source] may be represented by a [List] or any
+  /// [Iterable] with efficient `length` and `elementAt` implementations. A lazy
+  /// iterable with a lot of coordinate values may produce very poor
+  /// performance.
   const _PositionDataCoords.view(
     Iterable<double> source, {
     Coords type = Coords.xy,

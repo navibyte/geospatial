@@ -171,8 +171,8 @@ void main() {
 
     test('Test equalsCoords', () {
       final iter = arr.map((e) => e * 10.0);
-      final xyIter2 = PositionSeries.view(iter);
-      final xyIter3 = PositionSeries.view(iter);
+      final xyIter2 = PositionSeries.view(iter.toList(growable: false));
+      final xyIter3 = PositionSeries.view(iter.toList(growable: false));
 
       expect(xy1.equalsCoords(xyIter2), false);
       expect(xyIter3.equalsCoords(xyIter2), true);

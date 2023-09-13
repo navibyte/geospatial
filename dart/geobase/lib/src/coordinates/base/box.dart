@@ -89,9 +89,6 @@ abstract class Box extends Positionable {
 
   /// A bounding box with coordinate values as a view backed by [source].
   ///
-  /// A double iterable of [source] may be represented by a [List] or any
-  /// [Iterable] with efficient `length` and `elementAt` implementations.
-  ///
   /// The [source] must contain 4, 6 or 8 coordinate values. Supported
   /// coordinate value combinations by coordinate [type] are:
   ///
@@ -110,7 +107,7 @@ abstract class Box extends Positionable {
   /// xyz  | west, south, minElev, east, north, maxElev
   /// xym  | west, south, minM, east, north, maxM
   /// xyzm | west, south, minElev, minM, east, north, maxElev, maxM
-  factory Box.view(Iterable<double> source, {Coords? type}) {
+  factory Box.view(List<double> source, {Coords? type}) {
     final coordType = type ?? Coords.fromDimension(source.length ~/ 2);
     if (source.length != 2 * coordType.coordinateDimension) {
       throw invalidCoordinates;
@@ -943,6 +940,9 @@ class _BoxCoords extends Box {
   final Coords _type;
 
   /// A bounding box with coordinate values of [type] from [source].
+  ///
+  /// A double iterable of [source] may be represented by a [List] or any
+  /// [Iterable] with efficient `length` and `elementAt` implementations.
   const _BoxCoords.view(Iterable<double> source, {Coords type = Coords.xy})
       : _data = source,
         _type = type;

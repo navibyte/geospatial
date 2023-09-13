@@ -11,7 +11,7 @@ import '/src/codes/coords.dart';
 /// A function to create an object of [T] from [coordinates] of [type].
 @internal
 typedef CreateAt<T> = T Function(
-  Iterable<double> coordinates, {
+  List<double> coordinates, {
   required Coords type,
 });
 
@@ -30,7 +30,7 @@ T doCreateRange<T>(
   if (coordinates is List<double>) {
     // the source coordinates is a List, get range
     return to.call(
-      coordinates.getRange(start, end),
+      coordinates.getRange(start, end).toList(growable: false),
       type: type,
     );
   } else {

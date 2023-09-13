@@ -8,6 +8,7 @@ NOTE: Version 0.6.0 currently [under development](https://github.com/navibyte/ge
 * [Testing feature and geometry equality #188](https://github.com/navibyte/geospatial/issues/188)
 * [Factories on Position and Box to create from double arrays #199](https://github.com/navibyte/geospatial/issues/199)
 * [Redesigned PositionData supporting positions from coordinate value array and position objects #200](https://github.com/navibyte/geospatial/issues/200)
+* [Coordinates using data structures from typed data #203](https://github.com/navibyte/geospatial/issues/203)
 
 ⚠️ Breaking changes:
 * [Allow a position stored as "Position" in Point, and a bounding box as "Box" in Geometry classes #192](https://github.com/navibyte/geospatial/issues/192)

@@ -72,13 +72,7 @@ class Polygon extends SimpleGeometry {
     Box? bounds,
   }) =>
       Polygon(
-        rings
-            .map(
-              (ring) => PositionSeries.from(
-                ring is List<Position> ? ring : ring.toList(growable: false),
-              ),
-            )
-            .toList(growable: false),
+        rings.map(PositionSeries.from).toList(growable: false),
         bounds: bounds,
       );
 

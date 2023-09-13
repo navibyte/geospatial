@@ -257,7 +257,7 @@ void main() {
 
 void _testCoordinateOrder(
   String text,
-  Iterable<double> coords, [
+  List<double> coords, [
   Coords? type,
 ]) {
   final factories = [Position.create];

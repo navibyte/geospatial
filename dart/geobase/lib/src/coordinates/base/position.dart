@@ -99,9 +99,6 @@ abstract class Position extends Positionable {
 
   /// A position with coordinate values as a view backed by [source].
   ///
-  /// A double iterable of [source] may be represented by a [List] or any
-  /// [Iterable] with efficient `length` and `elementAt` implementations.
-  ///
   /// The [source] must contain 2, 3 or 4 coordinate values. Supported
   /// coordinate value combinations by coordinate [type] are:
   ///
@@ -120,7 +117,7 @@ abstract class Position extends Positionable {
   /// xyz  | lon, lat, elev
   /// xym  | lon, lat, m
   /// xyzm | lon, lat, elev, m
-  factory Position.view(Iterable<double> source, {Coords? type}) {
+  factory Position.view(List<double> source, {Coords? type}) {
     final len = source.length;
     final coordType = type ?? Coords.fromDimension(len);
     if (len != coordType.coordinateDimension) {
@@ -733,6 +730,9 @@ class _PositionCoords extends Position {
   final Coords _type;
 
   /// A position with coordinate values of [type] from [source].
+  ///
+  /// A double iterable of [source] may be represented by a [List] or any
+  /// [Iterable] with efficient `length` and `elementAt` implementations.
   const _PositionCoords.view(Iterable<double> source, {required Coords type})
       : _data = source,
         _type = type;

@@ -51,9 +51,7 @@ class LineString extends SimpleGeometry {
   /// The coordinate type of all positions in a chain should be the same.
   factory LineString.from(Iterable<Position> chain, {Box? bounds}) =>
       LineString(
-        PositionSeries.from(
-          chain is List<Position> ? chain : chain.toList(growable: false),
-        ),
+        PositionSeries.from(chain),
         bounds: bounds,
       );
 

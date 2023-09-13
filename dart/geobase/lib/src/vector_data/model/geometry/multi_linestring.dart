@@ -60,13 +60,7 @@ class MultiLineString extends SimpleGeometry {
     Box? bounds,
   }) =>
       MultiLineString(
-        lineStrings
-            .map(
-              (chain) => PositionSeries.from(
-                chain is List<Position> ? chain : chain.toList(growable: false),
-              ),
-            )
-            .toList(growable: false),
+        lineStrings.map(PositionSeries.from).toList(growable: false),
         bounds: bounds,
       );
 

@@ -68,15 +68,8 @@ class MultiPolygon extends SimpleGeometry {
       MultiPolygon(
         polygons
             .map(
-              (polygon) => polygon
-                  .map(
-                    (ring) => PositionSeries.from(
-                      ring is List<Position>
-                          ? ring
-                          : ring.toList(growable: false),
-                    ),
-                  )
-                  .toList(growable: false),
+              (polygon) =>
+                  polygon.map(PositionSeries.from).toList(growable: false),
             )
             .toList(growable: false),
         bounds: bounds,
