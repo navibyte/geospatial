@@ -126,6 +126,34 @@ abstract class Position extends Positionable {
     return _PositionCoords.view(source, type: coordType);
   }
 
+  /// A position with coordinate values as a sub view backed by [source],
+  /// starting at [start].
+  ///
+  /// There must be at least 2, 3 or 4 coordinate values (depending on the
+  /// [type] how many)
+  ///
+  /// ```dart
+  ///   // 9 coordinates values (3 values x, y and z for 3 positions)
+  ///   final coordinates = [1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 3.1, 3.2, 3.3];
+  ///
+  ///   // create a position from the subview values `2.1, 2.2, 2.3`
+  ///   final pos = Position.subview(coordinates, start: 3, type: Coords.xyz);
+  ///
+  ///   // prints: "2.1,2.2,2.3"
+  ///   print(pos);
+  /// ```
+  factory Position.subview(
+    List<double> source, {
+    required int start,
+    Coords type = Coords.xy,
+  }) {
+    final len = source.length;
+    if (start + type.coordinateDimension > len) {
+      throw invalidCoordinates;
+    }
+    return _PositionCoordsSubview.view(source, start: start, type: type);
+  }
+
   /// A position from parameters compatible with `CreatePosition` function type.
   ///
   /// The [Position.view] constructor is used to create a position from a double
@@ -833,4 +861,56 @@ class _PositionCoords extends Position {
 
   @override
   int get hashCode => Position.hash(this);
+}
+
+@immutable
+class _PositionCoordsSubview extends _PositionCoords {
+  final int start;
+
+  /// A position with coordinate values as a sub view backed by `source`,
+  /// starting at [start].
+  ///
+  /// A double iterable of `source` may be represented by a [List] or any
+  /// [Iterable] with efficient `length` and `elementAt` implementations.
+  const _PositionCoordsSubview.view(
+    super.source, {
+    required this.start,
+    required super.type,
+  }) : super.view();
+
+  @override
+  double get x => _data.elementAt(start + 0);
+
+  @override
+  double get y => _data.elementAt(start + 1);
+
+  @override
+  double get z => is3D ? _data.elementAt(start + 2) : 0.0;
+
+  @override
+  double? get optZ => is3D ? _data.elementAt(start + 2) : null;
+
+  @override
+  double get m {
+    final mIndex = _type.indexForM;
+    return mIndex != null ? _data.elementAt(start + mIndex) : 0.0;
+  }
+
+  @override
+  double? get optM {
+    final mIndex = _type.indexForM;
+    return mIndex != null ? _data.elementAt(start + mIndex) : null;
+  }
+
+  @override
+  double operator [](int index) => index >= 0 && index < coordinateDimension
+      ? _data.elementAt(start + index)
+      : 0.0;
+
+  @override
+  Iterable<double> get values => _data.skip(start).take(coordinateDimension);
+
+  @override
+  Iterable<double> valuesByType(Coords type) =>
+      Position.getValues(this, type: type);
 }
