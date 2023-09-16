@@ -936,14 +936,11 @@ abstract class Box extends Positionable {
 
 @immutable
 class _BoxCoords extends Box {
-  final Iterable<double> _data;
+  final List<double> _data;
   final Coords _type;
 
   /// A bounding box with coordinate values of [type] from [source].
-  ///
-  /// A double iterable of [source] may be represented by a [List] or any
-  /// [Iterable] with efficient `length` and `elementAt` implementations.
-  const _BoxCoords.view(Iterable<double> source, {Coords type = Coords.xy})
+  const _BoxCoords.view(List<double> source, {Coords type = Coords.xy})
       : _data = source,
         _type = type;
 
@@ -963,35 +960,33 @@ class _BoxCoords extends Box {
   Coords get type => _type;
 
   @override
-  double get minX => _data.elementAt(0);
+  double get minX => _data[0];
 
   @override
-  double get minY => _data.elementAt(1);
+  double get minY => _data[1];
 
   @override
-  double? get minZ => is3D ? _data.elementAt(2) : null;
+  double? get minZ => is3D ? _data[2] : null;
 
   @override
   double? get minM {
     final mIndex = _type.indexForM;
-    return mIndex != null ? _data.elementAt(mIndex) : null;
+    return mIndex != null ? _data[mIndex] : null;
   }
 
   @override
-  double get maxX => _data.elementAt(coordinateDimension + 0);
+  double get maxX => _data[coordinateDimension + 0];
 
   @override
-  double get maxY => _data.elementAt(coordinateDimension + 1);
+  double get maxY => _data[coordinateDimension + 1];
 
   @override
-  double? get maxZ => is3D ? _data.elementAt(coordinateDimension + 2) : null;
+  double? get maxZ => is3D ? _data[coordinateDimension + 2] : null;
 
   @override
   double? get maxM {
     final mIndex = _type.indexForM;
-    return mIndex != null
-        ? _data.elementAt(coordinateDimension + mIndex)
-        : null;
+    return mIndex != null ? _data[coordinateDimension + mIndex] : null;
   }
 
   @override

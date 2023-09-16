@@ -507,17 +507,12 @@ class _PositionArray extends PositionSeries {
 
 @immutable
 class _PositionDataCoords extends PositionSeries {
-  final Iterable<double> _data;
+  final List<double> _data;
   final Coords _type;
 
   /// A series of positions with coordinate values of [type] from [source].
-  ///
-  /// An iterable collection of [source] may be represented by a [List] or any
-  /// [Iterable] with efficient `length` and `elementAt` implementations. A lazy
-  /// iterable with a lot of coordinate values may produce very poor
-  /// performance.
   const _PositionDataCoords.view(
-    Iterable<double> source, {
+    List<double> source, {
     Coords type = Coords.xy,
   })  : _data = source,
         _type = type;
@@ -577,24 +572,24 @@ class _PositionDataCoords extends PositionSeries {
       );
 
   @override
-  double x(int index) => _data.elementAt(index * coordinateDimension);
+  double x(int index) => _data[index * coordinateDimension];
 
   @override
-  double y(int index) => _data.elementAt(index * coordinateDimension + 1);
+  double y(int index) => _data[index * coordinateDimension + 1];
 
   @override
   double z(int index) =>
-      type.is3D ? _data.elementAt(index * coordinateDimension + 2) : 0.0;
+      type.is3D ? _data[index * coordinateDimension + 2] : 0.0;
 
   @override
   double? optZ(int index) =>
-      type.is3D ? _data.elementAt(index * coordinateDimension + 2) : null;
+      type.is3D ? _data[index * coordinateDimension + 2] : null;
 
   @override
   double m(int index) {
     final mIndex = type.indexForM;
     return mIndex != null
-        ? _data.elementAt(index * coordinateDimension + mIndex)
+        ? _data[index * coordinateDimension + mIndex]
         : 0.0;
   }
 
@@ -602,7 +597,7 @@ class _PositionDataCoords extends PositionSeries {
   double? optM(int index) {
     final mIndex = type.indexForM;
     return mIndex != null
-        ? _data.elementAt(index * coordinateDimension + mIndex)
+        ? _data[index * coordinateDimension + mIndex]
         : null;
   }
 
@@ -651,7 +646,7 @@ class _PositionDataCoords extends PositionSeries {
 
     if (identical(coords1, coords2)) return true;
 
-    if (coords1 is List<double> && coords2 is List<double>) {
+    if (coords2 is List<double>) {
       for (var i = 0; i < len; i++) {
         if (coords1[i] != coords2[i]) return false;
       }
