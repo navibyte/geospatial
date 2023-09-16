@@ -785,7 +785,7 @@ In all geometry classes there are also some other ways to create objects:
 The following class diagram describes key members of `Point`, `LineString`
 and `Polygon` geometry classes:
 
-<img src="https://raw.githubusercontent.com/navibyte/geospatial/v0.12.0/dart/geobase/assets/diagrams/point_linestring_polygon.svg" width="100%" title="Point, LineString and Polygon geometry classes" />
+<img src="https://raw.githubusercontent.com/navibyte/geospatial/64852f5/dart/geobase/assets/diagrams/point_linestring_polygon.svg" width="100%" title="Point, LineString and Polygon geometry classes" />
 
 Primitive geometry classes described by the diagram:
 * `Point` with a single position represented by `Position`
@@ -802,7 +802,7 @@ The usage of `project()` method is described in the chapter about
 
 See also the class diagram about multi and collection geometries below:
 
-<img src="https://raw.githubusercontent.com/navibyte/geospatial/v0.12.0/dart/geobase/assets/diagrams/multi_and_collection_geometries.svg" width="100%" title="Multi and collection geometry classes" />
+<img src="https://raw.githubusercontent.com/navibyte/geospatial/64852f5/dart/geobase/assets/diagrams/multi_and_collection_geometries.svg" width="100%" title="Multi and collection geometry classes" />
 
 For example `MultiLineString` stores `chains` of positions for all line strings
 as a list of `PositionSeries`. It's also possible to get a mapped iterable of
@@ -835,7 +835,7 @@ property values or geometry objects, but not specified by the GeoJSON model
 This package models features and feature collections according to these
 definitions:
 
-<img src="https://raw.githubusercontent.com/navibyte/geospatial/v0.12.0/dart/geobase/assets/diagrams/feature_objects.svg" width="100%" title="Feature object classes" />
+<img src="https://raw.githubusercontent.com/navibyte/geospatial/64852f5/dart/geobase/assets/diagrams/feature_objects.svg" width="100%" title="Feature object classes" />
 
 ### Feature
 
@@ -1233,7 +1233,7 @@ As a small bonus let's continue the last sample a bit:
 
 The class diagram of temporal data and geospatial extent classes:
 
-<img src="https://raw.githubusercontent.com/navibyte/geospatial/v0.12.0/dart/geobase/assets/diagrams/meta_temporal_extent.svg" width="100%" title="Temporal data and geospatial extent classes" />
+<img src="https://raw.githubusercontent.com/navibyte/geospatial/64852f5/dart/geobase/assets/diagrams/meta_temporal_extent.svg" width="100%" title="Temporal data and geospatial extent classes" />
 
 ### Temporal data
 
