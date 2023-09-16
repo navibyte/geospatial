@@ -546,18 +546,11 @@ class _PositionDataCoords extends PositionSeries {
       Iterable.generate(length, (index) => this[index].copyTo(to));
 
   @override
-  Position operator [](int index) {
-    final dim = coordinateDimension;
-    final start = index * dim;
-    final end = start + dim;
-    return doCreateRange(
-      _data,
-      to: Position.view,
-      type: type,
-      start: start,
-      end: end,
-    );
-  }
+  Position operator [](int index) => Position.subview(
+        _data,
+        start: index * coordinateDimension,
+        type: type,
+      );
 
   @override
   R get<R extends Position>(
@@ -588,17 +581,13 @@ class _PositionDataCoords extends PositionSeries {
   @override
   double m(int index) {
     final mIndex = type.indexForM;
-    return mIndex != null
-        ? _data[index * coordinateDimension + mIndex]
-        : 0.0;
+    return mIndex != null ? _data[index * coordinateDimension + mIndex] : 0.0;
   }
 
   @override
   double? optM(int index) {
     final mIndex = type.indexForM;
-    return mIndex != null
-        ? _data[index * coordinateDimension + mIndex]
-        : null;
+    return mIndex != null ? _data[index * coordinateDimension + mIndex] : null;
   }
 
   @override

@@ -596,6 +596,9 @@ class _TestXYZM implements Projected {
         );
 
   @override
+  Projected packed() => this;
+
+  @override
   Geographic project(Projection projection) =>
       projection.project(this, to: Geographic.create);
 

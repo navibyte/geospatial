@@ -166,6 +166,9 @@ class Projected extends Position {
           m: type.isMeasured ? m : null,
         );
 
+  @override
+  Projected packed() => this;
+
   /// Unprojects this projected position to a geographic position using
   /// the inverse [projection].
   @override

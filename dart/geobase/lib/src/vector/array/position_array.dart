@@ -252,7 +252,7 @@ class _PositionArrayData<E extends Position> with PositionData<E> {
     final dim = coordinateDimension;
     final start = index * dim;
     final end = start + dim;
-    return doCreateRange(
+    return _doCreateRange(
       data,
       to: factory,
       type: type,
@@ -319,7 +319,7 @@ class _PositionArrayData<E extends Position> with PositionData<E> {
     var start = 0;
     var end = dim;
     while (end <= len) {
-      yield doCreateRange(
+      yield _doCreateRange(
         data,
         to: factory,
         type: type,

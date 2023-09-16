@@ -13,7 +13,6 @@ import 'package:meta/meta.dart';
 import '/src/codes/coords.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/projection/projection.dart';
-import '/src/utils/coord_utils.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 import '/src/utils/tolerance.dart';
@@ -1060,22 +1059,11 @@ class _BoxCoords extends Box {
   }
 
   @override
-  Position get min => doCreateRange(
-        _data,
-        to: Position.view,
-        type: type,
-        start: 0,
-        end: coordinateDimension,
-      );
+  Position get min => Position.subview(_data, start: 0, type: type);
 
   @override
-  Position get max => doCreateRange(
-        _data,
-        to: Position.view,
-        type: type,
-        start: coordinateDimension,
-        end: 2 * coordinateDimension,
-      );
+  Position get max =>
+      Position.subview(_data, start: type.coordinateDimension, type: type);
 
   @override
   bool operator ==(Object other) => other is Box && Box.testEquals(this, other);

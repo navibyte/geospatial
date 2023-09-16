@@ -332,6 +332,16 @@ abstract class Position extends Positionable {
   /// Copies this position as another position by the given coordinate [type].
   Position copyByType(Coords type);
 
+  /// Returns a position instance whose coordinate storage contains only
+  /// coordinate values represented by this position.
+  ///
+  /// If this position is already "packed", then this is returned.
+  ///
+  /// If this position has coordinate values in a subview of a large coordinate
+  /// array, then the returned position has coordinate values in an array that
+  /// is packed to contain only necessary values.
+  Position packed();
+
   /// Projects this position to another position using [projection].
   ///
   /// Subtypes may specify a more accurate position type for the returned object
@@ -849,6 +859,9 @@ class _PositionCoords extends Position {
         );
 
   @override
+  Position packed() => this;
+
+  @override
   Position project(Projection projection) =>
       projection.project(this, to: Position.create);
 
@@ -865,7 +878,7 @@ class _PositionCoords extends Position {
 
 @immutable
 class _PositionCoordsSubview extends _PositionCoords {
-  final int start;
+  final int _start;
 
   /// A position with coordinate values as a sub view backed by `source`,
   /// starting at [start].
@@ -874,43 +887,54 @@ class _PositionCoordsSubview extends _PositionCoords {
   /// [Iterable] with efficient `length` and `elementAt` implementations.
   const _PositionCoordsSubview.view(
     super.source, {
-    required this.start,
+    required int start,
     required super.type,
-  }) : super.view();
+  })  : _start = start,
+        super.view();
 
   @override
-  double get x => _data.elementAt(start + 0);
+  double get x => _data.elementAt(_start + 0);
 
   @override
-  double get y => _data.elementAt(start + 1);
+  double get y => _data.elementAt(_start + 1);
 
   @override
-  double get z => is3D ? _data.elementAt(start + 2) : 0.0;
+  double get z => is3D ? _data.elementAt(_start + 2) : 0.0;
 
   @override
-  double? get optZ => is3D ? _data.elementAt(start + 2) : null;
+  double? get optZ => is3D ? _data.elementAt(_start + 2) : null;
 
   @override
   double get m {
     final mIndex = _type.indexForM;
-    return mIndex != null ? _data.elementAt(start + mIndex) : 0.0;
+    return mIndex != null ? _data.elementAt(_start + mIndex) : 0.0;
   }
 
   @override
   double? get optM {
     final mIndex = _type.indexForM;
-    return mIndex != null ? _data.elementAt(start + mIndex) : null;
+    return mIndex != null ? _data.elementAt(_start + mIndex) : null;
   }
 
   @override
   double operator [](int index) => index >= 0 && index < coordinateDimension
-      ? _data.elementAt(start + index)
+      ? _data.elementAt(_start + index)
       : 0.0;
 
   @override
-  Iterable<double> get values => _data.skip(start).take(coordinateDimension);
+  Iterable<double> get values =>
+      _start == 0 && _data.length == coordinateDimension
+          ? _data
+          : _data.skip(_start).take(coordinateDimension);
 
   @override
   Iterable<double> valuesByType(Coords type) =>
-      Position.getValues(this, type: type);
+      _start == 0 && _data.length == coordinateDimension && this.type == type
+          ? _data
+          : Position.getValues(this, type: type);
+
+  @override
+  Position packed() => _start == 0 && _data.length == coordinateDimension
+      ? this
+      : Position.view(values.toList(growable: false), type: type);
 }

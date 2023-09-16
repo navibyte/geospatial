@@ -232,6 +232,9 @@ class _PositionCoordsImpl extends PositionCoords {
         );
 
   @override
+  PositionCoords packed() => this;
+
+  @override
   PositionCoords project(Projection projection) =>
       projection.project(this, to: PositionCoords.create);
 

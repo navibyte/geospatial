@@ -15,33 +15,6 @@ typedef CreateAt<T> = T Function(
   required Coords type,
 });
 
-/// Create an object of [T] from a subset (indicated [start] and [end]) of
-/// [coordinates] of [type].
-///
-/// An object of [T] is created using the factory function [to].
-@internal
-T doCreateRange<T>(
-  Iterable<double> coordinates, {
-  required CreateAt<T> to,
-  required Coords type,
-  required int start,
-  required int end,
-}) {
-  if (coordinates is List<double>) {
-    // the source coordinates is a List, get range
-    return to.call(
-      coordinates.getRange(start, end).toList(growable: false),
-      type: type,
-    );
-  } else {
-    // the source is not a List, generate a new
-    return to.call(
-      coordinates.skip(start).take(end - start).toList(growable: false),
-      type: type,
-    );
-  }
-}
-
 /// Coordinate values of all positions represented by [coordinates] with
 /// [sourceType]
 ///

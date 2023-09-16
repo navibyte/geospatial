@@ -204,6 +204,9 @@ class Geographic extends Position {
           m: type.isMeasured ? m : null,
         );
 
+  @override
+  Geographic packed() => this;
+
   /// Projects this geographic position to a projected position using
   /// the forward [projection].
   @override

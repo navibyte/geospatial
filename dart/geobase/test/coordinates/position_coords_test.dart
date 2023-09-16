@@ -233,17 +233,20 @@ void main() {
     test('Subview', () {
       final coordinates = [1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 3.1, 3.2, 3.3];
       final pos1 = Position.subview(coordinates, start: 3, type: Coords.xyz);
+      final packed1 = pos1.packed();
 
-      expect(pos1.toString(), '2.1,2.2,2.3');
-      expect(pos1.values, [2.1, 2.2, 2.3]);
-      expect(pos1.valuesByType(Coords.xy), [2.1, 2.2]);
-      expect(pos1.valuesByType(Coords.xyz), [2.1, 2.2, 2.3]);
-      expect(pos1.valuesByType(Coords.xym), [2.1, 2.2, 0.0]);
-      expect(pos1.valuesByType(Coords.xyzm), [2.1, 2.2, 2.3, 0.0]);
-      expect(pos1.z, 2.3);
-      expect(pos1.optZ, 2.3);
-      expect(pos1.m, 0.0);
-      expect(pos1.optM, isNull);
+      for (final pos in [pos1, packed1]) {
+        expect(pos.toString(), '2.1,2.2,2.3');
+        expect(pos.values, [2.1, 2.2, 2.3]);
+        expect(pos.valuesByType(Coords.xy), [2.1, 2.2]);
+        expect(pos.valuesByType(Coords.xyz), [2.1, 2.2, 2.3]);
+        expect(pos.valuesByType(Coords.xym), [2.1, 2.2, 0.0]);
+        expect(pos.valuesByType(Coords.xyzm), [2.1, 2.2, 2.3, 0.0]);
+        expect(pos.z, 2.3);
+        expect(pos.optZ, 2.3);
+        expect(pos.m, 0.0);
+        expect(pos.optM, isNull);
+      }
 
       expect(
         () => Position.subview(coordinates, start: 7, type: Coords.xyz),
