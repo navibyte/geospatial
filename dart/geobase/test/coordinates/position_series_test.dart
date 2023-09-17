@@ -323,4 +323,179 @@ void main() {
       }
     });
   });
+
+  group('Position series reversed', () {
+    test('xy', () {
+      final coords = [1.1, 1.2, 2.1, 2.2, 3.1, 3.2, 4.1, 4.2];
+      final xyCoords = PositionSeries.view(coords);
+      final xyPos = PositionSeries.from([
+        [1.1, 1.2].xy,
+        [2.1, 2.2].xy,
+        [3.1, 3.2].xy,
+        [4.1, 4.2].xy,
+      ]);
+      for (final xy in [xyCoords, xyPos]) {
+        final xyRev = xy.reversed();
+        expect(xy[1], [2.1, 2.2].xy);
+        expect(xyRev[2], [2.1, 2.2].xy);
+        expect(xyRev.values, [4.1, 4.2, 3.1, 3.2, 2.1, 2.2, 1.1, 1.2]);
+        expect(
+          xyRev.valuesByType(Coords.xy),
+          [4.1, 4.2, 3.1, 3.2, 2.1, 2.2, 1.1, 1.2],
+        );
+        expect(
+          xyRev.valuesByType(Coords.xyz),
+          [4.1, 4.2, 0.0, 3.1, 3.2, 0.0, 2.1, 2.2, 0.0, 1.1, 1.2, 0.0],
+        );
+        expect(
+          xyRev.valuesByType(Coords.xym),
+          [4.1, 4.2, 0.0, 3.1, 3.2, 0.0, 2.1, 2.2, 0.0, 1.1, 1.2, 0.0],
+        );
+        expect(
+          xyRev.valuesByType(Coords.xyzm),
+          [
+            4.1, 4.2, 0.0, 0.0, 3.1, 3.2, 0.0, 0.0,
+            2.1, 2.2, 0.0, 0.0, 1.1, 1.2, 0.0, 0.0
+            // ---
+          ],
+        );
+      }
+    });
+
+    test('xyz', () {
+      final coords = [
+        1.1, 1.2, 1.3, 2.1, 2.2, 2.3,
+        3.1, 3.2, 3.3, 4.1, 4.2, 4.3
+        // ---
+      ];
+      final xyzCoords = PositionSeries.view(coords, type: Coords.xyz);
+      final xyzPos = PositionSeries.from([
+        [1.1, 1.2, 1.3].xyz,
+        [2.1, 2.2, 2.3].xyz,
+        [3.1, 3.2, 3.3].xyz,
+        [4.1, 4.2, 4.3].xyz,
+      ]);
+      for (final xyz in [xyzCoords, xyzPos]) {
+        final xyzRev = xyz.reversed();
+        expect(xyz[1], [2.1, 2.2, 2.3].xyz);
+        expect(xyzRev[2], [2.1, 2.2, 2.3].xyz);
+        expect(
+          xyzRev.values,
+          [4.1, 4.2, 4.3, 3.1, 3.2, 3.3, 2.1, 2.2, 2.3, 1.1, 1.2, 1.3],
+        );
+        expect(
+          xyzRev.valuesByType(Coords.xy),
+          [4.1, 4.2, 3.1, 3.2, 2.1, 2.2, 1.1, 1.2],
+        );
+        expect(
+          xyzRev.valuesByType(Coords.xyz),
+          [4.1, 4.2, 4.3, 3.1, 3.2, 3.3, 2.1, 2.2, 2.3, 1.1, 1.2, 1.3],
+        );
+        expect(
+          xyzRev.valuesByType(Coords.xym),
+          [4.1, 4.2, 0.0, 3.1, 3.2, 0.0, 2.1, 2.2, 0.0, 1.1, 1.2, 0.0],
+        );
+        expect(
+          xyzRev.valuesByType(Coords.xyzm),
+          [
+            4.1, 4.2, 4.3, 0.0, 3.1, 3.2, 3.3, 0.0,
+            2.1, 2.2, 2.3, 0.0, 1.1, 1.2, 1.3, 0.0
+            // ---
+          ],
+        );
+      }
+    });
+
+    test('xym', () {
+      final coords = [
+        1.1, 1.2, 1.4, 2.1, 2.2, 2.4,
+        3.1, 3.2, 3.4, 4.1, 4.2, 4.4
+        // ---
+      ];
+      final xymCoords = PositionSeries.view(coords, type: Coords.xym);
+      final xymPos = PositionSeries.from([
+        [1.1, 1.2, 1.4].xym,
+        [2.1, 2.2, 2.4].xym,
+        [3.1, 3.2, 3.4].xym,
+        [4.1, 4.2, 4.4].xym,
+      ]);
+      for (final xym in [xymCoords, xymPos]) {
+        final xymRev = xym.reversed();
+        expect(xym[1], [2.1, 2.2, 2.4].xym);
+        expect(xymRev[2], [2.1, 2.2, 2.4].xym);
+        expect(
+          xymRev.values,
+          [4.1, 4.2, 4.4, 3.1, 3.2, 3.4, 2.1, 2.2, 2.4, 1.1, 1.2, 1.4],
+        );
+        expect(
+          xymRev.valuesByType(Coords.xy),
+          [4.1, 4.2, 3.1, 3.2, 2.1, 2.2, 1.1, 1.2],
+        );
+        expect(
+          xymRev.valuesByType(Coords.xyz),
+          [4.1, 4.2, 0.0, 3.1, 3.2, 0.0, 2.1, 2.2, 0.0, 1.1, 1.2, 0.0],
+        );
+        expect(
+          xymRev.valuesByType(Coords.xym),
+          [4.1, 4.2, 4.4, 3.1, 3.2, 3.4, 2.1, 2.2, 2.4, 1.1, 1.2, 1.4],
+        );
+        expect(
+          xymRev.valuesByType(Coords.xyzm),
+          [
+            4.1, 4.2, 0.0, 4.4, 3.1, 3.2, 0.0, 3.4,
+            2.1, 2.2, 0.0, 2.4, 1.1, 1.2, 0.0, 1.4
+            // ---
+          ],
+        );
+      }
+    });
+
+    test('xyzm', () {
+      final coords = [
+        1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.3, 2.4,
+        3.1, 3.2, 3.3, 3.4, 4.1, 4.2, 4.3, 4.4
+        // ---
+      ];
+      final xyzmCoords = PositionSeries.view(coords, type: Coords.xyzm);
+      final xyzmPos = PositionSeries.from([
+        [1.1, 1.2, 1.3, 1.4].xyzm,
+        [2.1, 2.2, 2.3, 2.4].xyzm,
+        [3.1, 3.2, 3.3, 3.4].xyzm,
+        [4.1, 4.2, 4.3, 4.4].xyzm,
+      ]);
+      for (final xyzm in [xyzmCoords, xyzmPos]) {
+        final xyzmRev = xyzm.reversed();
+        expect(xyzm[1], [2.1, 2.2, 2.3, 2.4].xyzm);
+        expect(xyzmRev[2], [2.1, 2.2, 2.3, 2.4].xyzm);
+        expect(
+          xyzmRev.values,
+          [
+            4.1, 4.2, 4.3, 4.4, 3.1, 3.2, 3.3, 3.4,
+            2.1, 2.2, 2.3, 2.4, 1.1, 1.2, 1.3, 1.4,
+            // ---
+          ],
+        );
+        expect(
+          xyzmRev.valuesByType(Coords.xy),
+          [4.1, 4.2, 3.1, 3.2, 2.1, 2.2, 1.1, 1.2],
+        );
+        expect(
+          xyzmRev.valuesByType(Coords.xyz),
+          [4.1, 4.2, 4.3, 3.1, 3.2, 3.3, 2.1, 2.2, 2.3, 1.1, 1.2, 1.3],
+        );
+        expect(
+          xyzmRev.valuesByType(Coords.xym),
+          [4.1, 4.2, 4.4, 3.1, 3.2, 3.4, 2.1, 2.2, 2.4, 1.1, 1.2, 1.4],
+        );
+        expect(
+          xyzmRev.valuesByType(Coords.xyzm),
+          [
+            4.1, 4.2, 4.3, 4.4, 3.1, 3.2, 3.3, 3.4,
+            2.1, 2.2, 2.3, 2.4, 1.1, 1.2, 1.3, 1.4,
+            // ---
+          ],
+        );
+      }
+    });
+  });
 }

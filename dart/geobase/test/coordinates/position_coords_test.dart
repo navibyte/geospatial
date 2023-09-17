@@ -234,8 +234,12 @@ void main() {
       final coordinates = [1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 3.1, 3.2, 3.3];
       final pos1 = Position.subview(coordinates, start: 3, type: Coords.xyz);
       final packed1 = pos1.packed();
+      final series = PositionSeries.view(coordinates, type: Coords.xyz);
+      final pos2 = series[1];
+      final pos3 = series.reversed()[1];
+      final packed3 = pos3.packed();
 
-      for (final pos in [pos1, packed1]) {
+      for (final pos in [pos1, packed1, pos2, pos3, packed3]) {
         expect(pos.toString(), '2.1,2.2,2.3');
         expect(pos.values, [2.1, 2.2, 2.3]);
         expect(pos.valuesByType(Coords.xy), [2.1, 2.2]);

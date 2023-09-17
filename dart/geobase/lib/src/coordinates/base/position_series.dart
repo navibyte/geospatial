@@ -9,7 +9,6 @@ import 'package:meta/meta.dart';
 import '/src/codes/coords.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/projection/projection.dart';
-import '/src/utils/coord_utils.dart';
 import '/src/utils/num.dart';
 import '/src/utils/tolerance.dart';
 
@@ -268,6 +267,10 @@ abstract class PositionSeries implements Positionable {
   /// the given coordinate [type].
   PositionSeries copyByType(Coords type);
 
+  /// Returns a position series with all positions in reversed order compared to
+  /// this.
+  PositionSeries reversed();
+
   /// Projects this series of positions to another series using [projection].
   PositionSeries project(Projection projection);
 
@@ -379,19 +382,18 @@ abstract class PositionSeries implements Positionable {
 
 @immutable
 class _PositionArray extends PositionSeries {
-  final Iterable<Position> _data;
+  final List<Position> _data;
   final Coords _type;
+  final bool _reversed;
 
   /// A series of positions with positions stored in [source].
-  ///
-  /// An iterable collection of [source] may be represented by a [List] or any
-  /// [Iterable] with efficient `length` and `elementAt` implementations. A lazy
-  /// iterable with a lot of position objects may produce very poor performance.
   const _PositionArray.view(
-    Iterable<Position> source, {
+    List<Position> source, {
     required Coords type,
+    bool reversed = false,
   })  : _data = source,
-        _type = type;
+        _type = type,
+        _reversed = reversed;
 
   @override
   int get spatialDimension => _type.spatialDimension;
@@ -412,16 +414,17 @@ class _PositionArray extends PositionSeries {
   int get length => _data.length;
 
   @override
-  Iterable<Position> get positions => _data;
+  Iterable<Position> get positions => _reversed ? _data.reversed : _data;
 
   @override
   Iterable<R> positionsAs<R extends Position>({
     required CreatePosition<R> to,
   }) =>
-      _data.map((pos) => pos.copyTo(to));
+      positions.map((pos) => pos.copyTo(to));
 
   @override
-  Position operator [](int index) => _data.elementAt(index);
+  Position operator [](int index) =>
+      _data[_reversed ? length - 1 - index : index];
 
   @override
   R get<R extends Position>(
@@ -452,7 +455,7 @@ class _PositionArray extends PositionSeries {
   Iterable<double> get values sync* {
     final yieldZ = is3D;
     final yieldM = isMeasured;
-    for (final pos in _data) {
+    for (final pos in positions) {
       yield pos.x;
       yield pos.y;
       if (yieldZ) yield pos.z;
@@ -464,7 +467,7 @@ class _PositionArray extends PositionSeries {
   Iterable<double> valuesByType(Coords type) sync* {
     final yieldZ = type.is3D;
     final yieldM = type.isMeasured;
-    for (final pos in _data) {
+    for (final pos in positions) {
       yield pos.x;
       yield pos.y;
       if (yieldZ) yield pos.z;
@@ -479,6 +482,11 @@ class _PositionArray extends PositionSeries {
           positions.map((pos) => pos.copyByType(type)).toList(growable: false),
           type: type,
         );
+
+  @override
+  PositionSeries reversed() => length <= 1
+      ? this
+      : _PositionArray.view(_data, type: _type, reversed: !_reversed);
 
   @override
   PositionSeries project(Projection projection) => PositionSeries.from(
@@ -509,13 +517,16 @@ class _PositionArray extends PositionSeries {
 class _PositionDataCoords extends PositionSeries {
   final List<double> _data;
   final Coords _type;
+  final bool _reversed;
 
   /// A series of positions with coordinate values of [type] from [source].
   const _PositionDataCoords.view(
     List<double> source, {
     Coords type = Coords.xy,
+    bool reversed = false,
   })  : _data = source,
-        _type = type;
+        _type = type,
+        _reversed = reversed;
 
   @override
   int get spatialDimension => _type.spatialDimension;
@@ -545,10 +556,12 @@ class _PositionDataCoords extends PositionSeries {
   }) =>
       Iterable.generate(length, (index) => this[index].copyTo(to));
 
+  int _resolveIndex(int index) => _reversed ? length - 1 - index : index;
+
   @override
   Position operator [](int index) => Position.subview(
         _data,
-        start: index * coordinateDimension,
+        start: _resolveIndex(index) * coordinateDimension,
         type: type,
       );
 
@@ -565,42 +578,57 @@ class _PositionDataCoords extends PositionSeries {
       );
 
   @override
-  double x(int index) => _data[index * coordinateDimension];
+  double x(int index) => _data[_resolveIndex(index) * coordinateDimension];
 
   @override
-  double y(int index) => _data[index * coordinateDimension + 1];
+  double y(int index) => _data[_resolveIndex(index) * coordinateDimension + 1];
 
   @override
   double z(int index) =>
-      type.is3D ? _data[index * coordinateDimension + 2] : 0.0;
+      type.is3D ? _data[_resolveIndex(index) * coordinateDimension + 2] : 0.0;
 
   @override
   double? optZ(int index) =>
-      type.is3D ? _data[index * coordinateDimension + 2] : null;
+      type.is3D ? _data[_resolveIndex(index) * coordinateDimension + 2] : null;
 
   @override
   double m(int index) {
     final mIndex = type.indexForM;
-    return mIndex != null ? _data[index * coordinateDimension + mIndex] : 0.0;
+    return mIndex != null
+        ? _data[_resolveIndex(index) * coordinateDimension + mIndex]
+        : 0.0;
   }
 
   @override
   double? optM(int index) {
     final mIndex = type.indexForM;
-    return mIndex != null ? _data[index * coordinateDimension + mIndex] : null;
+    return mIndex != null
+        ? _data[_resolveIndex(index) * coordinateDimension + mIndex]
+        : null;
+  }
+
+  Iterable<double> _valuesByType(Coords type) sync* {
+    final len = length;
+    if (len > 0) {
+      final yieldZ = type.is3D;
+      final yieldM = type.isMeasured;
+
+      for (var i = 0; i < len; i++) {
+        yield x(i);
+        yield y(i);
+        if (yieldZ) yield z(i);
+        if (yieldM) yield m(i);
+      }
+    }
   }
 
   @override
-  Iterable<double> get values => _data;
+  Iterable<double> get values =>
+      _reversed && length > 1 ? _valuesByType(type) : _data;
 
   @override
-  Iterable<double> valuesByType(Coords type) => this.type == type
-      ? values
-      : valuesByTypeIter(
-          _data,
-          sourceType: this.type,
-          targetType: type,
-        );
+  Iterable<double> valuesByType(Coords type) =>
+      this.type == type ? values : _valuesByType(type);
 
   @override
   PositionSeries copyByType(Coords type) => this.type == type
@@ -609,6 +637,11 @@ class _PositionDataCoords extends PositionSeries {
           valuesByType(type).toList(growable: false),
           type: type,
         );
+
+  @override
+  PositionSeries reversed() => length <= 1
+      ? this
+      : _PositionDataCoords.view(_data, type: _type, reversed: !_reversed);
 
   @override
   PositionSeries project(Projection projection) => PositionSeries.view(
@@ -628,14 +661,14 @@ class _PositionDataCoords extends PositionSeries {
   bool equalsCoords(PositionSeries other) {
     if (_type != other.type) return false;
 
-    final coords1 = _data;
-    final coords2 = other is _PositionDataCoords ? other._data : other.values;
+    final coords1 = values;
+    final coords2 = other.values;
     final len = coords1.length;
     if (len != coords2.length) return false;
 
     if (identical(coords1, coords2)) return true;
 
-    if (coords2 is List<double>) {
+    if (coords1 is List<double> && coords2 is List<double>) {
       for (var i = 0; i < len; i++) {
         if (coords1[i] != coords2[i]) return false;
       }
