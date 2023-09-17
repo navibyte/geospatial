@@ -16,7 +16,6 @@ import '/src/coordinates/data/position_data.dart';
 import '/src/coordinates/geographic/geographic.dart';
 import '/src/coordinates/projected/projected.dart';
 import '/src/coordinates/projection/projection.dart';
-import '/src/utils/coord_utils.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 
@@ -34,13 +33,19 @@ part 'position_coords.dart';
 @Deprecated('Use Position, PositionSeries or Box instead')
 abstract class Coordinates extends Iterable<double> implements Positionable {}
 
+/// A function to create an object of [T] from [coordinates] of [type].
+typedef _CreateAt<T> = T Function(
+  List<double> coordinates, {
+  required Coords type,
+});
+
 /// Create an object of [T] from a subset (indicated [start] and [end]) of
 /// [coordinates] of [type].
 ///
 /// An object of [T] is created using the factory function [to].
 T _doCreateRange<T>(
   Iterable<double> coordinates, {
-  required CreateAt<T> to,
+  required _CreateAt<T> to,
   required Coords type,
   required int start,
   required int end,

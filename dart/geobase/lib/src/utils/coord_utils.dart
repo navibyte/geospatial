@@ -8,13 +8,6 @@ import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
 
-/// A function to create an object of [T] from [coordinates] of [type].
-@internal
-typedef CreateAt<T> = T Function(
-  List<double> coordinates, {
-  required Coords type,
-});
-
 /// Coordinate values of all positions represented by [coordinates] with
 /// [sourceType]
 ///
