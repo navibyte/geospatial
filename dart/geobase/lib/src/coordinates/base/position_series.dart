@@ -13,6 +13,7 @@ import '/src/utils/num.dart';
 import '/src/utils/tolerance.dart';
 
 import 'position.dart';
+import 'position_extensions.dart';
 import 'positionable.dart';
 
 /// A fixed-length (and random-access) view to a series of positions.
@@ -375,6 +376,31 @@ abstract class PositionSeries implements Positionable {
     }
     return true;
   }
+
+  /// A string representation of coordinate values of all positions (in this
+  /// series) separated by [delimiter].
+  ///
+  /// If [positionDelimiter] is given, then positions are separated by
+  /// [positionDelimiter] and coordinate values inside positions by [delimiter].
+  ///
+  /// Use [decimals] to set a number of decimals (not applied if no decimals).
+  ///
+  /// Set [swapXY] to true to print y (or latitude) before x (or longitude).
+  String toText({
+    String delimiter = ',',
+    String? positionDelimiter,
+    int? decimals,
+    bool swapXY = false,
+  }) =>
+      positions.toText(
+        delimiter: delimiter,
+        positionDelimiter: positionDelimiter,
+        decimals: decimals,
+        swapXY: swapXY,
+      );
+
+  @override
+  String toString() => toText();
 }
 
 // ---------------------------------------------------------------------------

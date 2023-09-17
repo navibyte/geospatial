@@ -98,8 +98,7 @@ extension CoordinateArrayExtension on List<double> {
   Position get xyzm => Position.view(_requireLen(this, 4), type: Coords.xyzm);
 }
 
-/// A helper extension on `Iterable<Position>` to convert data as
-/// [PositionSeries].
+/// A helper extension on `Iterable<Position>`.
 extension PositionArrayExtension on Iterable<Position> {
   /// Returns positions of this `Position` iterable as `PositionSeries`.
   ///
@@ -114,4 +113,66 @@ extension PositionArrayExtension on Iterable<Position> {
           this,
           type: positionArrayType(this),
         );
+
+  /// A string representation of coordinate values of all positions (in this
+  /// iterable) separated by [delimiter].
+  ///
+  /// If [positionDelimiter] is given, then positions are separated by
+  /// [positionDelimiter] and coordinate values inside positions by [delimiter].
+  ///
+  /// Use [decimals] to set a number of decimals (not applied if no decimals).
+  ///
+  /// Set [swapXY] to true to print y (or latitude) before x (or longitude).
+  String toText({
+    String delimiter = ',',
+    String? positionDelimiter = ',',
+    int? decimals,
+    bool swapXY = false,
+  }) {
+    final buf = StringBuffer();
+    writeValues(
+      buf,
+      delimiter: delimiter,
+      positionDelimiter: positionDelimiter,
+      decimals: decimals,
+      swapXY: swapXY,
+    );
+    return buf.toString();
+  }
+
+  /// Writes coordinate values of all positions (in this iterable) to [buffer]
+  /// separated by [delimiter].
+  ///
+  /// If [positionDelimiter] is given, then positions are separated by
+  /// [positionDelimiter] and coordinate values inside positions by [delimiter].
+  ///
+  /// Use [decimals] to set a number of decimals (not applied if no decimals).
+  ///
+  /// Set [swapXY] to true to print y (or latitude) before x (or longitude).
+  void writeValues(
+    StringSink buffer, {
+    String delimiter = ',',
+    String? positionDelimiter,
+    int? decimals,
+    bool swapXY = false,
+  }) {
+    var isFirst = true;
+    for (final pos in this) {
+      // write separator between positions
+      if (isFirst) {
+        isFirst = false;
+      } else {
+        buffer.write(positionDelimiter ?? delimiter);
+      }
+
+      // write coordinate values of a position
+      Position.writeValues(
+        pos,
+        buffer,
+        delimiter: delimiter,
+        decimals: decimals,
+        swapXY: swapXY,
+      );
+    }
+  }
 }

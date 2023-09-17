@@ -324,7 +324,7 @@ void main() {
     });
   });
 
-  group('Position series reversed', () {
+  group('Position series reversed and toText', () {
     test('xy', () {
       final coords = [1.1, 1.2, 2.1, 2.2, 3.1, 3.2, 4.1, 4.2];
       final xyCoords = PositionSeries.view(coords);
@@ -335,10 +335,17 @@ void main() {
         [4.1, 4.2].xy,
       ]);
       for (final xy in [xyCoords, xyPos]) {
+        expect(xy.toText(), '1.1,1.2,2.1,2.2,3.1,3.2,4.1,4.2');
+        expect(
+          xy.toText(positionDelimiter: ' ', decimals: 2),
+          '1.10,1.20 2.10,2.20 3.10,3.20 4.10,4.20',
+        );
         final xyRev = xy.reversed();
         expect(xy[1], [2.1, 2.2].xy);
         expect(xyRev[2], [2.1, 2.2].xy);
         expect(xyRev.values, [4.1, 4.2, 3.1, 3.2, 2.1, 2.2, 1.1, 1.2]);
+        expect(xyRev.toText(), '4.1,4.2,3.1,3.2,2.1,2.2,1.1,1.2');
+        expect(xyRev.toText(swapXY: true), '4.2,4.1,3.2,3.1,2.2,2.1,1.2,1.1');
         expect(
           xyRev.valuesByType(Coords.xy),
           [4.1, 4.2, 3.1, 3.2, 2.1, 2.2, 1.1, 1.2],
