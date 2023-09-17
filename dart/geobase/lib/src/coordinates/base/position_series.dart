@@ -9,6 +9,7 @@ import 'package:meta/meta.dart';
 import '/src/codes/coords.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/projection/projection.dart';
+import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 import '/src/utils/tolerance.dart';
 
@@ -66,8 +67,16 @@ abstract class PositionSeries implements Positionable {
   factory PositionSeries.view(
     List<double> source, {
     Coords type = Coords.xy,
-  }) =>
-      _PositionDataCoords.view(source, type: type);
+  }) {
+    // ensure source array size is correct according to coordinate type
+    final valueCount = source.length;
+    final positionCount = valueCount ~/ type.coordinateDimension;
+    if (valueCount != positionCount * type.coordinateDimension) {
+      throw invalidCoordinates;
+    }
+
+    return _PositionDataCoords.view(source, type: type);
+  }
 
   /// A series of positions as a view backed by [source] containing [Position]
   /// objects.
