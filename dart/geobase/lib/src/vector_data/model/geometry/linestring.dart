@@ -169,6 +169,10 @@ class LineString extends SimpleGeometry {
   /// The chain of positions in this line string geometry.
   PositionSeries get chain => _chain;
 
+  /// Returns a line string containing a chain with all positions in reversed
+  /// order compared to the chain of this.
+  LineString reversed() => LineString(chain.reversed(), bounds: bounds);
+
   @override
   Box? calculateBounds() => BoundsBuilder.calculateBounds(
         series: chain,
