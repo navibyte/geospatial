@@ -1327,7 +1327,7 @@ import 'package:geobase/projections_proj4d.dart';
 Then a sample to use coordinate projections:
 
 ```dart
-  // A projection adapter from WGS84 (CRS84) to EPSG:23700 (with definition)
+  // The projection adapter between WGS84 (CRS84) and EPSG:23700 (definition)
   // (based on the sample at https://pub.dev/packages/proj4dart).
   final adapter = Proj4d.init(
     CoordRefSys.CRS84,
@@ -1337,15 +1337,17 @@ Then a sample to use coordinate projections:
         '+towgs84=52.17,-71.82,-14.9,0,0,0,0 +units=m +no_defs',
   );
 
-  // Apply a forward projection to EPSG:23700.
-  print(
-    adapter.forward
-        .project(
-          const Geographic(lon: 17.8880, lat: 46.8922),
-          to: Projected.create,
-        )
-        .toText(decimals: 5),
-  );
+  // The forward projection from WGS84 (CRS84) to EPSG:23700.
+  final forward = adapter.forward;
+
+  // A source geographic position.
+  const geographic = Geographic(lat: 46.8922, lon: 17.8880);
+
+  // Apply the forward projection returning a projected position in EPSG:23700.
+  final projected = geographic.project(forward);
+
+  // Prints: "561647.27300,172651.56518"
+  print(projected.toText(decimals: 5));
 ```
 
 Please see the documentation of [proj4dart](https://pub.dev/packages/proj4dart)
