@@ -314,6 +314,11 @@ abstract class PositionSeries implements Positionable {
     if (length != other.length) return false;
     if (type != other.type) return false;
 
+    return _testEqualsCoords(other);
+  }
+
+  /// Private implementation used by [equalsCoords] (overridden by sub classes).
+  bool _testEqualsCoords(PositionSeries other) {
     for (var i = 0; i < length; i++) {
       if (x(i) != x(i)) return false;
       if (y(i) != y(i)) return false;
@@ -341,6 +346,14 @@ abstract class PositionSeries implements Positionable {
     if (identical(this, other)) return true;
     if (length != other.length) return false;
 
+    return _testEquals2D(other, toleranceHoriz: toleranceHoriz);
+  }
+
+  /// Private implementation used by [equals2D] (overridden by sub classes).
+  bool _testEquals2D(
+    PositionSeries other, {
+    required double toleranceHoriz,
+  }) {
     for (var i = 0; i < length; i++) {
       if ((x(i) - other.x(i)).abs() > toleranceHoriz ||
           (y(i) - other.y(i)).abs() > toleranceHoriz) {
@@ -376,6 +389,19 @@ abstract class PositionSeries implements Positionable {
     if (identical(this, other)) return true;
     if (length != other.length) return false;
 
+    return _testEquals3D(
+      other,
+      toleranceHoriz: toleranceHoriz,
+      toleranceVert: toleranceVert,
+    );
+  }
+
+  /// Private implementation used by [equals3D] (overridden by sub classes).
+  bool _testEquals3D(
+    PositionSeries other, {
+    required double toleranceHoriz,
+    required double toleranceVert,
+  }) {
     for (var i = 0; i < length; i++) {
       if ((x(i) - other.x(i)).abs() > toleranceHoriz ||
           (y(i) - other.y(i)).abs() > toleranceHoriz ||
@@ -538,6 +564,57 @@ class _PositionArray extends PositionSeries {
       );
 
   @override
+  bool _testEqualsCoords(PositionSeries other) {
+    final iter1 = positions.iterator;
+    final iter2 = other.positions.iterator;
+    while (iter1.moveNext()) {
+      if (!iter2.moveNext()) return false;
+      if (iter1.current != iter2.current) return false;
+    }
+    return true;
+  }
+
+  @override
+  bool _testEquals2D(
+    PositionSeries other, {
+    required double toleranceHoriz,
+  }) {
+    final iter1 = positions.iterator;
+    final iter2 = other.positions.iterator;
+    while (iter1.moveNext()) {
+      if (!iter2.moveNext()) return false;
+      if (iter1.current.equals2D(
+        iter2.current,
+        toleranceHoriz: toleranceHoriz,
+      )) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  @override
+  bool _testEquals3D(
+    PositionSeries other, {
+    required double toleranceHoriz,
+    required double toleranceVert,
+  }) {
+    final iter1 = positions.iterator;
+    final iter2 = other.positions.iterator;
+    while (iter1.moveNext()) {
+      if (!iter2.moveNext()) return false;
+      if (iter1.current.equals3D(
+        iter2.current,
+        toleranceHoriz: toleranceHoriz,
+        toleranceVert: toleranceVert,
+      )) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  @override
   bool operator ==(Object other) =>
       other is _PositionArray && _type == other._type && _data == other._data;
 
@@ -693,29 +770,13 @@ class _PositionDataCoords extends PositionSeries {
       );
 
   @override
-  bool equalsCoords(PositionSeries other) {
-    if (_type != other.type) return false;
-
-    final coords1 = values;
-    final coords2 = other.values;
-    final len = coords1.length;
-    if (len != coords2.length) return false;
-
-    if (identical(coords1, coords2)) return true;
-
-    if (coords1 is List<double> && coords2 is List<double>) {
-      for (var i = 0; i < len; i++) {
-        if (coords1[i] != coords2[i]) return false;
-      }
-    } else {
-      final iter1 = coords1.iterator;
-      final iter2 = coords2.iterator;
-      while (iter1.moveNext()) {
-        if (!iter2.moveNext()) return false;
-        if (iter1.current != iter2.current) return false;
-      }
+  bool _testEqualsCoords(PositionSeries other) {
+    final iter1 = values.iterator;
+    final iter2 = other.values.iterator;
+    while (iter1.moveNext()) {
+      if (!iter2.moveNext()) return false;
+      if (iter1.current != iter2.current) return false;
     }
-
     return true;
   }
 
