@@ -319,7 +319,8 @@ abstract class PositionSeries implements Positionable {
 
   /// Private implementation used by [equalsCoords] (overridden by sub classes).
   bool _testEqualsCoords(PositionSeries other) {
-    for (var i = 0; i < length; i++) {
+    final len = length;
+    for (var i = 0; i < len; i++) {
       if (x(i) != x(i)) return false;
       if (y(i) != y(i)) return false;
       if (is3D && z(i) != z(i)) return false;
@@ -354,7 +355,8 @@ abstract class PositionSeries implements Positionable {
     PositionSeries other, {
     required double toleranceHoriz,
   }) {
-    for (var i = 0; i < length; i++) {
+    final len = length;
+    for (var i = 0; i < len; i++) {
       if ((x(i) - other.x(i)).abs() > toleranceHoriz ||
           (y(i) - other.y(i)).abs() > toleranceHoriz) {
         return false;
@@ -402,7 +404,8 @@ abstract class PositionSeries implements Positionable {
     required double toleranceHoriz,
     required double toleranceVert,
   }) {
-    for (var i = 0; i < length; i++) {
+    final len = length;
+    for (var i = 0; i < len; i++) {
       if ((x(i) - other.x(i)).abs() > toleranceHoriz ||
           (y(i) - other.y(i)).abs() > toleranceHoriz ||
           (z(i) - other.z(i)).abs() > toleranceVert) {
@@ -436,6 +439,40 @@ abstract class PositionSeries implements Positionable {
 
   @override
   String toString() => toText();
+
+  Iterable<double> _valuesByType(Coords type) {
+    final posCount = length;
+    if (posCount > 0) {
+      final yieldZ = type.is3D;
+      final yieldM = type.isMeasured;
+      final dim = type.coordinateDimension;
+      final valueCount = posCount * dim;
+
+      return Iterable.generate(valueCount, (index) {
+        switch (index % dim) {
+          case 0:
+            return x(index ~/ dim);
+          case 1:
+            return y(index ~/ dim);
+          case 2:
+            if (yieldZ) {
+              return z(index ~/ dim);
+            } else if (yieldM) {
+              return m(index ~/ dim);
+            }
+            return 0.0;
+          case 3:
+            if (yieldM) {
+              return m(index ~/ dim);
+            }
+            return 0.0;
+        }
+        return 0.0;
+      });
+    }
+
+    return const Iterable.empty();
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -513,28 +550,11 @@ class _PositionArray extends PositionSeries {
   double? optM(int index) => isMeasured ? this[index].m : null;
 
   @override
-  Iterable<double> get values sync* {
-    final yieldZ = is3D;
-    final yieldM = isMeasured;
-    for (final pos in positions) {
-      yield pos.x;
-      yield pos.y;
-      if (yieldZ) yield pos.z;
-      if (yieldM) yield pos.m;
-    }
-  }
+  // ignore: unnecessary_this
+  Iterable<double> get values => _valuesByType(this.type);
 
   @override
-  Iterable<double> valuesByType(Coords type) sync* {
-    final yieldZ = type.is3D;
-    final yieldM = type.isMeasured;
-    for (final pos in positions) {
-      yield pos.x;
-      yield pos.y;
-      if (yieldZ) yield pos.z;
-      if (yieldM) yield pos.m;
-    }
-  }
+  Iterable<double> valuesByType(Coords type) => _valuesByType(type);
 
   @override
   PositionSeries copyByType(Coords type) => this.type == type
@@ -583,7 +603,7 @@ class _PositionArray extends PositionSeries {
     final iter2 = other.positions.iterator;
     while (iter1.moveNext()) {
       if (!iter2.moveNext()) return false;
-      if (iter1.current.equals2D(
+      if (!iter1.current.equals2D(
         iter2.current,
         toleranceHoriz: toleranceHoriz,
       )) {
@@ -603,7 +623,7 @@ class _PositionArray extends PositionSeries {
     final iter2 = other.positions.iterator;
     while (iter1.moveNext()) {
       if (!iter2.moveNext()) return false;
-      if (iter1.current.equals3D(
+      if (!iter1.current.equals3D(
         iter2.current,
         toleranceHoriz: toleranceHoriz,
         toleranceVert: toleranceVert,
@@ -629,15 +649,17 @@ class _PositionArray extends PositionSeries {
 class _PositionDataCoords extends PositionSeries {
   final List<double> _data;
   final Coords _type;
+  final int _positionCount;
   final bool _reversed;
 
   /// A series of positions with coordinate values of [type] from [source].
-  const _PositionDataCoords.view(
+  _PositionDataCoords.view(
     List<double> source, {
     Coords type = Coords.xy,
     bool reversed = false,
   })  : _data = source,
         _type = type,
+        _positionCount = source.length ~/ type.coordinateDimension,
         _reversed = reversed;
 
   @override
@@ -656,7 +678,7 @@ class _PositionDataCoords extends PositionSeries {
   Coords get type => _type;
 
   @override
-  int get length => _data.length ~/ coordinateDimension;
+  int get length => _positionCount;
 
   @override
   Iterable<Position> get positions =>
@@ -719,21 +741,6 @@ class _PositionDataCoords extends PositionSeries {
         : null;
   }
 
-  Iterable<double> _valuesByType(Coords type) sync* {
-    final len = length;
-    if (len > 0) {
-      final yieldZ = type.is3D;
-      final yieldM = type.isMeasured;
-
-      for (var i = 0; i < len; i++) {
-        yield x(i);
-        yield y(i);
-        if (yieldZ) yield z(i);
-        if (yieldM) yield m(i);
-      }
-    }
-  }
-
   @override
   Iterable<double> get values =>
       _reversed && length > 1 ? _valuesByType(type) : _data;
@@ -771,11 +778,21 @@ class _PositionDataCoords extends PositionSeries {
 
   @override
   bool _testEqualsCoords(PositionSeries other) {
-    final iter1 = values.iterator;
-    final iter2 = other.values.iterator;
-    while (iter1.moveNext()) {
-      if (!iter2.moveNext()) return false;
-      if (iter1.current != iter2.current) return false;
+    final coords1 = values;
+    final coords2 = other.values;
+    final len = coords1.length;
+
+    if (coords1 is List<double> && coords2 is List<double>) {
+      for (var i = 0; i < len; i++) {
+        if (coords1[i] != coords2[i]) return false;
+      }
+    } else {
+      final iter1 = coords1.iterator;
+      final iter2 = coords2.iterator;
+      while (iter1.moveNext()) {
+        if (!iter2.moveNext()) return false;
+        if (iter1.current != iter2.current) return false;
+      }
     }
     return true;
   }
