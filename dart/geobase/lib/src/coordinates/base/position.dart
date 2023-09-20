@@ -7,12 +7,14 @@
 // ignore_for_file: avoid_redundant_argument_values
 
 import 'dart:math' as math;
+import 'dart:typed_data';
 
 import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/projection/projection.dart';
+import '/src/utils/coord_positions.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 import '/src/utils/tolerance.dart';
@@ -168,7 +170,7 @@ abstract class Position extends Positionable {
       // 3D coordinates
       if (m != null) {
         // 3D and measured coordinates
-        final list = List<double>.filled(4, 0);
+        final list = Float64List(4);
         list[0] = x;
         list[1] = y;
         list[2] = z;
@@ -176,7 +178,7 @@ abstract class Position extends Positionable {
         return Position.view(list, type: Coords.xyzm);
       } else {
         // 3D coordinates (not measured)
-        final list = List<double>.filled(3, 0);
+        final list = Float64List(3);
         list[0] = x;
         list[1] = y;
         list[2] = z;
@@ -186,14 +188,14 @@ abstract class Position extends Positionable {
       // 2D coordinates
       if (m != null) {
         // 2D and measured coordinates
-        final list = List<double>.filled(3, 0);
+        final list = Float64List(3);
         list[0] = x;
         list[1] = y;
         list[2] = m;
         return Position.view(list, type: Coords.xym);
       } else {
         // 2D coordinates (not measured)
-        final list = List<double>.filled(2, 0);
+        final list = Float64List(2);
         list[0] = x;
         list[1] = y;
         return Position.view(list, type: Coords.xy);
@@ -211,24 +213,26 @@ abstract class Position extends Positionable {
   /// Use an optional [type] to explicitely set the coordinate type. If not
   /// provided and [text] has 3 items, then xyz coordinates are assumed.
   ///
+  /// If [swapXY] is true, then swaps x and y for the result.
+  ///
+  /// If [singlePrecision] is true, then coordinate values of a position are
+  /// stored in `Float32List` instead of the `Float64List` (default).
+  ///
   /// Throws FormatException if coordinates are invalid.
   factory Position.parse(
     String text, {
-    Pattern? delimiter = ',',
+    Pattern delimiter = ',',
     Coords? type,
-  }) {
-    final coords =
-        parseDoubleValues(text, delimiter: delimiter).toList(growable: false);
-    final len = coords.length;
-    final coordType = type ?? Coords.fromDimension(len);
-    if (len != coordType.coordinateDimension) {
-      throw invalidCoordinates;
-    }
-    return Position.view(
-      coords,
-      type: coordType,
-    );
-  }
+    bool swapXY = false,
+    bool singlePrecision = false,
+  }) =>
+      parsePositionFromText(
+        text,
+        delimiter: delimiter,
+        type: type,
+        swapXY: swapXY,
+        singlePrecision: singlePrecision,
+      );
 
   /// The x coordinate value.
   ///
@@ -832,7 +836,9 @@ class _PositionCoords extends Position {
       isMeasured: isMeasured || m != null,
     );
 
-    final list = List<double>.filled(newType.coordinateDimension, 0);
+    final list = _data is Float32List
+        ? Float32List(newType.coordinateDimension)
+        : Float64List(newType.coordinateDimension);
     list[0] = x ?? this.x;
     list[1] = y ?? this.y;
     if (newType.is3D) {

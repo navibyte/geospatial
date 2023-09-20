@@ -56,6 +56,24 @@ Position parsePosition(
   return Position.view(coords, type: coordType);
 }
 
+/// Utility to parse a string with coord values to `Position`.
+///
+/// Swaps x and y for the result if `swapXY` is true.
+@internal
+Position parsePositionFromText(
+  String text, {
+  Pattern delimiter = ',',
+  Coords? type,
+  bool swapXY = false,
+  bool singlePrecision = false,
+}) =>
+    parsePosition(
+      text.trim().split(delimiter),
+      type: type,
+      swapXY: swapXY,
+      singlePrecision: singlePrecision,
+    );
+
 /// Utility to convert expect `List<dynamic> data to `List<Position>`.
 ///
 /// Swaps x and y for the result if `swapXY` is true.
