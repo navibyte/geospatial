@@ -8,14 +8,20 @@ part of 'wkb_format.dart';
 
 class _WkbGeometryDecoder implements ContentDecoder {
   final GeometryContent builder;
+  final bool singlePrecision;
 
-  _WkbGeometryDecoder(this.builder);
+  _WkbGeometryDecoder(
+    this.builder, {
+    // ignore: unused_element
+    this.singlePrecision = false,
+  });
 
   @override
   void decodeBytes(Uint8List source, {Map<String, dynamic>? options}) {
     _WkbGeometryBufferDecoder(
       builder,
       ByteReader.view(source),
+      singlePrecision: singlePrecision,
     ).buildAll();
   }
 
@@ -31,8 +37,13 @@ class _WkbGeometryDecoder implements ContentDecoder {
 class _WkbGeometryBufferDecoder {
   final GeometryContent builder;
   final ByteReader buffer;
+  final bool singlePrecision;
 
-  _WkbGeometryBufferDecoder(this.builder, this.buffer);
+  _WkbGeometryBufferDecoder(
+    this.builder,
+    this.buffer, {
+    this.singlePrecision = false,
+  });
 
   void buildAll() {
     // loop as long as some data available, so builds all geometries from buffer
@@ -91,6 +102,7 @@ class _WkbGeometryBufferDecoder {
           (geom) => _WkbGeometryBufferDecoder(
             geom,
             buffer,
+            singlePrecision: singlePrecision,
           ).buildCounted(numGeometries),
         );
         break;
@@ -209,7 +221,9 @@ class _WkbGeometryBufferDecoder {
     final type = outputType ?? coordType;
 
     // create fixed size list for point coordinates
-    final list = List<double>.filled(type.coordinateDimension, 0);
+    final list = singlePrecision
+        ? Float32List(type.coordinateDimension)
+        : Float64List(type.coordinateDimension);
     list[0] = x;
     list[1] = y;
 
@@ -278,7 +292,9 @@ class _WkbGeometryBufferDecoder {
     final numOutputValues = dim * numPoints;
 
     // create fixed size list for coordinates of all points as flat structure
-    final list = List<double>.filled(numOutputValues, 0);
+    final list = singlePrecision
+        ? Float32List(numOutputValues)
+        : Float64List(numOutputValues);
 
     for (var start = 0; start < numOutputValues; start += dim) {
       // all points has at least x and y values

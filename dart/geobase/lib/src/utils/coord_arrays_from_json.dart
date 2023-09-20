@@ -15,6 +15,7 @@ List<double> _requirePositionDouble(
   dynamic data, {
   Coords? type,
   bool swapXY = false,
+  bool singlePrecision = false,
 }) {
   // expect source to be list
   final source = data as List<dynamic>;
@@ -29,7 +30,7 @@ List<double> _requirePositionDouble(
 
   // create a list of doubles (cast items to num and then convert to double)
   // (also swap x and y if required)
-  final pos = List.filled(targetLen, 0.0);
+  final pos = singlePrecision ? Float32List(targetLen) : Float64List(targetLen);
   pos[0] = (source[swapXY ? 1 : 0] as num).toDouble();
   pos[1] = (source[swapXY ? 0 : 1] as num).toDouble();
   if (targetLen >= 3 && sourceLen >= 3) {
@@ -37,6 +38,40 @@ List<double> _requirePositionDouble(
   }
   if (targetLen >= 4 && sourceLen >= 4) {
     pos[3] = (source[3] as num).toDouble();
+  }
+  return pos;
+}
+
+/// Utility to parse `List<String> data to `List<double>`.
+///
+/// If [type] is given, then position is returned according to it.
+///
+/// Swaps x and y for the result if `swapXY` is true.
+List<double> _parsePositionDouble(
+  List<String> source, {
+  Coords? type,
+  bool swapXY = false,
+  bool singlePrecision = false,
+}) {
+  final sourceLen = source.length;
+
+  // not valid position if less than 2 coordinate values
+  if (sourceLen < 2) throw invalidCoordinates;
+
+  // calculate number of coordinate values for target position
+  final targetLen =
+      type != null ? type.coordinateDimension : sourceLen.clamp(2, 4);
+
+  // create a list of doubles (parse items to doubles)
+  // (also swap x and y if required)
+  final pos = singlePrecision ? Float32List(targetLen) : Float64List(targetLen);
+  pos[0] = double.parse(source[swapXY ? 1 : 0]);
+  pos[1] = double.parse(source[swapXY ? 0 : 1]);
+  if (targetLen >= 3 && sourceLen >= 3) {
+    pos[2] = double.parse(source[2]);
+  }
+  if (targetLen >= 4 && sourceLen >= 4) {
+    pos[3] = double.parse(source[3]);
   }
   return pos;
 }
@@ -67,6 +102,7 @@ List<double> _createFlatPositionArrayDouble(
   List<dynamic> source,
   Coords coordType, {
   bool swapXY = false,
+  bool singlePrecision = false,
 }) {
   if (source.isEmpty) {
     return List<double>.empty();
@@ -76,7 +112,8 @@ List<double> _createFlatPositionArrayDouble(
   final positionCount = source.length;
   final valueCount = dim * positionCount;
 
-  final array = List<double>.filled(valueCount, 0.0);
+  final array =
+      singlePrecision ? Float32List(valueCount) : Float64List(valueCount);
   for (var i = 0; i < positionCount; i++) {
     final pos = source[i] as List<dynamic>;
     if (pos.length < 2) {

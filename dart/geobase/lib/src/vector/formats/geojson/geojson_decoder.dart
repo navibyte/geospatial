@@ -36,8 +36,16 @@ class _GeoJsonGeometryTextDecoder implements ContentDecoder {
       // swap x and y if CRS has y-x (lat-lon) order (and logic is auth based)
       final swapXY = crs?.swapXY(logic: conf?.crsLogic) ?? false;
 
+      // if true coordinate values parsed are stored in Float32, not Float64
+      final singlePrecision = conf?.singlePrecision ?? false;
+
       // decode the geometry object at root (without name geometry name)
-      _decodeGeometry(root, builder, swapXY: swapXY);
+      _decodeGeometry(
+        root,
+        builder,
+        swapXY: swapXY,
+        singlePrecision: singlePrecision,
+      );
     } on FormatException {
       rethrow;
     } catch (err) {
@@ -76,6 +84,9 @@ class _GeoJsonFeatureTextDecoder implements ContentDecoder {
       // swap x and y if CRS has y-x (lat-lon) order (and logic is auth based)
       final swapXY = crs?.swapXY(logic: conf?.crsLogic) ?? false;
 
+      // if true coordinate values parsed are stored in Float32, not Float64
+      final singlePrecision = conf?.singlePrecision ?? false;
+
       // whether to ignore custom (or foreign) members on Features or
       // FeatureCollections
       final ignoreCustom = conf?.ignoreForeignMembers ?? false;
@@ -87,6 +98,7 @@ class _GeoJsonFeatureTextDecoder implements ContentDecoder {
             root,
             builder,
             swapXY: swapXY,
+            singlePrecision: singlePrecision,
             ignoreCustom: ignoreCustom,
           );
           return;
@@ -98,6 +110,7 @@ class _GeoJsonFeatureTextDecoder implements ContentDecoder {
             root,
             builder,
             swapXY: swapXY,
+            singlePrecision: singlePrecision,
             ignoreCustom: ignoreCustom,
             itemOffset: itemOffset,
             itemLimit: itemLimit,
@@ -120,6 +133,7 @@ void _decodeGeometry(
   Map<String, dynamic> geometry,
   GeometryContent builder, {
   required bool swapXY,
+  required bool singlePrecision,
   String? name,
 }) {
   // NOTE : coord type from conf
@@ -132,7 +146,11 @@ void _decodeGeometry(
       if (array.isEmpty) {
         builder.emptyGeometry(Geom.point, name: name);
       } else {
-        final pos = createPosition(array, swapXY: swapXY);
+        final pos = createPosition(
+          array,
+          swapXY: swapXY,
+          singlePrecision: singlePrecision,
+        );
         builder.point(pos, name: name);
       }
       break;
@@ -141,7 +159,11 @@ void _decodeGeometry(
       if (array.isEmpty) {
         builder.emptyGeometry(Geom.lineString, name: name);
       } else {
-        final chain = createPositionSeries(array, swapXY: swapXY);
+        final chain = createPositionSeries(
+          array,
+          swapXY: swapXY,
+          singlePrecision: singlePrecision,
+        );
         final coordType = chain.type;
         // NOTE: validate line string (at least two points)
         builder.lineString(
@@ -156,7 +178,11 @@ void _decodeGeometry(
       if (array.isEmpty) {
         builder.emptyGeometry(Geom.polygon, name: name);
       } else {
-        final rings = createPositionSeriesArray(array, swapXY: swapXY);
+        final rings = createPositionSeriesArray(
+          array,
+          swapXY: swapXY,
+          singlePrecision: singlePrecision,
+        );
         final coordType = positionSeriesArrayType(rings);
         // NOTE: validate polygon (at least one ring)
         builder.polygon(
@@ -171,7 +197,11 @@ void _decodeGeometry(
       if (array.isEmpty) {
         builder.emptyGeometry(Geom.multiPoint, name: name);
       } else {
-        final points = createPositionArray(array, swapXY: swapXY);
+        final points = createPositionArray(
+          array,
+          swapXY: swapXY,
+          singlePrecision: singlePrecision,
+        );
         final coordType = positionArrayType(points);
         builder.multiPoint(
           points,
@@ -185,7 +215,11 @@ void _decodeGeometry(
       if (array.isEmpty) {
         builder.emptyGeometry(Geom.multiLineString, name: name);
       } else {
-        final chains = createPositionSeriesArray(array, swapXY: swapXY);
+        final chains = createPositionSeriesArray(
+          array,
+          swapXY: swapXY,
+          singlePrecision: singlePrecision,
+        );
         final coordType = positionSeriesArrayType(chains);
         builder.multiLineString(
           chains,
@@ -199,8 +233,11 @@ void _decodeGeometry(
       if (array.isEmpty) {
         builder.emptyGeometry(Geom.multiPolygon, name: name);
       } else {
-        final ringsArray =
-            createPositionSeriesArrayArray(array, swapXY: swapXY);
+        final ringsArray = createPositionSeriesArrayArray(
+          array,
+          swapXY: swapXY,
+          singlePrecision: singlePrecision,
+        );
         final coordType = positionSeriesArrayArrayType(ringsArray);
         builder.multiPolygon(
           ringsArray,
@@ -221,6 +258,7 @@ void _decodeGeometry(
                 geometry as Map<String, dynamic>,
                 geometryBuilder,
                 swapXY: swapXY,
+                singlePrecision: singlePrecision,
               );
             }
           },
@@ -239,6 +277,7 @@ void _decodeFeature(
   Map<String, dynamic> feature,
   FeatureContent builder, {
   required bool swapXY,
+  required bool singlePrecision,
   required bool ignoreCustom,
 }) {
   // feature has an optional primary geometry in "geometry" field
@@ -270,6 +309,7 @@ void _decodeFeature(
               geom,
               geometryBuilder,
               swapXY: swapXY,
+              singlePrecision: singlePrecision,
 
               // GeoJSON => a primary geometry of a Feature is named "geometry"
               name: 'geometry',
@@ -284,6 +324,7 @@ void _decodeFeatureCollection(
   Map<String, dynamic> collection,
   FeatureContent builder, {
   required bool swapXY,
+  required bool singlePrecision,
   required bool ignoreCustom,
   int? itemOffset,
   int? itemLimit,
@@ -324,6 +365,7 @@ void _decodeFeatureCollection(
             feature as Map<String, dynamic>,
             featureBuilder,
             swapXY: swapXY,
+            singlePrecision: singlePrecision,
             ignoreCustom: ignoreCustom,
           );
         }
@@ -341,6 +383,7 @@ void _decodeFeatureCollection(
             feature as Map<String, dynamic>,
             featureBuilder,
             swapXY: swapXY,
+            singlePrecision: singlePrecision,
             ignoreCustom: ignoreCustom,
           );
         }

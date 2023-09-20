@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'dart:typed_data';
+
 import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
@@ -22,8 +24,34 @@ Position createPosition(
   dynamic data, {
   Coords? type,
   bool swapXY = false,
+  bool singlePrecision = false,
 }) {
-  final coords = _requirePositionDouble(data, type: type, swapXY: swapXY);
+  final coords = _requirePositionDouble(
+    data,
+    type: type,
+    swapXY: swapXY,
+    singlePrecision: singlePrecision,
+  );
+  final coordType = type ?? Coords.fromDimension(coords.length);
+  return Position.view(coords, type: coordType);
+}
+
+/// Utility to parse `List<String>` data to `Position`.
+///
+/// Swaps x and y for the result if `swapXY` is true.
+@internal
+Position parsePosition(
+  List<String> data, {
+  Coords? type,
+  bool swapXY = false,
+  bool singlePrecision = false,
+}) {
+  final coords = _parsePositionDouble(
+    data,
+    type: type,
+    swapXY: swapXY,
+    singlePrecision: singlePrecision,
+  );
   final coordType = type ?? Coords.fromDimension(coords.length);
   return Position.view(coords, type: coordType);
 }
@@ -36,12 +64,17 @@ List<Position> createPositionArray(
   dynamic data, {
   Coords? type,
   bool swapXY = false,
+  bool singlePrecision = false,
 }) {
   var coordType = type;
   return (data as List<dynamic>).map<Position>(
     (pos) {
-      final coords =
-          _requirePositionDouble(pos, type: coordType, swapXY: swapXY);
+      final coords = _requirePositionDouble(
+        pos,
+        type: coordType,
+        swapXY: swapXY,
+        singlePrecision: singlePrecision,
+      );
       coordType ??= Coords.fromDimension(coords.length);
       return Position.view(coords, type: coordType);
     },
@@ -56,11 +89,17 @@ PositionSeries createPositionSeries(
   List<dynamic> source, {
   Coords? type,
   bool swapXY = false,
+  bool singlePrecision = false,
 }) {
   final coordType = type ?? _resolveCoordType(source, positionLevel: 1);
 
   return PositionSeries.view(
-    _createFlatPositionArrayDouble(source, coordType, swapXY: swapXY),
+    _createFlatPositionArrayDouble(
+      source,
+      coordType,
+      swapXY: swapXY,
+      singlePrecision: singlePrecision,
+    ),
     type: coordType,
   );
 }
@@ -73,6 +112,7 @@ List<PositionSeries> createPositionSeriesArray(
   List<dynamic> source, {
   Coords? type,
   bool swapXY = false,
+  bool singlePrecision = false,
 }) =>
     source.isEmpty
         ? List<PositionSeries>.empty()
@@ -82,6 +122,7 @@ List<PositionSeries> createPositionSeriesArray(
                 e as List<dynamic>,
                 type: type ?? _resolveCoordType(source, positionLevel: 2),
                 swapXY: swapXY,
+                singlePrecision: singlePrecision,
               ),
             )
             .toList(growable: false);
@@ -95,6 +136,7 @@ List<List<PositionSeries>> createPositionSeriesArrayArray(
   List<dynamic> source, {
   Coords? type,
   bool swapXY = false,
+  bool singlePrecision = false,
 }) =>
     source.isEmpty
         ? List<List<PositionSeries>>.empty()
@@ -104,6 +146,7 @@ List<List<PositionSeries>> createPositionSeriesArrayArray(
                 e as List<dynamic>,
                 type: type ?? _resolveCoordType(source, positionLevel: 3),
                 swapXY: swapXY,
+                singlePrecision: singlePrecision,
               ),
             )
             .toList(growable: false);

@@ -34,6 +34,13 @@ class GeoJsonConf with EquatableMixin {
   /// authority-based (the default) or always lon-lat order.
   final GeoRepresentation? crsLogic;
 
+  /// When true, coordinate values read when parsing are allowed to be stored
+  /// on single-precision floating point numbers (Float32).
+  ///
+  /// By default this is true to indicate that double-precision floating point
+  /// numbers (Float64) are used.
+  final bool singlePrecision;
+
   /// When [ignoreMeasured] is set to true, then M coordinates are ignored from
   /// formatting.
   final bool ignoreMeasured;
@@ -54,6 +61,7 @@ class GeoJsonConf with EquatableMixin {
   /// Optional configuration parameters for formatting GeoJSON.
   const GeoJsonConf({
     this.crsLogic,
+    this.singlePrecision = false,
     this.ignoreMeasured = false,
     this.ignoreForeignMembers = false,
     this.printNonDefaultCrs = false,
@@ -62,6 +70,7 @@ class GeoJsonConf with EquatableMixin {
   @override
   List<Object?> get props => [
         crsLogic,
+        singlePrecision,
         ignoreMeasured,
         ignoreForeignMembers,
         printNonDefaultCrs,

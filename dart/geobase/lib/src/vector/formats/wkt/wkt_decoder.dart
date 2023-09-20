@@ -9,9 +9,16 @@ part of 'wkt_format.dart';
 class _WktGeometryTextDecoder implements ContentDecoder {
   final GeometryContent builder;
   final CoordRefSys? crs;
+  final bool singlePrecision;
   final Map<String, dynamic>? options;
 
-  _WktGeometryTextDecoder(this.builder, {this.crs, this.options});
+  _WktGeometryTextDecoder(
+    this.builder, {
+    this.crs,
+    // ignore: unused_element
+    this.singlePrecision = false,
+    this.options,
+  });
 
   @override
   void decodeBytes(Uint8List source) => decodeText(utf8.decode(source));
@@ -20,11 +27,7 @@ class _WktGeometryTextDecoder implements ContentDecoder {
   void decodeText(String source) {
     try {
       // decode the geometry object at given [source] string
-      _parseGeometry(
-        source.trim().toUpperCase(),
-        builder,
-        crs,
-      );
+      _parseGeometry(source.trim().toUpperCase(), builder);
     } on FormatException {
       rethrow;
     } catch (err) {
@@ -36,110 +39,262 @@ class _WktGeometryTextDecoder implements ContentDecoder {
 
   @override
   void decodeData(dynamic source) => decodeText(source.toString());
-}
 
-void _parseGeometry(
-  String text,
-  GeometryContent builder,
-  CoordRefSys? crs,
-) {
-  for (var type = 0; type < _types.length; type++) {
-    if (text.startsWith(_types[type])) {
-      var i = _types[type].length;
-      var expectM = false;
-      var expectZ = false;
-      while (i < text.length) {
-        final c = text[i];
-        switch (c) {
-          case 'M':
-            expectM = true;
-            break;
-          case 'Z':
-            expectZ = true;
-            break;
-          case 'E':
-            if (text.startsWith('EMPTY', i)) {
-              switch (type) {
-                case 0: // POINT
-                  builder.emptyGeometry(Geom.point);
-                  return;
-                case 1: // LINESTRING
-                  builder.emptyGeometry(Geom.lineString);
-                  return;
-                case 2: // POLYGON
-                  builder.emptyGeometry(Geom.polygon);
-                  return;
-                case 3: // MULTIPOINT
-                  builder.emptyGeometry(Geom.multiPoint);
-                  return;
-                case 4: // MULTILINESTRING
-                  builder.emptyGeometry(Geom.multiLineString);
-                  return;
-                case 5: // MULTIPOLYGON
-                  builder.emptyGeometry(Geom.multiPolygon);
-                  return;
-                default: // case 6: // GEOMETRYCOLLECTION
-                  builder.emptyGeometry(Geom.geometryCollection);
-                  return;
+  void _parseGeometry(String text, GeometryContent builder) {
+    for (var type = 0; type < _types.length; type++) {
+      if (text.startsWith(_types[type])) {
+        var i = _types[type].length;
+        var expectM = false;
+        var expectZ = false;
+        while (i < text.length) {
+          final c = text[i];
+          switch (c) {
+            case 'M':
+              expectM = true;
+              break;
+            case 'Z':
+              expectZ = true;
+              break;
+            case 'E':
+              if (text.startsWith('EMPTY', i)) {
+                switch (type) {
+                  case 0: // POINT
+                    builder.emptyGeometry(Geom.point);
+                    return;
+                  case 1: // LINESTRING
+                    builder.emptyGeometry(Geom.lineString);
+                    return;
+                  case 2: // POLYGON
+                    builder.emptyGeometry(Geom.polygon);
+                    return;
+                  case 3: // MULTIPOINT
+                    builder.emptyGeometry(Geom.multiPoint);
+                    return;
+                  case 4: // MULTILINESTRING
+                    builder.emptyGeometry(Geom.multiLineString);
+                    return;
+                  case 5: // MULTIPOLYGON
+                    builder.emptyGeometry(Geom.multiPolygon);
+                    return;
+                  default: // case 6: // GEOMETRYCOLLECTION
+                    builder.emptyGeometry(Geom.geometryCollection);
+                    return;
+                }
+              } else {
+                throw _invalidWkt(text);
               }
-            } else {
-              throw _invalidWkt(text);
-            }
-          case '(':
-            if (text[text.length - 1] == ')') {
-              final data = text.substring(i + 1, text.length - 1);
-              final coordsType = _coordType(expectZ, expectM);
-              switch (type) {
-                case 0: // POINT
-                  builder.point(
-                    _parsePosition(data, coordsType),
-                  );
-                  return;
-                case 1: // LINESTRING
-                  builder.lineString(
-                    _parsePositionSeries(data, coordsType),
-                  );
-                  return;
-                case 2: // POLYGON
-                  builder.polygon(
-                    _parsePositionSeriesArray(data, coordsType),
-                  );
-                  return;
-                case 3: // MULTIPOINT
-                  builder.multiPoint(
-                    _parsePositionArray(data, coordsType),
-                  );
-                  return;
-                case 4: // MULTILINESTRING
-                  builder.multiLineString(
-                    _parsePositionSeriesArray(data, coordsType),
-                  );
-                  return;
-                case 5: // MULTIPOLYGON
-                  builder.multiPolygon(
-                    _parsePositionSeriesArrayArray(data, coordsType),
-                  );
-                  return;
-                case 6: // GEOMETRYCOLLECTION
-                  builder.geometryCollection(
-                    (geom) => _parseGeometryCollection(data, geom, crs),
-                    type: coordsType,
-                  );
-                  return;
+            case '(':
+              if (text[text.length - 1] == ')') {
+                final data = text.substring(i + 1, text.length - 1);
+                final coordsType = _coordType(expectZ, expectM);
+                switch (type) {
+                  case 0: // POINT
+                    builder.point(
+                      _parsePosition(data, coordsType),
+                    );
+                    return;
+                  case 1: // LINESTRING
+                    builder.lineString(
+                      _parsePositionSeries(data, coordsType),
+                    );
+                    return;
+                  case 2: // POLYGON
+                    builder.polygon(
+                      _parsePositionSeriesArray(data, coordsType),
+                    );
+                    return;
+                  case 3: // MULTIPOINT
+                    builder.multiPoint(
+                      _parsePositionArray(data, coordsType),
+                    );
+                    return;
+                  case 4: // MULTILINESTRING
+                    builder.multiLineString(
+                      _parsePositionSeriesArray(data, coordsType),
+                    );
+                    return;
+                  case 5: // MULTIPOLYGON
+                    builder.multiPolygon(
+                      _parsePositionSeriesArrayArray(data, coordsType),
+                    );
+                    return;
+                  case 6: // GEOMETRYCOLLECTION
+                    builder.geometryCollection(
+                      (geom) => _parseGeometryCollection(data, geom, crs),
+                      type: coordsType,
+                    );
+                    return;
+                }
+              } else {
+                throw _invalidWkt(text);
               }
-            } else {
-              throw _invalidWkt(text);
-            }
-            break;
-          default:
-            if (!_isBlank(c)) throw _invalidWkt(text);
+              break;
+            default:
+              if (!_isBlank(c)) throw _invalidWkt(text);
+          }
+          i++;
         }
-        i++;
+        break;
       }
-      break;
+    }
+    throw _invalidWkt(text);
+  }
+
+  /// Parses a position from [text] with coordinates separated by white space.
+  Position _parsePosition(String text, Coords coordsType) {
+    final dim = coordsType.coordinateDimension;
+    final parts = _omitParenthesis(text.trim()).split(_splitByWhitespace);
+    if (parts.length != dim) {
+      throw _invalidCoords(text);
+    }
+    return parsePosition(
+      parts,
+      type: coordsType,
+      singlePrecision: singlePrecision,
+    );
+  }
+
+  /// Parses a position from [text] with coordinates separated by white
+  /// space and sets position coordinates to the [target] list at [offset].
+  void _parsePositionTo(String text, int dim, List<double> target, int offset) {
+    final parts = _omitParenthesis(text.trim()).split(_splitByWhitespace);
+    if (parts.length != dim) {
+      throw _invalidCoords(text);
+    }
+    for (var i = 0; i < dim; i++) {
+      target[offset + i] = double.parse(parts[i]);
     }
   }
-  throw _invalidWkt(text);
+
+  /// Parses an array of positions.
+  List<Position> _parsePositionArray(String text, Coords coordsType) {
+    final positions = text.split(',');
+    return positions
+        .map((pos) => _parsePosition(pos, coordsType))
+        .toList(growable: false);
+  }
+
+  /// Parses a series of positions.
+  PositionSeries _parsePositionSeries(String text, Coords coordsType) {
+    final dim = coordsType.coordinateDimension;
+    final positions = text.split(',');
+    final len = positions.length;
+    final array = Float64List(len * dim);
+    for (var i = 0; i < len; i++) {
+      _parsePositionTo(positions[i], dim, array, i * dim);
+    }
+    return PositionSeries.view(array, type: coordsType);
+  }
+
+  /// Parses an array of series of positions.
+  List<PositionSeries> _parsePositionSeriesArray(
+    String text,
+    Coords coordsType,
+  ) {
+    final list = <PositionSeries>[];
+
+    var ls = 0;
+    while (ls < text.length) {
+      if (text[ls] == '(') {
+        final le = text.indexOf(')', ls);
+        if (le == -1) {
+          throw _invalidWkt(text);
+        } else {
+          list.add(
+            _parsePositionSeries(
+              text.substring(ls + 1, le),
+              coordsType,
+            ),
+          );
+          ls = le;
+        }
+      }
+      ls++;
+    }
+
+    return list;
+  }
+
+  /// Parses an array of arrays of series of positions.
+  List<List<PositionSeries>> _parsePositionSeriesArrayArray(
+    String text,
+    Coords coordsType,
+  ) {
+    final polygons = <List<PositionSeries>>[];
+
+    var ps = 0;
+    while (ps < text.length) {
+      if (text[ps] == '(') {
+        final lineStrings = <PositionSeries>[];
+        var ls = ps + 1;
+        while (ls < text.length) {
+          if (text[ls] == ')') {
+            break;
+          } else if (text[ls] == '(') {
+            final le = text.indexOf(')', ls);
+            if (le == -1) {
+              throw _invalidWkt(text);
+            } else {
+              lineStrings.add(
+                _parsePositionSeries(
+                  text.substring(ls + 1, le),
+                  coordsType,
+                ),
+              );
+              ls = le;
+            }
+          }
+          ls++;
+        }
+        final pe = text.indexOf(')', ls);
+        if (pe == -1) {
+          throw _invalidWkt(text);
+        } else {
+          polygons.add(lineStrings);
+          ps = pe;
+        }
+      }
+      ps++;
+    }
+
+    return polygons;
+  }
+
+  /// Parses a geometry collection from [text], parsed geometries included to a
+  /// collection are sent to [builder].
+  ///
+  /// Optional [rangeStart] and [rangeLimit] parameters specify start offset and
+  /// optional limit count specifying a geometry object range to be returned on
+  /// a collection.
+  void _parseGeometryCollection(
+    String text,
+    GeometryContent builder,
+    CoordRefSys? crs, {
+    int? rangeStart,
+    int? rangeLimit,
+  }) {
+    if (rangeLimit == null || rangeLimit > 0) {
+      var startChar = 0;
+      var tokenIndex = 0;
+      var countAdded = 0;
+      while ((startChar = _findWktTokenStart(text, offset: startChar)) != -1) {
+        final endChar = _findWktTokenEnd(text, startChar);
+        if (endChar > startChar) {
+          if (rangeStart == null || tokenIndex >= rangeStart) {
+            _parseGeometry(text.substring(startChar, endChar), builder);
+            countAdded++;
+            if (rangeLimit != null && countAdded >= rangeLimit) {
+              break;
+            }
+          }
+          startChar = endChar;
+          tokenIndex++;
+        } else {
+          throw _invalidWkt(text);
+        }
+      }
+    }
+  }
 }
 
 const _types = <String>[
@@ -170,162 +325,6 @@ FormatException _invalidWkt(String wkt) => FormatException('Invalid wkt: $wkt');
 String _omitParenthesis(String str) => str.startsWith('(') && str.endsWith(')')
     ? str.substring(1, str.length - 1)
     : str;
-
-/// Parses a position from [text] with coordinates separated by white space.
-Position _parsePosition(String text, Coords coordsType) {
-  final dim = coordsType.coordinateDimension;
-  final parts = _omitParenthesis(text.trim()).split(_splitByWhitespace);
-  if (parts.length != dim) {
-    throw _invalidCoords(text);
-  }
-  return Position.view(
-    parts.map<double>(double.parse).toList(growable: false),
-    type: coordsType,
-  );
-}
-
-/// Parses a position from [text] with coordinates separated by white
-/// space and sets position coordinates to the [target] list at [offset].
-void _parsePositionTo(String text, int dim, List<double> target, int offset) {
-  final parts = _omitParenthesis(text.trim()).split(_splitByWhitespace);
-  if (parts.length != dim) {
-    throw _invalidCoords(text);
-  }
-  for (var i = 0; i < dim; i++) {
-    target[offset + i] = double.parse(parts[i]);
-  }
-}
-
-/// Parses an array of positions.
-List<Position> _parsePositionArray(String text, Coords coordsType) {
-  final positions = text.split(',');
-  return positions
-      .map((pos) => _parsePosition(pos, coordsType))
-      .toList(growable: false);
-}
-
-/// Parses a series of positions.
-PositionSeries _parsePositionSeries(String text, Coords coordsType) {
-  final dim = coordsType.coordinateDimension;
-  final positions = text.split(',');
-  final len = positions.length;
-  final array = List<double>.filled(len * dim, 0.0);
-  for (var i = 0; i < len; i++) {
-    _parsePositionTo(positions[i], dim, array, i * dim);
-  }
-  return PositionSeries.view(array, type: coordsType);
-}
-
-/// Parses an array of series of positions.
-List<PositionSeries> _parsePositionSeriesArray(String text, Coords coordsType) {
-  final list = <PositionSeries>[];
-
-  var ls = 0;
-  while (ls < text.length) {
-    if (text[ls] == '(') {
-      final le = text.indexOf(')', ls);
-      if (le == -1) {
-        throw _invalidWkt(text);
-      } else {
-        list.add(
-          _parsePositionSeries(
-            text.substring(ls + 1, le),
-            coordsType,
-          ),
-        );
-        ls = le;
-      }
-    }
-    ls++;
-  }
-
-  return list;
-}
-
-/// Parses an array of arrays of series of positions.
-List<List<PositionSeries>> _parsePositionSeriesArrayArray(
-  String text,
-  Coords coordsType,
-) {
-  final polygons = <List<PositionSeries>>[];
-
-  var ps = 0;
-  while (ps < text.length) {
-    if (text[ps] == '(') {
-      final lineStrings = <PositionSeries>[];
-      var ls = ps + 1;
-      while (ls < text.length) {
-        if (text[ls] == ')') {
-          break;
-        } else if (text[ls] == '(') {
-          final le = text.indexOf(')', ls);
-          if (le == -1) {
-            throw _invalidWkt(text);
-          } else {
-            lineStrings.add(
-              _parsePositionSeries(
-                text.substring(ls + 1, le),
-                coordsType,
-              ),
-            );
-            ls = le;
-          }
-        }
-        ls++;
-      }
-      final pe = text.indexOf(')', ls);
-      if (pe == -1) {
-        throw _invalidWkt(text);
-      } else {
-        polygons.add(lineStrings);
-        ps = pe;
-      }
-    }
-    ps++;
-  }
-
-  return polygons;
-}
-
-/// Parses a geometry collection from [text], parsed geometries included to a
-/// collection are sent to [builder].
-///
-/// Optional [rangeStart] and [rangeLimit] parameters specify start offset and
-/// optional limit count specifying a geometry object range to be returned on a
-/// collection.
-void _parseGeometryCollection(
-  String text,
-  GeometryContent builder,
-  CoordRefSys? crs, {
-  int? rangeStart,
-  int? rangeLimit,
-}) {
-  if (rangeLimit == null || rangeLimit > 0) {
-    var startChar = 0;
-    var tokenIndex = 0;
-    var countAdded = 0;
-    while ((startChar = _findWktTokenStart(text, offset: startChar)) != -1) {
-      final endChar = _findWktTokenEnd(text, startChar);
-      if (endChar > startChar) {
-        if (rangeStart == null || tokenIndex >= rangeStart) {
-          _parseGeometry(
-            text.substring(startChar, endChar),
-            builder,
-            crs,
-          );
-          countAdded++;
-          if (rangeLimit != null && countAdded >= rangeLimit) {
-            break;
-          }
-        }
-        startChar = endChar;
-        tokenIndex++;
-      } else {
-        throw _invalidWkt(text);
-      }
-    }
-  }
-}
 
 int _findWktTokenStart(String text, {int offset = 0}) {
   final len = text.length;
