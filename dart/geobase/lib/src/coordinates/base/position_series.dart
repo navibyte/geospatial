@@ -9,8 +9,8 @@ import 'package:meta/meta.dart';
 import '/src/codes/coords.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/projection/projection.dart';
+import '/src/utils/coord_positions.dart';
 import '/src/utils/format_validation.dart';
-import '/src/utils/num.dart';
 import '/src/utils/tolerance.dart';
 
 import 'position.dart';
@@ -120,17 +120,29 @@ abstract class PositionSeries implements Positionable {
   ///
   /// Coordinate values in [text] are separated by [delimiter].
   ///
+  /// Use the required optional [type] to explicitely set the coordinate type.
+  ///
+  /// If [swapXY] is true, then swaps x and y for all positions in the result.
+  ///
+  /// If [singlePrecision] is true, then coordinate values of positions are
+  /// stored in `Float32List` instead of the `Float64List` (default).
+  ///
   /// See [Position] for description about supported coordinate values.
   ///
   /// Throws FormatException if coordinates are invalid.
   factory PositionSeries.parse(
     String text, {
-    Pattern? delimiter = ',',
+    Pattern delimiter = ',',
     Coords type = Coords.xy,
+    bool swapXY = false,
+    bool singlePrecision = false,
   }) =>
-      PositionSeries.view(
-        parseDoubleValues(text, delimiter: delimiter).toList(growable: false),
+      parsePositionSeriesFromTextDim1(
+        text,
+        delimiter: delimiter,
         type: type,
+        swapXY: swapXY,
+        singlePrecision: singlePrecision,
       );
 
   /// The number of positions in this series.

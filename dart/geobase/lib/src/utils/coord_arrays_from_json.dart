@@ -199,6 +199,8 @@ Coords _resolveCoordType(List<dynamic> array, {required int positionLevel}) {
 
 /// Utility to create flat `List<double>` (1 dim) from `List<dynamic>`(2 dims).
 ///
+/// Each item is [source] represents a position.
+///
 /// Swaps x and y for the result if `swapXY` is true.
 List<double> _createFlatPositionArrayDouble(
   List<dynamic> source,
@@ -236,6 +238,53 @@ List<double> _createFlatPositionArrayDouble(
     }
     if (dim >= 4 && pos.length >= 4) {
       array[offset + 3] = (pos[3] as num).toDouble();
+    }
+  }
+
+  return array;
+}
+
+/// Utility to parse flat `List<double>` (1 dim) from `List<String>`(1 dims).
+///
+/// Each item is [source] represents a single coordinate value.
+///
+/// Swaps x and y for the result if `swapXY` is true.
+List<double> _parseFlatPositionArrayDoubleDim1(
+  List<String> source, {
+  required Coords type,
+  bool swapXY = false,
+  bool singlePrecision = false,
+}) {
+  if (source.isEmpty) {
+    return List<double>.empty();
+  }
+
+  final dim = type.coordinateDimension;
+  final valueCount = source.length;
+  final positionCount = valueCount ~/ dim;
+
+  if (dim * positionCount != valueCount) {
+    throw invalidCoordinates;
+  }
+
+  final array =
+      singlePrecision ? Float32List(valueCount) : Float64List(valueCount);
+  for (var i = 0; i < positionCount; i++) {
+    final offset = i * dim;
+    if (swapXY) {
+      // coordinate reference system has y-x (lat-lon) order => swap x and y
+      array[offset] = double.parse(source[offset + 1]);
+      array[offset + 1] = double.parse(source[offset + 0]);
+    } else {
+      // coordinate reference system has x-y (lon-lat) order => no swapping
+      array[offset] = double.parse(source[offset + 0]);
+      array[offset + 1] = double.parse(source[offset + 1]);
+    }
+    if (dim >= 3) {
+      array[offset + 2] = double.parse(source[offset + 2]);
+    }
+    if (dim >= 4) {
+      array[offset + 3] = double.parse(source[offset + 3]);
     }
   }
 

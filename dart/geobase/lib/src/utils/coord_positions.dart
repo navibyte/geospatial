@@ -181,6 +181,27 @@ PositionSeries createPositionSeries(
   );
 }
 
+/// Utility to create `PositionSeries` from text (1 dims).
+///
+/// Swaps x and y for the result if `swapXY` is true.
+@internal
+PositionSeries parsePositionSeriesFromTextDim1(
+  String text, {
+  Pattern delimiter = ',',
+  required Coords type,
+  bool swapXY = false,
+  bool singlePrecision = false,
+}) =>
+    PositionSeries.view(
+      _parseFlatPositionArrayDoubleDim1(
+        text.trim().split(delimiter),
+        type: type,
+        swapXY: swapXY,
+        singlePrecision: singlePrecision,
+      ),
+      type: type,
+    );
+
 /// Utility to create `List<PositionSeries>` from `List<dynamic>`(3 dims).
 ///
 /// Swaps x and y for the result if `swapXY` is true.
