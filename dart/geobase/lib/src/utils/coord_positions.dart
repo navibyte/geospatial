@@ -17,7 +17,7 @@ import 'format_validation.dart';
 
 part 'coord_arrays_from_json.dart';
 
-/// Utility to convert expect `List<dynamic> data to `Position`.
+/// Utility to convert expect `List<dynamic>` data to `Position`.
 ///
 /// Swaps x and y for the result if `swapXY` is true.
 @internal
@@ -75,7 +75,7 @@ Position parsePositionFromText(
       singlePrecision: singlePrecision,
     );
 
-/// Utility to convert expect `List<dynamic> data to `List<Position>`.
+/// Utility to convert expect `List<dynamic>` data to `List<Position>`.
 ///
 /// Swaps x and y for the result if `swapXY` is true.
 @internal
@@ -100,7 +100,7 @@ List<Position> createPositionArray(
   ).toList(growable: false);
 }
 
-/// Utility to convert expect `List<dynamic> data to `Box`.
+/// Utility to convert expect `List<dynamic>` data to `Box`.
 ///
 /// Swaps x and y for the result if `swapXY` is true.
 @internal
@@ -119,6 +119,44 @@ Box createBox(
   final coordType = type ?? Coords.fromDimension(coords.length ~/ 2);
   return Box.view(coords, type: coordType);
 }
+
+/// Utility to parse `List<String>` data to `Box`.
+///
+/// Swaps x and y for the result if `swapXY` is true.
+@internal
+Box parseBox(
+  List<String> data, {
+  Coords? type,
+  bool swapXY = false,
+  bool singlePrecision = false,
+}) {
+  final coords = _parseBoxDouble(
+    data,
+    type: type,
+    swapXY: swapXY,
+    singlePrecision: singlePrecision,
+  );
+  final coordType = type ?? Coords.fromDimension(coords.length ~/ 2);
+  return Box.view(coords, type: coordType);
+}
+
+/// Utility to parse a string with coord values to `Box`.
+///
+/// Swaps x and y for the result if `swapXY` is true.
+@internal
+Box parseBoxFromText(
+  String text, {
+  Pattern delimiter = ',',
+  Coords? type,
+  bool swapXY = false,
+  bool singlePrecision = false,
+}) =>
+    parseBox(
+      text.trim().split(delimiter),
+      type: type,
+      swapXY: swapXY,
+      singlePrecision: singlePrecision,
+    );
 
 /// Utility to create `PositionSeries` from `List<dynamic>`(2 dims).
 ///

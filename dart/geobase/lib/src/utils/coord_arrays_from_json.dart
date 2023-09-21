@@ -128,6 +128,56 @@ List<double> _requireBoxDouble(
   return bbox;
 }
 
+/// Utility to parse `List<String> data to `List<double>` for Box.
+///
+/// If [type] is given, then box is returned according to it.
+///
+/// Swaps x and y for the result if `swapXY` is true.
+List<double> _parseBoxDouble(
+  List<String> source, {
+  Coords? type,
+  bool swapXY = false,
+  bool singlePrecision = false,
+}) {
+  final len = source.length;
+
+  // len must be 4, 6 or 8, and match with type if that given
+  if ((len != 4 && len != 6 && len != 8) ||
+      (type != null && len != 2 * type.coordinateDimension)) {
+    throw invalidCoordinates;
+  }
+
+  // bbox may have 4, 6 or 8 coordinate values
+  final bbox = singlePrecision ? Float32List(len) : Float64List(len);
+  switch (len) {
+    case 4:
+      bbox[0] = double.parse(source[swapXY ? 1 : 0]); // minX
+      bbox[1] = double.parse(source[swapXY ? 0 : 1]); // minY
+      bbox[2] = double.parse(source[swapXY ? 3 : 2]); // maxX
+      bbox[3] = double.parse(source[swapXY ? 2 : 3]); // maxY
+      break;
+    case 6:
+      bbox[0] = double.parse(source[swapXY ? 1 : 0]); // minX
+      bbox[1] = double.parse(source[swapXY ? 0 : 1]); // minY
+      bbox[2] = double.parse(source[2]); // minZ or maxM
+      bbox[3] = double.parse(source[swapXY ? 4 : 3]); // maxX
+      bbox[4] = double.parse(source[swapXY ? 3 : 4]); // maxY
+      bbox[5] = double.parse(source[5]); // maxZ or maxM
+      break;
+    case 8:
+      bbox[0] = double.parse(source[swapXY ? 1 : 0]); // minX
+      bbox[1] = double.parse(source[swapXY ? 0 : 1]); // minY
+      bbox[2] = double.parse(source[2]); // minZ
+      bbox[3] = double.parse(source[3]); // maxM
+      bbox[4] = double.parse(source[swapXY ? 5 : 4]); // maxX
+      bbox[5] = double.parse(source[swapXY ? 4 : 5]); // maxY
+      bbox[6] = double.parse(source[6]); // maxZ
+      bbox[7] = double.parse(source[7]); // maxM
+      break;
+  }
+  return bbox;
+}
+
 /// Resolves coordinate type from first coordinate of [array] in
 /// [positionLevel].
 Coords _resolveCoordType(List<dynamic> array, {required int positionLevel}) {

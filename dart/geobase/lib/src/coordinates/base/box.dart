@@ -7,12 +7,14 @@
 // ignore_for_file: avoid_multiple_declarations_per_line
 
 import 'dart:math' as math;
+import 'dart:typed_data';
 
 import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/projection/projection.dart';
+import '/src/utils/coord_positions.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 import '/src/utils/tolerance.dart';
@@ -132,7 +134,7 @@ abstract class Box extends Positionable {
     final is3D = minZ != null && maxZ != null;
     final isMeasured = minM != null && maxM != null;
     final type = Coords.select(is3D: is3D, isMeasured: isMeasured);
-    final list = List<double>.filled(2 * type.coordinateDimension, 0);
+    final list = Float64List(2 * type.coordinateDimension);
     var i = 0;
     list[i++] = minX;
     list[i++] = minY;
@@ -172,24 +174,26 @@ abstract class Box extends Positionable {
   /// Use an optional [type] to explicitely set the coordinate type. If not
   /// provided and [text] has 6 items, then xyz coordinates are assumed.
   ///
+  /// If [swapXY] is true, then swaps x and y for the result.
+  ///
+  /// If [singlePrecision] is true, then coordinate values of a position are
+  /// stored in `Float32List` instead of the `Float64List` (default).
+  ///
   /// Throws FormatException if coordinates are invalid.
   factory Box.parse(
     String text, {
-    Pattern? delimiter = ',',
+    Pattern delimiter = ',',
     Coords? type,
-  }) {
-    final coords =
-        parseDoubleValues(text, delimiter: delimiter).toList(growable: false);
-    final len = coords.length;
-    final coordType = type ?? Coords.fromDimension(len ~/ 2);
-    if (len != 2 * coordType.coordinateDimension) {
-      throw invalidCoordinates;
-    }
-    return Box.view(
-      coords,
-      type: coordType,
-    );
-  }
+    bool swapXY = false,
+    bool singlePrecision = false,
+  }) =>
+      parseBoxFromText(
+        text,
+        delimiter: delimiter,
+        type: type,
+        swapXY: swapXY,
+        singlePrecision: singlePrecision,
+      );
 
   /// The minimum x (or west) coordinate.
   ///
