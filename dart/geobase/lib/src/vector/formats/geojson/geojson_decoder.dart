@@ -396,60 +396,10 @@ void _decodeFeatureCollection(
 }
 
 Box? _buildBboxOpt(Map<String, dynamic> object, bool swapXY, [Coords? type]) {
-  final coords = _getBboxOpt(object, swapXY);
-
-  if (coords != null) {
-    return Box.view(
-      // ensure list structure
-      coords,
-      // resolve type if not known
-      type: type ?? Coords.fromDimension(coords.length ~/ 2),
-    );
-  } else {
-    return null;
-  }
-}
-
-List<double>? _getBboxOpt(Map<String, dynamic> object, bool swapXY) {
   final data = object['bbox'];
   if (data == null) return null;
 
-  // expect source to be list
-  final source = data as List<dynamic>;
-  final len = source.length;
-
-  // bbox may have 4, 6 or 8 coordinate values
-  switch (len) {
-    case 4:
-      return [
-        (source[swapXY ? 1 : 0] as num).toDouble(), // minX
-        (source[swapXY ? 0 : 1] as num).toDouble(), // minY
-        (source[swapXY ? 3 : 2] as num).toDouble(), // maxX
-        (source[swapXY ? 2 : 3] as num).toDouble(), // maxY
-      ];
-    case 6:
-      return [
-        (source[swapXY ? 1 : 0] as num).toDouble(), // minX
-        (source[swapXY ? 0 : 1] as num).toDouble(), // minY
-        (source[2] as num).toDouble(), // minZ or maxM
-        (source[swapXY ? 4 : 3] as num).toDouble(), // maxX
-        (source[swapXY ? 3 : 4] as num).toDouble(), // maxY
-        (source[5] as num).toDouble(), // maxZ or maxM
-      ];
-    case 8:
-      return [
-        (source[swapXY ? 1 : 0] as num).toDouble(), // minX
-        (source[swapXY ? 0 : 1] as num).toDouble(), // minY
-        (source[2] as num).toDouble(), // minZ
-        (source[3] as num).toDouble(), // maxM
-        (source[swapXY ? 5 : 4] as num).toDouble(), // maxX
-        (source[swapXY ? 4 : 5] as num).toDouble(), // maxY
-        (source[6] as num).toDouble(), // maxZ
-        (source[7] as num).toDouble(), // maxM
-      ];
-    default:
-      throw _notValidGeoJsonData;
-  }
+  return createBox(data, type: type, swapXY: swapXY);
 }
 
 Object? _optStringOrNumber(dynamic data) {

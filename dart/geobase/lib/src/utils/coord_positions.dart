@@ -9,6 +9,7 @@ import 'dart:typed_data';
 import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
+import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/base/position_series.dart';
 
@@ -97,6 +98,26 @@ List<Position> createPositionArray(
       return Position.view(coords, type: coordType);
     },
   ).toList(growable: false);
+}
+
+/// Utility to convert expect `List<dynamic> data to `Box`.
+///
+/// Swaps x and y for the result if `swapXY` is true.
+@internal
+Box createBox(
+  dynamic data, {
+  Coords? type,
+  bool swapXY = false,
+  bool singlePrecision = false,
+}) {
+  final coords = _requireBoxDouble(
+    data,
+    type: type,
+    swapXY: swapXY,
+    singlePrecision: singlePrecision,
+  );
+  final coordType = type ?? Coords.fromDimension(coords.length ~/ 2);
+  return Box.view(coords, type: coordType);
 }
 
 /// Utility to create `PositionSeries` from `List<dynamic>`(2 dims).
