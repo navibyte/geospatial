@@ -124,7 +124,7 @@ class Geographic extends Position {
   /// Throws FormatException if coordinates are invalid.
   factory Geographic.parse(
     String text, {
-    Pattern? delimiter = ',',
+    Pattern delimiter = ',',
     Coords? type,
   }) =>
       Position.parsePosition(

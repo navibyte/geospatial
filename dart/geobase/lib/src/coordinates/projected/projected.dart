@@ -110,7 +110,7 @@ class Projected extends Position {
   /// Throws FormatException if coordinates are invalid.
   factory Projected.parse(
     String text, {
-    Pattern? delimiter = ',',
+    Pattern delimiter = ',',
     Coords? type,
   }) =>
       Position.parsePosition(

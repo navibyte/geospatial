@@ -137,7 +137,7 @@ class ProjBox extends Box {
   /// Throws FormatException if coordinates are invalid.
   factory ProjBox.parse(
     String text, {
-    Pattern? delimiter = ',',
+    Pattern delimiter = ',',
     Coords? type,
   }) =>
       Box.parseBox(

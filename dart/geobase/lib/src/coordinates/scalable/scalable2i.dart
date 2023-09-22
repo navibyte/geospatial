@@ -83,7 +83,7 @@ class Scalable2i implements Scalable {
   /// Coordinate values in [text] are separated by [delimiter].
   factory Scalable2i.parse(
     String text, {
-    Pattern? delimiter = ',',
+    Pattern delimiter = ',',
   }) {
     final coords = parseNumValues(text, delimiter: delimiter);
     return Scalable2i.build(coords);

@@ -663,7 +663,7 @@ abstract class Box extends Positionable {
   static R parseBox<R extends Box>(
     String text, {
     required CreateBox<R> to,
-    Pattern? delimiter = ',',
+    Pattern delimiter = ',',
     Coords? type,
   }) {
     final coords = parseDoubleValues(text, delimiter: delimiter);

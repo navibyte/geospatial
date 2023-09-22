@@ -588,7 +588,7 @@ abstract class Position extends Positionable {
   static R parsePosition<R extends Position>(
     String text, {
     required CreatePosition<R> to,
-    Pattern? delimiter = ',',
+    Pattern delimiter = ',',
     Coords? type,
   }) {
     final coords = parseDoubleValues(text, delimiter: delimiter);
