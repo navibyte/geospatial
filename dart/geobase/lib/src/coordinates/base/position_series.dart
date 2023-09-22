@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'dart:typed_data';
+
 import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
@@ -776,7 +778,13 @@ class _PositionDataCoords extends PositionSeries {
 
   @override
   PositionSeries project(Projection projection) => PositionSeries.view(
-        projection.projectCoords(values, type: type),
+        projection.projectCoords(
+          values,
+          type: type,
+          target: _data is Float32List
+              ? Float32List(length * type.coordinateDimension)
+              : Float64List(length * type.coordinateDimension),
+        ),
         type: type,
       );
 

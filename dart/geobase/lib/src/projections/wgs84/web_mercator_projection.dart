@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'dart:typed_data';
+
 import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
@@ -73,7 +75,7 @@ class _Wgs84ToWebMercatorProjection with Projection {
     required Coords type,
   }) {
     final dim = type.coordinateDimension;
-    final result = target ?? List<double>.filled(source.length, 0.0);
+    final result = target ?? Float64List(source.length);
 
     var offset = 0;
     final iter = source.iterator;
@@ -125,7 +127,7 @@ class _WebMercatorToWgs84Projection with Projection {
     required Coords type,
   }) {
     final dim = type.coordinateDimension;
-    final result = target ?? List<double>.filled(source.length, 0.0);
+    final result = target ?? Float64List(source.length);
 
     var offset = 0;
     final iter = source.iterator;
