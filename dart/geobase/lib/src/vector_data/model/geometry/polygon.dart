@@ -160,10 +160,14 @@ class Polygon extends SimpleGeometry {
   /// Use [crs] and [crsLogic] to give hints (like axis order, and whether x
   /// and y must be swapped when read in) about coordinate reference system in
   /// text input.
+  ///
+  /// If [singlePrecision] is true, then coordinate values of a position are
+  /// stored in `Float32List` instead of the `Float64List` (default).
   factory Polygon.parseCoords(
     String coordinates, {
     CoordRefSys? crs,
     GeoRepresentation? crsLogic,
+    bool singlePrecision = false,
   }) {
     final str = coordinates.trim();
     if (str.isEmpty) {
@@ -174,6 +178,7 @@ class Polygon extends SimpleGeometry {
       createPositionSeriesArray(
         array,
         swapXY: crs?.swapXY(logic: crsLogic) ?? false,
+        singlePrecision: singlePrecision,
       ),
     );
   }
