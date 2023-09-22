@@ -179,7 +179,8 @@ class _WktGeometryTextDecoder implements ContentDecoder {
     final dim = coordsType.coordinateDimension;
     final positions = text.split(',');
     final len = positions.length;
-    final array = Float64List(len * dim);
+    final array =
+        singlePrecision ? Float32List(len * dim) : Float64List(len * dim);
     for (var i = 0; i < len; i++) {
       _parsePositionTo(positions[i], dim, array, i * dim);
     }
