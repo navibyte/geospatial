@@ -77,9 +77,7 @@ class Point implements SimpleGeometry {
       Point(
         Position.view(
           // ensure list structure
-          position is List<double>
-              ? position
-              : position.toList(growable: false),
+          position is List<double> ? position : toFloatNNList(position),
           // resolve type if not known
           type: type ?? Coords.fromDimension(position.length),
         ),

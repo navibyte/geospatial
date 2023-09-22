@@ -767,7 +767,10 @@ class _PositionDataCoords extends PositionSeries {
   PositionSeries copyByType(Coords type) => this.type == type
       ? this
       : PositionSeries.view(
-          valuesByType(type).toList(growable: false),
+          toFloatNNList(
+            valuesByType(type),
+            singlePrecision: _data is Float32List,
+          ),
           type: type,
         );
 

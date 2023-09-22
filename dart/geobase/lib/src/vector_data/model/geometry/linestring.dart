@@ -87,7 +87,7 @@ class LineString extends SimpleGeometry {
   }) =>
       LineString(
         PositionSeries.view(
-          chain is List<double> ? chain : chain.toList(growable: false),
+          chain is List<double> ? chain : toFloatNNList(chain),
           type: type,
         ),
         bounds: bounds,

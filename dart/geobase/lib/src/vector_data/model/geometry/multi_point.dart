@@ -85,7 +85,7 @@ class MultiPoint extends SimpleGeometry {
         points
             .map(
               (pos) => Position.view(
-                pos is List<double> ? pos : pos.toList(growable: false),
+                pos is List<double> ? pos : toFloatNNList(pos),
                 type: type,
               ),
             )

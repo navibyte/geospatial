@@ -124,7 +124,7 @@ class Polygon extends SimpleGeometry {
         rings
             .map(
               (ring) => PositionSeries.view(
-                ring is List<double> ? ring : ring.toList(growable: false),
+                ring is List<double> ? ring : toFloatNNList(ring),
                 type: type,
               ),
             )

@@ -942,5 +942,8 @@ class _PositionCoordsSubview extends _PositionCoords {
   @override
   Position packed() => _start == 0 && _data.length == coordinateDimension
       ? this
-      : Position.view(values.toList(growable: false), type: type);
+      : Position.view(
+          toFloatNNList(values, singlePrecision: _data is Float32List),
+          type: type,
+        );
 }

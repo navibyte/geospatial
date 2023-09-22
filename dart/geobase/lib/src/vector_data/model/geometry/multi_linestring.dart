@@ -109,7 +109,7 @@ class MultiLineString extends SimpleGeometry {
         lineStrings
             .map(
               (chain) => PositionSeries.view(
-                chain is List<double> ? chain : chain.toList(growable: false),
+                chain is List<double> ? chain : toFloatNNList(chain),
                 type: type,
               ),
             )

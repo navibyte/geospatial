@@ -17,6 +17,27 @@ import 'format_validation.dart';
 
 part 'coord_arrays_from_json.dart';
 
+/// Creates `Float32List` (when [singlePrecision] asked) or `Float64List` from
+/// given [values].
+List<double> toFloatNNList(
+  Iterable<double> values, {
+  bool singlePrecision = false,
+}) {
+  if (values is List<double>) {
+    return singlePrecision
+        ? Float32List.fromList(values)
+        : Float64List.fromList(values);
+  } else {
+    final len = values.length;
+    final list = singlePrecision ? Float32List(len) : Float64List(len);
+    var i = 0;
+    for (final v in values) {
+      list[i++] = v;
+    }
+    return list;
+  }
+}
+
 /// Utility to convert expect `List<dynamic>` data to `Position`.
 ///
 /// Swaps x and y for the result if `swapXY` is true.
