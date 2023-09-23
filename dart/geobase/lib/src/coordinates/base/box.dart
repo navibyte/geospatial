@@ -108,6 +108,24 @@ abstract class Box extends Positionable {
   /// xyz  | west, south, minElev, east, north, maxElev
   /// xym  | west, south, minM, east, north, maxM
   /// xyzm | west, south, minElev, minM, east, north, maxElev, maxM
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a 2D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0)
+  /// Box.view([10.0, 20.0, 15.0, 25.0]);
+  ///
+  /// // a 3D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0, z: 30.0 .. 35.0)
+  /// Box.view([10.0, 20.0, 30.0, 15.0, 25.0, 35.0]);
+  ///
+  /// // a measured 2D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0, m: 40.0 .. 45.0)
+  /// // (need to specify the coordinate type XYM)
+  /// Box.view([10.0, 20.0, 40.0, 15.0, 25.0, 45.0], type: Coords.xym);
+  ///
+  /// // a measured 3D box
+  /// // (x: 10.0 .. 15.0, y: 20.0 .. 25.0, z: 30.0 .. 35.0, m: 40.0 .. 45.0)
+  /// Box.view([10.0, 20.0, 30.0, 40.0, 15.0, 25.0, 35.0, 45.0]);
+  /// ```
   factory Box.view(List<double> source, {Coords? type}) {
     final coordType = type ?? Coords.fromDimension(source.length ~/ 2);
     if (source.length != 2 * coordType.coordinateDimension) {
@@ -121,6 +139,31 @@ abstract class Box extends Positionable {
   /// The [Box.view] constructor is used to create a bounding box from a double
   /// array filled by given [minX], [minY], [maxX] and [maxY] coordinate values
   /// (and optionally by [minZ], [minM], [maxZ] and [maxM] too).
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a 2D box
+  /// Box.create(minX: 10.0, minY: 20.0, maxX: 15.0, maxY: 25.0);
+  ///
+  /// // a 3D box
+  /// Box.create(
+  ///   minX: 10.0, minY: 20.0, minZ: 30.0,
+  ///   maxX: 15.0, maxY: 25.0, maxZ: 35.0,
+  /// );
+  ///
+  /// // a measured 2D box
+  /// Box.create(
+  ///   minX: 10.0, minY: 20.0, minM: 40.0,
+  ///   maxX: 15.0, maxY: 25.0, maxM: 45.0,
+  /// );
+  ///
+  /// // a measured 3D box
+  /// Box.create(
+  ///   minX: 10.0, minY: 20.0, minZ: 30.0, minM: 40.0,
+  ///   maxX: 15.0, maxY: 25.0, maxZ: 35.0, maxM: 45.0,
+  /// );
+  /// ```
   factory Box.create({
     required double minX,
     required double minY,
@@ -180,6 +223,34 @@ abstract class Box extends Positionable {
   /// stored in `Float32List` instead of the `Float64List` (default).
   ///
   /// Throws FormatException if coordinates are invalid.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a 2D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0)
+  /// Box.parse('10.0,20.0,15.0,25.0');
+  ///
+  /// // a 3D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0, z: 30.0 .. 35.0)
+  /// Box.parse('10.0,20.0,30.0,15.0,25.0,35.0');
+  ///
+  /// // a measured 2D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0, m: 40.0 .. 45.0)
+  /// // (need to specify the coordinate type XYM)
+  /// Box.parse('10.0,20.0,40.0,15.0,25.0,45.0', type: Coords.xym);
+  ///
+  /// // a measured 3D box
+  /// // (x: 10.0 .. 15.0, y: 20.0 .. 25.0, z: 30.0 .. 35.0, m: 40.0 .. 45.0)
+  /// Box.parse('10.0,20.0,30.0,40.0,15.0,25.0,35.0,45.0');
+  ///
+  /// // a 2D box (x: 10.0..15.0, y: 20.0..25.0) using an alternative delimiter
+  /// Box.parse('10.0;20.0;15.0;25.0', delimiter: ';');
+  ///
+  /// // a 2D box (x: 10.0..15.0, y: 20.0..25.0) from an array with y before x
+  /// Box.parse('20.0,10.0,25.0,15.0', swapXY: true);
+  ///
+  /// // a 2D box (x: 10.0..15.0, y: 20.0..25.0) with the internal storage using
+  /// // single precision floating point numbers (`Float32List` in this case)
+  /// Box.parse('10.0,20.0,15.0,25.0', singlePrecision: true);
+  /// ```
   factory Box.parse(
     String text, {
     Pattern delimiter = ',',
