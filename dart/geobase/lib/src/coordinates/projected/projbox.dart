@@ -134,17 +134,21 @@ class ProjBox extends Box {
   /// Use an optional [type] to explicitely set the coordinate type. If not
   /// provided and [text] has 6 items, then xyz coordinates are assumed.
   ///
+  /// If [swapXY] is true, then swaps x and y for the result.
+  ///
   /// Throws FormatException if coordinates are invalid.
   factory ProjBox.parse(
     String text, {
     Pattern delimiter = ',',
     Coords? type,
+    bool swapXY = false,
   }) =>
       Box.parseBox(
         text,
         to: ProjBox.create,
         delimiter: delimiter,
         type: type,
+        swapXY: swapXY,
       );
 
   @override

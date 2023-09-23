@@ -508,12 +508,15 @@ abstract class Box extends Positionable {
   /// Use an optional [type] to explicitely set the coordinate type. If not
   /// provided and [coords] has 6 items, then xyz coordinates are assumed.
   ///
+  /// If [swapXY] is true, then swaps x and y for the result.
+  ///
   /// Throws FormatException if coordinates are invalid.
   static R buildBox<R extends Box>(
     Iterable<num> coords, {
     required CreateBox<R> to,
     int offset = 0,
     Coords? type,
+    bool swapXY = false,
   }) {
     if (coords is List<num>) {
       final len = coords.length - offset;
@@ -524,12 +527,12 @@ abstract class Box extends Positionable {
       }
       final mIndex = coordsType.indexForM;
       return to.call(
-        minX: coords[offset].toDouble(),
-        minY: coords[offset + 1].toDouble(),
+        minX: coords[swapXY ? offset + 1 : offset].toDouble(),
+        minY: coords[swapXY ? offset : offset + 1].toDouble(),
         minZ: coordsType.is3D ? coords[offset + 2].toDouble() : null,
         minM: mIndex != null ? coords[offset + mIndex].toDouble() : null,
-        maxX: coords[offset + dim].toDouble(),
-        maxY: coords[offset + dim + 1].toDouble(),
+        maxX: coords[swapXY ? offset + dim + 1 : offset + dim].toDouble(),
+        maxY: coords[swapXY ? offset + dim : offset + dim + 1].toDouble(),
         maxZ: coordsType.is3D ? coords[offset + dim + 2].toDouble() : null,
         maxM: mIndex != null ? coords[offset + dim + mIndex].toDouble() : null,
       );
@@ -560,10 +563,10 @@ abstract class Box extends Positionable {
       // if xy coordinates (4 items), then return already now
       if (type == Coords.xy || (c4 == null && type == null)) {
         return to.call(
-          minX: c0.toDouble(),
-          minY: c1.toDouble(),
-          maxX: c2.toDouble(),
-          maxY: c3.toDouble(),
+          minX: (swapXY ? c1 : c0).toDouble(),
+          minY: (swapXY ? c0 : c1).toDouble(),
+          maxX: (swapXY ? c3 : c2).toDouble(),
+          maxY: (swapXY ? c2 : c3).toDouble(),
         );
       }
 
@@ -591,21 +594,21 @@ abstract class Box extends Positionable {
         case Coords.xy:
           if (c4 == null) {
             return to.call(
-              minX: c0.toDouble(),
-              minY: c1.toDouble(),
-              maxX: c2.toDouble(),
-              maxY: c3.toDouble(),
+              minX: (swapXY ? c1 : c0).toDouble(),
+              minY: (swapXY ? c0 : c1).toDouble(),
+              maxX: (swapXY ? c3 : c2).toDouble(),
+              maxY: (swapXY ? c2 : c3).toDouble(),
             );
           }
           break;
         case Coords.xyz:
           if (c4 != null && c5 != null && c6 == null) {
             return to.call(
-              minX: c0.toDouble(),
-              minY: c1.toDouble(),
+              minX: (swapXY ? c1 : c0).toDouble(),
+              minY: (swapXY ? c0 : c1).toDouble(),
               minZ: c2.toDouble(),
-              maxX: c3.toDouble(),
-              maxY: c4.toDouble(),
+              maxX: (swapXY ? c4 : c3).toDouble(),
+              maxY: (swapXY ? c3 : c4).toDouble(),
               maxZ: c5.toDouble(),
             );
           }
@@ -613,11 +616,11 @@ abstract class Box extends Positionable {
         case Coords.xym:
           if (c4 != null && c5 != null && c6 == null) {
             return to.call(
-              minX: c0.toDouble(),
-              minY: c1.toDouble(),
+              minX: (swapXY ? c1 : c0).toDouble(),
+              minY: (swapXY ? c0 : c1).toDouble(),
               minM: c2.toDouble(),
-              maxX: c3.toDouble(),
-              maxY: c4.toDouble(),
+              maxX: (swapXY ? c4 : c3).toDouble(),
+              maxY: (swapXY ? c3 : c4).toDouble(),
               maxM: c5.toDouble(),
             );
           }
@@ -625,12 +628,12 @@ abstract class Box extends Positionable {
         case Coords.xyzm:
           if (c4 != null && c5 != null && c6 != null && c7 != null) {
             return to.call(
-              minX: c0.toDouble(),
-              minY: c1.toDouble(),
+              minX: (swapXY ? c1 : c0).toDouble(),
+              minY: (swapXY ? c0 : c1).toDouble(),
               minZ: c2.toDouble(),
               minM: c3.toDouble(),
-              maxX: c4.toDouble(),
-              maxY: c5.toDouble(),
+              maxX: (swapXY ? c5 : c4).toDouble(),
+              maxY: (swapXY ? c4 : c5).toDouble(),
               maxZ: c6.toDouble(),
               maxM: c7.toDouble(),
             );
@@ -659,15 +662,18 @@ abstract class Box extends Positionable {
   /// Use an optional [type] to explicitely set the coordinate type. If not
   /// provided and [text] has 6 items, then xyz coordinates are assumed.
   ///
+  /// If [swapXY] is true, then swaps x and y for the result.
+  ///
   /// Throws FormatException if coordinates are invalid.
   static R parseBox<R extends Box>(
     String text, {
     required CreateBox<R> to,
     Pattern delimiter = ',',
     Coords? type,
+    bool swapXY = false,
   }) {
     final coords = parseDoubleValues(text, delimiter: delimiter);
-    return buildBox(coords, to: to, type: type);
+    return buildBox(coords, to: to, type: type, swapXY: swapXY);
   }
 
   /// Returns an aligned 2D position relative to [box].

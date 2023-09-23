@@ -157,17 +157,22 @@ class GeoBox extends Box {
   /// Use an optional [type] to explicitely set the coordinate type. If not
   /// provided and [text] has 6 items, then xyz coordinates are assumed.
   ///
+  /// If [swapXY] is true, then swaps x and y (west <-> south, east <-> north)
+  /// for the result.
+  ///
   /// Throws FormatException if coordinates are invalid.
   factory GeoBox.parse(
     String text, {
     Pattern delimiter = ',',
     Coords? type,
+    bool swapXY = false,
   }) =>
       Box.parseBox(
         text,
         to: GeoBox.create,
         delimiter: delimiter,
         type: type,
+        swapXY: swapXY,
       );
 
   /// The west coordinate as geographic longitude.
