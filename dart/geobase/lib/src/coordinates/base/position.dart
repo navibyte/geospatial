@@ -119,6 +119,23 @@ abstract class Position extends Positionable {
   /// xyz  | lon, lat, elev
   /// xym  | lon, lat, m
   /// xyzm | lon, lat, elev, m
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // create a 2D position (x: 10.0, y: 20.0)
+  /// Position.view([10.0, 20.0]);
+  ///
+  /// // create a 3D position (x: 10.0, y: 20.0, z: 30.0)
+  /// Position.view([10.0, 20.0, 30.0]);
+  ///
+  /// // create a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
+  /// // (need to specify the coordinate type XYM)
+  /// Position.view([10.0, 20.0, 40.0], type: Coords.xym);
+  ///
+  /// // create a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+  /// Position.view([10.0, 20.0, 30.0, 40.0]);
+  /// ```
   factory Position.view(List<double> source, {Coords? type}) {
     final len = source.length;
     final coordType = type ?? Coords.fromDimension(len);
@@ -134,15 +151,21 @@ abstract class Position extends Positionable {
   /// There must be at least 2, 3 or 4 coordinate values (depending on the
   /// [type] how many)
   ///
+  /// Examples:
+  ///
   /// ```dart
-  ///   // 9 coordinates values (3 values x, y and z for 3 positions)
-  ///   final coordinates = [1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 3.1, 3.2, 3.3];
+  /// // coordinate data with values: x0, y0, z0, m0, x1, y1, z1, m1
+  /// final data = [-10.0, -20.0, -30.0, -40.0, 10.0, 20.0, 30.0, 40.0];
   ///
-  ///   // create a position from the subview values `2.1, 2.2, 2.3`
-  ///   final pos = Position.subview(coordinates, start: 3, type: Coords.xyz);
+  /// // create a 2D position (x: 10.0, y: 20.0)
+  /// // (the coordinate type is XY by default when using subview)
+  /// Position.subview(data, start: 4);
   ///
-  ///   // prints: "2.1,2.2,2.3"
-  ///   print(pos);
+  /// // create a 3D position (x: 10.0, y: 20.0, z: 30.0)
+  /// Position.subview(data, start: 4, type: Coords.xyz);
+  ///
+  /// // create a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+  /// Position.subview(data, start: 4, type: Coords.xyzm);
   /// ```
   factory Position.subview(
     List<double> source, {
@@ -160,6 +183,22 @@ abstract class Position extends Positionable {
   ///
   /// The [Position.view] constructor is used to create a position from a double
   /// array filled by given [x], [y], and optionally [z] and [m].
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // create a 2D position (x: 10.0, y: 20.0)
+  /// Position.create(x: 10.0, y: 20.0);
+  ///
+  /// // create a 3D position (x: 10.0, y: 20.0, z: 30.0)
+  /// Position.create(x: 10.0, y: 20.0, z: 30.0);
+  ///
+  /// // create a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
+  /// Position.create(x: 10.0, y: 20.0, m: 40.0);
+  ///
+  /// // create a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+  /// Position.create(x: 10.0, y: 20.0, z: 30.0, m: 40.0);
+  /// ```
   factory Position.create({
     required double x,
     required double y,
@@ -219,6 +258,33 @@ abstract class Position extends Positionable {
   /// stored in `Float32List` instead of the `Float64List` (default).
   ///
   /// Throws FormatException if coordinates are invalid.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // create a 2D position (x: 10.0, y: 20.0)
+  /// Position.parse('10.0,20.0');
+  ///
+  /// // create a 3D position (x: 10.0, y: 20.0, z: 30.0)
+  /// Position.parse('10.0,20.0,30.0');
+  ///
+  /// // create a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
+  /// // (need to specify the coordinate type XYM)
+  /// Position.parse('10.0,20.0,40.0', type: Coords.xym);
+  ///
+  /// // create a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+  /// Position.parse('10.0,20.0,30.0,40.0');
+  ///
+  /// // create a 2D position (x: 10.0, y: 20.0) using an alternative delimiter
+  /// Position.parse('10.0;20.0', delimiter: ';');
+  ///
+  /// // create a 2D position (x: 10.0, y: 20.0) from an array with y before x
+  /// Position.parse('20.0,10.0', swapXY: true);
+  ///
+  /// // create a 2D position (x: 10.0, y: 20.0) with the internal storage using
+  /// // single precision floating point numbers (`Float32List` in this case)
+  /// Position.parse('10.0,20.0', singlePrecision: true);
+  /// ```
   factory Position.parse(
     String text, {
     Pattern delimiter = ',',
