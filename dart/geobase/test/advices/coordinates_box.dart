@@ -91,12 +91,135 @@ void main() {
       _testBox(Box.parse('10.0,20.0,15.0,25.0', singlePrecision: true));
     });
   });
+
+  group('ProjBox class', () {
+    test('ProjBox.new', () {
+      // a 2D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0)
+      _testProjBox(
+        const ProjBox(minX: 10.0, minY: 20.0, maxX: 15.0, maxY: 25.0),
+      );
+
+      // a 3D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0, z: 30.0 .. 35.0)
+      _testProjBox(
+        const ProjBox(
+          minX: 10.0, minY: 20.0, minZ: 30.0,
+          maxX: 15.0, maxY: 25.0, maxZ: 35.0,
+          //
+        ),
+      );
+
+      // a measured 2D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0, m: 40.0 .. 45.0)
+      _testProjBox(
+        const ProjBox(
+          minX: 10.0, minY: 20.0, minM: 40.0,
+          maxX: 15.0, maxY: 25.0, maxM: 45.0,
+          //
+        ),
+      );
+
+      // a measured 3D box
+      // (x: 10.0 .. 15.0, y: 20.0 .. 25.0, z: 30.0 .. 35.0, m: 40.0 .. 45.0)
+      _testProjBox(
+        const ProjBox(
+          minX: 10.0, minY: 20.0, minZ: 30.0, minM: 40.0,
+          maxX: 15.0, maxY: 25.0, maxZ: 35.0, maxM: 45.0,
+          //
+        ),
+      );
+    });
+
+    test('ProjBox.create', () {
+      // a 2D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0)
+      _testProjBox(
+        const ProjBox.create(minX: 10.0, minY: 20.0, maxX: 15.0, maxY: 25.0),
+      );
+
+      // a 3D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0, z: 30.0 .. 35.0)
+      _testProjBox(
+        const ProjBox.create(
+          minX: 10.0, minY: 20.0, minZ: 30.0,
+          maxX: 15.0, maxY: 25.0, maxZ: 35.0,
+          //
+        ),
+      );
+
+      // a measured 2D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0, m: 40.0 .. 45.0)
+      _testProjBox(
+        const ProjBox.create(
+          minX: 10.0, minY: 20.0, minM: 40.0,
+          maxX: 15.0, maxY: 25.0, maxM: 45.0,
+          //
+        ),
+      );
+
+      // a measured 3D box
+      // (x: 10.0 .. 15.0, y: 20.0 .. 25.0, z: 30.0 .. 35.0, m: 40.0 .. 45.0)
+      _testProjBox(
+        const ProjBox.create(
+          minX: 10.0, minY: 20.0, minZ: 30.0, minM: 40.0,
+          maxX: 15.0, maxY: 25.0, maxZ: 35.0, maxM: 45.0,
+          //
+        ),
+      );
+    });
+
+    test('ProjBox.build', () {
+      // a 2D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0)
+      _testProjBox(ProjBox.build([10.0, 20.0, 15.0, 25.0]));
+
+      // a 3D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0, z: 30.0 .. 35.0)
+      _testProjBox(ProjBox.build([10.0, 20.0, 30.0, 15.0, 25.0, 35.0]));
+
+      // a measured 2D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0, m: 40.0 .. 45.0)
+      // (need to specify the coordinate type XYM)
+      _testProjBox(
+        ProjBox.build([10.0, 20.0, 40.0, 15.0, 25.0, 45.0], type: Coords.xym),
+      );
+
+      // a measured 3D box
+      // (x: 10.0 .. 15.0, y: 20.0 .. 25.0, z: 30.0 .. 35.0, m: 40.0 .. 45.0)
+      _testProjBox(
+        ProjBox.build([10.0, 20.0, 30.0, 40.0, 15.0, 25.0, 35.0, 45.0]),
+      );
+    });
+
+    test('ProjBox.parse', () {
+      // a 2D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0)
+      _testProjBox(ProjBox.parse('10.0,20.0,15.0,25.0'));
+
+      // a 3D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0, z: 30.0 .. 35.0)
+      _testProjBox(ProjBox.parse('10.0,20.0,30.0,15.0,25.0,35.0'));
+
+      // a measured 2D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0, m: 40.0 .. 45.0)
+      // (need to specify the coordinate type XYM)
+      _testProjBox(
+        ProjBox.parse('10.0,20.0,40.0,15.0,25.0,45.0', type: Coords.xym),
+      );
+
+      // a measured 3D box
+      // (x: 10.0 .. 15.0, y: 20.0 .. 25.0, z: 30.0 .. 35.0, m: 40.0 .. 45.0)
+      _testProjBox(ProjBox.parse('10.0,20.0,30.0,40.0,15.0,25.0,35.0,45.0'));
+
+      // a 2D box (x: 10.0..15.0, y: 20.0..25.0) using an alternative delimiter
+      _testProjBox(ProjBox.parse('10.0;20.0;15.0;25.0', delimiter: ';'));
+
+      // a 2D box (x: 10.0..15.0, y: 20.0..25.0) from an array with y before x
+      _testProjBox(ProjBox.parse('20.0,10.0,25.0,15.0', swapXY: true));
+    });
+  });
 }
 
 /// Tests box instance of the base type `Box`.
 void _testBox(Box box) {
   _doTest(box);
   _doTest(box.copyTo(ProjBox.create));
+  _doTest(box.copyTo(GeoBox.create));
+}
+
+/// Tests box instance of the sub type `ProjBox`.
+void _testProjBox(ProjBox box) {
+  _doTest(box);
+  _doTest(box.copyTo(Box.create));
   _doTest(box.copyTo(GeoBox.create));
 }
 

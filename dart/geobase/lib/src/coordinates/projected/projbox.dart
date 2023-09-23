@@ -42,6 +42,33 @@ class ProjBox extends Box {
   ///
   /// Optional [minZ] and [maxZ] for 3D boxes, and [minM] and [maxM] for
   /// measured boxes can be provided too.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a 2D box
+  /// ProjBox(minX: 10.0, minY: 20.0, maxX: 15.0, maxY: 25.0);
+  ///
+  /// // a 3D box
+  /// ProjBox(
+  ///   minX: 10.0, minY: 20.0, minZ: 30.0,
+  ///   maxX: 15.0, maxY: 25.0, maxZ: 35.0,
+  /// );
+  ///
+  /// // a measured 2D box
+  /// ProjBox(
+  ///   minX: 10.0, minY: 20.0, minM: 40.0,
+  ///   maxX: 15.0, maxY: 25.0, maxM: 45.0,
+  /// );
+  ///
+  /// // a measured 3D box
+  /// ProjBox(
+  ///   minX: 10.0, minY: 20.0, minZ: 30.0, minM: 40.0,
+  ///   maxX: 15.0, maxY: 25.0, maxZ: 35.0, maxM: 45.0,
+  /// );
+  /// ```
+  ///
+  /// This default constructor is equivalent to [ProjBox.create].
   const ProjBox({
     required double minX,
     required double minY,
@@ -61,6 +88,33 @@ class ProjBox extends Box {
         _maxM = maxM;
 
   /// A bounding box from parameters compatible with `CreateBox` function type.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a 2D box
+  /// ProjBox.create(minX: 10.0, minY: 20.0, maxX: 15.0, maxY: 25.0);
+  ///
+  /// // a 3D box
+  /// ProjBox.create(
+  ///   minX: 10.0, minY: 20.0, minZ: 30.0,
+  ///   maxX: 15.0, maxY: 25.0, maxZ: 35.0,
+  /// );
+  ///
+  /// // a measured 2D box
+  /// ProjBox.create(
+  ///   minX: 10.0, minY: 20.0, minM: 40.0,
+  ///   maxX: 15.0, maxY: 25.0, maxM: 45.0,
+  /// );
+  ///
+  /// // a measured 3D box
+  /// ProjBox.create(
+  ///   minX: 10.0, minY: 20.0, minZ: 30.0, minM: 40.0,
+  ///   maxX: 15.0, maxY: 25.0, maxZ: 35.0, maxM: 45.0,
+  /// );
+  /// ```
+  ///
+  /// This constructor is equivalent to the default contructor [ProjBox.new].
   const ProjBox.create({
     required double minX,
     required double minY,
@@ -106,6 +160,24 @@ class ProjBox extends Box {
   /// provided and [coords] has 6 items, then xyz coordinates are assumed.
   ///
   /// Throws FormatException if coordinates are invalid.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a 2D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0)
+  /// ProjBox.build([10.0, 20.0, 15.0, 25.0]);
+  ///
+  /// // a 3D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0, z: 30.0 .. 35.0)
+  /// ProjBox.build([10.0, 20.0, 30.0, 15.0, 25.0, 35.0]);
+  ///
+  /// // a measured 2D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0, m: 40.0 .. 45.0)
+  /// // (need to specify the coordinate type XYM)
+  /// ProjBox.build([10.0, 20.0, 40.0, 15.0, 25.0, 45.0], type: Coords.xym);
+  ///
+  /// // a measured 3D box
+  /// // (x: 10.0 .. 15.0, y: 20.0 .. 25.0, z: 30.0 .. 35.0, m: 40.0 .. 45.0)
+  /// ProjBox.build([10.0, 20.0, 30.0, 40.0, 15.0, 25.0, 35.0, 45.0]);
+  /// ```
   factory ProjBox.build(
     Iterable<num> coords, {
     int offset = 0,
@@ -137,6 +209,30 @@ class ProjBox extends Box {
   /// If [swapXY] is true, then swaps x and y for the result.
   ///
   /// Throws FormatException if coordinates are invalid.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a 2D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0)
+  /// ProjBox.parse('10.0,20.0,15.0,25.0');
+  ///
+  /// // a 3D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0, z: 30.0 .. 35.0)
+  /// ProjBox.parse('10.0,20.0,30.0,15.0,25.0,35.0');
+  ///
+  /// // a measured 2D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0, m: 40.0 .. 45.0)
+  /// // (need to specify the coordinate type XYM)
+  /// ProjBox.parse('10.0,20.0,40.0,15.0,25.0,45.0', type: Coords.xym);
+  ///
+  /// // a measured 3D box
+  /// // (x: 10.0 .. 15.0, y: 20.0 .. 25.0, z: 30.0 .. 35.0, m: 40.0 .. 45.0)
+  /// ProjBox.parse('10.0,20.0,30.0,40.0,15.0,25.0,35.0,45.0');
+  ///
+  /// // a 2D box (x: 10.0..15.0, y: 20.0..25.0) using an alternative delimiter
+  /// ProjBox.parse('10.0;20.0;15.0;25.0', delimiter: ';');
+  ///
+  /// // a 2D box (x: 10.0..15.0, y: 20.0..25.0) from an array with y before x
+  /// ProjBox.parse('20.0,10.0,25.0,15.0', swapXY: true);
+  /// ```
   factory ProjBox.parse(
     String text, {
     Pattern delimiter = ',',
