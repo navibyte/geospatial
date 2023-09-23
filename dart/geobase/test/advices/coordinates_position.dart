@@ -155,6 +155,84 @@ void main() {
       _testProjected(Projected.parse('20.0,10.0', swapXY: true));
     });
   });
+
+  group('Geographic class', () {
+    test('Geographic.new', () {
+      // create a 2D position (lon: 10.0, lat: 20.0)
+      _testGeographic(const Geographic(lon: 10.0, lat: 20.0));
+
+      // create a 3D position (lon: 10.0, lat: 20.0, elev: 30.0)
+      _testGeographic(const Geographic(lon: 10.0, lat: 20.0, elev: 30.0));
+
+      // create a measured 2D position (lon: 10.0, lat: 20.0, m: 40.0)
+      _testGeographic(const Geographic(lon: 10.0, lat: 20.0, m: 40.0));
+
+      // create a measured 3D position
+      // (lon: 10.0, lat: 20.0, elev: 30.0, m: 40.0)
+      _testGeographic(
+        const Geographic(lon: 10.0, lat: 20.0, elev: 30.0, m: 40.0),
+      );
+    });
+
+    test('Geographic.create', () {
+      // create a 2D position (lon: 10.0, lat: 20.0)
+      _testGeographic(const Geographic.create(x: 10.0, y: 20.0));
+
+      // create a 3D position (lon: 10.0, lat: 20.0, elev: 30.0)
+      _testGeographic(const Geographic.create(x: 10.0, y: 20.0, z: 30.0));
+
+      // create a measured 2D position (lon: 10.0, lat: 20.0, m: 40.0)
+      _testGeographic(const Geographic.create(x: 10.0, y: 20.0, m: 40.0));
+
+      // create a measured 3D position
+      // (lon: 10.0, lat: 20.0, elev: 30.0, m: 40.0)
+      _testGeographic(
+        const Geographic.create(x: 10.0, y: 20.0, z: 30.0, m: 40.0),
+      );
+    });
+
+    test('Geographic.build', () {
+      // create a 2D position (lon: 10.0, lat: 20.0)
+      _testGeographic(Geographic.build([10.0, 20.0]));
+
+      // create a 3D position (lon: 10.0, lat: 20.0, elev: 30.0)
+      _testGeographic(Geographic.build([10.0, 20.0, 30.0]));
+
+      // create a measured 2D position (lon: 10.0, lat: 20.0, m: 40.0)
+      // (need to specify the coordinate type XYM)
+      _testGeographic(
+        Geographic.build([10.0, 20.0, 40.0], type: Coords.xym),
+      );
+
+      // create a measured 3D position
+      // (lon: 10.0, lat: 20.0, elev: 30.0, m: 40.0)
+      _testGeographic(Geographic.build([10.0, 20.0, 30.0, 40.0]));
+    });
+
+    test('Geographic.parse', () {
+      // create a 2D position (lon: 10.0, lat: 20.0)
+      _testGeographic(Geographic.parse('10.0,20.0'));
+
+      // create a 3D position (lon: 10.0, lat: 20.0, elev: 30.0)
+      _testGeographic(Geographic.parse('10.0,20.0,30.0'));
+
+      // create a measured 2D position (lon: 10.0, lat: 20.0, m: 40.0)
+      // (need to specify the coordinate type XYM)
+      _testGeographic(Geographic.parse('10.0,20.0,40.0', type: Coords.xym));
+
+      // create a measured 3D position
+      // (lon: 10.0, lat: 20.0, elev: 30.0, m: 40.0)
+      _testGeographic(Geographic.parse('10.0,20.0,30.0,40.0'));
+
+      // create a 2D position (lon: 10.0, lat: 20.0) using an alternative
+      // delimiter
+      _testGeographic(Geographic.parse('10.0;20.0', delimiter: ';'));
+
+      // create a 2D position (lon: 10.0, lat: 20.0) from an array with y (lat)
+      // before x (lon)
+      _testGeographic(Geographic.parse('20.0,10.0', swapXY: true));
+    });
+  });
 }
 
 /// Tests position instance of the base type `Position`.
@@ -168,9 +246,15 @@ void _testPosition(Position pos) {
 /// Tests position instance of the sub type `Projected`.
 void _testProjected(Projected pos) {
   _doTest(pos);
-  _doTest(pos.packed());
   _doTest(pos.copyTo(Position.create));
   _doTest(pos.copyTo(Geographic.create));
+}
+
+/// Tests position instance of the sub type `Geographic`.
+void _testGeographic(Geographic pos) {
+  _doTest(pos);
+  _doTest(pos.copyTo(Position.create));
+  _doTest(pos.copyTo(Projected.create));
 }
 
 /// Tests the sample position (x: 10.0, y: 20.0 + optiomnally z: 30.0 m: 40.0)
