@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-// ignore_for_file: prefer_const_declarations
+// ignore_for_file: prefer_const_literals_to_create_immutables
 
 import 'package:geobase/coordinates.dart';
 
@@ -85,6 +85,22 @@ void main() {
   });
 
   group('Projected class', () {
+    test('Projected.new', () {
+      // create a 2D position (x: 10.0, y: 20.0)
+      _testProjected(const Projected(x: 10.0, y: 20.0));
+
+      // create a 3D position (x: 10.0, y: 20.0, z: 30.0)
+      _testProjected(const Projected(x: 10.0, y: 20.0, z: 30.0));
+
+      // create a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
+      _testProjected(const Projected(x: 10.0, y: 20.0, m: 40.0));
+
+      // create a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+      _testProjected(
+        const Projected(x: 10.0, y: 20.0, z: 30.0, m: 40.0),
+      );
+    });
+
     test('Projected.create', () {
       // create a 2D position (x: 10.0, y: 20.0)
       _testProjected(const Projected.create(x: 10.0, y: 20.0));
@@ -99,6 +115,23 @@ void main() {
       _testProjected(
         const Projected.create(x: 10.0, y: 20.0, z: 30.0, m: 40.0),
       );
+    });
+
+    test('Projected.build', () {
+      // create a 2D position (x: 10.0, y: 20.0)
+      _testPosition(Projected.build([10.0, 20.0]));
+
+      // create a 3D position (x: 10.0, y: 20.0, z: 30.0)
+      _testPosition(Projected.build([10.0, 20.0, 30.0]));
+
+      // create a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
+      // (need to specify the coordinate type XYM)
+      _testPosition(
+        Projected.build([10.0, 20.0, 40.0], type: Coords.xym),
+      );
+
+      // create a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+      _testPosition(Projected.build([10.0, 20.0, 30.0, 40.0]));
     });
 
     test('Projected.parse', () {

@@ -53,6 +53,24 @@ class Projected extends Position {
   final double? _m;
 
   /// A projected position with [x], [y], and optional [z] and [m] coordinates.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // create a 2D position (x: 10.0, y: 20.0)
+  /// Projected(x: 10.0, y: 20.0);
+  ///
+  /// // create a 3D position (x: 10.0, y: 20.0, z: 30.0)
+  /// Projected(x: 10.0, y: 20.0, z: 30.0);
+  ///
+  /// // create a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
+  /// Projected(x: 10.0, y: 20.0, m: 40.0);
+  ///
+  /// // create a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+  /// Projected(x: 10.0, y: 20.0, z: 30.0, m: 40.0);
+  /// ```
+  ///
+  /// This default constructor is equivalent to [Projected.create].
   const Projected({required double x, required double y, double? z, double? m})
       : _x = x,
         _y = y,
@@ -60,6 +78,24 @@ class Projected extends Position {
         _m = m;
 
   /// A position from parameters compatible with `CreatePosition` function type.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // create a 2D position (x: 10.0, y: 20.0)
+  /// Projected.create(x: 10.0, y: 20.0);
+  ///
+  /// // create a 3D position (x: 10.0, y: 20.0, z: 30.0)
+  /// Projected.create(x: 10.0, y: 20.0, z: 30.0);
+  ///
+  /// // create a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
+  /// Projected.create(x: 10.0, y: 20.0, m: 40.0);
+  ///
+  /// // create a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+  /// Projected.create(x: 10.0, y: 20.0, z: 30.0, m: 40.0);
+  /// ```
+  ///
+  /// This constructor is equivalent to the default contructor [Projected.new].
   const Projected.create({
     required double x,
     required double y,
@@ -85,6 +121,23 @@ class Projected extends Position {
   /// provided and [coords] has 3 items, then xyz coordinates are assumed.
   ///
   /// Throws FormatException if coordinates are invalid.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // create a 2D position (x: 10.0, y: 20.0)
+  /// Projected.build([10.0, 20.0]);
+  ///
+  /// // create a 3D position (x: 10.0, y: 20.0, z: 30.0)
+  /// Projected.build([10.0, 20.0, 30.0]);
+  ///
+  /// // create a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
+  /// // (need to specify the coordinate type XYM)
+  /// Projected.build([10.0, 20.0, 40.0], type: Coords.xym);
+  ///
+  /// // create a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+  /// Projected.build([10.0, 20.0, 30.0, 40.0]);
+  /// ```
   factory Projected.build(
     Iterable<num> coords, {
     int offset = 0,
@@ -110,6 +163,29 @@ class Projected extends Position {
   /// If [swapXY] is true, then swaps x and y for the result.
   ///
   /// Throws FormatException if coordinates are invalid.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // create a 2D position (x: 10.0, y: 20.0)
+  /// Projected.parse('10.0,20.0');
+  ///
+  /// // create a 3D position (x: 10.0, y: 20.0, z: 30.0)
+  /// Projected.parse('10.0,20.0,30.0');
+  ///
+  /// // create a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
+  /// // (need to specify the coordinate type XYM)
+  /// Projected.parse('10.0,20.0,40.0', type: Coords.xym);
+  ///
+  /// // create a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+  /// Projected.parse('10.0,20.0,30.0,40.0');
+  ///
+  /// // create a 2D position (x: 10.0, y: 20.0) using an alternative delimiter
+  /// Projected.parse('10.0;20.0', delimiter: ';');
+  ///
+  /// // create a 2D position (x: 10.0, y: 20.0) from an array with y before x
+  /// Projected.parse('20.0,10.0', swapXY: true);
+  /// ```
   factory Projected.parse(
     String text, {
     Pattern delimiter = ',',
