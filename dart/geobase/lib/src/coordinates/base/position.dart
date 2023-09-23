@@ -562,12 +562,15 @@ abstract class Position extends Positionable {
   /// Use an optional [type] to explicitely set the coordinate type. If not
   /// provided and [coords] has 3 items, then xyz coordinates are assumed.
   ///
+  /// If [swapXY] is true, then swaps x and y for the result.
+  ///
   /// Throws FormatException if coordinates are invalid.
   static R buildPosition<R extends Position>(
     Iterable<num> coords, {
     required CreatePosition<R> to,
     int offset = 0,
     Coords? type,
+    bool swapXY = false,
   }) {
     if (coords is List<num>) {
       final len = coords.length - offset;
@@ -577,8 +580,8 @@ abstract class Position extends Positionable {
         throw invalidCoordinates;
       }
       return to.call(
-        x: coords[offset].toDouble(),
-        y: coords[offset + 1].toDouble(),
+        x: coords[swapXY ? offset + 1 : offset].toDouble(),
+        y: coords[swapXY ? offset : offset + 1].toDouble(),
         z: coordsType.is3D
             ? (len > 2 ? coords[offset + 2] : 0.0).toDouble()
             : null,
@@ -598,8 +601,15 @@ abstract class Position extends Positionable {
       }
 
       // iterate at least to x and y
-      final x = iter.moveNext() ? iter.current : throw invalidCoordinates;
-      final y = iter.moveNext() ? iter.current : throw invalidCoordinates;
+      final num x;
+      final num y;
+      if (swapXY) {
+        y = iter.moveNext() ? iter.current : throw invalidCoordinates;
+        x = iter.moveNext() ? iter.current : throw invalidCoordinates;
+      } else {
+        x = iter.moveNext() ? iter.current : throw invalidCoordinates;
+        y = iter.moveNext() ? iter.current : throw invalidCoordinates;
+      }
 
       // XY was asked
       if (type == Coords.xy) {
@@ -650,15 +660,18 @@ abstract class Position extends Positionable {
   /// Use an optional [type] to explicitely set the coordinate type. If not
   /// provided and [text] has 3 items, then xyz coordinates are assumed.
   ///
+  /// If [swapXY] is true, then swaps x and y for the result.
+  ///
   /// Throws FormatException if coordinates are invalid.
   static R parsePosition<R extends Position>(
     String text, {
     required CreatePosition<R> to,
     Pattern delimiter = ',',
     Coords? type,
+    bool swapXY = false,
   }) {
     final coords = parseDoubleValues(text, delimiter: delimiter);
-    return buildPosition(coords, to: to, type: type);
+    return buildPosition(coords, to: to, type: type, swapXY: swapXY);
   }
 
   /// A coordinate value of [position] by the coordinate axis [index].

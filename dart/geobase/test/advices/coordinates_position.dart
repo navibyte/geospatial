@@ -83,6 +83,45 @@ void main() {
       _testPosition(Position.parse('10.0,20.0', singlePrecision: true));
     });
   });
+
+  group('Projected class', () {
+    test('Projected.create', () {
+      // create a 2D position (x: 10.0, y: 20.0)
+      _testProjected(const Projected.create(x: 10.0, y: 20.0));
+
+      // create a 3D position (x: 10.0, y: 20.0, z: 30.0)
+      _testProjected(const Projected.create(x: 10.0, y: 20.0, z: 30.0));
+
+      // create a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
+      _testProjected(const Projected.create(x: 10.0, y: 20.0, m: 40.0));
+
+      // create a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+      _testProjected(
+        const Projected.create(x: 10.0, y: 20.0, z: 30.0, m: 40.0),
+      );
+    });
+
+    test('Projected.parse', () {
+      // create a 2D position (x: 10.0, y: 20.0)
+      _testProjected(Projected.parse('10.0,20.0'));
+
+      // create a 3D position (x: 10.0, y: 20.0, z: 30.0)
+      _testProjected(Projected.parse('10.0,20.0,30.0'));
+
+      // create a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
+      // (need to specify the coordinate type XYM)
+      _testProjected(Projected.parse('10.0,20.0,40.0', type: Coords.xym));
+
+      // create a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+      _testProjected(Projected.parse('10.0,20.0,30.0,40.0'));
+
+      // create a 2D position (x: 10.0, y: 20.0) using an alternative delimiter
+      _testProjected(Projected.parse('10.0;20.0', delimiter: ';'));
+
+      // create a 2D position (x: 10.0, y: 20.0) from an array with y before x
+      _testProjected(Projected.parse('20.0,10.0', swapXY: true));
+    });
+  });
 }
 
 /// Tests position instance of the base type `Position`.
@@ -90,6 +129,14 @@ void _testPosition(Position pos) {
   _doTest(pos);
   _doTest(pos.packed());
   _doTest(pos.copyTo(Projected.create));
+  _doTest(pos.copyTo(Geographic.create));
+}
+
+/// Tests position instance of the sub type `Projected`.
+void _testProjected(Projected pos) {
+  _doTest(pos);
+  _doTest(pos.packed());
+  _doTest(pos.copyTo(Position.create));
   _doTest(pos.copyTo(Geographic.create));
 }
 

@@ -121,17 +121,21 @@ class Geographic extends Position {
   /// provided and [text] has 3 items, then (lon, lat, elev) coordinates are
   /// assumed.
   ///
+  /// If [swapXY] is true, then swaps x (lon) and y (lat) for the result.
+  ///
   /// Throws FormatException if coordinates are invalid.
   factory Geographic.parse(
     String text, {
     Pattern delimiter = ',',
     Coords? type,
+    bool swapXY = false,
   }) =>
       Position.parsePosition(
         text,
         to: Geographic.create,
         delimiter: delimiter,
         type: type,
+        swapXY: swapXY,
       );
 
   /// The longitude coordinate.

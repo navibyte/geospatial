@@ -107,10 +107,13 @@ class Projected extends Position {
   /// Use an optional [type] to explicitely set the coordinate type. If not
   /// provided and [text] has 3 items, then xyz coordinates are assumed.
   ///
+  /// If [swapXY] is true, then swaps x and y for the result.
+  ///
   /// Throws FormatException if coordinates are invalid.
   factory Projected.parse(
     String text, {
     Pattern delimiter = ',',
+    bool swapXY = false,
     Coords? type,
   }) =>
       Position.parsePosition(
@@ -118,6 +121,7 @@ class Projected extends Position {
         to: Projected.create,
         delimiter: delimiter,
         type: type,
+        swapXY: swapXY,
       );
 
   @override
