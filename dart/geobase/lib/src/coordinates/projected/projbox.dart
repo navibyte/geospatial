@@ -142,6 +142,43 @@ class ProjBox extends Box {
   /// A minimum bounding box calculated from [positions].
   ///
   /// Throws FormatException if cannot create (ie. [positions] is empty).
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a 2D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0)
+  /// ProjBox.from(
+  ///   const [
+  ///     Projected(x: 10.0, y: 20.0),
+  ///     Projected(x: 15.0, y: 25.0),
+  ///   ],
+  /// );
+  ///
+  /// // a 3D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0, z: 30.0 .. 35.0)
+  /// ProjBox.from(
+  ///   const [
+  ///     Projected(x: 10.0, y: 20.0, z: 30.0),
+  ///     Projected(x: 15.0, y: 25.0, z: 35.0),
+  ///   ],
+  /// );
+  ///
+  /// // a measured 2D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0, m: 40.0 .. 45.0)
+  /// ProjBox.from(
+  ///   const [
+  ///     Projected(x: 10.0, y: 20.0, m: 40.0),
+  ///     Projected(x: 15.0, y: 25.0, m: 45.0),
+  ///   ],
+  /// );
+  ///
+  /// // a measured 3D box
+  /// // (x: 10.0 .. 15.0, y: 20.0 .. 25.0, z: 30.0 .. 35.0, m: 40.0 .. 45.0)
+  /// ProjBox.from(
+  ///   const [
+  ///     Projected(x: 10.0, y: 20.0, z: 30.0, m: 40.0),
+  ///     Projected(x: 15.0, y: 25.0, z: 35.0, m: 45.0),
+  ///   ],
+  /// );
+  /// ```
   factory ProjBox.from(Iterable<Projected> positions) =>
       Box.createBoxFrom(positions, ProjBox.create);
 
