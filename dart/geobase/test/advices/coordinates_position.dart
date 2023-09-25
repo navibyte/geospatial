@@ -84,6 +84,39 @@ void main() {
     });
   });
 
+  group('Position class from extensions', () {
+    test('CoordinateArrayExtension.position', () {
+      // a 2D position (x: 10.0, y: 20.0)
+      _testPosition([10.0, 20.0].position);
+
+      // a 3D position (x: 10.0, y: 20.0, z: 30.0)
+      _testPosition([10.0, 20.0, 30.0].position);
+
+      // a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+      _testPosition([10.0, 20.0, 30.0, 40.0].position);
+    });
+
+    test('CoordinateArrayExtension.xy', () {
+      // a 2D position (x: 10.0, y: 20.0)
+      _testPosition([10.0, 20.0].xy);
+    });
+
+    test('CoordinateArrayExtension.xyz', () {
+      // a 3D position (x: 10.0, y: 20.0, z: 30.0)
+      _testPosition([10.0, 20.0, 30.0].xyz);
+    });
+
+    test('CoordinateArrayExtension.xym', () {
+      // a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
+      _testPosition([10.0, 20.0, 40.0].xym);
+    });
+
+    test('CoordinateArrayExtension.xyzm', () {
+      // a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+      _testPosition([10.0, 20.0, 30.0, 40.0].xyzm);
+    });
+  });
+
   group('Projected class', () {
     test('Projected.new', () {
       // create a 2D position (x: 10.0, y: 20.0)

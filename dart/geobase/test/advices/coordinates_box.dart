@@ -92,6 +92,20 @@ void main() {
     });
   });
 
+  group('Box class from extensions', () {
+    test('CoordinateArrayExtension.box', () {
+      // a 2D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0)
+      _testBox([10.0, 20.0, 15.0, 25.0].box);
+
+      // a 3D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0, z: 30.0 .. 35.0)
+      _testBox([10.0, 20.0, 30.0, 15.0, 25.0, 35.0].box);
+
+      // a measured 3D box
+      // (x: 10.0 .. 15.0, y: 20.0 .. 25.0, z: 30.0 .. 35.0, m: 40.0 .. 45.0)
+      _testBox([10.0, 20.0, 30.0, 40.0, 15.0, 25.0, 35.0, 45.0].box);
+    });
+  });
+
   group('ProjBox class', () {
     test('ProjBox.new', () {
       // a 2D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0)

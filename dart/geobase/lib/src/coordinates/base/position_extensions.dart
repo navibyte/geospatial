@@ -33,6 +33,20 @@ extension CoordinateArrayExtension on List<double> {
   /// * west, south, minElev, minM, east, north, maxElev, maxM
   ///
   /// See [Box.view] for more information.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a 2D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0)
+  /// [10.0, 20.0, 15.0, 25.0].box;
+  ///
+  /// // a 3D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0, z: 30.0 .. 35.0)
+  /// [10.0, 20.0, 30.0, 15.0, 25.0, 35.0].box;
+  ///
+  /// // a measured 3D box
+  /// // (x: 10.0 .. 15.0, y: 20.0 .. 25.0, z: 30.0 .. 35.0, m: 40.0 .. 45.0)
+  /// [10.0, 20.0, 30.0, 40.0, 15.0, 25.0, 35.0, 45.0].box;
+  /// ```
   Box get box => Box.view(this, type: Coords.fromDimension(length ~/ 2));
 
   /// A position with coordinate values as a view backed by `this`.
@@ -45,6 +59,19 @@ extension CoordinateArrayExtension on List<double> {
   /// See [Position.view] for more information.
   ///
   /// See also [xy], [xyz], [xym] and [xyzm].
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a 2D position (x: 10.0, y: 20.0)
+  /// [10.0, 20.0].position;
+  ///
+  /// // a 3D position (x: 10.0, y: 20.0, z: 30.0)
+  /// [10.0, 20.0, 30.0].position;
+  ///
+  /// // a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+  /// [10.0, 20.0, 30.0, 40.0].position;
+  /// ```
   Position get position =>
       Position.view(this, type: Coords.fromDimension(length));
 
@@ -65,6 +92,13 @@ extension CoordinateArrayExtension on List<double> {
   /// See [Position.view] for more information. See also [position].
   ///
   /// Throws FormatException if this does not contain exactly 2 values.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a 2D position (x: 10.0, y: 20.0)
+  /// [10.0, 20.0].xy;
+  /// ```
   Position get xy => Position.view(_requireLen(this, 2));
 
   /// A position with x, y and z coordinates as a view backed by `this`.
@@ -75,6 +109,13 @@ extension CoordinateArrayExtension on List<double> {
   /// See [Position.view] for more information. See also [position].
   ///
   /// Throws FormatException if this does not contain exactly 3 values.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a 3D position (x: 10.0, y: 20.0, z: 30.0)
+  /// [10.0, 20.0, 30.0].xyz;
+  /// ```
   Position get xyz => Position.view(_requireLen(this, 3), type: Coords.xyz);
 
   /// A position with x, y and m coordinates as a view backed by `this`.
@@ -85,6 +126,13 @@ extension CoordinateArrayExtension on List<double> {
   /// See [Position.view] for more information. See also [position].
   ///
   /// Throws FormatException if this does not contain exactly 3 values.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
+  /// [10.0, 20.0, 40.0].xym;
+  /// ```
   Position get xym => Position.view(_requireLen(this, 3), type: Coords.xym);
 
   /// A position with x, y, z and m coordinates as a view backed by `this`.
@@ -95,6 +143,13 @@ extension CoordinateArrayExtension on List<double> {
   /// See [Position.view] for more information. See also [position].
   ///
   /// Throws FormatException if this does not contain exactly 4 values.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+  /// [10.0, 20.0, 30.0, 40.0].xyzm);
+  /// ```
   Position get xyzm => Position.view(_requireLen(this, 4), type: Coords.xyzm);
 }
 
