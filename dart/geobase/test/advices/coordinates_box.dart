@@ -207,6 +207,167 @@ void main() {
       _testProjBox(ProjBox.parse('20.0,10.0,25.0,15.0', swapXY: true));
     });
   });
+
+  group('GeoBox class', () {
+    test('GeoBox.new', () {
+      // a 2D box (lon: 10.0 .. 15.0, lat: 20.0 .. 25.0)
+      _testGeoBox(
+        const GeoBox(west: 10.0, south: 20.0, east: 15.0, north: 25.0),
+      );
+
+      // a 3D box (lon: 10.0 .. 15.0, lat: 20.0 .. 25.0, elev: 30.0 .. 35.0)
+      _testGeoBox(
+        const GeoBox(
+          west: 10.0, south: 20.0, minElev: 30.0,
+          east: 15.0, north: 25.0, maxElev: 35.0,
+          //
+        ),
+      );
+
+      // a measured 2D box (lon: 10.0..15.0, lat: 20.0..25.0, m: 40.0..45.0)
+      _testGeoBox(
+        const GeoBox(
+          west: 10.0, south: 20.0, minM: 40.0,
+          east: 15.0, north: 25.0, maxM: 45.0,
+          //
+        ),
+      );
+
+      // a measured 3D box
+      // (lon: 10.0..15.0, lat: 20.0..25.0, elev: 30.0..35.0, m: 40.0..45.0)
+      _testGeoBox(
+        const GeoBox(
+          west: 10.0, south: 20.0, minElev: 30.0, minM: 40.0,
+          east: 15.0, north: 25.0, maxElev: 35.0, maxM: 45.0,
+          //
+        ),
+      );
+    });
+
+    test('GeoBox.create', () {
+      // a 2D box (lon: 10.0 .. 15.0, lat: 20.0 .. 25.0)
+      _testGeoBox(
+        const GeoBox.create(minX: 10.0, minY: 20.0, maxX: 15.0, maxY: 25.0),
+      );
+
+      // a 3D box (lon: 10.0 .. 15.0, lat: 20.0 .. 25.0, elev: 30.0 .. 35.0)
+      _testGeoBox(
+        const GeoBox.create(
+          minX: 10.0, minY: 20.0, minZ: 30.0,
+          maxX: 15.0, maxY: 25.0, maxZ: 35.0,
+          //
+        ),
+      );
+
+      // a measured 2D box (lon: 10.0..15.0, lat: 20.0..25.0, m: 40.0..45.0)
+      _testGeoBox(
+        const GeoBox.create(
+          minX: 10.0, minY: 20.0, minM: 40.0,
+          maxX: 15.0, maxY: 25.0, maxM: 45.0,
+          //
+        ),
+      );
+
+      // a measured 3D box
+      // (lon: 10.0..15.0, lat: 20.0..25.0, elev: 30.0..35.0, m: 40.0..45.0)
+      _testGeoBox(
+        const GeoBox.create(
+          minX: 10.0, minY: 20.0, minZ: 30.0, minM: 40.0,
+          maxX: 15.0, maxY: 25.0, maxZ: 35.0, maxM: 45.0,
+          //
+        ),
+      );
+    });
+
+    test('GeoBox.from', () {
+      // a 2D box (lon: 10.0 .. 15.0, lat: 20.0 .. 25.0)
+      _testGeoBox(
+        GeoBox.from(
+          const [
+            Geographic(lon: 10.0, lat: 20.0),
+            Geographic(lon: 15.0, lat: 25.0),
+          ],
+        ),
+      );
+
+      // a 3D box (lon: 10.0 .. 15.0, lat: 20.0 .. 25.0, elev: 30.0 .. 35.0)
+      _testGeoBox(
+        GeoBox.from(
+          const [
+            Geographic(lon: 10.0, lat: 20.0, elev: 30.0),
+            Geographic(lon: 15.0, lat: 25.0, elev: 35.0),
+          ],
+        ),
+      );
+
+      // a measured 2D box (lon: 10.0..15.0, lat: 20.0..25.0, m: 40.0..45.0)
+      _testGeoBox(
+        GeoBox.from(
+          const [
+            Geographic(lon: 10.0, lat: 20.0, m: 40.0),
+            Geographic(lon: 15.0, lat: 25.0, m: 45.0),
+          ],
+        ),
+      );
+
+      // a measured 3D box
+      // (lon: 10.0..15.0, lat: 20.0..25.0, elev: 30.0..35.0, m: 40.0..45.0)
+      _testGeoBox(
+        GeoBox.from(
+          const [
+            Geographic(lon: 10.0, lat: 20.0, elev: 30.0, m: 40.0),
+            Geographic(lon: 15.0, lat: 25.0, elev: 35.0, m: 45.0),
+          ],
+        ),
+      );
+    });
+
+    test('GeoBox.build', () {
+      // a 2D box (lon: 10.0 .. 15.0, lat: 20.0 .. 25.0)
+      _testGeoBox(GeoBox.build([10.0, 20.0, 15.0, 25.0]));
+
+      // a 3D box (lon: 10.0 .. 15.0, lat: 20.0 .. 25.0, elev: 30.0 .. 35.0)
+      _testGeoBox(GeoBox.build([10.0, 20.0, 30.0, 15.0, 25.0, 35.0]));
+
+      // a measured 2D box (lon: 10.0..15.0, lat: 20.0..25.0, m: 40.0..45.0)
+      // (need to specify the coordinate type XYM)
+      _testGeoBox(
+        GeoBox.build([10.0, 20.0, 40.0, 15.0, 25.0, 45.0], type: Coords.xym),
+      );
+
+      // a measured 3D box
+      // (lon: 10.0..15.0, lat: 20.0..25.0, elev: 30.0..35.0, m: 40.0..45.0)
+      _testGeoBox(
+        GeoBox.build([10.0, 20.0, 30.0, 40.0, 15.0, 25.0, 35.0, 45.0]),
+      );
+    });
+
+    test('GeoBox.parse', () {
+      // a 2D box (lon: 10.0 .. 15.0, lat: 20.0 .. 25.0)
+      _testGeoBox(GeoBox.parse('10.0,20.0,15.0,25.0'));
+
+      // a 3D box (lon: 10.0 .. 15.0, lat: 20.0 .. 25.0, elev: 30.0 .. 35.0)
+      _testGeoBox(GeoBox.parse('10.0,20.0,30.0,15.0,25.0,35.0'));
+
+      // a measured 2D box (lon: 10.0..15.0, lat: 20.0..25.0, m: 40.0..45.0)
+      // (need to specify the coordinate type XYM)
+      _testGeoBox(
+        GeoBox.parse('10.0,20.0,40.0,15.0,25.0,45.0', type: Coords.xym),
+      );
+
+      // a measured 3D box
+      // (lon: 10.0..15.0, lat: 20.0..25.0, elev: 30.0..35.0, m: 40.0..45.0)
+      _testGeoBox(GeoBox.parse('10.0,20.0,30.0,40.0,15.0,25.0,35.0,45.0'));
+
+      // a 2D box (lon: 10.0 .. 15.0, lat: 20.0 .. 25.0) using an alternative
+      // delimiter
+      _testGeoBox(GeoBox.parse('10.0;20.0;15.0;25.0', delimiter: ';'));
+
+      // a 2D box (lon: 10.0 .. 15.0, lat: 20.0 .. 25.0) from an array with y
+      // (lat) before x (lon)
+      _testGeoBox(GeoBox.parse('20.0,10.0,25.0,15.0', swapXY: true));
+    });
+  });
 }
 
 /// Tests box instance of the base type `Box`.
@@ -221,6 +382,13 @@ void _testProjBox(ProjBox box) {
   _doTest(box);
   _doTest(box.copyTo(Box.create));
   _doTest(box.copyTo(GeoBox.create));
+}
+
+/// Tests box instance of the sub type `GeoBox`.
+void _testGeoBox(GeoBox box) {
+  _doTest(box);
+  _doTest(box.copyTo(Box.create));
+  _doTest(box.copyTo(ProjBox.create));
 }
 
 /// Tests the sample box

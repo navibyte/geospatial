@@ -65,6 +65,32 @@ class GeoBox extends Box {
   ///
   /// Optional [minElev] and [maxElev] for 3D boxes, and [minM] and [maxM] for
   /// measured boxes can be provided too.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a 2D box (lon: 10.0 .. 15.0, lat: 20.0 .. 25.0)
+  /// GeoBox(west: 10.0, south: 20.0, east: 15.0, north: 25.0);
+  ///
+  /// // a 3D box (lon: 10.0 .. 15.0, lat: 20.0 .. 25.0, elev: 30.0 .. 35.0)
+  /// const GeoBox(
+  ///   west: 10.0, south: 20.0, minElev: 30.0,
+  ///   east: 15.0, north: 25.0, maxElev: 35.0,
+  /// );
+  ///
+  /// // a measured 2D box (lon: 10.0..15.0, lat: 20.0..25.0, m: 40.0..45.0)
+  /// const GeoBox(
+  ///   west: 10.0, south: 20.0, minM: 40.0,
+  ///   east: 15.0, north: 25.0, maxM: 45.0,
+  /// );
+  ///
+  /// // a measured 3D box
+  /// // (lon: 10.0..15.0, lat: 20.0..25.0, elev: 30.0..35.0, m: 40.0..45.0)
+  /// const GeoBox(
+  ///   west: 10.0, south: 20.0, minElev: 30.0, minM: 40.0,
+  ///   east: 15.0, north: 25.0, maxElev: 35.0, maxM: 45.0,
+  /// );
+  /// ```
   const GeoBox({
     required double west,
     required double south,
@@ -84,6 +110,32 @@ class GeoBox extends Box {
         _maxM = maxM;
 
   /// A bounding box from parameters compatible with `CreateBox` function type.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a 2D box (lon: 10.0 .. 15.0, lat: 20.0 .. 25.0)
+  /// GeoBox.create(minX: 10.0, minY: 20.0, maxX: 15.0, maxY: 25.0);
+  ///
+  /// // a 3D box (lon: 10.0 .. 15.0, lat: 20.0 .. 25.0, elev: 30.0 .. 35.0)
+  /// const GeoBox.create(
+  ///   minX: 10.0, minY: 20.0, minZ: 30.0,
+  ///   maxX: 15.0, maxY: 25.0, maxZ: 35.0,
+  /// );
+  ///
+  /// // a measured 2D box (lon: 10.0..15.0, lat: 20.0..25.0, m: 40.0..45.0)
+  /// GeoBox.create(
+  ///   minX: 10.0, minY: 20.0, minM: 40.0,
+  ///   maxX: 15.0, maxY: 25.0, maxM: 45.0,
+  /// );
+  ///
+  /// // a measured 3D box
+  /// // (lon: 10.0..15.0, lat: 20.0..25.0, elev: 30.0..35.0, m: 40.0..45.0)
+  /// GeoBox.create(
+  ///   minX: 10.0, minY: 20.0, minZ: 30.0, minM: 40.0,
+  ///   maxX: 15.0, maxY: 25.0, maxZ: 35.0, maxM: 45.0,
+  /// );
+  /// ```
   const GeoBox.create({
     required double minX,
     required double minY,
@@ -111,6 +163,43 @@ class GeoBox extends Box {
   /// A minimum bounding box calculated from [positions].
   ///
   /// Throws FormatException if cannot create (ie. [positions] is empty).
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a 2D box (lon: 10.0 .. 15.0, lat: 20.0 .. 25.0)
+  /// GeoBox.from(
+  ///   const [
+  ///     Geographic(lon: 10.0, lat: 20.0),
+  ///     Geographic(lon: 15.0, lat: 25.0),
+  ///   ],
+  /// );
+  ///
+  /// // a 3D box (lon: 10.0 .. 15.0, lat: 20.0 .. 25.0, elev: 30.0 .. 35.0)
+  /// GeoBox.from(
+  ///   const [
+  ///     Geographic(lon: 10.0, lat: 20.0, elev: 30.0),
+  ///     Geographic(lon: 15.0, lat: 25.0, elev: 35.0),
+  ///   ],
+  /// );
+  ///
+  /// // a measured 2D box (lon: 10.0..15.0, lat: 20.0..25.0, m: 40.0..45.0)
+  /// GeoBox.from(
+  ///   const [
+  ///     Geographic(lon: 10.0, lat: 20.0, m: 40.0),
+  ///     Geographic(lon: 15.0, lat: 25.0, m: 45.0),
+  ///   ],
+  /// );
+  ///
+  /// // a measured 3D box
+  /// // (lon: 10.0..15.0, lat: 20.0..25.0, elev: 30.0..35.0, m: 40.0..45.0)
+  /// GeoBox.from(
+  ///   const [
+  ///     Geographic(lon: 10.0, lat: 20.0, elev: 30.0, m: 40.0),
+  ///     Geographic(lon: 15.0, lat: 25.0, elev: 35.0, m: 45.0),
+  ///   ],
+  /// );
+  /// ```
   factory GeoBox.from(Iterable<Geographic> positions) =>
       Box.createBoxFrom(positions, GeoBox.create);
 
@@ -129,6 +218,24 @@ class GeoBox extends Box {
   /// provided and [coords] has 6 items, then xyz coordinates are assumed.
   ///
   /// Throws FormatException if coordinates are invalid.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a 2D box (lon: 10.0 .. 15.0, lat: 20.0 .. 25.0)
+  /// GeoBox.build([10.0, 20.0, 15.0, 25.0]);
+  ///
+  /// // a 3D box (lon: 10.0 .. 15.0, lat: 20.0 .. 25.0, elev: 30.0 .. 35.0)
+  /// GeoBox.build([10.0, 20.0, 30.0, 15.0, 25.0, 35.0]);
+  ///
+  /// // a measured 2D box (lon: 10.0..15.0, lat: 20.0..25.0, m: 40.0..45.0)
+  /// // (need to specify the coordinate type XYM)
+  /// GeoBox.build([10.0, 20.0, 40.0, 15.0, 25.0, 45.0], type: Coords.xym);
+  ///
+  /// // a measured 3D box
+  /// // (lon: 10.0..15.0, lat: 20.0..25.0, elev: 30.0..35.0, m: 40.0..45.0)
+  /// GeoBox.build([10.0, 20.0, 30.0, 40.0, 15.0, 25.0, 35.0, 45.0]);
+  /// ```
   factory GeoBox.build(
     Iterable<num> coords, {
     int offset = 0,
@@ -161,6 +268,32 @@ class GeoBox extends Box {
   /// for the result.
   ///
   /// Throws FormatException if coordinates are invalid.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a 2D box (lon: 10.0 .. 15.0, lat: 20.0 .. 25.0)
+  /// GeoBox.parse('10.0,20.0,15.0,25.0');
+  ///
+  /// // a 3D box (lon: 10.0 .. 15.0, lat: 20.0 .. 25.0, elev: 30.0 .. 35.0)
+  /// GeoBox.parse('10.0,20.0,30.0,15.0,25.0,35.0');
+  ///
+  /// // a measured 2D box (lon: 10.0..15.0, lat: 20.0..25.0, m: 40.0..45.0)
+  /// // (need to specify the coordinate type XYM)
+  /// GeoBox.parse('10.0,20.0,40.0,15.0,25.0,45.0', type: Coords.xym),
+  ///
+  /// // a measured 3D box
+  /// // (lon: 10.0..15.0, lat: 20.0..25.0, elev: 30.0..35.0, m: 40.0..45.0)
+  /// GeoBox.parse('10.0,20.0,30.0,40.0,15.0,25.0,35.0,45.0');
+  ///
+  /// // a 2D box (lon: 10.0 .. 15.0, lat: 20.0 .. 25.0) using an alternative
+  /// // delimiter
+  /// GeoBox.parse('10.0;20.0;15.0;25.0', delimiter: ';');
+  ///
+  /// // a 2D box (lon: 10.0 .. 15.0, lat: 20.0 .. 25.0) from an array with y
+  /// // (lat) before x (lon)
+  /// GeoBox.parse('20.0,10.0,25.0,15.0', swapXY: true);
+  /// ```
   factory GeoBox.parse(
     String text, {
     Pattern delimiter = ',',
