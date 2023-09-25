@@ -204,6 +204,43 @@ abstract class Box extends Positionable {
   /// representing a minimum bounding box for [positions].
   ///
   /// Throws FormatException if cannot create (ie. [positions] is empty).
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a 2D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0)
+  /// Box.from(
+  ///   [
+  ///     Position.create(x: 10.0, y: 20.0),
+  ///     Position.create(x: 15.0, y: 25.0),
+  ///   ],
+  /// );
+  ///
+  /// // a 3D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0, z: 30.0 .. 35.0)
+  /// Box.from(
+  ///   [
+  ///     Position.create(x: 10.0, y: 20.0, z: 30.0),
+  ///     Position.create(x: 15.0, y: 25.0, z: 35.0),
+  ///   ],
+  /// );
+  ///
+  /// // a measured 2D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0, m: 40.0 .. 45.0)
+  /// Box.from(
+  ///   [
+  ///     Position.create(x: 10.0, y: 20.0, m: 40.0),
+  ///     Position.create(x: 15.0, y: 25.0, m: 45.0),
+  ///   ],
+  /// );
+  ///
+  /// // a measured 3D box
+  /// // (x: 10.0 .. 15.0, y: 20.0 .. 25.0, z: 30.0 .. 35.0, m: 40.0 .. 45.0)
+  /// Box.from(
+  ///   [
+  ///     Position.create(x: 10.0, y: 20.0, z: 30.0, m: 40.0),
+  ///     Position.create(x: 15.0, y: 25.0, z: 35.0, m: 45.0),
+  ///   ],
+  /// );
+  /// ```
   factory Box.from(Iterable<Position> positions) =>
       Box.createBoxFrom(positions, Box.create);
 

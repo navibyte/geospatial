@@ -63,6 +63,49 @@ void main() {
       );
     });
 
+    test('Box.from', () {
+      // a 2D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0)
+      _testBox(
+        Box.from(
+          [
+            Position.create(x: 10.0, y: 20.0),
+            Position.create(x: 15.0, y: 25.0),
+          ],
+        ),
+      );
+
+      // a 3D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0, z: 30.0 .. 35.0)
+      _testBox(
+        Box.from(
+          [
+            Position.create(x: 10.0, y: 20.0, z: 30.0),
+            Position.create(x: 15.0, y: 25.0, z: 35.0),
+          ],
+        ),
+      );
+
+      // a measured 2D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0, m: 40.0 .. 45.0)
+      _testBox(
+        Box.from(
+          [
+            Position.create(x: 10.0, y: 20.0, m: 40.0),
+            Position.create(x: 15.0, y: 25.0, m: 45.0),
+          ],
+        ),
+      );
+
+      // a measured 3D box
+      // (x: 10.0 .. 15.0, y: 20.0 .. 25.0, z: 30.0 .. 35.0, m: 40.0 .. 45.0)
+      _testBox(
+        Box.from(
+          [
+            Position.create(x: 10.0, y: 20.0, z: 30.0, m: 40.0),
+            Position.create(x: 15.0, y: 25.0, z: 35.0, m: 45.0),
+          ],
+        ),
+      );
+    });
+
     test('Box.parse', () {
       // a 2D box (x: 10.0 .. 15.0, y: 20.0 .. 25.0)
       _testBox(Box.parse('10.0,20.0,15.0,25.0'));
