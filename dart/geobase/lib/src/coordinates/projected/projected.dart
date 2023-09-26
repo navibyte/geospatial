@@ -57,16 +57,16 @@ class Projected extends Position {
   /// Examples:
   ///
   /// ```dart
-  /// // create a 2D position (x: 10.0, y: 20.0)
+  /// // a 2D position (x: 10.0, y: 20.0)
   /// Projected(x: 10.0, y: 20.0);
   ///
-  /// // create a 3D position (x: 10.0, y: 20.0, z: 30.0)
+  /// // a 3D position (x: 10.0, y: 20.0, z: 30.0)
   /// Projected(x: 10.0, y: 20.0, z: 30.0);
   ///
-  /// // create a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
+  /// // a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
   /// Projected(x: 10.0, y: 20.0, m: 40.0);
   ///
-  /// // create a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+  /// // a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
   /// Projected(x: 10.0, y: 20.0, z: 30.0, m: 40.0);
   /// ```
   ///
@@ -82,16 +82,16 @@ class Projected extends Position {
   /// Examples:
   ///
   /// ```dart
-  /// // create a 2D position (x: 10.0, y: 20.0)
+  /// // a 2D position (x: 10.0, y: 20.0)
   /// Projected.create(x: 10.0, y: 20.0);
   ///
-  /// // create a 3D position (x: 10.0, y: 20.0, z: 30.0)
+  /// // a 3D position (x: 10.0, y: 20.0, z: 30.0)
   /// Projected.create(x: 10.0, y: 20.0, z: 30.0);
   ///
-  /// // create a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
+  /// // a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
   /// Projected.create(x: 10.0, y: 20.0, m: 40.0);
   ///
-  /// // create a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+  /// // a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
   /// Projected.create(x: 10.0, y: 20.0, z: 30.0, m: 40.0);
   /// ```
   ///
@@ -125,17 +125,17 @@ class Projected extends Position {
   /// Examples:
   ///
   /// ```dart
-  /// // create a 2D position (x: 10.0, y: 20.0)
+  /// // a 2D position (x: 10.0, y: 20.0)
   /// Projected.build([10.0, 20.0]);
   ///
-  /// // create a 3D position (x: 10.0, y: 20.0, z: 30.0)
+  /// // a 3D position (x: 10.0, y: 20.0, z: 30.0)
   /// Projected.build([10.0, 20.0, 30.0]);
   ///
-  /// // create a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
+  /// // a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
   /// // (need to specify the coordinate type XYM)
   /// Projected.build([10.0, 20.0, 40.0], type: Coords.xym);
   ///
-  /// // create a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+  /// // a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
   /// Projected.build([10.0, 20.0, 30.0, 40.0]);
   /// ```
   factory Projected.build(
@@ -167,23 +167,23 @@ class Projected extends Position {
   /// Examples:
   ///
   /// ```dart
-  /// // create a 2D position (x: 10.0, y: 20.0)
+  /// // a 2D position (x: 10.0, y: 20.0)
   /// Projected.parse('10.0,20.0');
   ///
-  /// // create a 3D position (x: 10.0, y: 20.0, z: 30.0)
+  /// // a 3D position (x: 10.0, y: 20.0, z: 30.0)
   /// Projected.parse('10.0,20.0,30.0');
   ///
-  /// // create a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
+  /// // a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
   /// // (need to specify the coordinate type XYM)
   /// Projected.parse('10.0,20.0,40.0', type: Coords.xym);
   ///
-  /// // create a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+  /// // a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
   /// Projected.parse('10.0,20.0,30.0,40.0');
   ///
-  /// // create a 2D position (x: 10.0, y: 20.0) using an alternative delimiter
+  /// // a 2D position (x: 10.0, y: 20.0) using an alternative delimiter
   /// Projected.parse('10.0;20.0', delimiter: ';');
   ///
-  /// // create a 2D position (x: 10.0, y: 20.0) from an array with y before x
+  /// // a 2D position (x: 10.0, y: 20.0) from an array with y before x
   /// Projected.parse('20.0,10.0', swapXY: true);
   /// ```
   factory Projected.parse(

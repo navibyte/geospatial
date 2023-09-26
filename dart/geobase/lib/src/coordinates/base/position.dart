@@ -123,17 +123,17 @@ abstract class Position extends Positionable {
   /// Examples:
   ///
   /// ```dart
-  /// // create a 2D position (x: 10.0, y: 20.0)
+  /// // a 2D position (x: 10.0, y: 20.0)
   /// Position.view([10.0, 20.0]);
   ///
-  /// // create a 3D position (x: 10.0, y: 20.0, z: 30.0)
+  /// // a 3D position (x: 10.0, y: 20.0, z: 30.0)
   /// Position.view([10.0, 20.0, 30.0]);
   ///
-  /// // create a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
+  /// // a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
   /// // (need to specify the coordinate type XYM)
   /// Position.view([10.0, 20.0, 40.0], type: Coords.xym);
   ///
-  /// // create a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+  /// // a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
   /// Position.view([10.0, 20.0, 30.0, 40.0]);
   /// ```
   factory Position.view(List<double> source, {Coords? type}) {
@@ -157,14 +157,14 @@ abstract class Position extends Positionable {
   /// // coordinate data with values: x0, y0, z0, m0, x1, y1, z1, m1
   /// final data = [-10.0, -20.0, -30.0, -40.0, 10.0, 20.0, 30.0, 40.0];
   ///
-  /// // create a 2D position (x: 10.0, y: 20.0)
+  /// // a 2D position (x: 10.0, y: 20.0)
   /// // (the coordinate type is XY by default when using subview)
   /// Position.subview(data, start: 4);
   ///
-  /// // create a 3D position (x: 10.0, y: 20.0, z: 30.0)
+  /// // a 3D position (x: 10.0, y: 20.0, z: 30.0)
   /// Position.subview(data, start: 4, type: Coords.xyz);
   ///
-  /// // create a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+  /// // a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
   /// Position.subview(data, start: 4, type: Coords.xyzm);
   /// ```
   factory Position.subview(
@@ -187,16 +187,16 @@ abstract class Position extends Positionable {
   /// Examples:
   ///
   /// ```dart
-  /// // create a 2D position (x: 10.0, y: 20.0)
+  /// // a 2D position (x: 10.0, y: 20.0)
   /// Position.create(x: 10.0, y: 20.0);
   ///
-  /// // create a 3D position (x: 10.0, y: 20.0, z: 30.0)
+  /// // a 3D position (x: 10.0, y: 20.0, z: 30.0)
   /// Position.create(x: 10.0, y: 20.0, z: 30.0);
   ///
-  /// // create a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
+  /// // a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
   /// Position.create(x: 10.0, y: 20.0, m: 40.0);
   ///
-  /// // create a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+  /// // a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
   /// Position.create(x: 10.0, y: 20.0, z: 30.0, m: 40.0);
   /// ```
   factory Position.create({
@@ -262,26 +262,26 @@ abstract class Position extends Positionable {
   /// Examples:
   ///
   /// ```dart
-  /// // create a 2D position (x: 10.0, y: 20.0)
+  /// // a 2D position (x: 10.0, y: 20.0)
   /// Position.parse('10.0,20.0');
   ///
-  /// // create a 3D position (x: 10.0, y: 20.0, z: 30.0)
+  /// // a 3D position (x: 10.0, y: 20.0, z: 30.0)
   /// Position.parse('10.0,20.0,30.0');
   ///
-  /// // create a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
+  /// // a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
   /// // (need to specify the coordinate type XYM)
   /// Position.parse('10.0,20.0,40.0', type: Coords.xym);
   ///
-  /// // create a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+  /// // a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
   /// Position.parse('10.0,20.0,30.0,40.0');
   ///
-  /// // create a 2D position (x: 10.0, y: 20.0) using an alternative delimiter
+  /// // a 2D position (x: 10.0, y: 20.0) using an alternative delimiter
   /// Position.parse('10.0;20.0', delimiter: ';');
   ///
-  /// // create a 2D position (x: 10.0, y: 20.0) from an array with y before x
+  /// // a 2D position (x: 10.0, y: 20.0) from an array with y before x
   /// Position.parse('20.0,10.0', swapXY: true);
   ///
-  /// // create a 2D position (x: 10.0, y: 20.0) with the internal storage using
+  /// // a 2D position (x: 10.0, y: 20.0) with the internal storage using
   /// // single precision floating point numbers (`Float32List` in this case)
   /// Position.parse('10.0,20.0', singlePrecision: true);
   /// ```

@@ -64,13 +64,13 @@ class Geographic extends Position {
   /// Examples:
   ///
   /// ```dart
-  /// // create a 2D position (lon: 10.0, lat: 20.0)
+  /// // a 2D position (lon: 10.0, lat: 20.0)
   /// Geographic(lon: 10.0, lat: 20.0);
   ///
-  /// // create a 3D position (lon: 10.0, lat: 20.0, elev: 30.0)
+  /// // a 3D position (lon: 10.0, lat: 20.0, elev: 30.0)
   /// Geographic(lon: 10.0, lat: 20.0, elev: 30.0);
   ///
-  /// // create a measured 2D position (lon: 10.0, lat: 20.0, m: 40.0)
+  /// // a measured 2D position (lon: 10.0, lat: 20.0, m: 40.0)
   /// Geographic(lon: 10.0, lat: 20.0, m: 40.0);
   ///
   /// // a measured 3D position (lon: 10.0, lat: 20.0, elev: 30.0, m: 40.0)
@@ -95,13 +95,13 @@ class Geographic extends Position {
   /// Examples:
   ///
   /// ```dart
-  /// // create a 2D position (lon: 10.0, lat: 20.0)
+  /// // a 2D position (lon: 10.0, lat: 20.0)
   /// Geographic.create(x: 10.0, y: 20.0);
   ///
-  /// // create a 3D position (lon: 10.0, lat: 20.0, elev: 30.0)
+  /// // a 3D position (lon: 10.0, lat: 20.0, elev: 30.0)
   /// Geographic.create(x: 10.0, y: 20.0, z: 30.0);
   ///
-  /// // create a measured 2D position (lon: 10.0, lat: 20.0, m: 40.0)
+  /// // a measured 2D position (lon: 10.0, lat: 20.0, m: 40.0)
   /// Geographic.create(x: 10.0, y: 20.0, m: 40.0);
   ///
   /// // a measured 3D position (lon: 10.0, lat: 20.0, elev: 30.0, m: 40.0)
@@ -134,13 +134,13 @@ class Geographic extends Position {
   /// Examples:
   ///
   /// ```dart
-  /// // create a 2D position (lon: 10.0, lat: 20.0)
+  /// // a 2D position (lon: 10.0, lat: 20.0)
   /// Geographic.build([10.0, 20.0]);
   ///
-  /// // create a 3D position (lon: 10.0, lat: 20.0, elev: 30.0)
+  /// // a 3D position (lon: 10.0, lat: 20.0, elev: 30.0)
   /// Geographic.build([10.0, 20.0, 30.0]);
   ///
-  /// // create a measured 2D position (lon: 10.0, lat: 20.0, m: 40.0)
+  /// // a measured 2D position (lon: 10.0, lat: 20.0, m: 40.0)
   /// // (need to specify the coordinate type XYM)
   /// Geographic.build([10.0, 20.0, 40.0], type: Coords.xym);
   ///
@@ -177,24 +177,24 @@ class Geographic extends Position {
   /// Examples:
   ///
   /// ```dart
-  /// // create a 2D position (lon: 10.0, lat: 20.0)
+  /// // a 2D position (lon: 10.0, lat: 20.0)
   /// Geographic.parse('10.0,20.0');
   ///
-  /// // create a 3D position (lon: 10.0, lat: 20.0, elev: 30.0)
+  /// // a 3D position (lon: 10.0, lat: 20.0, elev: 30.0)
   /// Geographic.parse('10.0,20.0,30.0');
   ///
-  /// // create a measured 2D position (lon: 10.0, lat: 20.0, m: 40.0)
+  /// // a measured 2D position (lon: 10.0, lat: 20.0, m: 40.0)
   /// // (need to specify the coordinate type XYM)
   /// Geographic.parse('10.0,20.0,40.0', type: Coords.xym);
   ///
   /// // a measured 3D position (lon: 10.0, lat: 20.0, elev: 30.0, m: 40.0)
   /// Geographic.parse('10.0,20.0,30.0,40.0');
   ///
-  /// // create a 2D position (lon: 10.0, lat: 20.0) using an alternative
+  /// // a 2D position (lon: 10.0, lat: 20.0) using an alternative
   /// // delimiter
   /// Geographic.parse('10.0;20.0', delimiter: ';');
   ///
-  /// // create a 2D position (lon: 10.0, lat: 20.0) from an array with y (lat)
+  /// // a 2D position (lon: 10.0, lat: 20.0) from an array with y (lat)
   /// // before x (lon)
   /// Geographic.parse('20.0,10.0', swapXY: true);
   /// ```
