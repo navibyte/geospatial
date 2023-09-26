@@ -1,6 +1,6 @@
 ## 0.6.0
 
-NOTE: Version 0.6.0 currently [under development](https://github.com/navibyte/geospatial/issues/193) (0.6.0-dev.2).
+NOTE: Version 0.6.0 currently [under development](https://github.com/navibyte/geospatial/issues/193) (0.6.0-dev.3).
 
 🧩 Features:
 * [Add copyWith (and map) methods to coordinate, meta, feature and geometry classes #189](https://github.com/navibyte/geospatial/issues/189)
@@ -26,6 +26,7 @@ NOTE: Version 0.6.0 currently [under development](https://github.com/navibyte/ge
 🛠 Maintenance:
 * PositionArray, PositionCoords and BoxCoords moved from vector_data to vector
   (and later deprecated by #201).
+* Enhanced class documentation and tests.
 
 ## 0.5.1
 
