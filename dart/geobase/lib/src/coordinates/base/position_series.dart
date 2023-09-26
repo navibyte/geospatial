@@ -66,6 +66,50 @@ abstract class PositionSeries implements Positionable {
   /// considered empty.
   ///
   /// See [Position] for description about supported coordinate values.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a series of 2D positions (with values of the `Coords.xy` type)
+  /// PositionSeries.view(
+  ///   [
+  ///     10.0, 20.0, // (x, y) for position 0
+  ///     12.5, 22.5, // (x, y) for position 1
+  ///     15.0, 25.0, // (x, y) for position 2
+  ///   ],
+  ///   type: Coords.xy,
+  /// );
+  ///
+  /// // a series of 3D positions (with values of the `Coords.xyz` type)
+  /// PositionSeries.view(
+  ///   [
+  ///     10.0, 20.0, 30.0, // (x, y, z) for position 0
+  ///     12.5, 22.5, 32.5, // (x, y, z) for position 1
+  ///     15.0, 25.0, 35.0, // (x, y, z) for position 2
+  ///   ],
+  ///   type: Coords.xyz,
+  /// );
+  ///
+  /// // a series of measured 2D positions (values of the `Coords.xym` type)
+  /// PositionSeries.view(
+  ///   [
+  ///     10.0, 20.0, 40.0, // (x, y, m) for position 0
+  ///     12.5, 22.5, 42.5, // (x, y, m) for position 1
+  ///     15.0, 25.0, 45.0, // (x, y, m) for position 2
+  ///   ],
+  ///   type: Coords.xym,
+  /// );
+  ///
+  /// // a series of measured 3D positions (values of the `Coords.xyzm` type)
+  /// PositionSeries.view(
+  ///   [
+  ///     10.0, 20.0, 30.0, 40.0, // (x, y, z, m) for position 0
+  ///     12.5, 22.5, 32.5, 42.5, // (x, y, z, m) for position 1
+  ///     15.0, 25.0, 35.0, 45.0, // (x, y, z, m) for position 2
+  ///   ],
+  ///   type: Coords.xyzm,
+  /// );
+  /// ```
   factory PositionSeries.view(
     List<double> source, {
     Coords type = Coords.xy,
@@ -92,6 +136,50 @@ abstract class PositionSeries implements Positionable {
   /// items are iterated and copied to a list that is used as a source.
   ///
   /// See [Position] for description about supported coordinate values.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a series of 2D positions (with values of the `Coords.xy` type)
+  /// PositionSeries.from(
+  ///   [
+  ///     Position.create(x: 10.0, y: 20.0),
+  ///     Position.create(x: 12.5, y: 22.5),
+  ///     Position.create(x: 15.0, y: 25.0),
+  ///   ],
+  ///   type: Coords.xy,
+  /// );
+  ///
+  /// // a series of 3D positions (with values of the `Coords.xyz` type)
+  /// PositionSeries.from(
+  ///   [
+  ///     Position.create(x: 10.0, y: 20.0, z: 30.0),
+  ///     Position.create(x: 12.5, y: 22.5, z: 32.5),
+  ///     Position.create(x: 15.0, y: 25.0, z: 35.0),
+  ///   ],
+  ///   type: Coords.xyz,
+  /// );
+  ///
+  /// // a series of measured 2D positions (values of the `Coords.xym` type)
+  /// PositionSeries.from(
+  ///   [
+  ///     Position.create(x: 10.0, y: 20.0, m: 40.0),
+  ///     Position.create(x: 12.5, y: 22.5, m: 42.5),
+  ///     Position.create(x: 15.0, y: 25.0, m: 45.0),
+  ///   ],
+  ///   type: Coords.xym,
+  /// ),
+  ///
+  /// // a series of measured 3D positions (values of the `Coords.xyzm` type)
+  /// PositionSeries.from(
+  ///   [
+  ///     Position.create(x: 10.0, y: 20.0, z: 30.0, m: 40.0),
+  ///     Position.create(x: 12.5, y: 22.5, z: 32.5, m: 42.5),
+  ///     Position.create(x: 15.0, y: 25.0, z: 35.0, m: 45.0),
+  ///   ],
+  ///   type: Coords.xyzm,
+  /// );
+  /// ```
   factory PositionSeries.from(Iterable<Position> source, {Coords? type}) {
     // ensure a list data structure
     final data =
@@ -132,6 +220,66 @@ abstract class PositionSeries implements Positionable {
   /// See [Position] for description about supported coordinate values.
   ///
   /// Throws FormatException if coordinates are invalid.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a series of 2D positions (with values of the `Coords.xy` type)
+  /// PositionSeries.parse(
+  ///   // values for three (x, y) positions
+  ///   '10.0,20.0,12.5,22.5,15.0,25.0',
+  ///   type: Coords.xy,
+  /// );
+  ///
+  /// // a series of 3D positions (with values of the `Coords.xyz` type)
+  /// PositionSeries.parse(
+  ///   // values for three (x, y, z) positions
+  ///   '10.0,20.0,30.0,12.5,22.5,32.5,15.0,25.0,35.0',
+  ///   type: Coords.xyz,
+  /// );
+  ///
+  /// // a series of measured 2D positions (values of the `Coords.xym` type)
+  /// PositionSeries.parse(
+  ///   // values for three (x, y, m) positions
+  ///   '10.0,20.0,40.0,12.5,22.5,42.5,15.0,25.0,45.0',
+  ///   type: Coords.xym,
+  /// ):
+  ///
+  /// // a series of measured 3D positions (values of the `Coords.xyzm` type)
+  /// PositionSeries.parse(
+  ///   // values for three (x, y, z, m) positions
+  ///   '10.0,20.0,30.0,40.0,12.5,22.5,32.5,42.5,15.0,25.0,35.0,45.0',
+  ///   type: Coords.xyzm,
+  /// );
+  ///
+  /// // a series of 2D positions (with values of the `Coords.xy` type) using
+  /// // an alternative delimiter
+  /// PositionSeries.parse(
+  ///   // values for three (x, y) positions
+  ///   '10.0;20.0;12.5;22.5;15.0;25.0',
+  ///   type: Coords.xy,
+  ///   delimiter: ';',
+  /// );
+  ///
+  /// // a series of 2D positions (with values of the `Coords.xy` type) with x
+  /// // before y
+  /// PositionSeries.parse(
+  ///   // values for three (x, y) positions
+  ///   '20.0,10.0,22.5,12.5,25.0,15.0',
+  ///   type: Coords.xy,
+  ///   swapXY: true,
+  /// );
+  ///
+  /// // a series of 2D positions (with values of the `Coords.xy` type) with the
+  /// // internal storage using single precision floating point numbers
+  /// // (`Float32List` in this case)
+  /// PositionSeries.parse(
+  ///   // values for three (x, y) positions
+  ///   '10.0,20.0,12.5,22.5,15.0,25.0',
+  ///   type: Coords.xy,
+  ///   singlePrecision: true,
+  /// );
+  /// ```
   factory PositionSeries.parse(
     String text, {
     Pattern delimiter = ',',
