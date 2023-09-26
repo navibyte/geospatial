@@ -140,7 +140,7 @@ abstract class PositionSeries implements Positionable {
   /// Examples:
   ///
   /// ```dart
-  /// // a series of 2D positions (with values of the `Coords.xy` type)
+  /// // a series of 2D positions
   /// PositionSeries.from(
   ///   [
   ///     Position.create(x: 10.0, y: 20.0),
@@ -150,7 +150,7 @@ abstract class PositionSeries implements Positionable {
   ///   type: Coords.xy,
   /// );
   ///
-  /// // a series of 3D positions (with values of the `Coords.xyz` type)
+  /// // a series of 3D positions
   /// PositionSeries.from(
   ///   [
   ///     Position.create(x: 10.0, y: 20.0, z: 30.0),
@@ -160,7 +160,7 @@ abstract class PositionSeries implements Positionable {
   ///   type: Coords.xyz,
   /// );
   ///
-  /// // a series of measured 2D positions (values of the `Coords.xym` type)
+  /// // a series of measured 2D positions
   /// PositionSeries.from(
   ///   [
   ///     Position.create(x: 10.0, y: 20.0, m: 40.0),
@@ -170,7 +170,7 @@ abstract class PositionSeries implements Positionable {
   ///   type: Coords.xym,
   /// ),
   ///
-  /// // a series of measured 3D positions (values of the `Coords.xyzm` type)
+  /// // a series of measured 3D positions
   /// PositionSeries.from(
   ///   [
   ///     Position.create(x: 10.0, y: 20.0, z: 30.0, m: 40.0),

@@ -81,6 +81,38 @@ extension CoordinateArrayExtension on List<double> {
   /// a flat structure.
   ///
   /// See [PositionSeries.view] for more information.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a series of 2D positions (with values of the `Coords.xy` type)
+  /// [
+  ///   10.0, 20.0, // (x, y) for position 0
+  ///   12.5, 22.5, // (x, y) for position 1
+  ///   15.0, 25.0, // (x, y) for position 2
+  /// ].positions(Coords.xy);
+  ///
+  /// // a series of 3D positions (with values of the `Coords.xyz` type)
+  /// [
+  ///   10.0, 20.0, 30.0, // (x, y, z) for position 0
+  ///   12.5, 22.5, 32.5, // (x, y, z) for position 1
+  ///   15.0, 25.0, 35.0, // (x, y, z) for position 2
+  /// ].positions(Coords.xyz);
+  ///
+  /// // a series of measured 2D positions (values of the `Coords.xym` type)
+  /// [
+  ///   10.0, 20.0, 40.0, // (x, y, m) for position 0
+  ///   12.5, 22.5, 42.5, // (x, y, m) for position 1
+  ///   15.0, 25.0, 45.0, // (x, y, m) for position 2
+  /// ].positions(Coords.xym);
+  ///
+  /// // a series of measured 3D positions (values of the `Coords.xyzm` type)
+  /// [
+  ///   10.0, 20.0, 30.0, 40.0, // (x, y, z, m) for position 0
+  ///   12.5, 22.5, 32.5, 42.5, // (x, y, z, m) for position 1
+  ///   15.0, 25.0, 35.0, 45.0, // (x, y, z, m) for position 2
+  /// ].positions(Coords.xyzm);
+  /// ```
   PositionSeries positions([Coords type = Coords.xy]) =>
       PositionSeries.view(this, type: type);
 
@@ -162,6 +194,38 @@ extension PositionArrayExtension on Iterable<Position> {
   ///
   /// If this iterable is empty, then returned array is empty too (with
   /// coordinate type set to `Coords.xy`).
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a series of 2D positions
+  /// [
+  ///   Position.create(x: 10.0, y: 20.0),
+  ///   Position.create(x: 12.5, y: 22.5),
+  ///   Position.create(x: 15.0, y: 25.0),
+  /// ].series(),
+  ///
+  /// // a series of 3D positions
+  /// [
+  ///   Position.create(x: 10.0, y: 20.0, z: 30.0),
+  ///   Position.create(x: 12.5, y: 22.5, z: 32.5),
+  ///   Position.create(x: 15.0, y: 25.0, z: 35.0),
+  /// ].series(),
+  ///
+  /// // a series of measured 2D positions
+  /// [
+  ///   Position.create(x: 10.0, y: 20.0, m: 40.0),
+  ///   Position.create(x: 12.5, y: 22.5, m: 42.5),
+  ///   Position.create(x: 15.0, y: 25.0, m: 45.0),
+  /// ].series(),
+  ///
+  /// // a series of measured 3D positions
+  /// [
+  ///   Position.create(x: 10.0, y: 20.0, z: 30.0, m: 40.0),
+  ///   Position.create(x: 12.5, y: 22.5, z: 32.5, m: 42.5),
+  ///   Position.create(x: 15.0, y: 25.0, z: 35.0, m: 45.0),
+  /// ].series(),
+  /// ```
   PositionSeries series() => isEmpty
       ? PositionSeries.empty()
       : PositionSeries.from(
