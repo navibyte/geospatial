@@ -4,11 +4,9 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'dart:convert';
 import 'dart:typed_data';
 
 import '/src/codes/coords.dart';
-import '/src/codes/geo_representation.dart';
 import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/box.dart';
@@ -105,29 +103,34 @@ class Point implements SimpleGeometry {
         options: options,
       );
 
-  /// Parses a point geometry from [coordinates] conforming to [DefaultFormat].
+  /// Parses a point geometry from [text] conforming to [DefaultFormat].
+  /// 
+  /// Coordinate values in [text] are separated by [delimiter].
   ///
-  /// Use [crs] and [crsLogic] to give hints (like axis order, and whether x
-  /// and y must be swapped when read in) about coordinate reference system in
-  /// text input.
+  /// Use an optional [type] to explicitely set the coordinate type. If not
+  /// provided and [text] has 3 items, then xyz coordinates are assumed.
+  ///
+  /// If [swapXY] is true, then swaps x and y for the result.
   ///
   /// If [singlePrecision] is true, then coordinate values of a position are
   /// stored in `Float32List` instead of the `Float64List` (default).
   factory Point.parseCoords(
-    String coordinates, {
-    CoordRefSys? crs,
-    GeoRepresentation? crsLogic,
+    String text, {
+    Pattern delimiter = ',',
+    Coords? type,
+    bool swapXY = false,
     bool singlePrecision = false,
   }) {
-    final str = coordinates.trim();
+    final str = text.trim();
     if (str.isEmpty) {
       return Point.build(const [double.nan, double.nan]);
     }
-    final array = json.decode('[$str]') as List<dynamic>;
     return Point(
-      createPosition(
-        array,
-        swapXY: crs?.swapXY(logic: crsLogic) ?? false,
+      parsePositionFromText(
+        str,
+        delimiter: delimiter,
+        type: type,
+        swapXY: swapXY,
         singlePrecision: singlePrecision,
       ),
     );

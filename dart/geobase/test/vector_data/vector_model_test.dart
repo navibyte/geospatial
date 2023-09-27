@@ -671,10 +671,14 @@ void main() {
       ];
       for (final crsData in crsDataList) {
         final crs = crsData[0] as CoordRefSys;
+        final swapXY = crs.swapXY();
         final order = crsData[1] as AxisOrder;
         if (order == AxisOrder.xy) {
           expect(Point.parse(point, crs: crs).toText(), point);
-          expect(Point.parseCoords(pointCoords, crs: crs).toText(), point);
+          expect(
+            Point.parseCoords(pointCoords, swapXY: swapXY).toText(),
+            point,
+          );
           expect(LineString.parse(lineString, crs: crs).toText(), lineString);
           expect(
             LineString.parseCoords(lineStringCoords, crs: crs).toText(),
@@ -710,7 +714,10 @@ void main() {
         } else if (order == AxisOrder.yx) {
           // toText without CRS (so default xy order)
           expect(Point.parse(pointYX, crs: crs).toText(), point);
-          expect(Point.parseCoords(pointCoordsYX, crs: crs).toText(), point);
+          expect(
+            Point.parseCoords(pointCoordsYX, swapXY: swapXY).toText(),
+            point,
+          );
           expect(LineString.parse(lineStringYX, crs: crs).toText(), lineString);
           expect(
             LineString.parseCoords(lineStringCoordsYX, crs: crs).toText(),
@@ -747,7 +754,7 @@ void main() {
           // toText with CRS (so yx order and swapping should occur)
           expect(Point.parse(pointYX, crs: crs).toText(crs: crs), pointYX);
           expect(
-            Point.parseCoords(pointCoordsYX, crs: crs).toText(crs: crs),
+            Point.parseCoords(pointCoordsYX, swapXY: swapXY).toText(crs: crs),
             pointYX,
           );
           expect(
