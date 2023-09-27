@@ -30,6 +30,23 @@ class Point implements SimpleGeometry {
   final Position _position;
 
   /// A point geometry with [position].
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a point with a 2D position (x: 10.0, y: 20.0)
+  /// Point([10.0, 20.0].xy));
+  ///
+  /// // a point with a 3D position (x: 10.0, y: 20.0, z: 30.0)
+  /// Point([10.0, 20.0, 30.0].xyz);
+  ///
+  /// // a point with a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
+  /// Point([10.0, 20.0, 40.0].xym);
+  ///
+  /// // a point with a measured 3D position
+  /// // (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+  /// Point([10.0, 20.0, 30.0, 40.0].xyzm);
+  /// ```
   const Point(Position position) : _position = position;
 
   /// A point geometry from [position].
@@ -45,28 +62,22 @@ class Point implements SimpleGeometry {
   /// Supported coordinate value combinations for `Iterable<double>` are:
   /// (x, y), (x, y, z), (x, y, m) and (x, y, z, m).
   ///
-  /// An example to build a point geometry with 2D coordinates:
-  /// ```dart
-  ///    // using a coordinate value list (x, y)
-  ///    Point.build([10, 20]);
-  /// ```
+  /// Examples:
   ///
-  /// An example to build a point geometry with 3D coordinates:
   /// ```dart
-  ///    // using a coordinate value list (x, y, z)
-  ///    Point.build([10, 20, 30]);
-  /// ```
+  /// // a point with a 2D position (x: 10.0, y: 20.0)
+  /// Point.build([10.0, 20.0]);
   ///
-  /// An example to build a point geometry with 2D coordinates with measurement:
-  /// ```dart
-  ///    // using a coordinate value list (x, y, m), need to specify type
-  ///    Point.build([10, 20, 40], type: Coords.xym);
-  /// ```
+  /// // a point with a 3D position (x: 10.0, y: 20.0, z: 30.0)
+  /// Point.build([10.0, 20.0, 30.0]);
   ///
-  /// An example to build a point geometry with 3D coordinates with measurement:
-  /// ```dart
-  ///    // using a coordinate value list (x, y, z, m)
-  ///    Point.build([10, 20, 30, 40]);
+  /// // a point with a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
+  /// // (need to specify the coordinate type XYM)
+  /// Point.build([10.0, 20.0, 40.0], type: Coords.xym);
+  ///
+  /// // a point with a measured 3D position
+  /// // (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+  /// Point.build([10.0, 20.0, 30.0, 40.0]);
   /// ```
   factory Point.build(
     Iterable<double> position, {
@@ -90,6 +101,47 @@ class Point implements SimpleGeometry {
   /// be swapped when read in) about coordinate reference system in text input.
   ///
   /// Format or decoder implementation specific options can be set by [options].
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a point with a 2D position (x: 10.0, y: 20.0)
+  /// Point.parse(
+  ///   format: GeoJSON.geometry,
+  ///   '{"type": "Point", "coordinates": [10.0, 20.0]}',
+  /// );
+  /// Point.parse(
+  ///   format: WKT.geometry,
+  ///   'POINT (10.0 20.0)',
+  /// );
+  ///
+  /// // a point with a 3D position (x: 10.0, y: 20.0, z: 30.0)
+  /// Point.parse(
+  ///   format: GeoJSON.geometry,
+  ///   '{"type": "Point", "coordinates": [10.0, 20.0, 30.0]}',
+  /// );
+  /// Point.parse(
+  ///   format: WKT.geometry,
+  ///   'POINT Z (10.0 20.0 30.0)',
+  /// );
+  ///
+  /// // a point with a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
+  /// Point.parse(
+  ///   format: WKT.geometry,
+  ///   'POINT M (10.0 20.0 40.0)',
+  /// );
+  ///
+  /// // a point with a measured 3D position
+  /// // (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+  /// Point.parse(
+  ///   format: GeoJSON.geometry,
+  ///   '{"type": "Point", "coordinates": [10.0, 20.0, 30.0, 40]}',
+  /// );
+  /// Point.parse(
+  ///   format: WKT.geometry,
+  ///   'POINT ZM (10.0 20.0 30.0 40.0)',
+  /// );
+  /// ```
   factory Point.parse(
     String text, {
     TextReaderFormat<SimpleGeometryContent> format = GeoJSON.geometry,
@@ -104,7 +156,7 @@ class Point implements SimpleGeometry {
       );
 
   /// Parses a point geometry from [text] conforming to [DefaultFormat].
-  /// 
+  ///
   /// Coordinate values in [text] are separated by [delimiter].
   ///
   /// Use an optional [type] to explicitely set the coordinate type. If not
@@ -114,6 +166,37 @@ class Point implements SimpleGeometry {
   ///
   /// If [singlePrecision] is true, then coordinate values of a position are
   /// stored in `Float32List` instead of the `Float64List` (default).
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a point with a 2D position (x: 10.0, y: 20.0)
+  /// Point.parseCoords('10.0,20.0');
+  ///
+  /// // a point with a 3D position (x: 10.0, y: 20.0, z: 30.0)
+  /// Point.parseCoords('10.0,20.0,30.0');
+  ///
+  /// // a point with a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
+  /// // (need to specify the coordinate type XYM)
+  /// Point.parseCoords('10.0,20.0,40.0', type: Coords.xym);
+  ///
+  /// // a point with a measured 3D position
+  /// // (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
+  /// Point.parseCoords('10.0,20.0,30.0,40.0');
+  ///
+  /// // a point with a 2D position (x: 10.0, y: 20.0) using an alternative
+  /// // delimiter
+  /// Point.parseCoords('10.0;20.0', delimiter: ';');
+  ///
+  /// // a point with a 2D position (x: 10.0, y: 20.0) from an array with y
+  /// // before x
+  /// Point.parseCoords('20.0,10.0', swapXY: true);
+  ///
+  /// // a point with a 2D position (x: 10.0, y: 20.0) with the internal storage
+  /// // using single precision floating point numbers (`Float32List` in this
+  /// // case)
+  /// Point.parseCoords('10.0,20.0', singlePrecision: true);
+  /// ```
   factory Point.parseCoords(
     String text, {
     Pattern delimiter = ',',

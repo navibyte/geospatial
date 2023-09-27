@@ -17,17 +17,17 @@ void main() {
   group('Position class', () {
     test('Position.view', () {
       // create a 2D position (x: 10.0, y: 20.0)
-      _testPosition(Position.view([10.0, 20.0]));
+      testPosition(Position.view([10.0, 20.0]));
 
       // create a 3D position (x: 10.0, y: 20.0, z: 30.0)
-      _testPosition(Position.view([10.0, 20.0, 30.0]));
+      testPosition(Position.view([10.0, 20.0, 30.0]));
 
       // create a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
       // (need to specify the coordinate type XYM)
-      _testPosition(Position.view([10.0, 20.0, 40.0], type: Coords.xym));
+      testPosition(Position.view([10.0, 20.0, 40.0], type: Coords.xym));
 
       // create a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
-      _testPosition(Position.view([10.0, 20.0, 30.0, 40.0]));
+      testPosition(Position.view([10.0, 20.0, 30.0, 40.0]));
     });
 
     test('Position.subview', () {
@@ -36,242 +36,242 @@ void main() {
 
       // create a 2D position (x: 10.0, y: 20.0)
       // (the coordinate type is XY by default when using subview)
-      _testPosition(Position.subview(data, start: 4));
+      testPosition(Position.subview(data, start: 4));
 
       // create a 3D position (x: 10.0, y: 20.0, z: 30.0)
-      _testPosition(Position.subview(data, start: 4, type: Coords.xyz));
+      testPosition(Position.subview(data, start: 4, type: Coords.xyz));
 
       // create a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
-      _testPosition(Position.subview(data, start: 4, type: Coords.xyzm));
+      testPosition(Position.subview(data, start: 4, type: Coords.xyzm));
     });
 
     test('Position.create', () {
       // create a 2D position (x: 10.0, y: 20.0)
-      _testPosition(Position.create(x: 10.0, y: 20.0));
+      testPosition(Position.create(x: 10.0, y: 20.0));
 
       // create a 3D position (x: 10.0, y: 20.0, z: 30.0)
-      _testPosition(Position.create(x: 10.0, y: 20.0, z: 30.0));
+      testPosition(Position.create(x: 10.0, y: 20.0, z: 30.0));
 
       // create a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
-      _testPosition(Position.create(x: 10.0, y: 20.0, m: 40.0));
+      testPosition(Position.create(x: 10.0, y: 20.0, m: 40.0));
 
       // create a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
-      _testPosition(Position.create(x: 10.0, y: 20.0, z: 30.0, m: 40.0));
+      testPosition(Position.create(x: 10.0, y: 20.0, z: 30.0, m: 40.0));
     });
 
     test('Position.parse', () {
       // create a 2D position (x: 10.0, y: 20.0)
-      _testPosition(Position.parse('10.0,20.0'));
+      testPosition(Position.parse('10.0,20.0'));
 
       // create a 3D position (x: 10.0, y: 20.0, z: 30.0)
-      _testPosition(Position.parse('10.0,20.0,30.0'));
+      testPosition(Position.parse('10.0,20.0,30.0'));
 
       // create a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
       // (need to specify the coordinate type XYM)
-      _testPosition(Position.parse('10.0,20.0,40.0', type: Coords.xym));
+      testPosition(Position.parse('10.0,20.0,40.0', type: Coords.xym));
 
       // create a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
-      _testPosition(Position.parse('10.0,20.0,30.0,40.0'));
+      testPosition(Position.parse('10.0,20.0,30.0,40.0'));
 
       // create a 2D position (x: 10.0, y: 20.0) using an alternative delimiter
-      _testPosition(Position.parse('10.0;20.0', delimiter: ';'));
+      testPosition(Position.parse('10.0;20.0', delimiter: ';'));
 
       // create a 2D position (x: 10.0, y: 20.0) from an array with y before x
-      _testPosition(Position.parse('20.0,10.0', swapXY: true));
+      testPosition(Position.parse('20.0,10.0', swapXY: true));
 
       // create a 2D position (x: 10.0, y: 20.0) with the internal storage using
       // single precision floating point numbers (`Float32List` in this case)
-      _testPosition(Position.parse('10.0,20.0', singlePrecision: true));
+      testPosition(Position.parse('10.0,20.0', singlePrecision: true));
     });
   });
 
   group('Position class from extensions', () {
     test('CoordinateArrayExtension.position', () {
       // a 2D position (x: 10.0, y: 20.0)
-      _testPosition([10.0, 20.0].position);
+      testPosition([10.0, 20.0].position);
 
       // a 3D position (x: 10.0, y: 20.0, z: 30.0)
-      _testPosition([10.0, 20.0, 30.0].position);
+      testPosition([10.0, 20.0, 30.0].position);
 
       // a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
-      _testPosition([10.0, 20.0, 30.0, 40.0].position);
+      testPosition([10.0, 20.0, 30.0, 40.0].position);
     });
 
     test('CoordinateArrayExtension.xy', () {
       // a 2D position (x: 10.0, y: 20.0)
-      _testPosition([10.0, 20.0].xy);
+      testPosition([10.0, 20.0].xy);
     });
 
     test('CoordinateArrayExtension.xyz', () {
       // a 3D position (x: 10.0, y: 20.0, z: 30.0)
-      _testPosition([10.0, 20.0, 30.0].xyz);
+      testPosition([10.0, 20.0, 30.0].xyz);
     });
 
     test('CoordinateArrayExtension.xym', () {
       // a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
-      _testPosition([10.0, 20.0, 40.0].xym);
+      testPosition([10.0, 20.0, 40.0].xym);
     });
 
     test('CoordinateArrayExtension.xyzm', () {
       // a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
-      _testPosition([10.0, 20.0, 30.0, 40.0].xyzm);
+      testPosition([10.0, 20.0, 30.0, 40.0].xyzm);
     });
   });
 
   group('Projected class', () {
     test('Projected.new', () {
       // create a 2D position (x: 10.0, y: 20.0)
-      _testProjected(const Projected(x: 10.0, y: 20.0));
+      testProjected(const Projected(x: 10.0, y: 20.0));
 
       // create a 3D position (x: 10.0, y: 20.0, z: 30.0)
-      _testProjected(const Projected(x: 10.0, y: 20.0, z: 30.0));
+      testProjected(const Projected(x: 10.0, y: 20.0, z: 30.0));
 
       // create a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
-      _testProjected(const Projected(x: 10.0, y: 20.0, m: 40.0));
+      testProjected(const Projected(x: 10.0, y: 20.0, m: 40.0));
 
       // create a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
-      _testProjected(
+      testProjected(
         const Projected(x: 10.0, y: 20.0, z: 30.0, m: 40.0),
       );
     });
 
     test('Projected.create', () {
       // create a 2D position (x: 10.0, y: 20.0)
-      _testProjected(const Projected.create(x: 10.0, y: 20.0));
+      testProjected(const Projected.create(x: 10.0, y: 20.0));
 
       // create a 3D position (x: 10.0, y: 20.0, z: 30.0)
-      _testProjected(const Projected.create(x: 10.0, y: 20.0, z: 30.0));
+      testProjected(const Projected.create(x: 10.0, y: 20.0, z: 30.0));
 
       // create a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
-      _testProjected(const Projected.create(x: 10.0, y: 20.0, m: 40.0));
+      testProjected(const Projected.create(x: 10.0, y: 20.0, m: 40.0));
 
       // create a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
-      _testProjected(
+      testProjected(
         const Projected.create(x: 10.0, y: 20.0, z: 30.0, m: 40.0),
       );
     });
 
     test('Projected.build', () {
       // create a 2D position (x: 10.0, y: 20.0)
-      _testPosition(Projected.build([10.0, 20.0]));
+      testPosition(Projected.build([10.0, 20.0]));
 
       // create a 3D position (x: 10.0, y: 20.0, z: 30.0)
-      _testPosition(Projected.build([10.0, 20.0, 30.0]));
+      testPosition(Projected.build([10.0, 20.0, 30.0]));
 
       // create a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
       // (need to specify the coordinate type XYM)
-      _testPosition(
+      testPosition(
         Projected.build([10.0, 20.0, 40.0], type: Coords.xym),
       );
 
       // create a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
-      _testPosition(Projected.build([10.0, 20.0, 30.0, 40.0]));
+      testPosition(Projected.build([10.0, 20.0, 30.0, 40.0]));
     });
 
     test('Projected.parse', () {
       // create a 2D position (x: 10.0, y: 20.0)
-      _testProjected(Projected.parse('10.0,20.0'));
+      testProjected(Projected.parse('10.0,20.0'));
 
       // create a 3D position (x: 10.0, y: 20.0, z: 30.0)
-      _testProjected(Projected.parse('10.0,20.0,30.0'));
+      testProjected(Projected.parse('10.0,20.0,30.0'));
 
       // create a measured 2D position (x: 10.0, y: 20.0, m: 40.0)
       // (need to specify the coordinate type XYM)
-      _testProjected(Projected.parse('10.0,20.0,40.0', type: Coords.xym));
+      testProjected(Projected.parse('10.0,20.0,40.0', type: Coords.xym));
 
       // create a measured 3D position (x: 10.0, y: 20.0, z: 30.0, m: 40.0)
-      _testProjected(Projected.parse('10.0,20.0,30.0,40.0'));
+      testProjected(Projected.parse('10.0,20.0,30.0,40.0'));
 
       // create a 2D position (x: 10.0, y: 20.0) using an alternative delimiter
-      _testProjected(Projected.parse('10.0;20.0', delimiter: ';'));
+      testProjected(Projected.parse('10.0;20.0', delimiter: ';'));
 
       // create a 2D position (x: 10.0, y: 20.0) from an array with y before x
-      _testProjected(Projected.parse('20.0,10.0', swapXY: true));
+      testProjected(Projected.parse('20.0,10.0', swapXY: true));
     });
   });
 
   group('Geographic class', () {
     test('Geographic.new', () {
       // create a 2D position (lon: 10.0, lat: 20.0)
-      _testGeographic(const Geographic(lon: 10.0, lat: 20.0));
+      testGeographic(const Geographic(lon: 10.0, lat: 20.0));
 
       // create a 3D position (lon: 10.0, lat: 20.0, elev: 30.0)
-      _testGeographic(const Geographic(lon: 10.0, lat: 20.0, elev: 30.0));
+      testGeographic(const Geographic(lon: 10.0, lat: 20.0, elev: 30.0));
 
       // create a measured 2D position (lon: 10.0, lat: 20.0, m: 40.0)
-      _testGeographic(const Geographic(lon: 10.0, lat: 20.0, m: 40.0));
+      testGeographic(const Geographic(lon: 10.0, lat: 20.0, m: 40.0));
 
       // create a measured 3D position
       // (lon: 10.0, lat: 20.0, elev: 30.0, m: 40.0)
-      _testGeographic(
+      testGeographic(
         const Geographic(lon: 10.0, lat: 20.0, elev: 30.0, m: 40.0),
       );
     });
 
     test('Geographic.create', () {
       // create a 2D position (lon: 10.0, lat: 20.0)
-      _testGeographic(const Geographic.create(x: 10.0, y: 20.0));
+      testGeographic(const Geographic.create(x: 10.0, y: 20.0));
 
       // create a 3D position (lon: 10.0, lat: 20.0, elev: 30.0)
-      _testGeographic(const Geographic.create(x: 10.0, y: 20.0, z: 30.0));
+      testGeographic(const Geographic.create(x: 10.0, y: 20.0, z: 30.0));
 
       // create a measured 2D position (lon: 10.0, lat: 20.0, m: 40.0)
-      _testGeographic(const Geographic.create(x: 10.0, y: 20.0, m: 40.0));
+      testGeographic(const Geographic.create(x: 10.0, y: 20.0, m: 40.0));
 
       // create a measured 3D position
       // (lon: 10.0, lat: 20.0, elev: 30.0, m: 40.0)
-      _testGeographic(
+      testGeographic(
         const Geographic.create(x: 10.0, y: 20.0, z: 30.0, m: 40.0),
       );
     });
 
     test('Geographic.build', () {
       // create a 2D position (lon: 10.0, lat: 20.0)
-      _testGeographic(Geographic.build([10.0, 20.0]));
+      testGeographic(Geographic.build([10.0, 20.0]));
 
       // create a 3D position (lon: 10.0, lat: 20.0, elev: 30.0)
-      _testGeographic(Geographic.build([10.0, 20.0, 30.0]));
+      testGeographic(Geographic.build([10.0, 20.0, 30.0]));
 
       // create a measured 2D position (lon: 10.0, lat: 20.0, m: 40.0)
       // (need to specify the coordinate type XYM)
-      _testGeographic(
+      testGeographic(
         Geographic.build([10.0, 20.0, 40.0], type: Coords.xym),
       );
 
       // create a measured 3D position
       // (lon: 10.0, lat: 20.0, elev: 30.0, m: 40.0)
-      _testGeographic(Geographic.build([10.0, 20.0, 30.0, 40.0]));
+      testGeographic(Geographic.build([10.0, 20.0, 30.0, 40.0]));
     });
 
     test('Geographic.parse', () {
       // create a 2D position (lon: 10.0, lat: 20.0)
-      _testGeographic(Geographic.parse('10.0,20.0'));
+      testGeographic(Geographic.parse('10.0,20.0'));
 
       // create a 3D position (lon: 10.0, lat: 20.0, elev: 30.0)
-      _testGeographic(Geographic.parse('10.0,20.0,30.0'));
+      testGeographic(Geographic.parse('10.0,20.0,30.0'));
 
       // create a measured 2D position (lon: 10.0, lat: 20.0, m: 40.0)
       // (need to specify the coordinate type XYM)
-      _testGeographic(Geographic.parse('10.0,20.0,40.0', type: Coords.xym));
+      testGeographic(Geographic.parse('10.0,20.0,40.0', type: Coords.xym));
 
       // create a measured 3D position
       // (lon: 10.0, lat: 20.0, elev: 30.0, m: 40.0)
-      _testGeographic(Geographic.parse('10.0,20.0,30.0,40.0'));
+      testGeographic(Geographic.parse('10.0,20.0,30.0,40.0'));
 
       // create a 2D position (lon: 10.0, lat: 20.0) using an alternative
       // delimiter
-      _testGeographic(Geographic.parse('10.0;20.0', delimiter: ';'));
+      testGeographic(Geographic.parse('10.0;20.0', delimiter: ';'));
 
       // create a 2D position (lon: 10.0, lat: 20.0) from an array with y (lat)
       // before x (lon)
-      _testGeographic(Geographic.parse('20.0,10.0', swapXY: true));
+      testGeographic(Geographic.parse('20.0,10.0', swapXY: true));
     });
   });
 
   group('PositionSeries class', () {
     test('PositionSeries.view', () {
       // a series of 2D positions (with values of the `Coords.xy` type)
-      _testPositionSeries(
+      testPositionSeries(
         PositionSeries.view(
           [
             10.0, 20.0, // (x, y) for position 0
@@ -283,7 +283,7 @@ void main() {
       );
 
       // a series of 3D positions (with values of the `Coords.xyz` type)
-      _testPositionSeries(
+      testPositionSeries(
         PositionSeries.view(
           [
             10.0, 20.0, 30.0, // (x, y, z) for position 0
@@ -295,7 +295,7 @@ void main() {
       );
 
       // a series of measured 2D positions (values of the `Coords.xym` type)
-      _testPositionSeries(
+      testPositionSeries(
         PositionSeries.view(
           [
             10.0, 20.0, 40.0, // (x, y, m) for position 0
@@ -307,7 +307,7 @@ void main() {
       );
 
       // a series of measured 3D positions (values of the `Coords.xyzm` type)
-      _testPositionSeries(
+      testPositionSeries(
         PositionSeries.view(
           [
             10.0, 20.0, 30.0, 40.0, // (x, y, z, m) for position 0
@@ -321,7 +321,7 @@ void main() {
 
     test('PositionSeries.from', () {
       // a series of 2D positions
-      _testPositionSeries(
+      testPositionSeries(
         PositionSeries.from(
           [
             Position.create(x: 10.0, y: 20.0),
@@ -333,7 +333,7 @@ void main() {
       );
 
       // a series of 3D positions
-      _testPositionSeries(
+      testPositionSeries(
         PositionSeries.from(
           [
             Position.create(x: 10.0, y: 20.0, z: 30.0),
@@ -345,7 +345,7 @@ void main() {
       );
 
       // a series of measured 2D positions
-      _testPositionSeries(
+      testPositionSeries(
         PositionSeries.from(
           [
             Position.create(x: 10.0, y: 20.0, m: 40.0),
@@ -357,7 +357,7 @@ void main() {
       );
 
       // a series of measured 3D positions
-      _testPositionSeries(
+      testPositionSeries(
         PositionSeries.from(
           [
             Position.create(x: 10.0, y: 20.0, z: 30.0, m: 40.0),
@@ -371,7 +371,7 @@ void main() {
 
     test('PositionSeries.parse', () {
       // a series of 2D positions (with values of the `Coords.xy` type)
-      _testPositionSeries(
+      testPositionSeries(
         PositionSeries.parse(
           // values for three (x, y) positions
           '10.0,20.0,12.5,22.5,15.0,25.0',
@@ -380,7 +380,7 @@ void main() {
       );
 
       // a series of 3D positions (with values of the `Coords.xyz` type)
-      _testPositionSeries(
+      testPositionSeries(
         PositionSeries.parse(
           // values for three (x, y, z) positions
           '10.0,20.0,30.0,12.5,22.5,32.5,15.0,25.0,35.0',
@@ -389,7 +389,7 @@ void main() {
       );
 
       // a series of measured 2D positions (values of the `Coords.xym` type)
-      _testPositionSeries(
+      testPositionSeries(
         PositionSeries.parse(
           // values for three (x, y, m) positions
           '10.0,20.0,40.0,12.5,22.5,42.5,15.0,25.0,45.0',
@@ -398,7 +398,7 @@ void main() {
       );
 
       // a series of measured 3D positions (values of the `Coords.xyzm` type)
-      _testPositionSeries(
+      testPositionSeries(
         PositionSeries.parse(
           // values for three (x, y, z, m) positions
           '10.0,20.0,30.0,40.0,12.5,22.5,32.5,42.5,15.0,25.0,35.0,45.0',
@@ -408,7 +408,7 @@ void main() {
 
       // a series of 2D positions (with values of the `Coords.xy` type) using
       // an alternative delimiter
-      _testPositionSeries(
+      testPositionSeries(
         PositionSeries.parse(
           // values for three (x, y) positions
           '10.0;20.0;12.5;22.5;15.0;25.0',
@@ -419,7 +419,7 @@ void main() {
 
       // a series of 2D positions (with values of the `Coords.xy` type) with x
       // before y
-      _testPositionSeries(
+      testPositionSeries(
         PositionSeries.parse(
           // values for three (x, y) positions
           '20.0,10.0,22.5,12.5,25.0,15.0',
@@ -431,7 +431,7 @@ void main() {
       // a series of 2D positions (with values of the `Coords.xy` type) with the
       // internal storage using single precision floating point numbers
       // (`Float32List` in this case)
-      _testPositionSeries(
+      testPositionSeries(
         PositionSeries.parse(
           // values for three (x, y) positions
           '10.0,20.0,12.5,22.5,15.0,25.0',
@@ -445,7 +445,7 @@ void main() {
   group('PositionSeries class from extensions', () {
     test('CoordinateArrayExtension.positions', () {
       // a series of 2D positions (with values of the `Coords.xy` type)
-      _testPositionSeries(
+      testPositionSeries(
         [
           10.0, 20.0, // (x, y) for position 0
           12.5, 22.5, // (x, y) for position 1
@@ -454,7 +454,7 @@ void main() {
       );
 
       // a series of 3D positions (with values of the `Coords.xyz` type)
-      _testPositionSeries(
+      testPositionSeries(
         [
           10.0, 20.0, 30.0, // (x, y, z) for position 0
           12.5, 22.5, 32.5, // (x, y, z) for position 1
@@ -463,7 +463,7 @@ void main() {
       );
 
       // a series of measured 2D positions (values of the `Coords.xym` type)
-      _testPositionSeries(
+      testPositionSeries(
         [
           10.0, 20.0, 40.0, // (x, y, m) for position 0
           12.5, 22.5, 42.5, // (x, y, m) for position 1
@@ -472,7 +472,7 @@ void main() {
       );
 
       // a series of measured 3D positions (values of the `Coords.xyzm` type)
-      _testPositionSeries(
+      testPositionSeries(
         [
           10.0, 20.0, 30.0, 40.0, // (x, y, z, m) for position 0
           12.5, 22.5, 32.5, 42.5, // (x, y, z, m) for position 1
@@ -483,7 +483,7 @@ void main() {
 
     test('PositionArrayExtension.series', () {
       // a series of 2D positions
-      _testPositionSeries(
+      testPositionSeries(
         [
           Position.create(x: 10.0, y: 20.0),
           Position.create(x: 12.5, y: 22.5),
@@ -492,7 +492,7 @@ void main() {
       );
 
       // a series of 3D positions
-      _testPositionSeries(
+      testPositionSeries(
         [
           Position.create(x: 10.0, y: 20.0, z: 30.0),
           Position.create(x: 12.5, y: 22.5, z: 32.5),
@@ -501,7 +501,7 @@ void main() {
       );
 
       // a series of measured 2D positions
-      _testPositionSeries(
+      testPositionSeries(
         [
           Position.create(x: 10.0, y: 20.0, m: 40.0),
           Position.create(x: 12.5, y: 22.5, m: 42.5),
@@ -510,7 +510,7 @@ void main() {
       );
 
       // a series of measured 3D positions
-      _testPositionSeries(
+      testPositionSeries(
         [
           Position.create(x: 10.0, y: 20.0, z: 30.0, m: 40.0),
           Position.create(x: 12.5, y: 22.5, z: 32.5, m: 42.5),
@@ -522,7 +522,7 @@ void main() {
 }
 
 /// Tests position instance of the base type `Position`.
-void _testPosition(Position pos) {
+void testPosition(Position pos) {
   _doTestPosition(pos);
   _doTestPosition(pos.packed());
   _doTestPosition(pos.copyTo(Projected.create));
@@ -530,14 +530,14 @@ void _testPosition(Position pos) {
 }
 
 /// Tests position instance of the sub type `Projected`.
-void _testProjected(Projected pos) {
+void testProjected(Projected pos) {
   _doTestPosition(pos);
   _doTestPosition(pos.copyTo(Position.create));
   _doTestPosition(pos.copyTo(Geographic.create));
 }
 
 /// Tests position instance of the sub type `Geographic`.
-void _testGeographic(Geographic pos) {
+void testGeographic(Geographic pos) {
   _doTestPosition(pos);
   _doTestPosition(pos.copyTo(Position.create));
   _doTestPosition(pos.copyTo(Projected.create));
@@ -645,9 +645,9 @@ void _doTestPosition(Position pos) {
 }
 
 /// Tests position series instance of the base type `PositionSeries`.
-void _testPositionSeries(PositionSeries series) {
+void testPositionSeries(PositionSeries series) {
   // first position is sample of position test
-  _testPosition(series[0]);
+  testPosition(series[0]);
 
   // tests for series
   _doTestPositionSeries(series);
