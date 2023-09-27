@@ -34,6 +34,46 @@ class LineString extends SimpleGeometry {
   /// A line string geometry with a [chain] of positions and optional [bounds].
   ///
   /// The [chain] array must contain at least two positions (or be empty).
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a line string from 2D positions
+  /// LineString(
+  ///   [
+  ///     10.0, 20.0, // (x, y) for position 0
+  ///     12.5, 22.5, // (x, y) for position 1
+  ///     15.0, 25.0, // (x, y) for position 2
+  ///   ].positions(Coords.xy),
+  /// );
+  ///
+  /// // a line string from 3D positions
+  /// LineString(
+  ///   [
+  ///     10.0, 20.0, 30.0, // (x, y, z) for position 0
+  ///     12.5, 22.5, 32.5, // (x, y, z) for position 1
+  ///     15.0, 25.0, 35.0, // (x, y, z) for position 2
+  ///   ].positions(Coords.xyz),
+  /// );
+  ///
+  /// // a line string from measured 2D positions
+  /// LineString(
+  ///   [
+  ///     10.0, 20.0, 40.0, // (x, y, m) for position 0
+  ///     12.5, 22.5, 42.5, // (x, y, m) for position 1
+  ///     15.0, 25.0, 45.0, // (x, y, m) for position 2
+  ///   ].positions(Coords.xym),
+  /// );
+  ///
+  /// // a line string from measured 3D positions
+  /// LineString(
+  ///   [
+  ///     10.0, 20.0, 30.0, 40.0, // (x, y, z, m) for position 0
+  ///     12.5, 22.5, 32.5, 42.5, // (x, y, z, m) for position 1
+  ///     15.0, 25.0, 35.0, 45.0, // (x, y, z, m) for position 2
+  ///   ].positions(Coords.xyzm),
+  /// );
+  /// ```
   const LineString(PositionSeries chain, {super.bounds})
       : _chain = chain,
         assert(
@@ -46,6 +86,40 @@ class LineString extends SimpleGeometry {
   /// The [chain] iterable must contain at least two positions (or be empty).
   ///
   /// The coordinate type of all positions in a chain should be the same.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a line string from 2D positions
+  /// LineString.from([
+  ///   [10.0, 20.0].xy,
+  ///   [12.5, 22.5].xy,
+  ///   [15.0, 25.0].xy,
+  /// ]);
+  ///
+  /// // a line string from 3D positions
+  /// LineString.from([
+  ///   [10.0, 20.0, 30.0].xyz,
+  ///   [12.5, 22.5, 32.5].xyz,
+  ///   [15.0, 25.0, 35.0].xyz,
+  /// ]);
+  ///
+  /// // a line string from measured 2D positions
+  /// LineString.from([
+  ///   [10.0, 20.0, 40.0].xym,
+  ///   [12.5, 22.5, 42.5].xym,
+  ///   [15.0, 25.0, 45.0].xym,
+  /// ]);
+  ///
+  /// // a line string from measured 3D positions
+  /// LineString.from(
+  ///   [
+  ///     [10.0, 20.0, 30.0, 40.0].xyzm,
+  ///     [12.5, 22.5, 32.5, 42.5].xyzm,
+  ///     [15.0, 25.0, 35.0, 45.0].xyzm,
+  ///   ],
+  /// );
+  /// ```
   factory LineString.from(Iterable<Position> chain, {Box? bounds}) =>
       LineString(
         PositionSeries.from(chain),
@@ -65,17 +139,48 @@ class LineString extends SimpleGeometry {
   /// of the first position, the next three coordinate values are x, y and z of
   /// the second position, and so on.
   ///
-  /// An example to build a line string with 3 points:
+  /// Examples:
+  ///
   /// ```dart
-  ///   LineString.build(
-  ///       // points as a flat structure with three (x, y) points
-  ///       [
-  ///            -1.1, -1.1,
-  ///            2.1, -2.5,
-  ///            3.5, -3.49,
-  ///       ],
-  ///       type: Coords.xy,
-  ///   );
+  /// // a line string from 2D positions
+  /// LineString.build(
+  ///   [
+  ///     10.0, 20.0, // (x, y) for position 0
+  ///     12.5, 22.5, // (x, y) for position 1
+  ///     15.0, 25.0, // (x, y) for position 2
+  ///   ],
+  ///   type: Coords.xy,
+  /// );
+  ///
+  /// // a line string from 3D positions
+  /// LineString.build(
+  ///   [
+  ///     10.0, 20.0, 30.0, // (x, y, z) for position 0
+  ///     12.5, 22.5, 32.5, // (x, y, z) for position 1
+  ///     15.0, 25.0, 35.0, // (x, y, z) for position 2
+  ///   ],
+  ///   type: Coords.xyz,
+  /// );
+  ///
+  /// // a line string from measured 2D positions
+  /// LineString.build(
+  ///   [
+  ///     10.0, 20.0, 40.0, // (x, y, m) for position 0
+  ///     12.5, 22.5, 42.5, // (x, y, m) for position 1
+  ///     15.0, 25.0, 45.0, // (x, y, m) for position 2
+  ///   ],
+  ///   type: Coords.xym,
+  /// );
+  ///
+  /// // a line string from measured 3D positions
+  /// LineString.build(
+  ///   [
+  ///     10.0, 20.0, 30.0, 40.0, // (x, y, z, m) for position 0
+  ///     12.5, 22.5, 32.5, 42.5, // (x, y, z, m) for position 1
+  ///     15.0, 25.0, 35.0, 45.0, // (x, y, z, m) for position 2
+  ///   ],
+  ///   type: Coords.xyzm,
+  /// );
   /// ```
   factory LineString.build(
     Iterable<double> chain, {
@@ -99,6 +204,50 @@ class LineString extends SimpleGeometry {
   /// be swapped when read in) about coordinate reference system in text input.
   ///
   /// Format or decoder implementation specific options can be set by [options].
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a line string from 2D positions
+  /// LineString.parse(
+  ///   format: GeoJSON.geometry,
+  ///   '{"type": "LineString", "coordinates": [[10.0,20.0], '
+  ///   '[12.5,22.5], [15.0,25.0]]}',
+  /// );
+  /// LineString.parse(
+  ///   format: WKT.geometry,
+  ///   'LINESTRING (10.0 20.0,12.5 22.5,15.0 25.0)',
+  /// );
+  ///
+  /// // a line string from 3D positions
+  /// LineString.parse(
+  ///   format: GeoJSON.geometry,
+  ///   '{"type": "LineString", "coordinates": [[10.0,20.0,30.0], '
+  ///   '[12.5,22.5,32.5], [15.0,25.0,35.0]]}',
+  /// );
+  /// LineString.parse(
+  ///   format: WKT.geometry,
+  ///   'LINESTRING Z (10.0 20.0 30.0,12.5 22.5 32.5,15.0 25.0 35.0)',
+  /// );
+  ///
+  /// // a line string from measured 2D positions
+  /// LineString.parse(
+  ///   format: WKT.geometry,
+  ///   'LINESTRING M (10.0 20.0 40.0,12.5 22.5 42.5,15.0 25.0 45.0)',
+  /// );
+  ///
+  /// // a line string from measured 3D positions
+  /// LineString.parse(
+  ///   format: GeoJSON.geometry,
+  ///   '{"type": "LineString", "coordinates": [[10.0,20.0,30.0,40.0], '
+  ///   '[12.5,22.5,32.5,42.5], [15.0,25.0,35.0,45.0]]}',
+  /// );
+  /// LineString.parse(
+  ///   format: WKT.geometry,
+  ///   'LINESTRING ZM '
+  ///   '(10.0 20.0 30.0 40.0,12.5 22.5 32.5 42.5,15.0 25.0 35.0 45.0)',
+  /// );
+  /// ```
   factory LineString.parse(
     String text, {
     TextReaderFormat<SimpleGeometryContent> format = GeoJSON.geometry,
@@ -121,6 +270,55 @@ class LineString extends SimpleGeometry {
   ///
   /// If [singlePrecision] is true, then coordinate values of positions are
   /// stored in `Float32List` instead of the `Float64List` (default).
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a line string from 2D positions
+  /// LineString.parseCoords(
+  ///   // values for three (x, y) positions
+  ///   '10.0,20.0,12.5,22.5,15.0,25.0',
+  ///   type: Coords.xy,
+  /// );
+  ///
+  /// // a line string from 3D positions
+  /// LineString.parseCoords(
+  ///   // values for three (x, y, z) positions
+  ///   '10.0,20.0,30.0,12.5,22.5,32.5,15.0,25.0,35.0',
+  ///   type: Coords.xyz,
+  /// );
+  ///
+  /// // a line string from measured 2D positions
+  /// LineString.parseCoords(
+  ///   // values for three (x, y, m) positions
+  ///   '10.0,20.0,40.0,12.5,22.5,42.5,15.0,25.0,45.0',
+  ///   type: Coords.xym,
+  /// );
+  ///
+  /// // a line string from measured 3D positions
+  /// LineString.parseCoords(
+  ///   // values for three (x, y, z, m) positions
+  ///   '10.0,20.0,30.0,40.0,12.5,22.5,32.5,42.5,15.0,25.0,35.0,45.0',
+  ///   type: Coords.xyzm,
+  /// );
+  ///
+  /// // a line string from2D positions with x before y
+  /// LineString.parseCoords(
+  ///   // values for three (x, y) positions
+  ///   '20.0,10.0,22.5,12.5,25.0,15.0',
+  ///   type: Coords.xy,
+  ///   swapXY: true,
+  /// );
+  ///
+  /// // a line string from 2D positions with the internal storage using single
+  /// // precision floating point numbers (`Float32List` in this case)
+  /// LineString.parseCoords(
+  ///   // values for three (x, y) positions
+  ///   '10.0,20.0,12.5,22.5,15.0,25.0',
+  ///   type: Coords.xy,
+  ///   singlePrecision: true,
+  /// );
+  /// ```
   factory LineString.parseCoords(
     String coordinates, {
     Pattern delimiter = ',',
