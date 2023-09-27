@@ -17,7 +17,6 @@ import '/src/utils/coord_positions.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
-import '/src/vector/formats/geojson/default_format.dart';
 import '/src/vector/formats/geojson/geojson_format.dart';
 import '/src/vector/formats/wkb/wkb_format.dart';
 import '/src/vector_data/model/bounded/bounded.dart';
@@ -155,9 +154,8 @@ class Point implements SimpleGeometry {
         options: options,
       );
 
-  /// Parses a point geometry from [text] conforming to [DefaultFormat].
-  ///
-  /// Coordinate values in [text] are separated by [delimiter].
+  /// Parses a point geometry from [text] with coordinate values separated by
+  /// [delimiter].
   ///
   /// Use an optional [type] to explicitely set the coordinate type. If not
   /// provided and [text] has 3 items, then xyz coordinates are assumed.

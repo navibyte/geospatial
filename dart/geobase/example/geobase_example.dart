@@ -190,10 +190,6 @@ void _intro() {
     Geographic(lon: 40, lat: 40, elev: 5.5),
   ]);
 
-  // Geometries can be parsed also from the text representation of coordinates.
-  LineString.parseCoords('[30,10],[10,30],[40,40]'); // 2D
-  LineString.parseCoords('[30,10,5.5],[10,30,5.5],[40,40,5.5]'); // 3D
-
   // -------
 
   // GeoJSON, WKT and WKB formats are supported as input and output.

@@ -453,6 +453,8 @@ void main() {
     const pointYX = '{"type":"Point","coordinates":[$pointCoordsYX]}';
     const lineStringCoords = '[-1.1,-1.1],[2.1,-2.5],[3.5,-3.49]';
     const lineStringCoordsYX = '[-1.1,-1.1],[-2.5,2.1],[-3.49,3.5]';
+    const lineStringCoordsFlat = '-1.1,-1.1,2.1,-2.5,3.5,-3.49';
+    const lineStringCoordsYXFlat = '-1.1,-1.1,-2.5,2.1,-3.49,3.5';
     const lineString =
         '{"type":"LineString","coordinates":[$lineStringCoords]}';
     const lineStringYX =
@@ -492,7 +494,7 @@ void main() {
       expect(Point.parse(point).toText(), point);
       expect(Point.parseCoords(pointCoords).toText(), point);
       expect(LineString.parse(lineString).toText(), lineString);
-      expect(LineString.parseCoords(lineStringCoords).toText(), lineString);
+      expect(LineString.parseCoords(lineStringCoordsFlat).toText(), lineString);
       expect(Polygon.parse(polygon).toText(), polygon);
       expect(Polygon.parseCoords(polygonCoords).toText(), polygon);
 
@@ -681,7 +683,7 @@ void main() {
           );
           expect(LineString.parse(lineString, crs: crs).toText(), lineString);
           expect(
-            LineString.parseCoords(lineStringCoords, crs: crs).toText(),
+            LineString.parseCoords(lineStringCoordsFlat, swapXY: swapXY).toText(),
             lineString,
           );
           expect(Polygon.parse(polygon, crs: crs).toText(), polygon);
@@ -720,7 +722,7 @@ void main() {
           );
           expect(LineString.parse(lineStringYX, crs: crs).toText(), lineString);
           expect(
-            LineString.parseCoords(lineStringCoordsYX, crs: crs).toText(),
+            LineString.parseCoords(lineStringCoordsYXFlat, swapXY: swapXY).toText(),
             lineString,
           );
           expect(Polygon.parse(polygonYX, crs: crs).toText(), polygon);
@@ -762,7 +764,7 @@ void main() {
             lineStringYX,
           );
           expect(
-            LineString.parseCoords(lineStringCoordsYX, crs: crs)
+            LineString.parseCoords(lineStringCoordsYXFlat, swapXY: swapXY)
                 .toText(crs: crs),
             lineStringYX,
           );

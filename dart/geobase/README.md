@@ -170,14 +170,6 @@ Position iterables can be used for building geomtries too:
   ]);
 ```
 
-Geometries can be parsed also from the text representation of coordinates (in
-this text representation each position is encoded between brackets):
-
-```dart
-  LineString.parseCoords('[30,10],[10,30],[40,40]'); // 2D 
-  LineString.parseCoords('[30,10,5.5],[10,30,5.5],[40,40,5.5]'); // 3D  
-```
-
 GeoJSON, WKT and WKB formats are supported as input and output:
 
 ```dart
