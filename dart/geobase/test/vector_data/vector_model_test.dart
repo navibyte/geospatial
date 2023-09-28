@@ -149,7 +149,7 @@ void main() {
       expect(emptyPolygon.toText(format: wkt), 'POLYGON EMPTY');
       expect(emptyPolygon.toText(), '{"type":"Polygon","coordinates":[]}');
       expect(
-        Polygon.parseCoords('').toText(format: def),
+        Polygon.parseCoords(const []).toText(format: def),
         emptyPolygon.toText(format: def),
       );
       expect(
@@ -463,6 +463,14 @@ void main() {
         '[[10.1,10.1],[5.0,9.0],[12.0,4.0],[10.1,10.1]],[[11.1,11.1],[6.0,9.9],[13.0,4.9],[11.1,11.1]]';
     const polygonCoordsYX =
         '[[10.1,10.1],[9.0,5.0],[4.0,12.0],[10.1,10.1]],[[11.1,11.1],[9.9,6.0],[4.9,13.0],[11.1,11.1]]';
+    const polygonCoordsFlat = [
+      '10.1,10.1,5.0,9.0,12.0,4.0,10.1,10.1',
+      '11.1,11.1,6.0,9.9,13.0,4.9,11.1,11.1',
+    ];
+    const polygonCoordsYXFlat = [
+      '10.1,10.1,9.0,5.0,4.0,12.0,10.1,10.1',
+      '11.1,11.1,9.9,6.0,4.9,13.0,11.1,11.1',
+    ];
     const polygon = '{"type":"Polygon","coordinates":[$polygonCoords]}';
     const polygonYX = '{"type":"Polygon","coordinates":[$polygonCoordsYX]}';
     const multiPointCoords =
@@ -496,7 +504,7 @@ void main() {
       expect(LineString.parse(lineString).toText(), lineString);
       expect(LineString.parseCoords(lineStringCoordsFlat).toText(), lineString);
       expect(Polygon.parse(polygon).toText(), polygon);
-      expect(Polygon.parseCoords(polygonCoords).toText(), polygon);
+      expect(Polygon.parseCoords(polygonCoordsFlat).toText(), polygon);
 
       final mpo1 = MultiPoint.parse(multiPoint);
       expect(mpo1.toText(), multiPoint);
@@ -683,12 +691,13 @@ void main() {
           );
           expect(LineString.parse(lineString, crs: crs).toText(), lineString);
           expect(
-            LineString.parseCoords(lineStringCoordsFlat, swapXY: swapXY).toText(),
+            LineString.parseCoords(lineStringCoordsFlat, swapXY: swapXY)
+                .toText(),
             lineString,
           );
           expect(Polygon.parse(polygon, crs: crs).toText(), polygon);
           expect(
-            Polygon.parseCoords(polygonCoords, crs: crs).toText(),
+            Polygon.parseCoords(polygonCoordsFlat, swapXY: swapXY).toText(),
             polygon,
           );
           expect(MultiPoint.parse(multiPoint, crs: crs).toText(), multiPoint);
@@ -722,12 +731,13 @@ void main() {
           );
           expect(LineString.parse(lineStringYX, crs: crs).toText(), lineString);
           expect(
-            LineString.parseCoords(lineStringCoordsYXFlat, swapXY: swapXY).toText(),
+            LineString.parseCoords(lineStringCoordsYXFlat, swapXY: swapXY)
+                .toText(),
             lineString,
           );
           expect(Polygon.parse(polygonYX, crs: crs).toText(), polygon);
           expect(
-            Polygon.parseCoords(polygonCoordsYX, crs: crs).toText(),
+            Polygon.parseCoords(polygonCoordsYXFlat, swapXY: swapXY).toText(),
             polygon,
           );
           expect(MultiPoint.parse(multiPointYX, crs: crs).toText(), multiPoint);
@@ -773,7 +783,8 @@ void main() {
             polygonYX,
           );
           expect(
-            Polygon.parseCoords(polygonCoordsYX, crs: crs).toText(crs: crs),
+            Polygon.parseCoords(polygonCoordsYXFlat, swapXY: swapXY)
+                .toText(crs: crs),
             polygonYX,
           );
           expect(
