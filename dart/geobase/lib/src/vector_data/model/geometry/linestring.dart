@@ -302,7 +302,15 @@ class LineString extends SimpleGeometry {
   ///   type: Coords.xyzm,
   /// );
   ///
-  /// // a line string from2D positions with x before y
+  /// // a line string from 2D positions using an alternative delimiter
+  /// LineString.parseCoords(
+  ///   // values for three (x, y) positions
+  ///   '10.0;20.0;12.5;22.5;15.0;25.0',
+  ///   type: Coords.xy,
+  ///   delimiter: ';',
+  /// );
+  ///
+  /// // a line string from 2D positions with x before y
   /// LineString.parseCoords(
   ///   // values for three (x, y) positions
   ///   '20.0,10.0,22.5,12.5,25.0,15.0',
