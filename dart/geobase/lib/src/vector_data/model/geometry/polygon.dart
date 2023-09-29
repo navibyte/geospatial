@@ -47,6 +47,87 @@ class Polygon extends SimpleGeometry {
   /// they should "follow the right-hand rule with respect to the area it
   /// bounds, i.e., exterior rings are counterclockwise, and holes are
   /// clockwise".
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a polygon (with an exterior ring only) from 2D positions
+  /// Polygon(
+  ///   [
+  ///     // an exterior ring with values of five (x, y) positions
+  ///     [
+  ///       10.0, 20.0,
+  ///       12.5, 22.5,
+  ///       15.0, 25.0,
+  ///       11.5, 27.5,
+  ///       10.0, 20.0,
+  ///     ].positions(Coords.xy),
+  ///   ],
+  /// );
+  ///
+  /// // a polygon (with an exterior and one interior ring) from 2D positions
+  /// Polygon(
+  ///   [
+  ///     // an exterior ring with values of five (x, y) positions
+  ///     [
+  ///       10.0, 20.0,
+  ///       12.5, 22.5,
+  ///       15.0, 25.0,
+  ///       11.5, 27.5,
+  ///       10.0, 20.0,
+  ///     ].positions(Coords.xy),
+  ///     // an interior ring with values of four (x, y) positions
+  ///     [
+  ///       12.5, 23.0,
+  ///       11.5, 24.0,
+  ///       12.5, 24.0,
+  ///       12.5, 23.0,
+  ///     ].positions(Coords.xy),
+  ///   ],
+  /// );
+  ///
+  /// // a polygon (with an exterior ring only) from 3D positions
+  /// Polygon(
+  ///   [
+  ///     // an exterior ring with values of five (x, y, z) positions
+  ///     [
+  ///       10.0, 20.0, 30.0,
+  ///       12.5, 22.5, 32.5,
+  ///       15.0, 25.0, 35.0,
+  ///       11.5, 27.5, 37.5,
+  ///       10.0, 20.0, 30.0,
+  ///     ].positions(Coords.xyz),
+  ///   ],
+  /// );
+  ///
+  /// // a polygon (with an exterior ring only) from measured 2D positions
+  /// Polygon(
+  ///   [
+  ///     // an exterior ring with values of five (x, y, m) positions
+  ///     [
+  ///       10.0, 20.0, 40.0,
+  ///       12.5, 22.5, 42.5,
+  ///       15.0, 25.0, 45.0,
+  ///       11.5, 27.5, 47.5,
+  ///       10.0, 20.0, 40.0,
+  ///     ].positions(Coords.xym),
+  ///   ],
+  /// );
+  ///
+  /// // a polygon (with an exterior ring only) from measured 3D positions
+  /// Polygon(
+  ///   [
+  ///     // an exterior ring with values of five (x, y, z, m) positions
+  ///     [
+  ///       10.0, 20.0, 30.0, 40.0,
+  ///       12.5, 22.5, 32.5, 42.5,
+  ///       15.0, 25.0, 35.0, 45.0,
+  ///       11.5, 27.5, 37.5, 47.5,
+  ///       10.0, 20.0, 30.0, 40.0,
+  ///     ].positions(Coords.xyzm),
+  ///   ],
+  /// );
+  /// ```
   const Polygon(List<PositionSeries> rings, {super.bounds}) : _rings = rings;
 
   /// A polygon geometry with one exterior and 0 to N interior [rings].
@@ -64,6 +145,87 @@ class Polygon extends SimpleGeometry {
   /// they should "follow the right-hand rule with respect to the area it
   /// bounds, i.e., exterior rings are counterclockwise, and holes are
   /// clockwise".
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a polygon (with an exterior ring only) from 2D positions
+  /// Polygon.from(
+  ///   [
+  ///     // an exterior ring with five (x, y) positions
+  ///     [
+  ///       [10.0, 20.0].xy,
+  ///       [12.5, 22.5].xy,
+  ///       [15.0, 25.0].xy,
+  ///       [11.5, 27.5].xy,
+  ///       [10.0, 20.0].xy,
+  ///     ],
+  ///   ],
+  /// );
+  ///
+  /// // a polygon (with an exterior and one interior ring) from 2D positions
+  /// Polygon.from(
+  ///   [
+  ///     // an exterior ring with five (x, y) positions
+  ///     [
+  ///       [10.0, 20.0].xy,
+  ///       [12.5, 22.5].xy,
+  ///       [15.0, 25.0].xy,
+  ///       [11.5, 27.5].xy,
+  ///       [10.0, 20.0].xy,
+  ///     ],
+  ///     // an interior ring with four (x, y) positions
+  ///     [
+  ///       [12.5, 23.0].xy,
+  ///       [11.5, 24.0].xy,
+  ///       [12.5, 24.0].xy,
+  ///       [12.5, 23.0].xy,
+  ///     ],
+  ///   ],
+  /// );
+  ///
+  /// // a polygon (with an exterior ring only) from 3D positions
+  /// Polygon.from(
+  ///   [
+  ///     // an exterior ring with five (x, y, z) positions
+  ///     [
+  ///       [10.0, 20.0, 30.0].xyz,
+  ///       [12.5, 22.5, 32.5].xyz,
+  ///       [15.0, 25.0, 35.0].xyz,
+  ///       [11.5, 27.5, 37.5].xyz,
+  ///       [10.0, 20.0, 30.0].xyz,
+  ///     ],
+  ///   ],
+  /// );
+  ///
+  /// // a polygon (with an exterior ring only) from measured 2D positions
+  /// Polygon.from(
+  ///   [
+  ///     // an exterior ring with five (x, y, m) positions
+  ///     [
+  ///       [10.0, 20.0, 40.0].xym,
+  ///       [12.5, 22.5, 42.5].xym,
+  ///       [15.0, 25.0, 45.0].xym,
+  ///       [11.5, 27.5, 47.5].xym,
+  ///       [10.0, 20.0, 40.0].xym,
+  ///     ],
+  ///   ],
+  /// );
+  ///
+  /// // a polygon (with an exterior ring only) from measured 3D positions
+  /// Polygon.from(
+  ///   [
+  ///     // an exterior ring with five (x, y, z, m) positions
+  ///     [
+  ///       [10.0, 20.0, 30.0, 40.0].xyzm,
+  ///       [12.5, 22.5, 32.5, 42.5].xyzm,
+  ///       [15.0, 25.0, 35.0, 45.0].xyzm,
+  ///       [11.5, 27.5, 37.5, 47.5].xyzm,
+  ///       [10.0, 20.0, 30.0, 40.0].xyzm,
+  ///     ],
+  ///   ],
+  /// );
+  /// ```
   factory Polygon.from(
     Iterable<Iterable<Position>> rings, {
     Box? bounds,
@@ -95,22 +257,90 @@ class Polygon extends SimpleGeometry {
   /// bounds, i.e., exterior rings are counterclockwise, and holes are
   /// clockwise".
   ///
-  /// An example to build a polygon geometry with one linear ring containing
-  /// 4 points:
+  /// Examples:
+  ///
   /// ```dart
-  ///  Polygon.build(
-  ///      // an array of linear rings
-  ///      [
-  ///        // a linear ring as a flat structure with four (x, y) points
-  ///        [
-  ///          10.1, 10.1,
-  ///          5.0, 9.0,
-  ///          12.0, 4.0,
-  ///          10.1, 10.1,
-  ///        ],
-  ///      ],
-  ///      type: Coords.xy,
-  ///  );
+  /// // a polygon (with an exterior ring only) from 2D positions
+  /// Polygon.build(
+  ///   [
+  ///     // an exterior ring with values of five (x, y) positions
+  ///     [
+  ///       10.0, 20.0,
+  ///       12.5, 22.5,
+  ///       15.0, 25.0,
+  ///       11.5, 27.5,
+  ///       10.0, 20.0,
+  ///     ],
+  ///   ],
+  ///   type: Coords.xy,
+  /// );
+  ///
+  /// // a polygon (with an exterior and one interior ring) from 2D positions
+  /// Polygon.build(
+  ///   [
+  ///     // an exterior ring with values of five (x, y) positions
+  ///     [
+  ///       10.0, 20.0,
+  ///       12.5, 22.5,
+  ///       15.0, 25.0,
+  ///       11.5, 27.5,
+  ///       10.0, 20.0,
+  ///     ],
+  ///     // an interior ring with values of four (x, y) positions
+  ///     [
+  ///       12.5, 23.0,
+  ///       11.5, 24.0,
+  ///       12.5, 24.0,
+  ///       12.5, 23.0,
+  ///     ],
+  ///   ],
+  ///   type: Coords.xy,
+  /// );
+  ///
+  /// // a polygon (with an exterior ring only) from 3D positions
+  /// Polygon.build(
+  ///   [
+  ///     // an exterior ring with values of five (x, y, z) positions
+  ///     [
+  ///       10.0, 20.0, 30.0,
+  ///       12.5, 22.5, 32.5,
+  ///       15.0, 25.0, 35.0,
+  ///       11.5, 27.5, 37.5,
+  ///       10.0, 20.0, 30.0,
+  ///     ],
+  ///   ],
+  ///   type: Coords.xyz,
+  /// );
+  ///
+  /// // a polygon (with an exterior ring only) from measured 2D positions
+  /// Polygon.build(
+  ///   [
+  ///     // an exterior ring with values of five (x, y, m) positions
+  ///     [
+  ///       10.0, 20.0, 40.0,
+  ///       12.5, 22.5, 42.5,
+  ///       15.0, 25.0, 45.0,
+  ///       11.5, 27.5, 47.5,
+  ///       10.0, 20.0, 40.0,
+  ///     ],
+  ///   ],
+  ///   type: Coords.xym,
+  /// );
+  ///
+  /// // a polygon (with an exterior ring only) from measured 3D positions
+  /// Polygon.build(
+  ///   [
+  ///     // an exterior ring with values of five (x, y, z, m) positions
+  ///     [
+  ///       10.0, 20.0, 30.0, 40.0,
+  ///       12.5, 22.5, 32.5, 42.5,
+  ///       15.0, 25.0, 35.0, 45.0,
+  ///       11.5, 27.5, 37.5, 47.5,
+  ///       10.0, 20.0, 30.0, 40.0,
+  ///     ],
+  ///   ],
+  ///   type: Coords.xyzm,
+  /// );
   /// ```
   factory Polygon.build(
     Iterable<Iterable<double>> rings, {
@@ -138,6 +368,54 @@ class Polygon extends SimpleGeometry {
   /// be swapped when read in) about coordinate reference system in text input.
   ///
   /// Format or decoder implementation specific options can be set by [options].
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a polygon (with an exterior ring only) from 2D positions
+  /// Polygon.parse(
+  ///   format: GeoJSON.geometry,
+  ///   '{"type": "Polygon", "coordinates": [[[10.0,20.0], '
+  ///   '[12.5,22.5], [15.0,25.0], [11.5,27.5], [10.0,20.0]]]}',
+  /// );
+  /// Polygon.parse(
+  ///   format: WKT.geometry,
+  ///   'POLYGON ((10.0 20.0,12.5 22.5,15.0 25.0, 11.5 27.5,10.0 20.0))',
+  /// );
+  ///
+  /// // a polygon (with an exterior ring only) from 3D positions
+  /// Polygon.parse(
+  ///   format: GeoJSON.geometry,
+  ///   '{"type": "Polygon", "coordinates": [[[10.0,20.0,30.0], '
+  ///   '[12.5,22.5,32.5], [15.0,25.0,35.0], '
+  ///   '[11.5,27.5,37.5], [10.0,20.0,30.0]]]}',
+  /// );
+  /// Polygon.parse(
+  ///   format: WKT.geometry,
+  ///   'POLYGON Z ((10.0 20.0 30.0,12.5 22.5 32.5,15.0 25.0 35.0, '
+  ///   '11.5 27.5 37.5,10.0 20.0 30.0))',
+  /// );
+  ///
+  /// // a polygon (with an exterior ring only) from measured 2D positions
+  /// Polygon.parse(
+  ///   format: WKT.geometry,
+  ///   'POLYGON M ((10.0 20.0 40.0,12.5 22.5 42.5,15.0 25.0 45.0, '
+  ///   '11.5 27.5 47.5,10.0 20.0 40.0))',
+  /// );
+  ///
+  /// // a polygon (with an exterior ring only) from measured 3D positions
+  /// Polygon.parse(
+  ///   format: GeoJSON.geometry,
+  ///   '{"type": "Polygon", "coordinates": [[[10.0,20.0,30.0,40.0], '
+  ///   '[12.5,22.5,32.5,42.5], [15.0,25.0,35.0,45.0], '
+  ///   '[11.5,27.5,37.5,47.5], [10.0,20.0,30.0,40.0]]]}',
+  /// );
+  /// Polygon.parse(
+  ///   format: WKT.geometry,
+  ///   'POLYGON ZM ((10.0 20.0 30.0 40.0,12.5 22.5 32.5 42.5, '
+  ///   '15.0 25.0 35.0 45.0, 11.5 27.5 37.5 47.5,10.0 20.0 30.0 40.0))',
+  /// );
+  /// ```
   factory Polygon.parse(
     String text, {
     TextReaderFormat<SimpleGeometryContent> format = GeoJSON.geometry,
@@ -160,6 +438,127 @@ class Polygon extends SimpleGeometry {
   ///
   /// If [singlePrecision] is true, then coordinate values of positions are
   /// stored in `Float32List` instead of the `Float64List` (default).
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a polygon (with an exterior ring only) from 2D positions
+  /// Polygon.parseCoords(
+  ///   [
+  ///     // an exterior ring with values of five (x, y) positions
+  ///     '10.0,20.0,'
+  ///     '12.5,22.5,'
+  ///     '15.0,25.0,'
+  ///     '11.5,27.5,'
+  ///     '10.0,20.0'
+  ///   ],
+  ///   type: Coords.xy,
+  /// );
+  ///
+  /// // a polygon (with an exterior and one interior ring) from 2D positions
+  /// Polygon.parseCoords(
+  ///   [
+  ///     // an exterior ring with values of five (x, y) positions
+  ///     '10.0,20.0,'
+  ///     '12.5,22.5,'
+  ///     '15.0,25.0,'
+  ///     '11.5,27.5,'
+  ///     '10.0,20.0',
+  ///
+  ///     // an interior ring with values of four (x, y) positions
+  ///     '12.5,23.0,'
+  ///     '11.5,24.0,'
+  ///     '12.5,24.0,'
+  ///     '12.5,23.0'
+  ///   ],
+  ///   type: Coords.xy,
+  /// );
+  ///
+  /// // a polygon (with an exterior ring only) from 3D positions
+  /// Polygon.parseCoords(
+  ///   [
+  ///     // an exterior ring with values of five (x, y, z) positions
+  ///     '10.0,20.0,30.0,'
+  ///     '12.5,22.5,32.5,'
+  ///     '15.0,25.0,35.0,'
+  ///     '11.5,27.5,37.5,'
+  ///     '10.0,20.0,30.0'
+  ///   ],
+  ///   type: Coords.xyz,
+  /// );
+  ///
+  /// // a polygon (with an exterior ring only) from measured 2D positions
+  /// Polygon.parseCoords(
+  ///   [
+  ///     // an exterior ring with values of five (x, y, m) positions
+  ///     '10.0,20.0,40.0,'
+  ///     '12.5,22.5,42.5,'
+  ///     '15.0,25.0,45.0,'
+  ///     '11.5,27.5,47.5,'
+  ///     '10.0,20.0,40.0'
+  ///   ],
+  ///   type: Coords.xym,
+  /// );
+  ///
+  /// // a polygon (with an exterior ring only) from measured 3D positions
+  /// Polygon.parseCoords(
+  ///   [
+  ///     // an exterior ring with values of five (x, y, z, m) positions
+  ///     '10.0,20.0,30.0,40.0,'
+  ///     '12.5,22.5,32.5,42.5,'
+  ///     '15.0,25.0,35.0,45.0,'
+  ///     '11.5,27.5,37.5,47.5,'
+  ///     '10.0,20.0,30.0,40.0'
+  ///   ],
+  ///   type: Coords.xyzm,
+  /// );
+  ///
+  /// // a polygon (with an exterior ring only) from 2D positions using an
+  /// // alternative delimiter
+  /// Polygon.parseCoords(
+  ///   [
+  ///     // an exterior ring with values of five (x, y) positions
+  ///     '10.0;20.0;'
+  ///     '12.5;22.5;'
+  ///     '15.0;25.0;'
+  ///     '11.5;27.5;'
+  ///     '10.0;20.0'
+  ///   ],
+  ///   type: Coords.xy,
+  ///   delimiter: ';',
+  /// );
+  ///
+  /// // a polygon (with an exterior ring only) from 2D positions with x before
+  /// // y
+  /// Polygon.parseCoords(
+  ///   [
+  ///     // an exterior ring with values of five (x, y) positions
+  ///     '20.0,10.0,'
+  ///     '22.5,12.5,'
+  ///     '25.0,15.0,'
+  ///     '27.5,11.5,'
+  ///     '20.0,10.0'
+  ///   ],
+  ///   type: Coords.xy,
+  ///   swapXY: true,
+  /// );
+  ///
+  /// // a polygon (with an exterior ring only) from 2D positions with the
+  /// // internal storage using single precision floating point numbers
+  /// // (`Float32List` in this case)
+  /// Polygon.parseCoords(
+  ///   [
+  ///     // an exterior ring with values of five (x, y) positions
+  ///     '10.0,20.0,'
+  ///     '12.5,22.5,'
+  ///     '15.0,25.0,'
+  ///     '11.5,27.5,'
+  ///     '10.0,20.0'
+  ///   ],
+  ///   type: Coords.xy,
+  ///   singlePrecision: true,
+  /// );
+  /// ```
   factory Polygon.parseCoords(
     Iterable<String> rings, {
     Pattern delimiter = ',',
