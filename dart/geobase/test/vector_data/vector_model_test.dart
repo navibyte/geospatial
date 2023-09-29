@@ -210,7 +210,7 @@ void main() {
       expect(emptyMultiPolygon.isEmptyByGeometry, true);
       expect(emptyMultiPolygon.toText(format: wkt), 'MULTIPOLYGON EMPTY');
       expect(
-        MultiPolygon.parseCoords('').toText(format: def),
+        MultiPolygon.parseCoords(const []).toText(format: def),
         emptyMultiPolygon.toText(format: def),
       );
       expect(
@@ -511,6 +511,18 @@ void main() {
         '[[[10.1,10.1],[5.0,9.0],[12.0,4.0],[10.1,10.1]],[[11.1,11.1],[6.0,9.9],[13.0,4.9],[11.1,11.1]]]';
     const multiPolygonCoordsYX =
         '[[[10.1,10.1],[9.0,5.0],[4.0,12.0],[10.1,10.1]],[[11.1,11.1],[9.9,6.0],[4.9,13.0],[11.1,11.1]]]';
+    const multiPolygonCoordsFlat = [
+      [
+        '10.1,10.1,5.0,9.0,12.0,4.0,10.1,10.1',
+        '11.1,11.1,6.0,9.9,13.0,4.9,11.1,11.1',
+      ]
+    ];
+    const multiPolygonCoordsYXFlat = [
+      [
+        '10.1,10.1,9.0,5.0,4.0,12.0,10.1,10.1',
+        '11.1,11.1,9.9,6.0,4.9,13.0,11.1,11.1',
+      ]
+    ];
     const multiPolygon =
         '{"type":"MultiPolygon","coordinates":[$multiPolygonCoords]}';
     const multiPolygonYX =
@@ -547,7 +559,7 @@ void main() {
       );
       expect(MultiPolygon.parse(multiPolygon).toText(), multiPolygon);
       expect(
-        MultiPolygon.parseCoords(multiPolygonCoords).toText(),
+        MultiPolygon.parseCoords(multiPolygonCoordsFlat).toText(),
         multiPolygon,
       );
     });
@@ -749,7 +761,10 @@ void main() {
             multiPolygon,
           );
           expect(
-            MultiPolygon.parseCoords(multiPolygonCoords, crs: crs).toText(),
+            MultiPolygon.parseCoords(
+              multiPolygonCoordsFlat,
+              swapXY: swapXY,
+            ).toText(),
             multiPolygon,
           );
         } else if (order == AxisOrder.yx) {
@@ -795,7 +810,10 @@ void main() {
             multiPolygon,
           );
           expect(
-            MultiPolygon.parseCoords(multiPolygonCoordsYX, crs: crs).toText(),
+            MultiPolygon.parseCoords(
+              multiPolygonCoordsYXFlat,
+              swapXY: swapXY,
+            ).toText(),
             multiPolygon,
           );
 
@@ -851,8 +869,10 @@ void main() {
             multiPolygonYX,
           );
           expect(
-            MultiPolygon.parseCoords(multiPolygonCoordsYX, crs: crs)
-                .toText(crs: crs),
+            MultiPolygon.parseCoords(
+              multiPolygonCoordsYXFlat,
+              swapXY: swapXY,
+            ).toText(crs: crs),
             multiPolygonYX,
           );
         }
