@@ -883,6 +883,163 @@ void main() {
       );
     });
   });
+
+  group('MultiPoint class', () {
+    test('MultiPoint.new', () {
+      // a multi point with three 2D positions
+      testMultiPoint(
+        MultiPoint([
+          [10.0, 20.0].xy,
+          [12.5, 22.5].xy,
+          [15.0, 25.0].xy,
+        ]),
+      );
+
+      // a multi point with three 3D positions
+      testMultiPoint(
+        MultiPoint([
+          [10.0, 20.0, 30.0].xyz,
+          [12.5, 22.5, 32.5].xyz,
+          [15.0, 25.0, 35.0].xyz,
+        ]),
+      );
+    });
+
+    test('MultiPoint.from', () {
+      // a multi point with three 2D positions
+      testMultiPoint(
+        MultiPoint.from([
+          [10.0, 20.0].xy,
+          [12.5, 22.5].xy,
+          [15.0, 25.0].xy,
+        ]),
+      );
+
+      // a multi point with three 3D positions
+      testMultiPoint(
+        MultiPoint.from([
+          [10.0, 20.0, 30.0].xyz,
+          [12.5, 22.5, 32.5].xyz,
+          [15.0, 25.0, 35.0].xyz,
+        ]),
+      );
+    });
+
+    test('MultiPoint.build', () {
+      // a multi point with three 2D positions
+      testMultiPoint(
+        MultiPoint.build(
+          [
+            [10.0, 20.0],
+            [12.5, 22.5],
+            [15.0, 25.0],
+          ],
+          type: Coords.xy,
+        ),
+      );
+
+      // a multi point with three 3D positions
+      testMultiPoint(
+        MultiPoint.build(
+          [
+            [10.0, 20.0, 30.0],
+            [12.5, 22.5, 32.5],
+            [15.0, 25.0, 35.0],
+          ],
+          type: Coords.xyz,
+        ),
+      );
+    });
+
+    test('MultiPoint.parse', () {
+      // a multi point from three 2D positions
+      testMultiPoint(
+        MultiPoint.parse(
+          format: GeoJSON.geometry,
+          '{"type": "MultiPoint", "coordinates": [[10.0,20.0], '
+          '[12.5,22.5], [15.0,25.0]]}',
+        ),
+      );
+      testMultiPoint(
+        MultiPoint.parse(
+          format: WKT.geometry,
+          'MULTIPOINT ((10.0 20.0),(12.5 22.5),(15.0 25.0))',
+        ),
+      );
+
+      // a multi point from three 3D positions
+      testMultiPoint(
+        MultiPoint.parse(
+          format: GeoJSON.geometry,
+          '{"type": "MultiPoint", "coordinates": [[10.0,20.0,30.0], '
+          '[12.5,22.5,32.5], [15.0,25.0,35.0]]}',
+        ),
+      );
+      testMultiPoint(
+        MultiPoint.parse(
+          format: WKT.geometry,
+          'MULTIPOINT Z ((10.0 20.0 30.0),(12.5 22.5 32.5),(15.0 25.0 35.0))',
+        ),
+      );
+    });
+
+    test('MultiPoint.parseCoords', () {
+      // a multi point from three 2D positions
+      testMultiPoint(
+        MultiPoint.parseCoords([
+          '10.0,20.0',
+          '12.5,22.5',
+          '15.0,25.0',
+        ]),
+      );
+
+      // a multi point from three 3D positions
+      testMultiPoint(
+        MultiPoint.parseCoords([
+          '10.0,20.0,30.0',
+          '12.5,22.5,32.5',
+          '15.0,25.0,35.0',
+        ]),
+      );
+
+      // a multi point from three 2D positions using an alternative delimiter
+      testMultiPoint(
+        MultiPoint.parseCoords(
+          [
+            '10.0;20.0',
+            '12.5;22.5',
+            '15.0;25.0',
+          ],
+          delimiter: ';',
+        ),
+      );
+
+      // a multi point from three 2D positions with x before y
+      testMultiPoint(
+        MultiPoint.parseCoords(
+          [
+            '20.0,10.0',
+            '22.5,12.5',
+            '25.0,15.0',
+          ],
+          swapXY: true,
+        ),
+      );
+
+      // a multi point from three 2D positions with the internal storage using
+      // single precision floating point numbers (`Float32List` in this case)
+      testMultiPoint(
+        MultiPoint.parseCoords(
+          [
+            '10.0,20.0',
+            '12.5,22.5',
+            '15.0,25.0',
+          ],
+          singlePrecision: true,
+        ),
+      );
+    });
+  });
 }
 
 /// Tests `Point` geometry.
@@ -904,6 +1061,11 @@ void testPolygon(Polygon polygon, {int ringCount = 1}) {
   }
 
   _doTestPolygon(polygon, ringCount: ringCount);
+}
+
+/// Tests `MultiPoint` geometry.
+void testMultiPoint(MultiPoint multiPoint) {
+  testPositionSeries(PositionSeries.from(multiPoint.positions));
 }
 
 void _doTestPolygon(Polygon polygon, {int ringCount = 1}) {

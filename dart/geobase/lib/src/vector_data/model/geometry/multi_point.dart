@@ -37,6 +37,24 @@ class MultiPoint extends SimpleGeometry {
   /// An optional [bounds] can used set a minimum bounding box for a geometry.
   ///
   /// Each point is represented by a [Position] instance.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a multi point with three 2D positions
+  /// MultiPoint([
+  ///   [10.0, 20.0].xy,
+  ///   [12.5, 22.5].xy,
+  ///   [15.0, 25.0].xy,
+  /// ]);
+  ///
+  /// // a multi point with three 3D positions
+  /// MultiPoint([
+  ///   [10.0, 20.0, 30.0].xyz,
+  ///   [12.5, 22.5, 32.5].xyz,
+  ///   [15.0, 25.0, 35.0].xyz,
+  /// ]);
+  /// ```
   const MultiPoint(List<Position> points, {super.bounds}) : _points = points;
 
   /// A multi point geometry from an iterable of `Position` objects in [points].
@@ -44,6 +62,24 @@ class MultiPoint extends SimpleGeometry {
   /// An optional [bounds] can used set a minimum bounding box for a geometry.
   ///
   /// The coordinate type of all points should be the same.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a multi point with three 2D positions
+  /// MultiPoint.from([
+  ///   [10.0, 20.0].xy,
+  ///   [12.5, 22.5].xy,
+  ///   [15.0, 25.0].xy,
+  /// ]);
+  ///
+  /// // a multi point with three 3D positions
+  /// MultiPoint.from([
+  ///   [10.0, 20.0, 30.0].xyz,
+  ///   [12.5, 22.5, 32.5].xyz,
+  ///   [15.0, 25.0, 35.0].xyz,
+  /// ]);
+  /// ```
   factory MultiPoint.from(Iterable<Position> points, {Box? bounds}) =>
       MultiPoint(
         points is List<Position> ? points : points.toList(growable: false),
@@ -62,16 +98,28 @@ class MultiPoint extends SimpleGeometry {
   /// coordinate value combinations for positions are: (x, y), (x, y, z),
   /// (x, y, m) and (x, y, z, m).
   ///
-  /// An example to build a multi point geometry with 3 points:
+  /// Examples:
+  ///
   /// ```dart
-  ///   MultiPoint.build(
-  ///       [
-  ///            [-1.1, -1.1],
-  ///            [2.1, -2.5],
-  ///            [3.5, -3.49],
-  ///       ],
-  ///       type: Coords.xy,
-  ///   );
+  /// // a multi point with three 2D positions
+  /// MultiPoint.build(
+  ///   [
+  ///     [10.0, 20.0],
+  ///     [12.5, 22.5],
+  ///     [15.0, 25.0],
+  ///   ],
+  ///   type: Coords.xy,
+  /// );
+  ///
+  /// // a multi point with three 3D positions
+  /// MultiPoint.build(
+  ///   [
+  ///     [10.0, 20.0, 30.0],
+  ///     [12.5, 22.5, 32.5],
+  ///     [15.0, 25.0, 35.0],
+  ///   ],
+  ///   type: Coords.xyz,
+  /// );
   /// ```
   factory MultiPoint.build(
     Iterable<Iterable<double>> points, {
@@ -99,6 +147,32 @@ class MultiPoint extends SimpleGeometry {
   /// be swapped when read in) about coordinate reference system in text input.
   ///
   /// Format or decoder implementation specific options can be set by [options].
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a multi point from three 2D positions
+  /// MultiPoint.parse(
+  ///   format: GeoJSON.geometry,
+  ///   '{"type": "MultiPoint", "coordinates": [[10.0,20.0], '
+  ///   '[12.5,22.5], [15.0,25.0]]}',
+  /// );
+  /// MultiPoint.parse(
+  ///   format: WKT.geometry,
+  ///   'MULTIPOINT ((10.0 20.0),(12.5 22.5),(15.0 25.0))',
+  /// );
+  ///
+  /// // a multi point from three 3D positions
+  /// MultiPoint.parse(
+  ///   format: GeoJSON.geometry,
+  ///   '{"type": "MultiPoint", "coordinates": [[10.0,20.0,30.0], '
+  ///   '[12.5,22.5,32.5], [15.0,25.0,35.0]]}',
+  /// );
+  /// MultiPoint.parse(
+  ///   format: WKT.geometry,
+  ///   'MULTIPOINT Z ((10.0 20.0 30.0),(12.5 22.5 32.5),(15.0 25.0 35.0))',
+  /// );
+  /// ```
   factory MultiPoint.parse(
     String text, {
     TextReaderFormat<SimpleGeometryContent> format = GeoJSON.geometry,
@@ -123,6 +197,55 @@ class MultiPoint extends SimpleGeometry {
   ///
   /// If [singlePrecision] is true, then coordinate values of positions are
   /// stored in `Float32List` instead of the `Float64List` (default).
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a multi point from three 2D positions
+  /// MultiPoint.parseCoords([
+  ///   '10.0,20.0',
+  ///   '12.5,22.5',
+  ///   '15.0,25.0',
+  /// ]);
+  ///
+  /// // a multi point from three 3D positions
+  /// MultiPoint.parseCoords([
+  ///   '10.0,20.0,30.0',
+  ///   '12.5,22.5,32.5',
+  ///   '15.0,25.0,35.0',
+  /// ]);
+  ///
+  /// // a multi point from three 2D positions using an alternative delimiter
+  /// MultiPoint.parseCoords(
+  ///   [
+  ///     '10.0;20.0',
+  ///     '12.5;22.5',
+  ///     '15.0;25.0',
+  ///   ],
+  ///   delimiter: ';',
+  /// );
+  ///
+  /// // a multi point from three 2D positions with x before y
+  /// MultiPoint.parseCoords(
+  ///   [
+  ///     '20.0,10.0',
+  ///     '22.5,12.5',
+  ///     '25.0,15.0',
+  ///   ],
+  ///   swapXY: true,
+  /// );
+  ///
+  /// // a multi point from three 2D positions with the internal storage using
+  /// // single precision floating point numbers (`Float32List` in this case)
+  /// MultiPoint.parseCoords(
+  ///   [
+  ///     '10.0,20.0',
+  ///     '12.5,22.5',
+  ///     '15.0,25.0',
+  ///   ],
+  ///   singlePrecision: true,
+  /// );
+  /// ```
   factory MultiPoint.parseCoords(
     Iterable<String> points, {
     Pattern delimiter = ',',
