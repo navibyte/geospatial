@@ -34,6 +34,25 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   ///
   /// An optional [type] specifies the coordinate type of geometry objects in a
   /// collection. When not provided, the type can be resolved from objects.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// GeometryCollection([
+  ///   // a point with a 2D position
+  ///   Point([10.0, 20.0].xy),
+  ///
+  ///   // a point with a 3D position
+  ///   Point([10.0, 20.0, 30.0].xyz),
+  ///
+  ///   // a line string from three 3D positions
+  ///   LineString.from([
+  ///     [10.0, 20.0, 30.0].xyz,
+  ///     [12.5, 22.5, 32.5].xyz,
+  ///     [15.0, 25.0, 35.0].xyz,
+  ///   ])
+  /// ]);
+  /// ```
   GeometryCollection(List<E> geometries, {Coords? type, super.bounds})
       : _geometries = geometries,
         _coordType = type ?? resolveCoordTypeFrom(collection: geometries);
@@ -53,35 +72,30 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   /// An optional [bounds] can used set a minimum bounding box for a geometry
   /// collection.
   ///
-  /// An example to build a geometry collection with two child geometries:
-  /// ```dart
-  ///   GeometryCollection.build(
-  ///       type: Coords.xy,
-  ///       count: 2,
-  ///       (geom) => geom
-  ///         ..point([10.123, 20.25].xy)
-  ///         ..polygon(
-  ///           [
-  ///              [
-  ///                 10.1, 10.1,
-  ///                 5.0, 9.0,
-  ///                 12.0, 4.0,
-  ///                 10.1, 10.1,
-  ///              ].positions(Coords.xy),
-  ///           ],
-  ///         ),
-  ///     );
-  /// ```
+  /// Examples:
   ///
-  /// An example to build a type geometry collection with points only:
   /// ```dart
-  ///   GeometryCollection<Point>.build(
-  ///       count: 3,
-  ///       (geom) => geom
-  ///         ..point([-1.1, -1.1].xy)
-  ///         ..point([2.1, -2.5].xy)
-  ///         ..point([3.5, -3.49].xy),
-  ///     );
+  /// GeometryCollection.build(
+  ///   count: 3,
+  ///   (GeometryContent geom) {
+  ///     geom
+  ///       // a point with a 2D position
+  ///       ..point([10.0, 20.0].xy)
+  ///
+  ///       // a point with a 3D position
+  ///       ..point([10.0, 20.0, 30.0].xyz)
+  ///
+  ///       // a line string from three 3D positions
+  ///       ..lineString(
+  ///         [
+  ///           10.0, 20.0, 30.0,
+  ///           12.5, 22.5, 32.5,
+  ///           15.0, 25.0, 35.0,
+  ///           //
+  ///         ].positions(Coords.xyz),
+  ///       );
+  ///   },
+  /// );
   /// ```
   factory GeometryCollection.build(
     WriteGeometries geometries, {
@@ -105,6 +119,45 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   /// be swapped when read in) about coordinate reference system in text input.
   ///
   /// Format or decoder implementation specific options can be set by [options].
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// GeometryCollection.parse(
+  ///   format: GeoJSON.geometry,
+  ///   '''
+  ///   {
+  ///     "type": "GeometryCollection",
+  ///     "geometries": [
+  ///       {"type": "Point", "coordinates": [10.0, 20.0]},
+  ///       {"type": "Point", "coordinates": [10.0, 20.0, 30.0]},
+  ///       {"type": "LineString",
+  ///         "coordinates": [
+  ///           [10.0, 20.0, 30.0],
+  ///           [12.5, 22.5, 32.5],
+  ///           [15.0, 25.0, 35.0]
+  ///         ]
+  ///       }
+  ///     ]
+  ///   }
+  ///   ''',
+  /// );
+  ///
+  /// GeometryCollection.parse(
+  ///   format: WKT.geometry,
+  ///   '''
+  ///   GEOMETRYCOLLECTION (
+  ///     POINT (10.0 20.0),
+  ///     POINT Z (10.0 20.0 30.0),
+  ///     LINESTRING Z (
+  ///       (10.0 20.0 30.0),
+  ///       (12.5 22.5 32.5),
+  ///       (15.0 25.0 35.0)
+  ///     )
+  ///   )
+  ///   ''',
+  /// );
+  /// ```
   static GeometryCollection<T> parse<T extends Geometry>(
     String text, {
     TextReaderFormat<GeometryContent> format = GeoJSON.geometry,

@@ -1481,6 +1481,93 @@ void main() {
       );
     });
   });
+
+  group('GeometryCollection class', () {
+    test('GeometryCollection.new', () {
+      testGeometryCollection(
+        GeometryCollection([
+          // a point with a 2D position
+          Point([10.0, 20.0].xy),
+
+          // a point with a 3D position
+          Point([10.0, 20.0, 30.0].xyz),
+
+          // a line string from three 3D positions
+          LineString.from([
+            [10.0, 20.0, 30.0].xyz,
+            [12.5, 22.5, 32.5].xyz,
+            [15.0, 25.0, 35.0].xyz,
+          ])
+        ]),
+      );
+    });
+
+    test('GeometryCollection.build', () {
+      testGeometryCollection(
+        GeometryCollection.build(
+          count: 3,
+          (GeometryContent geom) {
+            geom
+              // a point with a 2D position
+              ..point([10.0, 20.0].xy)
+
+              // a point with a 3D position
+              ..point([10.0, 20.0, 30.0].xyz)
+
+              // a line string from three 3D positions
+              ..lineString(
+                [
+                  10.0, 20.0, 30.0,
+                  12.5, 22.5, 32.5,
+                  15.0, 25.0, 35.0,
+                  //
+                ].positions(Coords.xyz),
+              );
+          },
+        ),
+      );
+    });
+
+    test('GeometryCollection.parse', () {
+      testGeometryCollection(
+        GeometryCollection.parse(
+          format: GeoJSON.geometry,
+          '''
+          {
+            "type": "GeometryCollection",
+            "geometries": [
+              {"type": "Point", "coordinates": [10.0, 20.0]},
+              {"type": "Point", "coordinates": [10.0, 20.0, 30.0]},
+              {"type": "LineString",
+                "coordinates": [
+                  [10.0, 20.0, 30.0],
+                  [12.5, 22.5, 32.5],
+                  [15.0, 25.0, 35.0]
+                ]
+              }
+            ]
+          }
+          ''',
+        ),
+      );
+      testGeometryCollection(
+        GeometryCollection.parse(
+          format: WKT.geometry,
+          '''
+          GEOMETRYCOLLECTION (
+            POINT (10.0 20.0),
+            POINT Z (10.0 20.0 30.0),
+            LINESTRING Z (
+              (10.0 20.0 30.0),
+              (12.5 22.5 32.5),
+              (15.0 25.0 35.0)
+            )
+          )
+          ''',
+        ),
+      );
+    });
+  });
 }
 
 /// Tests `Point` geometry.
@@ -1520,6 +1607,13 @@ void testMultiPolygon(MultiPolygon multiPolygon) {
   testPositionSeries(
     PositionSeries.from(multiPolygon.ringArrays.first.first.positions.take(3)),
   );
+}
+
+/// Tests `MultiGeometryCollection` geometry.
+void testGeometryCollection(GeometryCollection collection) {
+  testPoint(collection.geometries[0] as Point);
+  testPoint(collection.geometries[1] as Point);
+  testLineString(collection.geometries[2] as LineString);
 }
 
 void _doTestPolygon(Polygon polygon, {int ringCount = 1}) {
