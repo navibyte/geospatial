@@ -188,7 +188,7 @@ void main() {
       expect(emptyMultiLineString.isEmptyByGeometry, true);
       expect(emptyMultiLineString.toText(format: wkt), 'MULTILINESTRING EMPTY');
       expect(
-        MultiLineString.parseCoords('').toText(format: def),
+        MultiLineString.parseCoords(const []).toText(format: def),
         emptyMultiLineString.toText(format: def),
       );
       expect(
@@ -495,6 +495,14 @@ void main() {
         '[[10.1,10.1],[5.0,9.0],[12.0,4.0],[10.1,10.1]],[[11.1,11.1],[6.0,9.9],[13.0,4.9],[11.1,11.1]]';
     const multiLineStringCoordsYX =
         '[[10.1,10.1],[9.0,5.0],[4.0,12.0],[10.1,10.1]],[[11.1,11.1],[9.9,6.0],[4.9,13.0],[11.1,11.1]]';
+    const multiLineStringCoordsFlat = [
+      '10.1,10.1,5.0,9.0,12.0,4.0,10.1,10.1',
+      '11.1,11.1,6.0,9.9,13.0,4.9,11.1,11.1'
+    ];
+    const multiLineStringCoordsYXFlat = [
+      '10.1,10.1,9.0,5.0,4.0,12.0,10.1,10.1',
+      '11.1,11.1,9.9,6.0,4.9,13.0,11.1,11.1'
+    ];
     const multiLineString =
         '{"type":"MultiLineString","coordinates":[$multiLineStringCoords]}';
     const multiLineStringYX =
@@ -534,7 +542,7 @@ void main() {
 
       expect(MultiLineString.parse(multiLineString).toText(), multiLineString);
       expect(
-        MultiLineString.parseCoords(multiLineStringCoords).toText(),
+        MultiLineString.parseCoords(multiLineStringCoordsFlat).toText(),
         multiLineString,
       );
       expect(MultiPolygon.parse(multiPolygon).toText(), multiPolygon);
@@ -730,8 +738,10 @@ void main() {
             multiLineString,
           );
           expect(
-            MultiLineString.parseCoords(multiLineStringCoords, crs: crs)
-                .toText(),
+            MultiLineString.parseCoords(
+              multiLineStringCoordsFlat,
+              swapXY: swapXY,
+            ).toText(),
             multiLineString,
           );
           expect(
@@ -774,8 +784,10 @@ void main() {
             multiLineString,
           );
           expect(
-            MultiLineString.parseCoords(multiLineStringCoordsYX, crs: crs)
-                .toText(),
+            MultiLineString.parseCoords(
+              multiLineStringCoordsYXFlat,
+              swapXY: swapXY,
+            ).toText(),
             multiLineString,
           );
           expect(
@@ -828,8 +840,10 @@ void main() {
             multiLineStringYX,
           );
           expect(
-            MultiLineString.parseCoords(multiLineStringCoordsYX, crs: crs)
-                .toText(crs: crs),
+            MultiLineString.parseCoords(
+              multiLineStringCoordsYXFlat,
+              swapXY: swapXY,
+            ).toText(crs: crs),
             multiLineStringYX,
           );
           expect(

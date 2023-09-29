@@ -4,11 +4,9 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'dart:convert';
 import 'dart:typed_data';
 
 import '/src/codes/coords.dart';
-import '/src/codes/geo_representation.dart';
 import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/box.dart';
@@ -23,7 +21,6 @@ import '/src/utils/coord_type.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
-import '/src/vector/formats/geojson/default_format.dart';
 import '/src/vector/formats/geojson/geojson_format.dart';
 import '/src/vector/formats/wkb/wkb_format.dart';
 import '/src/vector_data/model/bounded/bounded.dart';
@@ -139,33 +136,40 @@ class MultiLineString extends SimpleGeometry {
         options: options,
       );
 
-  /// Parses a multi line string geometry from [coordinates] conforming to
-  /// [DefaultFormat].
+  /// Parses a multi line string geometry from [lineStrings] with each line
+  /// string formatted as a text containing coordinate values separated by
+  /// [delimiter].
   ///
-  /// Use [crs] and [crsLogic] to give hints (like axis order, and whether x
-  /// and y must be swapped when read in) about coordinate reference system in
-  /// text input.
+  /// Use the required optional [type] to explicitely set the coordinate type.
   ///
-  /// If [singlePrecision] is true, then coordinate values of a position are
+  /// If [swapXY] is true, then swaps x and y for all positions in the result.
+  ///
+  /// If [singlePrecision] is true, then coordinate values of positions are
   /// stored in `Float32List` instead of the `Float64List` (default).
   factory MultiLineString.parseCoords(
-    String coordinates, {
-    CoordRefSys? crs,
-    GeoRepresentation? crsLogic,
+    Iterable<String> lineStrings, {
+    Pattern delimiter = ',',
+    Coords type = Coords.xy,
+    bool swapXY = false,
     bool singlePrecision = false,
   }) {
-    final str = coordinates.trim();
-    if (str.isEmpty) {
+    if (lineStrings.isEmpty) {
       return MultiLineString.build(const []);
+    } else {
+      return MultiLineString(
+        lineStrings
+            .map(
+              (lineString) => parsePositionSeriesFromTextDim1(
+                lineString,
+                delimiter: delimiter,
+                type: type,
+                swapXY: swapXY,
+                singlePrecision: singlePrecision,
+              ),
+            )
+            .toList(growable: false),
+      );
     }
-    final array = json.decode('[$str]') as List<dynamic>;
-    return MultiLineString(
-      createPositionSeriesArray(
-        array,
-        swapXY: crs?.swapXY(logic: crsLogic) ?? false,
-        singlePrecision: singlePrecision,
-      ),
-    );
   }
 
   /// Decodes a multi line string geometry from [bytes] conforming to [format].
