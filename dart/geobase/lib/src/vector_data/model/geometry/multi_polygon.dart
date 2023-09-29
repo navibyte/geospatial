@@ -43,6 +43,44 @@ class MultiPolygon extends SimpleGeometry {
   /// rings must be closed linear rings. As specified by GeoJSON, they should
   /// "follow the right-hand rule with respect to the area it bounds, i.e.,
   /// exterior rings are counterclockwise, and holes are clockwise".
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a multi polygon with one polygon from 2D positions
+  /// MultiPolygon(
+  ///   [
+  ///     // polygon
+  ///     [
+  ///       // an exterior ring with values of five (x, y) positions
+  ///       [
+  ///         10.0, 20.0,
+  ///         12.5, 22.5,
+  ///         15.0, 25.0,
+  ///         11.5, 27.5,
+  ///         10.0, 20.0,
+  ///       ].positions(Coords.xy),
+  ///     ],
+  ///   ],
+  /// );
+  ///
+  /// // a multi polygon with one polygon from 3D positions
+  /// MultiPolygon(
+  ///   [
+  ///     // polygon
+  ///     [
+  ///       // an exterior ring with values of five (x, y, z) positions
+  ///       [
+  ///         10.0, 20.0, 30.0,
+  ///         12.5, 22.5, 32.5,
+  ///         15.0, 25.0, 35.0,
+  ///         11.5, 27.5, 37.5,
+  ///         10.0, 20.0, 30.0,
+  ///       ].positions(Coords.xyz),
+  ///     ],
+  ///   ],
+  /// );
+  /// ```
   const MultiPolygon(List<List<PositionSeries>> polygons, {super.bounds})
       : _polygons = polygons;
 
@@ -58,6 +96,44 @@ class MultiPolygon extends SimpleGeometry {
   /// exterior rings are counterclockwise, and holes are clockwise".
   ///
   /// The coordinate type of all positions in rings should be the same.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a multi polygon with one polygon from 2D positions
+  /// MultiPolygon.from(
+  ///   [
+  ///     // polygon
+  ///     [
+  ///       // an exterior ring with five (x, y) positions
+  ///       [
+  ///         [10.0, 20.0].xy,
+  ///         [12.5, 22.5].xy,
+  ///         [15.0, 25.0].xy,
+  ///         [11.5, 27.5].xy,
+  ///         [10.0, 20.0].xy,
+  ///       ],
+  ///     ],
+  ///   ],
+  /// );
+  ///
+  /// // a multi polygon with one polygon from 3D positions
+  /// MultiPolygon.from(
+  ///   [
+  ///     // polygon
+  ///     [
+  ///       // an exterior ring with five (x, y, z) positions
+  ///       [
+  ///         [10.0, 20.0, 30.0].xyz,
+  ///         [12.5, 22.5, 32.5].xyz,
+  ///         [15.0, 25.0, 35.0].xyz,
+  ///         [11.5, 27.5, 37.5].xyz,
+  ///         [10.0, 20.0, 30.0].xyz,
+  ///       ],
+  ///     ],
+  ///   ],
+  /// );
+  /// ```
   factory MultiPolygon.from(
     Iterable<Iterable<Iterable<Position>>> polygons, {
     Box? bounds,
@@ -93,33 +169,44 @@ class MultiPolygon extends SimpleGeometry {
   /// position, the next three coordinate values are x, y and z of the second
   /// position, and so on.
   ///
-  /// An example to build a multi polygon geometry with two polygons:
+  /// Examples:
+  ///
   /// ```dart
-  ///  MultiPolygon.build(
-  ///      // an array of polygons
-  ///      [
-  ///        // an array of linear rings of the first polygon
-  ///        [
-  ///          // a linear ring as a flat structure with four (x, y) points
-  ///          [
-  ///            10.1, 10.1,
-  ///            5.0, 9.0,
-  ///            12.0, 4.0,
-  ///            10.1, 10.1,
-  ///          ],
-  ///        ],
-  ///        // an array of linear rings of the second polygon
-  ///        [
-  ///          // a linear ring as a flat structure with four (x, y) points
-  ///          [
-  ///            110.1, 110.1,
-  ///            15.0, 19.0,
-  ///            112.0, 14.0,
-  ///            110.1, 110.1,
-  ///          ],
-  ///        ],
-  ///      ],
-  ///  );
+  /// // a multi polygon with one polygon from 2D positions
+  /// MultiPolygon.build(
+  ///   [
+  ///     // polygon
+  ///     [
+  ///       // an exterior ring with values of five (x, y) positions
+  ///       [
+  ///         10.0, 20.0,
+  ///         12.5, 22.5,
+  ///         15.0, 25.0,
+  ///         11.5, 27.5,
+  ///         10.0, 20.0,
+  ///       ],
+  ///     ],
+  ///   ],
+  ///   type: Coords.xy,
+  /// );
+  ///
+  /// // a multi polygon with one polygon from 3D positions
+  /// MultiPolygon.build(
+  ///   [
+  ///     // polygon
+  ///     [
+  ///       // an exterior ring with values of five (x, y, z) positions
+  ///       [
+  ///         10.0, 20.0, 30.0,
+  ///         12.5, 22.5, 32.5,
+  ///         15.0, 25.0, 35.0,
+  ///         11.5, 27.5, 37.5,
+  ///         10.0, 20.0, 30.0,
+  ///       ],
+  ///     ],
+  ///   ],
+  ///   type: Coords.xyz,
+  /// );
   /// ```
   factory MultiPolygon.build(
     Iterable<Iterable<Iterable<double>>> polygons, {
@@ -151,6 +238,35 @@ class MultiPolygon extends SimpleGeometry {
   /// be swapped when read in) about coordinate reference system in text input.
   ///
   /// Format or decoder implementation specific options can be set by [options].
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a multi polygon with one polygon from 2D positions
+  /// MultiPolygon.parse(
+  ///   format: GeoJSON.geometry,
+  ///   '{"type": "MultiPolygon", "coordinates": [[[[10.0,20.0], '
+  ///   '[12.5,22.5], [15.0,25.0], [11.5,27.5], [10.0,20.0]]]]}',
+  /// );
+  /// MultiPolygon.parse(
+  ///   format: WKT.geometry,
+  ///   'MULTIPOLYGON (((10.0 20.0,12.5 22.5,15.0 25.0, '
+  ///   '11.5 27.5,10.0 20.0)))',
+  /// );
+  ///
+  /// // a multi polygon with one polygon from 3D positions
+  /// MultiPolygon.parse(
+  ///   format: GeoJSON.geometry,
+  ///   '{"type": "MultiPolygon", "coordinates": [[[[10.0,20.0,30.0], '
+  ///   '[12.5,22.5,32.5], [15.0,25.0,35.0], '
+  ///   '[11.5,27.5,37.5], [10.0,20.0,30.0]]]]}',
+  /// );
+  /// MultiPolygon.parse(
+  ///   format: WKT.geometry,
+  ///   'MULTIPOLYGON Z (((10.0 20.0 30.0,12.5 22.5 32.5,15.0 25.0 35.0, '
+  ///   '11.5 27.5 37.5,10.0 20.0 30.0)))',
+  /// );
+  /// ```
   factory MultiPolygon.parse(
     String text, {
     TextReaderFormat<SimpleGeometryContent> format = GeoJSON.geometry,
@@ -174,6 +290,96 @@ class MultiPolygon extends SimpleGeometry {
   ///
   /// If [singlePrecision] is true, then coordinate values of positions are
   /// stored in `Float32List` instead of the `Float64List` (default).
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a multi polygon with one polygon from 2D positions
+  /// MultiPolygon.parseCoords(
+  ///   [
+  ///     // polygon
+  ///     [
+  ///       // an exterior ring with values of five (x, y) positions
+  ///       '10.0,20.0,'
+  ///       '12.5,22.5,'
+  ///       '15.0,25.0,'
+  ///       '11.5,27.5,'
+  ///       '10.0,20.0'
+  ///     ],
+  ///   ],
+  ///   type: Coords.xy,
+  /// );
+  ///
+  /// // a multi polygon with one polygon from 3D positions
+  /// MultiPolygon.parseCoords(
+  ///   [
+  ///     // polygon
+  ///     [
+  ///       // an exterior ring with values of five (x, y, z) positions
+  ///       '10.0,20.0,30.0,'
+  ///       '12.5,22.5,32.5,'
+  ///       '15.0,25.0,35.0,'
+  ///       '11.5,27.5,37.5,'
+  ///       '10.0,20.0,30.0'
+  ///     ],
+  ///   ],
+  ///   type: Coords.xyz,
+  /// );
+  ///
+  /// // a multi polygon with one polygon from 2D positions using an
+  /// // alternative delimiter
+  /// MultiPolygon.parseCoords(
+  ///   [
+  ///     // polygon
+  ///     [
+  ///       // an exterior ring with values of five (x, y) positions
+  ///       '10.0;20.0;'
+  ///       '12.5;22.5;'
+  ///       '15.0;25.0;'
+  ///       '11.5;27.5;'
+  ///       '10.0;20.0'
+  ///     ],
+  ///   ],
+  ///   type: Coords.xy,
+  ///   delimiter: ';',
+  /// ),
+  ///
+  /// // a multi polygon with one polygon from 2D positions with x before y
+  /// MultiPolygon.parseCoords(
+  ///   [
+  ///     // polygon
+  ///     [
+  ///       // an exterior ring with values of five (x, y) positions
+  ///       '20.0,10.0,'
+  ///       '22.5,12.5,'
+  ///       '25.0,15.0,'
+  ///       '27.5,11.5,'
+  ///       '20.0,10.0'
+  ///     ],
+  ///   ],
+  ///   type: Coords.xy,
+  ///   swapXY: true,
+  /// );
+  ///
+  /// // a multi polygon with one polygon from 2D positions with the
+  /// // internal storage using single precision floating point numbers
+  /// // (`Float32List` in this case)
+  /// MultiPolygon.parseCoords(
+  ///   [
+  ///     // polygon
+  ///     [
+  ///       // an exterior ring with values of five (x, y) positions
+  ///       '10.0,20.0,'
+  ///       '12.5,22.5,'
+  ///       '15.0,25.0,'
+  ///       '11.5,27.5,'
+  ///       '10.0,20.0'
+  ///     ],
+  ///   ],
+  ///   type: Coords.xy,
+  ///   singlePrecision: true,
+  /// );
+  /// ```
   factory MultiPolygon.parseCoords(
     Iterable<Iterable<String>> polygons, {
     Pattern delimiter = ',',

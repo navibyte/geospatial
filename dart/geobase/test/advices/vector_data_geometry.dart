@@ -1220,6 +1220,267 @@ void main() {
       );
     });
   });
+
+  group('MultiPolygon class', () {
+    test('MultiPolygon.new', () {
+      // a multi polygon with one polygon from 2D positions
+      testMultiPolygon(
+        MultiPolygon(
+          [
+            // polygon
+            [
+              // an exterior ring with values of five (x, y) positions
+              [
+                10.0, 20.0,
+                12.5, 22.5,
+                15.0, 25.0,
+                11.5, 27.5,
+                10.0, 20.0,
+                //
+              ].positions(Coords.xy),
+            ],
+          ],
+        ),
+      );
+
+      // a multi polygon with one polygon from 3D positions
+      testMultiPolygon(
+        MultiPolygon(
+          [
+            // polygon
+            [
+              // an exterior ring with values of five (x, y, z) positions
+              [
+                10.0, 20.0, 30.0,
+                12.5, 22.5, 32.5,
+                15.0, 25.0, 35.0,
+                11.5, 27.5, 37.5,
+                10.0, 20.0, 30.0,
+                //
+              ].positions(Coords.xyz),
+            ],
+          ],
+        ),
+      );
+    });
+
+    test('MultiPolygon.from', () {
+      // a multi polygon with one polygon from 2D positions
+      testMultiPolygon(
+        MultiPolygon.from(
+          [
+            // polygon
+            [
+              // an exterior ring with five (x, y) positions
+              [
+                [10.0, 20.0].xy,
+                [12.5, 22.5].xy,
+                [15.0, 25.0].xy,
+                [11.5, 27.5].xy,
+                [10.0, 20.0].xy,
+              ],
+            ],
+          ],
+        ),
+      );
+
+      // a multi polygon with one polygon from 3D positions
+      testMultiPolygon(
+        MultiPolygon.from(
+          [
+            // polygon
+            [
+              // an exterior ring with five (x, y, z) positions
+              [
+                [10.0, 20.0, 30.0].xyz,
+                [12.5, 22.5, 32.5].xyz,
+                [15.0, 25.0, 35.0].xyz,
+                [11.5, 27.5, 37.5].xyz,
+                [10.0, 20.0, 30.0].xyz,
+                //
+              ],
+            ],
+          ],
+        ),
+      );
+    });
+
+    test('Polygon.build', () {
+      // a multi polygon with one polygon from 2D positions
+      testMultiPolygon(
+        MultiPolygon.build(
+          [
+            // polygon
+            [
+              // an exterior ring with values of five (x, y) positions
+              [
+                10.0, 20.0,
+                12.5, 22.5,
+                15.0, 25.0,
+                11.5, 27.5,
+                10.0, 20.0,
+                //
+              ],
+            ],
+          ],
+          type: Coords.xy,
+        ),
+      );
+
+      // a multi polygon with one polygon from 3D positions
+      testMultiPolygon(
+        MultiPolygon.build(
+          [
+            // polygon
+            [
+              // an exterior ring with values of five (x, y, z) positions
+              [
+                10.0, 20.0, 30.0,
+                12.5, 22.5, 32.5,
+                15.0, 25.0, 35.0,
+                11.5, 27.5, 37.5,
+                10.0, 20.0, 30.0,
+                //
+              ],
+            ],
+          ],
+          type: Coords.xyz,
+        ),
+      );
+    });
+
+    test('MultiPolygon.parse', () {
+      // a multi polygon with one polygon from 2D positions
+      testMultiPolygon(
+        MultiPolygon.parse(
+          format: GeoJSON.geometry,
+          '{"type": "MultiPolygon", "coordinates": [[[[10.0,20.0], '
+          '[12.5,22.5], [15.0,25.0], [11.5,27.5], [10.0,20.0]]]]}',
+        ),
+      );
+      testMultiPolygon(
+        MultiPolygon.parse(
+          format: WKT.geometry,
+          'MULTIPOLYGON (((10.0 20.0,12.5 22.5,15.0 25.0, '
+          '11.5 27.5,10.0 20.0)))',
+        ),
+      );
+
+      // a multi polygon with one polygon from 3D positions
+      testMultiPolygon(
+        MultiPolygon.parse(
+          format: GeoJSON.geometry,
+          '{"type": "MultiPolygon", "coordinates": [[[[10.0,20.0,30.0], '
+          '[12.5,22.5,32.5], [15.0,25.0,35.0], '
+          '[11.5,27.5,37.5], [10.0,20.0,30.0]]]]}',
+        ),
+      );
+      testMultiPolygon(
+        MultiPolygon.parse(
+          format: WKT.geometry,
+          'MULTIPOLYGON Z (((10.0 20.0 30.0,12.5 22.5 32.5,15.0 25.0 35.0, '
+          '11.5 27.5 37.5,10.0 20.0 30.0)))',
+        ),
+      );
+    });
+
+    test('Polygon.parseCoords', () {
+      // a multi polygon with one polygon from 2D positions
+      testMultiPolygon(
+        MultiPolygon.parseCoords(
+          [
+            // polygon
+            [
+              // an exterior ring with values of five (x, y) positions
+              '10.0,20.0,'
+                  '12.5,22.5,'
+                  '15.0,25.0,'
+                  '11.5,27.5,'
+                  '10.0,20.0'
+            ],
+          ],
+          type: Coords.xy,
+        ),
+      );
+
+      // a multi polygon with one polygon from 3D positions
+      testMultiPolygon(
+        MultiPolygon.parseCoords(
+          [
+            // polygon
+            [
+              // an exterior ring with values of five (x, y, z) positions
+              '10.0,20.0,30.0,'
+                  '12.5,22.5,32.5,'
+                  '15.0,25.0,35.0,'
+                  '11.5,27.5,37.5,'
+                  '10.0,20.0,30.0'
+            ],
+          ],
+          type: Coords.xyz,
+        ),
+      );
+      // a multi polygon with one polygon from 2D positions using an
+      // alternative delimiter
+      testMultiPolygon(
+        MultiPolygon.parseCoords(
+          [
+            // polygon
+            [
+              // an exterior ring with values of five (x, y) positions
+              '10.0;20.0;'
+                  '12.5;22.5;'
+                  '15.0;25.0;'
+                  '11.5;27.5;'
+                  '10.0;20.0'
+            ],
+          ],
+          type: Coords.xy,
+          delimiter: ';',
+        ),
+      );
+
+      // a multi polygon with one polygon from 2D positions with x before y
+      testMultiPolygon(
+        MultiPolygon.parseCoords(
+          [
+            // polygon
+            [
+              // an exterior ring with values of five (x, y) positions
+              '20.0,10.0,'
+                  '22.5,12.5,'
+                  '25.0,15.0,'
+                  '27.5,11.5,'
+                  '20.0,10.0'
+            ],
+          ],
+          type: Coords.xy,
+          swapXY: true,
+        ),
+      );
+
+      // a multi polygon with one polygon from 2D positions with the
+      // internal storage using single precision floating point numbers
+      // (`Float32List` in this case)
+      testMultiPolygon(
+        MultiPolygon.parseCoords(
+          [
+            // polygon
+            [
+              // an exterior ring with values of five (x, y) positions
+              '10.0,20.0,'
+                  '12.5,22.5,'
+                  '15.0,25.0,'
+                  '11.5,27.5,'
+                  '10.0,20.0'
+            ],
+          ],
+          type: Coords.xy,
+          singlePrecision: true,
+        ),
+      );
+    });
+  });
 }
 
 /// Tests `Point` geometry.
@@ -1251,6 +1512,14 @@ void testMultiPoint(MultiPoint multiPoint) {
 /// Tests `MultiLineString` geometry.
 void testMultiLineString(MultiLineString multiLineString) {
   testPositionSeries(multiLineString.chains.first);
+}
+
+/// Tests `MultiPolygon` geometry.
+void testMultiPolygon(MultiPolygon multiPolygon) {
+  testPolygon(multiPolygon.polygons.first);
+  testPositionSeries(
+    PositionSeries.from(multiPolygon.ringArrays.first.first.positions.take(3)),
+  );
 }
 
 void _doTestPolygon(Polygon polygon, {int ringCount = 1}) {
