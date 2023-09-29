@@ -40,15 +40,30 @@ void main() {
       ];
       for (final test in tests) {
         expect(
-          MultiPoint.parseCoords(test[0])
+          MultiPoint.parseCoords(_toFlat(test[0]))
               .toText(format: DefaultFormat.geometry),
           test[1],
         );
       }
-      expect(() => MultiPoint.parseCoords(points12), throwsFormatException);
-      expect(() => MultiPoint.parseCoords(points21), throwsFormatException);
-      expect(() => MultiPoint.parseCoords(points20), throwsFormatException);
-      expect(() => MultiPoint.parseCoords(points02), throwsFormatException);
+      expect(
+        () => MultiPoint.parseCoords(_toFlat(points12)),
+        throwsFormatException,
+      );
+      expect(
+        () => MultiPoint.parseCoords(_toFlat(points21)),
+        throwsFormatException,
+      );
+      expect(
+        () => MultiPoint.parseCoords(_toFlat(points20)),
+        throwsFormatException,
+      );
+      expect(
+        () => MultiPoint.parseCoords(_toFlat(points02)),
+        throwsFormatException,
+      );
     });
   });
 }
+
+Iterable<String> _toFlat(String test) =>
+    test.substring(1, test.length - 1).split('],[');

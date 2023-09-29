@@ -170,7 +170,7 @@ void main() {
         '{"type":"MultiPoint","coordinates":[]}',
       );
       expect(
-        MultiPoint.parseCoords('').toText(format: def),
+        MultiPoint.parseCoords(const []).toText(format: def),
         emptyMultiPoint.toText(format: def),
       );
       expect(
@@ -477,6 +477,16 @@ void main() {
         '[-1.1,-1.1,-1.1,-1.1],[2.1,-2.5,2.3,0.1],[3.5,-3.49,11.3,0.23]';
     const multiPointCoordsYX =
         '[-1.1,-1.1,-1.1,-1.1],[-2.5,2.1,2.3,0.1],[-3.49,3.5,11.3,0.23]';
+    const multiPointCoordsFlat = [
+      '-1.1,-1.1,-1.1,-1.1',
+      '2.1,-2.5,2.3,0.1',
+      '3.5,-3.49,11.3,0.23'
+    ];
+    const multiPointCoordsYXFlat = [
+      '-1.1,-1.1,-1.1,-1.1',
+      '-2.5,2.1,2.3,0.1',
+      '-3.49,3.5,11.3,0.23'
+    ];
     const multiPoint =
         '{"type":"MultiPoint","coordinates":[$multiPointCoords]}';
     const multiPointYX =
@@ -508,7 +518,13 @@ void main() {
 
       final mpo1 = MultiPoint.parse(multiPoint);
       expect(mpo1.toText(), multiPoint);
-      expect(MultiPoint.parseCoords(multiPointCoords).toText(), multiPoint);
+      expect(
+        MultiPoint.parseCoords(
+          multiPointCoordsFlat,
+          type: Coords.xyzm,
+        ).toText(),
+        multiPoint,
+      );
       final mpo2 = MultiPoint.from([
         Projected.parse('-1.1,-1.1,-1.1,-1.1'),
         Projected.parse('2.1,-2.5,2.3,0.1'),
@@ -702,7 +718,11 @@ void main() {
           );
           expect(MultiPoint.parse(multiPoint, crs: crs).toText(), multiPoint);
           expect(
-            MultiPoint.parseCoords(multiPointCoords, crs: crs).toText(),
+            MultiPoint.parseCoords(
+              multiPointCoordsFlat,
+              type: Coords.xyzm,
+              swapXY: swapXY,
+            ).toText(),
             multiPoint,
           );
           expect(
@@ -742,7 +762,11 @@ void main() {
           );
           expect(MultiPoint.parse(multiPointYX, crs: crs).toText(), multiPoint);
           expect(
-            MultiPoint.parseCoords(multiPointCoordsYX, crs: crs).toText(),
+            MultiPoint.parseCoords(
+              multiPointCoordsYXFlat,
+              swapXY: swapXY,
+              type: Coords.xyzm,
+            ).toText(),
             multiPoint,
           );
           expect(
@@ -792,8 +816,11 @@ void main() {
             multiPointYX,
           );
           expect(
-            MultiPoint.parseCoords(multiPointCoordsYX, crs: crs)
-                .toText(crs: crs),
+            MultiPoint.parseCoords(
+              multiPointCoordsYXFlat,
+              swapXY: swapXY,
+              type: Coords.xyzm,
+            ).toText(crs: crs),
             multiPointYX,
           );
           expect(

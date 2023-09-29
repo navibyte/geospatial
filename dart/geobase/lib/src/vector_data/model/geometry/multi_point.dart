@@ -4,11 +4,9 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'dart:convert';
 import 'dart:typed_data';
 
 import '/src/codes/coords.dart';
-import '/src/codes/geo_representation.dart';
 import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/box.dart';
@@ -22,7 +20,6 @@ import '/src/utils/coord_type.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
-import '/src/vector/formats/geojson/default_format.dart';
 import '/src/vector/formats/geojson/geojson_format.dart';
 import '/src/vector/formats/wkb/wkb_format.dart';
 import '/src/vector_data/model/bounded/bounded.dart';
@@ -115,32 +112,41 @@ class MultiPoint extends SimpleGeometry {
         options: options,
       );
 
-  /// Parses a multi point geometry from [coordinates] conforming to
-  /// [DefaultFormat].
+  /// Parses a multi point geometry from [points] with positions formatted as
+  /// texts containing coordinate values separated by [delimiter].
   ///
-  /// Use [crs] and [crsLogic] to give hints (like axis order, and whether x
-  /// and y must be swapped when read in) about coordinate reference system in
-  /// text input.
+  /// Use an optional [type] to explicitely set the coordinate type. If not
+  /// provided and an item of [points] has 3 items, then xyz coordinates are
+  /// assumed.
   ///
-  /// If [singlePrecision] is true, then coordinate values of a position are
+  /// If [swapXY] is true, then swaps x and y for all positions in the result.
+  ///
+  /// If [singlePrecision] is true, then coordinate values of positions are
   /// stored in `Float32List` instead of the `Float64List` (default).
   factory MultiPoint.parseCoords(
-    String coordinates, {
-    CoordRefSys? crs,
-    GeoRepresentation? crsLogic,
+    Iterable<String> points, {
+    Pattern delimiter = ',',
+    Coords? type,
+    bool swapXY = false,
     bool singlePrecision = false,
   }) {
-    final str = coordinates.trim();
-    if (str.isEmpty) {
+    if (points.isEmpty) {
       return MultiPoint.build(const []);
+    } else {
+      return MultiPoint(
+        points
+            .map(
+              (point) => parsePositionFromText(
+                point,
+                delimiter: delimiter,
+                type: type,
+                swapXY: swapXY,
+                singlePrecision: singlePrecision,
+              ),
+            )
+            .toList(growable: false),
+      );
     }
-    final array = json.decode('[$str]') as List<dynamic>;
-    final points = createPositionArray(
-      array,
-      swapXY: crs?.swapXY(logic: crsLogic) ?? false,
-      singlePrecision: singlePrecision,
-    );
-    return MultiPoint(points);
   }
 
   /// Decodes a multi point geometry from [bytes] conforming to [format].
