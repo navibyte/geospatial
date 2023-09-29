@@ -1040,6 +1040,186 @@ void main() {
       );
     });
   });
+
+  group('MultiLineString class', () {
+    test('MultiLineString.new', () {
+      // a multi line string with two line strings both with three 2D positions
+      testMultiLineString(
+        MultiLineString([
+          [10.0, 20.0, 12.5, 22.5, 15.0, 25.0].positions(Coords.xy),
+          [12.5, 23.0, 11.5, 24.0, 12.5, 24.0].positions(Coords.xy),
+        ]),
+      );
+
+      // a multi line string with two line strings both with three 3D positions
+      testMultiLineString(
+        MultiLineString([
+          [10.0, 20.0, 30.0, 12.5, 22.5, 32.5, 15.0, 25.0, 35.0]
+              .positions(Coords.xyz),
+          [12.5, 23.0, 32.5, 11.5, 24.0, 31.5, 12.5, 24.0, 32.5]
+              .positions(Coords.xyz),
+        ]),
+      );
+    });
+
+    test('MultiLineString.from', () {
+      // a multi line string with two line strings both with three 2D positions
+      testMultiLineString(
+        MultiLineString.from([
+          [
+            [10.0, 20.0].xy,
+            [12.5, 22.5].xy,
+            [15.0, 25.0].xy,
+          ],
+          [
+            [12.5, 23.0].xy,
+            [11.5, 24.0].xy,
+            [12.5, 24.0].xy,
+          ],
+        ]),
+      );
+
+      // a multi line string with two line strings both with three 3D positions
+      testMultiLineString(
+        MultiLineString.from([
+          [
+            [10.0, 20.0, 30.0].xyz,
+            [12.5, 22.5, 32.5].xyz,
+            [15.0, 25.0, 35.0].xyz,
+          ],
+          [
+            [12.5, 23.0, 32.5].xyz,
+            [11.5, 24.0, 31.5].xyz,
+            [12.5, 24.0, 32.5].xyz,
+          ],
+        ]),
+      );
+    });
+
+    test('MultiLineString.build', () {
+      // a multi line string with two line strings both with three 2D positions
+      testMultiLineString(
+        MultiLineString.build(
+          [
+            [10.0, 20.0, 12.5, 22.5, 15.0, 25.0],
+            [12.5, 23.0, 11.5, 24.0, 12.5, 24.0],
+          ],
+          type: Coords.xy,
+        ),
+      );
+
+      // a multi line string with two line strings both with three 3D positions
+      testMultiLineString(
+        MultiLineString.build(
+          [
+            [10.0, 20.0, 30.0, 12.5, 22.5, 32.5, 15.0, 25.0, 35.0],
+            [12.5, 23.0, 32.5, 11.5, 24.0, 31.5, 12.5, 24.0, 32.5],
+          ],
+          type: Coords.xyz,
+        ),
+      );
+    });
+
+    test('MultiLineString.parse', () {
+      // a multi line string with two line strings both with three 2D positions
+      testMultiLineString(
+        MultiLineString.parse(
+          format: GeoJSON.geometry,
+          '{"type": "MultiLineString", "coordinates": [[[10.0,20.0], '
+          '[12.5,22.5], [15.0,25.0]], '
+          '[[12.5,23.0], [11.5,24.0], [12.5,24.0]]]}',
+        ),
+      );
+      testMultiLineString(
+        MultiLineString.parse(
+          format: WKT.geometry,
+          'MULTILINESTRING ((10.0 20.0,12.5 22.5,15.0 25.0), '
+          '(12.5 23.0,11.5 24.0,12.5 24.0))',
+        ),
+      );
+
+      // a multi line string with two line strings both with three 3D positions
+      testMultiLineString(
+        MultiLineString.parse(
+          format: GeoJSON.geometry,
+          '{"type": "MultiLineString", "coordinates": [[[10.0,20.0,30.0], '
+          '[12.5,22.5,32.5], [15.0,25.0,35.0]], '
+          '[[12.5,23.0,32.5], [11.5,24.0,31.5], [12.5,24.0,32.5]]]}',
+        ),
+      );
+      testMultiLineString(
+        MultiLineString.parse(
+          format: WKT.geometry,
+          'MULTILINESTRING Z ((10.0 20.0 30.0,12.5 22.5 32.5,15.0 25.0 35.0), '
+          '(12.5 23.0 32.5,11.5 24.0 31.5,12.5 24.0 32.5))',
+        ),
+      );
+    });
+
+    test('MultiLineString.parseCoords', () {
+      // a multi line string with two line strings both with three 2D positions
+      testMultiLineString(
+        MultiLineString.parseCoords(
+          [
+            '10.0,20.0,12.5,22.5,15.0,25.0',
+            '12.5,23.0,11.5,24.0,12.5,24.0',
+          ],
+          type: Coords.xy,
+        ),
+      );
+
+      // a multi line string with two line strings both with three 3D positions
+      testMultiLineString(
+        MultiLineString.parseCoords(
+          [
+            '10.0,20.0,30.0,12.5,22.5,32.5,15.0,25.0,35.0',
+            '12.5,23.0,32.5,11.5,24.0,31.5,12.5,24.0,32.5',
+          ],
+          type: Coords.xyz,
+        ),
+      );
+
+      // a multi line string with two line strings both with three 2D positions
+      // using an alternative delimiter
+      testMultiLineString(
+        MultiLineString.parseCoords(
+          [
+            '10.0;20.0;12.5;22.5;15.0;25.0',
+            '12.5;23.0;11.5;24.0;12.5;24.0',
+          ],
+          type: Coords.xy,
+          delimiter: ';',
+        ),
+      );
+
+      // a multi line string with two line strings both with three 2D positions
+      // with x before y
+      testMultiLineString(
+        MultiLineString.parseCoords(
+          [
+            '20.0,10.0,22.5,12.5,25.0,15.0',
+            '23.0,12.5,24.0,11.5,24.0,12.5',
+          ],
+          type: Coords.xy,
+          swapXY: true,
+        ),
+      );
+
+      // a multi line string with two line strings both with three 2D positions
+      // with the internal storage using single precision floating point numbers
+      // (`Float32List` in this case)
+      testMultiLineString(
+        MultiLineString.parseCoords(
+          [
+            '10.0,20.0,12.5,22.5,15.0,25.0',
+            '12.5,23.0,11.5,24.0,12.5,24.0',
+          ],
+          type: Coords.xy,
+          singlePrecision: true,
+        ),
+      );
+    });
+  });
 }
 
 /// Tests `Point` geometry.
@@ -1066,6 +1246,11 @@ void testPolygon(Polygon polygon, {int ringCount = 1}) {
 /// Tests `MultiPoint` geometry.
 void testMultiPoint(MultiPoint multiPoint) {
   testPositionSeries(PositionSeries.from(multiPoint.positions));
+}
+
+/// Tests `MultiLineString` geometry.
+void testMultiLineString(MultiLineString multiLineString) {
+  testPositionSeries(multiLineString.chains.first);
 }
 
 void _doTestPolygon(Polygon polygon, {int ringCount = 1}) {

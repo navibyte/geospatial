@@ -41,6 +41,24 @@ class MultiLineString extends SimpleGeometry {
   ///
   /// Each line string or a chain of positions is represented by a
   /// [PositionSeries] instance.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a multi line string with two line strings both with three 2D positions
+  /// MultiLineString([
+  ///   [10.0, 20.0, 12.5, 22.5, 15.0, 25.0].positions(Coords.xy),
+  ///   [12.5, 23.0, 11.5, 24.0, 12.5, 24.0].positions(Coords.xy),
+  /// ]);
+  ///
+  /// // a multi line string with two line strings both with three 3D positions
+  /// MultiLineString([
+  ///   [10.0, 20.0, 30.0, 12.5, 22.5, 32.5, 15.0, 25.0, 35.0]
+  ///       .positions(Coords.xyz),
+  ///   [12.5, 23.0, 32.5, 11.5, 24.0, 31.5, 12.5, 24.0, 32.5]
+  ///       .positions(Coords.xyz),
+  /// ]);
+  /// ```
   const MultiLineString(List<PositionSeries> lineStrings, {super.bounds})
       : _lineStrings = lineStrings;
 
@@ -52,6 +70,38 @@ class MultiLineString extends SimpleGeometry {
   /// Each line string or a chain of positions is represented by an
   /// `Iterable<Position>` instance. The coordinate type of all positions in
   /// all chains should be the same.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a multi line string with two line strings both with three 2D positions
+  /// MultiLineString.from([
+  ///   [
+  ///     [10.0, 20.0].xy,
+  ///     [12.5, 22.5].xy,
+  ///     [15.0, 25.0].xy,
+  ///   ],
+  ///   [
+  ///     [12.5, 23.0].xy,
+  ///     [11.5, 24.0].xy,
+  ///     [12.5, 24.0].xy,
+  ///   ],
+  /// ]);
+  ///
+  /// // a multi line string with two line strings both with three 3D positions
+  /// MultiLineString.from([
+  ///   [
+  ///     [10.0, 20.0, 30.0].xyz,
+  ///     [12.5, 22.5, 32.5].xyz,
+  ///     [15.0, 25.0, 35.0].xyz,
+  ///   ],
+  ///   [
+  ///     [12.5, 23.0, 32.5].xyz,
+  ///     [11.5, 24.0, 31.5].xyz,
+  ///     [12.5, 24.0, 32.5].xyz,
+  ///   ],
+  /// ]);
+  /// ```
   factory MultiLineString.from(
     Iterable<Iterable<Position>> lineStrings, {
     Box? bounds,
@@ -75,27 +125,26 @@ class MultiLineString extends SimpleGeometry {
   /// are x, y and z of the first position, the next three coordinate values are
   /// x, y and z of the second position, and so on.
   ///
-  /// An example to build a multi line string with two line strings:
+  /// Examples:
+  ///
   /// ```dart
-  ///  MultiLineString.build(
-  ///      // an array of chains (one chain for each line string)
-  ///      [
-  ///        // a chain as a flat structure with four (x, y) points
-  ///        [
-  ///          10.1, 10.1,
-  ///          5.0, 9.0,
-  ///          12.0, 4.0,
-  ///          10.1, 10.1,
-  ///        ],
-  ///        // a chain as a flat structure with three (x, y) points
-  ///        [
-  ///          -1.1, -1.1,
-  ///          2.1, -2.5,
-  ///          3.5, -3.49,
-  ///        ],
-  ///      ],
-  ///      type: Coords.xy,
-  ///  );
+  /// // a multi line string with two line strings both with three 2D positions
+  /// MultiLineString.build(
+  ///   [
+  ///     [10.0, 20.0, 12.5, 22.5, 15.0, 25.0],
+  ///     [12.5, 23.0, 11.5, 24.0, 12.5, 24.0],
+  ///   ],
+  ///   type: Coords.xy,
+  /// );
+  ///
+  /// // a multi line string with two line strings both with three 3D positions
+  /// MultiLineString.build(
+  ///   [
+  ///     [10.0, 20.0, 30.0, 12.5, 22.5, 32.5, 15.0, 25.0, 35.0],
+  ///     [12.5, 23.0, 32.5, 11.5, 24.0, 31.5, 12.5, 24.0, 32.5],
+  ///   ],
+  ///   type: Coords.xyz,
+  /// );
   /// ```
   factory MultiLineString.build(
     Iterable<Iterable<double>> lineStrings, {
@@ -123,6 +172,36 @@ class MultiLineString extends SimpleGeometry {
   /// be swapped when read in) about coordinate reference system in text input.
   ///
   /// Format or decoder implementation specific options can be set by [options].
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a multi line string with two line strings both with three 2D positions
+  /// MultiLineString.parse(
+  ///   format: GeoJSON.geometry,
+  ///   '{"type": "MultiLineString", "coordinates": [[[10.0,20.0], '
+  ///   '[12.5,22.5], [15.0,25.0]], '
+  ///   '[[12.5,23.0], [11.5,24.0], [12.5,24.0]]]}',
+  /// );
+  /// MultiLineString.parse(
+  ///   format: WKT.geometry,
+  ///   'MULTILINESTRING ((10.0 20.0,12.5 22.5,15.0 25.0), '
+  ///   '(12.5 23.0,11.5 24.0,12.5 24.0))',
+  /// );
+  ///
+  /// // a multi line string with two line strings both with three 3D positions
+  /// MultiLineString.parse(
+  ///   format: GeoJSON.geometry,
+  ///   '{"type": "MultiLineString", "coordinates": [[[10.0,20.0,30.0], '
+  ///   '[12.5,22.5,32.5], [15.0,25.0,35.0]], '
+  ///   '[[12.5,23.0,32.5], [11.5,24.0,31.5], [12.5,24.0,32.5]]]}',
+  /// );
+  /// MultiLineString.parse(
+  ///   format: WKT.geometry,
+  ///   'MULTILINESTRING Z ((10.0 20.0 30.0,12.5 22.5 32.5,15.0 25.0 35.0), '
+  ///   '(12.5 23.0 32.5,11.5 24.0 31.5,12.5 24.0 32.5))',
+  /// );
+  /// ```
   factory MultiLineString.parse(
     String text, {
     TextReaderFormat<SimpleGeometryContent> format = GeoJSON.geometry,
@@ -146,6 +225,62 @@ class MultiLineString extends SimpleGeometry {
   ///
   /// If [singlePrecision] is true, then coordinate values of positions are
   /// stored in `Float32List` instead of the `Float64List` (default).
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a multi line string with two line strings both with three 2D positions
+  /// MultiLineString.parseCoords(
+  ///   [
+  ///     '10.0,20.0,12.5,22.5,15.0,25.0',
+  ///     '12.5,23.0,11.5,24.0,12.5,24.0',
+  ///   ],
+  ///   type: Coords.xy,
+  /// );
+  ///
+  /// // a multi line string with two line strings both with three 3D positions
+  /// MultiLineString.parseCoords(
+  ///   [
+  ///     '10.0,20.0,30.0,12.5,22.5,32.5,15.0,25.0,35.0',
+  ///     '12.5,23.0,32.5,11.5,24.0,31.5,12.5,24.0,32.5',
+  ///   ],
+  ///   type: Coords.xyz,
+  /// );
+  ///
+  /// // a multi line string with two line strings both with three 2D positions
+  /// // using an alternative delimiter
+  /// MultiLineString.parseCoords(
+  ///   [
+  ///     '10.0;20.0;12.5;22.5;15.0;25.0',
+  ///     '12.5;23.0;11.5;24.0;12.5;24.0',
+  ///   ],
+  ///   type: Coords.xy,
+  ///   delimiter: ';',
+  /// );
+  ///
+  /// // a multi line string with two line strings both with three 2D positions
+  /// // with x before y
+  /// MultiLineString.parseCoords(
+  ///   [
+  ///     '20.0,10.0,22.5,12.5,25.0,15.0',
+  ///     '23.0,12.5,24.0,11.5,24.0,12.5',
+  ///   ],
+  ///   type: Coords.xy,
+  ///   swapXY: true,
+  /// );
+  ///
+  /// // a multi line string with two line strings both with three 2D positions
+  /// // with the internal storage using single precision floating point numbers
+  /// // (`Float32List` in this case)
+  /// MultiLineString.parseCoords(
+  ///   [
+  ///     '10.0,20.0,12.5,22.5,15.0,25.0',
+  ///     '12.5,23.0,11.5,24.0,12.5,24.0',
+  ///   ],
+  ///   type: Coords.xy,
+  ///   singlePrecision: true,
+  /// );
+  /// ```
   factory MultiLineString.parseCoords(
     Iterable<String> lineStrings, {
     Pattern delimiter = ',',
