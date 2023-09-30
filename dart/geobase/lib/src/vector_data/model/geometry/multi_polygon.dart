@@ -508,26 +508,6 @@ class MultiPolygon extends SimpleGeometry {
       );
 
   @override
-  @Deprecated('Use populated or unpopulated instead.')
-  MultiPolygon bounded({bool recalculate = false}) {
-    if (isEmptyByGeometry) return this;
-
-    if (recalculate || bounds == null) {
-      // a new MultiPolygon (rings array kept intact) with populated bounds
-      return MultiPolygon(
-        ringArrays,
-        bounds: BoundsBuilder.calculateBounds(
-          seriesArray: _allRings(ringArrays),
-          type: coordType,
-        ),
-      );
-    } else {
-      // bounds was already populated and not asked to recalculate
-      return this;
-    }
-  }
-
-  @override
   MultiPolygon populated({
     int traverse = 0,
     bool onBounds = true,

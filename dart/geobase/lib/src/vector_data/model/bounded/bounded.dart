@@ -54,24 +54,6 @@ abstract class Bounded {
   /// an empty geometry).
   Box? calculateBounds();
 
-  /// Returns a bounded object with a bounding box populated in [bounds] (and
-  /// in any subitem bounding boxes too). Other properties are left intact.
-  ///
-  /// The returned subtype must be the same as the type of this.
-  ///
-  /// The [recalculate] parameter:
-  /// * false: `bounds` for a returned object is calculated if [bounds] is null
-  /// * true: `bounds` for a returned object is always recalculated
-  ///
-  /// When a calculated bounding box equals to the current bounds of this (or
-  /// bounds cannot be calculated), it's allowed for implementations to return
-  /// `this`.
-  ///
-  /// The `bounds` in returned bounded object may still be null, if bounds
-  /// cannot be calculated (for example in the case of an empty geometry).
-  @Deprecated('Use populated or unpopulated instead.')
-  Bounded bounded({bool recalculate = false});
-
   /// Returns a bounded object of the same subtype as this with certain data
   /// members populated.
   ///

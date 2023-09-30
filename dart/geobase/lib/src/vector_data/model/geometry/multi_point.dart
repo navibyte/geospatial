@@ -328,26 +328,6 @@ class MultiPoint extends SimpleGeometry {
       );
 
   @override
-  @Deprecated('Use populated or unpopulated instead.')
-  MultiPoint bounded({bool recalculate = false}) {
-    if (isEmptyByGeometry) return this;
-
-    if (recalculate || bounds == null) {
-      // return a new MultiPoint (positions kept intact) with populated bounds
-      return MultiPoint(
-        positions,
-        bounds: BoundsBuilder.calculateBounds(
-          positions: positions,
-          type: coordType,
-        ),
-      );
-    } else {
-      // bounds was already populated and not asked to recalculate
-      return this;
-    }
-  }
-
-  @override
   MultiPoint populated({
     int traverse = 0,
     bool onBounds = true,

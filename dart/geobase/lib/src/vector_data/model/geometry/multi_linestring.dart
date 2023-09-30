@@ -367,26 +367,6 @@ class MultiLineString extends SimpleGeometry {
       );
 
   @override
-  @Deprecated('Use populated or unpopulated instead.')
-  MultiLineString bounded({bool recalculate = false}) {
-    if (isEmptyByGeometry) return this;
-
-    if (recalculate || bounds == null) {
-      // return a new MultiLineString (chains kept intact) with populated bounds
-      return MultiLineString(
-        chains,
-        bounds: BoundsBuilder.calculateBounds(
-          seriesArray: chains,
-          type: coordType,
-        ),
-      );
-    } else {
-      // bounds was already populated and not asked to recalculate
-      return this;
-    }
-  }
-
-  @override
   MultiLineString populated({
     int traverse = 0,
     bool onBounds = true,

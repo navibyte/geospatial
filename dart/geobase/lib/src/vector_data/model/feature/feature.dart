@@ -366,26 +366,6 @@ class Feature<T extends Geometry> extends FeatureObject {
   Box? calculateBounds() => geometry?.calculateBounds();
 
   @override
-  @Deprecated('Use populated or unpopulated instead.')
-  Feature<T> bounded({bool recalculate = false}) {
-    final currGeom = geometry;
-    if (currGeom == null || currGeom.isEmptyByGeometry) return this;
-
-    // ensure geometry is processed first
-    // ignore: deprecated_member_use_from_same_package
-    final geom = currGeom.bounded(recalculate: recalculate) as T;
-
-    // return a new feature with processed geometry and populated bounds
-    return Feature<T>(
-      id: id,
-      geometry: geom,
-      properties: properties,
-      custom: custom,
-      bounds: recalculate || bounds == null ? _buildBoundsFrom(geom) : bounds,
-    );
-  }
-
-  @override
   Feature populated({
     int traverse = 0,
     bool onBounds = true,

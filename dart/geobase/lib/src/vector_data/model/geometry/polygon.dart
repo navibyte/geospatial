@@ -694,26 +694,6 @@ class Polygon extends SimpleGeometry {
       );
 
   @override
-  @Deprecated('Use populated or unpopulated instead.')
-  Polygon bounded({bool recalculate = false}) {
-    if (isEmptyByGeometry) return this;
-
-    if (recalculate || bounds == null) {
-      // return a new Polygon (rings kept intact) with populated bounds
-      return Polygon(
-        rings,
-        bounds: BoundsBuilder.calculateBounds(
-          seriesArray: rings,
-          type: coordType,
-        ),
-      );
-    } else {
-      // bounds was already populated and not asked to recalculate
-      return this;
-    }
-  }
-
-  @override
   Polygon populated({
     int traverse = 0,
     bool onBounds = true,

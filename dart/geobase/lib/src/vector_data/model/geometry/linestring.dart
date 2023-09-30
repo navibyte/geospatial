@@ -419,26 +419,6 @@ class LineString extends SimpleGeometry {
       );
 
   @override
-  @Deprecated('Use populated or unpopulated instead.')
-  LineString bounded({bool recalculate = false}) {
-    if (isEmptyByGeometry) return this;
-
-    if (recalculate || bounds == null) {
-      // return a new linestring (chain kept intact) with populated bounds
-      return LineString(
-        chain,
-        bounds: BoundsBuilder.calculateBounds(
-          series: chain,
-          type: coordType,
-        ),
-      );
-    } else {
-      // bounds was already populated and not asked to recalculate
-      return this;
-    }
-  }
-
-  @override
   LineString populated({
     int traverse = 0,
     bool onBounds = true,

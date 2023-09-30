@@ -353,29 +353,6 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
       );
 
   @override
-  @Deprecated('Use populated or unpopulated instead.')
-  FeatureCollection<E> bounded({bool recalculate = false}) {
-    if (features.isEmpty) return this;
-
-    // ensure all features contained are processed first
-    final collection = features
-        .map<E>(
-          (feature) => feature.bounded(recalculate: recalculate) as E,
-        )
-        .toList(growable: false);
-
-    // return a new collection with processed features and populated bounds
-    return FeatureCollection<E>._(
-      collection,
-      coordType,
-      custom: custom,
-      bounds: recalculate || bounds == null
-          ? _buildBoundsFrom(collection, coordType)
-          : bounds,
-    );
-  }
-
-  @override
   FeatureCollection populated({
     int traverse = 0,
     bool onBounds = true,

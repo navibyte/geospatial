@@ -225,29 +225,6 @@ class GeometryCollection<E extends Geometry> extends Geometry {
       );
 
   @override
-  @Deprecated('Use populated or unpopulated instead.')
-  GeometryCollection<E> bounded({bool recalculate = false}) {
-    if (isEmptyByGeometry) return this;
-
-    // ensure all geometries contained are processed first
-    final collection = _geometries
-        .map<E>(
-          // ignore: deprecated_member_use_from_same_package
-          (geometry) => geometry.bounded(recalculate: recalculate) as E,
-        )
-        .toList(growable: false);
-
-    // return a new collection with processed geometries and populated bounds
-    return GeometryCollection<E>._(
-      collection,
-      coordType,
-      bounds: recalculate || bounds == null
-          ? _buildBoundsFrom(collection, coordType)
-          : bounds,
-    );
-  }
-
-  @override
   GeometryCollection populated({
     int traverse = 0,
     bool onBounds = true,
