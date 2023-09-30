@@ -61,6 +61,32 @@ class Feature<T extends Geometry> extends FeatureObject {
   ///
   /// Use an optional [custom] parameter to set any custom or "foreign member"
   /// properties.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a feature with an id and a point geometry (2D coordinates)
+  /// Feature(
+  ///   id: '1',
+  ///   geometry: Point([10.0, 20.0].xy),
+  /// );
+  ///
+  /// // a feature with properties and a line string geometry (3D coordinates)
+  /// Feature(
+  ///   geometry: LineString(
+  ///     // three (x, y, z) positions
+  ///     [10.0, 20.0, 30.0, 12.5, 22.5, 32.5, 15.0, 25.0, 35.0]
+  ///         .positions(Coords.xyz),
+  ///   ),
+  ///   // properties for a feature containing JSON Object like data
+  ///   properties: {
+  ///     'textProp': 'this is property value',
+  ///     'intProp': 10,
+  ///     'doubleProp': 29.5,
+  ///     'arrayProp': ['foo', 'bar'],
+  ///   },
+  /// );
+  /// ```
   const Feature({
     Object? id,
     T? geometry,
@@ -89,19 +115,30 @@ class Feature<T extends Geometry> extends FeatureObject {
   /// Use an optional [custom] parameter to set any custom or "foreign member"
   /// properties.
   ///
-  /// An example to create a feature containing a point geometry, the returned
-  /// type is `Feature<Point>`:
+  /// Examples:
   ///
   /// ```dart
-  ///   Feature<Point>.build(
-  ///       id: '1',
-  ///       geometry: (geom) => geom.point([10.123, 20.25].xy),
-  ///       properties: {
-  ///          'foo': 100,
-  ///          'bar': 'this is property value',
-  ///          'baz': true,
-  ///       },
-  ///   );
+  /// // a feature with an id and a point geometry (2D coordinates)
+  /// Feature.build(
+  ///   id: '1',
+  ///   geometry: (geom) => geom.point([10.0, 20.0].xy),
+  /// );
+  ///
+  /// // a feature with properties and a line string geometry (3D coordinates)
+  /// Feature.build(
+  ///   geometry: (geom) => geom.lineString(
+  ///     // three (x, y, z) positions
+  ///     [10.0, 20.0, 30.0, 12.5, 22.5, 32.5, 15.0, 25.0, 35.0]
+  ///         .positions(Coords.xyz),
+  ///   ),
+  ///   // properties for a feature containing JSON Object like data
+  ///   properties: {
+  ///     'textProp': 'this is property value',
+  ///     'intProp': 10,
+  ///     'doubleProp': 29.5,
+  ///     'arrayProp': ['foo', 'bar'],
+  ///   },
+  /// );
   /// ```
   factory Feature.build({
     Object? id,
@@ -159,6 +196,49 @@ class Feature<T extends Geometry> extends FeatureObject {
   /// be swapped when read in) about coordinate reference system in text input.
   ///
   /// Format or decoder implementation specific options can be set by [options].
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a feature with an id and a point geometry (2D coordinates)
+  /// Feature.parse(
+  ///   format: GeoJSON.feature,
+  ///   '''
+  ///   {
+  ///     "type": "Feature",
+  ///     "id": "1",
+  ///     "geometry": {
+  ///       "type": "Point",
+  ///       "coordinates": [10.0, 20.0]
+  ///     }
+  ///   }
+  ///   ''',
+  /// );
+  ///
+  /// // a feature with properties and a line string geometry (3D coordinates)
+  /// Feature.parse(
+  ///   format: GeoJSON.feature,
+  ///   '''
+  ///   {
+  ///     "type": "Feature",
+  ///     "geometry": {
+  ///       "type": "LineString",
+  ///       "coordinates": [
+  ///         [10.0, 20.0, 30.0],
+  ///         [12.5, 22.5, 32.5],
+  ///         [15.0, 25.0, 35.0]
+  ///       ]
+  ///     },
+  ///     "properties": {
+  ///       "textProp": "this is property value",
+  ///       "intProp": 10,
+  ///       "doubleProp": 29.5,
+  ///       "arrayProp": ["foo", "bar"]
+  ///     }
+  ///   }
+  ///   ''',
+  /// );
+  /// ```
   static Feature<T> parse<T extends Geometry>(
     String text, {
     TextReaderFormat<FeatureContent> format = GeoJSON.feature,
@@ -184,6 +264,45 @@ class Feature<T extends Geometry> extends FeatureObject {
   /// be swapped when read in) about coordinate reference system in text input.
   ///
   /// Format or decoder implementation specific options can be set by [options].
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a feature with an id and a point geometry (2D coordinates)
+  /// Feature.fromData(
+  ///   format: GeoJSON.feature,
+  ///   {
+  ///     'type': 'Feature',
+  ///     'id': '1',
+  ///     'geometry': {
+  ///       'type': 'Point',
+  ///       'coordinates': [10.0, 20.0]
+  ///     }
+  ///   },
+  /// );
+  ///
+  /// // a feature with properties and a line string geometry (3D coordinates)
+  /// Feature.fromData(
+  ///   format: GeoJSON.feature,
+  ///   {
+  ///     'type': 'Feature',
+  ///     'geometry': {
+  ///       'type': 'LineString',
+  ///       'coordinates': [
+  ///         [10.0, 20.0, 30.0],
+  ///         [12.5, 22.5, 32.5],
+  ///         [15.0, 25.0, 35.0]
+  ///       ]
+  ///     },
+  ///     'properties': {
+  ///       'textProp': 'this is property value',
+  ///       'intProp': 10,
+  ///       'doubleProp': 29.5,
+  ///       'arrayProp': ['foo', 'bar']
+  ///     }
+  ///   },
+  /// );
+  /// ```
   static Feature<T> fromData<T extends Geometry>(
     Map<String, dynamic> data, {
     TextReaderFormat<FeatureContent> format = GeoJSON.feature,
