@@ -196,6 +196,11 @@ Code          | Description
 
 ## :newspaper_roll: News
 
+2023-09-30
+* [geobase version 0.6.0](https://github.com/navibyte/geospatial/issues/193)
+  * ✨ Optimizing data structures (*Position*, *PositionSeries*, *Box*) used by simple geometries. Fixes, tests and documentation.
+* [geodata version 0.13.0](https://github.com/navibyte/geospatial/issues/198)
+
 2023-08-11
 * [geobase version 0.5.0](https://github.com/navibyte/geospatial/issues/174)
   * ✨ Spherical geodesy functions (distance, bearing, destination point, etc.) for *great circle* and *rhumb line* paths.
