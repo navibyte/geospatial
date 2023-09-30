@@ -159,18 +159,162 @@ void main() {
       );
     });
   });
+
+  group('FeatureCollection class', () {
+    test('FeatureCollection.new', () {
+      testFeatureCollection(
+        // a feature collection with two features
+        FeatureCollection([
+          // a feature with an id and a point geometry (2D coordinates)
+          Feature(
+            id: '1',
+            geometry: Point([10.0, 20.0].xy),
+          ),
+
+          // a feature with properties and a line string geometry (3D)
+          Feature(
+            geometry: LineString(
+              // three (x, y, z) positions
+              [10.0, 20.0, 30.0, 12.5, 22.5, 32.5, 15.0, 25.0, 35.0]
+                  .positions(Coords.xyz),
+            ),
+            // properties for a feature containing JSON Object like data
+            properties: {
+              'textProp': 'this is property value',
+              'intProp': 10,
+              'doubleProp': 29.5,
+              'arrayProp': ['foo', 'bar'],
+            },
+          ),
+        ]),
+      );
+    });
+
+    test('FeatureCollection.build', () {
+      testFeatureCollection(
+        // a feature collection with two features
+        FeatureCollection.build(
+          count: 2,
+          (feat) => feat
+            // a feature with an id and a point geometry (2D coordinates)
+            ..feature(
+              id: '1',
+              geometry: (geom) => geom.point([10.0, 20.0].xy),
+            )
+
+            // a feature with properties and a line string geometry (3D)
+            ..feature(
+              geometry: (geom) => geom.lineString(
+                // three (x, y, z) positions
+                [10.0, 20.0, 30.0, 12.5, 22.5, 32.5, 15.0, 25.0, 35.0]
+                    .positions(Coords.xyz),
+              ),
+              // properties for a feature containing JSON Object like data
+              properties: {
+                'textProp': 'this is property value',
+                'intProp': 10,
+                'doubleProp': 29.5,
+                'arrayProp': ['foo', 'bar'],
+              },
+            ),
+        ),
+      );
+    });
+
+    test('FeatureCollection.parse', () {
+      testFeatureCollection(
+        // a feature collection with two features
+        FeatureCollection.parse(
+          format: GeoJSON.feature,
+          '''
+          {
+            "type": "FeatureCollection",
+            "features": [
+              {
+                "type": "Feature",
+                "id": "1",
+                "geometry": {
+                  "type": "Point",
+                  "coordinates": [10.0, 20.0]
+                }
+              },
+              {
+                "type": "Feature",
+                "geometry": {
+                  "type": "LineString",
+                  "coordinates": [
+                    [10.0, 20.0, 30.0],
+                    [12.5, 22.5, 32.5],
+                    [15.0, 25.0, 35.0]
+                  ]
+                },
+                "properties": {
+                  "textProp": "this is property value",
+                  "intProp": 10,
+                  "doubleProp": 29.5,
+                  "arrayProp": ["foo", "bar"]
+                }
+              }
+            ]
+          }
+          ''',
+        ),
+      );
+    });
+
+    test('FeatureCollection.fromData', () {
+      testFeatureCollection(
+        // a feature collection with two features
+        FeatureCollection.fromData(
+          format: GeoJSON.feature,
+          {
+            'type': 'FeatureCollection',
+            'features': [
+              // a feature with an id and a point geometry (2D coordinates)
+              {
+                'type': 'Feature',
+                'id': '1',
+                'geometry': {
+                  'type': 'Point',
+                  'coordinates': [10.0, 20.0]
+                }
+              },
+              // a feature with properties and a line string geometry (3D)
+              {
+                'type': 'Feature',
+                'geometry': {
+                  'type': 'LineString',
+                  'coordinates': [
+                    [10.0, 20.0, 30.0],
+                    [12.5, 22.5, 32.5],
+                    [15.0, 25.0, 35.0]
+                  ]
+                },
+                'properties': {
+                  'textProp': 'this is property value',
+                  'intProp': 10,
+                  'doubleProp': 29.5,
+                  'arrayProp': ['foo', 'bar']
+                }
+              }
+            ]
+          },
+        ),
+      );
+    });
+  });
 }
 
 /// Tests `Feature` object with `Point` geometry.
-void testFeatureP(Feature<Point> feature) {
-  testPoint(feature.geometry!);
+void testFeatureP(Feature feature) {
+  testPoint(feature.geometry! as Point);
   expect(feature.id, '1');
   expect(feature.properties, const <String, dynamic>{});
 }
 
 /// Tests `Feature` object with `LineString` geometry.
-void testFeatureLS(Feature<LineString> feature) {
-  testLineString(feature.geometry!);
+void testFeatureLS(Feature feature) {
+  testLineString(feature.geometry! as LineString);
   expect(feature.id, isNull);
   expect(feature.properties, {
     'textProp': 'this is property value',
@@ -178,4 +322,11 @@ void testFeatureLS(Feature<LineString> feature) {
     'doubleProp': 29.5,
     'arrayProp': ['foo', 'bar'],
   });
+}
+
+/// Tests `FeatureCollection` object.
+void testFeatureCollection(FeatureCollection collection) {
+  expect(collection.features.length, 2);
+  testFeatureP(collection.features[0]);
+  testFeatureLS(collection.features[1]);
 }

@@ -40,6 +40,35 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
 
   /// A feature collection with an array of [features] with optional [bounds]
   /// and [custom] properties.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a feature collection with two features
+  /// FeatureCollection([
+  ///   // a feature with an id and a point geometry (2D coordinates)
+  ///   Feature<Point>(
+  ///     id: '1',
+  ///     geometry: Point([10.0, 20.0].xy),
+  ///   ),
+  ///
+  ///   // a feature with properties and a line string geometry (3D coordinates)
+  ///   Feature<LineString>(
+  ///     geometry: LineString(
+  ///       // three (x, y, z) positions
+  ///       [10.0, 20.0, 30.0, 12.5, 22.5, 32.5, 15.0, 25.0, 35.0]
+  ///           .positions(Coords.xyz),
+  ///     ),
+  ///     // properties for a feature containing JSON Object like data
+  ///     properties: {
+  ///       'textProp': 'this is property value',
+  ///       'intProp': 10,
+  ///       'doubleProp': 29.5,
+  ///       'arrayProp': ['foo', 'bar'],
+  ///     },
+  ///   ),
+  /// ]);
+  /// ```
   FeatureCollection(List<E> features, {super.bounds, super.custom})
       : _features = features,
         _coordType = resolveCoordTypeFrom(collection: features);
@@ -67,27 +96,35 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   /// Use an optional [custom] parameter to set any custom or "foreign member"
   /// properties.
   ///
-  /// An example to create a feature collection with feature containing point
-  /// geometries, the returned type is `FeatureCollection<Feature<Point>>`:
+  /// Examples:
   ///
   /// ```dart
-  ///   FeatureCollection.build<Point>(
-  ///       count: 2,
-  ///       (features) => features
-  ///           ..feature(
-  ///               id: '1',
-  ///               geometry: (geom) => geom.point([10.123, 20.25].xy),
-  ///               properties: {
-  ///                  'foo': 100,
-  ///                  'bar': 'this is property value',
-  ///                  'baz': true,
-  ///               },
-  ///           )
-  ///           ..feature(
-  ///               id: '2',
-  ///               // ...
-  ///           ),
-  ///   );
+  /// // a feature collection with two features
+  /// FeatureCollection.build(
+  ///   count: 2,
+  ///   (feat) => feat
+  ///     // a feature with an id and a point geometry (2D coordinates)
+  ///     ..feature(
+  ///       id: '1',
+  ///       geometry: (geom) => geom.point([10.0, 20.0].xy),
+  ///     )
+  ///
+  ///     // a feature with properties and a line string geometry (3D)
+  ///     ..feature(
+  ///       geometry: (geom) => geom.lineString(
+  ///         // three (x, y, z) positions
+  ///         [10.0, 20.0, 30.0, 12.5, 22.5, 32.5, 15.0, 25.0, 35.0]
+  ///             .positions(Coords.xyz),
+  ///       ),
+  ///       // properties for a feature containing JSON Object like data
+  ///       properties: {
+  ///         'textProp': 'this is property value',
+  ///         'intProp': 10,
+  ///         'doubleProp': 29.5,
+  ///         'arrayProp': ['foo', 'bar'],
+  ///       },
+  ///     ),
+  /// );
   /// ```
   static FeatureCollection<Feature<T>> build<T extends Geometry>(
     WriteFeatures features, {
@@ -120,6 +157,47 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   /// be swapped when read in) about coordinate reference system in text input.
   ///
   /// Format or decoder implementation specific options can be set by [options].
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a feature collection with two features
+  /// FeatureCollection.parse(
+  ///   format: GeoJSON.feature,
+  ///   '''
+  ///   {
+  ///     "type": "FeatureCollection",
+  ///     "features": [
+  ///       {
+  ///         "type": "Feature",
+  ///         "id": "1",
+  ///         "geometry": {
+  ///           "type": "Point",
+  ///           "coordinates": [10.0, 20.0]
+  ///         }
+  ///       },
+  ///       {
+  ///         "type": "Feature",
+  ///         "geometry": {
+  ///           "type": "LineString",
+  ///           "coordinates": [
+  ///             [10.0, 20.0, 30.0],
+  ///             [12.5, 22.5, 32.5],
+  ///             [15.0, 25.0, 35.0]
+  ///           ]
+  ///         },
+  ///         "properties": {
+  ///           "textProp": "this is property value",
+  ///           "intProp": 10,
+  ///           "doubleProp": 29.5,
+  ///           "arrayProp": ["foo", "bar"]
+  ///         }
+  ///       }
+  ///     ]
+  ///   }
+  ///   ''',
+  /// );
+  /// ```
   static FeatureCollection<Feature<T>> parse<T extends Geometry>(
     String text, {
     TextReaderFormat<FeatureContent> format = GeoJSON.feature,
@@ -146,6 +224,47 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   /// be swapped when read in) about coordinate reference system in text input.
   ///
   /// Format or decoder implementation specific options can be set by [options].
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a feature collection with two features
+  /// FeatureCollection.fromData(
+  ///   format: GeoJSON.feature,
+  ///   {
+  ///     'type': 'FeatureCollection',
+  ///     'features': [
+  ///       // a feature with an id and a point geometry (2D coordinates)
+  ///       {
+  ///         'type': 'Feature',
+  ///         'id': '1',
+  ///         'geometry': {
+  ///           'type': 'Point',
+  ///           'coordinates': [10.0, 20.0]
+  ///         }
+  ///       },
+  ///       // a feature with properties and a line string geometry (3D)
+  ///       {
+  ///         'type': 'Feature',
+  ///         'geometry': {
+  ///           'type': 'LineString',
+  ///           'coordinates': [
+  ///             [10.0, 20.0, 30.0],
+  ///             [12.5, 22.5, 32.5],
+  ///             [15.0, 25.0, 35.0]
+  ///           ]
+  ///         },
+  ///         'properties': {
+  ///           'textProp': 'this is property value',
+  ///           'intProp': 10,
+  ///           'doubleProp': 29.5,
+  ///           'arrayProp': ['foo', 'bar']
+  ///         }
+  ///       }
+  ///     ]
+  ///   },
+  /// );
+  /// ```
   static FeatureCollection<Feature<T>> fromData<T extends Geometry>(
     Map<String, dynamic> data, {
     TextReaderFormat<FeatureContent> format = GeoJSON.feature,
