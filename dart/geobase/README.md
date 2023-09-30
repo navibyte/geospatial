@@ -289,6 +289,103 @@ Other resources:
 
 ## Coordinates
 
+### Position data
+
+The basic building blocks to represent position data in this package are:
+
+Class            | Description
+---------------- | -----------
+`Position`       | A position with 2 to 4 coordinate values (x and y are required, z and m are optional) representing an exact location in some coordinate reference system.
+`PositionSeries` | A series of 0 to N positions built from a coordinate value array or a list of position objects.
+`Box`            | A bounding box with 4 to 8 coordinate values (minX, minY, maxX and maxY are required, minZ, minM, maxZ and maxM are optional).
+
+These classes are used by [geometry classes](#geometries) as internal data
+structures to store single positions and boxes, and series of positions.
+
+Some basic samples to create position objects:
+
+```dart
+  // A position as a view on a coordinate array containing x and y.
+  Position.view([708221.0, 5707225.0]);
+
+  // A position as a view on a coordinate array containing x, y and z.
+  Position.view([708221.0, 5707225.0, 45.0]);
+
+  // A position as a view on a coordinate array containing x, y, z and m.
+  Position.view([708221.0, 5707225.0, 45.0, 123.0]);
+
+  // The samples above can be shorted using extension methods on `List<double>`.
+  [708221.0, 5707225.0].xy;
+  [708221.0, 5707225.0, 45.0].xyz;
+  [708221.0, 5707225.0, 45.0, 123.0].xyzm;
+
+  // There are also some other factory methods.
+  Position.create(x: 708221.0, y: 5707225.0, z: 45.0, m: 123.0);
+  Position.parse('708221.0,5707225.0,45.0,123.0');
+  Position.parse('708221.0 5707225.0 45.0 123.0', delimiter: ' ');
+```
+
+Bounding boxes have similar factory methods too:
+
+```dart
+  // The same bounding box (limits on x and y) created with different factories.
+  Box.view([70800.0, 5707200.0, 70900.0, 5707300.0]);
+  Box.create(minX: 70800.0, minY: 5707200.0, maxX: 70900.0, maxY: 5707300.0);
+  Box.parse('70800.0,5707200.0,70900.0,5707300.0');
+  Box.parse('70800.0 5707200.0 70900.0 5707300.0', delimiter: ' ');
+```
+
+`PositionSeries` is a fixed-length (and random-access) view to a series of
+positions. There are two main structures to store coordinate values of positions
+contained in a series:
+
+* A list of `Position` objects (each object contains x and y coordinates, and
+  optionally z and m too).
+* A list of `double` values as a flat structure. For example a double list could
+  contain coordinates like `[x0, y0, z0, x1, y1, z1, x2, y2, z2]` that
+  represents three positions each with x, y and z coordinates.
+
+These two structures are demonstrated by code:
+
+```dart
+  // A position series from a flat coordinate value array.
+  PositionSeries.view(
+    [
+      70800.0, 5707200.0, // (x, y) coordinate values for position 0
+      70850.0, 5707250.0, // (x, y) coordinate values for position 1
+      70900.0, 5707300.0, // (x, y) coordinate values for position 2
+    ],
+    type: Coords.xy,
+  );
+
+  // A position series from an array of position objects.
+  PositionSeries.from(
+    [
+      [70800.0, 5707200.0].xy, // position 0 with (x, y) coordinate values
+      [70850.0, 5707250.0].xy, // position 1 with (x, y) coordinate values
+      [70900.0, 5707300.0].xy, // position 2 with (x, y) coordinate values
+    ],
+    type: Coords.xy,
+  );
+```
+
+See also the appendix about [coordinate arrays](#coordinate-arrays) for more
+advanced topic about handling coordinate value arrays for a single position,
+series of positions and a single bounding box. 
+
+Classes described above can be used to represented position data in various
+coordinate reference systems, including *geographic*, *projected* and local
+systems.
+
+There are also very specific subtypes of `Position` and `Box` classes. 
+
+`Projected` (extending `Position`) and `ProjBox` (extending `Box`) can be used
+to represent *projected* or cartesian (XYZ) coordinates. Similarily `Geographic`
+and `GeoBox` can be used to represent *geographic* coordinates. 
+
+These special purpose subtypes for positions and boxes are discussed in next
+few sections.
+
 ### Geographic coordinates
 
 *Geographic* coordinates are based on a spherical or ellipsoidal coordinate
@@ -483,6 +580,7 @@ Coordinate values in *position* classes (*projected* and *geographic*):
 
 Class         | Required coordinates      | Optional coordinates  | Values
 ------------- | ------------------------- | --------------------- | ------
+`Position`    | x, y                      | z, m                  | double
 `Projected`   | x, y                      | z, m                  | double
 `Geographic`  | lon, lat                  | elev, m               | double
 
@@ -490,6 +588,7 @@ Coordinate values in *bounding box* classes (*projected* and *geographic*):
 
 Class         | Required coordinates      | Optional coordinates         | Values
 ------------- | ------------------------- | ---------------------------- | ------
+`Box`         | minX, minY, maxX, maxY    | minZ, minM, maxZ, maxM       | double
 `ProjBox`     | minX, minY, maxX, maxY    | minZ, minM, maxZ, maxM       | double
 `GeoBox`      | west, south, east, north  | minElev, minM, maxElev, maxM | double
 
@@ -507,13 +606,9 @@ this package, for geographic coordinates x represents *longitude*, y represents
 Coordinates are stored as `double` values in all position and bounding box
 classes but `Scalable2i` uses `int` coordinate values. 
 
-The `Position` interface is a super type for `Projected` and `Geographic`, and
-the `Box` interface is a super type for `ProjBox` and `GeoBox`. Please see more
+The `Position` class is a super type for `Projected` and `Geographic`, and
+the `Box` class is a super type for `ProjBox` and `GeoBox`. Please see more
 information about them in the API reference.
-
-See also the appendix about [Coordinate array](#coordinate-arrays) for more
-advanced topic about handling coordinate value arrays for a single position,
-multiple positions and a single bounding box. 
 
 ## Coordinate reference systems
 

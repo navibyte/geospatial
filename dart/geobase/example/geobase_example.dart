@@ -19,6 +19,7 @@ void main() {
   _intro();
 
   // coordinates
+  _positionData();
   _positionSeries();
   _geographicCoordinates();
   _geographicCoordinatesDMS();
@@ -244,7 +245,58 @@ void _intro() {
   print(feature.toText(format: GeoJSON.feature));
 }
 
+void _positionData() {
+  // A position as a view on a coordinate array containing x and y.
+  Position.view([708221.0, 5707225.0]);
+
+  // A position as a view on a coordinate array containing x, y and z.
+  Position.view([708221.0, 5707225.0, 45.0]);
+
+  // A position as a view on a coordinate array containing x, y, z and m.
+  Position.view([708221.0, 5707225.0, 45.0, 123.0]);
+
+  // The samples above can be shorted using extension methods on `List<double>`.
+  [708221.0, 5707225.0].xy;
+  [708221.0, 5707225.0, 45.0].xyz;
+  [708221.0, 5707225.0, 45.0, 123.0].xyzm;
+
+  // There are also some other factory methods.
+  Position.create(x: 708221.0, y: 5707225.0, z: 45.0, m: 123.0);
+  Position.parse('708221.0,5707225.0,45.0,123.0');
+  Position.parse('708221.0 5707225.0 45.0 123.0', delimiter: ' ');
+
+  // -------
+
+  // The same bounding box (limits on x and y) created with different factories.
+  Box.view([70800.0, 5707200.0, 70900.0, 5707300.0]);
+  Box.create(minX: 70800.0, minY: 5707200.0, maxX: 70900.0, maxY: 5707300.0);
+  Box.parse('70800.0,5707200.0,70900.0,5707300.0');
+  Box.parse('70800.0 5707200.0 70900.0 5707300.0', delimiter: ' ');
+}
+
 void _positionSeries() {
+  // A position series from a flat coordinate value array.
+  PositionSeries.view(
+    [
+      70800.0, 5707200.0, // (x, y) coordinate values for position 0
+      70850.0, 5707250.0, // (x, y) coordinate values for position 1
+      70900.0, 5707300.0, // (x, y) coordinate values for position 2
+    ],
+    type: Coords.xy,
+  );
+
+  // A position series from an array of position objects.
+  PositionSeries.from(
+    [
+      [70800.0, 5707200.0].xy, // position 0 with (x, y) coordinate values
+      [70850.0, 5707250.0].xy, // position 1 with (x, y) coordinate values
+      [70900.0, 5707300.0].xy, // position 2 with (x, y) coordinate values
+    ],
+    type: Coords.xy,
+  );
+
+  // -------
+
   // A position series with three positions each with x and y coordinates.
   PositionSeries.view(
     [
