@@ -211,8 +211,16 @@ class LineString extends SimpleGeometry {
   /// // a line string from 2D positions
   /// LineString.parse(
   ///   format: GeoJSON.geometry,
-  ///   '{"type": "LineString", "coordinates": [[10.0,20.0], '
-  ///   '[12.5,22.5], [15.0,25.0]]}',
+  ///   '''
+  ///   {
+  ///     "type": "LineString",
+  ///     "coordinates": [
+  ///       [10.0,20.0],
+  ///       [12.5,22.5],
+  ///       [15.0,25.0]
+  ///     ]
+  ///   }
+  ///   ''',
   /// );
   /// LineString.parse(
   ///   format: WKT.geometry,
@@ -222,8 +230,16 @@ class LineString extends SimpleGeometry {
   /// // a line string from 3D positions
   /// LineString.parse(
   ///   format: GeoJSON.geometry,
-  ///   '{"type": "LineString", "coordinates": [[10.0,20.0,30.0], '
-  ///   '[12.5,22.5,32.5], [15.0,25.0,35.0]]}',
+  ///   '''
+  ///   {
+  ///     "type": "LineString",
+  ///     "coordinates": [
+  ///       [10.0,20.0,30.0],
+  ///       [12.5,22.5,32.5],
+  ///       [15.0,25.0,35.0]
+  ///     ]
+  ///   }
+  ///   ''',
   /// );
   /// LineString.parse(
   ///   format: WKT.geometry,
@@ -239,13 +255,26 @@ class LineString extends SimpleGeometry {
   /// // a line string from measured 3D positions
   /// LineString.parse(
   ///   format: GeoJSON.geometry,
-  ///   '{"type": "LineString", "coordinates": [[10.0,20.0,30.0,40.0], '
-  ///   '[12.5,22.5,32.5,42.5], [15.0,25.0,35.0,45.0]]}',
+  ///   '''
+  ///   {
+  ///     "type": "LineString",
+  ///     "coordinates": [
+  ///       [10.0,20.0,30.0,40.0],
+  ///       [12.5,22.5,32.5,42.5],
+  ///       [15.0,25.0,35.0,45.0]
+  ///     ]
+  ///   }
+  ///   ''',
   /// );
   /// LineString.parse(
   ///   format: WKT.geometry,
-  ///   'LINESTRING ZM '
-  ///   '(10.0 20.0 30.0 40.0,12.5 22.5 32.5 42.5,15.0 25.0 35.0 45.0)',
+  ///   '''
+  ///   LINESTRING ZM (
+  ///     10.0 20.0 30.0 40.0,
+  ///     12.5 22.5 32.5 42.5,
+  ///     15.0 25.0 35.0 45.0
+  ///   )
+  ///   ''',
   /// );
   /// ```
   factory LineString.parse(

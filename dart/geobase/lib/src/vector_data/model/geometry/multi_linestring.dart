@@ -179,27 +179,47 @@ class MultiLineString extends SimpleGeometry {
   /// // a multi line string with two line strings both with three 2D positions
   /// MultiLineString.parse(
   ///   format: GeoJSON.geometry,
-  ///   '{"type": "MultiLineString", "coordinates": [[[10.0,20.0], '
-  ///   '[12.5,22.5], [15.0,25.0]], '
-  ///   '[[12.5,23.0], [11.5,24.0], [12.5,24.0]]]}',
+  ///   '''
+  ///   {
+  ///     "type": "MultiLineString",
+  ///     "coordinates": [
+  ///       [[10.0,20.0], [12.5,22.5], [15.0,25.0]],
+  ///       [[12.5,23.0], [11.5,24.0], [12.5,24.0]]
+  ///     ]
+  ///   }
+  ///   ''',
   /// );
   /// MultiLineString.parse(
   ///   format: WKT.geometry,
-  ///   'MULTILINESTRING ((10.0 20.0,12.5 22.5,15.0 25.0), '
-  ///   '(12.5 23.0,11.5 24.0,12.5 24.0))',
+  ///   '''
+  ///   MULTILINESTRING (
+  ///     (10.0 20.0,12.5 22.5,15.0 25.0),
+  ///     (12.5 23.0,11.5 24.0,12.5 24.0)
+  ///   )
+  ///   ''',
   /// );
   ///
   /// // a multi line string with two line strings both with three 3D positions
   /// MultiLineString.parse(
   ///   format: GeoJSON.geometry,
-  ///   '{"type": "MultiLineString", "coordinates": [[[10.0,20.0,30.0], '
-  ///   '[12.5,22.5,32.5], [15.0,25.0,35.0]], '
-  ///   '[[12.5,23.0,32.5], [11.5,24.0,31.5], [12.5,24.0,32.5]]]}',
+  ///   '''
+  ///   {
+  ///     "type": "MultiLineString",
+  ///     "coordinates": [
+  ///       [[10.0,20.0,30.0], [12.5,22.5,32.5], [15.0,25.0,35.0]],
+  ///       [[12.5,23.0,32.5], [11.5,24.0,31.5], [12.5,24.0,32.5]]
+  ///     ]
+  ///   }
+  ///   ''',
   /// );
   /// MultiLineString.parse(
   ///   format: WKT.geometry,
-  ///   'MULTILINESTRING Z ((10.0 20.0 30.0,12.5 22.5 32.5,15.0 25.0 35.0), '
-  ///   '(12.5 23.0 32.5,11.5 24.0 31.5,12.5 24.0 32.5))',
+  ///   '''
+  ///   MULTILINESTRING Z (
+  ///     (10.0 20.0 30.0,12.5 22.5 32.5,15.0 25.0 35.0),
+  ///     (12.5 23.0 32.5,11.5 24.0 31.5,12.5 24.0 32.5)
+  ///   )
+  ///   ''',
   /// );
   /// ```
   factory MultiLineString.parse(

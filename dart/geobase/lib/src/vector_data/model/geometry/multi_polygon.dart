@@ -245,26 +245,75 @@ class MultiPolygon extends SimpleGeometry {
   /// // a multi polygon with one polygon from 2D positions
   /// MultiPolygon.parse(
   ///   format: GeoJSON.geometry,
-  ///   '{"type": "MultiPolygon", "coordinates": [[[[10.0,20.0], '
-  ///   '[12.5,22.5], [15.0,25.0], [11.5,27.5], [10.0,20.0]]]]}',
+  ///   '''
+  ///   {
+  ///     "type": "MultiPolygon",
+  ///     "coordinates": [
+  ///       [
+  ///         [
+  ///           [10.0,20.0],
+  ///           [12.5,22.5],
+  ///           [15.0,25.0],
+  ///           [11.5,27.5],
+  ///           [10.0,20.0]
+  ///         ]
+  ///       ]
+  ///     ]
+  ///   }
+  ///   ''',
   /// );
   /// MultiPolygon.parse(
   ///   format: WKT.geometry,
-  ///   'MULTIPOLYGON (((10.0 20.0,12.5 22.5,15.0 25.0, '
-  ///   '11.5 27.5,10.0 20.0)))',
+  ///   '''
+  ///   MULTIPOLYGON (
+  ///     (
+  ///       (
+  ///         10.0 20.0,
+  ///         12.5 22.5,
+  ///         15.0 25.0,
+  ///         11.5 27.5,
+  ///         10.0 20.0
+  ///       )
+  ///     )
+  ///   )
+  ///   ''',
   /// );
   ///
   /// // a multi polygon with one polygon from 3D positions
   /// MultiPolygon.parse(
   ///   format: GeoJSON.geometry,
-  ///   '{"type": "MultiPolygon", "coordinates": [[[[10.0,20.0,30.0], '
-  ///   '[12.5,22.5,32.5], [15.0,25.0,35.0], '
-  ///   '[11.5,27.5,37.5], [10.0,20.0,30.0]]]]}',
+  ///   '''
+  ///   {
+  ///     "type": "MultiPolygon",
+  ///     "coordinates": [
+  ///       [
+  ///         [
+  ///           [10.0,20.0,30.0],
+  ///           [12.5,22.5,32.5],
+  ///           [15.0,25.0,35.0],
+  ///           [11.5,27.5,37.5],
+  ///           [10.0,20.0,30.0]
+  ///         ]
+  ///       ]
+  ///     ]
+  ///   }
+  ///   ''',
   /// );
   /// MultiPolygon.parse(
   ///   format: WKT.geometry,
-  ///   'MULTIPOLYGON Z (((10.0 20.0 30.0,12.5 22.5 32.5,15.0 25.0 35.0, '
-  ///   '11.5 27.5 37.5,10.0 20.0 30.0)))',
+  ///   '''
+  ///   MULTIPOLYGON Z (
+  ///     (
+  ///       (
+  ///         10.0 20.0 30.0,
+  ///         12.5 22.5 32.5,
+  ///         15.0 25.0 35.0,
+  ///         11.5 27.5 37.5,
+  ///         10.0 20.0 30.0
+  ///       )
+  ///     )
+  ///   )
+  ///   ''',
   /// );
   /// ```
   factory MultiPolygon.parse(

@@ -273,8 +273,16 @@ void main() {
       testLineString(
         LineString.parse(
           format: GeoJSON.geometry,
-          '{"type": "LineString", "coordinates": [[10.0,20.0], '
-          '[12.5,22.5], [15.0,25.0]]}',
+          '''
+          { 
+            "type": "LineString", 
+            "coordinates": [
+              [10.0,20.0],
+              [12.5,22.5],
+              [15.0,25.0]
+            ]
+          }
+          ''',
         ),
       );
       testLineString(
@@ -288,8 +296,16 @@ void main() {
       testLineString(
         LineString.parse(
           format: GeoJSON.geometry,
-          '{"type": "LineString", "coordinates": [[10.0,20.0,30.0], '
-          '[12.5,22.5,32.5], [15.0,25.0,35.0]]}',
+          '''
+          { 
+            "type": "LineString", 
+            "coordinates": [
+              [10.0,20.0,30.0],
+              [12.5,22.5,32.5],
+              [15.0,25.0,35.0]
+            ]
+          }
+          ''',
         ),
       );
       testLineString(
@@ -311,15 +327,28 @@ void main() {
       testLineString(
         LineString.parse(
           format: GeoJSON.geometry,
-          '{"type": "LineString", "coordinates": [[10.0,20.0,30.0,40.0], '
-          '[12.5,22.5,32.5,42.5], [15.0,25.0,35.0,45.0]]}',
+          '''
+          { 
+            "type": "LineString", 
+            "coordinates": [
+              [10.0,20.0,30.0,40.0],
+              [12.5,22.5,32.5,42.5],
+              [15.0,25.0,35.0,45.0]
+            ]
+          }
+          ''',
         ),
       );
       testLineString(
         LineString.parse(
           format: WKT.geometry,
-          'LINESTRING ZM '
-          '(10.0 20.0 30.0 40.0,12.5 22.5 32.5 42.5,15.0 25.0 35.0 45.0)',
+          '''
+          LINESTRING ZM (
+            10.0 20.0 30.0 40.0,
+            12.5 22.5 32.5 42.5,
+            15.0 25.0 35.0 45.0
+          )
+          ''',
         ),
       );
     });
@@ -692,14 +721,26 @@ void main() {
       testPolygon(
         Polygon.parse(
           format: GeoJSON.geometry,
-          '{"type": "Polygon", "coordinates": [[[10.0,20.0], '
-          '[12.5,22.5], [15.0,25.0], [11.5,27.5], [10.0,20.0]]]}',
+          '''
+          {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [10.0,20.0],
+                [12.5,22.5],
+                [15.0,25.0],
+                [11.5,27.5],
+                [10.0,20.0]
+              ]
+            ]
+          }
+          ''',
         ),
       );
       testPolygon(
         Polygon.parse(
           format: WKT.geometry,
-          'POLYGON ((10.0 20.0,12.5 22.5,15.0 25.0, 11.5 27.5,10.0 20.0))',
+          'POLYGON ((10.0 20.0,12.5 22.5,15.0 25.0,11.5 27.5,10.0 20.0))',
         ),
       );
 
@@ -707,16 +748,36 @@ void main() {
       testPolygon(
         Polygon.parse(
           format: GeoJSON.geometry,
-          '{"type": "Polygon", "coordinates": [[[10.0,20.0,30.0], '
-          '[12.5,22.5,32.5], [15.0,25.0,35.0], '
-          '[11.5,27.5,37.5], [10.0,20.0,30.0]]]}',
+          '''
+          {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [10.0,20.0,30.0],
+                [12.5,22.5,32.5],
+                [15.0,25.0,35.0],
+                [11.5,27.5,37.5],
+                [10.0,20.0,30.0]
+              ]
+            ]
+          }
+          ''',
         ),
       );
       testPolygon(
         Polygon.parse(
           format: WKT.geometry,
-          'POLYGON Z ((10.0 20.0 30.0,12.5 22.5 32.5,15.0 25.0 35.0, '
-          '11.5 27.5 37.5,10.0 20.0 30.0))',
+          '''
+          POLYGON Z (
+            (
+              10.0 20.0 30.0,
+              12.5 22.5 32.5,
+              15.0 25.0 35.0,
+              11.5 27.5 37.5,
+              10.0 20.0 30.0
+            )
+          )
+          ''',
         ),
       );
 
@@ -724,8 +785,17 @@ void main() {
       testPolygon(
         Polygon.parse(
           format: WKT.geometry,
-          'POLYGON M ((10.0 20.0 40.0,12.5 22.5 42.5,15.0 25.0 45.0, '
-          '11.5 27.5 47.5,10.0 20.0 40.0))',
+          '''
+          POLYGON M (
+            (
+              10.0 20.0 40.0,
+              12.5 22.5 42.5,
+              15.0 25.0 45.0,
+              11.5 27.5 47.5,
+              10.0 20.0 40.0
+            )
+          )
+          ''',
         ),
       );
 
@@ -733,16 +803,36 @@ void main() {
       testPolygon(
         Polygon.parse(
           format: GeoJSON.geometry,
-          '{"type": "Polygon", "coordinates": [[[10.0,20.0,30.0,40.0], '
-          '[12.5,22.5,32.5,42.5], [15.0,25.0,35.0,45.0], '
-          '[11.5,27.5,37.5,47.5], [10.0,20.0,30.0,40.0]]]}',
+          '''
+          {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [10.0,20.0,30.0,40.0],
+                [12.5,22.5,32.5,42.5],
+                [15.0,25.0,35.0,45.0],
+                [11.5,27.5,37.5,47.5],
+                [10.0,20.0,30.0,40.0]
+              ]
+            ]
+          }
+          ''',
         ),
       );
       testPolygon(
         Polygon.parse(
           format: WKT.geometry,
-          'POLYGON ZM ((10.0 20.0 30.0 40.0,12.5 22.5 32.5 42.5, '
-          '15.0 25.0 35.0 45.0, 11.5 27.5 37.5 47.5,10.0 20.0 30.0 40.0))',
+          '''
+          POLYGON ZM (
+            (
+              10.0 20.0 30.0 40.0,
+              12.5 22.5 32.5 42.5,
+              15.0 25.0 35.0 45.0,
+              11.5 27.5 37.5 47.5,
+              10.0 20.0 30.0 40.0
+            )
+          )
+          ''',
         ),
       );
     });
@@ -956,8 +1046,12 @@ void main() {
       testMultiPoint(
         MultiPoint.parse(
           format: GeoJSON.geometry,
-          '{"type": "MultiPoint", "coordinates": [[10.0,20.0], '
-          '[12.5,22.5], [15.0,25.0]]}',
+          '''
+          {
+            "type": "MultiPoint",
+            "coordinates": [[10.0,20.0],[12.5,22.5],[15.0,25.0]]
+          }
+          ''',
         ),
       );
       testMultiPoint(
@@ -971,8 +1065,12 @@ void main() {
       testMultiPoint(
         MultiPoint.parse(
           format: GeoJSON.geometry,
-          '{"type": "MultiPoint", "coordinates": [[10.0,20.0,30.0], '
-          '[12.5,22.5,32.5], [15.0,25.0,35.0]]}',
+          '''
+          {
+            "type": "MultiPoint",
+            "coordinates": [[10.0,20.0,30.0],[12.5,22.5,32.5],[15.0,25.0,35.0]]
+          }
+          ''',
         ),
       );
       testMultiPoint(
@@ -1125,16 +1223,26 @@ void main() {
       testMultiLineString(
         MultiLineString.parse(
           format: GeoJSON.geometry,
-          '{"type": "MultiLineString", "coordinates": [[[10.0,20.0], '
-          '[12.5,22.5], [15.0,25.0]], '
-          '[[12.5,23.0], [11.5,24.0], [12.5,24.0]]]}',
+          '''
+          {
+            "type": "MultiLineString",
+            "coordinates": [
+              [[10.0,20.0], [12.5,22.5], [15.0,25.0]],
+              [[12.5,23.0], [11.5,24.0], [12.5,24.0]]
+            ]
+          }
+          ''',
         ),
       );
       testMultiLineString(
         MultiLineString.parse(
           format: WKT.geometry,
-          'MULTILINESTRING ((10.0 20.0,12.5 22.5,15.0 25.0), '
-          '(12.5 23.0,11.5 24.0,12.5 24.0))',
+          '''
+          MULTILINESTRING (
+            (10.0 20.0,12.5 22.5,15.0 25.0),
+            (12.5 23.0,11.5 24.0,12.5 24.0)
+          )
+          ''',
         ),
       );
 
@@ -1142,16 +1250,26 @@ void main() {
       testMultiLineString(
         MultiLineString.parse(
           format: GeoJSON.geometry,
-          '{"type": "MultiLineString", "coordinates": [[[10.0,20.0,30.0], '
-          '[12.5,22.5,32.5], [15.0,25.0,35.0]], '
-          '[[12.5,23.0,32.5], [11.5,24.0,31.5], [12.5,24.0,32.5]]]}',
+          '''
+          {
+            "type": "MultiLineString",
+            "coordinates": [
+              [[10.0,20.0,30.0], [12.5,22.5,32.5], [15.0,25.0,35.0]],
+              [[12.5,23.0,32.5], [11.5,24.0,31.5], [12.5,24.0,32.5]]
+            ]
+          }
+          ''',
         ),
       );
       testMultiLineString(
         MultiLineString.parse(
           format: WKT.geometry,
-          'MULTILINESTRING Z ((10.0 20.0 30.0,12.5 22.5 32.5,15.0 25.0 35.0), '
-          '(12.5 23.0 32.5,11.5 24.0 31.5,12.5 24.0 32.5))',
+          '''
+          MULTILINESTRING Z (
+            (10.0 20.0 30.0,12.5 22.5 32.5,15.0 25.0 35.0),
+            (12.5 23.0 32.5,11.5 24.0 31.5,12.5 24.0 32.5)
+          )
+          ''',
         ),
       );
     });
@@ -1305,7 +1423,7 @@ void main() {
       );
     });
 
-    test('Polygon.build', () {
+    test('MultiPolygon.build', () {
       // a multi polygon with one polygon from 2D positions
       testMultiPolygon(
         MultiPolygon.build(
@@ -1354,15 +1472,40 @@ void main() {
       testMultiPolygon(
         MultiPolygon.parse(
           format: GeoJSON.geometry,
-          '{"type": "MultiPolygon", "coordinates": [[[[10.0,20.0], '
-          '[12.5,22.5], [15.0,25.0], [11.5,27.5], [10.0,20.0]]]]}',
+          '''
+          {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [10.0,20.0],
+                  [12.5,22.5],
+                  [15.0,25.0],
+                  [11.5,27.5],
+                  [10.0,20.0]
+                ]
+              ]
+            ]
+          }
+          ''',
         ),
       );
       testMultiPolygon(
         MultiPolygon.parse(
           format: WKT.geometry,
-          'MULTIPOLYGON (((10.0 20.0,12.5 22.5,15.0 25.0, '
-          '11.5 27.5,10.0 20.0)))',
+          '''
+          MULTIPOLYGON (
+            (
+              ( 
+                10.0 20.0,
+                12.5 22.5,
+                15.0 25.0,
+                11.5 27.5,
+                10.0 20.0
+              )
+            )
+          )
+          ''',
         ),
       );
 
@@ -1370,21 +1513,45 @@ void main() {
       testMultiPolygon(
         MultiPolygon.parse(
           format: GeoJSON.geometry,
-          '{"type": "MultiPolygon", "coordinates": [[[[10.0,20.0,30.0], '
-          '[12.5,22.5,32.5], [15.0,25.0,35.0], '
-          '[11.5,27.5,37.5], [10.0,20.0,30.0]]]]}',
+          '''
+          {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [10.0,20.0,30.0],
+                  [12.5,22.5,32.5],
+                  [15.0,25.0,35.0],
+                  [11.5,27.5,37.5],
+                  [10.0,20.0,30.0]
+                ]
+              ]
+            ]
+          }
+          ''',
         ),
       );
       testMultiPolygon(
         MultiPolygon.parse(
           format: WKT.geometry,
-          'MULTIPOLYGON Z (((10.0 20.0 30.0,12.5 22.5 32.5,15.0 25.0 35.0, '
-          '11.5 27.5 37.5,10.0 20.0 30.0)))',
+          '''
+          MULTIPOLYGON Z (
+            (
+              ( 
+                10.0 20.0 30.0,
+                12.5 22.5 32.5,
+                15.0 25.0 35.0,
+                11.5 27.5 37.5,
+                10.0 20.0 30.0
+              )
+            )
+          )
+          ''',
         ),
       );
     });
 
-    test('Polygon.parseCoords', () {
+    test('MultiPolygon.parseCoords', () {
       // a multi polygon with one polygon from 2D positions
       testMultiPolygon(
         MultiPolygon.parseCoords(

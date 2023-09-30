@@ -154,8 +154,12 @@ class MultiPoint extends SimpleGeometry {
   /// // a multi point from three 2D positions
   /// MultiPoint.parse(
   ///   format: GeoJSON.geometry,
-  ///   '{"type": "MultiPoint", "coordinates": [[10.0,20.0], '
-  ///   '[12.5,22.5], [15.0,25.0]]}',
+  ///   '''
+  ///   {
+  ///     "type": "MultiPoint",
+  ///     "coordinates": [[10.0,20.0],[12.5,22.5],[15.0,25.0]]
+  ///   }
+  ///   ''',
   /// );
   /// MultiPoint.parse(
   ///   format: WKT.geometry,
@@ -165,8 +169,12 @@ class MultiPoint extends SimpleGeometry {
   /// // a multi point from three 3D positions
   /// MultiPoint.parse(
   ///   format: GeoJSON.geometry,
-  ///   '{"type": "MultiPoint", "coordinates": [[10.0,20.0,30.0], '
-  ///   '[12.5,22.5,32.5], [15.0,25.0,35.0]]}',
+  ///   '''
+  ///   {
+  ///     "type": "MultiPoint",
+  ///     "coordinates": [[10.0,20.0,30.0],[12.5,22.5,32.5],[15.0,25.0,35.0]]
+  ///   }
+  ///   ''',
   /// );
   /// MultiPoint.parse(
   ///   format: WKT.geometry,
