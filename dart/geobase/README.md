@@ -27,7 +27,30 @@ Key features:
 
 ## Introduction
 
-Geographic and projected *positions* and *bounding boxes*:
+General purpose positions, series of positions and bounding boxes:
+
+```dart
+  // A position as a view on a coordinate array containing x and y.
+  Position.view([708221.0, 5707225.0]);
+
+  // The sample above shorted.
+  [708221.0, 5707225.0].xy;
+
+  // A bounding box.
+  Box.view([70800.0, 5707200.0, 70900.0, 5707300.0]);
+
+  // A series of positions from an array of position objects.
+  PositionSeries.from(
+    [
+      [70800.0, 5707200.0].xy, // position 0 with (x, y) coordinate values
+      [70850.0, 5707250.0].xy, // position 1 with (x, y) coordinate values
+      [70900.0, 5707300.0].xy, // position 2 with (x, y) coordinate values
+    ],
+    type: Coords.xy,
+  );
+```
+
+*Geographic* and *projected* positions and bounding boxes:
 
 ```dart
   // A geographic position without and with an elevation.
