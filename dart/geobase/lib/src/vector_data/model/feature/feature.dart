@@ -309,7 +309,7 @@ class Feature<T extends Geometry> extends FeatureObject {
     CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) =>
-      FeatureBuilder.decodeData<Feature<T>, T>(
+      FeatureBuilder.fromData<Feature<T>, T>(
         data,
         format: format,
         crs: crs,

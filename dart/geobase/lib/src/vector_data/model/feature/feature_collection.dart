@@ -271,7 +271,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
     CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) =>
-      FeatureBuilder.decodeData<FeatureCollection<Feature<T>>, T>(
+      FeatureBuilder.fromData<FeatureCollection<Feature<T>>, T>(
         data,
         format: format,
         crs: crs,

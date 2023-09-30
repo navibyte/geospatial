@@ -127,7 +127,7 @@ class FeatureBuilder<T extends FeatureObject, E extends Geometry>
   /// be swapped when read in) about coordinate reference system in text input.
   ///
   /// Format or decoder implementation specific options can be set by [options].
-  static R decodeData<R extends FeatureObject, E extends Geometry>(
+  static R fromData<R extends FeatureObject, E extends Geometry>(
     Map<String, dynamic> data, {
     TextReaderFormat<FeatureContent> format = GeoJSON.feature,
     CoordRefSys? crs,
