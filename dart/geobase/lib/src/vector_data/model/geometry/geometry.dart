@@ -40,19 +40,6 @@ abstract class Geometry extends Bounded {
   /// * `MultiLineString` has no line strings.
   /// * `MultiPolygon` has no polygons.
   /// * `GeometryCollection` has no geometries.
-  @Deprecated('Use isEmptyByGeometry instead.')
-  bool get isEmpty => isEmptyByGeometry;
-
-  /// Returns true if this geometry is considered empty.
-  ///
-  /// Emptiness in the context of this classes extending Geometry is defined:
-  /// * `Point` has x and y coordinates with value `double.nan`.
-  /// * `LineString` has an empty chain of points.
-  /// * `Polygon` has an empty list of linear rings.
-  /// * `MultiPoint` has no points.
-  /// * `MultiLineString` has no line strings.
-  /// * `MultiPolygon` has no polygons.
-  /// * `GeometryCollection` has no geometries.
   ///
   /// The specification from [Bounded]:
   /// "Returns true if this bounded object is considered empty (that is it do

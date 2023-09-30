@@ -48,10 +48,6 @@ class Point implements SimpleGeometry {
   /// ```
   const Point(Position position) : _position = position;
 
-  /// A point geometry from [position].
-  @Deprecated('Use the default constructor instead')
-  const Point.from(Position position) : _position = position;
-
   /// Builds a point geometry from a [position].
   ///
   /// Use an optional [type] to explicitely specify the type of coordinates. If
@@ -239,9 +235,6 @@ class Point implements SimpleGeometry {
 
   @override
   Coords get coordType => position.type;
-
-  @override
-  bool get isEmpty => isEmptyByGeometry;
 
   @override
   bool get isEmptyByGeometry => position.x.isNaN && position.y.isNaN;
