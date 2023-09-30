@@ -11,6 +11,7 @@ NOTE: Version 0.6.0 currently [under development](https://github.com/navibyte/ge
 * [Coordinates using data structures from typed data #203](https://github.com/navibyte/geospatial/issues/203)
 * [Position from subview of coordinate value array as doubles #204](https://github.com/navibyte/geospatial/issues/204)
 * [PositionSeries and geometries with reversed positions #205](https://github.com/navibyte/geospatial/issues/205)
+* [Get a subseries of positions in PositionSeries #206](https://github.com/navibyte/geospatial/issues/206)
 
 ⚠️ Breaking changes:
 * [Allow a position stored as "Position" in Point, and a bounding box as "Box" in Geometry classes #192](https://github.com/navibyte/geospatial/issues/192)

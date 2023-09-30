@@ -443,6 +443,25 @@ abstract class PositionSeries implements Positionable {
   /// this.
   PositionSeries reversed();
 
+  /// Returns a sub series with positions from [start] (inclusive) to [end]
+  /// (exclusive).
+  ///
+  /// If [end] is not provided, then all positions from [start] to end are
+  /// returned.
+  ///
+  /// A returned series may point to the same position data as this (however
+  /// implementations are allowed to make a copy of positions in the range).
+  ///
+  /// Valid queries are such that 0 ≤ start ≤ end ≤ [positionCount].
+  PositionSeries subseries(int start, [int? end]) {
+    final subEnd = end ?? positionCount;
+    return start == 0 && subEnd == positionCount
+        ? this
+        : PositionSeries.from(
+            positions.skip(start).take(subEnd - start).toList(growable: false),
+          );
+  }
+
   /// Projects this series of positions to another series using [projection].
   PositionSeries project(Projection projection);
 
