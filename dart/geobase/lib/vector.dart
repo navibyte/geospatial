@@ -22,8 +22,6 @@
 library vector;
 
 export 'src/codes/geom.dart';
-export 'src/vector/array/coordinates.dart';
-export 'src/vector/array/coordinates_extensions.dart';
 export 'src/vector/content/coordinates_content.dart';
 export 'src/vector/content/feature_content.dart';
 export 'src/vector/content/geometry_content.dart';

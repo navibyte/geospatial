@@ -82,8 +82,6 @@ export 'src/tiling/tilematrix/mercator/web_mercator_quad.dart';
 export 'src/tiling/tilematrix/plate_carree/global_geodetic_quad.dart';
 
 // vector
-export 'src/vector/array/coordinates.dart';
-export 'src/vector/array/coordinates_extensions.dart';
 export 'src/vector/content/coordinates_content.dart';
 export 'src/vector/content/feature_content.dart';
 export 'src/vector/content/geometry_content.dart';
