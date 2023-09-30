@@ -293,7 +293,7 @@ abstract class _BaseTextWriter<T extends Object>
   }
 
   void _coordPointsFromSeries(PositionSeries points) {
-    _coordArray(count: points.length);
+    _coordArray(count: points.positionCount);
     for (final pos in points.positions) {
       _coordPosition(pos);
     }

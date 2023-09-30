@@ -259,7 +259,7 @@ class _WkbGeometryEncoder
 
   void _writePositionSeries(PositionSeries positions, Coords type) {
     // calculate the number of points and coordinate values
-    final numPoints = positions.length;
+    final numPoints = positions.positionCount;
     final numValues = numPoints * type.coordinateDimension;
 
     // get coordinate values as a double iterable

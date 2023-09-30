@@ -1787,7 +1787,7 @@ void _doTestPolygon(Polygon polygon, {int ringCount = 1}) {
   expect(polygon.rings.length, ringCount);
   if (ringCount >= 1) {
     final exterior = polygon.exterior!;
-    expect(exterior.length, 5);
+    expect(exterior.positionCount, 5);
     expect(
       exterior.valuesByType(Coords.xy),
       [
@@ -1802,7 +1802,7 @@ void _doTestPolygon(Polygon polygon, {int ringCount = 1}) {
 
     if (ringCount >= 2) {
       final interior = polygon.interior.first;
-      expect(interior.length, 4);
+      expect(interior.positionCount, 4);
       expect(interior.valuesByType(Coords.xy), [
         12.5, 23.0,
         11.5, 24.0,

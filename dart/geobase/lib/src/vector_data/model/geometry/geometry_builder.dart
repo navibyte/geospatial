@@ -285,7 +285,7 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
     String? name,
     Box? bounds,
   }) {
-    if (chain.length < 2) {
+    if (chain.positionCount < 2) {
       // note: ignore empty geometries for this implementation
     }
     _add(

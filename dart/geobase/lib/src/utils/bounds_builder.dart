@@ -134,22 +134,22 @@ class BoundsBuilder {
   void addPositionSeries(PositionSeries series) {
     switch (type) {
       case Coords.xy:
-        for (var i = 0; i < series.length; i++) {
+        for (var i = 0; i < series.positionCount; i++) {
           addPoint(x: series.x(i), y: series.y(i));
         }
         break;
       case Coords.xyz:
-        for (var i = 0; i < series.length; i++) {
+        for (var i = 0; i < series.positionCount; i++) {
           addPoint(x: series.x(i), y: series.y(i), z: series.z(i));
         }
         break;
       case Coords.xym:
-        for (var i = 0; i < series.length; i++) {
+        for (var i = 0; i < series.positionCount; i++) {
           addPoint(x: series.x(i), y: series.y(i), m: series.m(i));
         }
         break;
       case Coords.xyzm:
-        for (var i = 0; i < series.length; i++) {
+        for (var i = 0; i < series.positionCount; i++) {
           addPoint(
             x: series.x(i),
             y: series.y(i),

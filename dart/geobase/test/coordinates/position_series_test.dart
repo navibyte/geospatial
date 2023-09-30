@@ -48,7 +48,7 @@ void main() {
 
       test('Access positions as PositionData', () {
         final positions = array3;
-        expect(positions.length, 3);
+        expect(positions.positionCount, 3);
         expect(positions.type, type);
 
         final tests = type == Coords.xyz

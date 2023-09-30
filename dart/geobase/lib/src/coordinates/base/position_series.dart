@@ -296,13 +296,13 @@ abstract class PositionSeries implements Positionable {
       );
 
   /// The number of positions in this series.
-  int get length;
+  int get positionCount;
 
   /// Returns true if this series has no positions.
-  bool get isEmpty => length == 0;
+  bool get isEmpty => positionCount == 0;
 
   /// Returns true if this series has at least one position.
-  bool get isNotEmpty => length > 0;
+  bool get isNotEmpty => positionCount > 0;
 
   /// All positions in this series as an iterable.
   ///
@@ -345,12 +345,12 @@ abstract class PositionSeries implements Positionable {
   });
 
   /// The first position or null (if empty collection).
-  Position? get firstOrNull => length > 0 ? this[0] : null;
+  Position? get firstOrNull => positionCount > 0 ? this[0] : null;
 
   /// The last position or null (if empty collection).
   Position? get lastOrNull {
-    final len = length;
-    return len > 0 ? this[len - 1] : null;
+    final posCount = positionCount;
+    return posCount > 0 ? this[posCount - 1] : null;
   }
 
   /// The `x` coordinate of the position at the given index.
@@ -453,18 +453,21 @@ abstract class PositionSeries implements Positionable {
 
   /// True if the first and last position equals in 2D.
   bool get isClosed {
-    final len = length;
-    if (len >= 2) {
-      return this[0].equals2D(this[len - 1]);
+    final posCount = positionCount;
+    if (posCount >= 2) {
+      return this[0].equals2D(this[posCount - 1]);
     }
     return false;
   }
 
   /// True if the first and last position equals in 2D within [toleranceHoriz].
   bool isClosedBy([double toleranceHoriz = defaultEpsilon]) {
-    final len = length;
-    if (len >= 2) {
-      return this[0].equals2D(this[len - 1], toleranceHoriz: toleranceHoriz);
+    final posCount = positionCount;
+    if (posCount >= 2) {
+      return this[0].equals2D(
+        this[posCount - 1],
+        toleranceHoriz: toleranceHoriz,
+      );
     }
     return false;
   }
@@ -473,7 +476,7 @@ abstract class PositionSeries implements Positionable {
   /// (or both are empty) in the same order and with the same coordinate type.
   bool equalsCoords(PositionSeries other) {
     if (identical(this, other)) return true;
-    if (length != other.length) return false;
+    if (positionCount != other.positionCount) return false;
     if (type != other.type) return false;
 
     return _testEqualsCoords(other);
@@ -481,8 +484,8 @@ abstract class PositionSeries implements Positionable {
 
   /// Private implementation used by [equalsCoords] (overridden by sub classes).
   bool _testEqualsCoords(PositionSeries other) {
-    final len = length;
-    for (var i = 0; i < len; i++) {
+    final posCount = positionCount;
+    for (var i = 0; i < posCount; i++) {
       if (x(i) != x(i)) return false;
       if (y(i) != y(i)) return false;
       if (is3D && z(i) != z(i)) return false;
@@ -507,7 +510,7 @@ abstract class PositionSeries implements Positionable {
     assertTolerance(toleranceHoriz);
     if (isEmpty || other.isEmpty) return false;
     if (identical(this, other)) return true;
-    if (length != other.length) return false;
+    if (positionCount != other.positionCount) return false;
 
     return _testEquals2D(other, toleranceHoriz: toleranceHoriz);
   }
@@ -517,8 +520,8 @@ abstract class PositionSeries implements Positionable {
     PositionSeries other, {
     required double toleranceHoriz,
   }) {
-    final len = length;
-    for (var i = 0; i < len; i++) {
+    final posCount = positionCount;
+    for (var i = 0; i < posCount; i++) {
       if ((x(i) - other.x(i)).abs() > toleranceHoriz ||
           (y(i) - other.y(i)).abs() > toleranceHoriz) {
         return false;
@@ -551,7 +554,7 @@ abstract class PositionSeries implements Positionable {
     if (!is3D || !other.is3D) return false;
     if (isEmpty || other.isEmpty) return false;
     if (identical(this, other)) return true;
-    if (length != other.length) return false;
+    if (positionCount != other.positionCount) return false;
 
     return _testEquals3D(
       other,
@@ -566,8 +569,8 @@ abstract class PositionSeries implements Positionable {
     required double toleranceHoriz,
     required double toleranceVert,
   }) {
-    final len = length;
-    for (var i = 0; i < len; i++) {
+    final posCount = positionCount;
+    for (var i = 0; i < posCount; i++) {
       if ((x(i) - other.x(i)).abs() > toleranceHoriz ||
           (y(i) - other.y(i)).abs() > toleranceHoriz ||
           (z(i) - other.z(i)).abs() > toleranceVert) {
@@ -603,14 +606,14 @@ abstract class PositionSeries implements Positionable {
   String toString() => toText();
 
   Iterable<double> _valuesByType(Coords type) {
-    final posCount = length;
+    final posCount = positionCount;
     if (posCount > 0) {
       final yieldZ = type.is3D;
       final yieldM = type.isMeasured;
       final dim = type.coordinateDimension;
-      final valueCount = posCount * dim;
+      final valCount = posCount * dim;
 
-      return Iterable.generate(valueCount, (index) {
+      return Iterable.generate(valCount, (index) {
         switch (index % dim) {
           case 0:
             return x(index ~/ dim);
@@ -671,7 +674,7 @@ class _PositionArray extends PositionSeries {
   Coords get type => _type;
 
   @override
-  int get length => _data.length;
+  int get positionCount => _data.length;
 
   @override
   Iterable<Position> get positions => _reversed ? _data.reversed : _data;
@@ -684,7 +687,7 @@ class _PositionArray extends PositionSeries {
 
   @override
   Position operator [](int index) =>
-      _data[_reversed ? length - 1 - index : index];
+      _data[_reversed ? positionCount - 1 - index : index];
 
   @override
   R get<R extends Position>(
@@ -727,7 +730,7 @@ class _PositionArray extends PositionSeries {
         );
 
   @override
-  PositionSeries reversed() => length <= 1
+  PositionSeries reversed() => positionCount <= 1
       ? this
       : _PositionArray.view(_data, type: _type, reversed: !_reversed);
 
@@ -840,19 +843,19 @@ class _PositionDataCoords extends PositionSeries {
   Coords get type => _type;
 
   @override
-  int get length => _positionCount;
+  int get positionCount => _positionCount;
 
   @override
   Iterable<Position> get positions =>
-      Iterable.generate(length, (index) => this[index]);
+      Iterable.generate(positionCount, (index) => this[index]);
 
   @override
   Iterable<R> positionsAs<R extends Position>({
     required CreatePosition<R> to,
   }) =>
-      Iterable.generate(length, (index) => this[index].copyTo(to));
+      Iterable.generate(positionCount, (index) => this[index].copyTo(to));
 
-  int _resolveIndex(int index) => _reversed ? length - 1 - index : index;
+  int _resolveIndex(int index) => _reversed ? positionCount - 1 - index : index;
 
   @override
   Position operator [](int index) => Position.subview(
@@ -905,7 +908,7 @@ class _PositionDataCoords extends PositionSeries {
 
   @override
   Iterable<double> get values =>
-      _reversed && length > 1 ? _valuesByType(type) : _data;
+      _reversed && positionCount > 1 ? _valuesByType(type) : _data;
 
   @override
   Iterable<double> valuesByType(Coords type) =>
@@ -923,7 +926,7 @@ class _PositionDataCoords extends PositionSeries {
         );
 
   @override
-  PositionSeries reversed() => length <= 1
+  PositionSeries reversed() => positionCount <= 1
       ? this
       : _PositionDataCoords.view(_data, type: _type, reversed: !_reversed);
 
@@ -933,8 +936,8 @@ class _PositionDataCoords extends PositionSeries {
           values,
           type: type,
           target: _data is Float32List
-              ? Float32List(length * type.coordinateDimension)
-              : Float64List(length * type.coordinateDimension),
+              ? Float32List(positionCount * type.coordinateDimension)
+              : Float64List(positionCount * type.coordinateDimension),
         ),
         type: type,
       );

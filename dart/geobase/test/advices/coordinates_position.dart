@@ -665,7 +665,7 @@ void _doTestPositionSeries(PositionSeries series) {
     projPositions,
     geomPositions,
   ];
-  expect(series.length, 3);
+  expect(series.positionCount, 3);
   final other = PositionSeries.view(
     [
       10.09, 20.09, 30.09,

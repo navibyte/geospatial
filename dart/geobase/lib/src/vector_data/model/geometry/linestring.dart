@@ -74,10 +74,10 @@ class LineString extends SimpleGeometry {
   ///   ].positions(Coords.xyzm),
   /// );
   /// ```
-  const LineString(PositionSeries chain, {super.bounds})
+  LineString(PositionSeries chain, {super.bounds})
       : _chain = chain,
         assert(
-          chain.length == 0 || chain.length >= 2,
+          chain.positionCount == 0 || chain.positionCount >= 2,
           'Chain must contain at least two positions (or be empty)',
         );
 
