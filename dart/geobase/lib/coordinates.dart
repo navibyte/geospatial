@@ -26,7 +26,6 @@ export 'src/coordinates/base/position.dart';
 export 'src/coordinates/base/position_extensions.dart';
 export 'src/coordinates/base/position_series.dart';
 export 'src/coordinates/base/positionable.dart';
-export 'src/coordinates/data/position_data.dart';
 export 'src/coordinates/geographic/dms.dart';
 export 'src/coordinates/geographic/geobox.dart';
 export 'src/coordinates/geographic/geographic.dart';
