@@ -179,18 +179,6 @@ void _intro() {
   LineString.build([30, 10, 10, 30, 40, 40], type: Coords.xy);
   LineString.build([30, 10, 5.5, 10, 30, 5.5, 40, 40, 5.5], type: Coords.xyz);
 
-  // Position iterables can be used for building geomtries too.
-  LineString.from([
-    Projected(x: 30, y: 10),
-    Projected(x: 10, y: 30),
-    Projected(x: 40, y: 40),
-  ]);
-  LineString.from([
-    Geographic(lon: 30, lat: 10, elev: 5.5), // x = lon, y = lat, z = elev
-    Geographic(lon: 10, lat: 30, elev: 5.5),
-    Geographic(lon: 40, lat: 40, elev: 5.5),
-  ]);
-
   // -------
 
   // GeoJSON, WKT and WKB formats are supported as input and output.
@@ -635,9 +623,9 @@ void _point() {}
 void _lineString() {
   // A line string with 3 points (2D coordinates with x and y).
   LineString.from([
-    Projected(x: 30, y: 10),
-    Projected(x: 10, y: 30),
-    Projected(x: 40, y: 40),
+    [30.0, 10.0].xy, // xy => Position.view()
+    [10.0, 30.0].xy,
+    [40.0, 40.0].xy,
   ]);
 
   // A line string with 3 points (3D coordinates with x, y and z).
