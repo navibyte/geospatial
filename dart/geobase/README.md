@@ -10,7 +10,8 @@ and [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geomet
 
 ## Features
 
-✨ New (2023-07): spherical geodesy functions (distance, bearing, destination point, etc.) for *great circle* and *rhumb line* paths.
+✨ New (2023-09): Optimizing data structures (*Position*, *PositionSeries*, *Box*) used by simple geometries. Fixes, tests and documentation.
+✨ New (2023-07): Spherical geodesy functions (distance, bearing, destination point, etc.) for *great circle* and *rhumb line* paths.
 
 <a title="Ktrinko, CC0, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Eckert4.jpg"><img alt="World map with Natural Earth data, Excert projection" src="https://raw.githubusercontent.com/navibyte/geospatial_docs/v2023-08-12/assets/doc/projections/eckert4/320px-Eckert4.jpg" align="right"></a>
 
@@ -272,7 +273,7 @@ Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geobase: ^0.6.0-dev.3
+  geobase: ^0.6.0
 ```
 
 Import it:

@@ -1,6 +1,8 @@
 ## 0.6.0
 
-NOTE: Version 0.6.0 currently [under development](https://github.com/navibyte/geospatial/issues/193) (0.6.0-dev.3).
+[geobase version 0.6.0 #193](https://github.com/navibyte/geospatial/issues/193)
+
+✨ New (2023-09): Optimizing data structures (*Position*, *PositionSeries*, *Box*) used by simple geometries. Fixes, tests and documentation.
 
 🧩 Features:
 * [Add copyWith (and map) methods to coordinate, meta, feature and geometry classes #189](https://github.com/navibyte/geospatial/issues/189)
