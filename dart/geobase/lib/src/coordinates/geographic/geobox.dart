@@ -388,10 +388,35 @@ class GeoBox extends Box {
       );
 
   @override
-  double get width => east - west;
+  double get width => spansAntimeridian ? 360.0 + east - west : east - west;
 
   @override
   double get height => north - south;
+
+  /// True when this bounding box spans the antimeridian (that is
+  /// "min-longitude" (west) is larger than "max-longitude" (east) as a number).
+  ///
+  /// See also RFC 7946 chapter 5 about bounding boxes in GeoJSON for reference.
+  bool get spansAntimeridian => east < west;
+
+  /// Returns two bounding boxes (one to west from antimeridian and another to
+  /// east) when [spansAntimeridian] is true.
+  ///
+  /// When [spansAntimeridian] is false then returns this.
+  ///
+  /// It's guaranteed that no bounding box returned by this iterable spans
+  /// antimeridian.
+  Iterable<GeoBox> splitOnAntimeridian() sync* {
+    if (spansAntimeridian) {
+      // the part from antimeridian to west
+      yield copyWith(maxX: 180.0); // set "east" ("maxX") to 180.0
+
+      // the part from antimeridian to east
+      yield copyWith(minX: -180.0); // set "west" ("minX") to -180.0
+    } else {
+      yield this;
+    }
+  }
 
   @override
   GeoBox copyWith({
