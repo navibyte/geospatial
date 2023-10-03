@@ -418,6 +418,25 @@ class GeoBox extends Box {
     }
   }
 
+  /// Returns the "complementary" bounding box for the same latitude band with
+  /// this.
+  ///
+  /// For `GeoBox(west: 177.0, south: -20.0, east: -178.0, north: -16.0)` the
+  /// complementary box is
+  /// `GeoBox(west: -178.0, south: -20.0, east: 177.0, north: -16.0)` and vice
+  /// versa.
+  GeoBox get complementary {
+    if (width >= 360.0) {
+      // this has width == 360.0 => return box with width == 0.0
+      return copyWith(minX: minX, maxX: minX);
+    } else if (width > 0) {
+      return copyWith(minX: maxX, maxX: minX);
+    } else {
+      // this has width == 0.0 => return box with width == 360.0
+      return copyWith(minX: -180.0, maxX: 180.0);
+    }
+  }
+
   @override
   GeoBox copyWith({
     double? minX,
