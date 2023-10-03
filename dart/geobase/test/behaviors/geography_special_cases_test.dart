@@ -60,9 +60,9 @@ void main() {
       expect(zeroW180.complementary, round);
 
       expect(zeroE180.spansAntimeridian, false);
-      expect(zeroE180.width, 0.0);
-      expect(zeroE180.splitOnAntimeridian(), [zeroE180]);
-      expect(zeroE180.complementary, round);
+      expect(zeroE180.width, 360.0);
+      expect(zeroE180.splitOnAntimeridian(), [round]);
+      expect(zeroE180.complementary, zeroW180);
 
       expect(e20width359.spansAntimeridian, true);
       expect(e20width359.width, 359.0);

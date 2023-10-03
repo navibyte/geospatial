@@ -63,6 +63,16 @@ class GeoBox extends Box {
   /// as a number. See also RFC 7946 chapter 5 about bounding boxes in GeoJSON
   /// for reference.
   ///
+  /// The longitudal limit value [west] is normalized to the range
+  /// `[-180.0, 180.0[` and [east] is normalized to the range `[-180.0, 180.0]`,
+  /// both using the formula `(lon + 180.0) % 360.0 - 180.0` (if outside the
+  /// range). If [west] > [east] then the bounding box is spanning the
+  /// antimeridian.
+  ///
+  /// Latitudal limit values ([south] and [north]) are clipped to the range
+  /// `[-90.0, 90.0]`. It's required that [south] <= [north] (however this is
+  /// not asserted).
+  ///
   /// Optional [minElev] and [maxElev] for 3D boxes, and [minM] and [maxM] for
   /// measured boxes can be provided too.
   ///
@@ -100,12 +110,16 @@ class GeoBox extends Box {
     required double north,
     double? maxElev,
     double? maxM,
-  })  : _west = west,
-        _south = south,
+  })  : _west = west >= -180.0 && west < 180.0
+            ? west
+            : (west + 180.0) % 360.0 - 180.0,
+        _south = south < -90.0 ? -90.0 : (south > 90.0 ? 90.0 : south),
         _minElev = minElev,
         _minM = minM,
-        _east = east,
-        _north = north,
+        _east = east >= -180.0 && east <= 180.0
+            ? east
+            : (east + 180.0) % 360.0 - 180.0,
+        _north = north < -90.0 ? -90.0 : (north > 90.0 ? 90.0 : north),
         _maxElev = maxElev,
         _maxM = maxM;
 
@@ -145,14 +159,16 @@ class GeoBox extends Box {
     required double maxY,
     double? maxZ,
     double? maxM,
-  })  : _west = minX,
-        _south = minY,
-        _minElev = minZ,
-        _minM = minM,
-        _east = maxX,
-        _north = maxY,
-        _maxElev = maxZ,
-        _maxM = maxM;
+  }) : this(
+          west: minX,
+          south: minY,
+          minElev: minZ,
+          minM: minM,
+          east: maxX,
+          north: maxY,
+          maxElev: maxZ,
+          maxM: maxM,
+        );
 
   /// Creates a geographic bounding box by copying coordinates from [source].
   ///
