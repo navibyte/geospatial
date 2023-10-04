@@ -43,6 +43,22 @@ void main() {
       expect(fiji.width, 5.0);
       expect(fiji.splitOnAntimeridian(), [fijiWestFrom180, fijiEastFrom180]);
       expect(fiji.complementary, outsideFiji);
+      expect(
+        fiji.aligned2D(Aligned.center),
+        const Geographic(lon: 179.5, lat: -18.0),
+      );
+      expect(
+        fiji.aligned2D(Aligned.northWest),
+        const Geographic(lon: 177.0, lat: -16.0),
+      );
+      expect(
+        fiji.aligned2D(Aligned.southEast),
+        const Geographic(lon: -178.0, lat: -20.0),
+      );
+      expect(
+        fiji.aligned2D(const Aligned(x: 0.4, y: -0.5)),
+        const Geographic(lon: -179.5, lat: -19.0),
+      );
 
       expect(outsideFiji.spansAntimeridian, false);
       expect(outsideFiji.width, 355.0);
@@ -71,7 +87,14 @@ void main() {
         [e20width359WestFrom180, e20width359EastFrom180],
       );
       expect(e20width359.complementary, e19width1);
-
+      expect(
+        e20width359.aligned2D(const Aligned(x: -1.0, y: 0.5)),
+        const Geographic(lon: 20.0, lat: -17.0),
+      );
+      expect(
+        e20width359.aligned2D(const Aligned(x: 1.0, y: 0.5)),
+        const Geographic(lon: 19.0, lat: -17.0),
+      );
       expect(e19width1.spansAntimeridian, false);
       expect(e19width1.width, 1.0);
       expect(e19width1.splitOnAntimeridian(), [e19width1]);
