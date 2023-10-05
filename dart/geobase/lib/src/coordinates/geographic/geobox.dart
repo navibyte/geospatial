@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'dart:math' as math;
+
 import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
@@ -451,6 +453,117 @@ class GeoBox extends Box {
       // this has width == 0.0 => return box with width == 360.0
       return copyWith(minX: -180.0, maxX: 180.0);
     }
+  }
+
+  /// Merge this bounding box with [other] geographically that is considering
+  /// also cases spanning the antimeridian (on longitude).
+  ///
+  /// Examples
+  ///
+  /// ```dart
+  /// // a sample merging two boxes on both sides on the antimeridian
+  /// // (the result equal with p3 is then spanning the antimeridian)
+  /// const p1 = GeoBox(west: 177.0, south: -20.0, east: 179.0, north: -16.0);
+  /// const p2 = GeoBox(west: -179.0, south: -20.0, east: -178.0, north: -16.0);
+  /// const p3 = GeoBox(west: 177.0, south: -20.0, east: -178.0, north: -16.0);
+  /// p1.mergeGeographically(p2) == p3; // true
+  ///
+  /// // a sample merging two boxes without need for antimeridian logic
+  /// const p4 = GeoBox(west: 40.0, south: 10.0, east: 60.0, north: 11.0);
+  /// const p5 = GeoBox(west: 55.0, south: 19.0, east: 70.0, north: 20.0);
+  /// const p6 = GeoBox(west: 40.0, south: 10.0, east: 70.0, north: 20.0);
+  /// p4.mergeGeographically(p5) == p6; // true
+  /// ```
+  GeoBox mergeGeographically(GeoBox other) {
+    final double wNormalized;
+    final double eNormalized;
+
+    if (width < 360.0 && other.width < 360.0) {
+      // neither is full round on longitude, so need to calculate merged box
+
+      // sample two bounding boxes                                west  .. east
+      // box1 (not spanning):           |  xx               |     -140° .. -100°
+      // box2 (spanning antimeridian):  |x                xx|     140°  .. -160°
+      //                                |---------|---------|
+      //                            -180°         0°        180°
+
+      // put both bounding boxes on range [0, 360]
+      final double origo;
+      final double w1;
+      final double e1;
+      final double w2;
+      final double e2;
+      if (west < other.west) {
+        origo = west;
+        w1 = 0;
+        e1 = east < west ? 360.0 + east - origo : east - origo;
+        w2 = other.west - origo;
+        e2 = other.east < other.west
+            ? 360.0 + other.east - origo
+            : other.east - origo;
+      } else {
+        origo = other.west;
+        w1 = 0;
+        e1 = other.east < other.west
+            ? 360.0 + other.east - origo
+            : other.east - origo;
+        w2 = west - origo;
+        e2 = east < west ? 360.0 + east - origo : east - origo;
+      }
+
+      // sample two bounding boxes                                west  .. east
+      // box1 (not spanning):           |xx                 |     0°    .. 40°
+      // box2 (spanning antimeridian):  |               xxx |     280°  .. 340°
+      //                                |---------|---------|
+      //                               0°        180°       360°
+
+      final aWidth = math.max(e1, e2);
+      final double wMerged;
+      final double eMerged;
+      if (w2 > e1 && 360.0 - w2 + e1 < aWidth) {
+        wMerged = w2;
+        eMerged = e1;
+      } else {
+        wMerged = w1;
+        eMerged = aWidth;
+      }
+
+      // sample two bounding boxes                                west  .. east
+      // box1 (not spanning):           |xx                 |     0°    .. 40°
+      // box2 (spanning antimeridian):  |               xxx |     280°  .. 340°
+      // merged bounding box:           |xx             xxxx|     280°  .. 40°
+      //                                |---------|---------|
+      //                               0°        180°       360°
+
+      final wTranslated = (origo + wMerged) % 360.0;
+      final eTranslated = (origo + eMerged) % 360.0;
+
+      wNormalized = wTranslated >= -180.0 && wTranslated < 180.0
+          ? wTranslated
+          : (wTranslated + 180.0) % 360.0 - 180.0;
+      eNormalized = eTranslated >= -180.0 && eTranslated <= 180.0
+          ? eTranslated
+          : (eTranslated + 180.0) % 360.0 - 180.0;
+
+      // merged bounding box:           |xxxx             xx|     140°  .. -100°
+      //                                |---------|---------|
+      //                             -180°        0°        180°
+    } else {
+      // full round on longitude
+      wNormalized = -180.0;
+      eNormalized = 180.0;
+    }
+
+    return GeoBox(
+      west: wNormalized,
+      east: eNormalized,
+      south: math.min(south, other.south),
+      north: math.max(north, other.north),
+      minElev: is3D ? math.min(minElev ?? 0.0, other.minElev ?? 0.0) : null,
+      maxElev: is3D ? math.max(maxElev ?? 0.0, other.maxElev ?? 0.0) : null,
+      minM: isMeasured ? math.min(minM ?? 0.0, other.minM ?? 0.0) : null,
+      maxM: isMeasured ? math.max(maxM ?? 0.0, other.maxM ?? 0.0) : null,
+    );
   }
 
   @override

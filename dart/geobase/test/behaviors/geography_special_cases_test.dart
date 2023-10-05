@@ -104,6 +104,59 @@ void main() {
       expect(prime.width, 0.0);
       expect(prime.splitOnAntimeridian(), [prime]);
       expect(prime.complementary, round);
+
+      // merge tests
+      expect(fijiWestFrom180.mergeGeographically(fijiEastFrom180), fiji);
+      expect(fijiWestFrom180.mergeGeographically(fiji), fiji);
+      expect(fijiEastFrom180.mergeGeographically(fiji), fiji);
+      expect(round.mergeGeographically(fiji), round);
+      expect(
+        e20width359WestFrom180.mergeGeographically(e20width359EastFrom180),
+        e20width359,
+      );
+      expect(
+        e20width359WestFrom180.mergeGeographically(e20width359),
+        e20width359,
+      );
+      expect(
+        e20width359WestFrom180.mergeGeographically(e20width359),
+        e20width359,
+      );
+      expect(b(170, 172).mergeGeographically(b(-172, -170)), b(170, -170));
+      expect(b(-172, -170).mergeGeographically(b(170, 172)), b(170, -170));
+      expect(b(88, 89).mergeGeographically(b(-89, -88)), b(-89, 89));
+      expect(b(-89, -88).mergeGeographically(b(88, 89)), b(-89, 89));
+      expect(b(-180, -180).mergeGeographically(b(179, 180)), b(179, 180));
+      expect(b(-180, -179).mergeGeographically(b(179, 180)), b(179, -179));
+      expect(b(-180, -179).mergeGeographically(b(-180, -180)), b(-180, -179));
+      expect(b(160, -170).mergeGeographically(b(170, -160)), b(160, -160));
+      expect(b(90, 100).mergeGeographically(b(170, -160)), b(90, -160));
+      expect(b(-100, -90).mergeGeographically(b(170, -160)), b(170, -90));
+      expect(b(-100, -91).mergeGeographically(b(89, 100)), b(89, -91));
+      expect(b(-89, -88).mergeGeographically(b(88, 89)), b(-89, 89));
+      expect(b(-89, -88).mergeGeographically(b(88, 98)), b(88, -88));
+      expect(b(-140, -100).mergeGeographically(b(140, -160)), b(140, -100));
+      expect(b(140, -160).mergeGeographically(b(-140, -100)), b(140, -100));
+      expect(b(0, 1).mergeGeographically(b(179, 180)), b(0, 180));
+      expect(b(-2, -1).mergeGeographically(b(179, 180)), b(179, -1));
+      expect(b(-1, 0).mergeGeographically(b(179, -179)), b(179, 0));
+      expect(b(0, 1).mergeGeographically(b(179, -179)), b(0, -179));
+
+      // a sample merging two boxes on both sides on the antimeridian
+      // (the result equal with p3 is then spanning the antimeridian)
+      const p1 = GeoBox(west: 177.0, south: -20.0, east: 179.0, north: -16.0);
+      const p2 = GeoBox(west: -179.0, south: -20.0, east: -178.0, north: -16.0);
+      const p3 = GeoBox(west: 177.0, south: -20.0, east: -178.0, north: -16.0);
+      expect(p1.mergeGeographically(p2) == p3, true);
+
+      // a sample merging two boxes without need for antimeridian logic
+      const p4 = GeoBox(west: 40.0, south: 10.0, east: 60.0, north: 11.0);
+      const p5 = GeoBox(west: 55.0, south: 19.0, east: 70.0, north: 20.0);
+      const p6 = GeoBox(west: 40.0, south: 10.0, east: 70.0, north: 20.0);
+      expect(p4.mergeGeographically(p5) == p6, true);
     });
   });
 }
+
+GeoBox b(double west, double east) =>
+    GeoBox(west: west, south: -20.0, east: east, north: -16.0);
