@@ -10,6 +10,9 @@ NOTE: Version 1.0.0 currently under development (1.0.0-dev.0).
 🧩 Features:
 * [Handle the special case of bbox or geometries spanning the anti-meridian (longitude 180 degrees) #185](https://github.com/navibyte/geospatial/issues/185)
 
+🛠 Refactoring:
+* [Normalize longitude with inclusive limit on east 180 degrees #210](https://github.com/navibyte/geospatial/issues/210)
+
 ## 0.6.0
 
 [geobase version 0.6.0 #193](https://github.com/navibyte/geospatial/issues/193)

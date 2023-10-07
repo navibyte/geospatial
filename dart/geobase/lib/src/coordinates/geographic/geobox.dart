@@ -66,11 +66,10 @@ class GeoBox extends Box {
   /// as a number. See also RFC 7946 chapter 5 about bounding boxes in GeoJSON
   /// for reference.
   ///
-  /// The longitudal limit value [west] is normalized to the range
-  /// `[-180.0, 180.0[` and [east] is normalized to the range `[-180.0, 180.0]`,
-  /// both using the formula `(lon + 180.0) % 360.0 - 180.0` (if outside the
-  /// range). If [west] > [east] then the bounding box is spanning the
-  /// antimeridian.
+  /// The longitudal limit values ([west] and [east]) are normalized using the
+  /// formula `(lon + 180.0) % 360.0 - 180.0` if outside the range
+  /// `[-180.0, 180.0]`. If [west] > [east] then the bounding box is spanning
+  /// the antimeridian.
   ///
   /// Latitudal limit values ([south] and [north]) are clipped to the range
   /// `[-90.0, 90.0]`. It's required that [south] <= [north] (however this is
@@ -113,7 +112,7 @@ class GeoBox extends Box {
     required double north,
     double? maxElev,
     double? maxM,
-  })  : _west = west >= -180.0 && west < 180.0
+  })  : _west = west >= -180.0 && west <= 180.0
             ? west
             : (west + 180.0) % 360.0 - 180.0,
         _south = south < -90.0 ? -90.0 : (south > 90.0 ? 90.0 : south),

@@ -18,7 +18,7 @@ import 'dms.dart';
 /// Longitude is available at [lon], latitude at [lat] and elevation at [elev].
 /// [m] represents a measurement.
 ///
-/// Longitude (range `[-180.0, 180.0[`) and latitude (range `[-90.0, 90.0]`) are
+/// Longitude (range `[-180.0, 180.0]`) and latitude (range `[-90.0, 90.0]`) are
 /// represented as deegrees. The unit for [elev] is meters.
 ///
 /// *Geographic* coordinates are based on a spherical or ellipsoidal coordinate
@@ -54,9 +54,9 @@ class Geographic extends Position {
 
   /// A geographic position with [lon] and [lat], and optional [elev] and [m].
   ///
-  /// Longitude is normalized to the range `[-180.0, 180.0[` using the formula
-  /// `(lon + 180.0) % 360.0 - 180.0` (if outside the range) and latitude is
-  /// clipped to the range `[-90.0, 90.0]`.
+  /// Longitude is normalized using the formula `(lon + 180.0) % 360.0 - 180.0`
+  /// if outside the range `[-180.0, 180.0]` and latitude is clipped to the
+  /// range `[-90.0, 90.0]`.
   ///
   /// As a special case if [lon] or [lat] is `double.nan` then that value is
   /// preserved (not normalized or clipped).
@@ -82,7 +82,7 @@ class Geographic extends Position {
     double? elev,
     double? m,
   })  : _lon =
-            lon >= -180.0 && lon < 180.0 ? lon : (lon + 180.0) % 360.0 - 180.0,
+            lon >= -180.0 && lon <= 180.0 ? lon : (lon + 180.0) % 360.0 - 180.0,
         _lat = lat < -90.0 ? -90.0 : (lat > 90.0 ? 90.0 : lat),
         _elev = elev,
         _m = m;

@@ -159,7 +159,7 @@ void main() {
       expect((-179.534343).wrapLongitude(), -179.534343);
       expect(139.423.wrapLongitude(), 139.423);
       expect(179.99999999.wrapLongitude(), 179.99999999);
-      expect(180.0.wrapLongitude(), -180.0);
+      expect(180.0.wrapLongitude(), 180.0);
       expect(185.6.wrapLongitude(), closeTo(-174.4, 0.0000000000001));
       expect((-185.6).clipLongitude(), -180.0);
       expect((-180.0).clipLongitude(), -180.0);
@@ -377,7 +377,7 @@ void main() {
       expect(const Geographic(lon: -180.0, lat: 18.2).lon, -180.0);
       expect(const Geographic(lon: -181.0, lat: 18.2).lon, 179.0);
       expect(const Geographic(lon: -541.0, lat: 18.2).lon, 179.0);
-      expect(const Geographic(lon: 180.0, lat: 18.2).lon, -180.0);
+      expect(const Geographic(lon: 180.0, lat: 18.2).lon, 180.0);
       expect(const Geographic(lon: 181.0, lat: 18.2).lon, -179.0);
       expect(const Geographic(lon: 541.0, lat: 18.2).lon, -179.0);
       expect(const Geographic(lon: 34.2, lat: -90.0).lat, -90.0);

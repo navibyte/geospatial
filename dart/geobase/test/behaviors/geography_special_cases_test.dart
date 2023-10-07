@@ -76,9 +76,9 @@ void main() {
       expect(zeroW180.complementary, round);
 
       expect(zeroE180.spansAntimeridian, false);
-      expect(zeroE180.width, 360.0);
-      expect(zeroE180.splitOnAntimeridian(), [round]);
-      expect(zeroE180.complementary, zeroW180);
+      expect(zeroE180.width, 0.0);
+      expect(zeroE180.splitOnAntimeridian(), [zeroE180]);
+      expect(zeroE180.complementary, round);
 
       expect(e20width359.spansAntimeridian, true);
       expect(e20width359.width, 359.0);
@@ -127,8 +127,10 @@ void main() {
       expect(b(88, 89).mergeGeographically(b(-89, -88)), b(-89, 89));
       expect(b(-89, -88).mergeGeographically(b(88, 89)), b(-89, 89));
       expect(b(-180, -180).mergeGeographically(b(179, 180)), b(179, 180));
+      expect(b(180, 180).mergeGeographically(b(179, 180)), b(179, 180));
       expect(b(-180, -179).mergeGeographically(b(179, 180)), b(179, -179));
       expect(b(-180, -179).mergeGeographically(b(-180, -180)), b(-180, -179));
+      expect(b(-180, -179).mergeGeographically(b(180, 180)), b(-180, -179));
       expect(b(160, -170).mergeGeographically(b(170, -160)), b(160, -160));
       expect(b(90, 100).mergeGeographically(b(170, -160)), b(90, -160));
       expect(b(-100, -90).mergeGeographically(b(170, -160)), b(170, -90));

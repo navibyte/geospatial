@@ -34,13 +34,15 @@ extension DoubleAngleExtension on double {
   }
 
   /// Converts this double value in degrees to a normalized longitude in the
-  /// range `[-180.0, 180.0[`.
+  /// range `[-180.0, 180.0]`.
   ///
   /// Examples:
   /// * `-179.0` => `-179.0`
   /// * `-182.0` => `178.0`
   /// * `179.0` => `179.0`
   /// * `182.0` => `-178.0`
+  /// * `-180.0` => `-180.0`
+  /// * `180.0` => `180.0`
   ///
   /// Uses the formula `(this + 180.0) % 360.0 - 180.0` (if outside the range).
   ///
@@ -48,7 +50,7 @@ extension DoubleAngleExtension on double {
   ///
   /// See also [clipLongitude] and the default constructor of `Geographic`.
   double wrapLongitude() =>
-      this >= -180.0 && this < 180.0 ? this : (this + 180.0) % 360.0 - 180.0;
+      this >= -180.0 && this <= 180.0 ? this : (this + 180.0) % 360.0 - 180.0;
 
   /// Converts this double value in degrees to a clipped longitude in the range
   /// `[-180.0 .. 180.0]`.
