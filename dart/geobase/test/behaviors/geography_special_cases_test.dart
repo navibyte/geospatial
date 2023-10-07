@@ -8,6 +8,7 @@
 // ignore_for_file: avoid_redundant_argument_values
 
 import 'package:geobase/coordinates.dart';
+import 'package:geobase/projections.dart';
 
 import 'package:test/test.dart';
 
@@ -175,6 +176,29 @@ void main() {
       expect(b(160, -170).intersectsPoint2D(p(165)), true);
       expect(b(160, -170).intersectsPoint2D(p(-179)), true);
       expect(b(160, -170).intersectsPoint2D(p(-169)), false);
+
+      // project tests
+      final forward = WGS84.webMercator.forward;
+      final inverse = WGS84.webMercator.inverse;
+      final projectTests = [
+        const GeoBox(west: 40.1, south: 10.1, east: 60.1, north: 11.1),
+        const GeoBox(west: 40.1, south: 10.1, east: -170.1, north: 11.1),
+        const GeoBox(west: 40.1, south: 10.1, east: 180.0, north: 11.1),
+        const GeoBox(west: -180.0, south: 10.1, east: -170.1, north: 11.1),
+      ];
+      for (final t in projectTests) {
+        GeoBox? merged;
+        for (final ti in t.splitOnAntimeridian()) {
+          final pi = ti.project(inverse).project(forward);
+          expect(ti.toText(decimals: 3), pi.toText(decimals: 3));
+          if (merged == null) {
+            merged = pi;
+          } else {
+            merged = merged.mergeGeographically(pi);
+          }
+        }
+        expect(t.toText(decimals: 3), merged!.toText(decimals: 3));
+      }
     });
   });
 }
