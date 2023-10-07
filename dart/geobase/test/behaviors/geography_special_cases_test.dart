@@ -154,9 +154,30 @@ void main() {
       const p5 = GeoBox(west: 55.0, south: 19.0, east: 70.0, north: 20.0);
       const p6 = GeoBox(west: 40.0, south: 10.0, east: 70.0, north: 20.0);
       expect(p4.mergeGeographically(p5) == p6, true);
+
+      // intersects tests
+      expect(b(160, 170).intersects2D(b(169, 172)), true);
+      expect(b(160, 170).intersects2D(b(170, 172)), true);
+      expect(b(160, 170).intersects2D(b(171, 172)), false);
+      expect(b(160, -170).intersects2D(b(171, 172)), true);
+      expect(b(160, -170).intersects2D(b(179, -179)), true);
+      expect(b(160, -170).intersects2D(b(-179, -165)), true);
+      expect(b(160, -170).intersects2D(b(-170, -165)), true);
+      expect(b(160, -170).intersects2D(b(-169, -165)), false);
+      expect(b(160, 170).intersectsPoint2D(p(159)), false);
+      expect(b(160, 170).intersectsPoint2D(p(160)), true);
+      expect(b(160, 170).intersectsPoint2D(p(165)), true);
+      expect(b(160, 170).intersectsPoint2D(p(170)), true);
+      expect(b(160, 170).intersectsPoint2D(p(171)), false);
+      expect(b(160, -170).intersectsPoint2D(p(159)), false);
+      expect(b(160, -170).intersectsPoint2D(p(165)), true);
+      expect(b(160, -170).intersectsPoint2D(p(-179)), true);
+      expect(b(160, -170).intersectsPoint2D(p(-169)), false);
     });
   });
 }
 
 GeoBox b(double west, double east) =>
     GeoBox(west: west, south: -20.0, east: east, north: -16.0);
+
+Geographic p(double lon) => Geographic(lon: lon, lat: -18.0);

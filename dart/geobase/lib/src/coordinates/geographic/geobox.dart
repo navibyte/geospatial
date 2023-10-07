@@ -11,6 +11,7 @@ import 'package:meta/meta.dart';
 import '/src/codes/coords.dart';
 import '/src/coordinates/base/aligned.dart';
 import '/src/coordinates/base/box.dart';
+import '/src/coordinates/base/position.dart';
 import '/src/coordinates/projected/projbox.dart';
 import '/src/coordinates/projection/projection.dart';
 
@@ -623,6 +624,66 @@ class GeoBox extends Box {
     // create a projected bbox
     // (calculating min and max coords in all axes from corner positions)
     return ProjBox.from(projected);
+  }
+
+  @override
+  bool intersects2D(Box other) {
+    if (other is GeoBox && (spansAntimeridian || other.spansAntimeridian)) {
+      for (final box1 in splitOnAntimeridian()) {
+        for (final box2 in other.splitOnAntimeridian()) {
+          if (Box.testIntersects2D(box1, box2)) {
+            return true;
+          }
+        }
+      }
+      return false;
+    } else {
+      return Box.testIntersects2D(this, other);
+    }
+  }
+
+  @override
+  bool intersects(Box other) {
+    if (other is GeoBox && (spansAntimeridian || other.spansAntimeridian)) {
+      for (final box1 in splitOnAntimeridian()) {
+        for (final box2 in other.splitOnAntimeridian()) {
+          if (Box.testIntersects(box1, box2)) {
+            return true;
+          }
+        }
+      }
+      return false;
+    } else {
+      return Box.testIntersects(this, other);
+    }
+  }
+
+  @override
+  bool intersectsPoint2D(Position point) {
+    if (point is Geographic && spansAntimeridian) {
+      for (final box1 in splitOnAntimeridian()) {
+        if (Box.testIntersectsPoint2D(box1, point)) {
+          return true;
+        }
+      }
+      return false;
+    } else {
+      return Box.testIntersectsPoint2D(this, point);
+    }
+  }
+
+  @override
+  bool intersectsPoint(Position point) {
+    if (point is Geographic && spansAntimeridian) {
+      for (final box1 in splitOnAntimeridian()) {
+        if (Box.testIntersectsPoint(box1, point)) {
+          return true;
+        }
+      }
+      return false;
+    } else {
+      return Box.testIntersectsPoint(this, point);
+    }
   }
 
   @override
