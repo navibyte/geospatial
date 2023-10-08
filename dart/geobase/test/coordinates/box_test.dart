@@ -278,6 +278,23 @@ void main() {
               toleranceHoriz: 0.00000000001),
           true);
     });
+
+    test('Merge boxes', () {
+      const b1 = ProjBox(minX: 10.1, minY: 10.1, maxX: 20.1, maxY: 20.1);
+      const b2 = ProjBox(minX: 15.1, minY: 30.1, maxX: 25.1, maxY: 40.1);
+      const b3 = ProjBox(minX: 10.1, minY: 10.1, maxX: 25.1, maxY: 40.1);
+
+      expect(b1.merge(b2), b3);
+      expect(b2.merge(b1), b3);
+      expect(b1.copyWith(minZ: 5.1, maxZ: 6.1).merge(b2), b3);
+      expect(
+        b1
+            .copyWith(minZ: 5.1, maxZ: 6.1)
+            .merge(b2)
+            .copyWith(minZ: -5.1, maxZ: 16.1),
+        b3.copyWith(minZ: -5.1, maxZ: 16.1),
+      );
+    });
   });
 
   group('GeoBox class', () {
@@ -398,6 +415,31 @@ void main() {
           const Geographic(lon: 1, lat: 3, m: 2),
         ],
       );
+    });
+
+    test('Merge boxes', () {
+      const b1 = GeoBox.create(minX: 10.1, minY: 10.1, maxX: 20.1, maxY: 20.1);
+      const b2 = GeoBox.create(minX: 15.1, minY: 30.1, maxX: 25.1, maxY: 40.1);
+      const b3 = GeoBox.create(minX: 10.1, minY: 10.1, maxX: 25.1, maxY: 40.1);
+      const b4 =
+          GeoBox.create(minX: 176.5, minY: 10.1, maxX: -164.5, maxY: 20.1);
+      const b5 =
+          GeoBox.create(minX: 170.1, minY: 30.1, maxX: 179.1, maxY: 40.1);
+      const b6 =
+          GeoBox.create(minX: 170.1, minY: 10.1, maxX: -164.5, maxY: 40.1);
+
+      expect(b1.merge(b2), b3);
+      expect(b2.merge(b1), b3);
+      expect(b1.copyWith(minZ: 5.1, maxZ: 6.1).merge(b2), b3);
+      expect(
+        b1
+            .copyWith(minZ: 5.1, maxZ: 6.1)
+            .merge(b2)
+            .copyWith(minZ: -5.1, maxZ: 16.1),
+        b3.copyWith(minZ: -5.1, maxZ: 16.1),
+      );
+      expect(b4.merge(b5), b6);
+      expect(b5.merge(b4), b6);
     });
 
     test('Dms for documentation examples', () {

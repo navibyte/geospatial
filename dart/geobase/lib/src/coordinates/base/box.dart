@@ -433,6 +433,9 @@ abstract class Box extends Positionable {
   /// equals between min and max) or 4 positions (otherwise).
   Iterable<Position> get corners2D;
 
+  /// Returns a minimum bounding box containing both this and [other].
+  Box merge(Box other);
+
   /// Projects this bounding box to another box using [projection].
   ///
   /// Subtypes may specify a more accurate bounding box type for the returned
@@ -823,6 +826,27 @@ abstract class Box extends Positionable {
     }
   }
 
+  /// Returns a minimum bounding box created by [factory] containing both [box1]
+  /// and [box2].
+  static R createMerged<R extends Box>(
+    Box box1,
+    Box box2,
+    CreateBox<R> factory,
+  ) {
+    final is3D = box1.is3D && box2.is3D;
+    final isMeasured = box1.isMeasured && box2.isMeasured;
+    return factory.call(
+      minX: math.min(box1.minX, box2.minX),
+      minY: math.min(box1.minY, box2.minY),
+      minZ: is3D ? math.min(box1.minZ ?? 0.0, box2.minZ ?? 0.0) : null,
+      minM: isMeasured ? math.min(box1.minM ?? 0.0, box2.minM ?? 0.0) : null,
+      maxX: math.max(box1.maxX, box2.maxX),
+      maxY: math.max(box1.maxY, box2.maxY),
+      maxZ: is3D ? math.max(box1.maxZ ?? 0.0, box2.maxZ ?? 0.0) : null,
+      maxM: isMeasured ? math.max(box1.maxM ?? 0.0, box2.maxM ?? 0.0) : null,
+    );
+  }
+
   /// A minimum bounding box created by [factory], calculated from [positions].
   ///
   /// Throws FormatException if cannot create (ie. [positions] is empty).
@@ -1162,6 +1186,9 @@ class _BoxCoords extends Box {
   @override
   Iterable<Position> get corners2D =>
       Box.createCorners2D(this, Position.create);
+
+  @override
+  Box merge(Box other) => Box.createMerged(this, other, Box.create);
 
   @override
   Box project(Projection projection) {

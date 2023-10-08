@@ -554,15 +554,17 @@ class GeoBox extends Box {
       eNormalized = 180.0;
     }
 
+    final bothIs3D = is3D && other.is3D;
+    final bothIsMeasured = isMeasured && other.isMeasured;
     return GeoBox(
       west: wNormalized,
       east: eNormalized,
       south: math.min(south, other.south),
       north: math.max(north, other.north),
-      minElev: is3D ? math.min(minElev ?? 0.0, other.minElev ?? 0.0) : null,
-      maxElev: is3D ? math.max(maxElev ?? 0.0, other.maxElev ?? 0.0) : null,
-      minM: isMeasured ? math.min(minM ?? 0.0, other.minM ?? 0.0) : null,
-      maxM: isMeasured ? math.max(maxM ?? 0.0, other.maxM ?? 0.0) : null,
+      minElev: bothIs3D ? math.min(minElev ?? 0.0, other.minElev ?? 0.0) : null,
+      maxElev: bothIs3D ? math.max(maxElev ?? 0.0, other.maxElev ?? 0.0) : null,
+      minM: bothIsMeasured ? math.min(minM ?? 0.0, other.minM ?? 0.0) : null,
+      maxM: bothIsMeasured ? math.max(maxM ?? 0.0, other.maxM ?? 0.0) : null,
     );
   }
 
@@ -609,6 +611,11 @@ class GeoBox extends Box {
   @override
   Iterable<Geographic> get corners2D =>
       Box.createCorners2D(this, Geographic.create);
+
+  @override
+  GeoBox merge(Box other) => other is GeoBox
+      ? mergeGeographically(other)
+      : Box.createMerged(this, other, GeoBox.create);
 
   /// Projects this geographic bounding box to a projected box using
   /// the forward [projection].

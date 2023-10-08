@@ -376,6 +376,9 @@ class ProjBox extends Box {
   Iterable<Projected> get corners2D =>
       Box.createCorners2D(this, Projected.create);
 
+  @override
+  ProjBox merge(Box other) => Box.createMerged(this, other, ProjBox.create);
+
   /// Projects this projected bounding box to a geographic box using
   /// the inverse [projection].
   @override
