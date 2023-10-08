@@ -9,7 +9,6 @@ import 'dart:typed_data';
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
-import '/src/coordinates/base/bounded.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/base/position_series.dart';
@@ -478,7 +477,7 @@ class LineString extends SimpleGeometry {
   // NOTE: coordinates as raw data
 
   @override
-  bool equalsCoords(Bounded other) => testEqualsCoords<LineString>(
+  bool equalsCoords(Geometry other) => testEqualsCoords<LineString>(
         this,
         other,
         (lineString1, lineString2) => lineString1.chain.equalsCoords(
@@ -488,7 +487,7 @@ class LineString extends SimpleGeometry {
 
   @override
   bool equals2D(
-    Bounded other, {
+    Geometry other, {
     double toleranceHoriz = defaultEpsilon,
   }) =>
       testEquals2D<LineString>(
@@ -503,7 +502,7 @@ class LineString extends SimpleGeometry {
 
   @override
   bool equals3D(
-    Bounded other, {
+    Geometry other, {
     double toleranceHoriz = defaultEpsilon,
     double toleranceVert = defaultEpsilon,
   }) =>

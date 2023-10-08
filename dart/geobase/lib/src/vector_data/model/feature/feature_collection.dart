@@ -6,7 +6,6 @@
 
 import '/src/codes/coords.dart';
 import '/src/constants/epsilon.dart';
-import '/src/coordinates/base/bounded.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
@@ -284,9 +283,9 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   /// Returns true if this feature collection do not contain any features.
   ///
   /// The specification from [Bounded]:
-  /// "Returns true if this bounded object is considered empty (that is it do
-  /// not contain any geometry directly or on child objects, or geometry
-  /// contained is empty)".
+  /// "Returns true if this object is considered empty (that is it do not
+  /// contain any position data directly or on child objects, or a position data
+  /// object contained is empty)".
   @override
   bool get isEmptyByGeometry => features.isEmpty;
 
@@ -438,7 +437,8 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   }
 
   @override
-  bool equalsCoords(Bounded other) => testEqualsCoords<FeatureCollection<E>>(
+  bool equalsCoords(FeatureObject other) =>
+      testEqualsCoords<FeatureCollection<E>>(
         this,
         other,
         (collection1, collection2) => _testFeatureCollections<E>(
@@ -450,7 +450,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
 
   @override
   bool equals2D(
-    Bounded other, {
+    FeatureObject other, {
     double toleranceHoriz = defaultEpsilon,
   }) =>
       testEquals2D<FeatureCollection<E>>(
@@ -469,7 +469,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
 
   @override
   bool equals3D(
-    Bounded other, {
+    FeatureObject other, {
     double toleranceHoriz = defaultEpsilon,
     double toleranceVert = defaultEpsilon,
   }) =>

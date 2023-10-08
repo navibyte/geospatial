@@ -9,22 +9,28 @@ import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/projection/projection.dart';
 
-/// A base interface for classes that know their bounding boxes.
+/// A base interface for classes with position data and that know their bounding
+/// boxes.
+///
+/// For example classes representing a series of positions, geometries or
+/// geospatial features (with a geometry) and feature collections are considered
+/// "bounded" in the context of this package.
 abstract class Bounded {
   final Box? _bounds;
 
   /// A bounded object with an optional [bounds].
   const Bounded({Box? bounds}) : _bounds = bounds;
 
-  /// Returns true if this bounded object is considered empty (that is it do
-  /// not contain any geometry directly or on child objects, or geometry
+  /// Returns true if this object is considered empty (that is it do not contain
+  /// any position data directly or on child objects, or a position data object
   /// contained is empty).
   bool get isEmptyByGeometry;
 
-  /// The coordinate type for this bounded object.
+  /// A value of [Coords] representing the coordinate type of position data
+  /// contained directly or on child objects.
   ///
-  /// For bounded objects containing geometry data, the coordinate type is the
-  /// type indicated by data. For example for geometries containing 2D
+  /// For objects containing position data directly, the coordinate type is the
+  /// type indicated by such data. For example for geometries containing 2D
   /// coordinates it's `Coords.xy` or for geometries containg 3D data, it's
   /// `Coords.xyz`.
   ///
@@ -54,8 +60,8 @@ abstract class Bounded {
   /// an empty geometry).
   Box? calculateBounds();
 
-  /// Returns a bounded object of the same subtype as this with certain data
-  /// members populated.
+  /// Returns an object of the same subtype as this with certain data members
+  /// populated.
   ///
   /// If nothing is populated then `this` is returned.
   ///
@@ -73,8 +79,8 @@ abstract class Bounded {
     bool onBounds = true,
   });
 
-  /// Returns a bounded object of the same subtype as this with certain data
-  /// members unpopulated (or cleared).
+  /// Returns an object of the same subtype as this with certain data members
+  /// unpopulated (or cleared).
   ///
   /// If nothing is unpopulated then `this` is returned.
   ///
@@ -92,25 +98,23 @@ abstract class Bounded {
     bool onBounds = true,
   });
 
-  /// Returns a new bounded object with all geometries projected using
-  /// [projection] and other properties left intact.
+  /// Returns an object of the same subtype as this with all position data
+  /// projected using [projection] and any other properties left intact.
   ///
-  /// The returned subtype must be the same as the type of this.
-  ///
-  /// If [bounds] object is available on this, it's recalculated after
-  /// projecting geometries. If [bounds] is null, then it's null after
+  /// If [bounds] object is available on this, it's also recalculated after
+  /// projecting position data. If [bounds] is null, then it's null after
   /// projecting too.
   Bounded project(Projection projection);
 
-  /// Returns true if this and [other] contain exactly same coordinate values
-  /// (or both are empty) in the same order and with the same coordinate type.
-  bool equalsCoords(Bounded other);
+  /// True if this and [other] contain exactly same coordinate values (or both
+  /// are empty) in the same order and with the same coordinate type.
+  bool equalsCoords(covariant Bounded other);
 
-  /// True if this bounded object equals with [other] by testing 2D coordinates
-  /// of all geometries (that must be in same order in both objects) contained
+  /// True if this and [other] equals by testing 2D coordinate values of all
+  /// position data (that must be in same order in both objects) contained
   /// directly or by child objects.
   ///
-  /// Returns false if this and [other] are not of the same bounded object type.
+  /// Returns false if this and [other] are not of the same subtype.
   ///
   /// Returns false if this or [other] contain "empty geometry"
   /// ([isEmptyByGeometry] true).
@@ -120,15 +124,15 @@ abstract class Bounded {
   ///
   /// Tolerance values must be positive (>= 0.0).
   bool equals2D(
-    Bounded other, {
+    covariant Bounded other, {
     double toleranceHoriz = defaultEpsilon,
   });
 
-  /// True if this bounded object equals with [other] by testing 3D coordinates
-  /// of all geometries (that must be in same order in both objects) contained
+  /// True if this and [other] equals by testing 3D coordinate values of all
+  /// position data (that must be in same order in both objects) contained
   /// directly or by child objects.
   ///
-  /// Returns false if this and [other] are not of the same bounded object type.
+  /// Returns false if this and [other] are not of the same subtype.
   ///
   /// Returns false if this or [other] contain "empty geometry"
   /// ([isEmptyByGeometry] true).
@@ -143,7 +147,7 @@ abstract class Bounded {
   ///
   /// Tolerance values must be positive (>= 0.0).
   bool equals3D(
-    Bounded other, {
+    covariant Bounded other, {
     double toleranceHoriz = defaultEpsilon,
     double toleranceVert = defaultEpsilon,
   });

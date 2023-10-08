@@ -9,7 +9,6 @@ import 'dart:typed_data';
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
-import '/src/coordinates/base/bounded.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/projection/projection.dart';
@@ -388,7 +387,7 @@ class MultiPoint extends SimpleGeometry {
   // NOTE: coordinates as raw data
 
   @override
-  bool equalsCoords(Bounded other) => testEqualsCoords<MultiPoint>(
+  bool equalsCoords(Geometry other) => testEqualsCoords<MultiPoint>(
         this,
         other,
         (mp1, mp2) => _testMultiPoints(mp1, mp2, (pos1, pos2) => pos1 == pos2),
@@ -396,7 +395,7 @@ class MultiPoint extends SimpleGeometry {
 
   @override
   bool equals2D(
-    Bounded other, {
+    Geometry other, {
     double toleranceHoriz = defaultEpsilon,
   }) =>
       testEquals2D<MultiPoint>(
@@ -415,7 +414,7 @@ class MultiPoint extends SimpleGeometry {
 
   @override
   bool equals3D(
-    Bounded other, {
+    Geometry other, {
     double toleranceHoriz = defaultEpsilon,
     double toleranceVert = defaultEpsilon,
   }) =>

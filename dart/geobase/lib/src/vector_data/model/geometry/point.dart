@@ -9,7 +9,6 @@ import 'dart:typed_data';
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
-import '/src/coordinates/base/bounded.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/projection/projection.dart';
@@ -322,12 +321,12 @@ class Point implements SimpleGeometry {
   }
 
   @override
-  bool equalsCoords(Bounded other) =>
+  bool equalsCoords(Geometry other) =>
       other is Point && position == other.position;
 
   @override
   bool equals2D(
-    Bounded other, {
+    Geometry other, {
     double toleranceHoriz = defaultEpsilon,
   }) =>
       other is Point &&
@@ -340,7 +339,7 @@ class Point implements SimpleGeometry {
 
   @override
   bool equals3D(
-    Bounded other, {
+    Geometry other, {
     double toleranceHoriz = defaultEpsilon,
     double toleranceVert = defaultEpsilon,
   }) =>

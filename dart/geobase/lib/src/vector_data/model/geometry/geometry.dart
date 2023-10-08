@@ -9,6 +9,7 @@ import 'dart:typed_data';
 import 'package:meta/meta.dart';
 
 import '/src/codes/geom.dart';
+import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/bounded.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
@@ -60,15 +61,24 @@ abstract class Geometry extends Bounded {
     bool onBounds = true,
   });
 
-  /// Returns a new geometry projected using [projection].
-  ///
-  /// The returned geometry sub type must be the same as the type of this.
-  ///
-  /// If [bounds] object is available on this, it's recalculated after
-  /// projecting geometries. If [bounds] is null, then it's null after
-  /// projecting too.
   @override
   Geometry project(Projection projection);
+
+  @override
+  bool equalsCoords(Geometry other);
+
+  @override
+  bool equals2D(
+    Geometry other, {
+    double toleranceHoriz = defaultEpsilon,
+  });
+
+  @override
+  bool equals3D(
+    Geometry other, {
+    double toleranceHoriz = defaultEpsilon,
+    double toleranceVert = defaultEpsilon,
+  });
 
   /// Writes this geometry object to [writer].
   ///

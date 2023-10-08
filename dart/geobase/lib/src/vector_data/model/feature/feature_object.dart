@@ -8,6 +8,7 @@ import 'dart:typed_data';
 
 import 'package:meta/meta.dart';
 
+import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/bounded.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
@@ -40,19 +41,24 @@ abstract class FeatureObject extends Bounded {
     bool onBounds = true,
   });
 
-  /// Returns a new feature obect with all geometries projected using
-  /// [projection].
-  ///
-  /// The returned feature object sub type must be the same as the type of this.
-  ///
-  /// Any custom data or properties (other than geometries) are not projected,
-  /// just copied (by references).
-  ///
-  /// If [bounds] object is available on this, it's recalculated after
-  /// projecting geometries. If [bounds] is null, then it's null after
-  /// projecting too.
   @override
   FeatureObject project(Projection projection);
+
+  @override
+  bool equalsCoords(FeatureObject other);
+
+  @override
+  bool equals2D(
+    FeatureObject other, {
+    double toleranceHoriz = defaultEpsilon,
+  });
+
+  @override
+  bool equals3D(
+    FeatureObject other, {
+    double toleranceHoriz = defaultEpsilon,
+    double toleranceVert = defaultEpsilon,
+  });
 
   /// Optional custom or "foreign member" properties as a map.
   Map<String, dynamic>? get custom => _custom;

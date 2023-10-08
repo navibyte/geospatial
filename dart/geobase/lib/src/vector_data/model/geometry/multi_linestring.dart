@@ -9,7 +9,6 @@ import 'dart:typed_data';
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
-import '/src/coordinates/base/bounded.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/base/position_series.dart';
@@ -428,7 +427,7 @@ class MultiLineString extends SimpleGeometry {
   // NOTE: coordinates as raw data
 
   @override
-  bool equalsCoords(Bounded other) => testEqualsCoords<MultiLineString>(
+  bool equalsCoords(Geometry other) => testEqualsCoords<MultiLineString>(
         this,
         other,
         (mls1, mls2) => _testMultiLineStrings(
@@ -440,7 +439,7 @@ class MultiLineString extends SimpleGeometry {
 
   @override
   bool equals2D(
-    Bounded other, {
+    Geometry other, {
     double toleranceHoriz = defaultEpsilon,
   }) =>
       testEquals2D<MultiLineString>(
@@ -459,7 +458,7 @@ class MultiLineString extends SimpleGeometry {
 
   @override
   bool equals3D(
-    Bounded other, {
+    Geometry other, {
     double toleranceHoriz = defaultEpsilon,
     double toleranceVert = defaultEpsilon,
   }) =>

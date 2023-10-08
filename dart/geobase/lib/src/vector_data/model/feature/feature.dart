@@ -6,7 +6,6 @@
 
 import '/src/codes/coords.dart';
 import '/src/constants/epsilon.dart';
-import '/src/coordinates/base/bounded.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
@@ -444,7 +443,7 @@ class Feature<T extends Geometry> extends FeatureObject {
   }
 
   @override
-  bool equalsCoords(Bounded other) => testEqualsCoords<Feature<T>>(
+  bool equalsCoords(FeatureObject other) => testEqualsCoords<Feature<T>>(
         this,
         other,
         (feature1, feature2) => _testFeatures<T>(
@@ -456,7 +455,7 @@ class Feature<T extends Geometry> extends FeatureObject {
 
   @override
   bool equals2D(
-    Bounded other, {
+    FeatureObject other, {
     double toleranceHoriz = defaultEpsilon,
   }) =>
       testEquals2D<Feature<T>>(
@@ -475,7 +474,7 @@ class Feature<T extends Geometry> extends FeatureObject {
 
   @override
   bool equals3D(
-    Bounded other, {
+    FeatureObject other, {
     double toleranceHoriz = defaultEpsilon,
     double toleranceVert = defaultEpsilon,
   }) =>
