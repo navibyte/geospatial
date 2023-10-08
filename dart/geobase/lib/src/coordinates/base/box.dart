@@ -436,11 +436,11 @@ abstract class Box extends Positionable {
   /// Returns a minimum bounding box containing both this and [other].
   Box merge(Box other);
 
-  /// Returns unambiguous bounding boxes whose merged area equals with this 
+  /// Returns unambiguous bounding boxes whose merged area equals with this
   /// bounding box.
   ///
   /// Normally `this` is simply returned as an only item in an iterable.
-  /// 
+  ///
   /// However for geographic coordinates bounding boxes spanning the
   /// antimeridian could return two boxes located on both sides of the
   /// antimeridian (this logic is handled by `GeoBox`).

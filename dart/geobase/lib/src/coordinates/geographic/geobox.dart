@@ -424,7 +424,7 @@ class GeoBox extends Box {
   ///
   /// It's guaranteed that no bounding box returned by this iterable spans
   /// antimeridian.
-  /// 
+  ///
   /// For `GeoBox` instances calling `splitUnambiguously()` gives the same
   /// result as `splitGeographically()`.
   Iterable<GeoBox> splitGeographically() sync* {
@@ -627,7 +627,7 @@ class GeoBox extends Box {
   ///
   /// It's guaranteed that no bounding box returned by this iterable spans
   /// antimeridian.
-  /// 
+  ///
   /// For `GeoBox` instances calling `splitUnambiguously()` gives the same
   /// result as `splitGeographically()`.
   @override
