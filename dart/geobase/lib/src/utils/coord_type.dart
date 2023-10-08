@@ -7,9 +7,9 @@
 import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
+import '/src/coordinates/base/bounded.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/base/position_series.dart';
-import '/src/vector_data/model/bounded/bounded.dart';
 
 /// Resolves the coordinate type for [item] and/or [collection].
 ///

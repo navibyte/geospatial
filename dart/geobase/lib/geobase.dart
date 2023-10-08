@@ -38,6 +38,7 @@ export 'src/constants/screen_ppi.dart';
 
 // coordinates
 export 'src/coordinates/base/aligned.dart';
+export 'src/coordinates/base/bounded.dart';
 export 'src/coordinates/base/box.dart';
 export 'src/coordinates/base/position.dart';
 export 'src/coordinates/base/position_extensions.dart';
@@ -96,7 +97,6 @@ export 'src/vector/formats/wkt/wkt_format.dart';
 export 'src/vector/formats/wkt/wkt_like_format.dart';
 
 // vector_data
-export 'src/vector_data/model/bounded/bounded.dart';
 export 'src/vector_data/model/feature/feature.dart';
 export 'src/vector_data/model/feature/feature_builder.dart';
 export 'src/vector_data/model/feature/feature_collection.dart';

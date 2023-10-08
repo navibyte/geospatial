@@ -6,16 +6,15 @@
 
 import 'dart:typed_data';
 
-import 'package:geobase/vector_data.dart';
 import 'package:meta/meta.dart';
 
+import '/src/coordinates/base/bounded.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/vector/content/feature_content.dart';
 import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
 import '/src/vector/formats/geojson/geojson_format.dart';
-import '/src/vector_data/model/bounded/bounded.dart';
 
 /// A common base interface for geospatial feature objects (`Feature` and
 /// `FeatureCollection`).

@@ -7,7 +7,7 @@
 import 'package:meta/meta.dart';
 
 import '/src/constants/epsilon.dart';
-import '/src/vector_data/model/bounded/bounded.dart';
+import '/src/coordinates/base/bounded.dart';
 
 import 'tolerance.dart';
 

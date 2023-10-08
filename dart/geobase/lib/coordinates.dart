@@ -21,6 +21,7 @@ export 'src/codes/dms_type.dart';
 export 'src/codes/geo_representation.dart';
 export 'src/constants/epsilon.dart';
 export 'src/coordinates/base/aligned.dart';
+export 'src/coordinates/base/bounded.dart';
 export 'src/coordinates/base/box.dart';
 export 'src/coordinates/base/position.dart';
 export 'src/coordinates/base/position_extensions.dart';

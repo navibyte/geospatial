@@ -9,6 +9,7 @@ import 'dart:typed_data';
 import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
+import '/src/coordinates/base/bounded.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
@@ -20,7 +21,6 @@ import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
 import '/src/vector/formats/geojson/geojson_format.dart';
 import '/src/vector/formats/wkb/wkb_format.dart';
-import '/src/vector_data/model/bounded/bounded.dart';
 
 import 'geometry.dart';
 import 'geometry_builder.dart';
