@@ -424,7 +424,7 @@ class GeoBox extends Box {
   ///
   /// It's guaranteed that no bounding box returned by this iterable spans
   /// antimeridian.
-  Iterable<GeoBox> splitOnAntimeridian() sync* {
+  Iterable<GeoBox> splitGeographically() sync* {
     if (spansAntimeridian) {
       // the part from antimeridian to west
       yield copyWith(maxX: 180.0); // set "east" ("maxX") to 180.0
@@ -436,14 +436,14 @@ class GeoBox extends Box {
     }
   }
 
-  /// Returns the "complementary" bounding box for the same latitude band with
-  /// this.
+  /// Returns the "geographically complementary" bounding box for the same
+  /// latitude band with this.
   ///
   /// For `GeoBox(west: 177.0, south: -20.0, east: -178.0, north: -16.0)` the
   /// complementary box is
   /// `GeoBox(west: -178.0, south: -20.0, east: 177.0, north: -16.0)` and vice
   /// versa.
-  GeoBox get complementary {
+  GeoBox get complementaryGeographically {
     if (width >= 360.0) {
       // this has width == 360.0 => return box with width == 0.0
       return copyWith(minX: minX, maxX: minX);
@@ -463,16 +463,16 @@ class GeoBox extends Box {
   /// ```dart
   /// // a sample merging two boxes on both sides on the antimeridian
   /// // (the result equal with p3 is then spanning the antimeridian)
-  /// const p1 = GeoBox(west: 177.0, south: -20.0, east: 179.0, north: -16.0);
-  /// const p2 = GeoBox(west: -179.0, south: -20.0, east: -178.0, north: -16.0);
-  /// const p3 = GeoBox(west: 177.0, south: -20.0, east: -178.0, north: -16.0);
-  /// p1.mergeGeographically(p2) == p3; // true
+  /// const b1 = GeoBox(west: 177.0, south: -20.0, east: 179.0, north: -16.0);
+  /// const b2 = GeoBox(west: -179.0, south: -20.0, east: -178.0, north: -16.0);
+  /// const b3 = GeoBox(west: 177.0, south: -20.0, east: -178.0, north: -16.0);
+  /// b1.mergeGeographically(b2) == b3; // true
   ///
   /// // a sample merging two boxes without need for antimeridian logic
-  /// const p4 = GeoBox(west: 40.0, south: 10.0, east: 60.0, north: 11.0);
-  /// const p5 = GeoBox(west: 55.0, south: 19.0, east: 70.0, north: 20.0);
-  /// const p6 = GeoBox(west: 40.0, south: 10.0, east: 70.0, north: 20.0);
-  /// p4.mergeGeographically(p5) == p6; // true
+  /// const b4 = GeoBox(west: 40.0, south: 10.0, east: 60.0, north: 11.0);
+  /// const b5 = GeoBox(west: 55.0, south: 19.0, east: 70.0, north: 20.0);
+  /// const b6 = GeoBox(west: 40.0, south: 10.0, east: 70.0, north: 20.0);
+  /// b4.mergeGeographically(b5) == b6; // true
   /// ```
   GeoBox mergeGeographically(GeoBox other) {
     final double wNormalized;
@@ -628,8 +628,8 @@ class GeoBox extends Box {
   @override
   bool intersects2D(Box other) {
     if (other is GeoBox && (spansAntimeridian || other.spansAntimeridian)) {
-      for (final box1 in splitOnAntimeridian()) {
-        for (final box2 in other.splitOnAntimeridian()) {
+      for (final box1 in splitGeographically()) {
+        for (final box2 in other.splitGeographically()) {
           if (Box.testIntersects2D(box1, box2)) {
             return true;
           }
@@ -644,8 +644,8 @@ class GeoBox extends Box {
   @override
   bool intersects(Box other) {
     if (other is GeoBox && (spansAntimeridian || other.spansAntimeridian)) {
-      for (final box1 in splitOnAntimeridian()) {
-        for (final box2 in other.splitOnAntimeridian()) {
+      for (final box1 in splitGeographically()) {
+        for (final box2 in other.splitGeographically()) {
           if (Box.testIntersects(box1, box2)) {
             return true;
           }
@@ -660,7 +660,7 @@ class GeoBox extends Box {
   @override
   bool intersectsPoint2D(Position point) {
     if (point is Geographic && spansAntimeridian) {
-      for (final box1 in splitOnAntimeridian()) {
+      for (final box1 in splitGeographically()) {
         if (Box.testIntersectsPoint2D(box1, point)) {
           return true;
         }
@@ -674,7 +674,7 @@ class GeoBox extends Box {
   @override
   bool intersectsPoint(Position point) {
     if (point is Geographic && spansAntimeridian) {
-      for (final box1 in splitOnAntimeridian()) {
+      for (final box1 in splitGeographically()) {
         if (Box.testIntersectsPoint(box1, point)) {
           return true;
         }
