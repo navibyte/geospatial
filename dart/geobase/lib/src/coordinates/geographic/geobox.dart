@@ -424,6 +424,9 @@ class GeoBox extends Box {
   ///
   /// It's guaranteed that no bounding box returned by this iterable spans
   /// antimeridian.
+  /// 
+  /// For `GeoBox` instances calling `splitUnambiguously()` gives the same
+  /// result as `splitGeographically()`.
   Iterable<GeoBox> splitGeographically() sync* {
     if (spansAntimeridian) {
       // the part from antimeridian to west
@@ -616,6 +619,19 @@ class GeoBox extends Box {
   GeoBox merge(Box other) => other is GeoBox
       ? mergeGeographically(other)
       : Box.createMerged(this, other, GeoBox.create);
+
+  /// Returns two bounding boxes (one to west from antimeridian and another to
+  /// east) when [spansAntimeridian] is true.
+  ///
+  /// When [spansAntimeridian] is false then returns this.
+  ///
+  /// It's guaranteed that no bounding box returned by this iterable spans
+  /// antimeridian.
+  /// 
+  /// For `GeoBox` instances calling `splitUnambiguously()` gives the same
+  /// result as `splitGeographically()`.
+  @override
+  Iterable<GeoBox> splitUnambiguously() => splitGeographically();
 
   /// Projects this geographic bounding box to a projected box using
   /// the forward [projection].

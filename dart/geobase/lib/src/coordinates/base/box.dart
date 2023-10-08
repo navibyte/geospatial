@@ -436,6 +436,16 @@ abstract class Box extends Positionable {
   /// Returns a minimum bounding box containing both this and [other].
   Box merge(Box other);
 
+  /// Returns unambiguous bounding boxes whose merged area equals with this 
+  /// bounding box.
+  ///
+  /// Normally `this` is simply returned as an only item in an iterable.
+  /// 
+  /// However for geographic coordinates bounding boxes spanning the
+  /// antimeridian could return two boxes located on both sides of the
+  /// antimeridian (this logic is handled by `GeoBox`).
+  Iterable<Box> splitUnambiguously();
+
   /// Projects this bounding box to another box using [projection].
   ///
   /// Subtypes may specify a more accurate bounding box type for the returned
@@ -1189,6 +1199,9 @@ class _BoxCoords extends Box {
 
   @override
   Box merge(Box other) => Box.createMerged(this, other, Box.create);
+
+  @override
+  Iterable<Box> splitUnambiguously() => [this];
 
   @override
   Box project(Projection projection) {

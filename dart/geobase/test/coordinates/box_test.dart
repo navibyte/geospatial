@@ -279,7 +279,7 @@ void main() {
           true);
     });
 
-    test('Merge boxes', () {
+    test('Merge and boxes', () {
       const b1 = ProjBox(minX: 10.1, minY: 10.1, maxX: 20.1, maxY: 20.1);
       const b2 = ProjBox(minX: 15.1, minY: 30.1, maxX: 25.1, maxY: 40.1);
       const b3 = ProjBox(minX: 10.1, minY: 10.1, maxX: 25.1, maxY: 40.1);
@@ -294,6 +294,10 @@ void main() {
             .copyWith(minZ: -5.1, maxZ: 16.1),
         b3.copyWith(minZ: -5.1, maxZ: 16.1),
       );
+
+      expect(b1.splitUnambiguously(), [b1]);
+      expect(b2.splitUnambiguously(), [b2]);
+      expect(b3.splitUnambiguously(), [b3]);
     });
   });
 
@@ -417,7 +421,7 @@ void main() {
       );
     });
 
-    test('Merge boxes', () {
+    test('Merge and split boxes', () {
       const b1 = GeoBox.create(minX: 10.1, minY: 10.1, maxX: 20.1, maxY: 20.1);
       const b2 = GeoBox.create(minX: 15.1, minY: 30.1, maxX: 25.1, maxY: 40.1);
       const b3 = GeoBox.create(minX: 10.1, minY: 10.1, maxX: 25.1, maxY: 40.1);
@@ -440,6 +444,19 @@ void main() {
       );
       expect(b4.merge(b5), b6);
       expect(b5.merge(b4), b6);
+
+      expect(b1.splitUnambiguously(), [b1]);
+      expect(b2.splitUnambiguously(), [b2]);
+      expect(b3.splitUnambiguously(), [b3]);
+      expect(b4.splitUnambiguously(), const [
+        GeoBox.create(minX: 176.5, minY: 10.1, maxX: 180.0, maxY: 20.1),
+        GeoBox.create(minX: -180.0, minY: 10.1, maxX: -164.5, maxY: 20.1),
+      ]);
+      expect(b5.splitUnambiguously(), [b5]);
+      expect(b6.splitUnambiguously(), const [
+        GeoBox.create(minX: 170.1, minY: 10.1, maxX: 180.0, maxY: 40.1),
+        GeoBox.create(minX: -180.0, minY: 10.1, maxX: -164.5, maxY: 40.1),
+      ]);
     });
 
     test('Dms for documentation examples', () {

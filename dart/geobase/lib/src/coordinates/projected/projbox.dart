@@ -379,6 +379,9 @@ class ProjBox extends Box {
   @override
   ProjBox merge(Box other) => Box.createMerged(this, other, ProjBox.create);
 
+  @override
+  Iterable<ProjBox> splitUnambiguously() => [this];
+
   /// Projects this projected bounding box to a geographic box using
   /// the inverse [projection].
   @override
