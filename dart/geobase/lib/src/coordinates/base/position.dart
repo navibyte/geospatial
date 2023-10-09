@@ -423,12 +423,17 @@ abstract class Position extends ValuePositionable {
   /// The returned object should be of the same type as this object has.
   Position transform(TransformPosition transform);
 
+  /// True if this and the [other] position equals.
+  @override
+  bool equalsCoords(Position other) => this == other;
+
   /// True if this position equals with [other] by testing 2D coordinates only.
   ///
   /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
   /// this and [other] must be within [toleranceHoriz].
   ///
   /// Tolerance values must be positive (>= 0.0).
+  @override
   bool equals2D(
     Position other, {
     double toleranceHoriz = defaultEpsilon,
@@ -446,6 +451,7 @@ abstract class Position extends ValuePositionable {
   /// this and [other] must be within [toleranceVert].
   ///
   /// Tolerance values must be positive (>= 0.0).
+  @override
   bool equals3D(
     Position other, {
     double toleranceHoriz = defaultEpsilon,

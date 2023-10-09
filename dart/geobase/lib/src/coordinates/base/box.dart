@@ -452,12 +452,17 @@ abstract class Box extends ValuePositionable {
   /// box when forward-projecting, and other way when inverse-projecting).
   Box project(Projection projection);
 
+  /// True if this and the [other] box equals.
+  @override
+  bool equalsCoords(Box other) => this == other;
+
   /// True if this box equals with [other] by testing 2D coordinates only.
   ///
   /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
   /// this and [other] must be within [toleranceHoriz].
   ///
   /// Tolerance values must be positive (>= 0.0).
+  @override
   bool equals2D(Box other, {double toleranceHoriz = defaultEpsilon}) =>
       Box.testEquals2D(this, other, toleranceHoriz: toleranceHoriz);
 
@@ -472,6 +477,7 @@ abstract class Box extends ValuePositionable {
   /// this and [other] must be within [toleranceVert].
   ///
   /// Tolerance values must be positive (>= 0.0).
+  @override
   bool equals3D(
     Box other, {
     double toleranceHoriz = defaultEpsilon,

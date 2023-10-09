@@ -4,7 +4,6 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/projection/projection.dart';
 
@@ -91,50 +90,4 @@ abstract class Bounded extends Positionable {
   /// projecting position data. If [bounds] is null, then it's null after
   /// projecting too.
   Bounded project(Projection projection);
-
-  /// True if this and [other] contain exactly same coordinate values (or both
-  /// are empty) in the same order and with the same coordinate type.
-  bool equalsCoords(covariant Bounded other);
-
-  /// True if this and [other] equals by testing 2D coordinate values of all
-  /// position data (that must be in same order in both objects) contained
-  /// directly or by child objects.
-  ///
-  /// Returns false if this and [other] are not of the same subtype.
-  ///
-  /// Returns false if this or [other] contain "empty geometry"
-  /// ([isEmptyByGeometry] true).
-  ///
-  /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
-  /// this and [other] must be within [toleranceHoriz].
-  ///
-  /// Tolerance values must be positive (>= 0.0).
-  bool equals2D(
-    covariant Bounded other, {
-    double toleranceHoriz = defaultEpsilon,
-  });
-
-  /// True if this and [other] equals by testing 3D coordinate values of all
-  /// position data (that must be in same order in both objects) contained
-  /// directly or by child objects.
-  ///
-  /// Returns false if this and [other] are not of the same subtype.
-  ///
-  /// Returns false if this or [other] contain "empty geometry"
-  /// ([isEmptyByGeometry] true).
-  ///
-  /// Returns false if this or [other] do not contain 3D coordinates.
-  ///
-  /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
-  /// this and [other] must be within [toleranceHoriz].
-  ///
-  /// Differences on vertical coordinate values (ie. z or elev) between
-  /// this and [other] must be within [toleranceVert].
-  ///
-  /// Tolerance values must be positive (>= 0.0).
-  bool equals3D(
-    covariant Bounded other, {
-    double toleranceHoriz = defaultEpsilon,
-    double toleranceVert = defaultEpsilon,
-  });
 }

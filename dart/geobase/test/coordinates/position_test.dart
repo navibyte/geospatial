@@ -678,6 +678,9 @@ class _TestXYZM implements Projected {
   String toString() => '$x,$y,$z,$m';
 
   @override
+  bool equalsCoords(Position other) => this == other;
+
+  @override
   bool equals2D(
     Position other, {
     double toleranceHoriz = defaultEpsilon,

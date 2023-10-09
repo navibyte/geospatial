@@ -493,6 +493,7 @@ abstract class PositionSeries implements ValuePositionable {
 
   /// Returns true if this and [other] contain exactly same coordinate values
   /// (or both are empty) in the same order and with the same coordinate type.
+  @override
   bool equalsCoords(PositionSeries other) {
     if (identical(this, other)) return true;
     if (positionCount != other.positionCount) return false;
@@ -522,6 +523,7 @@ abstract class PositionSeries implements ValuePositionable {
   /// this and [other] must be within [toleranceHoriz].
   ///
   /// Tolerance values must be positive (>= 0.0).
+  @override
   bool equals2D(
     PositionSeries other, {
     double toleranceHoriz = defaultEpsilon,
@@ -563,6 +565,7 @@ abstract class PositionSeries implements ValuePositionable {
   /// this and [other] must be within [toleranceVert].
   ///
   /// Tolerance values must be positive (>= 0.0).
+  @override
   bool equals3D(
     PositionSeries other, {
     double toleranceHoriz = defaultEpsilon,
