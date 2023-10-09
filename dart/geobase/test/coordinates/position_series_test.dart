@@ -38,9 +38,9 @@ void main() {
         expect(array3.values, data3);
         expect(array3FromText.values, array3.values);
         expect(array3FromPositions.values, array3.values);
-        expect(array3.type, type);
-        expect(array3FromText.type, type);
-        expect(array3FromPositions.type, type);
+        expect(array3.coordType, type);
+        expect(array3FromText.coordType, type);
+        expect(array3FromPositions.coordType, type);
 
         expect(array3FromText.equalsCoords(array3), true);
         expect(array3FromPositions.equalsCoords(array3), true);
@@ -49,7 +49,7 @@ void main() {
       test('Access positions as PositionData', () {
         final positions = array3;
         expect(positions.positionCount, 3);
-        expect(positions.type, type);
+        expect(positions.coordType, type);
 
         final tests = type == Coords.xyz
             ? [
@@ -101,7 +101,7 @@ void main() {
       test('Access as geographic positions', () {
         final geographic = array3.positionsAs(to: Geographic.create).toList();
         expect(geographic.length, 3);
-        expect(array3.type, type);
+        expect(array3.coordType, type);
 
         final tests = type == Coords.xyz
             ? [
@@ -217,13 +217,13 @@ void main() {
     test('Creating position arrays', () {
       expect(xyArray3.values, xyData3);
       expect(xyArray3FromText.values, xyArray3.values);
-      expect(xyArray3.type, Coords.xy);
+      expect(xyArray3.coordType, Coords.xy);
     });
 
     test('Access as projected positions', () {
       final projected = xyArray3.positionsAs(to: Projected.create).toList();
       expect(projected.length, 3);
-      expect(projected.first.type, Coords.xy);
+      expect(projected.first.coordType, Coords.xy);
 
       final tests = [
         [
@@ -283,13 +283,13 @@ void main() {
     test('Creating position arrays', () {
       expect(xyzmArray3.values, xyzmData3);
       expect(xyzmArray3FromText.values, xyzmArray3.values);
-      expect(xyzmArray3.type, Coords.xyzm);
+      expect(xyzmArray3.coordType, Coords.xyzm);
     });
 
     test('Access projected positions', () {
       final projected = xyzmArray3.positionsAs(to: Projected.create).toList();
       expect(projected.length, 3);
-      expect(projected.first.type, Coords.xyzm);
+      expect(projected.first.coordType, Coords.xyzm);
 
       final tests = [
         [

@@ -666,7 +666,7 @@ class Polygon extends SimpleGeometry {
   Geom get geomType => Geom.polygon;
 
   @override
-  Coords get coordType => exterior?.type ?? Coords.xy;
+  Coords get coordType => exterior?.coordType ?? Coords.xy;
 
   @override
   bool get isEmptyByGeometry => _rings.isEmpty;

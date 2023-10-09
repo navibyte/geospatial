@@ -192,7 +192,7 @@ abstract class PositionSeries implements ValuePositionable {
       var isMeasured = true;
 
       for (final elem in data) {
-        final type = elem.type;
+        final type = elem.coordType;
         is3D &= type.is3D;
         isMeasured &= type.isMeasured;
         if (!is3D && !isMeasured) break;
@@ -409,8 +409,8 @@ abstract class PositionSeries implements ValuePositionable {
 
   /// Coordinate values of all positions in this series as an iterable.
   ///
-  /// Each position contains 2, 3 or 4 coordinate values indicated by [type] of
-  /// this series.
+  /// Each position contains 2, 3 or 4 coordinate values indicated by
+  /// [coordType] of this series.
   ///
   /// For example if data contains positions (x: 1.0, y: 1.1), (x: 2.0, y: 2.1),
   /// and (x: 3.0, y: 3.1), then a returned iterable would be
@@ -496,7 +496,7 @@ abstract class PositionSeries implements ValuePositionable {
   bool equalsCoords(PositionSeries other) {
     if (identical(this, other)) return true;
     if (positionCount != other.positionCount) return false;
-    if (type != other.type) return false;
+    if (coordType != other.coordType) return false;
 
     return _testEqualsCoords(other);
   }
@@ -693,6 +693,9 @@ class _PositionArray extends PositionSeries {
   Coords get type => _type;
 
   @override
+  Coords get coordType => _type;
+
+  @override
   int get positionCount => _data.length;
 
   @override
@@ -860,6 +863,9 @@ class _PositionDataCoords extends PositionSeries {
 
   @override
   Coords get type => _type;
+
+  @override
+  Coords get coordType => _type;
 
   @override
   int get positionCount => _positionCount;

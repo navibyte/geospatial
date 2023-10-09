@@ -164,7 +164,7 @@ void _decodeGeometry(
           swapXY: swapXY,
           singlePrecision: singlePrecision,
         );
-        final coordType = chain.type;
+        final coordType = chain.coordType;
         // NOTE: validate line string (at least two points)
         builder.lineString(
           chain,

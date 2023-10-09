@@ -375,8 +375,7 @@ abstract class Box extends ValuePositionable {
   ///
   /// See also [valuesByType] that returns coordinate values according to a
   /// given coordinate type.
-  // ignore: unnecessary_this
-  Iterable<double> get values => Box.getValues(this, type: this.type);
+  Iterable<double> get values => Box.getValues(this, type: coordType);
 
   /// Coordinate values of this bounding box as an iterable of 4, 6 or 8 items
   /// according to the given [type].
@@ -536,7 +535,7 @@ abstract class Box extends ValuePositionable {
 
   @override
   String toString() {
-    switch (type) {
+    switch (coordType) {
       case Coords.xy:
         return '$minX,$minY,$maxX,$maxY';
       case Coords.xyz:
@@ -577,7 +576,7 @@ abstract class Box extends ValuePositionable {
     Coords? type,
   }) {
     if (box is Box) {
-      if (box is R && (type == null || type == box.type)) {
+      if (box is R && (type == null || type == box.coordType)) {
         // box is of R and with compatiable coord type
         return box;
       } else {

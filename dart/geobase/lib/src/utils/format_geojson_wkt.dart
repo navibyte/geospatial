@@ -147,7 +147,7 @@ abstract class _BaseTextWriter<T extends Object>
     if (_geometryBeforeCoordinates(
       geomType: Geom.point,
       name: name,
-      coordType: position.type,
+      coordType: position.coordType,
     )) {
       _coordPosition(position);
       _geometryAfterCoordinates();
@@ -163,7 +163,7 @@ abstract class _BaseTextWriter<T extends Object>
     if (_geometryBeforeCoordinates(
       geomType: Geom.lineString,
       name: name,
-      coordType: chain.type,
+      coordType: chain.coordType,
       bounds: bounds,
     )) {
       _coordPointsFromSeries(chain);
@@ -309,7 +309,7 @@ abstract class _BaseTextWriter<T extends Object>
 
   @override
   void position(Position coordinates) {
-    final type = coordinates.type;
+    final type = coordinates.coordType;
     _startCoordType(type);
 
     _coordPosition(coordinates);
@@ -399,7 +399,7 @@ class DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
 
   @override
   void bounds(Box bounds) {
-    final type = bounds.type;
+    final type = bounds.coordType;
     _startCoordType(type);
 
     if (_markItem()) {
@@ -853,7 +853,7 @@ class WktLikeTextWriter<T extends Object> extends _BaseTextWriter<T> {
 
   @override
   void bounds(Box bounds) {
-    final type = bounds.type;
+    final type = bounds.coordType;
     _startCoordType(type);
 
     if (_markItem()) {
@@ -1049,7 +1049,7 @@ class WktTextWriter<T extends Object> extends WktLikeTextWriter<T> {
     final midM = hasM ? 0.5 * bounds.minM! + 0.5 * bounds.maxM! : null;
 
     // coordinate type
-    final coordType = bounds.type;
+    final coordType = bounds.coordType;
 
     // print polygon geometry
     if (_markItem()) {

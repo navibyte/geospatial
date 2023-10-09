@@ -237,7 +237,7 @@ class Projected extends Position {
       );
 
   @override
-  Projected copyByType(Coords type) => this.type == type
+  Projected copyByType(Coords type) => coordType == type
       ? this
       : Projected.create(
           x: x,
@@ -266,7 +266,7 @@ class Projected extends Position {
 
   @override
   String toString() {
-    switch (type) {
+    switch (coordType) {
       case Coords.xy:
         return '$_x,$_y';
       case Coords.xyz:

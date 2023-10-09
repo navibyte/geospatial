@@ -8,7 +8,8 @@ import '/src/codes/coords.dart';
 
 import 'positionable.dart';
 
-/// A positionable object that has (geospatial) coordinate values available.
+/// A positionable object that has (geospatial) coordinate values directly
+/// available.
 ///
 /// This interface is extended at least by `Position` (representing a single
 /// position), `PositionSeries` (representing a series of positions) and `Box`
@@ -46,7 +47,11 @@ abstract class ValuePositionable extends Positionable {
   bool get isMeasured;
 
   /// The coordinate type.
-  Coords get type => Coords.select(
+  @Deprecated('Use coordType instead.')
+  Coords get type => coordType;
+
+  @override
+  Coords get coordType => Coords.select(
         is3D: is3D,
         isMeasured: isMeasured,
       );

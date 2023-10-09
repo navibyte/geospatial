@@ -39,7 +39,7 @@ class _WkbGeometryEncoder
     String? name,
   }) {
     // type for coordinates
-    final coordType = position.type;
+    final coordType = position.coordType;
 
     // write a point geometry
     _writeGeometryHeader(Geom.point, coordType);
@@ -53,7 +53,7 @@ class _WkbGeometryEncoder
     Box? bounds,
   }) {
     // type for coordinates
-    final coordType = chain.type;
+    final coordType = chain.coordType;
 
     // write a line string geometry
     _writeGeometryHeader(Geom.lineString, coordType);
@@ -293,7 +293,7 @@ class _GeometryCollector with GeometryContent {
     String? name,
   }) {
     if (!hasZ || !hasM) {
-      final type = position.type;
+      final type = position.coordType;
       hasZ |= type.is3D;
       hasM |= type.isMeasured;
     }
@@ -307,7 +307,7 @@ class _GeometryCollector with GeometryContent {
     Box? bounds,
   }) {
     if (!hasZ || !hasM) {
-      final type = chain.type;
+      final type = chain.coordType;
       hasZ |= type.is3D;
       hasM |= type.isMeasured;
     }

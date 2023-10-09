@@ -399,7 +399,7 @@ class LineString extends SimpleGeometry {
   Geom get geomType => Geom.lineString;
 
   @override
-  Coords get coordType => _chain.type;
+  Coords get coordType => _chain.coordType;
 
   @override
   bool get isEmptyByGeometry => _chain.isEmpty;

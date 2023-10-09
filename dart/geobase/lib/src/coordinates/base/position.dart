@@ -374,8 +374,7 @@ abstract class Position extends ValuePositionable {
   ///
   /// See also [valuesByType] that returns coordinate values according to a
   /// given coordinate type.
-  // ignore: unnecessary_this
-  Iterable<double> get values => Position.getValues(this, type: this.type);
+  Iterable<double> get values => Position.getValues(this, type: coordType);
 
   /// Coordinate values of this position as an iterable of 2, 3 or 4 items
   /// according to the given [type].
@@ -528,7 +527,7 @@ abstract class Position extends ValuePositionable {
     Coords? type,
   }) {
     if (position is Position) {
-      if (position is R && (type == null || type == position.type)) {
+      if (position is R && (type == null || type == position.coordType)) {
         // position is of R and with compatiable coord type
         return position;
       } else {

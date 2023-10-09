@@ -233,7 +233,7 @@ class Point implements SimpleGeometry {
   Geom get geomType => Geom.point;
 
   @override
-  Coords get coordType => position.type;
+  Coords get coordType => position.coordType;
 
   @override
   bool get isEmptyByGeometry => position.x.isNaN && position.y.isNaN;

@@ -273,7 +273,7 @@ class Geographic extends Position {
       );
 
   @override
-  Geographic copyByType(Coords type) => this.type == type
+  Geographic copyByType(Coords type) => coordType == type
       ? this
       : Geographic.create(
           x: x,
@@ -302,7 +302,7 @@ class Geographic extends Position {
 
   @override
   String toString() {
-    switch (type) {
+    switch (coordType) {
       case Coords.xy:
         return '$_lon,$_lat';
       case Coords.xyz:
