@@ -89,5 +89,6 @@ abstract class Bounded extends Positionable {
   /// If [bounds] object is available on this, it's also recalculated after
   /// projecting position data. If [bounds] is null, then it's null after
   /// projecting too.
+  @override
   Bounded project(Projection projection);
 }

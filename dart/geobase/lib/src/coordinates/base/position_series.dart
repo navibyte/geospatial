@@ -463,6 +463,7 @@ abstract class PositionSeries implements ValuePositionable {
   }
 
   /// Projects this series of positions to another series using [projection].
+  @override
   PositionSeries project(Projection projection);
 
   /// Returns a position series with all points transformed using [transform].

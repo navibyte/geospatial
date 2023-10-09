@@ -450,6 +450,7 @@ abstract class Box extends ValuePositionable {
   /// Subtypes may specify a more accurate bounding box type for the returned
   /// object (for example a *geographic* bounding box would return a *projected*
   /// box when forward-projecting, and other way when inverse-projecting).
+  @override
   Box project(Projection projection);
 
   /// True if this and the [other] box equals.

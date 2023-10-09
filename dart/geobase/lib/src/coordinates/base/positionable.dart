@@ -6,6 +6,7 @@
 
 import '/src/codes/coords.dart';
 import '/src/constants/epsilon.dart';
+import '/src/coordinates/projection/projection.dart';
 
 /// A positionable object contains data structures for (geospatial) position
 /// data, directly or within child objects.
@@ -31,6 +32,10 @@ abstract class Positionable {
   /// `Coords.xym`, then `Coords.xy` is returned. When all items are
   /// `Coords.xyz`, then `Coords.xyz` is returned.
   Coords get coordType;
+
+  /// Returns an object of the same subtype as this with all position data
+  /// projected using [projection] and any other properties left intact.
+  Positionable project(Projection projection);
 
   /// True if this and [other] contain exactly same coordinate values (or both
   /// are empty) in the same order and with the same coordinate type.

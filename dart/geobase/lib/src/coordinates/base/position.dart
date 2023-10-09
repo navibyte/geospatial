@@ -416,6 +416,7 @@ abstract class Position extends ValuePositionable {
   /// Subtypes may specify a more accurate position type for the returned object
   /// (for example a *geographic* position would return a *projected* position
   /// when forward-projecting, and other way when inverse-projecting).
+  @override
   Position project(Projection projection);
 
   /// Returns a position transformed from this position using [transform].
