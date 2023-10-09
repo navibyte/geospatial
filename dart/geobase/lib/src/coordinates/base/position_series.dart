@@ -17,7 +17,7 @@ import '/src/utils/tolerance.dart';
 
 import 'position.dart';
 import 'position_extensions.dart';
-import 'positionable.dart';
+import 'value_positionable.dart';
 
 /// A fixed-length (and random-access) view to a series of positions.
 ///
@@ -41,7 +41,7 @@ import 'positionable.dart';
 /// `hashCode` is not testing coordinate values for contained positions. Methods
 /// [equalsCoords], [equals2D] and [equals3D] should be used to test coordinate
 /// values between two [PositionSeries] instances.
-abstract class PositionSeries implements Positionable {
+abstract class PositionSeries implements ValuePositionable {
   /// Default `const` constructor to allow extending this abstract class.
   const PositionSeries();
 

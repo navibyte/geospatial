@@ -21,7 +21,7 @@ import '/src/utils/tolerance.dart';
 
 import 'aligned.dart';
 import 'position.dart';
-import 'positionable.dart';
+import 'value_positionable.dart';
 
 /// Creates a new bounding box from [minX], [minY], [maxX] and [maxY] values.
 ///
@@ -84,7 +84,7 @@ typedef CreateBox<T extends Box> = T Function({
 /// @override
 /// int get hashCode => Box.hash(this);
 /// ```
-abstract class Box extends Positionable {
+abstract class Box extends ValuePositionable {
   /// Default `const` constructor to allow extending this abstract class.
   const Box();
 

@@ -19,7 +19,7 @@ import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 import '/src/utils/tolerance.dart';
 
-import 'positionable.dart';
+import 'value_positionable.dart';
 
 /// Creates a new position of [T] from [x] and [y], and optional [z] and [m].
 ///
@@ -95,7 +95,7 @@ typedef TransformPosition = T Function<T extends Position>(T source);
 /// @override
 /// int get hashCode => Position.hash(this);
 /// ```
-abstract class Position extends Positionable {
+abstract class Position extends ValuePositionable {
   /// Default `const` constructor to allow extending this abstract class.
   const Position();
 
