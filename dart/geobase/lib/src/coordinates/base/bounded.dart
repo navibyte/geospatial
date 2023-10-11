@@ -9,7 +9,7 @@ import '/src/coordinates/projection/projection.dart';
 
 import 'positionable.dart';
 
-/// A positionable object with position data (direclty or within child objects)
+/// A positionable object with position data (directly or within child objects)
 /// and methods to resolve bounding boxes.
 ///
 /// For example classes representing a series of positions, geometries or
