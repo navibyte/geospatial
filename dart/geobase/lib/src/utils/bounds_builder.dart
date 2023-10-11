@@ -41,7 +41,7 @@ class BoundsBuilder {
   }) {
     if (item == null &&
         (collection == null || collection.isEmpty) &&
-        (series == null || series.isEmpty) &&
+        (series == null || series.isEmptyByGeometry) &&
         (seriesArray == null || seriesArray.isEmpty) &&
         (positions == null || positions.isEmpty)) return null;
 

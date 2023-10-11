@@ -402,7 +402,7 @@ class LineString extends SimpleGeometry {
   Coords get coordType => _chain.coordType;
 
   @override
-  bool get isEmptyByGeometry => _chain.isEmpty;
+  bool get isEmptyByGeometry => _chain.isEmptyByGeometry;
 
   /// The chain of positions in this line string geometry.
   PositionSeries get chain => _chain;

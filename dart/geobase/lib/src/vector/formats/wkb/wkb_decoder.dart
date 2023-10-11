@@ -122,7 +122,7 @@ class _WkbGeometryBufferDecoder {
 
   void _buildLineString(Coords coordType, Endian endian) {
     final chain = _readPositionSeries(coordType, endian);
-    if (chain.isEmpty) {
+    if (chain.isEmptyByGeometry) {
       builder.emptyGeometry(Geom.lineString);
     } else {
       builder.lineString(chain);

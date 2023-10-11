@@ -299,10 +299,7 @@ abstract class PositionSeries implements ValuePositionable {
   int get positionCount;
 
   /// Returns true if this series has no positions.
-  bool get isEmpty => positionCount == 0;
-
-  /// Returns true if this series has at least one position.
-  bool get isNotEmpty => positionCount > 0;
+  bool get isEmptyByGeometry => positionCount == 0;
 
   /// All positions in this series as an iterable.
   ///
@@ -518,7 +515,7 @@ abstract class PositionSeries implements ValuePositionable {
   /// True if this series of positions equals with [other] by testing 2D
   /// coordinates of all positions (that must be in same order in both series).
   ///
-  /// Returns false if this or [other] is empty ([isEmpty] is true).
+  /// Returns false if this or [other] is empty ([isEmptyByGeometry] is true).
   ///
   /// Differences on 2D coordinate values (ie. x and y, or lon and lat) between
   /// this and [other] must be within [toleranceHoriz].
@@ -530,7 +527,7 @@ abstract class PositionSeries implements ValuePositionable {
     double toleranceHoriz = defaultEpsilon,
   }) {
     assertTolerance(toleranceHoriz);
-    if (isEmpty || other.isEmpty) return false;
+    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
     if (identical(this, other)) return true;
     if (positionCount != other.positionCount) return false;
 
@@ -555,7 +552,7 @@ abstract class PositionSeries implements ValuePositionable {
   /// True if this series of positions equals with [other] by testing 3D
   /// coordinates of all positions (that must be in same order in both views).
   ///
-  /// Returns false if this or [other] is empty ([isEmpty] is true).
+  /// Returns false if this or [other] is empty ([isEmptyByGeometry] is true).
   ///
   /// Returns false if this or [other] do not contain 3D coordinates.
   ///
@@ -575,7 +572,7 @@ abstract class PositionSeries implements ValuePositionable {
     assertTolerance(toleranceHoriz);
     assertTolerance(toleranceVert);
     if (!is3D || !other.is3D) return false;
-    if (isEmpty || other.isEmpty) return false;
+    if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
     if (identical(this, other)) return true;
     if (positionCount != other.positionCount) return false;
 
