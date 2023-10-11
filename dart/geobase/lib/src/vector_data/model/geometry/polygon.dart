@@ -731,17 +731,7 @@ class Polygon extends SimpleGeometry {
     final projected =
         rings.map((ring) => ring.project(projection)).toList(growable: false);
 
-    return Polygon(
-      projected,
-
-      // bounds calculated from projected geometry if there was bounds before
-      bounds: bounds != null
-          ? BoundsBuilder.calculateBounds(
-              seriesArray: projected,
-              type: coordType,
-            )
-          : null,
-    );
+    return Polygon(projected);
   }
 
   @override

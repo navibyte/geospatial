@@ -341,8 +341,8 @@ class Feature<T extends Geometry> extends FeatureObject {
   /// Copy this feature with optional [id], [geometry], [properties] and
   /// [custom] properties.
   ///
-  /// If [bounds] object is available on this, it's recalculated for a new
-  /// feature when [geometry] is given.
+  /// When a new [geometry] is given, then the returned collection has bounds
+  /// set to null.
   Feature<T> copyWith({
     Object? id,
     T? geometry,
@@ -355,10 +355,8 @@ class Feature<T extends Geometry> extends FeatureObject {
         properties: properties ?? this.properties,
         custom: custom ?? this.custom,
 
-        // bounds calculated from new geometry if there was bounds before
-        bounds: bounds != null && geometry != null
-            ? _buildBoundsFrom(geometry)
-            : bounds,
+        // bounds set to null if new geometry set
+        bounds: geometry != null ? null : bounds,
       );
 
   @override
@@ -422,11 +420,6 @@ class Feature<T extends Geometry> extends FeatureObject {
       geometry: projectedGeom,
       properties: properties,
       custom: custom,
-
-      // bounds calculated from projected geometry if there was bounds before
-      bounds: bounds != null && projectedGeom != null
-          ? _buildBoundsFrom(projectedGeom)
-          : null,
     );
   }
 

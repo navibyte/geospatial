@@ -109,7 +109,9 @@ void main() {
         expect(
           sourceLineString
               .populated()
+              .unpopulated()
               .project(forward)
+              .populated()
               .bounds
               ?.toText(decimals: 2),
           wgs84ToWebMercatorDataBounds[dim - 2][1],

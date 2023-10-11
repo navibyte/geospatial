@@ -365,17 +365,7 @@ class MultiPoint extends SimpleGeometry {
     final projected =
         positions.map((pos) => pos.project(projection)).toList(growable: false);
 
-    return MultiPoint(
-      projected,
-
-      // bounds calculated from projected geometry if there was bounds before
-      bounds: bounds != null
-          ? BoundsBuilder.calculateBounds(
-              positions: projected,
-              type: coordType,
-            )
-          : null,
-    );
+    return MultiPoint(projected);
   }
 
   @override

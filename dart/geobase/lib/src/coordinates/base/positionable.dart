@@ -34,7 +34,7 @@ abstract class Positionable {
   Coords get coordType;
 
   /// Returns an object of the same subtype as this with all position data
-  /// projected using [projection] and any other properties left intact.
+  /// projected using [projection] and non-positional properties left intact.
   Positionable project(Projection projection);
 
   /// True if this and [other] contain exactly same coordinate values (or both

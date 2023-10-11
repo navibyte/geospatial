@@ -203,17 +203,13 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   /// Returns a new geometry collection with all geometries mapped using
   /// [toGeometry].
   ///
-  /// If [bounds] object is available on this, it's recalculated after
-  /// mapping geometries. If [bounds] is null, then it's null after mapping too.
+  /// If [bounds] object is available on this, then it's not recalculated and
+  /// the returned object has it set null.
   GeometryCollection<E> map(E Function(E geometry) toGeometry) {
     final mapped = geometries.map<E>(toGeometry).toList(growable: false);
     final type = resolveCoordTypeFrom(collection: mapped);
 
-    return GeometryCollection<E>._(
-      mapped,
-      type,
-      bounds: bounds != null ? _buildBoundsFrom(mapped, type) : null,
-    );
+    return GeometryCollection<E>._(mapped, type);
   }
 
   @override
@@ -281,13 +277,7 @@ class GeometryCollection<E extends Geometry> extends Geometry {
         .map<E>((geometry) => geometry.project(projection) as E)
         .toList(growable: false);
 
-    return GeometryCollection<E>._(
-      projected,
-      coordType,
-
-      // bounds calculated from projected collection if there was bounds before
-      bounds: bounds != null ? _buildBoundsFrom(projected, coordType) : null,
-    );
+    return GeometryCollection<E>._(projected, coordType);
   }
 
   @override

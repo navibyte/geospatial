@@ -405,17 +405,7 @@ class MultiLineString extends SimpleGeometry {
         .map((chain) => chain.project(projection))
         .toList(growable: false);
 
-    return MultiLineString(
-      projected,
-
-      // bounds calculated from projected geometry if there was bounds before
-      bounds: bounds != null
-          ? BoundsBuilder.calculateBounds(
-              seriesArray: projected,
-              type: coordType,
-            )
-          : null,
-    );
+    return MultiLineString(projected);
   }
 
   @override

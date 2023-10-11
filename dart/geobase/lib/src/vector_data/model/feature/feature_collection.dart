@@ -295,8 +295,8 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   /// Copy this feature collection with optional [features] and [custom]
   /// properties.
   ///
-  /// If [bounds] object is available on this, it's recalculated for a new
-  /// feature collection when [features] is given.
+  /// When a new list of [features] is given, then the returned collection has
+  /// bounds set to null.
   FeatureCollection<E> copyWith({
     List<E>? features,
     Map<String, dynamic>? custom,
@@ -307,9 +307,6 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
         features,
         type,
         custom: custom ?? this.custom,
-
-        // bounds calculated from new features if there was bounds before
-        bounds: bounds != null ? _buildBoundsFrom(features, type) : null,
       );
     } else if (custom != null) {
       return FeatureCollection<E>._(
@@ -330,18 +327,13 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   /// Any custom data or properties (other than geometries) are not mapped
   /// just copied (by references).
   ///
-  /// If [bounds] object is available on this, it's recalculated after
-  /// mapping features. If [bounds] is null, then it's null after mapping too.
+  /// If [bounds] object is available on this, then it's not recalculated and
+  /// the returned object has it set null.
   FeatureCollection<E> map(E Function(E feature) toFeature) {
     final mapped = features.map<E>(toFeature).toList(growable: false);
     final type = resolveCoordTypeFrom(collection: mapped);
 
-    return FeatureCollection<E>._(
-      mapped,
-      type,
-      custom: custom,
-      bounds: bounds != null ? _buildBoundsFrom(mapped, type) : null,
-    );
+    return FeatureCollection<E>._(mapped, type, custom: custom);
   }
 
   @override
@@ -414,12 +406,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
         .map<E>((feature) => feature.project(projection) as E)
         .toList(growable: false);
 
-    return FeatureCollection<E>._(
-      projected,
-      coordType,
-      custom: custom,
-      bounds: bounds != null ? _buildBoundsFrom(projected, coordType) : null,
-    );
+    return FeatureCollection<E>._(projected, coordType, custom: custom);
   }
 
   @override

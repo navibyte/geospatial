@@ -84,11 +84,20 @@ abstract class Bounded extends Positionable {
   });
 
   /// Returns an object of the same subtype as this with all position data
-  /// projected using [projection] and any other properties left intact.
+  /// projected using [projection] and non-positional properties left intact.
   ///
-  /// If [bounds] object is available on this, it's also recalculated after
-  /// projecting position data. If [bounds] is null, then it's null after
-  /// projecting too.
+  /// If [bounds] object is available on this, then it's not projected and the
+  /// returned object has it set null.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // just project, the returned object has not bounds populated
+  /// someBoundedObject.project(someProjection);
+  ///
+  /// // project and populate, the returned object has bounds populated
+  /// someBoundedObject.project(someProjection).populated(onBounds: true);
+  /// ```
   @override
   Bounded project(Projection projection);
 }

@@ -409,6 +409,9 @@ class LineString extends SimpleGeometry {
 
   /// Returns a line string containing a chain with all positions in reversed
   /// order compared to the chain of this.
+  ///
+  /// If [bounds] object is available on this, then the same bounds is used also
+  /// by the returned object.
   LineString reversed() => LineString(chain.reversed(), bounds: bounds);
 
   @override
@@ -455,17 +458,7 @@ class LineString extends SimpleGeometry {
   LineString project(Projection projection) {
     final projected = chain.project(projection);
 
-    return LineString(
-      projected,
-
-      // bounds calculated from projected chain if there was bounds before
-      bounds: bounds != null
-          ? BoundsBuilder.calculateBounds(
-              series: projected,
-              type: coordType,
-            )
-          : null,
-    );
+    return LineString(projected);
   }
 
   @override

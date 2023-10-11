@@ -550,17 +550,7 @@ class MultiPolygon extends SimpleGeometry {
         )
         .toList(growable: false);
 
-    return MultiPolygon(
-      projected,
-
-      // bounds calculated from projected geometry if there was bounds before
-      bounds: bounds != null
-          ? BoundsBuilder.calculateBounds(
-              seriesArray: _allRings(projected),
-              type: coordType,
-            )
-          : null,
-    );
+    return MultiPolygon(projected);
   }
 
   @override
