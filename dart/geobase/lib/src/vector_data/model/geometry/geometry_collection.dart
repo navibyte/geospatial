@@ -10,6 +10,8 @@ import '/src/codes/coords.dart';
 import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/box.dart';
+import '/src/coordinates/base/position.dart';
+import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounded_utils.dart';
@@ -213,34 +215,52 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   }
 
   @override
-  Box? calculateBounds() => BoundsBuilder.calculateBounds(
+  Box? calculateBounds({PositionScheme scheme = Position.scheme}) =>
+      BoundsBuilder.calculateBounds(
         collection: _geometries,
         type: coordType,
         recalculateChilds: true,
+        scheme: scheme,
       );
 
   @override
   GeometryCollection populated({
     int traverse = 0,
     bool onBounds = true,
+    PositionScheme scheme = Position.scheme,
   }) {
     if (onBounds) {
       // populate geometries when traversing is asked
       final coll = traverse > 0 && geometries.isNotEmpty
           ? geometries
               .map<E>(
-                (f) => f.populated(traverse: traverse - 1, onBounds: onBounds)
-                    as E,
+                (f) => f.populated(
+                  traverse: traverse - 1,
+                  onBounds: onBounds,
+                  scheme: scheme,
+                ) as E,
               )
               .toList(growable: false)
           : geometries;
 
       // create a new collection if geometries changed or bounds was unpopulated
-      if (coll != geometries || (bounds == null && coll.isNotEmpty)) {
+      // or of other scheme
+      final currBounds = bounds;
+      final empty = coll.isEmpty;
+      if (coll != geometries ||
+          (currBounds == null && !empty) ||
+          (currBounds != null && !currBounds.conformsScheme(scheme))) {
         return GeometryCollection<E>._(
           coll,
           coordType,
-          bounds: _buildBoundsFrom(coll, coordType),
+          bounds: empty
+              ? null
+              : BoundsBuilder.calculateBounds(
+                  collection: coll,
+                  type: coordType,
+                  recalculateChilds: false,
+                  scheme: scheme,
+                ),
         );
       }
     }
@@ -356,14 +376,6 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   @override
   int get hashCode => Object.hash(bounds, geometries);
 }
-
-/// Returns bounds calculated from a geometry collection.
-Box? _buildBoundsFrom(Iterable<Geometry> geometries, Coords type) =>
-    BoundsBuilder.calculateBounds(
-      collection: geometries,
-      type: type,
-      recalculateChilds: false,
-    );
 
 bool _testGeometryCollections<E extends Geometry>(
   GeometryCollection<E> collection1,

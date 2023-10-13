@@ -103,7 +103,7 @@ abstract class Position extends ValuePositionable {
 
   /// A position scheme that creates base [Position] and [Box] instances for
   /// positions and bounding boxes.
-  /// 
+  ///
   /// These instances can be used to store any positions and boxes (projected,
   /// geographic or some other).
   static const scheme =
@@ -309,6 +309,9 @@ abstract class Position extends ValuePositionable {
         swapXY: swapXY,
         singlePrecision: singlePrecision,
       );
+
+  /// Returns true if this position instance conforms to the given [scheme].
+  bool conformsScheme(PositionScheme scheme) => scheme == Position.scheme;
 
   /// The x coordinate value.
   ///

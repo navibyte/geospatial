@@ -56,7 +56,7 @@ class Geographic extends Position {
 
   /// A position scheme that creates [Geographic] and [GeoBox] instances for
   /// positions and bounding boxes.
-  /// 
+  ///
   /// These instances can be used to store geographic positions and boxes.
   static const scheme =
       PositionScheme(position: Geographic.create, box: GeoBox.create);
@@ -220,6 +220,9 @@ class Geographic extends Position {
         type: type,
         swapXY: swapXY,
       );
+
+  @override
+  bool conformsScheme(PositionScheme scheme) => scheme == Geographic.scheme;
 
   /// The longitude coordinate.
   double get lon => _lon;

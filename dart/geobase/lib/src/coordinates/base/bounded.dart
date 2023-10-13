@@ -4,9 +4,11 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/coordinates/base/box.dart';
 import '/src/coordinates/projection/projection.dart';
 
+import 'box.dart';
+import 'position.dart';
+import 'position_scheme.dart';
 import 'positionable.dart';
 
 /// A positionable object with position data (directly or within child objects)
@@ -41,9 +43,15 @@ abstract class Bounded extends Positionable {
   /// This method calculates a value regardless whether [bounds] is populated or
   /// not.
   ///
+  /// Use [scheme] to set the position scheme:
+  /// * `Position.scheme` for generic position data (geographic, projected or
+  ///    any other), this is also the default
+  /// * `Projected.scheme` for projected position data
+  /// * `Geographic.scheme` for geographic position data
+  ///
   /// May return null if bounds cannot be calculated (for example in the case of
   /// an empty geometry).
-  Box? calculateBounds();
+  Box? calculateBounds({PositionScheme scheme = Position.scheme});
 
   /// Returns an object of the same subtype as this with certain data members
   /// populated.
@@ -58,10 +66,17 @@ abstract class Bounded extends Positionable {
   ///   populated for child levels indicated by [traverse] (0: no childs,
   ///   1: only direct childs, 2: direct childs and childs of them, ..).
   ///
+  /// Use [scheme] to set the position scheme:
+  /// * `Position.scheme` for generic position data (geographic, projected or
+  ///    any other), this is also the default
+  /// * `Projected.scheme` for projected position data
+  /// * `Geographic.scheme` for geographic position data
+  ///
   /// See also [unpopulated].
   Bounded populated({
     int traverse = 0,
     bool onBounds = true,
+    PositionScheme scheme = Position.scheme,
   });
 
   /// Returns an object of the same subtype as this with certain data members

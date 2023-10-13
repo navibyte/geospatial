@@ -57,7 +57,7 @@ class Projected extends Position {
 
   /// A position scheme that creates [Projected] and [ProjBox] instances for
   /// positions and bounding boxes.
-  /// 
+  ///
   /// These instances can be used to store projected positions and boxes.
   static const scheme =
       PositionScheme(position: Projected.create, box: ProjBox.create);
@@ -209,6 +209,9 @@ class Projected extends Position {
         type: type,
         swapXY: swapXY,
       );
+
+  @override
+  bool conformsScheme(PositionScheme scheme) => scheme == Projected.scheme;
 
   @override
   double get x => _x;

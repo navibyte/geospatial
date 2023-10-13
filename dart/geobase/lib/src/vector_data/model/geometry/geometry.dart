@@ -11,6 +11,8 @@ import 'package:meta/meta.dart';
 import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/bounded.dart';
+import '/src/coordinates/base/position.dart';
+import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/vector/content/geometry_content.dart';
@@ -53,6 +55,7 @@ abstract class Geometry extends Bounded {
   Geometry populated({
     int traverse = 0,
     bool onBounds = true,
+    PositionScheme scheme = Position.scheme,
   });
 
   @override

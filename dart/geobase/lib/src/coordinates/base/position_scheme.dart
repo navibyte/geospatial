@@ -15,14 +15,21 @@ import 'position.dart';
 /// There are following known static constant instances available:
 /// * `Position.scheme` to create positions and boxes for any position data
 ///   (geographic, projected or any other)
-/// * `Geographic.scheme` to create geographic positions and boxes
 /// * `Projected.scheme` to create projected positions and boxes
+/// * `Geographic.scheme` to create geographic positions and boxes
 @immutable
 class PositionScheme {
   final CreatePosition _position;
   final CreateBox _box;
 
   /// A position scheme with [position] and bounding [box] factories.
+  ///
+  /// Normally you should not need to create an instance of [PositionScheme] but
+  /// rather use one of static constant instances available:
+  /// * `Position.scheme` to create positions and boxes for any position data
+  ///   (geographic, projected or any other)
+  /// * `Projected.scheme` to create projected positions and boxes
+  /// * `Geographic.scheme` to create geographic positions and boxes
   const PositionScheme({
     required CreatePosition position,
     required CreateBox box,

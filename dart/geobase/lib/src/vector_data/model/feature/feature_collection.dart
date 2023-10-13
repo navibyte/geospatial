@@ -7,6 +7,8 @@
 import '/src/codes/coords.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/box.dart';
+import '/src/coordinates/base/position.dart';
+import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounded_utils.dart';
@@ -337,34 +339,52 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   }
 
   @override
-  Box? calculateBounds() => BoundsBuilder.calculateBounds(
+  Box? calculateBounds({PositionScheme scheme = Position.scheme}) =>
+      BoundsBuilder.calculateBounds(
         collection: features,
         type: coordType,
         recalculateChilds: true,
+        scheme: scheme,
       );
 
   @override
   FeatureCollection populated({
     int traverse = 0,
     bool onBounds = true,
+    PositionScheme scheme = Position.scheme,
   }) {
     if (onBounds) {
       // populate features when traversing is asked
       final coll = traverse > 0 && features.isNotEmpty
           ? features
               .map<E>(
-                (f) => f.populated(traverse: traverse - 1, onBounds: onBounds)
-                    as E,
+                (f) => f.populated(
+                  traverse: traverse - 1,
+                  onBounds: onBounds,
+                  scheme: scheme,
+                ) as E,
               )
               .toList(growable: false)
           : features;
 
       // create a new collection if features changed or bounds was unpopulated
-      if (coll != features || (bounds == null && coll.isNotEmpty)) {
+      // or of other scheme
+      final currBounds = bounds;
+      final empty = coll.isEmpty;
+      if (coll != features ||
+          (currBounds == null && !empty) ||
+          (currBounds != null && !currBounds.conformsScheme(scheme))) {
         return FeatureCollection<E>._(
           coll,
           coordType,
-          bounds: _buildBoundsFrom(coll, coordType),
+          bounds: empty
+              ? null
+              : BoundsBuilder.calculateBounds(
+                  collection: coll,
+                  type: coordType,
+                  recalculateChilds: false,
+                  scheme: scheme,
+                ),
           custom: custom,
         );
       }
@@ -486,14 +506,6 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   @override
   int get hashCode => Object.hash(bounds, features, custom);
 }
-
-/// Returns bounds calculated from a collection of features.
-Box? _buildBoundsFrom(Iterable<Feature> features, Coords type) =>
-    BoundsBuilder.calculateBounds(
-      collection: features,
-      type: type,
-      recalculateChilds: false,
-    );
 
 bool _testFeatureCollections<E extends Feature>(
   FeatureCollection<E> collection1,

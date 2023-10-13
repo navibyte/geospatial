@@ -7,6 +7,8 @@
 import '/src/codes/coords.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/box.dart';
+import '/src/coordinates/base/position.dart';
+import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounded_utils.dart';
@@ -360,26 +362,43 @@ class Feature<T extends Geometry> extends FeatureObject {
       );
 
   @override
-  Box? calculateBounds() => geometry?.calculateBounds();
+  Box? calculateBounds({PositionScheme scheme = Position.scheme}) =>
+      geometry?.calculateBounds(scheme: scheme);
 
   @override
   Feature populated({
     int traverse = 0,
     bool onBounds = true,
+    PositionScheme scheme = Position.scheme,
   }) {
     if (onBounds) {
       // populate a geometry when traversing is asked
       final geom = traverse > 0
-          ? geometry?.populated(traverse: traverse - 1, onBounds: onBounds)
+          ? geometry?.populated(
+              traverse: traverse - 1,
+              onBounds: onBounds,
+              scheme: scheme,
+            )
           : geometry;
 
       // create a new feature if geometry changed or bounds was unpopulated
-      if (geom != geometry || (bounds == null && geom != null)) {
+      // or of other scheme
+      final currBounds = bounds;
+      if (geom != geometry ||
+          (currBounds == null && geom != null) ||
+          (currBounds != null && !currBounds.conformsScheme(scheme))) {
         return Feature(
           id: id,
           geometry: geom,
           properties: properties,
-          bounds: geom != null ? _buildBoundsFrom(geom) : null,
+          bounds: geom != null
+              ? BoundsBuilder.calculateBounds(
+                  item: geom,
+                  type: geom.coordType,
+                  recalculateChilds: false,
+                  scheme: scheme,
+                )
+              : null,
           custom: custom,
         );
       }
@@ -505,13 +524,6 @@ class Feature<T extends Geometry> extends FeatureObject {
         custom,
       );
 }
-
-/// Returns bounds calculated from a collection of features.
-Box? _buildBoundsFrom(Geometry geometry) => BoundsBuilder.calculateBounds(
-      item: geometry,
-      type: geometry.coordType,
-      recalculateChilds: false,
-    );
 
 bool _testFeatures<T extends Geometry>(
   Feature<T> feature1,

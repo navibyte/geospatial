@@ -12,6 +12,7 @@ import '/src/codes/coords.dart';
 import '/src/coordinates/base/bounded.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
+import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/base/position_series.dart';
 
 /// A helper class to calculate bounds for a set of points and other bounds.
@@ -22,7 +23,7 @@ import '/src/coordinates/base/position_series.dart';
 /// Also a helper static methods [calculateBounds] helps calculating bounds for
 /// different kind of position collections.
 ///
-/// The result for calculations can be obtained from [boxCoords].
+/// The result for calculations can be obtained from [toBox].
 @internal
 class BoundsBuilder {
   /// Creates a new builder to calculate bounds for coordinate [type].
@@ -38,6 +39,7 @@ class BoundsBuilder {
     Iterable<Position>? positions,
     required Coords type,
     bool recalculateChilds = false,
+    PositionScheme scheme = Position.scheme,
   }) {
     if (item == null &&
         (collection == null || collection.isEmpty) &&
@@ -84,8 +86,7 @@ class BoundsBuilder {
       }
     }
 
-    final box = builder.boxCoords;
-    return box != null ? Box.view(box, type: type) : null;
+    return builder.toBox(scheme: scheme);
   }
 
   /// The coordinate type for geometries.
@@ -177,17 +178,46 @@ class BoundsBuilder {
     );
   }
 
-  /// The bounds for the current set of added points and bounds.
-  List<double>? get boxCoords {
+  /// The bounds for the current set of added points and bounds created by
+  /// [scheme].
+  Box? toBox({PositionScheme scheme = Position.scheme}) {
     if (!_minx.isNaN && !_miny.isNaN && !_maxx.isNaN && !_maxy.isNaN) {
       if (!type.is3D) {
         return !type.isMeasured
-            ? [_minx, _miny, _maxx, _maxy]
-            : [_minx, _miny, _minm, _maxx, _maxy, _maxm];
+            ? scheme.box.call(
+                minX: _minx,
+                minY: _miny,
+                maxX: _maxx,
+                maxY: _maxy,
+              )
+            : scheme.box.call(
+                minX: _minx,
+                minY: _miny,
+                minM: _minm,
+                maxX: _maxx,
+                maxY: _maxy,
+                maxM: _maxm,
+              );
       } else {
         return !type.isMeasured
-            ? [_minx, _miny, _minz, _maxx, _maxy, _maxz]
-            : [_minx, _miny, _minz, _minm, _maxx, _maxy, _maxz, _maxm];
+            ? scheme.box.call(
+                minX: _minx,
+                minY: _miny,
+                minZ: _minz,
+                maxX: _maxx,
+                maxY: _maxy,
+                maxZ: _maxz,
+              )
+            : scheme.box.call(
+                minX: _minx,
+                minY: _miny,
+                minZ: _minz,
+                minM: _minm,
+                maxX: _maxx,
+                maxY: _maxy,
+                maxM: _maxm,
+                maxZ: _maxz,
+              );
       }
     }
 

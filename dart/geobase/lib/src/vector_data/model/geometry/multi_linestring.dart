@@ -11,6 +11,7 @@ import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
+import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/base/position_series.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
@@ -360,25 +361,34 @@ class MultiLineString extends SimpleGeometry {
       chains.map<LineString>(LineString.new);
 
   @override
-  Box? calculateBounds() => BoundsBuilder.calculateBounds(
+  Box? calculateBounds({PositionScheme scheme = Position.scheme}) =>
+      BoundsBuilder.calculateBounds(
         seriesArray: _lineStrings,
         type: coordType,
+        scheme: scheme,
       );
 
   @override
   MultiLineString populated({
     int traverse = 0,
     bool onBounds = true,
+    PositionScheme scheme = Position.scheme,
   }) {
     if (onBounds) {
-      // create a new geometry if bounds was unpopulated and geometry not empty
-      if (bounds == null && !isEmptyByGeometry) {
+      // create a new geometry if bounds was unpopulated or of other scheme
+      final currBounds = bounds;
+      final empty = isEmptyByGeometry;
+      if ((currBounds == null && !empty) ||
+          (currBounds != null && !currBounds.conformsScheme(scheme))) {
         return MultiLineString(
           chains,
-          bounds: BoundsBuilder.calculateBounds(
-            seriesArray: chains,
-            type: coordType,
-          ),
+          bounds: empty
+              ? null
+              : BoundsBuilder.calculateBounds(
+                  seriesArray: chains,
+                  type: coordType,
+                  scheme: scheme,
+                ),
         );
       }
     }

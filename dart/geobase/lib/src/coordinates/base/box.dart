@@ -21,6 +21,7 @@ import '/src/utils/tolerance.dart';
 
 import 'aligned.dart';
 import 'position.dart';
+import 'position_scheme.dart';
 import 'value_positionable.dart';
 
 /// Creates a new bounding box from [minX], [minY], [maxX] and [maxY] values.
@@ -302,6 +303,9 @@ abstract class Box extends ValuePositionable {
         swapXY: swapXY,
         singlePrecision: singlePrecision,
       );
+
+  /// Returns true if this bounding box instance conforms to the given [scheme].
+  bool conformsScheme(PositionScheme scheme) => scheme == Position.scheme;
 
   /// The minimum x (or west) coordinate.
   ///

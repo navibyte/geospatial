@@ -11,6 +11,7 @@ import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
+import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/coord_positions.dart';
@@ -251,14 +252,13 @@ class Point implements SimpleGeometry {
   Position get position => _position;
 
   /// The bounding box for this point, min and max with the same point position.
-  ///
-  /// Uses [calculateBounds] to return value as bounds can be accessed directly.
   @override
   Box get bounds => calculateBounds();
 
   /// The bounding box for this point, min and max with the same point position.
   @override
-  Box calculateBounds() => Box.create(
+  Box calculateBounds({PositionScheme scheme = Position.scheme}) =>
+      scheme.box.call(
         minX: position.x,
         minY: position.y,
         minZ: position.optZ,
@@ -269,15 +269,16 @@ class Point implements SimpleGeometry {
         maxM: position.optM,
       );
 
-  /// Returns this [Point] object without any modifications.
   @override
   Point populated({
     int traverse = 0,
     bool onBounds = true,
+    PositionScheme scheme = Position.scheme,
   }) =>
-      this;
+      onBounds && scheme != Position.scheme
+          ? _BoundedPoint(position, bounds: calculateBounds(scheme: scheme))
+          : this;
 
-  /// Returns this [Point] object without any modifications.
   @override
   Point unpopulated({
     int traverse = 0,
@@ -361,4 +362,30 @@ class Point implements SimpleGeometry {
 
   @override
   int get hashCode => position.hashCode;
+}
+
+class _BoundedPoint extends Point {
+  final Box _bounds;
+
+  const _BoundedPoint(super.position, {required Box bounds}) : _bounds = bounds;
+
+  @override
+  Box get bounds => _bounds;
+
+  @override
+  Point populated({
+    int traverse = 0,
+    bool onBounds = true,
+    PositionScheme scheme = Position.scheme,
+  }) =>
+      onBounds && !bounds.conformsScheme(scheme)
+          ? _BoundedPoint(position, bounds: calculateBounds(scheme: scheme))
+          : this;
+
+  @override
+  Point unpopulated({
+    int traverse = 0,
+    bool onBounds = true,
+  }) =>
+      onBounds ? Point(position) : this;
 }

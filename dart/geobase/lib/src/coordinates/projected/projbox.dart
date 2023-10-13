@@ -9,6 +9,7 @@ import 'package:meta/meta.dart';
 import '/src/codes/coords.dart';
 import '/src/coordinates/base/aligned.dart';
 import '/src/coordinates/base/box.dart';
+import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/geographic/geobox.dart';
 import '/src/coordinates/projection/projection.dart';
 
@@ -283,6 +284,9 @@ class ProjBox extends Box {
         type: type,
         swapXY: swapXY,
       );
+
+  @override
+  bool conformsScheme(PositionScheme scheme) => scheme == Projected.scheme;
 
   @override
   double get minX => _minX;

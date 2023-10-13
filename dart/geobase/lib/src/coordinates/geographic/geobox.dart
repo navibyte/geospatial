@@ -12,6 +12,7 @@ import '/src/codes/coords.dart';
 import '/src/coordinates/base/aligned.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
+import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/projected/projbox.dart';
 import '/src/coordinates/projection/projection.dart';
 
@@ -325,6 +326,9 @@ class GeoBox extends Box {
         type: type,
         swapXY: swapXY,
       );
+
+  @override
+  bool conformsScheme(PositionScheme scheme) => scheme == Geographic.scheme;
 
   /// The west coordinate as geographic longitude.
   double get west => _west;
