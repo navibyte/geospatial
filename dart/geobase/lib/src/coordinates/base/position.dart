@@ -19,6 +19,8 @@ import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
 import '/src/utils/tolerance.dart';
 
+import 'box.dart';
+import 'position_scheme.dart';
 import 'value_positionable.dart';
 
 /// Creates a new position of [T] from [x] and [y], and optional [z] and [m].
@@ -98,6 +100,14 @@ typedef TransformPosition = T Function<T extends Position>(T source);
 abstract class Position extends ValuePositionable {
   /// Default `const` constructor to allow extending this abstract class.
   const Position();
+
+  /// A position scheme that creates base [Position] and [Box] instances for
+  /// positions and bounding boxes.
+  /// 
+  /// These instances can be used to store any positions and boxes (projected,
+  /// geographic or some other).
+  static const scheme =
+      PositionScheme(position: Position.create, box: Box.create);
 
   /// A position with coordinate values as a view backed by [source].
   ///

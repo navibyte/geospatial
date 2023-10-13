@@ -8,8 +8,11 @@ import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
 import '/src/coordinates/base/position.dart';
+import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/geographic/geographic.dart';
 import '/src/coordinates/projection/projection.dart';
+
+import 'projbox.dart';
 
 /// A projected position with [x], [y], and optional [z] and [m] coordinates.
 ///
@@ -51,6 +54,13 @@ class Projected extends Position {
   final double _y;
   final double? _z;
   final double? _m;
+
+  /// A position scheme that creates [Projected] and [ProjBox] instances for
+  /// positions and bounding boxes.
+  /// 
+  /// These instances can be used to store projected positions and boxes.
+  static const scheme =
+      PositionScheme(position: Projected.create, box: ProjBox.create);
 
   /// A projected position with [x], [y], and optional [z] and [m] coordinates.
   ///

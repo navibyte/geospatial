@@ -8,10 +8,12 @@ import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
 import '/src/coordinates/base/position.dart';
+import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/projected/projected.dart';
 import '/src/coordinates/projection/projection.dart';
 
 import 'dms.dart';
+import 'geobox.dart';
 
 /// A geographic position with longitude, latitude and optional elevation and m.
 ///
@@ -51,6 +53,13 @@ class Geographic extends Position {
   final double _lat;
   final double? _elev;
   final double? _m;
+
+  /// A position scheme that creates [Geographic] and [GeoBox] instances for
+  /// positions and bounding boxes.
+  /// 
+  /// These instances can be used to store geographic positions and boxes.
+  static const scheme =
+      PositionScheme(position: Geographic.create, box: GeoBox.create);
 
   /// A geographic position with [lon] and [lat], and optional [elev] and [m].
   ///
