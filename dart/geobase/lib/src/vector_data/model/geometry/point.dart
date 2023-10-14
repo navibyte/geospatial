@@ -257,6 +257,11 @@ class Point implements SimpleGeometry {
 
   /// The bounding box for this point, min and max with the same point position.
   @override
+  Box? getBounds({PositionScheme scheme = Position.scheme}) =>
+      calculateBounds(scheme: scheme);
+
+  /// The bounding box for this point, min and max with the same point position.
+  @override
   Box calculateBounds({PositionScheme scheme = Position.scheme}) =>
       scheme.box.call(
         minX: position.x,
@@ -371,6 +376,10 @@ class _BoundedPoint extends Point {
 
   @override
   Box get bounds => _bounds;
+
+  @override
+  Box? getBounds({PositionScheme scheme = Position.scheme}) =>
+      bounds.conformsScheme(scheme) ? bounds : calculateBounds(scheme: scheme);
 
   @override
   Point populated({

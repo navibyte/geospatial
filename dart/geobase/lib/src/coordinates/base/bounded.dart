@@ -53,6 +53,15 @@ abstract class Bounded extends Positionable {
   /// an empty geometry).
   Box? calculateBounds({PositionScheme scheme = Position.scheme});
 
+  /// Returns the current [bounds] if it's populated and conforms to [scheme],
+  /// or otherwise returns one calculated by [calculateBounds].
+  Box? getBounds({PositionScheme scheme = Position.scheme}) {
+    final b = bounds;
+    return b != null && b.conformsScheme(scheme)
+        ? b
+        : calculateBounds(scheme: scheme);
+  }
+
   /// Returns an object of the same subtype as this with certain data members
   /// populated.
   ///
