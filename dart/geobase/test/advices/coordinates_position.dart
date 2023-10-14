@@ -678,6 +678,7 @@ void _doTestPositionSeries(PositionSeries series) {
   expect(series.equals2D(other), false);
   expect(series.equals2D(other, toleranceHoriz: 0.1), true);
   final List<Position> expectedPositions;
+  final Box expectedBox;
   if (series.is3D) {
     if (series.isMeasured) {
       expectedPositions = [
@@ -685,6 +686,7 @@ void _doTestPositionSeries(PositionSeries series) {
         [12.5, 22.5, 32.5, 42.5].xyzm,
         [15.0, 25.0, 35.0, 45.0].xyzm,
       ];
+      expectedBox = [10.0, 20.0, 30.0, 40.0, 15.0, 25.0, 35.0, 45.0].box;
       expect(
         series.equalsCoords(
           [
@@ -813,6 +815,7 @@ void _doTestPositionSeries(PositionSeries series) {
         [12.5, 22.5, 32.5].xyz,
         [15.0, 25.0, 35.0].xyz,
       ];
+      expectedBox = [10.0, 20.0, 30.0, 15.0, 25.0, 35.0].box;
       expect(
         series.equalsCoords(
           [
@@ -919,6 +922,8 @@ void _doTestPositionSeries(PositionSeries series) {
         [12.5, 22.5, 42.5].xym,
         [15.0, 25.0, 45.0].xym,
       ];
+      expectedBox =
+          Box.view([10.0, 20.0, 40.0, 15.0, 25.0, 45.0], type: Coords.xym);
       expect(
         series.equalsCoords(
           [
@@ -1017,6 +1022,7 @@ void _doTestPositionSeries(PositionSeries series) {
         [12.5, 22.5].xy,
         [15.0, 25.0].xy,
       ];
+      expectedBox = [10.0, 20.0, 15.0, 25.0].box;
       expect(
         series.equalsCoords(
           [
@@ -1133,4 +1139,47 @@ void _doTestPositionSeries(PositionSeries series) {
       expect(arrays[j][i], pos);
     }
   }
+
+  for (final bb in [
+    series.calculateBounds(scheme: Position.scheme),
+    series.populated(scheme: Position.scheme).bounds,
+    series
+        .populated(scheme: Projected.scheme)
+        .populated(scheme: Position.scheme)
+        .bounds,
+  ]) {
+    expect(bb, expectedBox);
+    expect(bb is Box, true);
+    expect(bb.runtimeType.toString(), '_BoxCoords');
+  }
+  for (final bb in [
+    series.calculateBounds(scheme: Projected.scheme),
+    series.populated(scheme: Projected.scheme).bounds,
+    series
+        .populated(scheme: Geographic.scheme)
+        .populated(scheme: Projected.scheme)
+        .bounds,
+  ]) {
+    expect(bb, expectedBox);
+    expect(bb is ProjBox, true);
+    expect(bb.runtimeType.toString(), 'ProjBox');
+  }
+  for (final bb in [
+    series.calculateBounds(scheme: Geographic.scheme),
+    series.populated(scheme: Geographic.scheme).bounds,
+    series
+        .populated(scheme: Projected.scheme)
+        .populated(scheme: Geographic.scheme)
+        .bounds,
+  ]) {
+    expect(bb, expectedBox);
+    expect(bb is GeoBox, true);
+    expect(bb.runtimeType.toString(), 'GeoBox');
+  }
+  expect(series.populated(scheme: Position.scheme).unpopulated().bounds, null);
+  expect(series.populated(scheme: Projected.scheme).unpopulated().bounds, null);
+  expect(
+    series.populated(scheme: Geographic.scheme).unpopulated().bounds,
+    null,
+  );
 }

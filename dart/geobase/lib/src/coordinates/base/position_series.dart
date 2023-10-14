@@ -4,6 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:meta/meta.dart';
@@ -15,8 +16,11 @@ import '/src/utils/coord_positions.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/tolerance.dart';
 
+import 'bounded.dart';
+import 'box.dart';
 import 'position.dart';
 import 'position_extensions.dart';
+import 'position_scheme.dart';
 import 'value_positionable.dart';
 
 /// A fixed-length (and random-access) view to a series of positions.
@@ -41,9 +45,9 @@ import 'value_positionable.dart';
 /// `hashCode` is not testing coordinate values for contained positions. Methods
 /// [equalsCoords], [equals2D] and [equals3D] should be used to test coordinate
 /// values between two [PositionSeries] instances.
-abstract class PositionSeries implements ValuePositionable {
-  /// Default `const` constructor to allow extending this abstract class.
-  const PositionSeries();
+abstract class PositionSeries extends Bounded implements ValuePositionable {
+  /// A position series object with an optional [bounds].
+  const PositionSeries._({super.bounds});
 
   static final _empty = PositionSeries.view(const []);
 
@@ -299,6 +303,7 @@ abstract class PositionSeries implements ValuePositionable {
   int get positionCount;
 
   /// Returns true if this series has no positions.
+  @override
   bool get isEmptyByGeometry => positionCount == 0;
 
   /// All positions in this series as an iterable.
@@ -468,6 +473,57 @@ abstract class PositionSeries implements ValuePositionable {
   /// The returned object should be of the same type as this object has.
   PositionSeries transform(TransformPosition transform);
 
+  @override
+  Box? calculateBounds({PositionScheme scheme = Position.scheme}) {
+    final posCount = positionCount;
+    if (posCount >= 1) {
+      final hasZ = is3D;
+      final hasM = isMeasured;
+      var minx = x(0);
+      var miny = y(0);
+      var minz = hasZ ? z(0) : 0.0;
+      var minm = hasM ? m(0) : 0.0;
+      var maxx = minx;
+      var maxy = miny;
+      var maxz = minz;
+      var maxm = minm;
+
+      if (posCount >= 2) {
+        for (var i = 1; i < posCount; i++) {
+          final xi = x(i);
+          final yi = y(i);
+          minx = math.min(minx, xi);
+          miny = math.min(miny, yi);
+          maxx = math.max(maxx, xi);
+          maxy = math.max(maxy, yi);
+          if (hasZ) {
+            final zi = z(i);
+            minz = math.min(minz, zi);
+            maxz = math.max(maxz, zi);
+          }
+          if (hasM) {
+            final mi = m(i);
+            minm = math.min(minm, mi);
+            maxm = math.max(maxm, mi);
+          }
+        }
+      }
+
+      return scheme.box.call(
+        minX: minx,
+        minY: miny,
+        minZ: hasZ ? minz : null,
+        minM: hasM ? minm : null,
+        maxX: maxx,
+        maxY: maxy,
+        maxZ: hasZ ? maxz : null,
+        maxM: hasM ? maxm : null,
+      );
+    }
+
+    return null;
+  }
+
   /// True if the first and last position equals in 2D.
   bool get isClosed {
     final posCount = positionCount;
@@ -496,6 +552,14 @@ abstract class PositionSeries implements ValuePositionable {
     if (identical(this, other)) return true;
     if (positionCount != other.positionCount) return false;
     if (coordType != other.coordType) return false;
+
+    // test bounding boxes if both position series objects have it
+    final bb1 = bounds;
+    final bb2 = other.bounds;
+    if (bb1 != null && bb2 != null && bb1 != bb2) {
+      // both position series objects have bounding boxes and boxes do not equal
+      return false;
+    }
 
     return _testEqualsCoords(other);
   }
@@ -530,6 +594,19 @@ abstract class PositionSeries implements ValuePositionable {
     if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
     if (identical(this, other)) return true;
     if (positionCount != other.positionCount) return false;
+
+    // test bounding boxes if both position series objects have it
+    final bb1 = bounds;
+    final bb2 = other.bounds;
+    if (bb1 != null &&
+        bb2 != null &&
+        !bb1.equals2D(
+          bb2,
+          toleranceHoriz: toleranceHoriz,
+        )) {
+      // both position series objects have boxes and boxes do not equal in 2D
+      return false;
+    }
 
     return _testEquals2D(other, toleranceHoriz: toleranceHoriz);
   }
@@ -575,6 +652,20 @@ abstract class PositionSeries implements ValuePositionable {
     if (isEmptyByGeometry || other.isEmptyByGeometry) return false;
     if (identical(this, other)) return true;
     if (positionCount != other.positionCount) return false;
+
+    // test bounding boxes if both position series objects have it
+    final bb1 = bounds;
+    final bb2 = other.bounds;
+    if (bb1 != null &&
+        bb2 != null &&
+        !bb1.equals3D(
+          bb2,
+          toleranceHoriz: toleranceHoriz,
+          toleranceVert: toleranceVert,
+        )) {
+      // both position series objects have boxes and boxes do not equal in 3D
+      return false;
+    }
 
     return _testEquals3D(
       other,
@@ -674,9 +765,11 @@ class _PositionArray extends PositionSeries {
     List<Position> source, {
     required Coords type,
     bool reversed = false,
+    super.bounds,
   })  : _data = source,
         _type = type,
-        _reversed = reversed;
+        _reversed = reversed,
+        super._();
 
   @override
   int get spatialDimension => _type.spatialDimension;
@@ -755,7 +848,12 @@ class _PositionArray extends PositionSeries {
   @override
   PositionSeries reversed() => positionCount <= 1
       ? this
-      : _PositionArray.view(_data, type: _type, reversed: !_reversed);
+      : _PositionArray.view(
+          _data,
+          type: _type,
+          reversed: !_reversed,
+          bounds: bounds,
+        );
 
   @override
   PositionSeries project(Projection projection) => PositionSeries.from(
@@ -770,6 +868,38 @@ class _PositionArray extends PositionSeries {
             .toList(growable: false),
         type: type,
       );
+
+  @override
+  PositionSeries populated({
+    int traverse = 0,
+    bool onBounds = true,
+    PositionScheme scheme = Position.scheme,
+  }) {
+    if (onBounds) {
+      // create a new series if bounds was unpopulated or of other scheme
+      final currBounds = bounds;
+      final empty = isEmptyByGeometry;
+      if ((currBounds == null && !empty) ||
+          (currBounds != null && !currBounds.conformsScheme(scheme))) {
+        return _PositionArray.view(
+          _data,
+          type: _type,
+          reversed: _reversed,
+          bounds: calculateBounds(scheme: scheme),
+        );
+      }
+    }
+    return this;
+  }
+
+  @override
+  PositionSeries unpopulated({
+    int traverse = 0,
+    bool onBounds = true,
+  }) =>
+      onBounds && bounds != null
+          ? _PositionArray.view(_data, type: _type, reversed: _reversed)
+          : this;
 
   @override
   bool _testEqualsCoords(PositionSeries other) {
@@ -824,10 +954,14 @@ class _PositionArray extends PositionSeries {
 
   @override
   bool operator ==(Object other) =>
-      other is _PositionArray && _type == other._type && _data == other._data;
+      other is _PositionArray &&
+      _type == other._type &&
+      bounds == other.bounds &&
+      _reversed == other._reversed &&
+      _data == other._data;
 
   @override
-  int get hashCode => Object.hash(_type, _data);
+  int get hashCode => Object.hash(_type, bounds, _reversed, _data);
 }
 
 // ---------------------------------------------------------------------------
@@ -845,10 +979,12 @@ class _PositionDataCoords extends PositionSeries {
     List<double> source, {
     Coords type = Coords.xy,
     bool reversed = false,
+    super.bounds,
   })  : _data = source,
         _type = type,
         _positionCount = source.length ~/ type.coordinateDimension,
-        _reversed = reversed;
+        _reversed = reversed,
+        super._();
 
   @override
   int get spatialDimension => _type.spatialDimension;
@@ -954,7 +1090,12 @@ class _PositionDataCoords extends PositionSeries {
   @override
   PositionSeries reversed() => positionCount <= 1
       ? this
-      : _PositionDataCoords.view(_data, type: _type, reversed: !_reversed);
+      : _PositionDataCoords.view(
+          _data,
+          type: _type,
+          reversed: !_reversed,
+          bounds: bounds,
+        );
 
   @override
   PositionSeries project(Projection projection) => PositionSeries.view(
@@ -975,6 +1116,38 @@ class _PositionDataCoords extends PositionSeries {
             .toList(growable: false),
         type: type,
       );
+
+  @override
+  PositionSeries populated({
+    int traverse = 0,
+    bool onBounds = true,
+    PositionScheme scheme = Position.scheme,
+  }) {
+    if (onBounds) {
+      // create a new series if bounds was unpopulated or of other scheme
+      final currBounds = bounds;
+      final empty = isEmptyByGeometry;
+      if ((currBounds == null && !empty) ||
+          (currBounds != null && !currBounds.conformsScheme(scheme))) {
+        return _PositionDataCoords.view(
+          _data,
+          type: _type,
+          reversed: _reversed,
+          bounds: calculateBounds(scheme: scheme),
+        );
+      }
+    }
+    return this;
+  }
+
+  @override
+  PositionSeries unpopulated({
+    int traverse = 0,
+    bool onBounds = true,
+  }) =>
+      onBounds && bounds != null
+          ? _PositionDataCoords.view(_data, type: _type, reversed: _reversed)
+          : this;
 
   @override
   bool _testEqualsCoords(PositionSeries other) {
@@ -1018,8 +1191,10 @@ class _PositionDataCoords extends PositionSeries {
   bool operator ==(Object other) =>
       other is _PositionDataCoords &&
       _type == other._type &&
+      bounds == other.bounds &&
+      _reversed == other._reversed &&
       _data == other._data;
 
   @override
-  int get hashCode => Object.hash(_type, _data);
+  int get hashCode => Object.hash(_type, bounds, _reversed, _data);
 }
