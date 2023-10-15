@@ -612,6 +612,12 @@ class _TestXYZM implements Projected {
   double operator [](int i) => Position.getValue(this, i);
 
   @override
+  int get positionCount => 1;
+
+  @override
+  int get valueCount => positionCount * coordinateDimension;
+
+  @override
   // ignore: unnecessary_this
   Iterable<double> get values => Position.getValues(this, type: this.type);
 

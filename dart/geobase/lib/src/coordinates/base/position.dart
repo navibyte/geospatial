@@ -377,7 +377,13 @@ abstract class Position extends ValuePositionable {
   /// 3     | m         | m
   double operator [](int index) => Position.getValue(this, index);
 
+  /// A [Position] object represents a single position, returns always `1`.
+  @override
+  int get positionCount => 1;
+
   /// Coordinate values of this position as an iterable of 2, 3 or 4 items.
+  /// 
+  /// The number of values expected is indicated by [valueCount].
   ///
   /// For projected or cartesian coordinates, the coordinate ordering is:
   /// (x, y), (x, y, z), (x, y, m) or (x, y, z, m).

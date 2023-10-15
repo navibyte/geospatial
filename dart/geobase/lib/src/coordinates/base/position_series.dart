@@ -300,7 +300,12 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
       );
 
   /// The number of positions in this series.
+  @override
   int get positionCount;
+
+  /// The number of coordinate values for all positions in this series.
+  @override
+  int get valueCount => positionCount * coordinateDimension;
 
   /// Returns true if this series has no positions.
   @override
@@ -411,8 +416,10 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
 
   /// Coordinate values of all positions in this series as an iterable.
   ///
+  /// The number of all values expected is indicated by [valueCount].
+  /// 
   /// Each position contains 2, 3 or 4 coordinate values indicated by
-  /// [coordType] of this series.
+  /// [coordinateDimension].
   ///
   /// For example if data contains positions (x: 1.0, y: 1.1), (x: 2.0, y: 2.1),
   /// and (x: 3.0, y: 3.1), then a returned iterable would be

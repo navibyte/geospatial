@@ -357,7 +357,13 @@ abstract class Box extends ValuePositionable {
   /// The maximum position (or east-north) of this bounding box.
   Position get max;
 
+  /// A [Box] object represents two positions (min and max), returns always `2`.
+  @override
+  int get positionCount => 2;
+
   /// Coordinate values of this bounding box as an iterable of 4, 6 or 8 items.
+  ///
+  /// The number of values expected is indicated by [valueCount].
   ///
   /// For projected or cartesian coordinates, values are:
   ///
