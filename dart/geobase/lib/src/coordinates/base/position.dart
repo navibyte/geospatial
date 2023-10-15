@@ -387,13 +387,10 @@ abstract class Position extends ValuePositionable {
   ///
   /// See also [valuesByType] that returns coordinate values according to a
   /// given coordinate type.
+  @override
   Iterable<double> get values => Position.getValues(this, type: coordType);
 
-  /// Coordinate values of this position as an iterable of 2, 3 or 4 items
-  /// according to the given [type].
-  ///
-  /// See [values] (that returns coordinate values according to the coordinate
-  /// type of this position) for description of possible return values.
+  @override
   Iterable<double> valuesByType(Coords type) =>
       Position.getValues(this, type: type);
 
@@ -411,7 +408,7 @@ abstract class Position extends ValuePositionable {
   /// measured position.
   Position copyWith({double? x, double? y, double? z, double? m});
 
-  /// Copies this position as another position by the given coordinate [type].
+  @override
   Position copyByType(Coords type);
 
   /// Returns a position instance whose coordinate storage contains only
@@ -489,6 +486,7 @@ abstract class Position extends ValuePositionable {
   ///
   /// To get WKT compatible text, set `delimiter` to ` `:
   /// `10.1 20.2 30.3`
+  @override
   String toText({
     String delimiter = ',',
     int? decimals,

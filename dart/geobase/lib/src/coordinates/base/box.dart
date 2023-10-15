@@ -379,13 +379,10 @@ abstract class Box extends ValuePositionable {
   ///
   /// See also [valuesByType] that returns coordinate values according to a
   /// given coordinate type.
+  @override
   Iterable<double> get values => Box.getValues(this, type: coordType);
 
-  /// Coordinate values of this bounding box as an iterable of 4, 6 or 8 items
-  /// according to the given [type].
-  ///
-  /// See [values] (that returns coordinate values according to the coordinate
-  /// type of this bounding box) for description of possible return values.
+  @override
   Iterable<double> valuesByType(Coords type) => Box.getValues(this, type: type);
 
   /// Copies this box to a new box created by the [factory].
@@ -418,7 +415,7 @@ abstract class Box extends ValuePositionable {
     double? maxM,
   });
 
-  /// Copies this bounding box as another box by the given coordinate [type].
+  @override
   Box copyByType(Coords type);
 
   /// The width of the bounding box, equals to `maxX - minX`.
@@ -532,6 +529,7 @@ abstract class Box extends ValuePositionable {
   ///
   /// A sample with default parameters (for a 2D bounding box):
   /// `10.1,10.1,20.2,20.2`
+  @override
   String toText({String delimiter = ',', int? decimals, bool swapXY = false}) {
     final buf = StringBuffer();
     Box.writeValues(

@@ -55,4 +55,36 @@ abstract class ValuePositionable extends Positionable {
         is3D: is3D,
         isMeasured: isMeasured,
       );
+
+  /// Coordinate values as a double iterable.
+  ///
+  /// For projected or cartesian coordinates, the coordinate ordering is:
+  /// (x, y), (x, y, z), (x, y, m) or (x, y, z, m).
+  ///
+  /// For geographic coordinates, the coordinate ordering is:
+  /// (lon, lat), (lon, lat, elev), (lon, lat, m) or (lon, lat, elev, m).
+  ///
+  /// See also [valuesByType] that returns coordinate values according to a
+  /// given coordinate type.
+  Iterable<double> get values;
+
+  /// Coordinate values  as a double iterable according to the given [type].
+  ///
+  /// See [values] (that returns coordinate values according to the coordinate
+  /// type of `this`) for description of possible return values.
+  Iterable<double> valuesByType(Coords type);
+
+  /// Copies `this` as another object according to the given [type].
+  ValuePositionable copyByType(Coords type);
+
+  /// A string representation of coordinate values separated by [delimiter].
+  ///
+  /// Use [decimals] to set a number of decimals (not applied if no decimals).
+  ///
+  /// Set [swapXY] to true to print y (or latitude) before x (or longitude).
+  String toText({
+    String delimiter = ',',
+    int? decimals,
+    bool swapXY = false,
+  });
 }

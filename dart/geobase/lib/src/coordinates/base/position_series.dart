@@ -426,6 +426,7 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
   ///
   /// See also [valuesByType] that returns coordinate values of all positions
   /// according to a given coordinate type.
+  @override
   Iterable<double> get values;
 
   /// Coordinate values of all positions in this series as an iterable.
@@ -435,10 +436,12 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
   ///
   /// See [values] (that returns coordinate values according to the coordinate
   /// type of this bounding box) for description of possible return values.
+  @override
   Iterable<double> valuesByType(Coords type);
 
   /// Copies this series of positions as another series with positions mapped by
   /// the given coordinate [type].
+  @override
   PositionSeries copyByType(Coords type);
 
   /// Returns a position series with all positions in reversed order compared to
@@ -711,6 +714,7 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
   ///
   /// Set [swapXY] to true to print y (or latitude) before x (or longitude).
+  @override
   String toText({
     String delimiter = ',',
     String? positionDelimiter,
