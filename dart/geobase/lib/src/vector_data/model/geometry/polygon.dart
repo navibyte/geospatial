@@ -16,7 +16,6 @@ import '/src/coordinates/base/position_series.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounded_utils.dart';
-import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_positions.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
@@ -689,11 +688,7 @@ class Polygon extends SimpleGeometry {
 
   @override
   Box? calculateBounds({PositionScheme scheme = Position.scheme}) =>
-      BoundsBuilder.calculateBounds(
-        seriesArray: _rings,
-        type: coordType,
-        scheme: scheme,
-      );
+      exterior?.calculateBounds(scheme: scheme);
 
   @override
   Polygon populated({
@@ -703,19 +698,12 @@ class Polygon extends SimpleGeometry {
   }) {
     if (onBounds) {
       // create a new geometry if bounds was unpopulated or of other scheme
-      final currBounds = bounds;
-      final empty = isEmptyByGeometry;
-      if ((currBounds == null && !empty) ||
-          (currBounds != null && !currBounds.conformsScheme(scheme))) {
+      final b = bounds;
+      final empty = rings.isEmpty;
+      if ((b == null && !empty) || (b != null && !b.conformsScheme(scheme))) {
         return Polygon(
           rings,
-          bounds: empty
-              ? null
-              : BoundsBuilder.calculateBounds(
-                  seriesArray: rings,
-                  type: coordType,
-                  scheme: scheme,
-                ),
+          bounds: empty ? null : exterior?.getBounds(scheme: scheme),
         );
       }
     }

@@ -11,11 +11,11 @@ import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
+import '/src/coordinates/base/position_extensions.dart';
 import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounded_utils.dart';
-import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_positions.dart';
 import '/src/utils/coord_type.dart';
 import '/src/vector/content/simple_geometry_content.dart';
@@ -322,12 +322,20 @@ class MultiPoint extends SimpleGeometry {
   Iterable<Point> get points => positions.map<Point>(Point.new);
 
   @override
-  Box? calculateBounds({PositionScheme scheme = Position.scheme}) =>
-      BoundsBuilder.calculateBounds(
-        positions: positions,
-        type: coordType,
-        scheme: scheme,
-      );
+  Box? calculateBounds({PositionScheme scheme = Position.scheme}) => positions
+      .map(
+        (p) => scheme.box.call(
+          minX: p.x,
+          minY: p.y,
+          minZ: p.optZ,
+          minM: p.optM,
+          maxX: p.x,
+          maxY: p.y,
+          maxZ: p.optZ,
+          maxM: p.optM,
+        ),
+      )
+      .merge();
 
   @override
   MultiPoint populated({
@@ -337,19 +345,12 @@ class MultiPoint extends SimpleGeometry {
   }) {
     if (onBounds) {
       // create a new geometry if bounds was unpopulated or of other scheme
-      final currBounds = bounds;
-      final empty = isEmptyByGeometry;
-      if ((currBounds == null && !empty) ||
-          (currBounds != null && !currBounds.conformsScheme(scheme))) {
+      final b = bounds;
+      final empty = positions.isEmpty;
+      if ((b == null && !empty) || (b != null && !b.conformsScheme(scheme))) {
         return MultiPoint(
           positions,
-          bounds: empty
-              ? null
-              : BoundsBuilder.calculateBounds(
-                  positions: positions,
-                  type: coordType,
-                  scheme: scheme,
-                ),
+          bounds: empty ? null : calculateBounds(scheme: scheme),
         );
       }
     }

@@ -295,3 +295,20 @@ extension PositionArrayExtension on Iterable<Position> {
     }
   }
 }
+
+/// A helper extension on `Iterable<Box?>`.
+extension BoxArrayExtension on Iterable<Box?> {
+  /// Returns a single minimum bounding box containing all non-null boxes on
+  /// this.
+  ///
+  /// Returns null if this iterable is empty.
+  Box? merge() {
+    Box? merged;
+    for (final box in this) {
+      if (box != null) {
+        merged = merged == null ? box : merged.merge(box);
+      }
+    }
+    return merged;
+  }
+}

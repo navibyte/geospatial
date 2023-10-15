@@ -11,12 +11,12 @@ import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
+import '/src/coordinates/base/position_extensions.dart';
 import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/base/position_series.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounded_utils.dart';
-import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_positions.dart';
 import '/src/utils/coord_type.dart';
 import '/src/vector/content/simple_geometry_content.dart';
@@ -491,23 +491,14 @@ class MultiPolygon extends SimpleGeometry {
   /// All polygons as a lazy iterable of [Polygon] geometries.
   Iterable<Polygon> get polygons => ringArrays.map<Polygon>(Polygon.new);
 
-  static Iterable<PositionSeries> _allRings(
-    List<List<PositionSeries>> ringArrays,
-  ) {
-    Iterable<PositionSeries>? iter;
-    for (final rings in ringArrays) {
-      iter = iter == null ? rings : iter.followedBy(rings);
-    }
-    return iter ?? [];
-  }
-
   @override
   Box? calculateBounds({PositionScheme scheme = Position.scheme}) =>
-      BoundsBuilder.calculateBounds(
-        seriesArray: _allRings(_polygons),
-        type: coordType,
-        scheme: scheme,
-      );
+      ringArrays.map((polygon) {
+        if (polygon.isNotEmpty) {
+          return polygon.first.calculateBounds(scheme: scheme);
+        }
+        return null;
+      }).merge();
 
   @override
   MultiPolygon populated({
@@ -517,19 +508,19 @@ class MultiPolygon extends SimpleGeometry {
   }) {
     if (onBounds) {
       // create a new geometry if bounds was unpopulated or of other scheme
-      final currBounds = bounds;
-      final empty = isEmptyByGeometry;
-      if ((currBounds == null && !empty) ||
-          (currBounds != null && !currBounds.conformsScheme(scheme))) {
+      final b = bounds;
+      final empty = ringArrays.isEmpty;
+      if ((b == null && !empty) || (b != null && !b.conformsScheme(scheme))) {
         return MultiPolygon(
           ringArrays,
           bounds: empty
               ? null
-              : BoundsBuilder.calculateBounds(
-                  seriesArray: _allRings(ringArrays),
-                  type: coordType,
-                  scheme: scheme,
-                ),
+              : ringArrays.map((polygon) {
+                  if (polygon.isNotEmpty) {
+                    return polygon.first.getBounds(scheme: scheme);
+                  }
+                  return null;
+                }).merge(),
         );
       }
     }

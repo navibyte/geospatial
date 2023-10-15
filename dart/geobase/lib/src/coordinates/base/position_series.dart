@@ -524,6 +524,19 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
     return null;
   }
 
+  @override
+  PositionSeries populated({
+    int traverse = 0,
+    bool onBounds = true,
+    PositionScheme scheme = Position.scheme,
+  });
+
+  @override
+  PositionSeries unpopulated({
+    int traverse = 0,
+    bool onBounds = true,
+  });
+
   /// True if the first and last position equals in 2D.
   bool get isClosed {
     final posCount = positionCount;

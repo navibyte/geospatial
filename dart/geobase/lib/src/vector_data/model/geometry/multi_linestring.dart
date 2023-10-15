@@ -11,12 +11,12 @@ import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
+import '/src/coordinates/base/position_extensions.dart';
 import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/base/position_series.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounded_utils.dart';
-import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_positions.dart';
 import '/src/utils/coord_type.dart';
 import '/src/vector/content/simple_geometry_content.dart';
@@ -362,11 +362,7 @@ class MultiLineString extends SimpleGeometry {
 
   @override
   Box? calculateBounds({PositionScheme scheme = Position.scheme}) =>
-      BoundsBuilder.calculateBounds(
-        seriesArray: _lineStrings,
-        type: coordType,
-        scheme: scheme,
-      );
+      chains.map((c) => c.calculateBounds(scheme: scheme)).merge();
 
   @override
   MultiLineString populated({
@@ -376,19 +372,14 @@ class MultiLineString extends SimpleGeometry {
   }) {
     if (onBounds) {
       // create a new geometry if bounds was unpopulated or of other scheme
-      final currBounds = bounds;
-      final empty = isEmptyByGeometry;
-      if ((currBounds == null && !empty) ||
-          (currBounds != null && !currBounds.conformsScheme(scheme))) {
+      final b = bounds;
+      final empty = chains.isEmpty;
+      if ((b == null && !empty) || (b != null && !b.conformsScheme(scheme))) {
         return MultiLineString(
           chains,
           bounds: empty
               ? null
-              : BoundsBuilder.calculateBounds(
-                  seriesArray: chains,
-                  type: coordType,
-                  scheme: scheme,
-                ),
+              : chains.map((c) => c.getBounds(scheme: scheme)).merge(),
         );
       }
     }

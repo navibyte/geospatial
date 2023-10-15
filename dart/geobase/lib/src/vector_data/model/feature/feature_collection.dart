@@ -8,11 +8,11 @@ import '/src/codes/coords.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
+import '/src/coordinates/base/position_extensions.dart';
 import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounded_utils.dart';
-import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_type.dart';
 import '/src/vector/content/feature_content.dart';
 import '/src/vector/encoding/text_format.dart';
@@ -339,13 +339,10 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   }
 
   @override
-  Box? calculateBounds({PositionScheme scheme = Position.scheme}) =>
-      BoundsBuilder.calculateBounds(
-        collection: features,
-        type: coordType,
-        recalculateChilds: true,
-        scheme: scheme,
-      );
+  Box? calculateBounds({PositionScheme scheme = Position.scheme}) => features
+      .map((f) => f.calculateBounds(scheme: scheme))
+      .merge()
+      ?.copyByType(coordType);
 
   @override
   FeatureCollection populated({
@@ -369,22 +366,20 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
 
       // create a new collection if features changed or bounds was unpopulated
       // or of other scheme
-      final currBounds = bounds;
+      final b = bounds;
       final empty = coll.isEmpty;
       if (coll != features ||
-          (currBounds == null && !empty) ||
-          (currBounds != null && !currBounds.conformsScheme(scheme))) {
+          (b == null && !empty) ||
+          (b != null && !b.conformsScheme(scheme))) {
         return FeatureCollection<E>._(
           coll,
           coordType,
           bounds: empty
               ? null
-              : BoundsBuilder.calculateBounds(
-                  collection: coll,
-                  type: coordType,
-                  recalculateChilds: false,
-                  scheme: scheme,
-                ),
+              : coll
+                  .map((f) => f.calculateBounds(scheme: scheme))
+                  .merge()
+                  ?.copyByType(coordType),
           custom: custom,
         );
       }

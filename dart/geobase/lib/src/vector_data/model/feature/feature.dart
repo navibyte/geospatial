@@ -12,7 +12,6 @@ import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounded_utils.dart';
-import '/src/utils/bounds_builder.dart';
 import '/src/vector/content/feature_content.dart';
 import '/src/vector/content/geometry_content.dart';
 import '/src/vector/encoding/text_format.dart';
@@ -383,22 +382,15 @@ class Feature<T extends Geometry> extends FeatureObject {
 
       // create a new feature if geometry changed or bounds was unpopulated
       // or of other scheme
-      final currBounds = bounds;
+      final b = bounds;
       if (geom != geometry ||
-          (currBounds == null && geom != null) ||
-          (currBounds != null && !currBounds.conformsScheme(scheme))) {
+          (b == null && geom != null) ||
+          (b != null && !b.conformsScheme(scheme))) {
         return Feature(
           id: id,
           geometry: geom,
           properties: properties,
-          bounds: geom != null
-              ? BoundsBuilder.calculateBounds(
-                  item: geom,
-                  type: geom.coordType,
-                  recalculateChilds: false,
-                  scheme: scheme,
-                )
-              : null,
+          bounds: geom?.getBounds(scheme: scheme),
           custom: custom,
         );
       }

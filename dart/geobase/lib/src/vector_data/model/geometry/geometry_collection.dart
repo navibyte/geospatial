@@ -11,11 +11,11 @@ import '/src/codes/geom.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
+import '/src/coordinates/base/position_extensions.dart';
 import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounded_utils.dart';
-import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_type.dart';
 import '/src/vector/content/geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
@@ -215,13 +215,10 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   }
 
   @override
-  Box? calculateBounds({PositionScheme scheme = Position.scheme}) =>
-      BoundsBuilder.calculateBounds(
-        collection: _geometries,
-        type: coordType,
-        recalculateChilds: true,
-        scheme: scheme,
-      );
+  Box? calculateBounds({PositionScheme scheme = Position.scheme}) => geometries
+      .map((geom) => geom.calculateBounds(scheme: scheme))
+      .merge()
+      ?.copyByType(coordType);
 
   @override
   GeometryCollection populated({
@@ -245,22 +242,20 @@ class GeometryCollection<E extends Geometry> extends Geometry {
 
       // create a new collection if geometries changed or bounds was unpopulated
       // or of other scheme
-      final currBounds = bounds;
+      final b = bounds;
       final empty = coll.isEmpty;
       if (coll != geometries ||
-          (currBounds == null && !empty) ||
-          (currBounds != null && !currBounds.conformsScheme(scheme))) {
+          (b == null && !empty) ||
+          (b != null && !b.conformsScheme(scheme))) {
         return GeometryCollection<E>._(
           coll,
           coordType,
           bounds: empty
               ? null
-              : BoundsBuilder.calculateBounds(
-                  collection: coll,
-                  type: coordType,
-                  recalculateChilds: false,
-                  scheme: scheme,
-                ),
+              : coll
+                  .map((geom) => geom.getBounds(scheme: scheme))
+                  .merge()
+                  ?.copyByType(coordType),
         );
       }
     }

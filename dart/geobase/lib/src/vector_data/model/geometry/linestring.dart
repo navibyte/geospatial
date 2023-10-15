@@ -16,7 +16,6 @@ import '/src/coordinates/base/position_series.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounded_utils.dart';
-import '/src/utils/bounds_builder.dart';
 import '/src/utils/coord_positions.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
@@ -417,11 +416,7 @@ class LineString extends SimpleGeometry {
 
   @override
   Box? calculateBounds({PositionScheme scheme = Position.scheme}) =>
-      BoundsBuilder.calculateBounds(
-        series: chain,
-        type: coordType,
-        scheme: scheme,
-      );
+      chain.calculateBounds(scheme: scheme);
 
   @override
   LineString populated({
@@ -431,19 +426,12 @@ class LineString extends SimpleGeometry {
   }) {
     if (onBounds) {
       // create a new geometry if bounds was unpopulated or of other scheme
-      final currBounds = bounds;
+      final b = bounds;
       final empty = isEmptyByGeometry;
-      if ((currBounds == null && !empty) ||
-          (currBounds != null && !currBounds.conformsScheme(scheme))) {
+      if ((b == null && !empty) || (b != null && !b.conformsScheme(scheme))) {
         return LineString(
           chain,
-          bounds: empty
-              ? null
-              : BoundsBuilder.calculateBounds(
-                  series: chain,
-                  type: coordType,
-                  scheme: scheme,
-                ),
+          bounds: empty ? null : chain.getBounds(scheme: scheme),
         );
       }
     }
