@@ -231,6 +231,62 @@ void main() {
       expect(mls.populated(scheme: Geographic.scheme).bounds, geo);
     });
   });
+
+  group('Bounding boxes containing/touching the north or south pole', () {
+    test('North pole', () {
+      expect(
+        const Point(Geographic(lon: 0.0, lat: 90.0))
+            .getBounds(scheme: Geographic.scheme),
+        const GeoBox(west: 0.0, south: 90.0, east: 0.0, north: 90.0),
+      );
+      expect(
+        LineString.build([0.0, 90.0, 1.0, 90.0])
+            .getBounds(scheme: Geographic.scheme),
+        const GeoBox(west: 0.0, south: 90.0, east: 1.0, north: 90.0),
+      );
+      expect(
+        LineString.build([0.0, 89.0, 1.0, 90.0])
+            .getBounds(scheme: Geographic.scheme),
+        const GeoBox(west: 0.0, south: 89.0, east: 1.0, north: 90.0),
+      );
+      expect(
+        LineString.build([-180.0, 89.0, 180.0, 90.0])
+            .getBounds(scheme: Geographic.scheme),
+        const GeoBox(west: -180.0, south: 89.0, east: 180.0, north: 90.0),
+      );
+    });
+    test('Merged bounds - north pole', () {
+      final lines = [
+        [177.0, 20.0, 178.0, -19.0, 179.0, -18.0].positions(Coords.xy),
+        [-179.0, 91.0, -178.0, 90.0].positions(Coords.xy)
+      ];
+      final mls = MultiLineString(lines);
+
+      const proj = ProjBox(minX: -179.0, minY: -19.0, maxX: 179.0, maxY: 91.0);
+      expect(mls.calculateBounds(scheme: Projected.scheme), proj);
+      expect(mls.populated(scheme: Projected.scheme).bounds, proj);
+
+      const geo = GeoBox(west: 177.0, south: -19.0, east: -178.0, north: 90.0);
+      expect(mls.calculateBounds(scheme: Geographic.scheme), geo);
+      expect(mls.populated(scheme: Geographic.scheme).bounds, geo);
+    });
+
+    test('Merged bounds - south pole', () {
+      final lines = [
+        [177.0, -91.0, 178.0, -19.0, 179.0, -18.0].positions(Coords.xy),
+        [-179.0, -17.0, -178.0, -16.0].positions(Coords.xy)
+      ];
+      final mls = MultiLineString(lines);
+
+      const proj = ProjBox(minX: -179.0, minY: -91.0, maxX: 179.0, maxY: -16.0);
+      expect(mls.calculateBounds(scheme: Projected.scheme), proj);
+      expect(mls.populated(scheme: Projected.scheme).bounds, proj);
+
+      const geo = GeoBox(west: 177.0, south: -90.0, east: -178.0, north: -16.0);
+      expect(mls.calculateBounds(scheme: Geographic.scheme), geo);
+      expect(mls.populated(scheme: Geographic.scheme).bounds, geo);
+    });
+  });
 }
 
 GeoBox b(double west, double east) =>
