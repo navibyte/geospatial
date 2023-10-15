@@ -71,9 +71,6 @@ abstract class Bounded extends Positionable {
   /// * The `bounds` in a returned bounded object is ensured to be populated
   ///   (expect when cannot be calculated, for example in the case of an empty
   ///   geometry).
-  /// * If [traverse] > 0, then also bounding boxes of child bounded objects are
-  ///   populated for child levels indicated by [traverse] (0: no childs,
-  ///   1: only direct childs, 2: direct childs and childs of them, ..).
   ///
   /// Use [scheme] to set the position scheme:
   /// * `Position.scheme` for generic position data (geographic, projected or
@@ -83,7 +80,6 @@ abstract class Bounded extends Positionable {
   ///
   /// See also [unpopulated].
   Bounded populated({
-    int traverse = 0,
     bool onBounds = true,
     PositionScheme scheme = Position.scheme,
   });
@@ -95,15 +91,10 @@ abstract class Bounded extends Positionable {
   ///
   /// If [onBounds] is true (as by default):
   /// * The `bounds` in a returned bounded object is ensured to be unpopulated
-  ///   (expect when `bounds` is always available, for example in the case of a
-  ///    point geometry).
-  /// * If [traverse] > 0, then also bounding boxes of child bounded objects are
-  ///   are unpopulated for child levels indicated by [traverse] (0: no childs,
-  ///   1: only direct childs, 2: direct childs and childs of them, ..).
+  ///   (expect when `bounds` is always available).
   ///
   /// See also [populated].
   Bounded unpopulated({
-    int traverse = 0,
     bool onBounds = true,
   });
 

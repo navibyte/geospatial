@@ -526,14 +526,12 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
 
   @override
   PositionSeries populated({
-    int traverse = 0,
     bool onBounds = true,
     PositionScheme scheme = Position.scheme,
   });
 
   @override
   PositionSeries unpopulated({
-    int traverse = 0,
     bool onBounds = true,
   });
 
@@ -884,7 +882,6 @@ class _PositionArray extends PositionSeries {
 
   @override
   PositionSeries populated({
-    int traverse = 0,
     bool onBounds = true,
     PositionScheme scheme = Position.scheme,
   }) {
@@ -907,7 +904,6 @@ class _PositionArray extends PositionSeries {
 
   @override
   PositionSeries unpopulated({
-    int traverse = 0,
     bool onBounds = true,
   }) =>
       onBounds && bounds != null

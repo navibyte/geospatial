@@ -31,6 +31,27 @@ abstract class FeatureObject extends Bounded {
   const FeatureObject({super.bounds, Map<String, dynamic>? custom})
       : _custom = custom;
 
+  /// Returns a feature object of the same subtype as this with certain data
+  /// members populated.
+  ///
+  /// If nothing is populated then `this` is returned.
+  ///
+  /// If [onBounds] is true (as by default):
+  /// * The `bounds` in a returned feature object is ensured to be populated
+  ///   (expect when cannot be calculated, for example in the case of an empty
+  ///   geometry).
+  /// * If [traverse] > 0, then also bounding boxes of child feature or geometry
+  ///   objects of this feature object are populated for child levels indicated
+  ///   by [traverse] (0: no childs, 1: only direct childs, 2: direct childs and
+  ///   childs of them, ..).
+  ///
+  /// Use [scheme] to set the position scheme:
+  /// * `Position.scheme` for generic position data (geographic, projected or
+  ///    any other), this is also the default
+  /// * `Projected.scheme` for projected position data
+  /// * `Geographic.scheme` for geographic position data
+  ///
+  /// See also [unpopulated].
   @override
   FeatureObject populated({
     int traverse = 0,
@@ -38,6 +59,20 @@ abstract class FeatureObject extends Bounded {
     PositionScheme scheme = Position.scheme,
   });
 
+  /// Returns a feature object of the same subtype as this with certain data
+  /// members unpopulated (or cleared).
+  ///
+  /// If nothing is unpopulated then `this` is returned.
+  ///
+  /// If [onBounds] is true (as by default):
+  /// * The `bounds` in a returned feature object is ensured to be unpopulated
+  ///   (expect when `bounds` is always available).
+  /// * If [traverse] > 0, then also bounding boxes of child feature or geometry
+  ///   objects of this feature object are unpopulated for child levels
+  ///   indicated by [traverse] (0: no childs, 1: only direct childs, 2: direct
+  ///   childs and childs of them, ..).
+  ///
+  /// See also [populated].
   @override
   FeatureObject unpopulated({
     int traverse = 0,
