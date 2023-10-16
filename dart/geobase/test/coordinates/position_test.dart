@@ -574,7 +574,7 @@ class _TestXYZM implements Projected {
   }) : this(x: x, y: y, z: z ?? 0, m: m ?? 0);
 
   @override
-  bool conformsScheme(PositionScheme scheme) => scheme == Projected.scheme;
+  PositionScheme get conforming => Projected.scheme;
 
   @override
   R copyTo<R extends Position>(CreatePosition<R> factory) =>

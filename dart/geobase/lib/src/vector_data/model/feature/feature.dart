@@ -385,7 +385,7 @@ class Feature<T extends Geometry> extends FeatureObject {
       final b = bounds;
       if (geom != geometry ||
           (b == null && geom != null) ||
-          (b != null && !b.conformsScheme(scheme))) {
+          (b != null && !b.conforming.conformsWith(scheme))) {
         return Feature(
           id: id,
           geometry: geom,

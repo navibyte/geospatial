@@ -428,7 +428,8 @@ class LineString extends SimpleGeometry {
       // create a new geometry if bounds was unpopulated or of other scheme
       final b = bounds;
       final empty = isEmptyByGeometry;
-      if ((b == null && !empty) || (b != null && !b.conformsScheme(scheme))) {
+      if ((b == null && !empty) ||
+          (b != null && !b.conforming.conformsWith(scheme))) {
         return LineString(
           chain,
           bounds: empty ? null : chain.getBounds(scheme: scheme),

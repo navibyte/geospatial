@@ -72,4 +72,7 @@ class PositionScheme {
 
   /// The factory to create bounding boxes.
   CreateBox get box => _box;
+
+  /// Returns true if this scheme conforms with [other].
+  bool conformsWith(PositionScheme other) => this == other;
 }

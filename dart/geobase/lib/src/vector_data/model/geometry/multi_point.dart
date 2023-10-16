@@ -347,7 +347,8 @@ class MultiPoint extends SimpleGeometry {
       // create a new geometry if bounds was unpopulated or of other scheme
       final b = bounds;
       final empty = positions.isEmpty;
-      if ((b == null && !empty) || (b != null && !b.conformsScheme(scheme))) {
+      if ((b == null && !empty) ||
+          (b != null && !b.conforming.conformsWith(scheme))) {
         return MultiPoint(
           positions,
           bounds: empty ? null : calculateBounds(scheme: scheme),

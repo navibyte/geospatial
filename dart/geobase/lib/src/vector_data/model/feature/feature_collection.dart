@@ -370,7 +370,7 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
       final empty = coll.isEmpty;
       if (coll != features ||
           (b == null && !empty) ||
-          (b != null && !b.conformsScheme(scheme))) {
+          (b != null && !b.conforming.conformsWith(scheme))) {
         return FeatureCollection<E>._(
           coll,
           coordType,

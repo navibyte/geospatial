@@ -417,7 +417,7 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
   /// Coordinate values of all positions in this series as an iterable.
   ///
   /// The number of all values expected is indicated by [valueCount].
-  /// 
+  ///
   /// Each position contains 2, 3 or 4 coordinate values indicated by
   /// [coordinateDimension].
   ///
@@ -898,10 +898,10 @@ class _PositionArray extends PositionSeries {
   }) {
     if (onBounds) {
       // create a new series if bounds was unpopulated or of other scheme
-      final currBounds = bounds;
+      final b = bounds;
       final empty = isEmptyByGeometry;
-      if ((currBounds == null && !empty) ||
-          (currBounds != null && !currBounds.conformsScheme(scheme))) {
+      if ((b == null && !empty) ||
+          (b != null && !b.conforming.conformsWith(scheme))) {
         return _PositionArray.view(
           _data,
           type: _type,
@@ -1145,10 +1145,10 @@ class _PositionDataCoords extends PositionSeries {
   }) {
     if (onBounds) {
       // create a new series if bounds was unpopulated or of other scheme
-      final currBounds = bounds;
+      final b = bounds;
       final empty = isEmptyByGeometry;
-      if ((currBounds == null && !empty) ||
-          (currBounds != null && !currBounds.conformsScheme(scheme))) {
+      if ((b == null && !empty) ||
+          (b != null && !b.conforming.conformsWith(scheme))) {
         return _PositionDataCoords.view(
           _data,
           type: _type,

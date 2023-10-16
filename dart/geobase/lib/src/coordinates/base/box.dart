@@ -304,8 +304,8 @@ abstract class Box extends ValuePositionable {
         singlePrecision: singlePrecision,
       );
 
-  /// Returns true if this bounding box instance conforms to the given [scheme].
-  bool conformsScheme(PositionScheme scheme) => scheme == Position.scheme;
+  /// Returns a position scheme this bounding box is conforming to.
+  PositionScheme get conforming => Position.scheme;
 
   /// The minimum x (or west) coordinate.
   ///

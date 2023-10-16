@@ -246,7 +246,7 @@ class GeometryCollection<E extends Geometry> extends Geometry {
       final empty = coll.isEmpty;
       if (coll != geometries ||
           (b == null && !empty) ||
-          (b != null && !b.conformsScheme(scheme))) {
+          (b != null && !b.conforming.conformsWith(scheme))) {
         return GeometryCollection<E>._(
           coll,
           coordType,

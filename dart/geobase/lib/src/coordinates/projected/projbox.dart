@@ -286,7 +286,7 @@ class ProjBox extends Box {
       );
 
   @override
-  bool conformsScheme(PositionScheme scheme) => scheme == Projected.scheme;
+  PositionScheme get conforming => Projected.scheme;
 
   @override
   double get minX => _minX;

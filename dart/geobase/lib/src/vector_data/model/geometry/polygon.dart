@@ -700,7 +700,8 @@ class Polygon extends SimpleGeometry {
       // create a new geometry if bounds was unpopulated or of other scheme
       final b = bounds;
       final empty = rings.isEmpty;
-      if ((b == null && !empty) || (b != null && !b.conformsScheme(scheme))) {
+      if ((b == null && !empty) ||
+          (b != null && !b.conforming.conformsWith(scheme))) {
         return Polygon(
           rings,
           bounds: empty ? null : exterior?.getBounds(scheme: scheme),

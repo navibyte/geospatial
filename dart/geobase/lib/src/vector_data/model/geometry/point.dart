@@ -379,7 +379,9 @@ class _BoundedPoint extends Point {
 
   @override
   Box? getBounds({PositionScheme scheme = Position.scheme}) =>
-      bounds.conformsScheme(scheme) ? bounds : calculateBounds(scheme: scheme);
+      bounds.conforming.conformsWith(scheme)
+          ? bounds
+          : calculateBounds(scheme: scheme);
 
   @override
   Point populated({
@@ -387,7 +389,7 @@ class _BoundedPoint extends Point {
     bool onBounds = true,
     PositionScheme scheme = Position.scheme,
   }) =>
-      onBounds && !bounds.conformsScheme(scheme)
+      onBounds && !bounds.conforming.conformsWith(scheme)
           ? _BoundedPoint(position, bounds: calculateBounds(scheme: scheme))
           : this;
 

@@ -57,7 +57,7 @@ abstract class Bounded extends Positionable {
   /// or otherwise returns one calculated by [calculateBounds].
   Box? getBounds({PositionScheme scheme = Position.scheme}) {
     final b = bounds;
-    return b != null && b.conformsScheme(scheme)
+    return b != null && b.conforming.conformsWith(scheme)
         ? b
         : calculateBounds(scheme: scheme);
   }

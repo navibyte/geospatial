@@ -65,7 +65,7 @@ abstract class ValuePositionable extends Positionable {
   int get valueCount => positionCount * coordinateDimension;
 
   /// Coordinate values as a double iterable.
-  /// 
+  ///
   /// The number of values expected is indicated by [valueCount].
   ///
   /// For projected or cartesian coordinates, the coordinate ordering is:

@@ -374,7 +374,8 @@ class MultiLineString extends SimpleGeometry {
       // create a new geometry if bounds was unpopulated or of other scheme
       final b = bounds;
       final empty = chains.isEmpty;
-      if ((b == null && !empty) || (b != null && !b.conformsScheme(scheme))) {
+      if ((b == null && !empty) ||
+          (b != null && !b.conforming.conformsWith(scheme))) {
         return MultiLineString(
           chains,
           bounds: empty

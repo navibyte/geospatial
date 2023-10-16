@@ -221,8 +221,9 @@ class Geographic extends Position {
         swapXY: swapXY,
       );
 
+  /// Returns a position scheme this position is conforming to.
   @override
-  bool conformsScheme(PositionScheme scheme) => scheme == Geographic.scheme;
+  PositionScheme get conforming => Geographic.scheme;
 
   /// The longitude coordinate.
   double get lon => _lon;

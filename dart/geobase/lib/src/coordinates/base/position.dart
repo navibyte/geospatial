@@ -310,8 +310,8 @@ abstract class Position extends ValuePositionable {
         singlePrecision: singlePrecision,
       );
 
-  /// Returns true if this position instance conforms to the given [scheme].
-  bool conformsScheme(PositionScheme scheme) => scheme == Position.scheme;
+  /// Returns a position scheme this position is conforming to.
+  PositionScheme get conforming => Position.scheme;
 
   /// The x coordinate value.
   ///
@@ -382,7 +382,7 @@ abstract class Position extends ValuePositionable {
   int get positionCount => 1;
 
   /// Coordinate values of this position as an iterable of 2, 3 or 4 items.
-  /// 
+  ///
   /// The number of values expected is indicated by [valueCount].
   ///
   /// For projected or cartesian coordinates, the coordinate ordering is:

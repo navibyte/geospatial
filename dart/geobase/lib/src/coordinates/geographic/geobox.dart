@@ -328,7 +328,7 @@ class GeoBox extends Box {
       );
 
   @override
-  bool conformsScheme(PositionScheme scheme) => scheme == Geographic.scheme;
+  PositionScheme get conforming => Geographic.scheme;
 
   /// The west coordinate as geographic longitude.
   double get west => _west;
