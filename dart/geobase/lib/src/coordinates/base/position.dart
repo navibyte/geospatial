@@ -601,6 +601,11 @@ abstract class Position extends ValuePositionable {
   Position operator +(Position other) =>
       cartesianPositionSum(this, other, to: conforming.position);
 
+  /// Returns a position with coordinate values of this subtracted with values
+  /// of [other].
+  Position operator -(Position other) =>
+      cartesianPositionSubtract(this, other, to: conforming.position);
+
   /// A string representation of coordinate values separated by [delimiter].
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).

@@ -305,6 +305,10 @@ class Projected extends Position {
       cartesianPositionSum(this, other, to: Projected.create);
 
   @override
+  Projected operator -(Position other) =>
+      cartesianPositionSubtract(this, other, to: Projected.create);
+
+  @override
   bool get is3D => _z != null;
 
   @override

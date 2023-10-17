@@ -103,3 +103,21 @@ R cartesianPositionSum<R extends Position>(
     m: hasM ? p1.m + p2.m : null,
   );
 }
+
+/// Returns a position with coordinate values of [p1] subtracted with values of
+/// [p2].
+@internal
+R cartesianPositionSubtract<R extends Position>(
+  R p1,
+  Position p2, {
+  required CreatePosition<R> to,
+}) {
+  final hasZ = p1.is3D && p2.is3D;
+  final hasM = p1.isMeasured && p2.isMeasured;
+  return to.call(
+    x: p1.x - p2.x,
+    y: p1.y - p2.y,
+    z: hasZ ? p1.z - p2.z : null,
+    m: hasM ? p1.m - p2.m : null,
+  );
+}
