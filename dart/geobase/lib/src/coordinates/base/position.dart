@@ -606,6 +606,17 @@ abstract class Position extends ValuePositionable {
   Position operator -(Position other) =>
       cartesianPositionSubtract(this, other, to: conforming.position);
 
+  /// Returns a position with coordinate values of this scaled by [factor].
+  Position operator *(double factor) =>
+      cartesianPositionScale(this, factor: factor, to: conforming.position);
+
+  /// Returns a position with coordinate values of this scaled by `1.0/factor`.
+  Position operator /(double factor) => cartesianPositionScale(
+        this,
+        factor: 1.0 / factor,
+        to: conforming.position,
+      );
+
   /// A string representation of coordinate values separated by [delimiter].
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).

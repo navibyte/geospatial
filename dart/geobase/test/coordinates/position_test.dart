@@ -765,11 +765,19 @@ class _TestXYZM implements Projected {
 
   @override
   Projected operator +(Position other) =>
-      cartesianPositionSum(this, other, to: Projected.create);
+      cartesianPositionSum(this, other, to: _TestXYZM.create);
 
   @override
   Projected operator -(Position other) =>
-      cartesianPositionSubtract(this, other, to: Projected.create);
+      cartesianPositionSubtract(this, other, to: _TestXYZM.create);
+
+  @override
+  Projected operator *(double factor) =>
+      cartesianPositionScale(this, factor: factor, to: _TestXYZM.create);
+
+  @override
+  Projected operator /(double factor) =>
+      cartesianPositionScale(this, factor: 1.0 / factor, to: _TestXYZM.create);
 
   @override
   bool operator ==(Object other) =>

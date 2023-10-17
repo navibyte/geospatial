@@ -121,3 +121,20 @@ R cartesianPositionSubtract<R extends Position>(
     m: hasM ? p1.m - p2.m : null,
   );
 }
+
+/// Returns a position with coordinate values of [position] scaled by [factor].
+@internal
+R cartesianPositionScale<R extends Position>(
+  R position, {
+  required double factor,
+  required CreatePosition<R> to,
+}) {
+  final hasZ = position.is3D;
+  final hasM = position.isMeasured;
+  return to.call(
+    x: factor * position.x,
+    y: factor * position.y,
+    z: hasZ ? factor * position.z : null,
+    m: hasM ? factor * position.m : null,
+  );
+}

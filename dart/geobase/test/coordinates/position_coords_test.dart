@@ -431,6 +431,20 @@ void main() {
       );
     });
 
+    test('Scale', () {
+      expect([1.5, -1.5].xy * 2.0, [3.0, -3.0].xy);
+      expect([1.5, -1.5, 0.0].xyz * -2.0, [-3.0, 3.0, 0.0].xyz);
+      expect([1.5, -1.5, 0.0].xym * -2.0, [-3.0, 3.0, 0.0].xym);
+      expect([1.5, -1.5, 0.5, 1.0].xyzm * -2.0, [-3.0, 3.0, -1.0, -2.0].xyzm);
+
+      expect([1.5, -1.5].xy / 0.5, [3.0, -3.0].xy);
+      expect([1.5, -1.5, 0.0].xyz / -0.5, [-3.0, 3.0, 0.0].xyz);
+      expect([1.5, -1.5, 0.0].xym / -0.5, [-3.0, 3.0, 0.0].xym);
+      expect([1.5, -1.5, 0.5, 1.0].xyzm / -0.5, [-3.0, 3.0, -1.0, -2.0].xyzm);
+
+      expect([1.5, -1.5].xy / 0.0, [double.infinity, -double.infinity].xy);
+    });
+
     test('Copy with', () {
       expect(
         [1.0, 1.0].xy.copyWith(),

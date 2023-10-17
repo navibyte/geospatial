@@ -345,6 +345,14 @@ class Geographic extends Position {
       cartesianPositionSubtract(this, other, to: Geographic.create);
 
   @override
+  Geographic operator *(double factor) =>
+      cartesianPositionScale(this, factor: factor, to: Geographic.create);
+
+  @override
+  Geographic operator /(double factor) =>
+      cartesianPositionScale(this, factor: 1.0 / factor, to: Geographic.create);
+
+  @override
   bool get is3D => _elev != null;
 
   @override
