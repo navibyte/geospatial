@@ -224,7 +224,7 @@ class SphericalGreatCircle extends Geodetic {
     return Geographic(lat: latm.toDegrees(), lon: lonm.toDegrees());
   }
 
-  /// Returns the itermediate point at the given fraction between the current
+  /// Returns the intermediate point at the given fraction between the current
   /// [position] and [destination].
   ///
   /// Parameters:
@@ -236,13 +236,14 @@ class SphericalGreatCircle extends Geodetic {
   ///   const p2 = Geographic(lat: 48.857, lon: 2.351);
   ///
   ///   // intermediate point (lat: 51.3721°N, lon: 000.7073°E)
-  ///   final pInt = p1.spherical.intermediatePointTo(p2, 0.25);
+  ///   final pInt = p1.spherical.intermediatePointTo(p2, fraction: 0.25);
   /// ```
   Geographic intermediatePointTo(
     Geographic destination, {
     required double fraction,
   }) {
-    if (position == destination) return position;
+    if (position == destination || fraction == 0.0) return position;
+    if (fraction == 1.0) return destination;
 
     final lat1 = position.lat.toRadians();
     final lon1 = position.lon.toRadians();
