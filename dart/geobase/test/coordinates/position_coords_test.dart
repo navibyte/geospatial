@@ -266,6 +266,59 @@ void main() {
       );
     });
 
+    test('Intermediate points', () {
+      final p1 = Position.create(x: 0.119, y: 52.205);
+      final p2 = Position.create(x: 2.351, y: 48.857);
+
+      // intermediate point (x: 0.677, y: 51.368)
+      final pInt = p1.intermediatePointTo(p2, fraction: 0.25);
+      expect(pInt.toText(decimals: 3), '0.677,51.368');
+
+      expect(
+        [0.0, 0.0].xy.intermediatePointTo([4.0, 4.0].xy, fraction: -1.0),
+        [-4.0, -4.0].xy,
+      );
+      expect(
+        [0.0, 0.0].xy.intermediatePointTo([4.0, 4.0].xy, fraction: 0.0),
+        [0.0, 0.0].xy,
+      );
+      expect(
+        [0.0, 0.0].xy.intermediatePointTo([4.0, 4.0].xy, fraction: 0.5),
+        [2.0, 2.0].xy,
+      );
+      expect(
+        [0.0, 0.0].xy.intermediatePointTo([4.0, 4.0].xy, fraction: 1.0),
+        [4.0, 4.0].xy,
+      );
+      expect(
+        [0.0, 0.0].xy.intermediatePointTo([4.0, 4.0].xy, fraction: 2.0),
+        [8.0, 8.0].xy,
+      );
+
+      expect(
+        [-0.0, -0.0].xy.intermediatePointTo([-4.0, -4.0].xy, fraction: 0.25),
+        [-1.0, -1.0].xy,
+      );
+      expect(
+        [-0.0, -0.0, -0.1]
+            .xyz
+            .intermediatePointTo([-4.0, -4.0, -0.5].xyz, fraction: 0.25),
+        [-1.0, -1.0, -0.2].xyz,
+      );
+      expect(
+        [-0.0, -0.0, -0.1]
+            .xym
+            .intermediatePointTo([-4.0, -4.0, -0.5].xym, fraction: 0.25),
+        [-1.0, -1.0, -0.2].xym,
+      );
+      expect(
+        [-0.0, -0.0, -0.1, 0.1]
+            .xyzm
+            .intermediatePointTo([-4.0, -4.0, -0.5, 0.5].xyzm, fraction: 0.25),
+        [-1.0, -1.0, -0.2, 0.2].xyzm,
+      );
+    });
+
     test('Copy with', () {
       expect(
         [1.0, 1.0].xy.copyWith(),

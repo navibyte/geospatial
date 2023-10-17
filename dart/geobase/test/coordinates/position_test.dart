@@ -731,6 +731,9 @@ class _TestXYZM implements Projected {
 
   @override
   Position midPointTo(Position destination) {
+    // ignore: avoid_returning_this
+    if (this == destination) return this;
+
     final hasZ = is3D && destination.is3D;
     final hasM = isMeasured && destination.isMeasured;
     return conforming.position.call(
@@ -738,6 +741,25 @@ class _TestXYZM implements Projected {
       y: 0.5 * y + 0.5 * destination.y,
       z: hasZ ? 0.5 * z + 0.5 * destination.z : null,
       m: hasM ? 0.5 * m + 0.5 * destination.m : null,
+    );
+  }
+
+  @override
+  Position intermediatePointTo(
+    Position destination, {
+    required double fraction,
+  }) {
+    // ignore: avoid_returning_this
+    if (this == destination || fraction == 0.0) return this;
+    if (fraction == 1.0) return destination;
+
+    final hasZ = is3D && destination.is3D;
+    final hasM = isMeasured && destination.isMeasured;
+    return conforming.position.call(
+      x: x + fraction * (destination.x - x),
+      y: y + fraction * (destination.y - y),
+      z: hasZ ? z + fraction * (destination.z - z) : null,
+      m: hasM ? m + fraction * (destination.m - m) : null,
     );
   }
 
