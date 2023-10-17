@@ -12,6 +12,7 @@ NOTE: Version 1.0.0 currently under development (1.0.0-dev.1).
 * [Handle the special case of bbox or geometries spanning the anti-meridian (longitude 180 degrees) #185](https://github.com/navibyte/geospatial/issues/185)
 * [Merge and split on Box #211](https://github.com/navibyte/geospatial/issues/211)
 * [PositionScheme for generic, geographic and projected position data #214](https://github.com/navibyte/geospatial/issues/214)
+* [Add basic geometry calculation functions #191](https://github.com/navibyte/geospatial/issues/191)
 
 🛠 Refactoring:
 * [Normalize longitude with inclusive limit on east 180 degrees #210](https://github.com/navibyte/geospatial/issues/210)

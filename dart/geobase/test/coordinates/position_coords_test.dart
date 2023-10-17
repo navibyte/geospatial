@@ -215,6 +215,25 @@ void main() {
       );
     });
 
+    test('Distances 2D', () {
+      expect([1.0, 1.0].xy.distanceTo2D([4.0, 1.0].xy), 3.0);
+      expect([1.0, 1.0].xy.distanceTo2D([1.0, 4.0].xy), 3.0);
+      expect(
+        [1.0, 1.0].xy.distanceTo2D([4.0, 4.0].xy),
+        closeTo(4.242640687119285, 0.0000000000001),
+      );
+    });
+
+    test('Distances 3D', () {
+      expect([1.0, 1.0, 1.0].xyz.distanceTo3D([4.0, 1.0, 1.0].xyz), 3.0);
+      expect([1.0, 1.0, 1.0].xyz.distanceTo3D([1.0, 4.0, 1.0].xyz), 3.0);
+      expect([1.0, 1.0, 1.0].xyz.distanceTo3D([1.0, 1.0, 4.0].xyz), 3.0);
+      expect(
+        [1.0, 1.0, 1.0].xyz.distanceTo3D([4.0, 4.0, 4.0].xyz),
+        closeTo(5.196152422706632, 0.0000000000001),
+      );
+    });
+
     test('Copy with', () {
       expect(
         [1.0, 1.0].xy.copyWith(),

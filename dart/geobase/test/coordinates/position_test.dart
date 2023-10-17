@@ -6,6 +6,8 @@
 
 // ignore_for_file: prefer_const_declarations
 
+import 'dart:math' as math;
+
 import 'package:geobase/constants.dart';
 import 'package:geobase/coordinates.dart';
 import 'package:geobase/vector.dart';
@@ -707,6 +709,19 @@ class _TestXYZM implements Projected {
         other,
         toleranceHoriz: toleranceHoriz,
         toleranceVert: toleranceVert,
+      );
+
+  @override
+  double distanceTo2D(Position destination) => math.sqrt(
+        (x - destination.x) * (x - destination.x) +
+            (y - destination.y) * (y - destination.y),
+      );
+
+  @override
+  double distanceTo3D(Position destination) => math.sqrt(
+        (x - destination.x) * (x - destination.x) +
+            (y - destination.y) * (y - destination.y) +
+            (z - destination.z) * (z - destination.z),
       );
 
   @override

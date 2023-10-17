@@ -481,6 +481,28 @@ abstract class Position extends ValuePositionable {
         toleranceVert: toleranceVert,
       );
 
+  /// Returns the distance from this to [destination] calculated in a cartesian
+  /// 2D plane.
+  ///
+  /// To calculate the distance along the surface of the earth, see `geodesy`
+  /// extensions for `Geographic` positions.
+  ///
+  /// See also [distanceTo3D].
+  double distanceTo2D(Position destination) => math.sqrt(
+        (x - destination.x) * (x - destination.x) +
+            (y - destination.y) * (y - destination.y),
+      );
+
+  /// Returns the distance from this to [destination] calculated in a cartesian
+  /// 3D space.
+  ///
+  /// See also [distanceTo2D].
+  double distanceTo3D(Position destination) => math.sqrt(
+        (x - destination.x) * (x - destination.x) +
+            (y - destination.y) * (y - destination.y) +
+            (z - destination.z) * (z - destination.z),
+      );
+
   /// A string representation of coordinate values separated by [delimiter].
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
