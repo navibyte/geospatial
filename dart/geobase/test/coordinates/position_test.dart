@@ -764,6 +764,10 @@ class _TestXYZM implements Projected {
       );
 
   @override
+  Projected operator +(Position other) =>
+      cartesianPositionSum(this, other, to: Projected.create);
+
+  @override
   bool operator ==(Object other) =>
       other is Position && Position.testEquals(this, other);
 

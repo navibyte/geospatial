@@ -337,6 +337,10 @@ class Geographic extends Position {
       );
 
   @override
+  Geographic operator +(Position other) =>
+      cartesianPositionSum(this, other, to: Geographic.create);
+
+  @override
   bool get is3D => _elev != null;
 
   @override

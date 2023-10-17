@@ -19,7 +19,6 @@ R cartesianMidPointTo<R extends Position>(
   Position destination, {
   required CreatePosition<R> to,
 }) {
-  // ignore: avoid_returning_this
   if (source == destination) return source;
 
   final hasZ = source.is3D && destination.is3D;
@@ -45,7 +44,6 @@ R cartesianIntermediatePointTo<R extends Position>(
   required double fraction,
   required CreatePosition<R> to,
 }) {
-  // ignore: avoid_returning_this
   if (source == destination || fraction == 0.0) return source;
   if (fraction == 1.0 && destination is R) return destination;
 
@@ -72,7 +70,6 @@ R cartesianDestinationPoint2D<R extends Position>(
   required double bearing,
   required CreatePosition<R> to,
 }) {
-  // ignore: avoid_returning_this
   if (distance == 0.0) return source;
 
   final bear = bearing % 360.0;
@@ -87,5 +84,22 @@ R cartesianDestinationPoint2D<R extends Position>(
   return to.call(
     x: source.x + distance * math.cos(angleRad),
     y: source.y + distance * math.sin(angleRad),
+  );
+}
+
+/// Returns a position with all coordinate values summed from [p1] and [p2].
+@internal
+R cartesianPositionSum<R extends Position>(
+  R p1,
+  Position p2, {
+  required CreatePosition<R> to,
+}) {
+  final hasZ = p1.is3D && p2.is3D;
+  final hasM = p1.isMeasured && p2.isMeasured;
+  return to.call(
+    x: p1.x + p2.x,
+    y: p1.y + p2.y,
+    z: hasZ ? p1.z + p2.z : null,
+    m: hasM ? p1.m + p2.m : null,
   );
 }
