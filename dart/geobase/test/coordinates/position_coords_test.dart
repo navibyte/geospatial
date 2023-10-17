@@ -319,6 +319,86 @@ void main() {
       );
     });
 
+    test('Destination points', () {
+      final p1 = Position.create(x: 0.119, y: 52.205);
+
+      // destination point (x: 2.351, y: 48.857)
+      final pInt = p1.destinationPoint2D(bearing: 146.31, distance: 4.024);
+      expect(pInt.toText(decimals: 3), '2.351,48.857');
+
+      expect(
+        [2.1, 2.1]
+            .xy
+            .destinationPoint2D(distance: 2.0, bearing: 0.0)
+            .toText(decimals: 3),
+        [2.1, 4.1].xy.toText(decimals: 3),
+      );
+      expect(
+        [2.1, 2.1]
+            .xy
+            .destinationPoint2D(distance: 2.0, bearing: 90.0)
+            .toText(decimals: 3),
+        [4.1, 2.1].xy.toText(decimals: 3),
+      );
+      expect(
+        [2.1, 2.1]
+            .xy
+            .destinationPoint2D(distance: 2.0, bearing: 180.0)
+            .toText(decimals: 3),
+        [2.1, 0.1].xy.toText(decimals: 3),
+      );
+      expect(
+        [2.1, 2.1]
+            .xy
+            .destinationPoint2D(distance: 2.0, bearing: 270.0)
+            .toText(decimals: 3),
+        [0.1, 2.1].xy.toText(decimals: 3),
+      );
+
+      final tests = [
+        [34.5, -223.3].xy,
+        [-12.23, -598.23].xy,
+        [-592.3, -16.42].xy,
+        [-34.4, -58.7].xy,
+        [-53.23, 48.34].xy,
+        [64.344, 27.45].xy,
+        [73.42, -59.99].xy,
+        [0.001, 0.001].xy,
+        [-0.001, -0.001].xy,
+      ];
+
+      Position? prev;
+      for (final test in tests) {
+        if (prev != null) {
+          final bearing1 = test.bearingTo2D(prev);
+          final distance1 = test.distanceTo2D(prev);
+          final bearing2 = prev.bearingTo2D(test);
+          final distance2 = prev.distanceTo2D(test);
+
+          expect(bearing1, closeTo((bearing2 + 180.0) % 360.0, 0.000000000001));
+          expect(distance1, distance2);
+
+          expect(
+            test.toText(decimals: 3),
+            prev
+                .destinationPoint2D(distance: distance2, bearing: bearing2)
+                .toText(decimals: 3),
+          );
+          expect(
+            prev.toText(decimals: 3),
+            test
+                .destinationPoint2D(distance: distance1, bearing: bearing1)
+                .toText(decimals: 3),
+          );
+          expect(
+            test,
+            test.destinationPoint2D(distance: 0.0, bearing: bearing1),
+          );
+        }
+        prev = test;
+      }
+    });
+
     test('Copy with', () {
       expect(
         [1.0, 1.0].xy.copyWith(),

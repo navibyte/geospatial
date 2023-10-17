@@ -764,6 +764,29 @@ class _TestXYZM implements Projected {
   }
 
   @override
+  Position destinationPoint2D({
+    required double distance,
+    required double bearing,
+  }) {
+    // ignore: avoid_returning_this
+    if (distance == 0.0) return this;
+
+    final bear = bearing % 360.0;
+    final double angleDeg;
+    if (bear < 270.0) {
+      angleDeg = 90.0 - bear;
+    } else {
+      angleDeg = 450.0 - bear;
+    }
+    final angleRad = angleDeg.toRadians();
+
+    return conforming.position.call(
+      x: x + distance * math.cos(angleRad),
+      y: y + distance * math.sin(angleRad),
+    );
+  }
+
+  @override
   bool operator ==(Object other) =>
       other is Position && Position.testEquals(this, other);
 

@@ -513,8 +513,8 @@ abstract class Position extends ValuePositionable {
   /// 2D plane.
   ///
   /// The bearing is measured in degrees (0°..360°) with 0° pointing to the
-  /// positive Y-axis, 90° to the positive X-axis, 180° to the negative Y-axis,
-  /// and 270° to the negative X-axis.
+  /// positive Y-axis ("north"), 90° to the positive X-axis ("east"), 180° to
+  /// the negative Y-axis ("south"), and 270° to the negative X-axis ("west").
   ///
   /// To calculate initial and final bearings along the surface of the earth,
   /// see `spherical` and `rhumb` extensions for `Geographic` positions
@@ -577,6 +577,46 @@ abstract class Position extends ValuePositionable {
       y: y + fraction * (destination.y - y),
       z: hasZ ? z + fraction * (destination.z - z) : null,
       m: hasM ? m + fraction * (destination.m - m) : null,
+    );
+  }
+
+  /// Returns a destination point located at the given [distance] from this to
+  /// the direction of [bearing] calculated in a cartesian 2D plane.
+  ///
+  /// The bearing is measured in degrees (0°..360°) with 0° pointing to the
+  /// positive Y-axis ("north"), 90° to the positive X-axis ("east"), 180° to
+  /// the negative Y-axis ("south"), and 270° to the negative X-axis ("west").
+  ///
+  /// To calculate destination points along the surface of the earth, see
+  /// the `spherical` extension for `Geographic` positions implemented by the
+  /// `package:geobase/geodesy.dart` library.
+  ///
+  /// Examples:
+  /// ```dart
+  ///   final p1 = Position.create(x: 0.119, y: 52.205);
+  ///
+  ///   // destination point (x: 2.351, y: 48.857)
+  ///   final pInt = p1.destinationPoint2D(bearing: 146.31, distance: 4.024);
+  /// ```
+  Position destinationPoint2D({
+    required double distance,
+    required double bearing,
+  }) {
+    // ignore: avoid_returning_this
+    if (distance == 0.0) return this;
+
+    final bear = bearing % 360.0;
+    final double angleDeg;
+    if (bear < 270.0) {
+      angleDeg = 90.0 - bear;
+    } else {
+      angleDeg = 450.0 - bear;
+    }
+    final angleRad = angleDeg.toRadians();
+
+    return conforming.position.call(
+      x: x + distance * math.cos(angleRad),
+      y: y + distance * math.sin(angleRad),
     );
   }
 
