@@ -246,6 +246,26 @@ void main() {
       expect([1.0, 1.0].xy.bearingTo2D([0.5, 1.5].xy), 315.0);
     });
 
+    test('Midpoints', () {
+      expect([1.0, 1.0].xy.midPointTo([4.0, 4.0].xy), [2.5, 2.5].xy);
+      expect(
+        [1.0, 1.0, -1.0].xyz.midPointTo([4.0, 4.0, -4.0].xyz),
+        [2.5, 2.5, -2.5].xyz,
+      );
+      expect(
+        [1.0, 1.0, -1.0].xym.midPointTo([4.0, 4.0, -4.0].xym),
+        [2.5, 2.5, -2.5].xym,
+      );
+      expect(
+        [1.0, 1.0, -1.0].xyz.midPointTo([4.0, 4.0, -4.0].xym),
+        [2.5, 2.5].xy,
+      );
+      expect(
+        [0.0, -4.0, -1.0, 1.0].xyzm.midPointTo([0.0, -8.0, -4.0, -4.0].xyzm),
+        [0.0, -6.0, -2.5, -1.5].xyzm,
+      );
+    });
+
     test('Copy with', () {
       expect(
         [1.0, 1.0].xy.copyWith(),

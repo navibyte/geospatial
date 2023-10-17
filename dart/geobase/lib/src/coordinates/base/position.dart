@@ -523,6 +523,23 @@ abstract class Position extends ValuePositionable {
       (450.0 - math.atan2(destination.y - y, destination.x - x).toDegrees()) %
       360.0;
 
+  /// Returns a midpoint between this and [destination] positions calculated in
+  /// the cartesian coordinate reference system.
+  ///
+  /// To calculate midpoints along the surface of the earth, see `spherical` and
+  /// `rhumb` extensions for `Geographic` positions implemented by the
+  /// `package:geobase/geodesy.dart` library.
+  Position midPointTo(Position destination) {
+    final hasZ = is3D && destination.is3D;
+    final hasM = isMeasured && destination.isMeasured;
+    return conforming.position.call(
+      x: 0.5 * x + 0.5 * destination.x,
+      y: 0.5 * y + 0.5 * destination.y,
+      z: hasZ ? 0.5 * z + 0.5 * destination.z : null,
+      m: hasM ? 0.5 * m + 0.5 * destination.m : null,
+    );
+  }
+
   /// A string representation of coordinate values separated by [delimiter].
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).

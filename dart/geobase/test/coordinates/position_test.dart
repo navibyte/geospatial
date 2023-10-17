@@ -730,6 +730,18 @@ class _TestXYZM implements Projected {
       360.0;
 
   @override
+  Position midPointTo(Position destination) {
+    final hasZ = is3D && destination.is3D;
+    final hasM = isMeasured && destination.isMeasured;
+    return conforming.position.call(
+      x: 0.5 * x + 0.5 * destination.x,
+      y: 0.5 * y + 0.5 * destination.y,
+      z: hasZ ? 0.5 * z + 0.5 * destination.z : null,
+      m: hasM ? 0.5 * m + 0.5 * destination.m : null,
+    );
+  }
+
+  @override
   bool operator ==(Object other) =>
       other is Position && Position.testEquals(this, other);
 
