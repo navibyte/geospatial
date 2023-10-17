@@ -11,6 +11,7 @@ import '/src/coordinates/base/position.dart';
 import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/geographic/geographic.dart';
 import '/src/coordinates/projection/projection.dart';
+import '/src/utils/coord_calculations_cartesian.dart';
 
 import 'projbox.dart';
 
@@ -270,6 +271,34 @@ class Projected extends Position {
 
   @override
   Projected transform(TransformPosition transform) => transform.call(this);
+
+  @override
+  Projected midPointTo(Position destination) =>
+      cartesianMidPointTo(this, destination, to: Projected.create);
+
+  @override
+  Projected intermediatePointTo(
+    Position destination, {
+    required double fraction,
+  }) =>
+      cartesianIntermediatePointTo(
+        this,
+        destination,
+        fraction: fraction,
+        to: Projected.create,
+      );
+
+  @override
+  Projected destinationPoint2D({
+    required double distance,
+    required double bearing,
+  }) =>
+      cartesianDestinationPoint2D(
+        this,
+        distance: distance,
+        bearing: bearing,
+        to: Projected.create,
+      );
 
   @override
   bool get is3D => _z != null;

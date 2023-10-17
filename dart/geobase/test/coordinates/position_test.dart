@@ -10,6 +10,7 @@ import 'dart:math' as math;
 
 import 'package:geobase/constants.dart';
 import 'package:geobase/coordinates.dart';
+import 'package:geobase/src/utils/coord_calculations_cartesian.dart';
 import 'package:geobase/vector.dart';
 
 import 'package:meta/meta.dart';
@@ -735,61 +736,32 @@ class _TestXYZM implements Projected {
           360.0;
 
   @override
-  Position midPointTo(Position destination) {
-    // ignore: avoid_returning_this
-    if (this == destination) return this;
-
-    final hasZ = is3D && destination.is3D;
-    final hasM = isMeasured && destination.isMeasured;
-    return conforming.position.call(
-      x: 0.5 * x + 0.5 * destination.x,
-      y: 0.5 * y + 0.5 * destination.y,
-      z: hasZ ? 0.5 * z + 0.5 * destination.z : null,
-      m: hasM ? 0.5 * m + 0.5 * destination.m : null,
-    );
-  }
+  Projected midPointTo(Position destination) =>
+      cartesianMidPointTo(this, destination, to: _TestXYZM.create);
 
   @override
-  Position intermediatePointTo(
+  Projected intermediatePointTo(
     Position destination, {
     required double fraction,
-  }) {
-    // ignore: avoid_returning_this
-    if (this == destination || fraction == 0.0) return this;
-    if (fraction == 1.0) return destination;
-
-    final hasZ = is3D && destination.is3D;
-    final hasM = isMeasured && destination.isMeasured;
-    return conforming.position.call(
-      x: x + fraction * (destination.x - x),
-      y: y + fraction * (destination.y - y),
-      z: hasZ ? z + fraction * (destination.z - z) : null,
-      m: hasM ? m + fraction * (destination.m - m) : null,
-    );
-  }
+  }) =>
+      cartesianIntermediatePointTo(
+        this,
+        destination,
+        fraction: fraction,
+        to: _TestXYZM.create,
+      );
 
   @override
-  Position destinationPoint2D({
+  Projected destinationPoint2D({
     required double distance,
     required double bearing,
-  }) {
-    // ignore: avoid_returning_this
-    if (distance == 0.0) return this;
-
-    final bear = bearing % 360.0;
-    final double angleDeg;
-    if (bear < 270.0) {
-      angleDeg = 90.0 - bear;
-    } else {
-      angleDeg = 450.0 - bear;
-    }
-    final angleRad = angleDeg.toRadians();
-
-    return conforming.position.call(
-      x: x + distance * math.cos(angleRad),
-      y: y + distance * math.sin(angleRad),
-    );
-  }
+  }) =>
+      cartesianDestinationPoint2D(
+        this,
+        distance: distance,
+        bearing: bearing,
+        to: _TestXYZM.create,
+      );
 
   @override
   bool operator ==(Object other) =>

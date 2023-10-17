@@ -14,6 +14,7 @@ import 'package:meta/meta.dart';
 import '/src/codes/coords.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/projection/projection.dart';
+import '/src/utils/coord_calculations_cartesian.dart';
 import '/src/utils/coord_positions.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
@@ -534,19 +535,8 @@ abstract class Position extends ValuePositionable {
   /// To calculate midpoints along the surface of the earth, see `spherical` and
   /// `rhumb` extensions for `Geographic` positions implemented by the
   /// `package:geobase/geodesy.dart` library.
-  Position midPointTo(Position destination) {
-    // ignore: avoid_returning_this
-    if (this == destination) return this;
-
-    final hasZ = is3D && destination.is3D;
-    final hasM = isMeasured && destination.isMeasured;
-    return conforming.position.call(
-      x: 0.5 * x + 0.5 * destination.x,
-      y: 0.5 * y + 0.5 * destination.y,
-      z: hasZ ? 0.5 * z + 0.5 * destination.z : null,
-      m: hasM ? 0.5 * m + 0.5 * destination.m : null,
-    );
-  }
+  Position midPointTo(Position destination) =>
+      cartesianMidPointTo(this, destination, to: conforming.position);
 
   /// Returns an intermediate point at the given [fraction] between this and
   /// [destination] positions calculated in the cartesian coordinate reference
@@ -570,20 +560,13 @@ abstract class Position extends ValuePositionable {
   Position intermediatePointTo(
     Position destination, {
     required double fraction,
-  }) {
-    // ignore: avoid_returning_this
-    if (this == destination || fraction == 0.0) return this;
-    if (fraction == 1.0) return destination;
-
-    final hasZ = is3D && destination.is3D;
-    final hasM = isMeasured && destination.isMeasured;
-    return conforming.position.call(
-      x: x + fraction * (destination.x - x),
-      y: y + fraction * (destination.y - y),
-      z: hasZ ? z + fraction * (destination.z - z) : null,
-      m: hasM ? m + fraction * (destination.m - m) : null,
-    );
-  }
+  }) =>
+      cartesianIntermediatePointTo(
+        this,
+        destination,
+        fraction: fraction,
+        to: conforming.position,
+      );
 
   /// Returns a destination point located at the given [distance] from this to
   /// the direction of [bearing] calculated in a cartesian 2D plane.
@@ -606,24 +589,13 @@ abstract class Position extends ValuePositionable {
   Position destinationPoint2D({
     required double distance,
     required double bearing,
-  }) {
-    // ignore: avoid_returning_this
-    if (distance == 0.0) return this;
-
-    final bear = bearing % 360.0;
-    final double angleDeg;
-    if (bear < 270.0) {
-      angleDeg = 90.0 - bear;
-    } else {
-      angleDeg = 450.0 - bear;
-    }
-    final angleRad = angleDeg.toRadians();
-
-    return conforming.position.call(
-      x: x + distance * math.cos(angleRad),
-      y: y + distance * math.sin(angleRad),
-    );
-  }
+  }) =>
+      cartesianDestinationPoint2D(
+        this,
+        distance: distance,
+        bearing: bearing,
+        to: conforming.position,
+      );
 
   /// A string representation of coordinate values separated by [delimiter].
   ///

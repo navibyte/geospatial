@@ -11,6 +11,7 @@ import '/src/coordinates/base/position.dart';
 import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/projected/projected.dart';
 import '/src/coordinates/projection/projection.dart';
+import '/src/utils/coord_calculations_cartesian.dart';
 
 import 'dms.dart';
 import 'geobox.dart';
@@ -306,6 +307,34 @@ class Geographic extends Position {
 
   @override
   Geographic transform(TransformPosition transform) => transform.call(this);
+
+  @override
+  Geographic midPointTo(Position destination) =>
+      cartesianMidPointTo(this, destination, to: Geographic.create);
+
+  @override
+  Geographic intermediatePointTo(
+    Position destination, {
+    required double fraction,
+  }) =>
+      cartesianIntermediatePointTo(
+        this,
+        destination,
+        fraction: fraction,
+        to: Geographic.create,
+      );
+
+  @override
+  Geographic destinationPoint2D({
+    required double distance,
+    required double bearing,
+  }) =>
+      cartesianDestinationPoint2D(
+        this,
+        distance: distance,
+        bearing: bearing,
+        to: Geographic.create,
+      );
 
   @override
   bool get is3D => _elev != null;
