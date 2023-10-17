@@ -20,6 +20,7 @@ import '/src/utils/num.dart';
 import '/src/utils/tolerance.dart';
 
 import 'box.dart';
+import 'position_functions.dart';
 import 'position_scheme.dart';
 import 'value_positionable.dart';
 
@@ -481,11 +482,12 @@ abstract class Position extends ValuePositionable {
         toleranceVert: toleranceVert,
       );
 
-  /// Returns the distance from this to [destination] calculated in a cartesian
+  /// Returns a distance from this to [destination] calculated in a cartesian
   /// 2D plane.
   ///
-  /// To calculate the distance along the surface of the earth, see `geodesy`
-  /// extensions for `Geographic` positions.
+  /// To calculate distances along the surface of the earth, see `spherical` and
+  /// `rhumb` extensions for `Geographic` positions implemented by the
+  /// `package:geobase/geodesy.dart` library.
   ///
   /// See also [distanceTo3D].
   double distanceTo2D(Position destination) => math.sqrt(
@@ -493,8 +495,12 @@ abstract class Position extends ValuePositionable {
             (y - destination.y) * (y - destination.y),
       );
 
-  /// Returns the distance from this to [destination] calculated in a cartesian
+  /// Returns a distance from this to [destination] calculated in a cartesian
   /// 3D space.
+  ///
+  /// To calculate distances along the surface of the earth, see `spherical` and
+  /// `rhumb` extensions for `Geographic` positions implemented by the
+  /// `package:geobase/geodesy.dart` library.
   ///
   /// See also [distanceTo2D].
   double distanceTo3D(Position destination) => math.sqrt(
@@ -502,6 +508,20 @@ abstract class Position extends ValuePositionable {
             (y - destination.y) * (y - destination.y) +
             (z - destination.z) * (z - destination.z),
       );
+
+  /// Returns a bearing from this to [destination] calculated in a cartesian
+  /// 2D plane.
+  ///
+  /// The bearing is measured in degrees (0°..360°) with 0° pointing to the
+  /// positive Y-axis, 90° to the positive X-axis, 180° to the negative Y-axis,
+  /// and 270° to the negative X-axis.
+  ///
+  /// To calculate initial and final bearings along the surface of the earth,
+  /// see `spherical` and `rhumb` extensions for `Geographic` positions
+  /// implemented by the `package:geobase/geodesy.dart` library.
+  double bearingTo2D(Position destination) =>
+      (450.0 - math.atan2(destination.y - y, destination.x - x).toDegrees()) %
+      360.0;
 
   /// A string representation of coordinate values separated by [delimiter].
   ///

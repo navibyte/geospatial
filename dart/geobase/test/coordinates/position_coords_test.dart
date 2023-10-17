@@ -234,6 +234,18 @@ void main() {
       );
     });
 
+    test('Bearings 2D', () {
+      expect([1.0, 1.0].xy.bearingTo2D([4.0, 1.0].xy), 90.0);
+      expect([1.0, 1.0].xy.bearingTo2D([1.0, 4.0].xy), 0.0);
+      expect([1.0, 1.0].xy.bearingTo2D([-4.0, 1.0].xy), 270.0);
+      expect([1.0, 1.0].xy.bearingTo2D([1.0, -4.0].xy), 180.0);
+
+      expect([1.0, 1.0].xy.bearingTo2D([1.5, 1.5].xy), 45.0);
+      expect([1.0, 1.0].xy.bearingTo2D([1.5, 0.5].xy), 135.0);
+      expect([1.0, 1.0].xy.bearingTo2D([0.5, 0.5].xy), 225.0);
+      expect([1.0, 1.0].xy.bearingTo2D([0.5, 1.5].xy), 315.0);
+    });
+
     test('Copy with', () {
       expect(
         [1.0, 1.0].xy.copyWith(),

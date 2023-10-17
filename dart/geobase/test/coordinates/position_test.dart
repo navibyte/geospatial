@@ -725,6 +725,11 @@ class _TestXYZM implements Projected {
       );
 
   @override
+  double bearingTo2D(Position destination) =>
+      (450.0 - math.atan2(destination.y - y, destination.x - x).toDegrees()) %
+      360.0;
+
+  @override
   bool operator ==(Object other) =>
       other is Position && Position.testEquals(this, other);
 
