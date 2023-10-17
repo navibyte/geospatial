@@ -216,6 +216,7 @@ void main() {
     });
 
     test('Distances 2D', () {
+      expect([1.0, 1.0].xy.distanceTo2D([1.0, 1.0].xy), 0.0);
       expect([1.0, 1.0].xy.distanceTo2D([4.0, 1.0].xy), 3.0);
       expect([1.0, 1.0].xy.distanceTo2D([1.0, 4.0].xy), 3.0);
       expect(
@@ -225,6 +226,7 @@ void main() {
     });
 
     test('Distances 3D', () {
+      expect([1.0, 1.0, 1.0].xyz.distanceTo2D([1.0, 1.0, 1.0].xyz), 0.0);
       expect([1.0, 1.0, 1.0].xyz.distanceTo3D([4.0, 1.0, 1.0].xyz), 3.0);
       expect([1.0, 1.0, 1.0].xyz.distanceTo3D([1.0, 4.0, 1.0].xyz), 3.0);
       expect([1.0, 1.0, 1.0].xyz.distanceTo3D([1.0, 1.0, 4.0].xyz), 3.0);
@@ -235,6 +237,8 @@ void main() {
     });
 
     test('Bearings 2D', () {
+      expect([1.0, 1.0].xy.bearingTo2D([1.0, 1.0].xy), 0.0);
+
       expect([1.0, 1.0].xy.bearingTo2D([4.0, 1.0].xy), 90.0);
       expect([1.0, 1.0].xy.bearingTo2D([1.0, 4.0].xy), 0.0);
       expect([1.0, 1.0].xy.bearingTo2D([-4.0, 1.0].xy), 270.0);

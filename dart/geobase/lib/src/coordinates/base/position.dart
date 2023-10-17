@@ -490,10 +490,12 @@ abstract class Position extends ValuePositionable {
   /// `package:geobase/geodesy.dart` library.
   ///
   /// See also [distanceTo3D].
-  double distanceTo2D(Position destination) => math.sqrt(
-        (x - destination.x) * (x - destination.x) +
-            (y - destination.y) * (y - destination.y),
-      );
+  double distanceTo2D(Position destination) => this == destination
+      ? 0.0
+      : math.sqrt(
+          (x - destination.x) * (x - destination.x) +
+              (y - destination.y) * (y - destination.y),
+        );
 
   /// Returns a distance from this to [destination] calculated in a cartesian
   /// 3D space.
@@ -503,11 +505,13 @@ abstract class Position extends ValuePositionable {
   /// `package:geobase/geodesy.dart` library.
   ///
   /// See also [distanceTo2D].
-  double distanceTo3D(Position destination) => math.sqrt(
-        (x - destination.x) * (x - destination.x) +
-            (y - destination.y) * (y - destination.y) +
-            (z - destination.z) * (z - destination.z),
-      );
+  double distanceTo3D(Position destination) => this == destination
+      ? 0.0
+      : math.sqrt(
+          (x - destination.x) * (x - destination.x) +
+              (y - destination.y) * (y - destination.y) +
+              (z - destination.z) * (z - destination.z),
+        );
 
   /// Returns a bearing from this to [destination] calculated in a cartesian
   /// 2D plane.
@@ -519,9 +523,10 @@ abstract class Position extends ValuePositionable {
   /// To calculate initial and final bearings along the surface of the earth,
   /// see `spherical` and `rhumb` extensions for `Geographic` positions
   /// implemented by the `package:geobase/geodesy.dart` library.
-  double bearingTo2D(Position destination) =>
-      (450.0 - math.atan2(destination.y - y, destination.x - x).toDegrees()) %
-      360.0;
+  double bearingTo2D(Position destination) => this == destination
+      ? 0.0
+      : (450.0 - math.atan2(destination.y - y, destination.x - x).toDegrees()) %
+          360.0;
 
   /// Returns a midpoint between this and [destination] positions calculated in
   /// the cartesian coordinate reference system.

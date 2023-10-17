@@ -712,22 +712,27 @@ class _TestXYZM implements Projected {
       );
 
   @override
-  double distanceTo2D(Position destination) => math.sqrt(
-        (x - destination.x) * (x - destination.x) +
-            (y - destination.y) * (y - destination.y),
-      );
+  double distanceTo2D(Position destination) => this == destination
+      ? 0.0
+      : math.sqrt(
+          (x - destination.x) * (x - destination.x) +
+              (y - destination.y) * (y - destination.y),
+        );
 
   @override
-  double distanceTo3D(Position destination) => math.sqrt(
-        (x - destination.x) * (x - destination.x) +
-            (y - destination.y) * (y - destination.y) +
-            (z - destination.z) * (z - destination.z),
-      );
+  double distanceTo3D(Position destination) => this == destination
+      ? 0.0
+      : math.sqrt(
+          (x - destination.x) * (x - destination.x) +
+              (y - destination.y) * (y - destination.y) +
+              (z - destination.z) * (z - destination.z),
+        );
 
   @override
-  double bearingTo2D(Position destination) =>
-      (450.0 - math.atan2(destination.y - y, destination.x - x).toDegrees()) %
-      360.0;
+  double bearingTo2D(Position destination) => this == destination
+      ? 0.0
+      : (450.0 - math.atan2(destination.y - y, destination.x - x).toDegrees()) %
+          360.0;
 
   @override
   Position midPointTo(Position destination) {
