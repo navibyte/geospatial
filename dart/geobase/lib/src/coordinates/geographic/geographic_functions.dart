@@ -4,35 +4,11 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'dart:math';
-
 import '/src/constants/geodetic.dart';
 
-const _toRad = pi / 180.0;
-
-/// An extension on [double] with basic degrees and radians utility methods.
-extension DoubleAngleExtension on double {
-  /// Converts this double value in degrees to radians.
-  double toRadians() => this * _toRad;
-
-  /// Converts this double value in radians to degrees.
-  double toDegrees() => this / _toRad;
-
-  /// Normalizes this double value in degrees to the range `[0.0, 360.0[`.
-  ///
-  /// Examples:
-  /// * `5.0` => `5.0`
-  /// * `-5.0` => `355.0`
-  /// * `362.0` => `2.0`
-  ///
-  /// As a special case if this is `double.nan` then `double.nan` is returned.
-  double wrap360() {
-    if (this >= 0.0 && this < 360.0) {
-      return this;
-    }
-    return this % 360.0;
-  }
-
+/// An extension on [double] with basic degrees and radians utility methods (
+/// (for geographic coordinate reference systems).
+extension GeographicDoubleAngleExtension on double {
   /// Converts this double value in degrees to a normalized longitude in the
   /// range `[-180.0, 180.0]`.
   ///

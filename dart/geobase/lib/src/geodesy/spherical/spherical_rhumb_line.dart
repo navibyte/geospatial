@@ -32,8 +32,8 @@ import 'dart:math';
 
 import 'package:meta/meta.dart';
 
+import '/src/coordinates/base/position_functions.dart';
 import '/src/coordinates/geographic/geographic.dart';
-import '/src/coordinates/geographic/geographic_functions.dart';
 import '/src/geodesy/base/geodetic.dart';
 
 /// An extension for easier access to [SphericalRhumbLine].

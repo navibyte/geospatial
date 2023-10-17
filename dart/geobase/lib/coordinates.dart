@@ -25,6 +25,7 @@ export 'src/coordinates/base/bounded.dart';
 export 'src/coordinates/base/box.dart';
 export 'src/coordinates/base/position.dart';
 export 'src/coordinates/base/position_extensions.dart';
+export 'src/coordinates/base/position_functions.dart';
 export 'src/coordinates/base/position_scheme.dart';
 export 'src/coordinates/base/position_series.dart';
 export 'src/coordinates/base/positionable.dart';
