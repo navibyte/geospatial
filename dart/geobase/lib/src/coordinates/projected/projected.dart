@@ -317,6 +317,10 @@ class Projected extends Position {
       cartesianPositionScale(this, factor: 1.0 / factor, to: Projected.create);
 
   @override
+  Projected operator -() =>
+      cartesianPositionNegate(this, to: Projected.create);
+
+  @override
   bool get is3D => _z != null;
 
   @override

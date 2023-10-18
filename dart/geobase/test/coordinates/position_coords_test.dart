@@ -445,6 +445,13 @@ void main() {
       expect([1.5, -1.5].xy / 0.0, [double.infinity, -double.infinity].xy);
     });
 
+    test('Negate', () {
+      expect(-[1.5, -1.5].xy, [-1.5, 1.5].xy);
+      expect(-[1.5, -1.5, 0.0].xyz, [-1.5, 1.5, -0.0].xyz);
+      expect(-[1.5, -1.5, -0.0].xym, [-1.5, 1.5, 0.0].xym);
+      expect(-[1.5, -1.5, 10.0, 1.0].xyzm, [-1.5, 1.5, -10.0, -1.0].xyzm);
+    });
+
     test('Copy with', () {
       expect(
         [1.0, 1.0].xy.copyWith(),

@@ -780,6 +780,9 @@ class _TestXYZM implements Projected {
       cartesianPositionScale(this, factor: 1.0 / factor, to: _TestXYZM.create);
 
   @override
+  Projected operator -() => cartesianPositionNegate(this, to: _TestXYZM.create);
+
+  @override
   bool operator ==(Object other) =>
       other is Position && Position.testEquals(this, other);
 

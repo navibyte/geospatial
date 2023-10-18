@@ -138,3 +138,19 @@ R cartesianPositionScale<R extends Position>(
     m: hasM ? factor * position.m : null,
   );
 }
+
+/// Returns a position with coordinate values of [position] negated.
+@internal
+R cartesianPositionNegate<R extends Position>(
+  R position, {
+  required CreatePosition<R> to,
+}) {
+  final hasZ = position.is3D;
+  final hasM = position.isMeasured;
+  return to.call(
+    x: -position.x,
+    y: -position.y,
+    z: hasZ ? -position.z : null,
+    m: hasM ? -position.m : null,
+  );
+}
