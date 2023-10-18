@@ -349,8 +349,8 @@ class Geographic extends Position {
       cartesianPositionScale(this, factor: factor, to: Geographic.create);
 
   @override
-  Geographic operator /(double factor) =>
-      cartesianPositionScale(this, factor: 1.0 / factor, to: Geographic.create);
+  Geographic operator /(Position divisor) =>
+      cartesianPositionDivision(this, divisor: divisor, to: Geographic.create);
 
   @override
   Geographic operator %(Position divisor) =>

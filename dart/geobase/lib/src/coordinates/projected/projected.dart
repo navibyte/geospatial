@@ -313,8 +313,8 @@ class Projected extends Position {
       cartesianPositionScale(this, factor: factor, to: Projected.create);
 
   @override
-  Projected operator /(double factor) =>
-      cartesianPositionScale(this, factor: 1.0 / factor, to: Projected.create);
+  Projected operator /(Position divisor) =>
+      cartesianPositionDivision(this, divisor: divisor, to: Projected.create);
 
   @override
   Projected operator %(Position divisor) =>

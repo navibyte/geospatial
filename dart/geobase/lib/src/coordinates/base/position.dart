@@ -610,20 +610,28 @@ abstract class Position extends ValuePositionable {
   Position operator *(double factor) =>
       cartesianPositionScale(this, factor: factor, to: conforming.position);
 
-  /// Returns a position with coordinate values of this scaled by `1.0/factor`.
-  Position operator /(double factor) => cartesianPositionScale(
+  /// Returns a position with coordinate values of this divided by values of
+  /// [divisor].
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // This usage of modulo operator returns a position of `[15.0, 15.0].xy`
+  /// [150.0, 300.0].xy / [10.0, 20.0].xy;
+  /// ```
+  Position operator /(Position divisor) => cartesianPositionDivision(
         this,
-        factor: 1.0 / factor,
+        divisor: divisor,
         to: conforming.position,
       );
 
   /// Returns a position with coordinate values of this applied with modulo
   /// operator `%` by values of [divisor].
-  /// 
+  ///
   /// Examples:
-  /// 
+  ///
   /// ```dart
-  /// // This usage of modulo operator returns a position of `[10.0, 170.0].xy)`
+  /// // This usage of modulo operator returns a position of `[10.0, 170.0].xy`
   /// [370.0, 170.0].xy % [360.0, 180.0].xy;
   /// ```
   Position operator %(Position divisor) =>

@@ -139,6 +139,24 @@ R cartesianPositionScale<R extends Position>(
   );
 }
 
+/// Returns a position with coordinate values of [position] divided by values of
+/// [divisor].
+@internal
+R cartesianPositionDivision<R extends Position>(
+  R position, {
+  required Position divisor,
+  required CreatePosition<R> to,
+}) {
+  final hasZ = position.is3D && divisor.is3D;
+  final hasM = position.isMeasured && divisor.isMeasured;
+  return to.call(
+    x: position.x / divisor.x,
+    y: position.y / divisor.y,
+    z: hasZ ? position.z / divisor.z : null,
+    m: hasM ? position.m / divisor.m : null,
+  );
+}
+
 /// Returns a position with coordinate values of [position] applied with modulo
 /// operator `%` by values of [divisor].
 @internal
