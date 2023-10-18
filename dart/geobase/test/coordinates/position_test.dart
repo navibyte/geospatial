@@ -780,6 +780,10 @@ class _TestXYZM implements Projected {
       cartesianPositionScale(this, factor: 1.0 / factor, to: _TestXYZM.create);
 
   @override
+  Projected operator %(Position divisor) =>
+      cartesianPositionModulo(this, divisor: divisor, to: _TestXYZM.create);
+
+  @override
   Projected operator -() => cartesianPositionNegate(this, to: _TestXYZM.create);
 
   @override

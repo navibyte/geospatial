@@ -617,6 +617,18 @@ abstract class Position extends ValuePositionable {
         to: conforming.position,
       );
 
+  /// Returns a position with coordinate values of this applied with modulo
+  /// operator `%` by values of [divisor].
+  /// 
+  /// Examples:
+  /// 
+  /// ```dart
+  /// // This usage of modulo operator returns a position of `[10.0, 170.0].xy)`
+  /// [370.0, 170.0].xy % [360.0, 180.0].xy;
+  /// ```
+  Position operator %(Position divisor) =>
+      cartesianPositionModulo(this, divisor: divisor, to: conforming.position);
+
   /// Returns a position with coordinate values of this negated.
   Position operator -() =>
       cartesianPositionNegate(this, to: conforming.position);
