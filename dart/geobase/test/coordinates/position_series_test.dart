@@ -505,4 +505,34 @@ void main() {
       }
     });
   });
+
+  group('PositionSeries cartesian calculations', () {
+    test('Length2D', () {
+      final series1 = [
+        [1.0, 1.0].xy,
+        [1.0, 2.0].xy,
+        [2.0, 2.0].xy,
+      ].series();
+      expect(series1.length2D(), 2.0);
+      expect(series1.reversed().length2D(), 2.0);
+      final series2 = [
+        [1.0, 1.0].xy,
+        [2.0, 2.0].xy,
+        [3.0, 3.0].xy,
+      ].series();
+      expect(series2.length2D(), 2.8284271247461903);
+      expect(series2.subseries(1).length2D(), 1.4142135623730951);
+    });
+
+    test('Length3D', () {
+      final series1 = [
+        [1.0, 1.0, 1.0].xyz,
+        [1.0, 2.0, 1.0].xyz,
+        [2.0, 2.0, 1.0].xyz,
+        [2.0, 2.0, 2.0].xyz,
+      ].series();
+      expect(series1.length3D(), 3.0);
+      expect(series1.reversed().length3D(), 3.0);
+    });
+  });
 }

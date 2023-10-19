@@ -712,6 +712,51 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
     return true;
   }
 
+  /// Returns the length of a line string represented by this position series
+  /// calculated in a cartesian 2D plane.
+  ///
+  /// If this series is closed and it represents a linear ring of a polygon then
+  /// the result is a perimeter of an area.
+  ///
+  /// To calculate lengths along the surface of the earth, see `spherical`
+  /// extensions for `Iterable<Geographic>` and `PositionSeries` implemented by
+  /// the `package:geobase/geodesy.dart` library.
+  ///
+  /// See also [length3D].
+  double length2D() {
+    var length = 0.0;
+    final posCount = positionCount;
+    for (var i = 1; i < posCount; i++) {
+      final dx = x(i - 1) - x(i);
+      final dy = y(i - 1) - y(i);
+      length += math.sqrt(dx * dx + dy * dy);
+    }
+    return length;
+  }
+
+  /// Returns the length of a line string represented by this position series
+  /// calculated in a cartesian 3D space.
+  ///
+  /// If this series is closed and it represents a linear ring of a polygon then
+  /// the result is a perimeter of an area.
+  ///
+  /// To calculate (2D) lengths along the surface of the earth, see `spherical`
+  /// extensions for `Iterable<Geographic>` and `PositionSeries` implemented by
+  /// the `package:geobase/geodesy.dart` library.
+  ///
+  /// See also [length2D].
+  double length3D() {
+    var length = 0.0;
+    final posCount = positionCount;
+    for (var i = 1; i < posCount; i++) {
+      final dx = x(i - 1) - x(i);
+      final dy = y(i - 1) - y(i);
+      final dz = z(i - 1) - z(i);
+      length += math.sqrt(dx * dx + dy * dy + dz * dz);
+    }
+    return length;
+  }
+
   /// A string representation of coordinate values of all positions (in this
   /// series) separated by [delimiter].
   ///
