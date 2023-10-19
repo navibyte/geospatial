@@ -102,6 +102,24 @@ void main() {
           closeTo(6182469722.7, 0.1)); // 6.18e9 m²
     });
 
+    test('LineString length', () {
+      const lineString1 = [
+        Geographic(lat: 0.5, lon: 0.5),
+        Geographic(lat: 1.0, lon: 0.0),
+        Geographic(lat: 1.5, lon: 0.5),
+      ];
+      expect(lineString1.spherical.length2D(),
+          closeTo(157240.4, 0.1)); // 157.2404×10³ m
+      expect(lineString1.series().spherical.length2D(), closeTo(157240.4, 0.1));
+
+      expect(
+          [p1, p2].spherical.length2D(), closeTo(404300, 300)); // 404.3×10³ m
+      expect([p2, p1, p2].spherical.length2D(), closeTo(808600, 300));
+      expect([p1, p2].spherical.length2D(radius: 3959),
+          closeTo(251.2, 0.03)); // 251.2 mi
+      expect([p3, p4].spherical.length2D(), 968853.5441168448);
+    });
+
     test('Polygon area from vector data polygon object', () {
       // a closed linear ring of <lon, lat> points as flat coordinate data.
       const linearRing = [0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0];

@@ -626,6 +626,34 @@ class SphericalGreatCircleLineString {
   /// geographic positions) on a spherical model earth (great-circle paths).
   const SphericalGreatCircleLineString(this.lineString);
 
+  /// Calculates the length of a spherical line string with line segments
+  /// representing great circle arcs.
+  ///
+  /// Parameters:
+  /// * [radius]: The radius of earth (defaults to mean radius in metres).
+  ///
+  /// Example:
+  /// ```dart
+  ///   // a line string (`Iterable<Geographic>`)
+  ///   const lineString = [
+  ///     Geographic(lat: 0.5, lon: 0.5),
+  ///     Geographic(lat: 1.0, lon: 0.0),
+  ///     Geographic(lat: 1.5, lon: 0.5),
+  ///   ];
+  ///   final length = lineString.spherical.length2D(); // 157.2404×10³ m
+  /// ```
+  double length2D({double radius = 6371000.0}) {
+    var length = 0.0;
+    Geographic? previous;
+    for (final pos in lineString) {
+      if (previous != null) {
+        length += previous.spherical.distanceTo(pos, radius: radius);
+      }
+      previous = pos;
+    }
+    return length;
+  }
+
   /// Calculates the area of a spherical polygon where the sides of the polygon
   /// are great circle arcs joining the vertices.
   ///
