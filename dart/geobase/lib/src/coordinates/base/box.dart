@@ -527,6 +527,10 @@ abstract class Box extends ValuePositionable {
   /// when both has m coordinates.
   bool intersectsPoint(Position point) => Box.testIntersectsPoint(this, point);
 
+  /// Returns the perimeter of the area represented by this bounding box
+  /// calculated in a cartesian 2D plane.
+  double length2D() => 2.0 * width + 2 * height;
+
   /// Returns coordinate values as a string separated by [delimiter].
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).

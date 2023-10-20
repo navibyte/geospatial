@@ -568,6 +568,12 @@ void main() {
         ProjBox.build(const [1, 2, 3, 4, 11, 12, 13, 14]),
       );
     });
+
+    test('Length2D', () {
+      expect(ProjBox.build(const [11.0, 22.0, 13.5, 27.0]).length2D(), 15.0);
+      expect(GeoBox.build(const [11.0, 22.0, 13.5, 27.0]).length2D(), 15.0);
+      expect(GeoBox.build(const [179.0, 22.0, -178.5, 27.0]).length2D(), 15.0);
+    });
   });
 }
 
