@@ -14,6 +14,7 @@ import 'package:meta/meta.dart';
 import '/src/codes/coords.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/projection/projection.dart';
+import '/src/utils/coord_calculations_cartesian.dart';
 import '/src/utils/coord_positions.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/num.dart';
@@ -530,6 +531,32 @@ abstract class Box extends ValuePositionable {
   /// Returns the perimeter of the area represented by this bounding box
   /// calculated in a cartesian 2D plane.
   double length2D() => 2.0 * width + 2 * height;
+
+  /// Returns a bounding box with min and max coordinate values of this summed
+  /// with coordinate values of [addend].
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // Returns: `Box.create(minX: 3.0, minY: 0.0, maxX: 4.0, maxY: 1.0))`
+  /// Box.create(minX: 1.0, minY: 1.0, maxX: 2.0, maxY: 2.0) +
+  ///   Position.create(x: 2.0, y: -1.0);
+  /// ```
+  Box operator +(Position addend) =>
+      cartesianBoxSum(this, addend, to: conforming.box);
+
+  /// Returns a bounding box with min and max coordinate values of this
+  /// subtracted with coordinate values of [subtract].
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // Returns: `Box.create(minX: -1.0, minY: 2.0, maxX: 0.0, maxY: 3.0))`
+  /// Box.create(minX: 1.0, minY: 1.0, maxX: 2.0, maxY: 2.0) -
+  ///   Position.create(x: 2.0, y: -1.0);
+  /// ```
+  Box operator -(Position subtract) =>
+      cartesianBoxSubtract(this, subtract, to: conforming.box);
 
   /// Returns coordinate values as a string separated by [delimiter].
   ///

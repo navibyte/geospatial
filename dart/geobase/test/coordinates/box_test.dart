@@ -568,11 +568,53 @@ void main() {
         ProjBox.build(const [1, 2, 3, 4, 11, 12, 13, 14]),
       );
     });
+  });
 
+  group('Box Calculations', () {
     test('Length2D', () {
       expect(ProjBox.build(const [11.0, 22.0, 13.5, 27.0]).length2D(), 15.0);
       expect(GeoBox.build(const [11.0, 22.0, 13.5, 27.0]).length2D(), 15.0);
       expect(GeoBox.build(const [179.0, 22.0, -178.5, 27.0]).length2D(), 15.0);
+    });
+
+    test('Sum', () {
+      expect(
+          Box.create(minX: 1.0, minY: 1.0, maxX: 2.0, maxY: 2.0) +
+              Position.create(x: 2.0, y: -1.0),
+          Box.create(minX: 3.0, minY: 0.0, maxX: 4.0, maxY: 1.0));
+      expect(
+        [1.0, -1.0, 2.0, 2.0].box + [4.0, -4.0].xy,
+        [5.0, -5.0, 6.0, -2.0].box,
+      );
+      expect(
+        [1.0, -1.0, 0.0, 2.0, 2.0, 1.0].box + [4.0, -4.0, 1.0].xyz,
+        [5.0, -5.0, 1.0, 6.0, -2.0, 2.0].box,
+      );
+      expect(
+        [1.0, -1.0, 0.0, 0.0, 2.0, 2.0, 1.0, 0.0].box +
+            [4.0, -4.0, 1.0, 3.0].xyzm,
+        [5.0, -5.0, 1.0, 3.0, 6.0, -2.0, 2.0, 3.0].box,
+      );
+    });
+
+    test('Subtract', () {
+      expect(
+          Box.create(minX: 1.0, minY: 1.0, maxX: 2.0, maxY: 2.0) -
+              Position.create(x: 2.0, y: -1.0),
+          Box.create(minX: -1.0, minY: 2.0, maxX: 0.0, maxY: 3.0));
+      expect(
+        [1.0, -1.0, 2.0, 2.0].box - [4.0, -4.0].xy,
+        [-3.0, 3.0, -2.0, 6.0].box,
+      );
+      expect(
+        [1.0, -1.0, 0.0, 2.0, 2.0, 1.0].box - [4.0, -4.0, 1.0].xyz,
+        [-3.0, 3.0, -1.0, -2.0, 6.0, 0.0].box,
+      );
+      expect(
+        [1.0, -1.0, 0.0, 0.0, 2.0, 2.0, 1.0, 0.0].box -
+            [4.0, -4.0, 1.0, 3.0].xyzm,
+        [-3.0, 3.0, -1.0, -3.0, -2.0, 6.0, 0.0, -3.0].box,
+      );
     });
   });
 }

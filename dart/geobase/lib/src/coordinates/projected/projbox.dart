@@ -9,9 +9,11 @@ import 'package:meta/meta.dart';
 import '/src/codes/coords.dart';
 import '/src/coordinates/base/aligned.dart';
 import '/src/coordinates/base/box.dart';
+import '/src/coordinates/base/position.dart';
 import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/geographic/geobox.dart';
 import '/src/coordinates/projection/projection.dart';
+import '/src/utils/coord_calculations_cartesian.dart';
 
 import 'projected.dart';
 
@@ -400,6 +402,34 @@ class ProjBox extends Box {
     // (calculating min and max coords in all axes from corner positions)
     return GeoBox.from(unprojected);
   }
+
+  /// Returns a bounding box with min and max coordinate values of this summed
+  /// with coordinate values of [addend].
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // Returns: `ProjBox(minX: 3.0, minY: 0.0, maxX: 4.0, maxY: 1.0))`
+  /// ProjBox(minX: 1.0, minY: 1.0, maxX: 2.0, maxY: 2.0) +
+  ///   Projected(x: 2.0, y: -1.0);
+  /// ```
+  @override
+  ProjBox operator +(Position addend) =>
+      cartesianBoxSum(this, addend, to: ProjBox.create);
+
+  /// Returns a bounding box with min and max coordinate values of this
+  /// subtracted with coordinate values of [subtract].
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // Returns: `ProjBox(minX: -1.0, minY: 2.0, maxX: 0.0, maxY: 3.0))`
+  /// ProjBox(minX: 1.0, minY: 1.0, maxX: 2.0, maxY: 2.0) -
+  ///   Projected(x: 2.0, y: -1.0);
+  /// ```
+  @override
+  ProjBox operator -(Position subtract) =>
+      cartesianBoxSubtract(this, subtract, to: ProjBox.create);
 
   @override
   int get spatialDimension => type.spatialDimension;

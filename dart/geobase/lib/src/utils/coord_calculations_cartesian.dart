@@ -8,6 +8,7 @@ import 'dart:math' as math;
 
 import 'package:meta/meta.dart';
 
+import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/base/position_functions.dart';
 
@@ -188,5 +189,49 @@ R cartesianPositionNegate<R extends Position>(
     y: -position.y,
     z: hasZ ? -position.z : null,
     m: hasM ? -position.m : null,
+  );
+}
+
+/// Returns a bounding box with min and max coordinate values of [box] summed
+/// with coordinate values of [addend].
+@internal
+R cartesianBoxSum<R extends Box>(
+  R box,
+  Position addend, {
+  required CreateBox<R> to,
+}) {
+  final hasZ = box.is3D && addend.is3D;
+  final hasM = box.isMeasured && addend.isMeasured;
+  return to.call(
+    minX: box.minX + addend.x,
+    minY: box.minY + addend.y,
+    minZ: hasZ ? (box.minZ ?? 0.0) + addend.z : null,
+    minM: hasM ? (box.minM ?? 0.0) + addend.m : null,
+    maxX: box.maxX + addend.x,
+    maxY: box.maxY + addend.y,
+    maxZ: hasZ ? (box.maxZ ?? 0.0) + addend.z : null,
+    maxM: hasM ? (box.maxM ?? 0.0) + addend.m : null,
+  );
+}
+
+/// Returns a bounding box with min and max coordinate values of [box] summed
+/// with coordinate values of [subtract].
+@internal
+R cartesianBoxSubtract<R extends Box>(
+  R box,
+  Position subtract, {
+  required CreateBox<R> to,
+}) {
+  final hasZ = box.is3D && subtract.is3D;
+  final hasM = box.isMeasured && subtract.isMeasured;
+  return to.call(
+    minX: box.minX - subtract.x,
+    minY: box.minY - subtract.y,
+    minZ: hasZ ? (box.minZ ?? 0.0) - subtract.z : null,
+    minM: hasM ? (box.minM ?? 0.0) - subtract.m : null,
+    maxX: box.maxX - subtract.x,
+    maxY: box.maxY - subtract.y,
+    maxZ: hasZ ? (box.maxZ ?? 0.0) - subtract.z : null,
+    maxM: hasM ? (box.maxM ?? 0.0) - subtract.m : null,
   );
 }

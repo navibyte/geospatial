@@ -15,6 +15,7 @@ import '/src/coordinates/base/position.dart';
 import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/projected/projbox.dart';
 import '/src/coordinates/projection/projection.dart';
+import '/src/utils/coord_calculations_cartesian.dart';
 
 import 'dms.dart';
 import 'geographic.dart';
@@ -711,6 +712,34 @@ class GeoBox extends Box {
       return Box.testIntersectsPoint(this, point);
     }
   }
+
+  /// Returns a bounding box with min and max coordinate values of this summed
+  /// with coordinate values of [addend].
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // Returns: `GeoBox(west: 3.0, south: 0.0, east: 4.0, north: 1.0))`
+  /// GeoBox(west: 1.0, south: 1.0, east: 2.0, north: 2.0) +
+  ///   Geographic(lon: 2.0, lat: -1.0);
+  /// ```
+  @override
+  GeoBox operator +(Position addend) =>
+      cartesianBoxSum(this, addend, to: GeoBox.create);
+
+  /// Returns a bounding box with min and max coordinate values of this
+  /// subtracted with coordinate values of [subtract].
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // Returns: `GeoBox(west: -1.0, south: 2.0, east: 0.0, north: 3.0))`
+  /// GeoBox(west: 1.0, south: 1.0, east: 2.0, north: 2.0) -
+  ///   Geographic(lon: 2.0, lat: -1.0);
+  /// ```
+  @override
+  GeoBox operator -(Position subtract) =>
+      cartesianBoxSubtract(this, subtract, to: GeoBox.create);
 
   @override
   int get spatialDimension => type.spatialDimension;
