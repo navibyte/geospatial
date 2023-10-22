@@ -57,5 +57,8 @@ class AddOneOnXYProjection with Projection {
   }
 }
 
-T addOneOnXYTransform<T extends Position>(T source) =>
-    source.copyWith(x: source.x + 1.0, y: source.y + 1) as T;
+T addOneOnXYTransform<T extends Position>(
+  Position source, {
+  required CreatePosition<T> to,
+}) =>
+    to.call(x: source.x + 1.0, y: source.y + 1);

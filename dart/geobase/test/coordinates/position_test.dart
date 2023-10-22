@@ -609,7 +609,8 @@ class _TestXYZM implements Projected {
       projection.project(this, to: Geographic.create);
 
   @override
-  Projected transform(TransformPosition transform) => transform(this);
+  Projected transform(TransformPosition transform) =>
+      transform.call(this, to: _TestXYZM.create);
 
   @override
   double operator [](int i) => Position.getValue(this, i);

@@ -39,12 +39,14 @@ typedef CreatePosition<T extends Position> = T Function({
   double? m,
 });
 
-/// A function to transform the [source] position of `T` to a position of `T`.
-///
-/// Target positions of `T` are created using [source] itself as a factory.
+/// A function to transform the [source] position to a position of [T] using
+/// [to] as a factory.
 ///
 /// Throws FormatException if cannot transform.
-typedef TransformPosition = T Function<T extends Position>(T source);
+typedef TransformPosition = T Function<T extends Position>(
+  Position source, {
+  required CreatePosition<T> to,
+});
 
 /// A base class for geospatial positions.
 ///
@@ -1134,7 +1136,8 @@ class _PositionCoords extends Position {
       projection.project(this, to: Position.create);
 
   @override
-  Position transform(TransformPosition transform) => transform.call(this);
+  Position transform(TransformPosition transform) =>
+      transform.call(this, to: Position.create);
 
   @override
   bool operator ==(Object other) =>

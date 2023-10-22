@@ -7,6 +7,7 @@ NOTE: Version 1.0.0 currently under development (1.0.0-dev.1).
 ⚠️ Breaking changes:
 * [Remove previous deprecations for geobase 1.0.0 #207](https://github.com/navibyte/geospatial/issues/207)
 * [Restructure abstract base classes Positionable and Bounded #213](https://github.com/navibyte/geospatial/issues/213)
+* [Change signature of TransformPosition typedef #216](https://github.com/navibyte/geospatial/issues/216)
 
 🧩 Features:
 * [Handle the special case of bbox or geometries spanning the anti-meridian (longitude 180 degrees) #185](https://github.com/navibyte/geospatial/issues/185)

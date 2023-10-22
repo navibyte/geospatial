@@ -306,7 +306,8 @@ class Geographic extends Position {
       projection.project(this, to: Projected.create);
 
   @override
-  Geographic transform(TransformPosition transform) => transform.call(this);
+  Geographic transform(TransformPosition transform) =>
+      transform.call(this, to: Geographic.create);
 
   @override
   Geographic midPointTo(Position destination) =>
