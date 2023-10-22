@@ -598,6 +598,8 @@ void main() {
           [35.0, 62.0, 32.0].xyz,
         ].series().values,
       );
+
+      expect([10.0, 11.0].xy.transform(_sampleTransform), [15.0, 22.0].xy);
     });
   });
 }

@@ -439,10 +439,41 @@ abstract class Position extends ValuePositionable {
   @override
   Position project(Projection projection);
 
-  /// Returns a position transformed from this position using [transform].
+  /// Returns a position transformed from this using [transform].
   ///
-  /// The returned object should be of the same type as this object has.
-  Position transform(TransformPosition transform);
+  /// As an example a transform function could be:
+  ///
+  /// ```dart
+  /// /// A sample transform function for positions that translates `x` by 5.0,
+  /// /// scales `y` by 2.0, keeps `z` intact (null or a value), and ensures
+  /// /// `m` is cleared.
+  /// T _sampleTransform<T extends Position>(
+  ///   Position source, {
+  ///   required CreatePosition<T> to,
+  /// }) =>
+  ///     // call factory to create a transformed position
+  ///     to.call(
+  ///       x: source.x + 5.0, // translate x by 5.0
+  ///       y: source.y * 2.0, // scale y by 2.0
+  ///       z: source.optZ, // copy z value from source (null or a value)
+  ///       m: null, // set m null even if source has null
+  ///     );
+  /// ```
+  ///
+  /// Then this transform function could be applied like this:
+  ///
+  /// ```dart
+  /// // create a position X and Y coordinate values
+  /// final position1 = [10.0, 11.0].xy;
+  ///
+  /// // transform it
+  /// final transformed = position1.transform(_sampleTransform);
+  ///
+  /// // in this case the result would contains same coordinate values as this
+  /// final position2 = [15.0, 22.0].xy;
+  /// ```
+  Position transform(TransformPosition transform) =>
+      transform.call(this, to: conforming.position);
 
   /// True if this and the [other] position equals.
   @override
@@ -1134,10 +1165,6 @@ class _PositionCoords extends Position {
   @override
   Position project(Projection projection) =>
       projection.project(this, to: Position.create);
-
-  @override
-  Position transform(TransformPosition transform) =>
-      transform.call(this, to: Position.create);
 
   @override
   bool operator ==(Object other) =>
