@@ -134,7 +134,8 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
   ///
   /// If given [type] is null then the coordinate type of [source] positions is
   /// resolved from those positions (a type returned is such that it's valid
-  /// for all positions).
+  /// for all positions). For an empty [source] the `Coords.xy` type is used if
+  /// [type] is missing.
   ///
   /// If [source] is `List<Position>` then it's used directly as a source for a
   /// new `PositionSeries` object. If [source] is `Iterable<Position>` then
@@ -192,6 +193,8 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
 
     if (type != null) {
       return _PositionArray.view(data, type: type);
+    } else if (data.isEmpty) {
+      return _PositionArray.view(data, type: Coords.xy);
     } else {
       var is3D = true;
       var isMeasured = true;
