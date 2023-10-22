@@ -12,6 +12,7 @@ import 'package:meta/meta.dart';
 import '/src/codes/coords.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/projection/projection.dart';
+import '/src/utils/coord_calculations_cartesian.dart';
 import '/src/utils/coord_positions.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/tolerance.dart';
@@ -756,6 +757,25 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
     }
     return length;
   }
+
+  /// Returns a position series with coordinate values of all positions scaled
+  /// by [factor].
+  PositionSeries operator *(double factor) => PositionSeries.from(
+        positions.map(
+          (pos) => cartesianPositionScale(
+            pos,
+            factor: factor,
+            to: pos.conforming.position,
+          ),
+        ),
+      );
+
+  /// Returns a position series with coordinate values of all positions negated.
+  PositionSeries operator -() => PositionSeries.from(
+        positions.map(
+          (pos) => cartesianPositionNegate(pos, to: pos.conforming.position),
+        ),
+      );
 
   /// A string representation of coordinate values of all positions (in this
   /// series) separated by [delimiter].

@@ -91,7 +91,7 @@ R cartesianDestinationPoint2D<R extends Position>(
 /// Returns a position with all coordinate values summed from [p1] and [p2].
 @internal
 R cartesianPositionSum<R extends Position>(
-  R p1,
+  Position p1,
   Position p2, {
   required CreatePosition<R> to,
 }) {
@@ -109,7 +109,7 @@ R cartesianPositionSum<R extends Position>(
 /// [p2].
 @internal
 R cartesianPositionSubtract<R extends Position>(
-  R p1,
+  Position p1,
   Position p2, {
   required CreatePosition<R> to,
 }) {
@@ -126,7 +126,7 @@ R cartesianPositionSubtract<R extends Position>(
 /// Returns a position with coordinate values of [position] scaled by [factor].
 @internal
 R cartesianPositionScale<R extends Position>(
-  R position, {
+  Position position, {
   required double factor,
   required CreatePosition<R> to,
 }) {
@@ -144,7 +144,7 @@ R cartesianPositionScale<R extends Position>(
 /// [divisor].
 @internal
 R cartesianPositionDivision<R extends Position>(
-  R position, {
+  Position position, {
   required Position divisor,
   required CreatePosition<R> to,
 }) {
@@ -162,7 +162,7 @@ R cartesianPositionDivision<R extends Position>(
 /// operator `%` by values of [divisor].
 @internal
 R cartesianPositionModulo<R extends Position>(
-  R position, {
+  Position position, {
   required Position divisor,
   required CreatePosition<R> to,
 }) {
@@ -179,7 +179,7 @@ R cartesianPositionModulo<R extends Position>(
 /// Returns a position with coordinate values of [position] negated.
 @internal
 R cartesianPositionNegate<R extends Position>(
-  R position, {
+  Position position, {
   required CreatePosition<R> to,
 }) {
   final hasZ = position.is3D;
@@ -196,7 +196,7 @@ R cartesianPositionNegate<R extends Position>(
 /// with coordinate values of [addend].
 @internal
 R cartesianBoxSum<R extends Box>(
-  R box,
+  Box box,
   Position addend, {
   required CreateBox<R> to,
 }) {
@@ -218,7 +218,7 @@ R cartesianBoxSum<R extends Box>(
 /// with coordinate values of [subtract].
 @internal
 R cartesianBoxSubtract<R extends Box>(
-  R box,
+  Box box,
   Position subtract, {
   required CreateBox<R> to,
 }) {
@@ -239,7 +239,7 @@ R cartesianBoxSubtract<R extends Box>(
 /// Returns a bounding box with coordinate values of [box] scaled by [factor].
 @internal
 R cartesianBoxScale<R extends Box>(
-  R box, {
+  Box box, {
   required double factor,
   required CreateBox<R> to,
 }) {
@@ -260,7 +260,7 @@ R cartesianBoxScale<R extends Box>(
 /// Returns a bounding box with coordinate values of [box] negated.
 @internal
 R cartesianBoxNegate<R extends Box>(
-  R box, {
+  Box box, {
   required CreateBox<R> to,
 }) {
   final hasZ = box.is3D;

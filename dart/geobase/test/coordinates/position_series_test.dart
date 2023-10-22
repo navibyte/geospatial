@@ -7,6 +7,7 @@
 // ignore_for_file: unrelated_type_equality_checks, prefer_const_declarations
 
 import 'package:geobase/coordinates.dart';
+import 'package:geobase/src/utils/coord_calculations_cartesian.dart';
 
 import 'package:test/test.dart';
 
@@ -507,32 +508,85 @@ void main() {
   });
 
   group('PositionSeries cartesian calculations', () {
+    final series1xy = [
+      [1.0, 1.0].xy,
+      [1.0, 2.0].xy,
+      [2.0, 2.0].xy,
+    ].series();
+    final series2xy = [
+      [1.0, 1.0].xy,
+      [2.0, 2.0].xy,
+      [3.0, 3.0].xy,
+    ].series();
+    final series3xyz = [
+      [1.0, 1.0, 1.0].xyz,
+      [1.0, 2.0, 1.0].xyz,
+      [2.0, 2.0, 1.0].xyz,
+      [2.0, 2.0, 2.0].xyz,
+    ].series();
+
     test('Length2D', () {
-      final series1 = [
-        [1.0, 1.0].xy,
-        [1.0, 2.0].xy,
-        [2.0, 2.0].xy,
-      ].series();
-      expect(series1.length2D(), 2.0);
-      expect(series1.reversed().length2D(), 2.0);
-      final series2 = [
-        [1.0, 1.0].xy,
-        [2.0, 2.0].xy,
-        [3.0, 3.0].xy,
-      ].series();
-      expect(series2.length2D(), 2.8284271247461903);
-      expect(series2.subseries(1).length2D(), 1.4142135623730951);
+      expect(series1xy.length2D(), 2.0);
+      expect(series1xy.reversed().length2D(), 2.0);
+
+      expect(series2xy.length2D(), 2.8284271247461903);
+      expect(series2xy.subseries(1).length2D(), 1.4142135623730951);
     });
 
     test('Length3D', () {
-      final series1 = [
-        [1.0, 1.0, 1.0].xyz,
-        [1.0, 2.0, 1.0].xyz,
-        [2.0, 2.0, 1.0].xyz,
-        [2.0, 2.0, 2.0].xyz,
+      expect(series3xyz.length3D(), 3.0);
+      expect(series3xyz.reversed().length3D(), 3.0);
+    });
+
+    test('Scale', () {
+      expect(
+        (series3xyz * 1.5).values,
+        [
+          [1.5, 1.5, 1.5].xyz,
+          [1.5, 3.0, 1.5].xyz,
+          [3.0, 3.0, 1.5].xyz,
+          [3.0, 3.0, 3.0].xyz,
+        ].series().values,
+      );
+    });
+
+    test('Negate and scale via operators and transform', () {
+      final expected3xyz = [
+        [-1.5, -1.5, -1.5].xyz,
+        [-1.5, -3.0, -1.5].xyz,
+        [-3.0, -3.0, -1.5].xyz,
+        [-3.0, -3.0, -3.0].xyz,
       ].series();
-      expect(series1.length3D(), 3.0);
-      expect(series1.reversed().length3D(), 3.0);
+      expect((-series3xyz * 1.5).values, expected3xyz.values);
+      expect(
+        series3xyz.transform(_transformPositionSeries(true, 1.5)).values,
+        expected3xyz.values,
+      );
+      expect(
+        series3xyz.transform(_transformPositionSeries(false, 1.5)).values,
+        (-expected3xyz).values,
+      );
     });
   });
+}
+
+TransformPosition _transformPositionSeries(bool negate, double scale) {
+  return <T extends Position>(
+    Position source, {
+    required CreatePosition<T> to,
+  }) {
+    if (negate) {
+      return cartesianPositionScale(
+        cartesianPositionNegate(source, to: to),
+        factor: scale,
+        to: to,
+      );
+    } else {
+      return cartesianPositionScale(
+        source,
+        factor: scale,
+        to: to,
+      );
+    }
+  };
 }
