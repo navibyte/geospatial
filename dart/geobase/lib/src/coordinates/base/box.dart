@@ -558,6 +558,13 @@ abstract class Box extends ValuePositionable {
   Box operator -(Position subtract) =>
       cartesianBoxSubtract(this, subtract, to: conforming.box);
 
+  /// Returns a bounding box with coordinate values of this scaled by [factor].
+  Box operator *(double factor) =>
+      cartesianBoxScale(this, factor: factor, to: conforming.box);
+
+  /// Returns a bounding box with coordinate values of this negated.
+  Box operator -() => cartesianBoxNegate(this, to: conforming.box);
+
   /// Returns coordinate values as a string separated by [delimiter].
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).

@@ -432,6 +432,13 @@ class ProjBox extends Box {
       cartesianBoxSubtract(this, subtract, to: ProjBox.create);
 
   @override
+  ProjBox operator *(double factor) =>
+      cartesianBoxScale(this, factor: factor, to: ProjBox.create);
+
+  @override
+  ProjBox operator -() => cartesianBoxNegate(this, to: ProjBox.create);
+
+  @override
   int get spatialDimension => type.spatialDimension;
 
   @override

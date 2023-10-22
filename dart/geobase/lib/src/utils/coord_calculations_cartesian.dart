@@ -235,3 +235,44 @@ R cartesianBoxSubtract<R extends Box>(
     maxM: hasM ? (box.maxM ?? 0.0) - subtract.m : null,
   );
 }
+
+/// Returns a bounding box with coordinate values of [box] scaled by [factor].
+@internal
+R cartesianBoxScale<R extends Box>(
+  R box, {
+  required double factor,
+  required CreateBox<R> to,
+}) {
+  final hasZ = box.is3D;
+  final hasM = box.isMeasured;
+  return to.call(
+    minX: factor * box.minX,
+    minY: factor * box.minY,
+    minZ: hasZ ? factor * (box.minZ ?? 0.0) : null,
+    minM: hasM ? factor * (box.minM ?? 0.0) : null,
+    maxX: factor * box.maxX,
+    maxY: factor * box.maxY,
+    maxZ: hasZ ? factor * (box.maxZ ?? 0.0) : null,
+    maxM: hasM ? factor * (box.maxM ?? 0.0) : null,
+  );
+}
+
+/// Returns a bounding box with coordinate values of [box] negated.
+@internal
+R cartesianBoxNegate<R extends Box>(
+  R box, {
+  required CreateBox<R> to,
+}) {
+  final hasZ = box.is3D;
+  final hasM = box.isMeasured;
+  return to.call(
+    minX: -box.minX,
+    minY: -box.minY,
+    minZ: hasZ ? -(box.minZ ?? 0.0) : null,
+    minM: hasM ? -(box.minM ?? 0.0) : null,
+    maxX: -box.maxX,
+    maxY: -box.maxY,
+    maxZ: hasZ ? -(box.maxZ ?? 0.0) : null,
+    maxM: hasM ? -(box.maxM ?? 0.0) : null,
+  );
+}

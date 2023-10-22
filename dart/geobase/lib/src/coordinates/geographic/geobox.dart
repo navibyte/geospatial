@@ -742,6 +742,13 @@ class GeoBox extends Box {
       cartesianBoxSubtract(this, subtract, to: GeoBox.create);
 
   @override
+  GeoBox operator *(double factor) =>
+      cartesianBoxScale(this, factor: factor, to: GeoBox.create);
+
+  @override
+  GeoBox operator -() => cartesianBoxNegate(this, to: GeoBox.create);
+
+  @override
   int get spatialDimension => type.spatialDimension;
 
   @override
