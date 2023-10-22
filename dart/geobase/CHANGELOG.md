@@ -2,7 +2,7 @@
 
 [geobase version 1.0.0 #175](https://github.com/navibyte/geospatial/issues/175)
 
-NOTE: Version 1.0.0 currently under development (1.0.0-dev.1).
+NOTE: Version 1.0.0 currently under development (1.0.0-dev.2).
 
 ⚠️ Breaking changes:
 * [Remove previous deprecations for geobase 1.0.0 #207](https://github.com/navibyte/geospatial/issues/207)
