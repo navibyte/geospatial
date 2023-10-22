@@ -567,8 +567,54 @@ void main() {
         (-expected3xyz).values,
       );
     });
+
+    test('Transform sample', () {
+      final series = [
+        [10.0, 11.0].xy,
+        [20.0, 21.0].xy,
+        [30.0, 31.0].xy,
+      ].series();
+
+      final transformed = series.transform(_sampleTransform);
+
+      expect(
+        transformed.values,
+        [
+          [15.0, 22.0].xy,
+          [25.0, 42.0].xy,
+          [35.0, 62.0].xy,
+        ].series().values,
+      );
+
+      expect(
+        [
+          [10.0, 11.0, 12.0, 13.0].xyzm,
+          [20.0, 21.0, 22.0, 23.0].xyzm,
+          [30.0, 31.0, 32.0, 33.0].xyzm,
+        ].series().transform(_sampleTransform).values,
+        [
+          [15.0, 22.0, 12.0].xyz,
+          [25.0, 42.0, 22.0].xyz,
+          [35.0, 62.0, 32.0].xyz,
+        ].series().values,
+      );
+    });
   });
 }
+
+/// A sample transform function for positions that translates `x` by 5.0, scales
+/// `y` by 2.0, keeps `z` intact (null or a value), and ensures `m` is cleared.
+T _sampleTransform<T extends Position>(
+  Position source, {
+  required CreatePosition<T> to,
+}) =>
+    // call factory to create a transformed position
+    to.call(
+      x: source.x + 5.0, // translate x by 5.0
+      y: source.y * 2.0, // scale y by 2.0
+      z: source.optZ, // copy z value from source (null or a value)
+      m: null, // set m null even if source has null
+    );
 
 TransformPosition _transformPositionSeries(bool negate, double scale) {
   return <T extends Position>(

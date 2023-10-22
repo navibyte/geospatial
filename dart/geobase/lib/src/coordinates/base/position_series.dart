@@ -481,8 +481,50 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
 
   /// Returns a position series with all points transformed using [transform].
   ///
-  /// The returned object should be of the same type as this object has.
-  PositionSeries transform(TransformPosition transform);
+  /// As an example a transform function could be:
+  ///
+  /// ```dart
+  /// /// A sample transform function for positions that translates `x` by 5.0,
+  /// /// scales `y` by 2.0, keeps `z` intact (null or a value), and ensures
+  /// /// `m` is cleared.
+  /// T _sampleTransform<T extends Position>(
+  ///   Position source, {
+  ///   required CreatePosition<T> to,
+  /// }) =>
+  ///     // call factory to create a transformed position
+  ///     to.call(
+  ///       x: source.x + 5.0, // translate x by 5.0
+  ///       y: source.y * 2.0, // scale y by 2.0
+  ///       z: source.optZ, // copy z value from source (null or a value)
+  ///       m: null, // set m null even if source has null
+  ///     );
+  /// ```
+  ///
+  /// Then this transform function could be applied like this:
+  ///
+  /// ```dart
+  /// // create a position series object with three XY positions
+  /// final series1 = [
+  ///   [10.0, 11.0].xy,
+  ///   [20.0, 21.0].xy,
+  ///   [30.0, 31.0].xy,
+  /// ].series();
+  ///
+  /// // transform it
+  /// final transformed = series1.transform(_sampleTransform);
+  ///
+  /// // in this case the result would contains same coordinate values as this
+  /// final series2 = [
+  ///   [15.0, 22.0].xy,
+  ///   [25.0, 42.0].xy,
+  ///   [35.0, 62.0].xy,
+  /// ].series()
+  /// ```
+  PositionSeries transform(TransformPosition transform) => PositionSeries.from(
+        positions
+            .map((pos) => pos.transform(transform))
+            .toList(growable: false),
+      );
 
   @override
   Box? calculateBounds({PositionScheme scheme = Position.scheme}) {
@@ -949,14 +991,6 @@ class _PositionArray extends PositionSeries {
       );
 
   @override
-  PositionSeries transform(TransformPosition transform) => PositionSeries.from(
-        positions
-            .map((pos) => pos.transform(transform))
-            .toList(growable: false),
-        type: type,
-      );
-
-  @override
   PositionSeries populated({
     bool onBounds = true,
     PositionScheme scheme = Position.scheme,
@@ -1191,14 +1225,6 @@ class _PositionDataCoords extends PositionSeries {
               ? Float32List(positionCount * type.coordinateDimension)
               : Float64List(positionCount * type.coordinateDimension),
         ),
-        type: type,
-      );
-
-  @override
-  PositionSeries transform(TransformPosition transform) => PositionSeries.from(
-        positions
-            .map((pos) => pos.transform(transform))
-            .toList(growable: false),
         type: type,
       );
 
