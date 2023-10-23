@@ -772,10 +772,18 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
   double length2D() {
     var length = 0.0;
     final posCount = positionCount;
-    for (var i = 1; i < posCount; i++) {
-      final dx = x(i - 1) - x(i);
-      final dy = y(i - 1) - y(i);
-      length += math.sqrt(dx * dx + dy * dy);
+    if (posCount >= 2) {
+      var px = x(0);
+      var py = y(0);
+      for (var i = 1; i < posCount; i++) {
+        final cx = x(i);
+        final cy = y(i);
+        final dx = px - cx;
+        final dy = py - cy;
+        length += math.sqrt(dx * dx + dy * dy);
+        px = cx;
+        py = cy;
+      }
     }
     return length;
   }
@@ -794,11 +802,22 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
   double length3D() {
     var length = 0.0;
     final posCount = positionCount;
-    for (var i = 1; i < posCount; i++) {
-      final dx = x(i - 1) - x(i);
-      final dy = y(i - 1) - y(i);
-      final dz = z(i - 1) - z(i);
-      length += math.sqrt(dx * dx + dy * dy + dz * dz);
+    if (posCount >= 2) {
+      var px = x(0);
+      var py = y(0);
+      var pz = z(0);
+      for (var i = 1; i < posCount; i++) {
+        final cx = x(i);
+        final cy = y(i);
+        final cz = z(i);
+        final dx = px - cx;
+        final dy = py - cy;
+        final dz = pz - cz;
+        length += math.sqrt(dx * dx + dy * dy + dz * dz);
+        px = cx;
+        py = cy;
+        pz = cz;
+      }
     }
     return length;
   }

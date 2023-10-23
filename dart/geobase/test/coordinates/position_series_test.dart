@@ -553,6 +553,8 @@ void main() {
       expect(rectangle.reversed().signedArea2D(), -1.0);
       expect((rectangle * 2.0).signedArea2D(), 4.0);
       expect((rectangle * -3.0).signedArea2D(), 9.0);
+      expect(rectangle.length2D(), 4.0);
+      expect(rectangle.subseries(0, 4).length2D(), 3.0);
 
       final triangle = [
         [1.0, 1.0].xy,
