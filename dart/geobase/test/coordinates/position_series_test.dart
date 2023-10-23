@@ -538,6 +538,155 @@ void main() {
       expect(series3xyz.reversed().length3D(), 3.0);
     });
 
+    test('Area3D', () {
+      final rectangle = [
+        [1.0, 1.0].xy,
+        [2.0, 1.0].xy,
+        [2.0, 2.0].xy,
+        [1.0, 2.0].xy,
+        [1.0, 1.0].xy,
+      ].series();
+      expect(rectangle.signedArea2D(), 1.0);
+      expect(rectangle.subseries(0, 4).signedArea2D(), 1.0);
+      expect(rectangle.subseries(0, 3).signedArea2D(), 0.5);
+      expect(rectangle.subseries(1, 5).signedArea2D(), 1.0);
+      expect(rectangle.reversed().signedArea2D(), -1.0);
+      expect((rectangle * 2.0).signedArea2D(), 4.0);
+      expect((rectangle * -3.0).signedArea2D(), 9.0);
+
+      final triangle = [
+        [1.0, 1.0].xy,
+        [2.0, 1.0].xy,
+        [2.0, 2.0].xy,
+        [1.0, 1.0].xy,
+      ].series();
+      expect(triangle.signedArea2D(), 0.5);
+      expect(triangle.subseries(0, 3).signedArea2D(), 0.5);
+      expect(triangle.subseries(0, 2).signedArea2D(), 0.0);
+      expect((triangle * 4.0).signedArea2D(), 8.0);
+
+      final shape = [
+        [1.0, 0.0].xy,
+        [1.0, 1.0].xy,
+        [3.0, 0.0].xy,
+        [3.0, 1.0].xy,
+        [2.0, 2.0].xy,
+        [1.0, 1.0].xy,
+        [1.0, 2.0].xy,
+        [2.0, 3.0].xy,
+        [1.0, 3.0].xy,
+        [1.0, 4.0].xy,
+        [2.0, 5.0].xy,
+        [4.0, 5.0].xy,
+        [4.0, 2.0].xy,
+        [3.0, 3.0].xy,
+        [3.0, 2.0].xy,
+        [4.0, 1.0].xy,
+        [5.0, 1.0].xy,
+        [5.0, 6.0].xy,
+        [1.0, 6.0].xy,
+        [1.0, 5.0].xy,
+        [0.0, 4.0].xy,
+        [0.0, 1.0].xy,
+        [1.0, 0.0].xy,
+      ].series();
+      expect(shape.signedArea2D(), 16.0);
+      expect((shape * 2.0).signedArea2D(), 64.0);
+      expect((shape * -2.0).signedArea2D(), 64.0);
+      expect(shape.subseries(1).signedArea2D(), 16.0);
+      expect(shape.subseries(5).signedArea2D(), 14.0);
+      expect(shape.reversed().signedArea2D(), -16.0);
+
+      final selfTouching = [
+        [0.0, 0.0].xy,
+        [1.0, 0.0].xy,
+        [1.0, 3.0].xy,
+        [3.0, 3.0].xy,
+        [1.0, 1.0].xy,
+        [4.0, 1.0].xy,
+        [4.0, 4.0].xy,
+        [0.0, 4.0].xy,
+        [0.0, 0.0].xy,
+      ].series();
+      expect(selfTouching.signedArea2D(), 11.0);
+      expect(selfTouching.reversed().signedArea2D(), -11.0);
+      expect(selfTouching.subseries(1).reversed().signedArea2D(), -11.0);
+
+      final selfTouchingWithHole = [
+        [0.0, 0.0].xy,
+        [4.0, 0.0].xy,
+        [4.0, 4.0].xy,
+        [2.0, 4.0].xy,
+        [2.0, 3.0].xy,
+        [3.0, 3.0].xy,
+        [3.0, 2.0].xy,
+        [2.0, 2.0].xy,
+        [2.0, 1.0].xy,
+        [1.0, 1.0].xy,
+        [1.0, 2.0].xy,
+        [2.0, 3.0].xy,
+        [2.0, 4.0].xy,
+        [0.0, 4.0].xy,
+        [0.0, 0.0].xy,
+      ].series();
+      expect(selfTouchingWithHole.signedArea2D(), 13.5);
+      expect(selfTouchingWithHole.subseries(1).signedArea2D(), 13.5);
+      expect(selfTouchingWithHole.reversed().signedArea2D(), -13.5);
+
+      final selfIntersectingNotValid = [
+        [0.0, 0.0].xy,
+        [1.0, 0.0].xy,
+        [1.0, 3.0].xy,
+        [3.0, 3.0].xy,
+        [0.0, 0.0].xy,
+        [4.0, 0.0].xy,
+        [4.0, 4.0].xy,
+        [0.0, 4.0].xy,
+        [0.0, 0.0].xy,
+      ].series();
+      expect(selfIntersectingNotValid.signedArea2D(), 14.5);
+      expect(selfIntersectingNotValid.reversed().signedArea2D(), -14.5);
+      expect(
+        selfIntersectingNotValid.subseries(1).reversed().signedArea2D(),
+        -14.5,
+      );
+
+      // http://en.wikipedia.org/wiki/Shoelace_formula
+      final shoelaceSample = [
+        [1.0, 6.0].xy,
+        [3.0, 1.0].xy,
+        [7.0, 2.0].xy,
+        [4.0, 4.0].xy,
+        [8.0, 5.0].xy,
+        [1.0, 6.0].xy,
+      ].series();
+      expect(shoelaceSample.signedArea2D(), 16.5);
+      expect(shoelaceSample.subseries(1).signedArea2D(), 16.5);
+      expect(shoelaceSample.reversed().signedArea2D(), -16.5);
+      expect(shoelaceSample.subseries(1).reversed().signedArea2D(), -16.5);
+      final p1 = [3.0, 1.0].xy;
+      final p2 = [7.0, 2.0].xy;
+      final p3 = [4.0, 4.0].xy;
+      final p4 = [8.0, 6.0].xy;
+      final p5 = [1.0, 7.0].xy;
+      final q = [4.0, 3.0].xy;
+      final shoelaceBlue = [p1, p2, p3, p4, p5].series();
+      final shoelaceGreen = [p2, p3, p4].series();
+      final shoelaceRed = [p1, q, p2].series();
+      final shoelaceBlueMinusP3 = [p1, p2, p4, p5].series();
+      final shoelaceBluePlusQ = [p1, q, p2, p3, p4, p5].series();
+      expect(shoelaceBlue.signedArea2D(), 20.5);
+      expect(shoelaceBlue.reversed().signedArea2D(), -20.5);
+      expect(shoelaceGreen.signedArea2D(), -7.0);
+      expect(shoelaceGreen.reversed().signedArea2D(), 7.0);
+      expect(shoelaceRed.signedArea2D(), -3.5);
+      expect(shoelaceRed.reversed().signedArea2D(), 3.5);
+      expect(shoelaceBlueMinusP3.signedArea2D(), 27.5);
+      expect(shoelaceBlueMinusP3.reversed().signedArea2D(), -27.5);
+      expect(shoelaceBluePlusQ.signedArea2D(), 17.0);
+      expect(shoelaceBluePlusQ.reversed().signedArea2D(), -17.0);
+    });
+
     test('Scale', () {
       expect(
         (series3xyz * 1.5).values,

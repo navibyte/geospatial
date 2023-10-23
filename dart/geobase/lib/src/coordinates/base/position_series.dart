@@ -803,6 +803,66 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
     return length;
   }
 
+  /// Returns the signed area of a linear ring (polygon) represented by this
+  /// position series calculated in a cartesian 2D plane.
+  ///
+  /// The area is positive for linear rings in counterclockwise (CCW) order, and
+  /// negative for linear rings in clockwise (CW) order.
+  ///
+  /// To calculate (2D) area on the surface of the earth, see `spherical`
+  /// extensions for `Iterable<Geographic>` and `PositionSeries` implemented by
+  /// the `package:geobase/geodesy.dart` library.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // A sample closed polygon in the counterclockwise (CCW) order.
+  /// // (source for the sample: http://en.wikipedia.org/wiki/Shoelace_formula).
+  /// final shoelaceSample = [
+  ///   [1.0, 6.0].xy,
+  ///   [3.0, 1.0].xy,
+  ///   [7.0, 2.0].xy,
+  ///   [4.0, 4.0].xy,
+  ///   [8.0, 5.0].xy,
+  ///   [1.0, 6.0].xy,
+  /// ].series();
+  ///
+  /// // The area is `16.5` for a closed counterclockwise (CCW) polygon.
+  /// shoelaceSample.signedArea2D();
+  ///
+  /// // The area is `16.5` also for non-closed counterclockwise (CCW) polygon.
+  /// shoelaceSample.subseries(1).signedArea2D();
+  ///
+  /// // The area is `-16.5` for a closed clockwise (CW) polygon.
+  /// shoelaceSample.reversed().signedArea2D();
+  ///
+  /// // The area is `-16.5` also for non-closed clockwise (CW) polygon.
+  /// shoelaceSample.subseries(1).reversed().signedArea2D();
+  /// ```
+  double signedArea2D() {
+    // Based on Computational Geometry in C, 2nd edition (2005) by O'Rourke,
+    // the section 1.4.3 (Code for Area).
+    //
+    // See also: https://en.wikipedia.org/wiki/Shoelace_formula
+
+    var area = 0.0;
+    final posCount = positionCount;
+    if (posCount >= 3) {
+      final px = x(0);
+      final py = y(0);
+      var aDeltaX = x(1) - px;
+      var aDeltaY = y(1) - py;
+      for (var i = 2; i < posCount; i++) {
+        final nextDeltaX = x(i) - px;
+        final nextDeltaY = y(i) - py;
+        area += aDeltaX * nextDeltaY - nextDeltaX * aDeltaY;
+        aDeltaX = nextDeltaX;
+        aDeltaY = nextDeltaY;
+      }
+    }
+    return area / 2.0;
+  }
+
   /// Returns a position series with coordinate values of all positions scaled
   /// by [factor].
   PositionSeries operator *(double factor) => PositionSeries.from(
