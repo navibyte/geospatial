@@ -296,6 +296,24 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   }
 
   @override
+  double length2D() {
+    var length = 0.0;
+    for (final geom in geometries) {
+      length += geom.length2D();
+    }
+    return length;
+  }
+
+  @override
+  double length3D() {
+    var length = 0.0;
+    for (final geom in geometries) {
+      length += geom.length3D();
+    }
+    return length;
+  }
+
+  @override
   void writeTo(GeometryContent writer, {String? name}) => isEmptyByGeometry
       ? writer.emptyGeometry(Geom.geometryCollection, name: name)
       : writer.geometryCollection(

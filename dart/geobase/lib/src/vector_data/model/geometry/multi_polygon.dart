@@ -556,6 +556,28 @@ class MultiPolygon extends SimpleGeometry {
   }
 
   @override
+  double length2D() {
+    var length = 0.0;
+    for (final polygon in ringArrays) {
+      for (final ring in polygon) {
+        length += ring.length2D();
+      }
+    }
+    return length;
+  }
+
+  @override
+  double length3D() {
+    var length = 0.0;
+    for (final polygon in ringArrays) {
+      for (final ring in polygon) {
+        length += ring.length3D();
+      }
+    }
+    return length;
+  }
+
+  @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
       isEmptyByGeometry
           ? writer.emptyGeometry(Geom.multiPolygon, name: name)

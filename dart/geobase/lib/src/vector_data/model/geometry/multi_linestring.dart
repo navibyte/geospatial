@@ -411,6 +411,24 @@ class MultiLineString extends SimpleGeometry {
   }
 
   @override
+  double length2D() {
+    var length = 0.0;
+    for (final chain in chains) {
+      length += chain.length2D();
+    }
+    return length;
+  }
+
+  @override
+  double length3D() {
+    var length = 0.0;
+    for (final chain in chains) {
+      length += chain.length3D();
+    }
+    return length;
+  }
+
+  @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
       isEmptyByGeometry
           ? writer.emptyGeometry(Geom.multiLineString, name: name)

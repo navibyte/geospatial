@@ -1212,6 +1212,61 @@ void main() {
       expect(coll.toText(), featCollPoints);
     });
   });
+
+  group('Calculations', () {
+    final rectanglePositions = [
+      [1.0, 1.0, 0.0].xyz,
+      [2.0, 1.0, 0.0].xyz,
+      [2.0, 2.0, 0.0].xyz,
+      [1.0, 2.0, 0.0].xyz,
+      [1.0, 1.0, 0.0].xyz,
+    ];
+    final rectangle = rectanglePositions.series();
+
+    test('Length2D', () {
+      expect(Point(rectangle[0]).length2D(), 0.0);
+      expect(LineString(rectangle).length2D(), 4.0);
+      expect(Polygon([rectangle]).length2D(), 4.0);
+      expect(MultiPoint(rectanglePositions).length2D(), 0.0);
+      expect(MultiLineString([rectangle, rectangle]).length2D(), 8.0);
+      expect(
+        MultiPolygon([
+          [rectangle],
+          [rectangle]
+        ]).length2D(),
+        8.0,
+      );
+      expect(
+        GeometryCollection([
+          LineString(rectangle),
+          MultiLineString([rectangle, rectangle]),
+        ]).length2D(),
+        12.0,
+      );
+    });
+
+    test('Length3D', () {
+      expect(Point(rectangle[0]).length3D(), 0.0);
+      expect(LineString(rectangle).length3D(), 4.0);
+      expect(Polygon([rectangle]).length3D(), 4.0);
+      expect(MultiPoint(rectanglePositions).length3D(), 0.0);
+      expect(MultiLineString([rectangle, rectangle]).length3D(), 8.0);
+      expect(
+        MultiPolygon([
+          [rectangle],
+          [rectangle]
+        ]).length3D(),
+        8.0,
+      );
+      expect(
+        GeometryCollection([
+          LineString(rectangle),
+          MultiLineString([rectangle, rectangle]),
+        ]).length3D(),
+        12.0,
+      );
+    });
+  });
 }
 
 void _testDecodeGeometryAndEncodeToText(

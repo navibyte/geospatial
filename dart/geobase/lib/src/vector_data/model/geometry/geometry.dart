@@ -102,6 +102,32 @@ abstract class Geometry extends Bounded {
   @override
   Geometry project(Projection projection);
 
+  /// Returns the length of this geometry calculated in a cartesian 2D plane.
+  ///
+  /// For points the result is `0.0`, for line strings the length of a line, for
+  /// polygons the perimeter of an area. Multi geometries and geometry
+  /// collections returns the sum of lengths of contained geometries.
+  ///
+  /// To calculate lengths along the surface of the earth, see `spherical`
+  /// extensions for `Iterable<Geographic>` and `PositionSeries` implemented by
+  /// the `package:geobase/geodesy.dart` library.
+  ///
+  /// See also [length3D].
+  double length2D();
+
+  /// Returns the length of this geometry calculated in a cartesian 3D space.
+  ///
+  /// For points the result is `0.0`, for line strings the length of a line, for
+  /// polygons the perimeter of an area. Multi geometries and geometry
+  /// collections returns the sum of lengths of contained geometries.
+  ///
+  /// To calculate (2D) lengths along the surface of the earth, see `spherical`
+  /// extensions for `Iterable<Geographic>` and `PositionSeries` implemented by
+  /// the `package:geobase/geodesy.dart` library.
+  ///
+  /// See also [length2D].
+  double length3D();
+
   @override
   bool equalsCoords(Geometry other);
 

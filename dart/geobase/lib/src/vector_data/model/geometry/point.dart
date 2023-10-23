@@ -295,6 +295,12 @@ class Point implements SimpleGeometry {
   Point project(Projection projection) => Point(position.project(projection));
 
   @override
+  double length2D() => 0.0;
+
+  @override
+  double length3D() => 0.0;
+
+  @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
       isEmptyByGeometry
           ? writer.emptyGeometry(Geom.point, name: name)
