@@ -578,6 +578,23 @@ class MultiPolygon extends SimpleGeometry {
   }
 
   @override
+  double area2D() {
+    var area = 0.0;
+    for (final polygon in ringArrays) {
+      if (polygon.isNotEmpty) {
+        // area of an exterior ring
+        area += polygon.first.signedArea2D().abs();
+
+        // areas of interior rings
+        for (final hole in polygon.skip(1)) {
+          area -= hole.signedArea2D().abs();
+        }
+      }
+    }
+    return area;
+  }
+
+  @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
       isEmptyByGeometry
           ? writer.emptyGeometry(Geom.multiPolygon, name: name)

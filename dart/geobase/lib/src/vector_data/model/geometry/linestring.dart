@@ -467,6 +467,9 @@ class LineString extends SimpleGeometry {
   double length3D() => chain.length3D();
 
   @override
+  double area2D() => 0.0;
+
+  @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
       isEmptyByGeometry
           ? writer.emptyGeometry(Geom.lineString, name: name)

@@ -387,6 +387,9 @@ class MultiPoint extends SimpleGeometry {
   double length3D() => 0.0;
 
   @override
+  double area2D() => 0.0;
+
+  @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
       isEmptyByGeometry
           ? writer.emptyGeometry(Geom.multiPoint, name: name)

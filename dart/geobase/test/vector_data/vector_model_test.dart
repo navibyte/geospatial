@@ -1218,6 +1218,8 @@ void main() {
       [1.0, 1.0, 0.0].xyz,
       [2.0, 1.0, 0.0].xyz,
       [2.0, 2.0, 0.0].xyz,
+      [2.0, 2.0, 1.0].xyz,
+      [1.0, 2.0, 1.0].xyz,
       [1.0, 2.0, 0.0].xyz,
       [1.0, 1.0, 0.0].xyz,
     ];
@@ -1247,23 +1249,57 @@ void main() {
 
     test('Length3D', () {
       expect(Point(rectangle[0]).length3D(), 0.0);
-      expect(LineString(rectangle).length3D(), 4.0);
-      expect(Polygon([rectangle]).length3D(), 4.0);
+      expect(LineString(rectangle).length3D(), 6.0);
+      expect(Polygon([rectangle]).length3D(), 6.0);
       expect(MultiPoint(rectanglePositions).length3D(), 0.0);
-      expect(MultiLineString([rectangle, rectangle]).length3D(), 8.0);
+      expect(MultiLineString([rectangle, rectangle]).length3D(), 12.0);
       expect(
         MultiPolygon([
           [rectangle],
           [rectangle]
         ]).length3D(),
-        8.0,
+        12.0,
       );
       expect(
         GeometryCollection([
           LineString(rectangle),
           MultiLineString([rectangle, rectangle]),
         ]).length3D(),
-        12.0,
+        18.0,
+      );
+    });
+
+    test('Area2D', () {
+      final holePositions = [
+        [1.25, 1.25].xy,
+        [1.75, 1.25].xy,
+        [1.75, 1.75].xy,
+        [1.25, 1.75].xy,
+        [1.25, 1.25].xy,
+      ];
+      final hole = holePositions.reversed.series();
+
+      expect(Point(rectangle[0]).area2D(), 0.0);
+      expect(LineString(rectangle).area2D(), 0.0);
+      expect(Polygon([rectangle]).area2D(), 1.0);
+      expect(Polygon([rectangle, hole]).area2D(), 0.75);
+      expect(MultiPoint(rectanglePositions).area2D(), 0.0);
+      expect(MultiLineString([rectangle, rectangle]).area2D(), 0.0);
+      expect(
+        MultiPolygon([
+          [rectangle],
+          [rectangle, hole]
+        ]).area2D(),
+        1.75,
+      );
+      expect(
+        GeometryCollection([
+          Polygon([rectangle]),
+          Polygon([rectangle, hole]),
+          LineString(rectangle),
+          MultiLineString([rectangle, rectangle]),
+        ]).area2D(),
+        1.75,
       );
     });
   });

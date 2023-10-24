@@ -752,6 +752,22 @@ class Polygon extends SimpleGeometry {
   }
 
   @override
+  double area2D() {
+    var area = 0.0;
+    final ext = exterior;
+    if (ext != null) {
+      // area of an exterior ring
+      area += ext.signedArea2D().abs();
+
+      // areas of interior rings
+      for (final hole in interior) {
+        area -= hole.signedArea2D().abs();
+      }
+    }
+    return area;
+  }
+
+  @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
       isEmptyByGeometry
           ? writer.emptyGeometry(Geom.polygon, name: name)

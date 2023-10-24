@@ -128,6 +128,19 @@ abstract class Geometry extends Bounded {
   /// See also [length2D].
   double length3D();
 
+  /// Returns the area of this geometry calculated in a cartesian 2D plane.
+  ///
+  /// The area is zero or a positive double value. For points and line string
+  /// the result is `0.0`, and for polygon geometries the area of an polygon
+  /// (more specifically the area represented by an exterior ring minus areas of
+  /// any interior rings or holes). Multi geometries and geometry collections
+  /// returns the sum of areas of contained geometries.
+  ///
+  /// To calculate (2D) area on the surface of the earth, see `spherical`
+  /// extensions for `Iterable<Geographic>` and `PositionSeries` implemented by
+  /// the `package:geobase/geodesy.dart` library.
+  double area2D();
+
   @override
   bool equalsCoords(Geometry other);
 

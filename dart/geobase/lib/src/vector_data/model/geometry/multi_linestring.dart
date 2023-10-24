@@ -429,6 +429,9 @@ class MultiLineString extends SimpleGeometry {
   }
 
   @override
+  double area2D() => 0.0;
+
+  @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
       isEmptyByGeometry
           ? writer.emptyGeometry(Geom.multiLineString, name: name)

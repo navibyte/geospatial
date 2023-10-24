@@ -314,6 +314,15 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   }
 
   @override
+  double area2D() {
+    var area = 0.0;
+    for (final geom in geometries) {
+      area += geom.area2D();
+    }
+    return area;
+  }
+
+  @override
   void writeTo(GeometryContent writer, {String? name}) => isEmptyByGeometry
       ? writer.emptyGeometry(Geom.geometryCollection, name: name)
       : writer.geometryCollection(
