@@ -482,7 +482,8 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
   @override
   PositionSeries project(Projection projection);
 
-  /// Returns a position series with all points transformed using [transform].
+  /// Returns a position series with all positions transformed using
+  /// [transform].
   ///
   /// As an example a transform function could be:
   ///

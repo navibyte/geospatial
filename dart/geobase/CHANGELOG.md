@@ -15,6 +15,7 @@ NOTE: Version 1.0.0 currently under development (1.0.0-dev.2).
 * [PositionScheme for generic, geographic and projected position data #214](https://github.com/navibyte/geospatial/issues/214)
 * [Add basic geometry calculation functions #191](https://github.com/navibyte/geospatial/issues/191)
 * [Operators in Position, Box and PositionSeries #215](https://github.com/navibyte/geospatial/issues/215)
+* [Transform and filter positions and position series #218](https://github.com/navibyte/geospatial/issues/218)
 
 🛠 Refactoring:
 * [Normalize longitude with inclusive limit on east 180 degrees #210](https://github.com/navibyte/geospatial/issues/210)

@@ -41,8 +41,6 @@ typedef CreatePosition<T extends Position> = T Function({
 
 /// A function to transform the [source] position to a position of [T] using
 /// [to] as a factory.
-///
-/// Throws FormatException if cannot transform.
 typedef TransformPosition = T Function<T extends Position>(
   Position source, {
   required CreatePosition<T> to,
