@@ -530,6 +530,24 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
             .toList(growable: false),
       );
 
+  /// Expands this position to an iterable of zero or more positions of using
+  /// [expand].
+  ///
+  /// When [expand] returns zero or one position it can be considered
+  /// implementing a *filter*.
+  PositionSeries expand(ExpandPosition expand) {
+    final source = positions;
+    // ignore: avoid_returning_this
+    if (source.isEmpty) return this;
+
+    final target = <Position>[];
+    for (final pos in source) {
+      target.addAll(pos.expand(expand));
+    }
+
+    return PositionSeries.from(target);
+  }
+
   @override
   Box? calculateBounds({PositionScheme scheme = Position.scheme}) {
     final posCount = positionCount;

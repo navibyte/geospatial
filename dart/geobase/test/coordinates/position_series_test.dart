@@ -727,6 +727,32 @@ void main() {
         expected3xyz[0].expand(_filterPosition([-2.0, -2.0, -1.0, -1.0].box)),
         expected3xyz.subseries(0, 1).positions,
       );
+
+      expect(
+        expected3xyz.expand(_filterPosition([2.0, 2.0, 1.0, 1.0].box)).values,
+        PositionSeries.empty().values,
+      );
+      expect(
+        expected3xyz
+            .expand(_filterPosition([-2.0, -2.0, -1.0, -1.0].box))
+            .values,
+        expected3xyz.subseries(0, 1).values,
+      );
+      expect(
+        expected3xyz
+            .expand(_filterPosition([-2.0, -2.0, -1.0, -1.0].box, true))
+            .values,
+        expected3xyz
+            .subseries(0, 1)
+            .values
+            .followedBy(expected3xyz.subseries(0, 1).values),
+      );
+      expect(
+        expected3xyz
+            .expand(_filterPosition([-2.0, -3.0, -1.0, -1.0].box))
+            .values,
+        expected3xyz.subseries(0, 2).values,
+      );
     });
 
     test('Transform sample', () {
@@ -800,14 +826,16 @@ TransformPosition _transformPosition(bool negate, double scale) {
   };
 }
 
-ExpandPosition _filterPosition(Box inside) {
+ExpandPosition _filterPosition(Box inside, [bool twice = false]) {
   return <T extends Position>(
     Position source, {
     required CreatePosition<T> to,
   }) {
     if (inside.intersectsPoint2D(source)) {
+      final pos = source is T ? source : source.copyTo(to);
       return [
-        if (source is T) source else source.copyTo(to),
+        pos,
+        if (twice) pos,
       ];
     } else {
       return const Iterable.empty();
