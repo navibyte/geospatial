@@ -613,6 +613,10 @@ class _TestXYZM implements Projected {
       transform.call(this, to: _TestXYZM.create);
 
   @override
+  Iterable<Projected> expand(ExpandPosition expand) =>
+      expand.call(this, to: _TestXYZM.create);
+
+  @override
   double operator [](int i) => Position.getValue(this, i);
 
   @override

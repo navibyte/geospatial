@@ -274,6 +274,10 @@ class Projected extends Position {
       transform.call(this, to: Projected.create);
 
   @override
+  Iterable<Projected> expand(ExpandPosition expand) =>
+      expand.call(this, to: Projected.create);
+
+  @override
   Projected midPointTo(Position destination) =>
       cartesianMidPointTo(this, destination, to: Projected.create);
 

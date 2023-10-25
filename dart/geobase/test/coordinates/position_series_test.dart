@@ -701,7 +701,7 @@ void main() {
       );
     });
 
-    test('Negate and scale via operators and transform', () {
+    test('Negate and scale via operators and transform and filter', () {
       final expected3xyz = [
         [-1.5, -1.5, -1.5].xyz,
         [-1.5, -3.0, -1.5].xyz,
@@ -709,13 +709,23 @@ void main() {
         [-3.0, -3.0, -3.0].xyz,
       ].series();
       expect((-series3xyz * 1.5).values, expected3xyz.values);
+
       expect(
-        series3xyz.transform(_transformPositionSeries(true, 1.5)).values,
+        series3xyz.transform(_transformPosition(true, 1.5)).values,
         expected3xyz.values,
       );
       expect(
-        series3xyz.transform(_transformPositionSeries(false, 1.5)).values,
+        series3xyz.transform(_transformPosition(false, 1.5)).values,
         (-expected3xyz).values,
+      );
+
+      expect(
+        expected3xyz[0].expand(_filterPosition([1.0, 1.0, 2.0, 2.0].box)),
+        const <Position>[],
+      );
+      expect(
+        expected3xyz[0].expand(_filterPosition([-2.0, -2.0, -1.0, -1.0].box)),
+        expected3xyz.subseries(0, 1).positions,
       );
     });
 
@@ -769,7 +779,7 @@ T _sampleTransform<T extends Position>(
       m: null, // set m null even if source has null
     );
 
-TransformPosition _transformPositionSeries(bool negate, double scale) {
+TransformPosition _transformPosition(bool negate, double scale) {
   return <T extends Position>(
     Position source, {
     required CreatePosition<T> to,
@@ -786,6 +796,21 @@ TransformPosition _transformPositionSeries(bool negate, double scale) {
         factor: scale,
         to: to,
       );
+    }
+  };
+}
+
+ExpandPosition _filterPosition(Box inside) {
+  return <T extends Position>(
+    Position source, {
+    required CreatePosition<T> to,
+  }) {
+    if (inside.intersectsPoint2D(source)) {
+      return [
+        if (source is T) source else source.copyTo(to),
+      ];
+    } else {
+      return const Iterable.empty();
     }
   };
 }

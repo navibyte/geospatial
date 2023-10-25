@@ -46,6 +46,15 @@ typedef TransformPosition = T Function<T extends Position>(
   required CreatePosition<T> to,
 });
 
+/// A function to expand the [source] position to an iterable of zero or more
+/// positions of [T] using [to] as a factory.
+///
+/// When zero or one position is returned the function implements a *filter*.
+typedef ExpandPosition = Iterable<T> Function<T extends Position>(
+  Position source, {
+  required CreatePosition<T> to,
+});
+
 /// A base class for geospatial positions.
 ///
 /// The known two instantiable sub classes are `Projected` (with x, y, z and m
@@ -472,6 +481,14 @@ abstract class Position extends ValuePositionable {
   /// ```
   Position transform(TransformPosition transform) =>
       transform.call(this, to: conforming.position);
+
+  /// Expands this position to an iterable of zero or more positions of using
+  /// [expand].
+  ///
+  /// When [expand] returns zero or one position it can be considered
+  /// implementing a *filter*.
+  Iterable<Position> expand(ExpandPosition expand) =>
+      expand.call(this, to: conforming.position);
 
   /// True if this and the [other] position equals.
   @override

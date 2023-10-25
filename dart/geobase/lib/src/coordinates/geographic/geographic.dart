@@ -310,6 +310,10 @@ class Geographic extends Position {
       transform.call(this, to: Geographic.create);
 
   @override
+  Iterable<Geographic> expand(ExpandPosition expand) =>
+      expand.call(this, to: Geographic.create);
+
+  @override
   Geographic midPointTo(Position destination) =>
       cartesianMidPointTo(this, destination, to: Geographic.create);
 
