@@ -524,11 +524,15 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
   ///   [35.0, 62.0].xy,
   /// ].series()
   /// ```
-  PositionSeries transform(TransformPosition transform) => PositionSeries.from(
-        positions
-            .map((pos) => pos.transform(transform))
-            .toList(growable: false),
-      );
+  PositionSeries transform(TransformPosition transform) {
+    final source = positions;
+    // ignore: avoid_returning_this
+    if (source.isEmpty) return this;
+
+    return PositionSeries.from(
+      source.map((pos) => pos.transform(transform)).toList(growable: false),
+    );
+  }
 
   /// Expands this position to an iterable of zero or more positions of using
   /// [expand].
