@@ -21,17 +21,20 @@ part 'coord_arrays_from_json.dart';
 /// given [values].
 List<double> toFloatNNList(
   Iterable<double> values, {
+  int? valueCount,
   bool singlePrecision = false,
 }) {
-  if (values is List<double>) {
+  if (values is List<double> &&
+      (valueCount == null || values.length == valueCount)) {
     return singlePrecision
         ? Float32List.fromList(values)
         : Float64List.fromList(values);
   } else {
-    final len = values.length;
+    final len = valueCount ?? values.length;
     final list = singlePrecision ? Float32List(len) : Float64List(len);
     var i = 0;
     for (final v in values) {
+      if (i >= len) break;
       list[i++] = v;
     }
     return list;

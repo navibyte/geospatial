@@ -1250,7 +1250,11 @@ class _PositionCoordsSubview extends _PositionCoords {
   Position packed() => _start == 0 && _data.length == coordinateDimension
       ? this
       : Position.view(
-          toFloatNNList(values, singlePrecision: _data is Float32List),
+          toFloatNNList(
+            values,
+            singlePrecision: _data is Float32List,
+            valueCount: valueCount,
+          ),
           type: type,
         );
 }

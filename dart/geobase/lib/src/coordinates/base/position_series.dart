@@ -1474,6 +1474,7 @@ class _PositionDataCoords extends PositionSeries {
           toFloatNNList(
             valuesByType(type),
             singlePrecision: _data is Float32List,
+            valueCount: positionCount * type.coordinateDimension,
           ),
           type: type,
         );
