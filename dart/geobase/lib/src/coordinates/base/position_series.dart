@@ -471,6 +471,18 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
   /// Valid queries are such that 0 ≤ start ≤ end ≤ [positionCount].
   PositionSeries subseries(int start, [int? end]);
 
+  /// Returns a position series with positions from [start] (inclusive) to [end]
+  /// (exclusive) removed.
+  ///
+  /// If [end] is not provided, then all positions from [start] to end are
+  /// removed.
+  ///
+  /// A returned series may point to the same position data as this (however
+  /// implementations are allowed to make a copy of positions in the range).
+  ///
+  /// Valid queries are such that 0 ≤ start ≤ end ≤ [positionCount].
+  PositionSeries rangeRemoved(int start, [int? end]);
+
   /// Projects this series of positions to another series using [projection].
   @override
   PositionSeries project(Projection projection);
@@ -1099,6 +1111,33 @@ class _PositionArray extends PositionSeries {
   }
 
   @override
+  PositionSeries rangeRemoved(int start, [int? end]) {
+    final rangeEnd = end ?? positionCount;
+    if (start == rangeEnd) {
+      return this;
+    } else if (start == 0 && rangeEnd == positionCount) {
+      return PositionSeries.empty();
+    } else if (rangeEnd == positionCount) {
+      return subseries(0, start);
+    } else if (start == 0) {
+      return subseries(rangeEnd);
+    } else {
+      final removedCount = rangeEnd - start;
+      final target = List<Position>.generate(
+        positionCount - removedCount,
+        (index) {
+          if (index < start) {
+            return this[index];
+          } else {
+            return this[removedCount + index];
+          }
+        },
+      );
+      return PositionSeries.from(target, type: coordType);
+    }
+  }
+
+  @override
   PositionSeries project(Projection projection) => PositionSeries.from(
         positions.map((pos) => pos.project(projection)).toList(growable: false),
         type: coordType,
@@ -1385,6 +1424,36 @@ class _PositionDataCoords extends PositionSeries {
           type: coordType,
         );
       }
+    }
+  }
+
+  @override
+  PositionSeries rangeRemoved(int start, [int? end]) {
+    final rangeEnd = end ?? positionCount;
+    if (start == rangeEnd) {
+      return this;
+    } else if (start == 0 && rangeEnd == positionCount) {
+      return PositionSeries.empty();
+    } else if (rangeEnd == positionCount) {
+      return subseries(0, start);
+    } else if (start == 0) {
+      return subseries(rangeEnd);
+    } else {
+      final removedCount = rangeEnd - start;
+      final target = _createValueList(positionCount - removedCount);
+      _copyValues(
+        target,
+        sourceStart: 0,
+        sourceEnd: start,
+        targetStart: 0,
+      );
+      _copyValues(
+        target,
+        sourceStart: rangeEnd,
+        sourceEnd: positionCount,
+        targetStart: start,
+      );
+      return PositionSeries.view(target, type: coordType);
     }
   }
 

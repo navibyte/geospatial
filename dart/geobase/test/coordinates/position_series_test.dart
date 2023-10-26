@@ -548,6 +548,62 @@ void main() {
       );
     });
 
+    test('RangeRemoved', () {
+      expect(
+        series1xy.rangeRemoved(1).values,
+        series1xy.rangeRemoved(1, 3).values,
+      );
+      expect(
+        series1xy.rangeRemoved(0, 3).values,
+        series1xy.subseries(0, 0).values,
+      );
+      expect(
+        series1xy.rangeRemoved(1, 3).values,
+        series1xy.subseries(0, 1).values,
+      );
+      expect(
+        series1xy.rangeRemoved(0, 1).values,
+        series1xy.subseries(1).values,
+      );
+      expect(
+        series1xy.rangeRemoved(1).values,
+        series1xy.subseries(0, 1).values,
+      );
+      expect(series1xy.rangeRemoved(1).values, [1.0, 1.0]);
+      expect(series1xy.reversed().rangeRemoved(1).values, [2.0, 2.0]);
+      final flat1xy = PositionSeries.view(series1xy.values.toList());
+      expect(flat1xy.rangeRemoved(1).values, flat1xy.rangeRemoved(1, 3).values);
+      expect(flat1xy.rangeRemoved(0, 3).values, flat1xy.subseries(0, 0).values);
+      expect(flat1xy.rangeRemoved(1, 3).values, flat1xy.subseries(0, 1).values);
+      expect(flat1xy.rangeRemoved(0, 1).values, flat1xy.subseries(1).values);
+      expect(flat1xy.rangeRemoved(1).values, flat1xy.subseries(0, 1).values);
+      expect(flat1xy.rangeRemoved(1).values, [1.0, 1.0]);
+      expect(flat1xy.reversed().rangeRemoved(1).values, [2.0, 2.0]);
+
+      expect(
+        series3xyz.rangeRemoved(2).values,
+        series3xyz.subseries(0, 2).values,
+      );
+      expect(
+        series3xyz.rangeRemoved(1, 3).values,
+        [1.0, 1.0, 1.0, 2.0, 2.0, 2.0],
+      );
+      expect(
+        series3xyz.reversed().rangeRemoved(1, 3).values,
+        [2.0, 2.0, 2.0, 1.0, 1.0, 1.0],
+      );
+      final flat3xyz =
+          PositionSeries.view(series3xyz.values.toList(), type: Coords.xyz);
+      expect(
+        flat3xyz.rangeRemoved(2, 3).values,
+        [1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 2.0, 2.0, 2.0],
+      );
+      expect(
+        flat3xyz.reversed().rangeRemoved(2, 3).values,
+        [2.0, 2.0, 2.0, 2.0, 2.0, 1.0, 1.0, 1.0, 1.0],
+      );
+    });
+
     test('Length2D', () {
       expect(series1xy.length2D(), 2.0);
       expect(series1xy.reversed().length2D(), 2.0);
