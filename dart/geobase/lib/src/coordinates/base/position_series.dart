@@ -1224,6 +1224,32 @@ class _PositionDataCoords extends PositionSeries {
       ? Float32List(count * coordinateDimension)
       : Float64List(count * coordinateDimension);
 
+  /// Internal helper to copy coordinate values from this to flat [target].
+  ///
+  /// Indexes [sourceStart], [sourceEnd] and [targetStart] specify indexes of
+  /// positions not coordinate values.
+  void _copyValues(
+    List<double> target, {
+    required int sourceStart,
+    required int sourceEnd,
+    required int targetStart,
+  }) {
+    final dim = coordinateDimension;
+    for (var index = sourceStart; index < sourceEnd; index++) {
+      // index in coordinate value array of this for a position by `index`
+      // (need to use _resolveIndex to ensure any reversing is handled)
+      final sourceArrayIndex = _resolveIndex(index) * dim;
+
+      // index in coordinate value array of target
+      final targetArrayIndex = (targetStart + index - sourceStart) * dim;
+
+      // copy `dim` coordinate values for a position by `index`
+      for (var i = 0; i < dim; i++) {
+        target[targetArrayIndex + i] = _data[sourceArrayIndex + i];
+      }
+    }
+  }
+
   @override
   int get spatialDimension => _type.spatialDimension;
 
@@ -1342,17 +1368,23 @@ class _PositionDataCoords extends PositionSeries {
     if (start == 0 && subEnd == positionCount) {
       return this;
     } else {
-      final arrayStart = start * coordinateDimension;
-      final arrayEnd = subEnd * coordinateDimension;
-      return PositionSeries.view(
-        _reversed
-            ? values
-                .skip(arrayStart)
-                .take(arrayEnd - arrayStart)
-                .toList(growable: false)
-            : _data.sublist(arrayStart, arrayEnd),
-        type: coordType,
-      );
+      if (_reversed) {
+        final target = _createValueList(subEnd - start);
+        _copyValues(
+          target,
+          sourceStart: start,
+          sourceEnd: subEnd,
+          targetStart: 0,
+        );
+        return PositionSeries.view(target, type: coordType);
+      } else {
+        final arrayStart = start * coordinateDimension;
+        final arrayEnd = subEnd * coordinateDimension;
+        return PositionSeries.view(
+          _data.sublist(arrayStart, arrayEnd),
+          type: coordType,
+        );
+      }
     }
   }
 
