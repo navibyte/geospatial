@@ -537,6 +537,14 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
         type: coordType,
       );
 
+  /// Returns a position series with all positions of this series sorted to the
+  /// order specified by [compare].
+  PositionSeries sorted(int Function(Position a, Position b) compare) =>
+      PositionSeries.from(
+        positions.toList(growable: false)..sort(compare),
+        type: coordType,
+      );
+
   /// Projects this series of positions to another series using [projection].
   @override
   PositionSeries project(Projection projection);
