@@ -525,25 +525,25 @@ void main() {
       [2.0, 2.0, 2.0].xyz,
     ].series();
 
-    test('Subseries', () {
-      expect(series1xy.subseries(1).values, series1xy.subseries(1, 3).values);
-      expect(series1xy.subseries(1).values, [1.0, 2.0, 2.0, 2.0]);
-      expect(series1xy.reversed().subseries(1).values, [1.0, 2.0, 1.0, 1.0]);
+    test('Range', () {
+      expect(series1xy.range(1).values, series1xy.range(1, 3).values);
+      expect(series1xy.range(1).values, [1.0, 2.0, 2.0, 2.0]);
+      expect(series1xy.reversed().range(1).values, [1.0, 2.0, 1.0, 1.0]);
       final flat1xy = PositionSeries.view(series1xy.values.toList());
-      expect(flat1xy.subseries(1).values, [1.0, 2.0, 2.0, 2.0]);
-      expect(flat1xy.reversed().subseries(1).values, [1.0, 2.0, 1.0, 1.0]);
+      expect(flat1xy.range(1).values, [1.0, 2.0, 2.0, 2.0]);
+      expect(flat1xy.reversed().range(1).values, [1.0, 2.0, 1.0, 1.0]);
 
-      expect(series3xyz.subseries(2).values, series3xyz.subseries(2, 4).values);
-      expect(series3xyz.subseries(2).values, [2.0, 2.0, 1.0, 2.0, 2.0, 2.0]);
+      expect(series3xyz.range(2).values, series3xyz.range(2, 4).values);
+      expect(series3xyz.range(2).values, [2.0, 2.0, 1.0, 2.0, 2.0, 2.0]);
       expect(
-        series3xyz.reversed().subseries(2).values,
+        series3xyz.reversed().range(2).values,
         [1.0, 2.0, 1.0, 1.0, 1.0, 1.0],
       );
       final flat3xyz =
           PositionSeries.view(series3xyz.values.toList(), type: Coords.xyz);
-      expect(flat3xyz.subseries(2).values, [2.0, 2.0, 1.0, 2.0, 2.0, 2.0]);
+      expect(flat3xyz.range(2).values, [2.0, 2.0, 1.0, 2.0, 2.0, 2.0]);
       expect(
-        flat3xyz.reversed().subseries(2).values,
+        flat3xyz.reversed().range(2).values,
         [1.0, 2.0, 1.0, 1.0, 1.0, 1.0],
       );
     });
@@ -555,34 +555,34 @@ void main() {
       );
       expect(
         series1xy.rangeRemoved(0, 3).values,
-        series1xy.subseries(0, 0).values,
+        series1xy.range(0, 0).values,
       );
       expect(
         series1xy.rangeRemoved(1, 3).values,
-        series1xy.subseries(0, 1).values,
+        series1xy.range(0, 1).values,
       );
       expect(
         series1xy.rangeRemoved(0, 1).values,
-        series1xy.subseries(1).values,
+        series1xy.range(1).values,
       );
       expect(
         series1xy.rangeRemoved(1).values,
-        series1xy.subseries(0, 1).values,
+        series1xy.range(0, 1).values,
       );
       expect(series1xy.rangeRemoved(1).values, [1.0, 1.0]);
       expect(series1xy.reversed().rangeRemoved(1).values, [2.0, 2.0]);
       final flat1xy = PositionSeries.view(series1xy.values.toList());
       expect(flat1xy.rangeRemoved(1).values, flat1xy.rangeRemoved(1, 3).values);
-      expect(flat1xy.rangeRemoved(0, 3).values, flat1xy.subseries(0, 0).values);
-      expect(flat1xy.rangeRemoved(1, 3).values, flat1xy.subseries(0, 1).values);
-      expect(flat1xy.rangeRemoved(0, 1).values, flat1xy.subseries(1).values);
-      expect(flat1xy.rangeRemoved(1).values, flat1xy.subseries(0, 1).values);
+      expect(flat1xy.rangeRemoved(0, 3).values, flat1xy.range(0, 0).values);
+      expect(flat1xy.rangeRemoved(1, 3).values, flat1xy.range(0, 1).values);
+      expect(flat1xy.rangeRemoved(0, 1).values, flat1xy.range(1).values);
+      expect(flat1xy.rangeRemoved(1).values, flat1xy.range(0, 1).values);
       expect(flat1xy.rangeRemoved(1).values, [1.0, 1.0]);
       expect(flat1xy.reversed().rangeRemoved(1).values, [2.0, 2.0]);
 
       expect(
         series3xyz.rangeRemoved(2).values,
-        series3xyz.subseries(0, 2).values,
+        series3xyz.range(0, 2).values,
       );
       expect(
         series3xyz.rangeRemoved(1, 3).values,
@@ -735,7 +735,7 @@ void main() {
       expect(series1xy.reversed().length2D(), 2.0);
 
       expect(series2xy.length2D(), 2.8284271247461903);
-      expect(series2xy.subseries(1).length2D(), 1.4142135623730951);
+      expect(series2xy.range(1).length2D(), 1.4142135623730951);
     });
 
     test('Length3D', () {
@@ -752,14 +752,14 @@ void main() {
         [1.0, 1.0].xy,
       ].series();
       expect(rectangle.signedArea2D(), 1.0);
-      expect(rectangle.subseries(0, 4).signedArea2D(), 1.0);
-      expect(rectangle.subseries(0, 3).signedArea2D(), 0.5);
-      expect(rectangle.subseries(1, 5).signedArea2D(), 1.0);
+      expect(rectangle.range(0, 4).signedArea2D(), 1.0);
+      expect(rectangle.range(0, 3).signedArea2D(), 0.5);
+      expect(rectangle.range(1, 5).signedArea2D(), 1.0);
       expect(rectangle.reversed().signedArea2D(), -1.0);
       expect((rectangle * 2.0).signedArea2D(), 4.0);
       expect((rectangle * -3.0).signedArea2D(), 9.0);
       expect(rectangle.length2D(), 4.0);
-      expect(rectangle.subseries(0, 4).length2D(), 3.0);
+      expect(rectangle.range(0, 4).length2D(), 3.0);
 
       final triangle = [
         [1.0, 1.0].xy,
@@ -768,8 +768,8 @@ void main() {
         [1.0, 1.0].xy,
       ].series();
       expect(triangle.signedArea2D(), 0.5);
-      expect(triangle.subseries(0, 3).signedArea2D(), 0.5);
-      expect(triangle.subseries(0, 2).signedArea2D(), 0.0);
+      expect(triangle.range(0, 3).signedArea2D(), 0.5);
+      expect(triangle.range(0, 2).signedArea2D(), 0.0);
       expect((triangle * 4.0).signedArea2D(), 8.0);
 
       final shape = [
@@ -800,8 +800,8 @@ void main() {
       expect(shape.signedArea2D(), 16.0);
       expect((shape * 2.0).signedArea2D(), 64.0);
       expect((shape * -2.0).signedArea2D(), 64.0);
-      expect(shape.subseries(1).signedArea2D(), 16.0);
-      expect(shape.subseries(5).signedArea2D(), 14.0);
+      expect(shape.range(1).signedArea2D(), 16.0);
+      expect(shape.range(5).signedArea2D(), 14.0);
       expect(shape.reversed().signedArea2D(), -16.0);
 
       final selfTouching = [
@@ -817,7 +817,7 @@ void main() {
       ].series();
       expect(selfTouching.signedArea2D(), 11.0);
       expect(selfTouching.reversed().signedArea2D(), -11.0);
-      expect(selfTouching.subseries(1).reversed().signedArea2D(), -11.0);
+      expect(selfTouching.range(1).reversed().signedArea2D(), -11.0);
 
       final selfTouchingWithHole = [
         [0.0, 0.0].xy,
@@ -837,7 +837,7 @@ void main() {
         [0.0, 0.0].xy,
       ].series();
       expect(selfTouchingWithHole.signedArea2D(), 13.5);
-      expect(selfTouchingWithHole.subseries(1).signedArea2D(), 13.5);
+      expect(selfTouchingWithHole.range(1).signedArea2D(), 13.5);
       expect(selfTouchingWithHole.reversed().signedArea2D(), -13.5);
 
       final selfIntersectingNotValid = [
@@ -854,7 +854,7 @@ void main() {
       expect(selfIntersectingNotValid.signedArea2D(), 14.5);
       expect(selfIntersectingNotValid.reversed().signedArea2D(), -14.5);
       expect(
-        selfIntersectingNotValid.subseries(1).reversed().signedArea2D(),
+        selfIntersectingNotValid.range(1).reversed().signedArea2D(),
         -14.5,
       );
 
@@ -868,9 +868,9 @@ void main() {
         [1.0, 6.0].xy,
       ].series();
       expect(shoelaceSample.signedArea2D(), 16.5);
-      expect(shoelaceSample.subseries(1).signedArea2D(), 16.5);
+      expect(shoelaceSample.range(1).signedArea2D(), 16.5);
       expect(shoelaceSample.reversed().signedArea2D(), -16.5);
-      expect(shoelaceSample.subseries(1).reversed().signedArea2D(), -16.5);
+      expect(shoelaceSample.range(1).reversed().signedArea2D(), -16.5);
       final p1 = [3.0, 1.0].xy;
       final p2 = [7.0, 2.0].xy;
       final p3 = [4.0, 4.0].xy;
@@ -930,7 +930,7 @@ void main() {
       );
       expect(
         expected3xyz[0].expand(_filterPosition([-2.0, -2.0, -1.0, -1.0].box)),
-        expected3xyz.subseries(0, 1).positions,
+        expected3xyz.range(0, 1).positions,
       );
 
       expect(
@@ -941,22 +941,22 @@ void main() {
         expected3xyz
             .expand(_filterPosition([-2.0, -2.0, -1.0, -1.0].box))
             .values,
-        expected3xyz.subseries(0, 1).values,
+        expected3xyz.range(0, 1).values,
       );
       expect(
         expected3xyz
             .expand(_filterPosition([-2.0, -2.0, -1.0, -1.0].box, true))
             .values,
         expected3xyz
-            .subseries(0, 1)
+            .range(0, 1)
             .values
-            .followedBy(expected3xyz.subseries(0, 1).values),
+            .followedBy(expected3xyz.range(0, 1).values),
       );
       expect(
         expected3xyz
             .expand(_filterPosition([-2.0, -3.0, -1.0, -1.0].box))
             .values,
-        expected3xyz.subseries(0, 2).values,
+        expected3xyz.range(0, 2).values,
       );
     });
 

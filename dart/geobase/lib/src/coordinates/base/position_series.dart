@@ -459,7 +459,7 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
   /// this.
   PositionSeries reversed();
 
-  /// Returns a sub series with positions from [start] (inclusive) to [end]
+  /// Returns a subseries with positions from [start] (inclusive) to [end]
   /// (exclusive).
   ///
   /// If [end] is not provided, then all positions from [start] to end are
@@ -469,7 +469,7 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
   /// implementations are allowed to make a copy of positions in the range).
   ///
   /// Valid queries are such that 0 ≤ start ≤ end ≤ [positionCount].
-  PositionSeries subseries(int start, [int? end]);
+  PositionSeries range(int start, [int? end]);
 
   /// Returns a position series with positions from [start] (inclusive) to [end]
   /// (exclusive) removed.
@@ -1147,7 +1147,7 @@ class _PositionArray extends PositionSeries {
         );
 
   @override
-  PositionSeries subseries(int start, [int? end]) {
+  PositionSeries range(int start, [int? end]) {
     final subEnd = end ?? positionCount;
     return start == 0 && subEnd == positionCount
         ? this
@@ -1170,9 +1170,9 @@ class _PositionArray extends PositionSeries {
     } else if (start == 0 && rangeEnd == positionCount) {
       return PositionSeries.empty();
     } else if (rangeEnd == positionCount) {
-      return subseries(0, start);
+      return range(0, start);
     } else if (start == 0) {
-      return subseries(rangeEnd);
+      return range(rangeEnd);
     } else {
       final removedCount = rangeEnd - start;
       final target = List<Position>.generate(
@@ -1454,7 +1454,7 @@ class _PositionDataCoords extends PositionSeries {
         );
 
   @override
-  PositionSeries subseries(int start, [int? end]) {
+  PositionSeries range(int start, [int? end]) {
     final subEnd = end ?? positionCount;
     if (start == 0 && subEnd == positionCount) {
       return this;
@@ -1487,9 +1487,9 @@ class _PositionDataCoords extends PositionSeries {
     } else if (start == 0 && rangeEnd == positionCount) {
       return PositionSeries.empty();
     } else if (rangeEnd == positionCount) {
-      return subseries(0, start);
+      return range(0, start);
     } else if (start == 0) {
-      return subseries(rangeEnd);
+      return range(rangeEnd);
     } else {
       final removedCount = rangeEnd - start;
       final target = _createValueList(positionCount - removedCount);

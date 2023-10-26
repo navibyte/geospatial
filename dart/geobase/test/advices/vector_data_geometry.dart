@@ -1750,7 +1750,7 @@ void testLineString(LineString lineString) {
 /// Tests `Polygon` geometry.
 void testPolygon(Polygon polygon, {int ringCount = 1}) {
   if (ringCount >= 1) {
-    testPositionSeries(polygon.exterior!.subseries(0, 3));
+    testPositionSeries(polygon.exterior!.range(0, 3));
   }
 
   _doTestPolygon(polygon, ringCount: ringCount);
@@ -1769,7 +1769,7 @@ void testMultiLineString(MultiLineString multiLineString) {
 /// Tests `MultiPolygon` geometry.
 void testMultiPolygon(MultiPolygon multiPolygon) {
   testPolygon(multiPolygon.polygons.first);
-  testPositionSeries(multiPolygon.ringArrays.first.first.subseries(0, 3));
+  testPositionSeries(multiPolygon.ringArrays.first.first.range(0, 3));
 }
 
 /// Tests `MultiGeometryCollection` geometry.

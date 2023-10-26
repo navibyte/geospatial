@@ -710,26 +710,26 @@ void _doTestPositionSeries(PositionSeries series) {
         10.0, 20.0, 30.0, 40.0,
         //
       ]);
-      expect(series.subseries(0, 0).values, const <double>[]);
-      expect(series.subseries(3, 5).values, const <double>[]);
-      expect(series.subseries(0, 1).values, [
+      expect(series.range(0, 0).values, const <double>[]);
+      expect(series.range(3, 5).values, const <double>[]);
+      expect(series.range(0, 1).values, [
         10.0, 20.0, 30.0, 40.0,
         //
       ]);
-      expect(series.subseries(1, 2).values, [
+      expect(series.range(1, 2).values, [
         12.5, 22.5, 32.5, 42.5,
         //
       ]);
-      expect(series.subseries(1, 10).values, [
+      expect(series.range(1, 10).values, [
         12.5, 22.5, 32.5, 42.5,
         15.0, 25.0, 35.0, 45.0,
         //
       ]);
-      expect(series.subseries(2).values, [
+      expect(series.range(2).values, [
         15.0, 25.0, 35.0, 45.0,
         //
       ]);
-      expect(series.reversed().subseries(2).values, [
+      expect(series.reversed().range(2).values, [
         10.0, 20.0, 30.0, 40.0,
         //
       ]);
@@ -840,7 +840,7 @@ void _doTestPositionSeries(PositionSeries series) {
         10.0, 20.0, 30.0,
         //
       ]);
-      expect(series.subseries(1, 2).values, [
+      expect(series.range(1, 2).values, [
         12.5, 22.5, 32.5,
         //
       ]);
@@ -948,7 +948,7 @@ void _doTestPositionSeries(PositionSeries series) {
         10.0, 20.0, 40.0,
         //
       ]);
-      expect(series.subseries(1, 2).values, [
+      expect(series.range(1, 2).values, [
         12.5, 22.5, 42.5,
         //
       ]);
@@ -1046,7 +1046,7 @@ void _doTestPositionSeries(PositionSeries series) {
         10.0, 20.0,
         //
       ]);
-      expect(series.subseries(1, 2).values, [
+      expect(series.range(1, 2).values, [
         12.5, 22.5,
         //
       ]);
