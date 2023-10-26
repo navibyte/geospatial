@@ -483,6 +483,37 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
   /// Valid queries are such that 0 ≤ start ≤ end ≤ [positionCount].
   PositionSeries rangeRemoved(int start, [int? end]);
 
+  /// Returns a position series with positions from [start] (inclusive) to [end]
+  /// (exclusive) replaced with [replacements].
+  ///
+  /// A returned series may point to the same position data as this (however
+  /// implementations are allowed to make a copy of positions in the range).
+  ///
+  /// Valid queries are such that 0 ≤ start ≤ end ≤ [positionCount].
+  PositionSeries rangeReplaced(
+    int start,
+    int end,
+    Iterable<Position> replacements,
+  ) {
+    final source = positions;
+    Iterable<Position>? target;
+    if (start == end && replacements.isEmpty) {
+      // ignore: avoid_returning_this
+      return this;
+    } else if (start == 0 && end == positionCount) {
+      target = replacements;
+    } else {
+      if (start > 0) {
+        target = source.take(start);
+      }
+      target = target != null ? target.followedBy(replacements) : replacements;
+      if (end < positionCount) {
+        target = target.followedBy(source.skip(end));
+      }
+    }
+    return PositionSeries.from(target, type: coordType);
+  }
+
   /// Projects this series of positions to another series using [projection].
   @override
   PositionSeries project(Projection projection);

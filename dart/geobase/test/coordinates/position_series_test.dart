@@ -604,6 +604,62 @@ void main() {
       );
     });
 
+    test('RangeReplaced', () {
+      for (final s1xy in [
+        series1xy,
+        PositionSeries.view(series1xy.values.toList())
+      ]) {
+        expect(
+          s1xy.rangeReplaced(1, 2, [
+            [1.1, 2.1].xy,
+          ]).values,
+          [1.0, 1.0, 1.1, 2.1, 2.0, 2.0],
+        );
+        expect(
+          s1xy.rangeReplaced(1, 3, [
+            [1.1, 2.1].xy,
+          ]).values,
+          [1.0, 1.0, 1.1, 2.1],
+        );
+        expect(
+          s1xy.reversed().rangeReplaced(1, 3, [
+            [1.1, 2.1].xy,
+            [1.2, 2.2].xy,
+          ]).values,
+          [2.0, 2.0, 1.1, 2.1, 1.2, 2.2],
+        );
+        expect(
+          s1xy.reversed().rangeReplaced(1, 1, [
+            [1.1, 2.1].xy,
+            [1.2, 2.2].xy,
+          ]).values,
+          [2.0, 2.0, 1.1, 2.1, 1.2, 2.2, 1.0, 2.0, 1.0, 1.0],
+        );
+        expect(
+          s1xy.reversed().rangeReplaced(1, 1, const []).values,
+          [2.0, 2.0, 1.0, 2.0, 1.0, 1.0],
+        );
+      }
+      for (final s3xyz in [
+        series3xyz,
+        PositionSeries.view(series3xyz.values.toList(), type: Coords.xyz)
+      ]) {
+        expect(
+          s3xyz.rangeReplaced(1, 2, [
+            [1.1, 2.1, 1.1].xyz,
+          ]).values,
+          [1.0, 1.0, 1.0, 1.1, 2.1, 1.1, 2.0, 2.0, 1.0, 2.0, 2.0, 2.0],
+        );
+        expect(
+          s3xyz.reversed().rangeReplaced(1, 3, [
+            [1.1, 2.1].xy,
+            [1.2, 2.2, 2.2].xyz,
+          ]).values,
+          [2.0, 2.0, 2.0, 1.1, 2.1, 0.0, 1.2, 2.2, 2.2, 1.0, 1.0, 1.0],
+        );
+      }
+    });
+
     test('Length2D', () {
       expect(series1xy.length2D(), 2.0);
       expect(series1xy.reversed().length2D(), 2.0);
