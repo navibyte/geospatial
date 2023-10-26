@@ -458,6 +458,18 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
   @override
   PositionSeries copyByType(Coords type);
 
+  /// Returns a position series with coordinate values packed in a flat
+  /// structure.
+  ///
+  /// If this series is already "packed", then this is returned.
+  ///
+  /// If [singlePrecision] is true, then coordinate values of positions are
+  /// stored in `Float32List` instead of the `Float64List` (default).
+  ///
+  /// The coordinate type of returned series is [type] when given, and othewise
+  /// [coordType] of this series.
+  PositionSeries packed({bool singlePrecision = false, Coords? type});
+
   /// Returns a position series with all positions in reversed order compared to
   /// this.
   PositionSeries reversed();
@@ -1168,6 +1180,19 @@ class _PositionArray extends PositionSeries {
         );
 
   @override
+  PositionSeries packed({bool singlePrecision = false, Coords? type}) {
+    final targetType = type ?? coordType;
+    return PositionSeries.view(
+      toFloatNNList(
+        valuesByType(targetType),
+        singlePrecision: singlePrecision,
+        valueCount: positionCount * targetType.coordinateDimension,
+      ),
+      type: targetType,
+    );
+  }
+
+  @override
   PositionSeries reversed() => positionCount <= 1
       ? this
       : _PositionArray.view(
@@ -1478,6 +1503,28 @@ class _PositionDataCoords extends PositionSeries {
           ),
           type: type,
         );
+
+  @override
+  PositionSeries packed({bool singlePrecision = false, Coords? type}) {
+    final isSingleCurrently = _data is Float32List;
+    final targetType = type ?? coordType;
+
+    if (coordType != targetType ||
+        isSingleCurrently != singlePrecision ||
+        _reversed) {
+      return PositionSeries.view(
+        toFloatNNList(
+          valuesByType(targetType),
+          singlePrecision: singlePrecision,
+          valueCount: positionCount * targetType.coordinateDimension,
+        ),
+        type: targetType,
+      );
+    } else {
+      // already packed (without reversed state and with correct precision)
+      return this;
+    }
+  }
 
   @override
   PositionSeries reversed() => positionCount <= 1

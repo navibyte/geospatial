@@ -716,7 +716,10 @@ void main() {
       }
       for (final s3xyz in [
         series3xyz,
+        series3xyz.packed(),
+        PositionSeries.view(series3xyz.values.toList(), type: Coords.xyz),
         PositionSeries.view(series3xyz.values.toList(), type: Coords.xyz)
+            .packed(singlePrecision: true)
       ]) {
         expect(
           s3xyz.added([
@@ -733,6 +736,8 @@ void main() {
     test('Sorted', () {
       for (final s1xy in [
         series1xy,
+        series1xy.packed(),
+        series1xy.packed(singlePrecision: true),
         PositionSeries.view(series1xy.values.toList())
       ]) {
         expect(
@@ -749,6 +754,8 @@ void main() {
     test('Filtered', () {
       for (final s1xy in [
         series1xy,
+        series1xy.packed(),
+        series1xy.packed(singlePrecision: true),
         PositionSeries.view(series1xy.values.toList())
       ]) {
         expect(

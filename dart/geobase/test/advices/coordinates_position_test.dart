@@ -650,11 +650,15 @@ void testPositionSeries(PositionSeries series) {
   testPosition(series[0]);
 
   // tests for series
-  _doTestPositionSeries(series);
+  _doTestPositionSeries(series, series.coordType);
+  _doTestPositionSeries(series.packed(), series.coordType);
+  _doTestPositionSeries(series.packed(type: Coords.xy), Coords.xy);
+  _doTestPositionSeries(series.packed(singlePrecision: true), series.coordType);
 }
 
 /// Tests the sample position series.
-void _doTestPositionSeries(PositionSeries series) {
+void _doTestPositionSeries(PositionSeries series, Coords type) {
+  expect(series.coordType, type);
   final positions = series.positions.toList(growable: false);
   final projPositions =
       series.positionsAs(to: Projected.create).toList(growable: false);
