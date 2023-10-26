@@ -1176,24 +1176,28 @@ class _PositionArray extends PositionSeries {
 
   @override
   PositionSeries range(int start, [int? end]) {
-    final subEnd = end ?? positionCount;
-    return start == 0 && subEnd == positionCount
-        ? this
-        : PositionSeries.from(
-            _reversed
-                ? _data.reversed
-                    .skip(start)
-                    .take(subEnd - start)
-                    .toList(growable: false)
-                : _data.sublist(start, subEnd),
-            type: coordType,
-          );
+    final rangeEnd = math.min(end ?? positionCount, positionCount);
+    if (start >= rangeEnd) {
+      return PositionSeries.empty();
+    } else if (start == 0 && rangeEnd == positionCount) {
+      return this;
+    } else {
+      return PositionSeries.from(
+        _reversed
+            ? _data.reversed
+                .skip(start)
+                .take(rangeEnd - start)
+                .toList(growable: false)
+            : _data.sublist(start, rangeEnd),
+        type: coordType,
+      );
+    }
   }
 
   @override
   PositionSeries rangeRemoved(int start, [int? end]) {
-    final rangeEnd = end ?? positionCount;
-    if (start == rangeEnd) {
+    final rangeEnd = math.min(end ?? positionCount, positionCount);
+    if (start >= rangeEnd) {
       return this;
     } else if (start == 0 && rangeEnd == positionCount) {
       return PositionSeries.empty();
@@ -1483,22 +1487,24 @@ class _PositionDataCoords extends PositionSeries {
 
   @override
   PositionSeries range(int start, [int? end]) {
-    final subEnd = end ?? positionCount;
-    if (start == 0 && subEnd == positionCount) {
+    final rangeEnd = math.min(end ?? positionCount, positionCount);
+    if (start >= rangeEnd) {
+      return PositionSeries.empty();
+    } else if (start == 0 && rangeEnd == positionCount) {
       return this;
     } else {
       if (_reversed) {
-        final target = _createValueList(subEnd - start);
+        final target = _createValueList(rangeEnd - start);
         _copyValues(
           target,
           sourceStart: start,
-          sourceEnd: subEnd,
+          sourceEnd: rangeEnd,
           targetStart: 0,
         );
         return PositionSeries.view(target, type: coordType);
       } else {
         final arrayStart = start * coordinateDimension;
-        final arrayEnd = subEnd * coordinateDimension;
+        final arrayEnd = rangeEnd * coordinateDimension;
         return PositionSeries.view(
           _data.sublist(arrayStart, arrayEnd),
           type: coordType,
@@ -1509,8 +1515,8 @@ class _PositionDataCoords extends PositionSeries {
 
   @override
   PositionSeries rangeRemoved(int start, [int? end]) {
-    final rangeEnd = end ?? positionCount;
-    if (start == rangeEnd) {
+    final rangeEnd = math.min(end ?? positionCount, positionCount);
+    if (start >= rangeEnd) {
       return this;
     } else if (start == 0 && rangeEnd == positionCount) {
       return PositionSeries.empty();

@@ -61,4 +61,9 @@ T addOneOnXYTransform<T extends Position>(
   Position source, {
   required CreatePosition<T> to,
 }) =>
-    to.call(x: source.x + 1.0, y: source.y + 1);
+    to.call(
+      x: source.x + 1.0,
+      y: source.y + 1,
+      z: source.optZ,
+      m: source.optM,
+    );
