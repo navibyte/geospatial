@@ -660,19 +660,19 @@ void main() {
       }
     });
 
-    test('InsertAll', () {
+    test('Inserted', () {
       for (final s1xy in [
         series1xy,
         PositionSeries.view(series1xy.values.toList())
       ]) {
         expect(
-          s1xy.insertAll(1, [
+          s1xy.inserted(1, [
             [1.1, 2.1].xy,
           ]).values,
           [1.0, 1.0, 1.1, 2.1, 1.0, 2.0, 2.0, 2.0],
         );
         expect(
-          s1xy.reversed().insertAll(1, [
+          s1xy.reversed().inserted(1, [
             [1.1, 2.1].xy,
             [1.2, 2.2].xy,
           ]).values,
@@ -684,7 +684,7 @@ void main() {
         PositionSeries.view(series3xyz.values.toList(), type: Coords.xyz)
       ]) {
         expect(
-          s3xyz.insertAll(1, [
+          s3xyz.inserted(1, [
             [1.1, 2.1, 1.1].xyz,
           ]).values,
           [
@@ -695,19 +695,19 @@ void main() {
       }
     });
 
-    test('AddAll', () {
+    test('Added', () {
       for (final s1xy in [
         series1xy,
         PositionSeries.view(series1xy.values.toList())
       ]) {
         expect(
-          s1xy.addAll([
+          s1xy.added([
             [1.1, 2.1].xy,
           ]).values,
           [1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 1.1, 2.1],
         );
         expect(
-          s1xy.reversed().addAll([
+          s1xy.reversed().added([
             [1.1, 2.1].xy,
             [1.2, 2.2].xy,
           ]).values,
@@ -719,7 +719,7 @@ void main() {
         PositionSeries.view(series3xyz.values.toList(), type: Coords.xyz)
       ]) {
         expect(
-          s3xyz.addAll([
+          s3xyz.added([
             [1.1, 2.1, 1.1].xyz,
           ]).values,
           [
