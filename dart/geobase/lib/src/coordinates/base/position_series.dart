@@ -1219,6 +1219,11 @@ class _PositionDataCoords extends PositionSeries {
         _reversed = reversed,
         super._();
 
+  /// Internal helper to create a flat coordinate array for [count] positions.
+  List<double> _createValueList(int count) => _data is Float32List
+      ? Float32List(count * coordinateDimension)
+      : Float64List(count * coordinateDimension);
+
   @override
   int get spatialDimension => _type.spatialDimension;
 
@@ -1354,12 +1359,10 @@ class _PositionDataCoords extends PositionSeries {
   PositionSeries project(Projection projection) => PositionSeries.view(
         projection.projectCoords(
           values,
-          type: type,
-          target: _data is Float32List
-              ? Float32List(positionCount * type.coordinateDimension)
-              : Float64List(positionCount * type.coordinateDimension),
+          type: coordType,
+          target: _createValueList(positionCount),
         ),
-        type: type,
+        type: coordType,
       );
 
   @override
