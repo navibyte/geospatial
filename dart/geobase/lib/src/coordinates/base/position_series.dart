@@ -527,6 +527,14 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
   ) =>
       rangeReplaced(index, index, iterable);
 
+  /// Returns a position series with [iterable] of positions added to positions
+  /// of this series.
+  ///
+  /// A returned series may point to the same position data as this (however
+  /// implementations are allowed to make a copy of positions in the range).
+  PositionSeries addAll(Iterable<Position> iterable) =>
+      PositionSeries.from(positions.followedBy(iterable));
+
   /// Projects this series of positions to another series using [projection].
   @override
   PositionSeries project(Projection projection);
