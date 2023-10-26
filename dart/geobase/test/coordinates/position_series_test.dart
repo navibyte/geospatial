@@ -507,7 +507,7 @@ void main() {
     });
   });
 
-  group('PositionSeries cartesian calculations', () {
+  group('PositionSeries manipulations and cartesian calculations', () {
     final series1xy = [
       [1.0, 1.0].xy,
       [1.0, 2.0].xy,
@@ -524,6 +524,29 @@ void main() {
       [2.0, 2.0, 1.0].xyz,
       [2.0, 2.0, 2.0].xyz,
     ].series();
+
+    test('Subseries', () {
+      expect(series1xy.subseries(1).values, series1xy.subseries(1, 3).values);
+      expect(series1xy.subseries(1).values, [1.0, 2.0, 2.0, 2.0]);
+      expect(series1xy.reversed().subseries(1).values, [1.0, 2.0, 1.0, 1.0]);
+      final flat1xy = PositionSeries.view(series1xy.values.toList());
+      expect(flat1xy.subseries(1).values, [1.0, 2.0, 2.0, 2.0]);
+      expect(flat1xy.reversed().subseries(1).values, [1.0, 2.0, 1.0, 1.0]);
+
+      expect(series3xyz.subseries(2).values, series3xyz.subseries(2, 4).values);
+      expect(series3xyz.subseries(2).values, [2.0, 2.0, 1.0, 2.0, 2.0, 2.0]);
+      expect(
+        series3xyz.reversed().subseries(2).values,
+        [1.0, 2.0, 1.0, 1.0, 1.0, 1.0],
+      );
+      final flat3xyz =
+          PositionSeries.view(series3xyz.values.toList(), type: Coords.xyz);
+      expect(flat3xyz.subseries(2).values, [2.0, 2.0, 1.0, 2.0, 2.0, 2.0]);
+      expect(
+        flat3xyz.reversed().subseries(2).values,
+        [1.0, 2.0, 1.0, 1.0, 1.0, 1.0],
+      );
+    });
 
     test('Length2D', () {
       expect(series1xy.length2D(), 2.0);

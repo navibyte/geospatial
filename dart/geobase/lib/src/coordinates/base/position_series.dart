@@ -469,14 +469,7 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
   /// implementations are allowed to make a copy of positions in the range).
   ///
   /// Valid queries are such that 0 ≤ start ≤ end ≤ [positionCount].
-  PositionSeries subseries(int start, [int? end]) {
-    final subEnd = end ?? positionCount;
-    return start == 0 && subEnd == positionCount
-        ? this
-        : PositionSeries.from(
-            positions.skip(start).take(subEnd - start).toList(growable: false),
-          );
-  }
+  PositionSeries subseries(int start, [int? end]);
 
   /// Projects this series of positions to another series using [projection].
   @override
@@ -1090,6 +1083,22 @@ class _PositionArray extends PositionSeries {
         );
 
   @override
+  PositionSeries subseries(int start, [int? end]) {
+    final subEnd = end ?? positionCount;
+    return start == 0 && subEnd == positionCount
+        ? this
+        : PositionSeries.from(
+            _reversed
+                ? _data.reversed
+                    .skip(start)
+                    .take(subEnd - start)
+                    .toList(growable: false)
+                : _data.sublist(start, subEnd),
+            type: coordType,
+          );
+  }
+
+  @override
   PositionSeries project(Projection projection) => PositionSeries.from(
         positions.map((pos) => pos.project(projection)).toList(growable: false),
         type: type,
@@ -1320,6 +1329,26 @@ class _PositionDataCoords extends PositionSeries {
           reversed: !_reversed,
           bounds: bounds,
         );
+
+  @override
+  PositionSeries subseries(int start, [int? end]) {
+    final subEnd = end ?? positionCount;
+    if (start == 0 && subEnd == positionCount) {
+      return this;
+    } else {
+      final arrayStart = start * coordinateDimension;
+      final arrayEnd = subEnd * coordinateDimension;
+      return PositionSeries.view(
+        _reversed
+            ? values
+                .skip(arrayStart)
+                .take(arrayEnd - arrayStart)
+                .toList(growable: false)
+            : _data.sublist(arrayStart, arrayEnd),
+        type: coordType,
+      );
+    }
+  }
 
   @override
   PositionSeries project(Projection projection) => PositionSeries.view(
