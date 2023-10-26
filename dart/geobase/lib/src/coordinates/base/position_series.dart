@@ -1011,6 +1011,7 @@ class _PositionArray extends PositionSeries {
   bool get isMeasured => _type.isMeasured;
 
   @override
+  @Deprecated('Use coordType instead.')
   Coords get type => _type;
 
   @override
@@ -1058,14 +1059,13 @@ class _PositionArray extends PositionSeries {
   double? optM(int index) => isMeasured ? this[index].m : null;
 
   @override
-  // ignore: unnecessary_this
-  Iterable<double> get values => _valuesByType(this.type);
+  Iterable<double> get values => _valuesByType(coordType);
 
   @override
   Iterable<double> valuesByType(Coords type) => _valuesByType(type);
 
   @override
-  PositionSeries copyByType(Coords type) => this.type == type
+  PositionSeries copyByType(Coords type) => coordType == type
       ? this
       : PositionSeries.from(
           positions.map((pos) => pos.copyByType(type)).toList(growable: false),
@@ -1101,7 +1101,7 @@ class _PositionArray extends PositionSeries {
   @override
   PositionSeries project(Projection projection) => PositionSeries.from(
         positions.map((pos) => pos.project(projection)).toList(growable: false),
-        type: type,
+        type: coordType,
       );
 
   @override
@@ -1237,6 +1237,7 @@ class _PositionDataCoords extends PositionSeries {
   bool get isMeasured => _type.isMeasured;
 
   @override
+  @Deprecated('Use coordType instead.')
   Coords get type => _type;
 
   @override
@@ -1261,7 +1262,7 @@ class _PositionDataCoords extends PositionSeries {
   Position operator [](int index) => Position.subview(
         _data,
         start: _resolveIndex(index) * coordinateDimension,
-        type: type,
+        type: coordType,
       );
 
   @override
@@ -1284,15 +1285,15 @@ class _PositionDataCoords extends PositionSeries {
 
   @override
   double z(int index) =>
-      type.is3D ? _data[_resolveIndex(index) * coordinateDimension + 2] : 0.0;
+      is3D ? _data[_resolveIndex(index) * coordinateDimension + 2] : 0.0;
 
   @override
   double? optZ(int index) =>
-      type.is3D ? _data[_resolveIndex(index) * coordinateDimension + 2] : null;
+      is3D ? _data[_resolveIndex(index) * coordinateDimension + 2] : null;
 
   @override
   double m(int index) {
-    final mIndex = type.indexForM;
+    final mIndex = coordType.indexForM;
     return mIndex != null
         ? _data[_resolveIndex(index) * coordinateDimension + mIndex]
         : 0.0;
@@ -1300,7 +1301,7 @@ class _PositionDataCoords extends PositionSeries {
 
   @override
   double? optM(int index) {
-    final mIndex = type.indexForM;
+    final mIndex = coordType.indexForM;
     return mIndex != null
         ? _data[_resolveIndex(index) * coordinateDimension + mIndex]
         : null;
@@ -1308,14 +1309,14 @@ class _PositionDataCoords extends PositionSeries {
 
   @override
   Iterable<double> get values =>
-      _reversed && positionCount > 1 ? _valuesByType(type) : _data;
+      _reversed && positionCount > 1 ? _valuesByType(coordType) : _data;
 
   @override
   Iterable<double> valuesByType(Coords type) =>
-      this.type == type ? values : _valuesByType(type);
+      coordType == type ? values : _valuesByType(type);
 
   @override
-  PositionSeries copyByType(Coords type) => this.type == type
+  PositionSeries copyByType(Coords type) => coordType == type
       ? this
       : PositionSeries.view(
           toFloatNNList(
