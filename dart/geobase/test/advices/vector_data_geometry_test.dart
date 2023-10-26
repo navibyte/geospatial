@@ -13,7 +13,7 @@ import 'package:geobase/vector_data.dart';
 
 import 'package:test/test.dart';
 
-import 'coordinates_position.dart';
+import 'coordinates_position_test.dart';
 
 void main() {
   group('Point class', () {

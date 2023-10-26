@@ -13,7 +13,7 @@ import 'package:geobase/vector_data.dart';
 
 import 'package:test/test.dart';
 
-import 'vector_data_geometry.dart';
+import 'vector_data_geometry_test.dart';
 
 void main() {
   group('Feature class', () {
