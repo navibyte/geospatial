@@ -746,6 +746,30 @@ void main() {
       }
     });
 
+    test('Filtered', () {
+      for (final s1xy in [
+        series1xy,
+        PositionSeries.view(series1xy.values.toList())
+      ]) {
+        expect(
+          s1xy.filtered((count, index, pos) => pos.x + pos.y <= 3.5).values,
+          [1.0, 1.0, 1.0, 2.0],
+        );
+        expect(
+          s1xy.filtered((count, index, pos) => index < count - 2).values,
+          [1.0, 1.0],
+        );
+        expect(
+          s1xy.reversed().filtered((count, index, pos) => true).values,
+          [2.0, 2.0, 1.0, 2.0, 1.0, 1.0],
+        );
+        expect(
+          s1xy.reversed().filtered((count, index, pos) => false).values,
+          <double>[],
+        );
+      }
+    });
+
     test('Length2D', () {
       expect(series1xy.length2D(), 2.0);
       expect(series1xy.reversed().length2D(), 2.0);

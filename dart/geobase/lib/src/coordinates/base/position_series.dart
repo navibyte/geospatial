@@ -545,6 +545,24 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
         type: coordType,
       );
 
+  /// Returns a position series with all positions of this series that satisfy
+  /// the predicate [test].
+  ///
+  /// The test predicate defined by
+  /// `bool Function(int count, int index, Position element)` has arguments
+  /// `count` (the count of all positions in this series), `index` (the current
+  /// index of element tested) and `element` (the current element tested).
+  PositionSeries filtered(
+    bool Function(int count, int index, Position element) test,
+  ) {
+    final posCount = positionCount;
+    var i = 0;
+    return PositionSeries.from(
+      positions.where((pos) => test(posCount, i++, pos)),
+      type: coordType,
+    );
+  }
+
   /// Projects this series of positions to another series using [projection].
   @override
   PositionSeries project(Projection projection);
