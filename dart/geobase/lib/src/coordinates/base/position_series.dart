@@ -53,7 +53,10 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
   static final _empty = PositionSeries.view(const []);
 
   /// An empty series of positions without any positions.
-  factory PositionSeries.empty() => _empty;
+  ///
+  /// An optional [type] specifies the coordinate type.
+  factory PositionSeries.empty([Coords type = Coords.xy]) =>
+      type == Coords.xy ? _empty : PositionSeries.view(const [], type: type);
 
   /// A series of positions as a view backed by [source] containing coordinate
   /// values of positions.
@@ -1178,7 +1181,7 @@ class _PositionArray extends PositionSeries {
   PositionSeries range(int start, [int? end]) {
     final rangeEnd = math.min(end ?? positionCount, positionCount);
     if (start >= rangeEnd) {
-      return PositionSeries.empty();
+      return PositionSeries.empty(coordType);
     } else if (start == 0 && rangeEnd == positionCount) {
       return this;
     } else {
@@ -1200,7 +1203,7 @@ class _PositionArray extends PositionSeries {
     if (start >= rangeEnd) {
       return this;
     } else if (start == 0 && rangeEnd == positionCount) {
-      return PositionSeries.empty();
+      return PositionSeries.empty(coordType);
     } else if (rangeEnd == positionCount) {
       return range(0, start);
     } else if (start == 0) {
@@ -1489,7 +1492,7 @@ class _PositionDataCoords extends PositionSeries {
   PositionSeries range(int start, [int? end]) {
     final rangeEnd = math.min(end ?? positionCount, positionCount);
     if (start >= rangeEnd) {
-      return PositionSeries.empty();
+      return PositionSeries.empty(coordType);
     } else if (start == 0 && rangeEnd == positionCount) {
       return this;
     } else {
@@ -1519,7 +1522,7 @@ class _PositionDataCoords extends PositionSeries {
     if (start >= rangeEnd) {
       return this;
     } else if (start == 0 && rangeEnd == positionCount) {
-      return PositionSeries.empty();
+      return PositionSeries.empty(coordType);
     } else if (rangeEnd == positionCount) {
       return range(0, start);
     } else if (start == 0) {

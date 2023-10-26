@@ -364,7 +364,7 @@ class LineString extends SimpleGeometry {
   }) {
     final str = coordinates.trim();
     if (str.isEmpty) {
-      return LineString(PositionSeries.empty());
+      return LineString(PositionSeries.empty(type));
     }
     // NOTE: validate line string (at least two points)
     return LineString(
