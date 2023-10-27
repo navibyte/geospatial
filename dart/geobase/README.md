@@ -1749,9 +1749,8 @@ used to import only a certain subset instead of the whole **geobase** package:
 
 Package                | Description 
 ---------------------- | ----------- 
-**codes**              | Enums (codes) for geospatial coordinate, geometry types, canvas origin, cardinal direction, DMS type, geo representation and axis order.
-**constants**          | Epsilon, geodetic and screen related constants.
-**coordinates**        | Geographic (longitude-latitude) and projected positions and bounding boxes.
+**common**             | Common codes, contants and reference systems related to geospatial applications.
+**coordinates**        | Position, bounding box and positions series (with coordinate arrays).
 **geodesy**            | Spherical geodesy functions for *great circle* and *rhumb line* paths.
 **meta**               | Temporal data structures (instant, interval) and spatial extents.
 **projections**        | Geospatial projections (currently only between WGS84 and Web Mercator).
