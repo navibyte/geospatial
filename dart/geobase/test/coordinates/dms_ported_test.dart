@@ -9,6 +9,7 @@
 
 // ignore_for_file: lines_longer_than_80_chars, prefer_const_constructors
 
+import 'package:geobase/common.dart';
 import 'package:geobase/coordinates.dart';
 
 import 'package:test/test.dart';

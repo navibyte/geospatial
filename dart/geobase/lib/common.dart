@@ -4,14 +4,16 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// Common codes, contants and reference systems related to geospatial
-/// applications.
+/// Common codes, constants, functions and reference systems related to
+/// geospatial applications.
 ///
 /// Features:
 /// * Enums (codes): geospatial coordinate, geometry types, dimensionality,
 ///   canvas origin, cardinal direction, DMS type, geo representation, axis
 ///   order.
 /// * Constants: epsilon, geodetic and screen related constants.
+/// * Functions: conversions between radians and degrees, geographic coordinate
+///   helpers.
 /// * Coordinate and temporal reference systems.
 ///
 /// This libary exports a subset of `package:geobase/geobase.dart`.
@@ -33,6 +35,10 @@ export 'src/common/codes/geom.dart';
 export 'src/common/constants/epsilon.dart';
 export 'src/common/constants/geodetic.dart';
 export 'src/common/constants/screen_ppi.dart';
+
+// functions
+export 'src/common/functions/geographic_functions.dart';
+export 'src/common/functions/position_functions.dart';
 
 // reference
 export 'src/common/reference/coord_ref_sys.dart';

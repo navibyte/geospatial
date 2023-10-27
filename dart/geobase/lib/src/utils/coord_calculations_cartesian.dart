@@ -8,9 +8,9 @@ import 'dart:math' as math;
 
 import 'package:meta/meta.dart';
 
+import '/src/common/functions/position_functions.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
-import '/src/coordinates/base/position_functions.dart';
 
 /// Returns a midpoint between this and [destination] positions calculated in
 /// the cartesian coordinate reference system.

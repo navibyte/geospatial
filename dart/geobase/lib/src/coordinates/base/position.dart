@@ -13,6 +13,7 @@ import 'package:meta/meta.dart';
 
 import '/src/common/codes/coords.dart';
 import '/src/common/constants/epsilon.dart';
+import '/src/common/functions/position_functions.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/utils/coord_calculations_cartesian.dart';
 import '/src/utils/coord_positions.dart';
@@ -21,7 +22,6 @@ import '/src/utils/num.dart';
 import '/src/utils/tolerance.dart';
 
 import 'box.dart';
-import 'position_functions.dart';
 import 'position_scheme.dart';
 import 'value_positionable.dart';
 

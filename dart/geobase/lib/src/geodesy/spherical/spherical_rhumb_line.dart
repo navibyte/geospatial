@@ -32,7 +32,7 @@ import 'dart:math';
 
 import 'package:meta/meta.dart';
 
-import '/src/coordinates/base/position_functions.dart';
+import '/src/common/functions/position_functions.dart';
 import '/src/coordinates/geographic/geographic.dart';
 import '/src/geodesy/base/geodetic.dart';
 

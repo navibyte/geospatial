@@ -33,9 +33,8 @@ import 'dart:math';
 
 import '/src/common/codes/cardinal_precision.dart';
 import '/src/common/codes/dms_type.dart';
-import '/src/coordinates/base/position_functions.dart';
-
-import 'geographic_functions.dart';
+import '/src/common/functions/geographic_functions.dart';
+import '/src/common/functions/position_functions.dart';
 
 /// A base class for formatters with methods for parsing and formatting
 /// degrees/minutes/seconds on latitude, longitude and bearing values.
