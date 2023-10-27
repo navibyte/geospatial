@@ -5,6 +5,8 @@
 // Docs: https://github.com/navibyte/geospatial
 
 // ignore_for_file: unrelated_type_equality_checks, prefer_const_declarations
+// ignore_for_file: avoid_redundant_argument_values
+// ignore_for_file: missing_whitespace_between_adjacent_strings
 
 import 'package:geobase/coordinates.dart';
 import 'package:geobase/src/utils/coord_calculations_cartesian.dart';
@@ -790,7 +792,7 @@ void main() {
       expect(series3xyz.reversed().length3D(), 3.0);
     });
 
-    test('Area3D', () {
+    test('Area2D and centroid2D', () {
       final rectangle = [
         [1.0, 1.0].xy,
         [2.0, 1.0].xy,
@@ -798,6 +800,7 @@ void main() {
         [1.0, 2.0].xy,
         [1.0, 1.0].xy,
       ].series();
+      final rectangleNC = rectangle.range(0, 4);
       expect(rectangle.signedArea2D(), 1.0);
       expect(rectangle.range(0, 4).signedArea2D(), 1.0);
       expect(rectangle.range(0, 3).signedArea2D(), 0.5);
@@ -807,6 +810,57 @@ void main() {
       expect((rectangle * -3.0).signedArea2D(), 9.0);
       expect(rectangle.length2D(), 4.0);
       expect(rectangle.range(0, 4).length2D(), 3.0);
+      expect(rectangle.centroid2D(), [1.5, 1.5].xy);
+      expect((rectangle * 2.0).centroid2D(), [3.0, 3.0].xy);
+      expect(rectangleNC.centroid2D(), [1.5, 1.5].xy);
+      expect(
+        rectangleNC.centroid2D(dimensionality: Dimensionality.punctual),
+        [1.5, 1.5].xy,
+      );
+      expect(
+        rectangle.centroid2D(dimensionality: Dimensionality.linear),
+        [1.5, 1.5].xy,
+      );
+
+      final centroidTest1 = [
+        [2.0, 4.0].xy,
+        [5.0, -1.0].xy,
+        [-4.0, 10.0].xy
+      ].series();
+      expect(centroidTest1.centroid2D()!.toText(decimals: 2), '1,4.33');
+      final centroidTest2 = [
+        [4.0, 5.0].xy,
+        [30.0, 6.0].xy,
+        [20.0, 25.0].xy
+      ].series();
+      expect(centroidTest2.centroid2D(), [18.0, 12.0].xy);
+      expect(
+        centroidTest2.added([
+          [4.0, 5.0].xy
+        ]).centroid2D(),
+        [18.0, 12.0].xy,
+      );
+      expect(centroidTest2.range(0, 2).centroid2D(), [17.0, 5.5].xy);
+      expect(centroidTest2.range(1, 2).centroid2D(), [30.0, 6.0].xy);
+
+      final straightLine = [
+        [1.0, 0.0].xy,
+        [2.0, 0.0].xy,
+        [6.0, 0.0].xy,
+      ].series();
+      expect(
+        // not actually areal, so calculated as linear
+        straightLine.centroid2D(dimensionality: Dimensionality.areal),
+        [3.5, 0.0].xy,
+      );
+      expect(
+        straightLine.centroid2D(dimensionality: Dimensionality.linear),
+        [3.5, 0.0].xy,
+      );
+      expect(
+        straightLine.centroid2D(dimensionality: Dimensionality.punctual),
+        [3.0, 0.0].xy,
+      );
 
       final triangle = [
         [1.0, 1.0].xy,
@@ -818,6 +872,22 @@ void main() {
       expect(triangle.range(0, 3).signedArea2D(), 0.5);
       expect(triangle.range(0, 2).signedArea2D(), 0.0);
       expect((triangle * 4.0).signedArea2D(), 8.0);
+      expect(
+        triangle.centroid2D(dimensionality: Dimensionality.punctual),
+        [1.5, 1.25].xy,
+      );
+      expect(
+        triangle
+            .centroid2D(dimensionality: Dimensionality.linear)!
+            .toText(decimals: 3),
+        '1.646,1.354',
+      );
+      expect(
+        triangle
+            .centroid2D(dimensionality: Dimensionality.areal)!
+            .toText(decimals: 3),
+        '1.667,1.333',
+      );
 
       final shape = [
         [1.0, 0.0].xy,
@@ -850,6 +920,24 @@ void main() {
       expect(shape.range(1).signedArea2D(), 16.0);
       expect(shape.range(5).signedArea2D(), 14.0);
       expect(shape.reversed().signedArea2D(), -16.0);
+      expect(
+        shape
+            .centroid2D(dimensionality: Dimensionality.punctual)!
+            .toText(decimals: 3),
+        '2.130,2.522',
+      );
+      expect(
+        shape
+            .centroid2D(dimensionality: Dimensionality.linear)!
+            .toText(decimals: 3),
+        '2.508,2.996',
+      );
+      expect(
+        shape
+            .centroid2D(dimensionality: Dimensionality.areal)!
+            .toText(decimals: 3),
+        '2.583,3.229',
+      );
 
       final selfTouching = [
         [0.0, 0.0].xy,
@@ -939,6 +1027,33 @@ void main() {
       expect(shoelaceBlueMinusP3.reversed().signedArea2D(), -27.5);
       expect(shoelaceBluePlusQ.signedArea2D(), 17.0);
       expect(shoelaceBluePlusQ.reversed().signedArea2D(), -17.0);
+
+      // https://postgis.net/docs/ST_Centroid.html
+      final stPoints = PositionSeries.parse(
+        '-1,0,-1,2,-1,3,-1,4,-1,7,0,1,0,3,1,1,2,0,6,0,7,8,9,8,10,6',
+      );
+      expect(
+        stPoints
+            .centroid2D(dimensionality: Dimensionality.punctual)!
+            .toText(decimals: 14),
+        '2.30769230769231,3.30769230769231',
+      );
+      final stPolygon = PositionSeries.parse(
+        '0,2,-1,1,0,0,0.5,0,1,0,2,1,1,2,0.5,2,0,2',
+      );
+      expect(
+        stPolygon.centroid2D(dimensionality: Dimensionality.areal),
+        [0.5, 1.0].xy,
+      );
+
+      // https://postgis.net/docs/ST_Area.html
+      // https://postgis.net/docs/ST_Length.html
+      final stPolygon2 = PositionSeries.parse(
+        '743238,2967416,743238,2967450,743265,2967450,'
+        '743265.625,2967416,743238,2967416',
+      );
+      expect(stPolygon2.reversed().signedArea2D(), closeTo(928.625, 0.001));
+      expect(stPolygon2.length2D(), closeTo(122.630744000095, 0.000000001));
     });
 
     test('Scale', () {

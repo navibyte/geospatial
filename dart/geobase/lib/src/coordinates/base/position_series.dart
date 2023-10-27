@@ -10,6 +10,7 @@ import 'dart:typed_data';
 import 'package:meta/meta.dart';
 
 import '/src/codes/coords.dart';
+import '/src/codes/dimensionality.dart';
 import '/src/constants/epsilon.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/utils/coord_calculations_cartesian.dart';
@@ -1003,6 +1004,106 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
       }
     }
     return area / 2.0;
+  }
+
+  /// Returns the centroid of a geometry represented by this position series
+  /// calculated in a cartesian 2D plane.
+  ///
+  /// The *centroid* is - as by definition - *a geometric center of mass of a
+  /// geometry*.
+  ///
+  /// The centroid is computed according to [dimensionality]:
+  /// * `Dimensionality.volymetric`: not supported, works as `areal`
+  /// * `Dimensionality.areal`: weighted by the area with this position series
+  ///    representing a polygon with positions in the counterclockwise (CCW)
+  ///    order.
+  /// * `Dimensionality.linear`: computed from midpoints of line segments that
+  ///    are weighted by the length of each line segment.
+  /// * `Dimensionality.punctual`: the arithmetic mean of all separate
+  ///    positions in this series.
+  ///
+  /// Returns null if a centroid position could not be calculated.
+  ///
+  /// See also [Centroid](https://en.wikipedia.org/wiki/Centroid) in Wikipedia.
+  Position? centroid2D({
+    Dimensionality dimensionality = Dimensionality.areal,
+  }) {
+    final topoDim = dimensionality.topologicalDimension;
+    final posCount = positionCount;
+
+    // Areal geometry (weighted by area triangles).
+    if (topoDim >= 2 && posCount >= 3) {
+      // See "Of a polygon" in https://en.wikipedia.org/wiki/Centroid
+      var area = 0.0;
+      var cx = 0.0;
+      var cy = 0.0;
+      var x1 = x(0);
+      var y1 = y(0);
+      for (var i = 1; i <= posCount; i++) {
+        final isLast = i == posCount;
+        final x2 = x(isLast ? 0 : i);
+        final y2 = y(isLast ? 0 : i);
+        final shoelace = x1 * y2 - x2 * y1;
+        area += shoelace;
+        cx += (x1 + x2) * shoelace;
+        cy += (y1 + y2) * shoelace;
+        x1 = x2;
+        y1 = y2;
+      }
+      if (area.abs() > 0.0) {
+        final area6 = 6.0 * (area / 2.0);
+        return Position.create(
+          x: cx / area6,
+          y: cy / area6,
+        );
+      }
+    }
+
+    // Linear geometry (weighted by line segments).
+    if (topoDim >= 1 && posCount >= 2) {
+      var length = 0.0;
+      var cx = 0.0;
+      var cy = 0.0;
+      var x1 = x(0);
+      var y1 = y(0);
+      for (var i = 1; i < posCount; i++) {
+        final x2 = x(i);
+        final y2 = y(i);
+        final dx = x2 - x1;
+        final dy = y2 - y1;
+        final segmentLength = math.sqrt(dx * dx + dy * dy);
+        if (segmentLength > 0.0) {
+          length += segmentLength;
+          cx += segmentLength * (x1 + x2) / 2.0;
+          cy += segmentLength * (y1 + y2) / 2.0;
+        }
+        x1 = x2;
+        y1 = y2;
+      }
+      if (length > 0.0) {
+        return Position.create(
+          x: cx / length,
+          y: cy / length,
+        );
+      }
+    }
+
+    // Punctual geometry (arithmethic mean of all points).
+    if (posCount >= 1) {
+      var cx = 0.0;
+      var cy = 0.0;
+      for (var i = 0; i < posCount; i++) {
+        cx += x(i);
+        cy += y(i);
+      }
+      return Position.create(
+        x: cx / posCount,
+        y: cy / posCount,
+      );
+    }
+
+    // could not calculate
+    return null;
   }
 
   /// Returns a position series with coordinate values of all positions scaled
