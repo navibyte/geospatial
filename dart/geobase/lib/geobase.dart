@@ -19,7 +19,7 @@
 /// * vector data formats supported ([GeoJSON](https://geojson.org/), [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry), [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary))
 /// * coordinate projections (web mercator + based on the external [proj4dart](https://pub.dev/packages/proj4dart) library)
 /// * tiling schemes and tile matrix sets (web mercator, global geodetic)
-/// * common codes, constants, functions and reference systems related to geospatial applications
+/// * common codes, constants, functions, presentation helpers and reference systems related to geospatial applications
 ///
 /// Usage: import `package:geobase/geobase.dart`
 library geobase;
@@ -38,6 +38,7 @@ export 'src/common/constants/geodetic.dart';
 export 'src/common/constants/screen_ppi.dart';
 export 'src/common/functions/geographic_functions.dart';
 export 'src/common/functions/position_functions.dart';
+export 'src/common/presentation/dms.dart';
 export 'src/common/reference/coord_ref_sys.dart';
 export 'src/common/reference/coord_ref_sys_resolver.dart';
 export 'src/common/reference/temporal_ref_sys.dart';
@@ -53,7 +54,6 @@ export 'src/coordinates/base/position_scheme.dart';
 export 'src/coordinates/base/position_series.dart';
 export 'src/coordinates/base/positionable.dart';
 export 'src/coordinates/base/value_positionable.dart';
-export 'src/coordinates/geographic/dms.dart';
 export 'src/coordinates/geographic/geobox.dart';
 export 'src/coordinates/geographic/geographic.dart';
 export 'src/coordinates/projected/projbox.dart';

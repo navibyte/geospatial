@@ -30,7 +30,6 @@ export 'src/coordinates/base/position_scheme.dart';
 export 'src/coordinates/base/position_series.dart';
 export 'src/coordinates/base/positionable.dart';
 export 'src/coordinates/base/value_positionable.dart';
-export 'src/coordinates/geographic/dms.dart';
 export 'src/coordinates/geographic/geobox.dart';
 export 'src/coordinates/geographic/geographic.dart';
 export 'src/coordinates/projected/projbox.dart';

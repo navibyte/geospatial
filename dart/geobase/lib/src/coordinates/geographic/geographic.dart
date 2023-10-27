@@ -7,13 +7,13 @@
 import 'package:meta/meta.dart';
 
 import '/src/common/codes/coords.dart';
+import '/src/common/presentation/dms.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/projected/projected.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/utils/coord_calculations_cartesian.dart';
 
-import 'dms.dart';
 import 'geobox.dart';
 
 /// A geographic position with longitude, latitude and optional elevation and m.

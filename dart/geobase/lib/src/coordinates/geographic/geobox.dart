@@ -9,6 +9,7 @@ import 'dart:math' as math;
 import 'package:meta/meta.dart';
 
 import '/src/common/codes/coords.dart';
+import '/src/common/presentation/dms.dart';
 import '/src/coordinates/base/aligned.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
@@ -17,7 +18,6 @@ import '/src/coordinates/projected/projbox.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/utils/coord_calculations_cartesian.dart';
 
-import 'dms.dart';
 import 'geographic.dart';
 
 /// A geographic bounding box with [west], [south], [east] and [north] values.
