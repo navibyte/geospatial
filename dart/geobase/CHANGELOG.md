@@ -17,6 +17,7 @@ NOTE: Version 1.0.0 currently under development (1.0.0-dev.2).
 * [Operators in Position, Box and PositionSeries #215](https://github.com/navibyte/geospatial/issues/215)
 * [Transform and filter positions and position series #218](https://github.com/navibyte/geospatial/issues/218)
 * [Position element manipulation in PositionSeries #219](https://github.com/navibyte/geospatial/issues/219)
+* [Enum for dimensionality or topological dimension #220](https://github.com/navibyte/geospatial/issues/220)
 
 🛠 Refactoring:
 * [Normalize longitude with inclusive limit on east 180 degrees #210](https://github.com/navibyte/geospatial/issues/210)
