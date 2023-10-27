@@ -4,8 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/codes/coords.dart';
-import '/src/constants/epsilon.dart';
+import '/src/common/codes/coords.dart';
+import '/src/common/constants/epsilon.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/base/position_scheme.dart';

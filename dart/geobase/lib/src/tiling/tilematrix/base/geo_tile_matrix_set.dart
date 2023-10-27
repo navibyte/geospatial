@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/codes/canvas_origin.dart';
+import '/src/common/codes/canvas_origin.dart';
 import '/src/coordinates/base/aligned.dart';
 import '/src/coordinates/geographic/geobox.dart';
 import '/src/coordinates/geographic/geographic.dart';

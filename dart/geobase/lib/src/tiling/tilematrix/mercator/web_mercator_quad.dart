@@ -8,8 +8,8 @@ import 'dart:math' as math;
 
 import 'package:meta/meta.dart';
 
-import '/src/codes/canvas_origin.dart';
-import '/src/constants/screen_ppi.dart';
+import '/src/common/codes/canvas_origin.dart';
+import '/src/common/constants/screen_ppi.dart';
 import '/src/coordinates/scalable/scalable2i.dart';
 import '/src/tiling/convert/scaled_converter.dart';
 import '/src/tiling/tilematrix/base/geo_tile_matrix_set.dart';

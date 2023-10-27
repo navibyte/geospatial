@@ -10,9 +10,9 @@ import 'dart:typed_data';
 
 import 'package:equatable/equatable.dart';
 
-import '/src/codes/coords.dart';
-import '/src/codes/geo_representation.dart';
-import '/src/codes/geom.dart';
+import '/src/common/codes/coords.dart';
+import '/src/common/codes/geo_representation.dart';
+import '/src/common/codes/geom.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/coord_positions.dart';

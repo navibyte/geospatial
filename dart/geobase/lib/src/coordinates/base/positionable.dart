@@ -4,8 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/codes/coords.dart';
-import '/src/constants/epsilon.dart';
+import '/src/common/codes/coords.dart';
+import '/src/common/constants/epsilon.dart';
 import '/src/coordinates/projection/projection.dart';
 
 /// A positionable object contains data structures for (geospatial) position

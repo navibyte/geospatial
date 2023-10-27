@@ -32,7 +32,7 @@ import 'dart:math';
 
 import 'package:meta/meta.dart';
 
-import '/src/constants/epsilon.dart';
+import '/src/common/constants/epsilon.dart';
 import '/src/coordinates/base/position_functions.dart';
 import '/src/coordinates/base/position_series.dart';
 import '/src/coordinates/geographic/geographic.dart';

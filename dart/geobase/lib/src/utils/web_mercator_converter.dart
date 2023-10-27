@@ -8,7 +8,7 @@ import 'dart:math' as math;
 
 import 'package:meta/meta.dart';
 
-import '/src/constants/geodetic.dart';
+import '/src/common/constants/geodetic.dart';
 import '/src/coordinates/geographic/geographic_functions.dart';
 import '/src/tiling/convert/scaled_converter.dart';
 

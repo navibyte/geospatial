@@ -6,7 +6,7 @@
 
 import 'package:meta/meta.dart';
 
-import '/src/codes/coords.dart';
+import '/src/common/codes/coords.dart';
 
 /// Coordinate values of all positions represented by [coordinates] with
 /// [sourceType]

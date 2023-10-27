@@ -8,7 +8,7 @@ import 'dart:typed_data';
 
 import 'package:proj4dart/proj4dart.dart' as p4d;
 
-import '/src/codes/coords.dart';
+import '/src/common/codes/coords.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/projection/projection_adapter.dart';

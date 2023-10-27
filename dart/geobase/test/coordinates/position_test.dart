@@ -8,7 +8,7 @@
 
 import 'dart:math' as math;
 
-import 'package:geobase/constants.dart';
+import 'package:geobase/common.dart';
 import 'package:geobase/coordinates.dart';
 import 'package:geobase/src/utils/coord_calculations_cartesian.dart';
 import 'package:geobase/vector.dart';

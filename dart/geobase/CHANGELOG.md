@@ -22,6 +22,7 @@ NOTE: Version 1.0.0 currently under development (1.0.0-dev.2).
 🛠 Refactoring:
 * [Normalize longitude with inclusive limit on east 180 degrees #210](https://github.com/navibyte/geospatial/issues/210)
 * [Move Bounded to coordinates and implement it by PositionSeries #212](https://github.com/navibyte/geospatial/issues/212)
+* [Restructure codes and constants sub packages #221](https://github.com/navibyte/geospatial/issues/221)
 
 🚥 Tests:
 * [Handle the special case of bbox or geometries containing or touching north (latitude 90 deg) or south (latitude -90 deg) poles #209](https://github.com/navibyte/geospatial/issues/209)

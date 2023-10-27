@@ -8,7 +8,7 @@ import 'dart:typed_data';
 
 import 'package:meta/meta.dart';
 
-import '/src/constants/epsilon.dart';
+import '/src/common/constants/epsilon.dart';
 import '/src/coordinates/base/bounded.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/base/position_scheme.dart';

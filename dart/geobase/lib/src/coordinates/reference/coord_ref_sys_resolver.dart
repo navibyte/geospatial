@@ -4,8 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/codes/axis_order.dart';
-import '/src/codes/geo_representation.dart';
+import '/src/common/codes/axis_order.dart';
+import '/src/common/codes/geo_representation.dart';
 
 /// An abstract class for resolving coordinate reference system information.
 ///

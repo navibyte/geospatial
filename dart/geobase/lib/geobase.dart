@@ -22,20 +22,18 @@
 /// Usage: import `package:geobase/geobase.dart`
 library geobase;
 
-// codes
-export 'src/codes/axis_order.dart';
-export 'src/codes/canvas_origin.dart';
-export 'src/codes/cardinal_precision.dart';
-export 'src/codes/coords.dart';
-export 'src/codes/dimensionality.dart';
-export 'src/codes/dms_type.dart';
-export 'src/codes/geo_representation.dart';
-export 'src/codes/geom.dart';
-
-// constants
-export 'src/constants/epsilon.dart';
-export 'src/constants/geodetic.dart';
-export 'src/constants/screen_ppi.dart';
+// common (codes, constants)
+export 'src/common/codes/axis_order.dart';
+export 'src/common/codes/canvas_origin.dart';
+export 'src/common/codes/cardinal_precision.dart';
+export 'src/common/codes/coords.dart';
+export 'src/common/codes/dimensionality.dart';
+export 'src/common/codes/dms_type.dart';
+export 'src/common/codes/geo_representation.dart';
+export 'src/common/codes/geom.dart';
+export 'src/common/constants/epsilon.dart';
+export 'src/common/constants/geodetic.dart';
+export 'src/common/constants/screen_ppi.dart';
 
 // coordinates
 export 'src/coordinates/base/aligned.dart';

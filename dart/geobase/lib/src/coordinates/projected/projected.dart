@@ -6,7 +6,7 @@
 
 import 'package:meta/meta.dart';
 
-import '/src/codes/coords.dart';
+import '/src/common/codes/coords.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/geographic/geographic.dart';

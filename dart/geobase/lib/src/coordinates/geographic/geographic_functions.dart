@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '/src/constants/geodetic.dart';
+import '/src/common/constants/geodetic.dart';
 
 /// An extension on [double] with basic degrees and radians utility methods (
 /// (for geographic coordinate reference systems).

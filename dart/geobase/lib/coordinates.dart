@@ -14,13 +14,13 @@
 /// Usage: import `package:geobase/coordinates.dart`
 library coordinates;
 
-export 'src/codes/axis_order.dart';
-export 'src/codes/cardinal_precision.dart';
-export 'src/codes/coords.dart';
-export 'src/codes/dimensionality.dart';
-export 'src/codes/dms_type.dart';
-export 'src/codes/geo_representation.dart';
-export 'src/constants/epsilon.dart';
+export 'src/common/codes/axis_order.dart';
+export 'src/common/codes/cardinal_precision.dart';
+export 'src/common/codes/coords.dart';
+export 'src/common/codes/dimensionality.dart';
+export 'src/common/codes/dms_type.dart';
+export 'src/common/codes/geo_representation.dart';
+export 'src/common/constants/epsilon.dart';
 export 'src/coordinates/base/aligned.dart';
 export 'src/coordinates/base/bounded.dart';
 export 'src/coordinates/base/box.dart';

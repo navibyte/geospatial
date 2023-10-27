@@ -8,7 +8,7 @@ import 'dart:math' as math;
 
 import 'package:meta/meta.dart';
 
-import '/src/codes/coords.dart';
+import '/src/common/codes/coords.dart';
 import '/src/coordinates/base/aligned.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';

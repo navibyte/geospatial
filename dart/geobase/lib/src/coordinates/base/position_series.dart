@@ -9,9 +9,9 @@ import 'dart:typed_data';
 
 import 'package:meta/meta.dart';
 
-import '/src/codes/coords.dart';
-import '/src/codes/dimensionality.dart';
-import '/src/constants/epsilon.dart';
+import '/src/common/codes/coords.dart';
+import '/src/common/codes/dimensionality.dart';
+import '/src/common/constants/epsilon.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/utils/coord_calculations_cartesian.dart';
 import '/src/utils/coord_positions.dart';

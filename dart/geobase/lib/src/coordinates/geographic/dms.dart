@@ -31,8 +31,8 @@
 
 import 'dart:math';
 
-import '/src/codes/cardinal_precision.dart';
-import '/src/codes/dms_type.dart';
+import '/src/common/codes/cardinal_precision.dart';
+import '/src/common/codes/dms_type.dart';
 import '/src/coordinates/base/position_functions.dart';
 
 import 'geographic_functions.dart';

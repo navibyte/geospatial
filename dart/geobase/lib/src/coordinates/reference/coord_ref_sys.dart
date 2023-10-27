@@ -8,8 +8,8 @@
 
 import 'package:meta/meta.dart';
 
-import '/src/codes/axis_order.dart';
-import '/src/codes/geo_representation.dart';
+import '/src/common/codes/axis_order.dart';
+import '/src/common/codes/geo_representation.dart';
 
 import 'coord_ref_sys_resolver.dart';
 

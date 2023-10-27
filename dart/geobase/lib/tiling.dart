@@ -11,9 +11,9 @@
 /// Usage: import `package:geobase/tiling.dart`
 library tiling;
 
-export 'src/codes/canvas_origin.dart';
-export 'src/constants/geodetic.dart';
-export 'src/constants/screen_ppi.dart';
+export 'src/common/codes/canvas_origin.dart';
+export 'src/common/constants/geodetic.dart';
+export 'src/common/constants/screen_ppi.dart';
 export 'src/tiling/convert/scaled_converter.dart';
 export 'src/tiling/tilematrix/base/geo_tile_matrix_set.dart';
 export 'src/tiling/tilematrix/base/tile_matrix_set.dart';
