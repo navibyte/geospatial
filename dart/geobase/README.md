@@ -11,6 +11,7 @@ and [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geomet
 ## Features
 
 ✨ New (2023-09): Optimizing data structures (*Position*, *PositionSeries*, *Box*) used by simple geometries. Fixes, tests and documentation.
+
 ✨ New (2023-07): Spherical geodesy functions (distance, bearing, destination point, etc.) for *great circle* and *rhumb line* paths.
 
 <a title="Ktrinko, CC0, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Eckert4.jpg"><img alt="World map with Natural Earth data, Excert projection" src="https://raw.githubusercontent.com/navibyte/geospatial_docs/v2023-08-12/assets/doc/projections/eckert4/320px-Eckert4.jpg" align="right"></a>
@@ -273,7 +274,7 @@ Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geobase: ^1.0.0-dev.2
+  geobase: ^1.0.0-dev.3
 ```
 
 Import it:
@@ -1749,7 +1750,7 @@ used to import only a certain subset instead of the whole **geobase** package:
 
 Package                | Description 
 ---------------------- | ----------- 
-**common**             | Common codes, contants and reference systems related to geospatial applications.
+**common**             | Common codes, constants, functions, presentation helpers and reference systems related to geospatial applications.
 **coordinates**        | Position, bounding box and positions series (with coordinate arrays).
 **geodesy**            | Spherical geodesy functions for *great circle* and *rhumb line* paths.
 **meta**               | Temporal data structures (instant, interval) and spatial extents.
