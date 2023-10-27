@@ -6,6 +6,7 @@
 
 // ignore_for_file: cascade_invocations, lines_longer_than_80_chars
 
+import 'package:geobase/common.dart';
 import 'package:geobase/coordinates.dart';
 import 'package:geobase/vector.dart';
 import 'package:geobase/vector_data.dart';

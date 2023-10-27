@@ -6,12 +6,12 @@
 
 import '/src/common/codes/coords.dart';
 import '/src/common/constants/epsilon.dart';
+import '/src/common/reference/coord_ref_sys.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/base/position_extensions.dart';
 import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/projection/projection.dart';
-import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/bounded_utils.dart';
 import '/src/utils/coord_type.dart';
 import '/src/vector/content/feature_content.dart';

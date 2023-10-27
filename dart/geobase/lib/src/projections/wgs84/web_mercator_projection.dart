@@ -9,10 +9,10 @@ import 'dart:typed_data';
 import 'package:meta/meta.dart';
 
 import '/src/common/codes/coords.dart';
+import '/src/common/reference/coord_ref_sys.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/projection/projection_adapter.dart';
-import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/utils/format_validation.dart';
 import '/src/utils/web_mercator_converter.dart';
 

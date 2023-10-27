@@ -6,7 +6,7 @@
 
 import 'package:meta/meta.dart';
 
-import '/src/coordinates/reference/temporal_ref_sys.dart';
+import '/src/common/reference/temporal_ref_sys.dart';
 import '/src/meta/time/interval.dart';
 
 /// An extent with 1 to N intervals in defined temporal coordinate reference

@@ -5,7 +5,7 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import 'package:equatable/equatable.dart';
-import 'package:geobase/coordinates.dart';
+import 'package:geobase/common.dart';
 import 'package:meta/meta.dart';
 
 /// A base query for requesting data from a geospatial data source.

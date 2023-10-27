@@ -6,9 +6,9 @@
 
 import 'package:meta/meta.dart';
 
+import '/src/common/reference/coord_ref_sys.dart';
+import '/src/common/reference/temporal_ref_sys.dart';
 import '/src/coordinates/geographic/geobox.dart';
-import '/src/coordinates/reference/coord_ref_sys.dart';
-import '/src/coordinates/reference/temporal_ref_sys.dart';
 import '/src/meta/time/interval.dart';
 
 import 'spatial_extent.dart';

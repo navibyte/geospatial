@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import '../reference/coord_ref_sys.dart';
+import '/src/common/reference/coord_ref_sys.dart';
 
 import 'projection.dart';
 

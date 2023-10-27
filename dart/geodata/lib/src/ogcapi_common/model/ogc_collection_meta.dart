@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:geobase/coordinates.dart';
+import 'package:geobase/common.dart';
 
 import '/src/core/base/collection_meta.dart';
 

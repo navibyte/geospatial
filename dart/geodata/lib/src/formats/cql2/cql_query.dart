@@ -6,7 +6,7 @@
 
 import 'dart:convert';
 
-import 'package:geobase/coordinates.dart';
+import 'package:geobase/common.dart';
 import 'package:meta/meta.dart';
 
 /// A query based on the `Common Query Language` (CQL2).

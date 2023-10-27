@@ -9,11 +9,11 @@ import 'dart:typed_data';
 import 'package:meta/meta.dart';
 
 import '/src/common/constants/epsilon.dart';
+import '/src/common/reference/coord_ref_sys.dart';
 import '/src/coordinates/base/bounded.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/projection/projection.dart';
-import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/vector/content/feature_content.dart';
 import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';

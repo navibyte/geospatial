@@ -11,6 +11,7 @@ To test run this from command line:
       dart example/ogcapi_features_crs_example.dart 
 */
 
+import 'package:geobase/common.dart';
 import 'package:geobase/coordinates.dart';
 import 'package:geobase/vector.dart';
 import 'package:geobase/vector_data.dart';

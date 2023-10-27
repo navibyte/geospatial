@@ -10,10 +10,10 @@ import 'dart:typed_data';
 
 import '/src/common/codes/coords.dart';
 import '/src/common/codes/geom.dart';
+import '/src/common/reference/coord_ref_sys.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/base/position_series.dart';
-import '/src/coordinates/reference/coord_ref_sys.dart';
 import '/src/vector/content/geometry_content.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
