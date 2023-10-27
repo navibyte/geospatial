@@ -4,6 +4,9 @@
 
 NOTE: Version 1.0.0 currently under development (1.0.0-dev.0).
 
+🛠 Maintenance:
+* Uses the latest `geobase` version 1.0.0
+
 ## 0.13.0
 
 [geodata version 0.13.0 #198](https://github.com/navibyte/geospatial/issues/198)
