@@ -21,6 +21,8 @@ void main() {
   // coordinates
   _positionData();
   _positionSeries();
+  _positionManipulation();
+  _positionSeriesManipulation();
   _geographicCoordinates();
   _geographicCoordinatesDMS();
   _projectedCoordinates();
@@ -353,6 +355,93 @@ void _positionSeries() {
     ],
     type: Coords.xyz,
   );
+}
+
+void _positionManipulation() {
+  // a position containing x, y and z
+  final pos = [708221.0, 5707225.0, 45.0].xyz;
+
+  // multiplication operator - prints "708.221,5707.225,0.045" (values in km)
+  // (the operand is a factor value applied to all coordinate values)
+  print(pos * 0.001);
+
+  // negate operator - prints "-708221.0,-5707225.0,-45.0"
+  print(-pos);
+
+  // following operators expect an operand to be another position object
+
+  // add operator - prints "708231.0,5707245.0,50.0"
+  print(pos + [10.0, 20.0, 5.0].xyz);
+
+  // subtraction operator - prints "708211.0,5707205.0,40.0"
+  print(pos - [10.0, 20.0, 5.0].xyz);
+
+  // division operator - prints "708.221,5707.225,45.0" (x and y values in km)
+  print(pos / [1000.0, 1000.0, 1.0].xyz);
+
+  // modulo operator - prints "221.0,225.0,45.0"
+  print(pos % [1000.0, 1000.0, 1000.0].xyz);
+
+  // there is support also for basic calculations in cartesian coordinates
+
+  // other point 1000.0 meters to the direction of 45° (north-east)
+  final other = pos.destinationPoint2D(distance: 1000.0, bearing: 45.0);
+
+  // distance between points - prints "1000.0"
+  print(pos.distanceTo2D(other).toStringAsFixed(1));
+
+  // bearing from point to another - prints "45.0"
+  print(pos.bearingTo2D(other).toStringAsFixed(1));
+
+  // midpoint between two points - prints "708574.6,5707578.6"
+  print(pos.midPointTo(other).toText(decimals: 1));
+
+  // intermediate point between two point (fraction range: 0.0 to 1.0)
+  // prints "708397.8,5707401.8"
+  print(pos.intermediatePointTo(other, fraction: 0.25).toText(decimals: 1));
+}
+
+void _positionSeriesManipulation() {
+  // a closed linear ring with positions in the counterclockwise (CCW) order
+  final polygon = [
+    [1.0, 6.0].xy,
+    [3.0, 1.0].xy,
+    [7.0, 2.0].xy,
+    [4.0, 4.0].xy,
+    [8.0, 5.0].xy,
+    [1.0, 6.0].xy,
+  ].series();
+
+  // the area of a polygon formed by the linear ring - prints "16.5"
+  print(polygon.signedArea2D());
+
+  // the perimeter of a polygon - prints "24.3"
+  print(polygon.length2D().toStringAsFixed(1));
+
+  // the centroid position of a polygon - prints "3.9,3.7"
+  print(polygon.centroid2D()!.toText(decimals: 1));
+
+  // a closed linear ring with positions in the clockwise (CW) order
+  final reversed = polygon.reversed();
+
+  // a line string omitting the last position of `reversed`
+  final line = reversed.range(0, reversed.positionCount - 1);
+
+  // the length of a line string - prints "18.9"
+  print(line.length2D().toStringAsFixed(1));
+
+  // the line string modified by replacing positions at indexes 1 ja 2
+  final lineModified = line.rangeReplaced(1, 3, [
+    [3.5, 1.5].xy,
+    [7.5, 2.5].xy,
+  ]);
+
+  // coordinate values of a line string multiplied by 100.0
+  final lineModified2 = lineModified * 100.0;
+
+  // get position count and a position by index - prints "5" and "350.0,150.0"
+  print(lineModified2.positionCount);
+  print(lineModified2[1]);
 }
 
 void _geographicCoordinates() {

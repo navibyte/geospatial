@@ -664,7 +664,7 @@ abstract class Position extends ValuePositionable {
   /// Examples:
   ///
   /// ```dart
-  /// // This usage of modulo operator returns a position of `[15.0, 15.0].xy`
+  /// // This usage of division operator returns a position of `[15.0, 15.0].xy`
   /// [150.0, 300.0].xy / [10.0, 20.0].xy;
   /// ```
   Position operator /(Position divisor) => cartesianPositionDivision(
