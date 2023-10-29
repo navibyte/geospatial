@@ -8,6 +8,8 @@ Geospatial feature service Web APIs with support for
 
 ## Features
 
+✨ New (2023-10): The stable version 1.0.0 is now ready. See also the article [Geospatial tools for Dart - version 1.0 published](https://medium.com/@navibyte/geospatial-tools-for-dart-version-1-0-published-0f9673e510b3) at Medium.
+
 ✨ New (2023-07): better client-side support for OGC API Features (Part 1 and 2).
 
 Key features:
@@ -128,7 +130,7 @@ Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geodata: ^1.0.0-dev.0
+  geodata: ^1.0.0
 ```
 
 Import it:

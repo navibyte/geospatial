@@ -2,7 +2,7 @@
 
 [geodata version 1.0.0 #187](https://github.com/navibyte/geospatial/issues/187)
 
-NOTE: Version 1.0.0 currently under development (1.0.0-dev.0).
+✨ New (2023-10): The stable version 1.0.0 is now ready. See also the article [Geospatial tools for Dart - version 1.0 published](https://medium.com/@navibyte/geospatial-tools-for-dart-version-1-0-published-0f9673e510b3) at Medium.
 
 🛠 Maintenance:
 * Uses the latest `geobase` version 1.0.0
