@@ -283,6 +283,9 @@ void _positionData() {
   Box.create(minX: 70800.0, minY: 5707200.0, maxX: 70900.0, maxY: 5707300.0);
   Box.parse('70800.0,5707200.0,70900.0,5707300.0');
   Box.parse('70800.0 5707200.0 70900.0 5707300.0', delimiter: ' ');
+
+  // The same box using extension methods on `List<double>`.
+  [70800.0, 5707200.0, 70900.0, 5707300.0].box;
 }
 
 void _positionSeries() {
@@ -305,6 +308,22 @@ void _positionSeries() {
     ],
     type: Coords.xy,
   );
+
+  // -------
+
+  // A position series from a flat coordinate value array (2D positions).
+  [
+    70800.0, 5707200.0, // (x, y) coordinate values for position 0
+    70850.0, 5707250.0, // (x, y) coordinate values for position 1
+    70900.0, 5707300.0, // (x, y) coordinate values for position 2
+  ].positions(Coords.xy);
+
+  // A position series from a flat coordinate value array (3D positions).
+  [
+    70800.0, 5707200.0, 40.0, // (x, y, z) coordinate values for position 0
+    70850.0, 5707250.0, 45.0, // (x, y, z) coordinate values for position 1
+    70900.0, 5707300.0, 50.0, // (x, y, z) coordinate values for position 2
+  ].positions(Coords.xyz);
 
   // -------
 
