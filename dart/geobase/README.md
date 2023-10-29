@@ -10,6 +10,8 @@ and [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geomet
 
 ## Features
 
+✨ New (2023-10): The stable version 1.0.0 is now ready. See also the article [Geospatial tools for Dart - version 1.0 published](https://medium.com/@navibyte/geospatial-tools-for-dart-version-1-0-published-0f9673e510b3) at Medium.
+
 ✨ New (2023-09): Optimizing data structures (*Position*, *PositionSeries*, *Box*) used by simple geometries. Fixes, tests and documentation.
 
 ✨ New (2023-07): Spherical geodesy functions (distance, bearing, destination point, etc.) for *great circle* and *rhumb line* paths.
@@ -274,7 +276,7 @@ Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geobase: ^1.0.0-dev.3
+  geobase: ^1.0.0
 ```
 
 Import it:

@@ -2,7 +2,7 @@
 
 [geobase version 1.0.0 #175](https://github.com/navibyte/geospatial/issues/175)
 
-NOTE: Version 1.0.0 currently under development (1.0.0-dev.3).
+✨ New (2023-10): The stable version 1.0.0 is now ready. See also the article [Geospatial tools for Dart - version 1.0 published](https://medium.com/@navibyte/geospatial-tools-for-dart-version-1-0-published-0f9673e510b3) at Medium.
 
 ⚠️ Breaking changes:
 * [Remove previous deprecations for geobase 1.0.0 #207](https://github.com/navibyte/geospatial/issues/207)
