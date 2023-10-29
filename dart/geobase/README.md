@@ -732,14 +732,6 @@ path.
 
 ### Great circle paths
 
-To use spherical geodesy functions you may import the whole `geobase` but
-following partial imports should also be enough for most cases:
-
-```dart
-import 'package:geobase/coordinates.dart';
-import 'package:geobase/geodesy.dart';
-```
-
 Examples using *great circle* paths (orthodromic) on a spherical earth model:
 
 ```dart
@@ -931,8 +923,7 @@ as a list of `PositionSeries`. It's also possible to get a mapped iterable of
 
 ### Feature objects
 
-According to the [OGC Glossary](https://www.ogc.org/ogc/glossary/f) a geospatial
-**feature** is *a digital representation of a real world entity. It has a spatial domain, a temporal domain, or a spatial/temporal domain as one of its attributes. Examples of features include almost anything that can be placed in time and space, including desks, buildings, cities, trees, forest stands, ecosystems, delivery vehicles, snow removal routes, oil wells, oil pipelines, oil spill, and so on*.
+According to the [OGC Glossary](https://www.ogc.org/resources/ogc-glossary/) a geospatial **feature** is *a digital representation of a real world entity. It has a spatial domain, a temporal domain, or a spatial/temporal domain as one of its attributes. Examples of features include almost anything that can be placed in time and space, including desks, buildings, cities, trees, forest stands, ecosystems, delivery vehicles, snow removal routes, oil wells, oil pipelines, oil spill, and so on*.
 
 Below is an illustration of features in a simple vector map. *Wells* are features
 with point geometries, *rivers* with line strings (or polyline) geometries, and

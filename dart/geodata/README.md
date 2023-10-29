@@ -255,7 +255,7 @@ read metadata and feature items from an API service conforming to
 Most relevant portions of this sample:
 
 ```dart
-import 'package:geobase/coordinates.dart';
+import 'package:geobase/geobase.dart';
 import 'package:geodata/ogcapi_features_client.dart';
 
 Future<void> main(List<String> args) async {

@@ -10,9 +10,7 @@
 To test run this from command line: dart example/geodata_example.dart 
 */
 
-import 'package:geobase/common.dart';
-import 'package:geobase/coordinates.dart';
-import 'package:geobase/vector_data.dart';
+import 'package:geobase/geobase.dart';
 import 'package:geodata/ogcapi_features_client.dart';
 
 /// This example demonstrates accessing metadata and geospatial feature items

@@ -32,8 +32,8 @@ import 'feature_object.dart';
 ///
 /// Feature objects have an optional primary [geometry] of [T].
 ///
-/// According to the [OGC Glossary](https://www.ogc.org/ogc/glossary/f) a
-/// feature is "a digital representation of a real world entity. It has a
+/// According to the [OGC Glossary](https://www.ogc.org/resources/ogc-glossary/)
+/// a feature is "a digital representation of a real world entity. It has a
 /// spatial domain, a temporal domain, or a spatial/temporal domain as one of
 /// its attributes. Examples of features include almost anything that can be
 /// placed in time and space, including desks, buildings, cities, trees, forest
