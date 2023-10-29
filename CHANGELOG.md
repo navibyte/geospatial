@@ -1,3 +1,35 @@
+2023-10-29
+* ✨ New (2023-10-29): The stable version 1.0.0 is now ready. See also the article [Geospatial tools for Dart - version 1.0 published](https://medium.com/@navibyte/geospatial-tools-for-dart-version-1-0-published-0f9673e510b3) at Medium
+* [geobase version 1.0.0](https://github.com/navibyte/geospatial/issues/175)
+* [geodata version 1.0.0](https://github.com/navibyte/geospatial/issues/187)
+
+2023-09-30
+* [geobase version 0.6.0](https://github.com/navibyte/geospatial/issues/193)
+  * ✨ Optimizing data structures (*Position*, *PositionSeries*, *Box*) used by simple geometries. Fixes, tests and documentation.
+* [geodata version 0.13.0](https://github.com/navibyte/geospatial/issues/198)
+
+2023-08-11
+* [geobase version 0.5.0](https://github.com/navibyte/geospatial/issues/174)
+  * ✨ Spherical geodesy functions (distance, bearing, destination point, etc.) for *great circle* and *rhumb line* paths.
+* [geodata version 0.12.0](https://github.com/navibyte/geospatial/issues/177)
+  * ✨ Better client-side support for OGC API Features (Part 1 and 2).
+
+2023-03-19
+* ✨ New: Updated docs with class and flow diagrams:
+  * [geobase](https://pub.dev/packages/geobase/versions/0.4.2) (0.4.2)
+  * [geodata](https://pub.dev/packages/geodata/versions/0.11.4) (0.11.4)
+
+2022-12-02
+* [geobase version 0.4.0](https://github.com/navibyte/geospatial/issues/161)
+* [geodata version 0.11.0](https://github.com/navibyte/geospatial/issues/162)
+
+2022-08-21
+* [geobase](https://pub.dev/packages/geobase/versions/0.3.0) (0.3.0), see [changelog](dart/geobase/CHANGELOG.md#030) for details
+  * ✨ New: Data structures for simple geometries, features and feature collections.
+  * ✨ New: Support for [Well-known binary](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary) (WKB). Text and binary data formats, encodings and content interfaces also redesigned.  
+* [geodata](https://pub.dev/packages/geodata/versions/0.10.0) (0.10.0), see [changelog](dart/geodata/CHANGELOG.md#0100) for details
+  * ✨ New: Updated with latest [geobase](https://pub.dev/packages/geobase) version 0.3.0, and no longer with dependency on [geocore](https://pub.dev/packages/geocore).
+* [geocore](https://pub.dev/packages/geocore/versions/0.10.0) (0.10.0), see [changelog](dart/geocore/CHANGELOG.md#0100) for details
 
 ## 2022-08-21
 
