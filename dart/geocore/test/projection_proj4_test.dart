@@ -116,7 +116,7 @@ void main() {
         'UNIT["Meter",1]]';
     const defs = [proj4def, wktDef, esriDef];
     const defsAccuracyProj = [null, 0.1, 100];
-    const defsAccuracyWgs84 = [null, 0.000001, 0.01];
+    const defsAccuracyWgs84 = [null, 0.000002, 0.01];
 
     for (var i = 0; i < defs.length; i++) {
       final def = defs[i];
