@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -1664,7 +1664,7 @@ void main() {
             [10.0, 20.0, 30.0].xyz,
             [12.5, 22.5, 32.5].xyz,
             [15.0, 25.0, 35.0].xyz,
-          ])
+          ]),
         ]),
       );
     });

@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -284,7 +284,7 @@ void main() {
                 const Projected(x: 11, y: 21, z: -30.95, m: -1.1),
                 const Projected(x: 12, y: 22, m: 2.2),
                 const Projected(x: 13, y: 23, z: 49.1),
-              ])
+              ]),
         ],
         def:
             '[10.0,20.0],[11.0,21.0,-30.95,-1.1],[12.0,22.0,0.0,2.2],[13.0,23.0,49.1]',
@@ -572,7 +572,7 @@ void main() {
         [
           (output) => output.polygon(
                 [
-                  PositionSeries.view([10.1, 10.1, 5, 9, 12, 4, 10.1, 10.1])
+                  PositionSeries.view([10.1, 10.1, 5, 9, 12, 4, 10.1, 10.1]),
                 ],
               ),
         ],
@@ -799,7 +799,7 @@ void main() {
               properties: {},
               custom: {
                 'map1': {'p2': 2},
-                'features': 'this should not get printed'
+                'features': 'this should not get printed',
               },
             ),
         ),

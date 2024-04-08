@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -71,7 +71,7 @@ const wgs84ToWebMercatorDataBounds = [
   ],
   [
     '-180.0,-89.9,10.0,10.0,179.9999999,89.9,10.0,10.0',
-    '-20037508.34,-44927335.43,10,10,20037508.33,44927335.43,10,10'
+    '-20037508.34,-44927335.43,10,10,20037508.33,44927335.43,10,10',
   ],
 ];
 

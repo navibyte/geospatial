@@ -1,3 +1,8 @@
+## 0.10.1+1
+
+🛠 Maintenance:
+* Adding trailing commas to avoid "Missing a required trailing comma" message.
+
 ## 0.10.1
 
 🛠 Maintenance:

@@ -3,6 +3,9 @@
 🐛 Bugs fixed:
 * [Bug: special case POINT EMPTY encoding x and y as double.nan in WKB encoder / byte writer #225](https://github.com/navibyte/geospatial/issues/225)
 
+🛠 Maintenance:
+* Adding trailing commas to avoid "Missing a required trailing comma" message.
+
 ## 1.0.0
 
 [geobase version 1.0.0 #175](https://github.com/navibyte/geospatial/issues/175)

@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -268,14 +268,14 @@ void _readmeIntro() {
         [45, 45],
         [15, 40],
         [10, 20],
-        [35, 10]
+        [35, 10],
       ],
       // this is an interior boundary or an inner ring representing a hole
       [
         [20, 30],
         [35, 35],
         [30, 20],
-        [20, 30]
+        [20, 30],
       ],
     ],
     GeoPoint2.coordinates,
@@ -317,12 +317,12 @@ void _readmeIntro() {
       [
         [10, 10],
         [20, 20],
-        [10, 40]
+        [10, 40],
       ],
       Point2.coordinates,
     ),
     // A polygon parsed from WKT compatible text.
-    Polygon.parse('(40 40, 20 45, 45 30, 40 40)', Point2.coordinates)
+    Polygon.parse('(40 40, 20 45, 45 30, 40 40)', Point2.coordinates),
   ]);
 
   // A geometry collection can also be parsed from WKT text.
@@ -344,7 +344,7 @@ void _readmeIntro() {
   Bounds.make(
     [
       [10.0, 10.0, 10.0],
-      [20.0, 20.0, 20.0]
+      [20.0, 20.0, 20.0],
     ],
     Point3.coordinates,
   );
@@ -460,14 +460,14 @@ void _geoJsonFeatureCollection() {
           [
             [-1.1, -1.1],
             [2.1, -2.5],
-            [3.5, -3.49]
+            [3.5, -3.49],
           ],
           GeoPoint2.coordinates,
           type: LineStringType.any,
           bounds: GeoBounds.make(
             [
               [-1.1, -3.49],
-              [3.5, -1.1]
+              [3.5, -1.1],
             ],
             GeoPoint2.coordinates,
           ),

@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -128,8 +128,8 @@ void main() {
             'id': '1',
             'geometry': {
               'type': 'Point',
-              'coordinates': [10.0, 20.0]
-            }
+              'coordinates': [10.0, 20.0],
+            },
           },
         ),
       );
@@ -145,15 +145,15 @@ void main() {
               'coordinates': [
                 [10.0, 20.0, 30.0],
                 [12.5, 22.5, 32.5],
-                [15.0, 25.0, 35.0]
-              ]
+                [15.0, 25.0, 35.0],
+              ],
             },
             'properties': {
               'textProp': 'this is property value',
               'intProp': 10,
               'doubleProp': 29.5,
-              'arrayProp': ['foo', 'bar']
-            }
+              'arrayProp': ['foo', 'bar'],
+            },
           },
         ),
       );
@@ -276,8 +276,8 @@ void main() {
                 'id': '1',
                 'geometry': {
                   'type': 'Point',
-                  'coordinates': [10.0, 20.0]
-                }
+                  'coordinates': [10.0, 20.0],
+                },
               },
               // a feature with properties and a line string geometry (3D)
               {
@@ -287,17 +287,17 @@ void main() {
                   'coordinates': [
                     [10.0, 20.0, 30.0],
                     [12.5, 22.5, 32.5],
-                    [15.0, 25.0, 35.0]
-                  ]
+                    [15.0, 25.0, 35.0],
+                  ],
                 },
                 'properties': {
                   'textProp': 'this is property value',
                   'intProp': 10,
                   'doubleProp': 29.5,
-                  'arrayProp': ['foo', 'bar']
-                }
+                  'arrayProp': ['foo', 'bar'],
+                },
               }
-            ]
+            ],
           },
         ),
       );

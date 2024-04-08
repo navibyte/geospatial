@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -32,7 +32,7 @@ void main() {
             // three different ways to write POINT(2.0 4.0)
             (writer) => writer.point([2.0, 4.0].xy),
             (writer) => writer.point(const Geographic(lon: 2.0, lat: 4.0)),
-            (writer) => writer.point([2.0, 4.0].xy)
+            (writer) => writer.point([2.0, 4.0].xy),
           ],
         );
 
@@ -63,7 +63,7 @@ void main() {
             // three different ways to write POINT(2.1 -3.4)
             (writer) => writer.point([2.1, -3.4].xy),
             (writer) => writer.point(const Geographic(lon: 2.1, lat: -3.4)),
-            (writer) => writer.point([2.1, -3.4].xy)
+            (writer) => writer.point([2.1, -3.4].xy),
           ],
         );
 
@@ -71,7 +71,7 @@ void main() {
           endian,
           'POINT Z(2.1 -3.4 34.2)',
           [
-            (writer) => writer.point([2.1, -3.4, 34.2].xyz)
+            (writer) => writer.point([2.1, -3.4, 34.2].xyz),
           ],
         );
 
@@ -79,7 +79,7 @@ void main() {
           endian,
           'POINT M(2.1 -3.4 0.2)',
           [
-            (writer) => writer.point([2.1, -3.4, 0.2].xym)
+            (writer) => writer.point([2.1, -3.4, 0.2].xym),
           ],
         );
 
@@ -87,7 +87,7 @@ void main() {
           endian,
           'POINT ZM(2.1 -3.4 34.2 0.2)',
           [
-            (writer) => writer.point([2.1, -3.4, 34.2, 0.2].position)
+            (writer) => writer.point([2.1, -3.4, 34.2, 0.2].position),
           ],
         );
 
@@ -97,13 +97,13 @@ void main() {
           [
             (writer) => writer
               ..point([1.0, 1.0].xy)
-              ..point([2.0, 2.0].xy)
+              ..point([2.0, 2.0].xy),
           ],
         );
 
         final points = [
           [1.0, 1.0].xy,
-          [2.0, 2.0].xy
+          [2.0, 2.0].xy,
         ];
         final pointsFlat = [1.0, 1.0, 2.0, 2.0].positions();
         _testEncodeAndDecodeToWKT(
@@ -112,7 +112,7 @@ void main() {
           [
             (writer) => writer
               ..lineString(pointsFlat)
-              ..multiPoint(points)
+              ..multiPoint(points),
           ],
         );
 
@@ -157,7 +157,7 @@ void main() {
                     ..lineString(pointsFlat)
                     ..multiPoint(points)
                     ..point([2.1, -3.4].xy),
-                )
+                ),
           ],
         );
       });
@@ -209,7 +209,7 @@ void main() {
                 ..multiPoint(
                   [
                     [0.0, 0.0].xy,
-                    [1.0, 1.0].xy
+                    [1.0, 1.0].xy,
                   ],
                 )
                 ..point([3.0, 4.0].xy)

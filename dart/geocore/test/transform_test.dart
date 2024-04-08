@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2022 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -204,7 +204,7 @@ void main() {
             Polygon<Point3m>.parse(
               '(40 40 -10 110, 20 45 -20 120, 45 30 -30 130, 40 40 -40 140)',
               Point3m.coordinates,
-            )
+            ),
           ]),
         ).transform(translate1),
         GeometryCollection([
@@ -216,7 +216,7 @@ void main() {
           Polygon<Point3m>.parse(
             '(41 42 -7 114, 21 47 -17 124, 46 32 -27 134, 41 42 -37 144)',
             Point3m.coordinates,
-          )
+          ),
         ]),
       );
     });
@@ -279,7 +279,7 @@ void main() {
         [90, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
         [90, 1.0, 0.0, 10.0, 0.0, 1.0, 9.0],
         [270, 0.0, 0.0, 10.0, 20.0, 20.0, -10.0],
-        [630, 0.0, 0.0, 10.0, 20.0, 20.0, -10.0]
+        [630, 0.0, 0.0, 10.0, 20.0, 20.0, -10.0],
       ];
 
       for (final t in tests) {

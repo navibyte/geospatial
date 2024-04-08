@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -53,7 +53,7 @@ void _positionSeries() {
     'Array of positions': () {
       final positions1 = <Position>[
         for (var index = 0; index < posCount; index++)
-          Projected(x: index * 2, y: index * 2 + 1)
+          Projected(x: index * 2, y: index * 2 + 1),
       ];
       return PositionSeries.from(positions1, type: Coords.xy);
     },

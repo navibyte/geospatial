@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -207,7 +207,7 @@ void main() {
       // coordinates another west from and another east from the antimeridian)
       final lines = [
         [177.0, -20.0, 178.0, -19.0, 179.0, -18.0].positions(Coords.xy),
-        [-179.0, -17.0, -178.0, -16.0].positions(Coords.xy)
+        [-179.0, -17.0, -178.0, -16.0].positions(Coords.xy),
       ];
       final mls = MultiLineString(lines);
 
@@ -258,7 +258,7 @@ void main() {
     test('Merged bounds - north pole', () {
       final lines = [
         [177.0, 20.0, 178.0, -19.0, 179.0, -18.0].positions(Coords.xy),
-        [-179.0, 91.0, -178.0, 90.0].positions(Coords.xy)
+        [-179.0, 91.0, -178.0, 90.0].positions(Coords.xy),
       ];
       final mls = MultiLineString(lines);
 
@@ -274,7 +274,7 @@ void main() {
     test('Merged bounds - south pole', () {
       final lines = [
         [177.0, -91.0, 178.0, -19.0, 179.0, -18.0].positions(Coords.xy),
-        [-179.0, -17.0, -178.0, -16.0].positions(Coords.xy)
+        [-179.0, -17.0, -178.0, -16.0].positions(Coords.xy),
       ];
       final mls = MultiLineString(lines);
 

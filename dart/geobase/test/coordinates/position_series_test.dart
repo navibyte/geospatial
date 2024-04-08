@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -365,7 +365,7 @@ void main() {
           xyRev.valuesByType(Coords.xyzm),
           [
             4.1, 4.2, 0.0, 0.0, 3.1, 3.2, 0.0, 0.0,
-            2.1, 2.2, 0.0, 0.0, 1.1, 1.2, 0.0, 0.0
+            2.1, 2.2, 0.0, 0.0, 1.1, 1.2, 0.0, 0.0,
             // ---
           ],
         );
@@ -375,7 +375,7 @@ void main() {
     test('xyz', () {
       final coords = [
         1.1, 1.2, 1.3, 2.1, 2.2, 2.3,
-        3.1, 3.2, 3.3, 4.1, 4.2, 4.3
+        3.1, 3.2, 3.3, 4.1, 4.2, 4.3,
         // ---
       ];
       final xyzCoords = PositionSeries.view(coords, type: Coords.xyz);
@@ -409,7 +409,7 @@ void main() {
           xyzRev.valuesByType(Coords.xyzm),
           [
             4.1, 4.2, 4.3, 0.0, 3.1, 3.2, 3.3, 0.0,
-            2.1, 2.2, 2.3, 0.0, 1.1, 1.2, 1.3, 0.0
+            2.1, 2.2, 2.3, 0.0, 1.1, 1.2, 1.3, 0.0,
             // ---
           ],
         );
@@ -419,7 +419,7 @@ void main() {
     test('xym', () {
       final coords = [
         1.1, 1.2, 1.4, 2.1, 2.2, 2.4,
-        3.1, 3.2, 3.4, 4.1, 4.2, 4.4
+        3.1, 3.2, 3.4, 4.1, 4.2, 4.4,
         // ---
       ];
       final xymCoords = PositionSeries.view(coords, type: Coords.xym);
@@ -453,7 +453,7 @@ void main() {
           xymRev.valuesByType(Coords.xyzm),
           [
             4.1, 4.2, 0.0, 4.4, 3.1, 3.2, 0.0, 3.4,
-            2.1, 2.2, 0.0, 2.4, 1.1, 1.2, 0.0, 1.4
+            2.1, 2.2, 0.0, 2.4, 1.1, 1.2, 0.0, 1.4,
             // ---
           ],
         );
@@ -463,7 +463,7 @@ void main() {
     test('xyzm', () {
       final coords = [
         1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.3, 2.4,
-        3.1, 3.2, 3.3, 3.4, 4.1, 4.2, 4.3, 4.4
+        3.1, 3.2, 3.3, 3.4, 4.1, 4.2, 4.3, 4.4,
         // ---
       ];
       final xyzmCoords = PositionSeries.view(coords, type: Coords.xyzm);
@@ -609,7 +609,7 @@ void main() {
     test('RangeReplaced', () {
       for (final s1xy in [
         series1xy,
-        PositionSeries.view(series1xy.values.toList())
+        PositionSeries.view(series1xy.values.toList()),
       ]) {
         expect(
           s1xy.rangeReplaced(1, 2, [
@@ -644,7 +644,7 @@ void main() {
       }
       for (final s3xyz in [
         series3xyz,
-        PositionSeries.view(series3xyz.values.toList(), type: Coords.xyz)
+        PositionSeries.view(series3xyz.values.toList(), type: Coords.xyz),
       ]) {
         expect(
           s3xyz.rangeReplaced(1, 2, [
@@ -665,7 +665,7 @@ void main() {
     test('Inserted', () {
       for (final s1xy in [
         series1xy,
-        PositionSeries.view(series1xy.values.toList())
+        PositionSeries.view(series1xy.values.toList()),
       ]) {
         expect(
           s1xy.inserted(1, [
@@ -683,7 +683,7 @@ void main() {
       }
       for (final s3xyz in [
         series3xyz,
-        PositionSeries.view(series3xyz.values.toList(), type: Coords.xyz)
+        PositionSeries.view(series3xyz.values.toList(), type: Coords.xyz),
       ]) {
         expect(
           s3xyz.inserted(1, [
@@ -700,7 +700,7 @@ void main() {
     test('Added', () {
       for (final s1xy in [
         series1xy,
-        PositionSeries.view(series1xy.values.toList())
+        PositionSeries.view(series1xy.values.toList()),
       ]) {
         expect(
           s1xy.added([
@@ -721,7 +721,7 @@ void main() {
         series3xyz.packed(),
         PositionSeries.view(series3xyz.values.toList(), type: Coords.xyz),
         PositionSeries.view(series3xyz.values.toList(), type: Coords.xyz)
-            .packed(singlePrecision: true)
+            .packed(singlePrecision: true),
       ]) {
         expect(
           s3xyz.added([
@@ -740,7 +740,7 @@ void main() {
         series1xy,
         series1xy.packed(),
         series1xy.packed(singlePrecision: true),
-        PositionSeries.view(series1xy.values.toList())
+        PositionSeries.view(series1xy.values.toList()),
       ]) {
         expect(
           s1xy.sorted((a, b) => ((a.x + a.y) - (b.x + b.y)).round()).values,
@@ -758,7 +758,7 @@ void main() {
         series1xy,
         series1xy.packed(),
         series1xy.packed(singlePrecision: true),
-        PositionSeries.view(series1xy.values.toList())
+        PositionSeries.view(series1xy.values.toList()),
       ]) {
         expect(
           s1xy.filtered((count, index, pos) => pos.x + pos.y <= 3.5).values,
@@ -825,18 +825,18 @@ void main() {
       final centroidTest1 = [
         [2.0, 4.0].xy,
         [5.0, -1.0].xy,
-        [-4.0, 10.0].xy
+        [-4.0, 10.0].xy,
       ].series();
       expect(centroidTest1.centroid2D()!.toText(decimals: 2), '1,4.33');
       final centroidTest2 = [
         [4.0, 5.0].xy,
         [30.0, 6.0].xy,
-        [20.0, 25.0].xy
+        [20.0, 25.0].xy,
       ].series();
       expect(centroidTest2.centroid2D(), [18.0, 12.0].xy);
       expect(
         centroidTest2.added([
-          [4.0, 5.0].xy
+          [4.0, 5.0].xy,
         ]).centroid2D(),
         [18.0, 12.0].xy,
       );

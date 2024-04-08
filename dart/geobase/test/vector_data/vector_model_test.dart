@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -481,12 +481,12 @@ void main() {
     const multiPointCoordsFlat = [
       '-1.1,-1.1,-1.1,-1.1',
       '2.1,-2.5,2.3,0.1',
-      '3.5,-3.49,11.3,0.23'
+      '3.5,-3.49,11.3,0.23',
     ];
     const multiPointCoordsYXFlat = [
       '-1.1,-1.1,-1.1,-1.1',
       '-2.5,2.1,2.3,0.1',
-      '-3.49,3.5,11.3,0.23'
+      '-3.49,3.5,11.3,0.23',
     ];
     const multiPoint =
         '{"type":"MultiPoint","coordinates":[$multiPointCoords]}';
@@ -498,11 +498,11 @@ void main() {
         '[[10.1,10.1],[9.0,5.0],[4.0,12.0],[10.1,10.1]],[[11.1,11.1],[9.9,6.0],[4.9,13.0],[11.1,11.1]]';
     const multiLineStringCoordsFlat = [
       '10.1,10.1,5.0,9.0,12.0,4.0,10.1,10.1',
-      '11.1,11.1,6.0,9.9,13.0,4.9,11.1,11.1'
+      '11.1,11.1,6.0,9.9,13.0,4.9,11.1,11.1',
     ];
     const multiLineStringCoordsYXFlat = [
       '10.1,10.1,9.0,5.0,4.0,12.0,10.1,10.1',
-      '11.1,11.1,9.9,6.0,4.9,13.0,11.1,11.1'
+      '11.1,11.1,9.9,6.0,4.9,13.0,11.1,11.1',
     ];
     const multiLineString =
         '{"type":"MultiLineString","coordinates":[$multiLineStringCoords]}';
@@ -1025,7 +1025,7 @@ void main() {
         po.copyWith(
           properties: {
             'a': 1,
-            'b': [1, 2]
+            'b': [1, 2],
           },
         ).toText(),
         '{"type":"Feature","geometry":{"type":"Point","coordinates":[1.5,2.5]},"properties":{"a":1,"b":[1,2]}}',
@@ -1097,7 +1097,7 @@ void main() {
         fc.copyWith(
           custom: {
             'a': 1,
-            'b': [2, 3]
+            'b': [2, 3],
           },
         ).toText(),
         '${featColl.substring(0, featColl.length - 1)},"a":1,"b":[2,3]}',
@@ -1235,7 +1235,7 @@ void main() {
       expect(
         MultiPolygon([
           [rectangle],
-          [rectangle]
+          [rectangle],
         ]).length2D(),
         8.0,
       );
@@ -1257,7 +1257,7 @@ void main() {
       expect(
         MultiPolygon([
           [rectangle],
-          [rectangle]
+          [rectangle],
         ]).length3D(),
         12.0,
       );
@@ -1289,7 +1289,7 @@ void main() {
       expect(
         MultiPolygon([
           [rectangle],
-          [rectangle, hole]
+          [rectangle, hole],
         ]).area2D(),
         1.75,
       );

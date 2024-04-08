@@ -1,3 +1,8 @@
+## 1.0.0+1
+
+🛠 Maintenance:
+* Adding trailing commas to avoid "Missing a required trailing comma" message.
+
 ## 1.0.0
 
 [geodata version 1.0.0 #187](https://github.com/navibyte/geospatial/issues/187)

@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -154,7 +154,7 @@ void _intro() {
 
   // A polygon with an exterior ring (and without any holes).
   Polygon.build([
-    [30, 10, 40, 40, 20, 40, 10, 20, 30, 10]
+    [30, 10, 40, 40, 20, 40, 10, 20, 30, 10],
   ]);
 
   // A polygon with an exterior ring and an interior ring as a hole.
@@ -168,13 +168,13 @@ void _intro() {
     [10, 40],
     [40, 30],
     [20, 20],
-    [30, 10]
+    [30, 10],
   ]);
 
   // A multi line string with two line strings (polylines):
   MultiLineString.build([
     [10, 10, 20, 20, 10, 40],
-    [40, 40, 30, 30, 40, 20, 30, 10]
+    [40, 40, 30, 30, 40, 20, 30, 10],
   ]);
 
   // A multi polygon with two polygons both with an outer ring (without holes).
@@ -193,7 +193,7 @@ void _intro() {
     LineString.build([10, 10, 20, 20, 10, 40]),
     Polygon.build([
       [40, 40, 20, 45, 45, 30, 40, 40],
-    ])
+    ]),
   ]);
 
   // -------
@@ -712,7 +712,7 @@ void _geometryTypes2D() {
     LineString.build([10, 10, 20, 20, 10, 40]),
     Polygon.build([
       [40, 40, 20, 45, 45, 30, 40, 40],
-    ])
+    ]),
   ]);
 }
 
