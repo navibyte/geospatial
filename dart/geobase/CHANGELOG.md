@@ -1,3 +1,8 @@
+## 1.0.1
+
+🐛 Bugs fixed:
+* [Bug: special case POINT EMPTY encoding x and y as double.nan in WKB encoder / byte writer #225](https://github.com/navibyte/geospatial/issues/225)
+
 ## 1.0.0
 
 [geobase version 1.0.0 #175](https://github.com/navibyte/geospatial/issues/175)

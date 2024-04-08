@@ -15,10 +15,6 @@ class _WkbGeometryEncoder
     required Endian endian,
   }) : _buffer = ByteWriter.buffered(
           endian: endian,
-
-          // Note this is needed because of emptyGeometry special case of
-          // POINT(NaN NaN) and how it is encoded in WKB (same way with OSGEO)
-          nanEncodedAsNegative: true,
         );
 
   @override
@@ -201,7 +197,6 @@ class _WkbGeometryEncoder
         // that is POINT(NaN NaN) is considered POINT EMPTY, or something..
         // Note: negative NaN (whatever it is) is needed to get same output in
         //       bytes as those OSGEO related (reliable?) sources
-        //       (thats why buffer is create with nanEncodedAsNegative: true)
         _writeGeometryHeader(type, Coords.xy);
         _buffer
           ..writeFloat64(double.nan)
