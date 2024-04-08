@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -308,14 +308,8 @@ class MultiPoint extends SimpleGeometry {
 
   /// The positions of all points.
   ///
-  /// List items can be any [Position] objects, like `Projected`, `Geographic`
-  /// or `PositionCoords`.
-  ///
-  /// Position items accessed from the list can be typed using extension
-  /// methods:
-  /// * `asProjected`: a position as a `Projected` position
-  /// * `asGeographic`: a position as a `Geographic` position
-  /// * `coords`: a position as a `PositionCoords` position
+  /// List items can be any [Position] objects, like `Position` itself,
+  /// `Projected` or `Geographic`.
   List<Position> get positions => _points;
 
   /// All points as a lazy iterable of [Point] geometries.

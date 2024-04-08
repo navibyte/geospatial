@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -243,12 +243,7 @@ class Point implements SimpleGeometry {
   ///
   /// The returned object is of the type used for storing a position in this
   /// point geometry. That is, it can be any [Position] object, like
-  /// `Projected`, `Geographic` or `PositionCoords`.
-  ///
-  /// The returned position can be typed using extension methods:
-  /// * `asProjected`: the position as a `Projected` position
-  /// * `asGeographic`: the position as a `Geographic` position
-  /// * `coords`: the position as a `PositionCoords` position
+  /// `Position` itself, `Projected` or `Geographic`.
   Position get position => _position;
 
   /// The bounding box for this point, min and max with the same point position.

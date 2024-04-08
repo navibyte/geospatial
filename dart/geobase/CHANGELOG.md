@@ -5,6 +5,7 @@
 
 🛠 Maintenance:
 * Adding trailing commas to avoid "Missing a required trailing comma" message.
+* Small documentation fixes.
 
 ## 1.0.0
 
