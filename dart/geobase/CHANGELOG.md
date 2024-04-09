@@ -1,3 +1,12 @@
+## 1.0.2
+
+🧩 Features:
+* [Add Extended WKB or EWKB support #224](https://github.com/navibyte/geospatial/issues/224)
+  * Support decoding also EWKB data (no support for accessing an optional srid).
+  * These changes on WKB decoder internal logic without any library API changes.
+  * Quite extensive tests.
+  * Encoding EWKB data not yet implemented (see #165, coming in future version).
+
 ## 1.0.1
 
 🐛 Bugs fixed:

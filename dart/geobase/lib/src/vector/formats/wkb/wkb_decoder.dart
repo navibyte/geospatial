@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -69,6 +69,15 @@ class _WkbGeometryBufferDecoder {
     // resolve coordinate and geometry types from WKB id
     final coordType = Coords.fromWkbId(typeId);
     final geomType = Geom.fromWkbId(typeId);
+
+    // check if data is EWKB and has SRID flag on
+    final hasSRID = (typeId & 0x20000000) != 0;
+
+    // read SRID but ignore it if such field exists
+    // (NOTE: in future version this data should be exposed to decoder client)
+    if (hasSRID) {
+      buffer.readUint32(endian);
+    }
 
     // depending on the geometry type, read geometry data and build objects
     switch (geomType) {

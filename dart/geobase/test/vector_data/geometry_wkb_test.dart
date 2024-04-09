@@ -7,15 +7,19 @@
 // ignore_for_file: lines_longer_than_80_chars, avoid_redundant_argument_values
 
 import 'dart:convert';
+import 'dart:typed_data';
 
+import 'package:geobase/src/utils/byte_utils.dart';
 import 'package:geobase/vector.dart';
 import 'package:geobase/vector_data.dart';
 
 import 'package:test/test.dart';
 
+import '../vector/wkb_samples.dart';
+
 void main() {
   group('WKB special cases', () {
-    test('Geobase issue #224 (EWKB sample data)', () {
+    test('Geobase issue #224 (EWKB sample data) 1', () {
       // test case for https://github.com/navibyte/geospatial/issues/224
       // see also: https://rodic.fr/wp-content/uploads/2015/11/geom_converter.html
       //
@@ -25,10 +29,6 @@ void main() {
 
       // decode bytes from base64 encoded string
       final bytes = base64.decode('AQEAACDmEAAAr8+c9Sl2VECSDzCpkG85QA==');
-
-      // decode WKB
-      // (should throw when trying to decode according to WKB standard)
-      expect(() => Point.decode(bytes, format: WKB.geometry), throwsException);
 
       // NOTE the sample data above is not a valid WKB byte sequence
       // * https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry
@@ -43,6 +43,27 @@ void main() {
       // * https://postgis.net/docs/ST_AsEWKB.html
       // * https://postgis.net/docs/using_postgis_dbmanagement.html#EWKB_EWKT
       // * https://libgeos.org/specifications/wkb/
+
+      // decode EWKB data using standard WKB format (should ignore SRID data)
+      final point = Point.decode(bytes, format: WKB.geometry);
+      expect(point.toText(format: WKT.geometry), 'POINT(81.846311 25.4358011)');
+    });
+
+    test('Geobase issue #224 (EWKB sample data) 2', () {
+      // test case for https://github.com/navibyte/geospatial/issues/224
+      // original sample code from the issue (with some modifications)
+
+      const bin = '0101000020E6100000AFCF9CF529765440920F30A9906F3940';
+
+      final ibytes = <int>[];
+      for (var i = 0; i + 1 < bin.length; i += 2) {
+        final hexDigit = bin.substring(i, i + 2);
+        ibytes.add(int.parse(hexDigit, radix: 16));
+      }
+      final bytes = Uint8List.fromList(ibytes);
+      final point = Point.decode(bytes, format: WKB.geometry);
+
+      expect(point.toText(format: WKT.geometry), 'POINT(81.846311 25.4358011)');
     });
 
     test('MariaDB samples (standard WKB)', () {
@@ -114,5 +135,55 @@ void main() {
         'POLYGON((10.689 -25.092,34.595 -20.17,38.814 -35.639,13.502 -39.155,10.689 -25.092))',
       );
     });
+
+    test('HEXWKB/HEXEWKB samples', () {
+      for (final testCase in wkbGeometries) {
+        // test case with WKB or EWKB representation as hex and WKT representation
+        final hex = testCase[0] as String;
+        final wkt = testCase[1] as String;
+        final srid = testCase[2] as int;
+
+        // get WKB or EWKB representation as bytes
+        final wkbBytes = Uint8ListUtils.fromHex(hex);
+
+        // decode a geometry
+        final geom = GeometryBuilder.decode(wkbBytes, format: WKB.geometry);
+        expect(geom.toText(format: WKT.geometry), wkt);
+
+        // check also an optional SRID
+        final sridFromWkb = _getSRID(wkbBytes);
+        // if(sridFromWkb != srid) {
+        //   print('$wkt $srid $sridFromWkb');
+        // }
+        expect(sridFromWkb, srid);
+      }
+    });
+
+    test('Test hex utility functions', () {
+      for (final testCase in wkbGeometries) {
+        final hex = testCase[0] as String;
+        final bytes = Uint8ListUtils.fromHex(hex);
+        final bytesToHex = bytes.toHex();
+        expect(hex.toLowerCase(), bytesToHex);
+      }
+    });
   });
+}
+
+int _getSRID(Uint8List bytes) {
+  if (bytes[0] == 0) {
+    // big endian -> SRID flag is on byte 1
+    if ((bytes[1] & 0x20) != 0) {
+      // has SRID on bytes 5 to 8 (most significant first)
+      return (bytes[5] << 24) | (bytes[6] << 16) | (bytes[7] << 8) | bytes[8];
+    }
+  } else {
+    // little endian -> SRID flag is on byte 4
+    if ((bytes[4] & 0x20) != 0) {
+      // has SRID on bytes 5 to 8 (most significant last)
+      return (bytes[8] << 24) | (bytes[7] << 16) | (bytes[6] << 8) | bytes[5];
+    }
+  }
+
+  return 0; // unknown
 }

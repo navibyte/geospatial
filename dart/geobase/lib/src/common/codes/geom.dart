@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -13,7 +13,8 @@ import 'coords.dart';
 /// standard by [The Open Geospatial Consortium](https://www.ogc.org/).
 ///
 /// The types are also compatible with
-/// [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry).
+/// [Well-known text representation of geometry](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry)
+/// and [three flavors of WKB](https://libgeos.org/specifications/wkb/).
 enum Geom {
   /// The type for the `POINT` geometry.
   point(
@@ -130,10 +131,19 @@ enum Geom {
   /// * `6` for the `multiPolygon` type
   /// * `7` for the `geometryCollection` type
   ///
+  /// Supports parsing a geometry type also from Extended WKB (EWKB) type.
+  ///
   /// References:
   /// * [Simple Feature Access - Part 1: Common Architecture](https://www.ogc.org/standards/sfa)
+  /// * [GEOS : Well-Known Binary (WKB)](https://libgeos.org/specifications/wkb/)
+  /// * [PostGIS : ST_AsEWKB](https://postgis.net/docs/ST_AsEWKB.html)
   static Geom fromWkbId(int id) {
-    switch (id % 1000) {
+    // Take only 3 least-significant bytes of 4 byte unsigned integer.
+    // (as Extended WKB specifies flags on most-significant byte)
+    final id24 = id & 0xffffff;
+
+    // Get the geometry type.
+    switch (id24 % 1000) {
       case 1:
         return Geom.point;
       case 2:

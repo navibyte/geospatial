@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -149,16 +149,44 @@ enum Coords {
   /// Selects a [Coords] enum based on the WKB type [id].
   ///
   /// Expected values are:
-  /// * `0` for 2D coordinates: (x,y) or (lon,lat)
-  /// * `1000` for 3D coordinates: (x,y,z) or (lon,lat,elev)
-  /// * `2000` for measured coordinates: (x,y,m) or (lon,lat,m)
-  /// * `3000` for 3D / measured coordinates: (x,y,z,m) or (lon,lat,elev,m)
+  /// * `0` to `7` for 2D coordinates: (x,y) or (lon,lat)
+  /// * `1000` to `1007` for 3D coordinates: (x,y,z) or (lon,lat,elev)
+  /// * `2000` to `2007` for measured coordinates: (x,y,m) or (lon,lat,m)
+  /// * `3000` to `3007` for 3D / measured coordinates: (x,y,z,m) or
+  ///   (lon,lat,elev,m)
+  ///
+  /// Supports parsing a coordinate type also from Extended WKB (EWKB) type with
+  /// dimensionality flags:
+  /// * If the flag `0x80000000` is on, then z or elev coordinates are expected.
+  /// * If the flag `0x40000000` is on, then m coordinates are expected.
   ///
   /// References:
   /// * [Simple Feature Access - Part 1: Common Architecture](https://www.ogc.org/standards/sfa)
+  /// * [GEOS : Well-Known Binary (WKB)](https://libgeos.org/specifications/wkb/)
+  /// * [PostGIS : ST_AsEWKB](https://postgis.net/docs/ST_AsEWKB.html)
   static Coords fromWkbId(int id) {
-    switch ((id ~/ 1000) * 1000) {
+    // Take only 3 least-significant bytes of 4 byte unsigned integer.
+    // (as Extended WKB specifies flags on most-significant byte)
+    final id24 = id & 0xffffff;
+
+    // Get the geometry type.
+    switch ((id24 ~/ 1000) * 1000) {
       case 0:
+        // check special cases for Extented WKB first
+        if ((id & 0x80000000) != 0) {
+          // EWKB dimensionality flag for Z is on
+          if ((id & 0x40000000) != 0) {
+            // EWKB dimensionality flag for M is on
+            return Coords.xyzm;
+          } else {
+            return Coords.xyz;
+          }
+        } else if ((id & 0x40000000) != 0) {
+          // EWKB dimensionality flag for M is on
+          return Coords.xym;
+        }
+
+        // standard WKB, only xy coordinates
         return Coords.xy;
       case 1000:
         return Coords.xyz;
