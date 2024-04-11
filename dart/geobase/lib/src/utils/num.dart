@@ -13,10 +13,19 @@ final _splitByWhitespace = RegExp(r'\s+');
 /// For example returns '15' if a double value is 15.00, and '15.50' if a double
 /// value is 15.50.
 ///
+/// However if [compact] is false then return "15.00" for value 15 when
+/// [fractionDigits] is 2.
+///
 /// See: https://stackoverflow.com/questions/39958472/dart-numberformat
 @internal
-String toStringAsFixedWhenDecimals(num n, int fractionDigits) =>
-    n.toStringAsFixed(n.truncateToDouble() == n ? 0 : fractionDigits);
+String toStringAsFixedWhenDecimals(
+  num n,
+  int fractionDigits, {
+  bool compact = true,
+}) =>
+    n.toStringAsFixed(
+      compact && n.truncateToDouble() == n ? 0 : fractionDigits,
+    );
 
 /// Returns [n] in as compact form as possible if [compact] is true.
 ///

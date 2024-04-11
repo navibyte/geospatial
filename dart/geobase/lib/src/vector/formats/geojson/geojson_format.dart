@@ -58,6 +58,16 @@ class GeoJsonConf with EquatableMixin {
   /// order.
   final bool printNonDefaultCrs;
 
+  /// When true and the number of decimals not set for output, then numbers
+  /// outputted are compacted.
+  ///
+  /// Examples:
+  /// * int (15) => "15"
+  /// * double (15.0) => "15"
+  /// * double (15.1) => "15.1"
+  /// * double (15.123) => "15.123"
+  final bool compactNums;
+
   /// Optional configuration parameters for formatting GeoJSON.
   const GeoJsonConf({
     this.crsLogic,
@@ -65,6 +75,7 @@ class GeoJsonConf with EquatableMixin {
     this.ignoreMeasured = false,
     this.ignoreForeignMembers = false,
     this.printNonDefaultCrs = false,
+    this.compactNums = true,
   });
 
   @override
@@ -74,6 +85,7 @@ class GeoJsonConf with EquatableMixin {
         ignoreMeasured,
         ignoreForeignMembers,
         printNonDefaultCrs,
+        compactNums,
       ];
 }
 

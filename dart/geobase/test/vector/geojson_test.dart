@@ -6,6 +6,7 @@
 
 // ignore_for_file: cascade_invocations
 
+import 'package:geobase/coordinates.dart';
 import 'package:geobase/vector.dart';
 
 import 'package:test/test.dart';
@@ -94,6 +95,67 @@ void main() {
         geoJsonExpected: collEmpty,
         options: {'itemOffset': 1, 'itemLimit': 0},
       );
+    });
+
+    test('Test decimals and number compacting', () {
+      final geoJSONNotCompact = GeoJSON.geometryFormat(
+        conf: const GeoJsonConf(compactNums: false),
+      );
+      final testCases = [
+        [
+          (GeometryContent geom) => geom.point([-0.0014, 51.4778, 45.0].xyz),
+          (StringBuffer buf) => GeoJSON.geometry.encoder(buffer: buf),
+          '{"type":"Point","coordinates":[-0.0014,51.4778,45]}',
+        ],
+        [
+          (GeometryContent geom) => geom.point([-0.0014, 51.4778, 45.0].xyz),
+          (StringBuffer buf) => GeoJSON.geometry.encoder(
+                buffer: buf,
+                decimals: 1,
+              ),
+          '{"type":"Point","coordinates":[-0.0,51.5,45]}',
+        ],
+        [
+          (GeometryContent geom) => geom.point([-0.0014, 51.4778, 45.0].xyz),
+          (StringBuffer buf) => GeoJSON.geometry.encoder(
+                buffer: buf,
+                decimals: 5,
+              ),
+          '{"type":"Point","coordinates":[-0.00140,51.47780,45]}',
+        ],
+        [
+          (GeometryContent geom) => geom.point([-0.0014, 51.4778, 45.0].xyz),
+          (StringBuffer buf) => geoJSONNotCompact.encoder(
+                buffer: buf,
+                decimals: 1,
+              ),
+          '{"type":"Point","coordinates":[-0.0,51.5,45.0]}',
+        ],
+        [
+          (GeometryContent geom) => geom.point([-0.0014, 51.4778, 45.0].xyz),
+          (StringBuffer buf) => geoJSONNotCompact.encoder(
+                buffer: buf,
+                decimals: 5,
+              ),
+          '{"type":"Point","coordinates":[-0.00140,51.47780,45.00000]}',
+        ],
+        [
+          (GeometryContent geom) => geom.point([-0.0014, 51.4778, 45.0].xyz),
+          (StringBuffer buf) => geoJSONNotCompact.encoder(buffer: buf),
+          '{"type":"Point","coordinates":[-0.0014,51.4778,45.0]}',
+        ],
+      ];
+
+      for (final test in testCases) {
+        final content = test[0] as WriteGeometries;
+        final createEncoder =
+            test[1] as ContentEncoder<GeometryContent> Function(StringBuffer);
+        final geojson = test[2] as String;
+        final buf = StringBuffer();
+        final encoder = createEncoder.call(buf);
+        content.call(encoder.writer);
+        expect(buf.toString(), geojson);
+      }
     });
   });
 }

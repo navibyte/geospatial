@@ -43,24 +43,11 @@ enum _Container {
 abstract class _BaseTextWriter<T extends Object>
     with GeometryContent, CoordinateContent
     implements ContentEncoder<T> {
-  _BaseTextWriter({
-    StringSink? buffer,
-    this.decimals,
-    this.compactNums = true,
-    this.crs,
-  }) : _buffer = buffer ?? StringBuffer();
+  _BaseTextWriter({StringSink? buffer, this.decimals, this.crs})
+      : _buffer = buffer ?? StringBuffer();
 
   final StringSink _buffer;
   final int? decimals;
-
-  /// When true and [decimals] is null, then numbers outputted are compacted.
-  ///
-  /// Examples:
-  /// * int (15) => "15"
-  /// * double (15.0) => "15"
-  /// * double (15.1) => "15.1"
-  /// * double (15.123) => "15.123"
-  final bool compactNums;
 
   /// Optional information about coordinate reference system related to data
   /// to be written by a text writer.
@@ -80,6 +67,17 @@ abstract class _BaseTextWriter<T extends Object>
 
   @override
   T get writer => this as T;
+
+  /// When true and [decimals] is null, then numbers outputted are compacted.
+  ///
+  /// Examples:
+  /// * int (15) => "15"
+  /// * double (15.0) => "15"
+  /// * double (15.1) => "15.1"
+  /// * double (15.123) => "15.123"
+  ///
+  /// This getter can be extended by sub classes.
+  bool get _compactNums => true;
 
   void _startContainer(_Container type) {
     _hasItemsOnLevel.add(false);
@@ -370,6 +368,9 @@ class DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
   /// Configuration options for GeoJSON and GeoJSON like formats.
   final GeoJsonConf conf;
 
+  @override
+  bool get _compactNums => conf.compactNums;
+
   bool get _crsRequiresToSwapXY => crs?.swapXY(logic: conf.crsLogic) ?? false;
 
   @override
@@ -480,33 +481,53 @@ class DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
     final dec = decimals;
     if (dec != null) {
       _buffer
-        ..write(toStringAsFixedWhenDecimals(swapXY ? y : x, dec))
+        ..write(
+          toStringAsFixedWhenDecimals(
+            swapXY ? y : x,
+            dec,
+            compact: _compactNums,
+          ),
+        )
         ..write(',')
-        ..write(toStringAsFixedWhenDecimals(swapXY ? x : y, dec));
+        ..write(
+          toStringAsFixedWhenDecimals(
+            swapXY ? x : y,
+            dec,
+            compact: _compactNums,
+          ),
+        );
       if (printZ) {
         _buffer
           ..write(',')
-          ..write(toStringAsFixedWhenDecimals(zValue, dec));
+          ..write(
+            toStringAsFixedWhenDecimals(zValue, dec, compact: _compactNums),
+          );
       }
       if (printM) {
         _buffer
           ..write(',')
-          ..write(toStringAsFixedWhenDecimals(m ?? 0.0, dec));
+          ..write(
+            toStringAsFixedWhenDecimals(
+              m ?? 0.0,
+              dec,
+              compact: _compactNums,
+            ),
+          );
       }
     } else {
       _buffer
-        ..write(toStringCompact(swapXY ? y : x, compact: compactNums))
+        ..write(toStringCompact(swapXY ? y : x, compact: _compactNums))
         ..write(',')
-        ..write(toStringCompact(swapXY ? x : y, compact: compactNums));
+        ..write(toStringCompact(swapXY ? x : y, compact: _compactNums));
       if (printZ) {
         _buffer
           ..write(',')
-          ..write(toStringCompact(zValue, compact: compactNums));
+          ..write(toStringCompact(zValue, compact: _compactNums));
       }
       if (printM) {
         _buffer
           ..write(',')
-          ..write(toStringCompact(m ?? 0.0, compact: compactNums));
+          ..write(toStringCompact(m ?? 0.0, compact: _compactNums));
       }
     }
   }
@@ -947,33 +968,37 @@ class WktLikeTextWriter<T extends Object> extends _BaseTextWriter<T> {
     final dec = decimals;
     if (dec != null) {
       _buffer
-        ..write(toStringAsFixedWhenDecimals(x, dec))
+        ..write(toStringAsFixedWhenDecimals(x, dec, compact: _compactNums))
         ..write(' ')
-        ..write(toStringAsFixedWhenDecimals(y, dec));
+        ..write(toStringAsFixedWhenDecimals(y, dec, compact: _compactNums));
       if (printZ) {
         _buffer
           ..write(' ')
-          ..write(toStringAsFixedWhenDecimals(zValue, dec));
+          ..write(
+            toStringAsFixedWhenDecimals(zValue, dec, compact: _compactNums),
+          );
       }
       if (printM) {
         _buffer
           ..write(' ')
-          ..write(toStringAsFixedWhenDecimals(m ?? 0.0, dec));
+          ..write(
+            toStringAsFixedWhenDecimals(m ?? 0.0, dec, compact: _compactNums),
+          );
       }
     } else {
       _buffer
-        ..write(toStringCompact(x, compact: compactNums))
+        ..write(toStringCompact(x, compact: _compactNums))
         ..write(' ')
-        ..write(toStringCompact(y, compact: compactNums));
+        ..write(toStringCompact(y, compact: _compactNums));
       if (printZ) {
         _buffer
           ..write(' ')
-          ..write(toStringCompact(zValue, compact: compactNums));
+          ..write(toStringCompact(zValue, compact: _compactNums));
       }
       if (printM) {
         _buffer
           ..write(' ')
-          ..write(toStringCompact(m ?? 0.0, compact: compactNums));
+          ..write(toStringCompact(m ?? 0.0, compact: _compactNums));
       }
     }
   }
