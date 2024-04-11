@@ -141,6 +141,7 @@ void main() {
         final hex = testCase[0] as String;
         final wkt = testCase[1] as String;
         final srid = testCase[2] as int;
+        final expectEWKB = testCase[3] as bool;
 
         // decode a geometry using geometry builder directly
         final geom = GeometryBuilder.decodeHex(hex, format: WKB.geometry);
@@ -149,24 +150,73 @@ void main() {
         // decode a geometry using geometry specific factories
         if (wkt.startsWith('POINT')) {
           expect(Point.decodeHex(hex).toText(format: WKT.geometry), wkt);
+          if (!expectEWKB) {
+            expect(
+              Point.parse(wkt, format: WKT.geometry)
+                  .toBytesHex(endian: _getEndian(hex)),
+              hex,
+            );
+          }
         } else if (wkt.startsWith('LINESTRING')) {
           expect(LineString.decodeHex(hex).toText(format: WKT.geometry), wkt);
+          if (!expectEWKB) {
+            expect(
+              LineString.parse(wkt, format: WKT.geometry)
+                  .toBytesHex(endian: _getEndian(hex)),
+              hex,
+            );
+          }
         } else if (wkt.startsWith('POLYGON')) {
           expect(Polygon.decodeHex(hex).toText(format: WKT.geometry), wkt);
+          if (!expectEWKB) {
+            expect(
+              Polygon.parse(wkt, format: WKT.geometry)
+                  .toBytesHex(endian: _getEndian(hex)),
+              hex,
+            );
+          }
         } else if (wkt.startsWith('MULTIPOINT')) {
           expect(MultiPoint.decodeHex(hex).toText(format: WKT.geometry), wkt);
+          if (!expectEWKB) {
+            expect(
+              MultiPoint.parse(wkt, format: WKT.geometry)
+                  .toBytesHex(endian: _getEndian(hex)),
+              hex,
+            );
+          }
         } else if (wkt.startsWith('MULTILINESTRING')) {
           expect(
             MultiLineString.decodeHex(hex).toText(format: WKT.geometry),
             wkt,
           );
+          if (!expectEWKB) {
+            expect(
+              MultiLineString.parse(wkt, format: WKT.geometry)
+                  .toBytesHex(endian: _getEndian(hex)),
+              hex,
+            );
+          }
         } else if (wkt.startsWith('MULTIPOLYGON')) {
           expect(MultiPolygon.decodeHex(hex).toText(format: WKT.geometry), wkt);
+          if (!expectEWKB) {
+            expect(
+              MultiPolygon.parse(wkt, format: WKT.geometry)
+                  .toBytesHex(endian: _getEndian(hex)),
+              hex,
+            );
+          }
         } else if (wkt.startsWith('GEOMETRYCOLLECTION')) {
           expect(
             GeometryCollection.decodeHex(hex).toText(format: WKT.geometry),
             wkt,
           );
+          if (!expectEWKB) {
+            expect(
+              GeometryCollection.parse(wkt, format: WKT.geometry)
+                  .toBytesHex(endian: _getEndian(hex)),
+              hex,
+            );
+          }
         }
 
         // check also an optional SRID
@@ -207,3 +257,6 @@ int _getSRID(String hex) {
 
   return 0; // unknown
 }
+
+Endian _getEndian(String hex) =>
+    hex.startsWith('01') ? Endian.little : Endian.big;

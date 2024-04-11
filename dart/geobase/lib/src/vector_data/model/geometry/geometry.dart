@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -15,6 +15,7 @@ import '/src/coordinates/base/bounded.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/projection/projection.dart';
+import '/src/utils/byte_utils.dart';
 import '/src/vector/content/geometry_content.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
@@ -196,6 +197,8 @@ abstract class Geometry extends Bounded {
   ///
   /// Other format or encoder implementation specific options can be set by
   /// [options].
+  ///
+  /// See also [toBytesHex] to get the binary representation as a hex string.
   Uint8List toBytes({
     BinaryFormat<GeometryContent> format = WKB.geometry,
     Endian? endian,
@@ -205,6 +208,17 @@ abstract class Geometry extends Bounded {
     writeTo(encoder.writer);
     return encoder.toBytes();
   }
+
+  /// The binary representation as a hex string of this geometry object, with
+  /// [format] applied.
+  ///
+  /// See [toBytes] for more information.
+  String toBytesHex({
+    BinaryFormat<GeometryContent> format = WKB.geometry,
+    Endian? endian,
+    Map<String, dynamic>? options,
+  }) =>
+      toBytes(format: format, endian: endian, options: options).toHex();
 
   /// The string representation of this geometry object as specified by
   /// [GeoJSON].

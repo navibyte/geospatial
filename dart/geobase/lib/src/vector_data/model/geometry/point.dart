@@ -14,6 +14,7 @@ import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/projection/projection.dart';
+import '/src/utils/byte_utils.dart';
 import '/src/utils/coord_positions.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
@@ -355,6 +356,14 @@ class Point implements SimpleGeometry {
     writeTo(encoder.writer);
     return encoder.toBytes();
   }
+
+  @override
+  String toBytesHex({
+    BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
+    Endian? endian,
+    Map<String, dynamic>? options,
+  }) =>
+      toBytes(format: format, endian: endian, options: options).toHex();
 
   @override
   bool equalsCoords(Geometry other) =>
