@@ -18,16 +18,16 @@ const wktGeometries = [
 
   // polygons
   'POLYGON((10.1 10.1,20.2 10.1,20.2 20.2,10.1 20.2,10.1 10.1))',
-  'POLYGON((35.0 10.0,45.0 45.0,15.0 40.0,10.0 20.0,35.0 10.0))',
+  'POLYGON((35 10,45 45,15 40,10 20,35 10))',
 
   // multi points
   'MULTIPOINT(10.1 10.1,20.2 20.2,30.3 30.3)',
 
   // multi linestrings
-  'MULTILINESTRING((35.0 10.0,45.0 45.0,15.0 40.0,10.0 20.0,35.0 10.0))',
+  'MULTILINESTRING((35 10,45 45,15 40,10 20,35 10))',
 
   // multi polygons
-  'MULTIPOLYGON(((35.0 10.0,45.0 45.0,15.0 40.0,10.0 20.0,35.0 10.0)))',
+  'MULTIPOLYGON(((35 10,45 45,15 40,10 20,35 10)))',
 
   // geometry collections
   'GEOMETRYCOLLECTION(POINT(10.1 20.2),POINT M(10.1 20.2 30.3),LINESTRING(10.1 10.1,20.2 20.2,30.3 30.3))',

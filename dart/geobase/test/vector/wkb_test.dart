@@ -93,7 +93,7 @@ void main() {
 
         _testEncodeAndDecodeToWKT(
           endian,
-          'POINT(1.0 1.0),POINT(2.0 2.0)',
+          'POINT(1 1),POINT(2 2)',
           [
             (writer) => writer
               ..point([1.0, 1.0].xy)
@@ -108,7 +108,7 @@ void main() {
         final pointsFlat = [1.0, 1.0, 2.0, 2.0].positions();
         _testEncodeAndDecodeToWKT(
           endian,
-          'LINESTRING(1.0 1.0,2.0 2.0),MULTIPOINT(1.0 1.0,2.0 2.0)',
+          'LINESTRING(1 1,2 2),MULTIPOINT(1 1,2 2)',
           [
             (writer) => writer
               ..lineString(pointsFlat)
@@ -130,27 +130,27 @@ void main() {
         ];
         _testEncodeAndDecodeToWKT(
           endian,
-          'POLYGON((10.1 10.1,5.0 9.0,12.0 4.0,10.1 10.1))',
+          'POLYGON((10.1 10.1,5 9,12 4,10.1 10.1))',
           [(writer) => writer.polygon(linestringsFlat)],
         );
         _testEncodeAndDecodeToWKT(
           endian,
-          'MULTILINESTRING((10.1 10.1,5.0 9.0,12.0 4.0,10.1 10.1))',
+          'MULTILINESTRING((10.1 10.1,5 9,12 4,10.1 10.1))',
           [(writer) => writer.multiLineString(linestringsFlat)],
         );
 
         final multiPolygons = [linestringsFlat, linestringsFlat];
         _testEncodeAndDecodeToWKT(
           endian,
-          'MULTIPOLYGON(((10.1 10.1,5.0 9.0,12.0 4.0,10.1 '
-          '10.1)),((10.1 10.1,5.0 9.0,12.0 4.0,10.1 10.1)))',
+          'MULTIPOLYGON(((10.1 10.1,5 9,12 4,10.1 '
+          '10.1)),((10.1 10.1,5 9,12 4,10.1 10.1)))',
           [(writer) => writer.multiPolygon(multiPolygons)],
         );
 
         _testEncodeAndDecodeToWKT(
           endian,
-          'GEOMETRYCOLLECTION(LINESTRING(1.0 1.0,2.0 2.0),MULTIPOINT(1.0 '
-          '1.0,2.0 2.0),POINT(2.1 -3.4))',
+          'GEOMETRYCOLLECTION(LINESTRING(1 1,2 2),MULTIPOINT(1 '
+          '1,2 2),POINT(2.1 -3.4))',
           [
             (writer) => writer.geometryCollection(
                   (geom) => geom

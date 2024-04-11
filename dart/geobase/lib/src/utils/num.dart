@@ -18,6 +18,35 @@ final _splitByWhitespace = RegExp(r'\s+');
 String toStringAsFixedWhenDecimals(num n, int fractionDigits) =>
     n.toStringAsFixed(n.truncateToDouble() == n ? 0 : fractionDigits);
 
+/// Returns [n] in as compact form as possible if [compact] is true.
+///
+/// If [compact] is false, then simply `n.toString()` is returned.
+///
+/// Otherwise:
+///
+/// If [n] is `int` then an integer as a string is returned.
+///
+/// If [n] is `double` without decimals then it's returned without decimals, not
+/// even ".0" postfix.
+///
+/// If [n] is `double` with decimals then it's returned with decimals as the
+/// standard method `n.toString()` formats it.
+///
+/// Examples:
+/// * int (15) => "15"
+/// * double (15.0) => "15"
+/// * double (15.1) => "15.1"
+/// * double (15.123) => "15.123"
+@internal
+String toStringCompact(num n, {bool compact = true}) {
+  if (!compact || n is int) {
+    return n.toString();
+  } else {
+    final nt = n.truncateToDouble();
+    return nt == n ? n.toStringAsFixed(0) : n.toString();
+  }
+}
+
 /// Returns a lazy iterable parsing values from [text] separated by [delimiter].
 ///
 /// If [delimiter] is not provided, values are separated by whitespace.

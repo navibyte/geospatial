@@ -71,14 +71,14 @@ void main() {
       //
       // hex: 000000000140000000000000004010000000000000
       // base64: AAAAAAFAAAAAAAAAAEAQAAAAAAAA
-      // expected: POINT(2.0 4.0)
+      // expected: POINT(2 4)
 
       // decode bytes from base64 encoded string
       final bytes = base64.decode('AAAAAAFAAAAAAAAAAEAQAAAAAAAA');
 
       // decode WKB
       final point = Point.decode(bytes, format: WKB.geometry);
-      expect(point.toText(format: WKT.geometry), 'POINT(2.0 4.0)');
+      expect(point.toText(format: WKT.geometry), 'POINT(2 4)');
     });
 
     test('MySQL samples (standard WKB)', () {
@@ -86,14 +86,14 @@ void main() {
       //
       // hex: 0101000000000000000000F03F000000000000F0BF
       // base64: AAAAAAFAAAAAAAAAAEAQAAAAAAAA
-      // expected: POINT(1.0 -1.0)
+      // expected: POINT(1 -1)
 
       // decode bytes from base64 encoded string
       final bytes = base64.decode('AQEAAAAAAAAAAADwPwAAAAAAAPC/');
 
       // decode WKB
       final point = Point.decode(bytes, format: WKB.geometry);
-      expect(point.toText(format: WKT.geometry), 'POINT(1.0 -1.0)');
+      expect(point.toText(format: WKT.geometry), 'POINT(1 -1)');
     });
 
     test('GEOS samples (standard WKB)', () {
@@ -101,7 +101,7 @@ void main() {
       //
       // hex: 01020000000300000000000000000000000000000000000000000000000000F03F000000000000F03F0000000000000040000000000000F03F
       // base64: AQIAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPA/AAAAAAAA8D8AAAAAAAAAQAAAAAAAAPA/
-      // expected: LINESTRING(0.0 0.0,1.0 1.0,2.0 1.0)
+      // expected: LINESTRING(0 0,1 1,2 1)
 
       // decode bytes from base64 encoded string
       final bytes = base64.decode(
@@ -112,7 +112,7 @@ void main() {
       final line = LineString.decode(bytes, format: WKB.geometry);
       expect(
         line.toText(format: WKT.geometry),
-        'LINESTRING(0.0 0.0,1.0 1.0,2.0 1.0)',
+        'LINESTRING(0 0,1 1,2 1)',
       );
     });
 

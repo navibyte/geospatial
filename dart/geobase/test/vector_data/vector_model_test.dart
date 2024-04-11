@@ -461,16 +461,16 @@ void main() {
     const lineStringYX =
         '{"type":"LineString","coordinates":[$lineStringCoordsYX]}';
     const polygonCoords =
-        '[[10.1,10.1],[5.0,9.0],[12.0,4.0],[10.1,10.1]],[[11.1,11.1],[6.0,9.9],[13.0,4.9],[11.1,11.1]]';
+        '[[10.1,10.1],[5,9],[12,4],[10.1,10.1]],[[11.1,11.1],[6,9.9],[13,4.9],[11.1,11.1]]';
     const polygonCoordsYX =
-        '[[10.1,10.1],[9.0,5.0],[4.0,12.0],[10.1,10.1]],[[11.1,11.1],[9.9,6.0],[4.9,13.0],[11.1,11.1]]';
+        '[[10.1,10.1],[9,5],[4,12],[10.1,10.1]],[[11.1,11.1],[9.9,6],[4.9,13],[11.1,11.1]]';
     const polygonCoordsFlat = [
-      '10.1,10.1,5.0,9.0,12.0,4.0,10.1,10.1',
-      '11.1,11.1,6.0,9.9,13.0,4.9,11.1,11.1',
+      '10.1,10.1,5,9,12,4,10.1,10.1',
+      '11.1,11.1,6,9.9,13,4.9,11.1,11.1',
     ];
     const polygonCoordsYXFlat = [
-      '10.1,10.1,9.0,5.0,4.0,12.0,10.1,10.1',
-      '11.1,11.1,9.9,6.0,4.9,13.0,11.1,11.1',
+      '10.1,10.1,9,5,4,12,10.1,10.1',
+      '11.1,11.1,9.9,6,4.9,13.0,11.1,11.1',
     ];
     const polygon = '{"type":"Polygon","coordinates":[$polygonCoords]}';
     const polygonYX = '{"type":"Polygon","coordinates":[$polygonCoordsYX]}';
@@ -493,35 +493,35 @@ void main() {
     const multiPointYX =
         '{"type":"MultiPoint","coordinates":[$multiPointCoordsYX]}';
     const multiLineStringCoords =
-        '[[10.1,10.1],[5.0,9.0],[12.0,4.0],[10.1,10.1]],[[11.1,11.1],[6.0,9.9],[13.0,4.9],[11.1,11.1]]';
+        '[[10.1,10.1],[5,9],[12,4],[10.1,10.1]],[[11.1,11.1],[6,9.9],[13,4.9],[11.1,11.1]]';
     const multiLineStringCoordsYX =
-        '[[10.1,10.1],[9.0,5.0],[4.0,12.0],[10.1,10.1]],[[11.1,11.1],[9.9,6.0],[4.9,13.0],[11.1,11.1]]';
+        '[[10.1,10.1],[9,5],[4,12],[10.1,10.1]],[[11.1,11.1],[9.9,6],[4.9,13],[11.1,11.1]]';
     const multiLineStringCoordsFlat = [
-      '10.1,10.1,5.0,9.0,12.0,4.0,10.1,10.1',
-      '11.1,11.1,6.0,9.9,13.0,4.9,11.1,11.1',
+      '10.1,10.1,5,9,12,4,10.1,10.1',
+      '11.1,11.1,6,9.9,13,4.9,11.1,11.1',
     ];
     const multiLineStringCoordsYXFlat = [
-      '10.1,10.1,9.0,5.0,4.0,12.0,10.1,10.1',
-      '11.1,11.1,9.9,6.0,4.9,13.0,11.1,11.1',
+      '10.1,10.1,9,5,4,12,10.1,10.1',
+      '11.1,11.1,9.9,6,4.9,13,11.1,11.1',
     ];
     const multiLineString =
         '{"type":"MultiLineString","coordinates":[$multiLineStringCoords]}';
     const multiLineStringYX =
         '{"type":"MultiLineString","coordinates":[$multiLineStringCoordsYX]}';
     const multiPolygonCoords =
-        '[[[10.1,10.1],[5.0,9.0],[12.0,4.0],[10.1,10.1]],[[11.1,11.1],[6.0,9.9],[13.0,4.9],[11.1,11.1]]]';
+        '[[[10.1,10.1],[5,9],[12,4],[10.1,10.1]],[[11.1,11.1],[6,9.9],[13,4.9],[11.1,11.1]]]';
     const multiPolygonCoordsYX =
-        '[[[10.1,10.1],[9.0,5.0],[4.0,12.0],[10.1,10.1]],[[11.1,11.1],[9.9,6.0],[4.9,13.0],[11.1,11.1]]]';
+        '[[[10.1,10.1],[9,5],[4,12],[10.1,10.1]],[[11.1,11.1],[9.9,6],[4.9,13],[11.1,11.1]]]';
     const multiPolygonCoordsFlat = [
       [
-        '10.1,10.1,5.0,9.0,12.0,4.0,10.1,10.1',
-        '11.1,11.1,6.0,9.9,13.0,4.9,11.1,11.1',
+        '10.1,10.1,5,9,12,4,10.1,10.1',
+        '11.1,11.1,6,9.9,13,4.9,11.1,11.1',
       ]
     ];
     const multiPolygonCoordsYXFlat = [
       [
-        '10.1,10.1,9.0,5.0,4.0,12.0,10.1,10.1',
-        '11.1,11.1,9.9,6.0,4.9,13.0,11.1,11.1',
+        '10.1,10.1,9,5,4,12,10.1,10.1',
+        '11.1,11.1,9.9,6,4.9,13,11.1,11.1',
       ]
     ];
     const multiPolygon =
@@ -963,7 +963,7 @@ void main() {
         GeometryCollection.parse<Point>(geomCollPoints)
             .map((g) => Point(g.position.copyWith(x: 0.0)))
             .toText(),
-        '{"type":"GeometryCollection","geometries":[{"type":"Point","coordinates":[0.0,2.5]},{"type":"Point","coordinates":[0.0,2.5]}]}',
+        '{"type":"GeometryCollection","geometries":[{"type":"Point","coordinates":[0,2.5]},{"type":"Point","coordinates":[0,2.5]}]}',
       );
     });
 
@@ -1036,7 +1036,7 @@ void main() {
               geometry: const Point(Geographic(lat: 10.0, lon: 20.0)),
             )
             .toText(),
-        '{"type":"Feature","geometry":{"type":"Point","coordinates":[20.0,10.0]},"properties":{"foo":1,"bar":"baz"}}',
+        '{"type":"Feature","geometry":{"type":"Point","coordinates":[20,10]},"properties":{"foo":1,"bar":"baz"}}',
       );
       expect(
         po.copyWith(custom: {'a': 1}).toText(),

@@ -43,11 +43,24 @@ enum _Container {
 abstract class _BaseTextWriter<T extends Object>
     with GeometryContent, CoordinateContent
     implements ContentEncoder<T> {
-  _BaseTextWriter({StringSink? buffer, this.decimals, this.crs})
-      : _buffer = buffer ?? StringBuffer();
+  _BaseTextWriter({
+    StringSink? buffer,
+    this.decimals,
+    this.compactNums = true,
+    this.crs,
+  }) : _buffer = buffer ?? StringBuffer();
 
   final StringSink _buffer;
   final int? decimals;
+
+  /// When true and [decimals] is null, then numbers outputted are compacted.
+  ///
+  /// Examples:
+  /// * int (15) => "15"
+  /// * double (15.0) => "15"
+  /// * double (15.1) => "15.1"
+  /// * double (15.123) => "15.123"
+  final bool compactNums;
 
   /// Optional information about coordinate reference system related to data
   /// to be written by a text writer.
@@ -482,18 +495,18 @@ class DefaultTextWriter<T extends Object> extends _BaseTextWriter<T> {
       }
     } else {
       _buffer
-        ..write(swapXY ? y : x)
+        ..write(toStringCompact(swapXY ? y : x, compact: compactNums))
         ..write(',')
-        ..write(swapXY ? x : y);
+        ..write(toStringCompact(swapXY ? x : y, compact: compactNums));
       if (printZ) {
         _buffer
           ..write(',')
-          ..write(zValue);
+          ..write(toStringCompact(zValue, compact: compactNums));
       }
       if (printM) {
         _buffer
           ..write(',')
-          ..write(m ?? 0.0);
+          ..write(toStringCompact(m ?? 0.0, compact: compactNums));
       }
     }
   }
@@ -949,18 +962,18 @@ class WktLikeTextWriter<T extends Object> extends _BaseTextWriter<T> {
       }
     } else {
       _buffer
-        ..write(x)
+        ..write(toStringCompact(x, compact: compactNums))
         ..write(' ')
-        ..write(y);
+        ..write(toStringCompact(y, compact: compactNums));
       if (printZ) {
         _buffer
           ..write(' ')
-          ..write(zValue);
+          ..write(toStringCompact(zValue, compact: compactNums));
       }
       if (printM) {
         _buffer
           ..write(' ')
-          ..write(m ?? 0.0);
+          ..write(toStringCompact(m ?? 0.0, compact: compactNums));
       }
     }
   }

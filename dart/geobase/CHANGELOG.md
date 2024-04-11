@@ -1,3 +1,12 @@
+## 1.1.0
+
+[geobase release 1.1.0](https://github.com/navibyte/geospatial/milestone/1)
+
+NOTE: Version 1.1.0 currently under development (1.1.0-dev.0).
+
+🧩 Features:
+* [Pretty printing and more output specifiers on GeoJSON and WKT format writers #98]
+
 ## 1.0.2
 
 🧩 Features:

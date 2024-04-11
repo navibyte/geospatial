@@ -1169,11 +1169,11 @@ The sample below demonstrates the logic:
   // longitude, latitude, elevation.
 
   // Writing GeoJSON without crs information expects longitude-latitude order.
-  // Prints: {"type":"Point","coordinates":[-0.0014,51.4778,45.0]}
+  // Prints: {"type":"Point","coordinates":[-0.0014,51.4778,45]}
   print(point2.toText(format: GeoJSON.geometry));
 
   // Writing with crs (EPSG:4326) results in latitude-longitude order.
-  // Prints: {"type":"Point","coordinates":[51.4778,-0.0014,45.0]}
+  // Prints: {"type":"Point","coordinates":[51.4778,-0.0014,45]}
   print(point2.toText(format: GeoJSON.geometry, crs: epsg4326));
 ```
 
