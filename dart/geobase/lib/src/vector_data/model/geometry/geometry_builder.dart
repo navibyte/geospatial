@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -14,6 +14,7 @@ import '/src/common/reference/coord_ref_sys.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/base/position_series.dart';
+import '/src/utils/byte_utils.dart';
 import '/src/vector/content/geometry_content.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
@@ -206,6 +207,8 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
   /// a default.
   ///
   /// Format or decoder implementation specific options can be set by [options].
+  ///
+  /// See also [decodeHex] to decode from bytes represented as a hex string.
   static R decode<R extends Geometry>(
     Uint8List bytes, {
     BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
@@ -233,13 +236,31 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
     }
   }
 
-  /// Parses a geometry collection with elements of [T] from [bytes] conforming
+  /// Decodes a geometry of [R] from [bytesHex] (as a hex string) conforming to
+  /// [format].
+  ///
+  /// See [decode] for more information.
+  static R decodeHex<R extends Geometry>(
+    String bytesHex, {
+    BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
+    Map<String, dynamic>? options,
+  }) =>
+      decode(
+        Uint8ListUtils.fromHex(bytesHex),
+        format: format,
+        options: options,
+      );
+
+  /// Decodes a geometry collection with elements of [T] from [bytes] conforming
   /// to [format].
   ///
   /// When [format] is not given, then the geometry format of [WKB] is used as
   /// a default.
   ///
   /// Format or decoder implementation specific options can be set by [options].
+  ///
+  /// See also [decodeCollectionHex] to decode from bytes represented as a hex
+  /// string.
   static GeometryCollection<T> decodeCollection<T extends Geometry>(
     Uint8List bytes, {
     BinaryFormat<GeometryContent> format = WKB.geometry,
@@ -267,6 +288,21 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
       throw const FormatException('Could not decode bytes');
     }
   }
+
+  /// Decodes a geometry collection with elements of [T] from [bytesHex] (as a
+  /// hex string) conforming to [format].
+  ///
+  /// See [decodeCollection] for more information.
+  static GeometryCollection<T> decodeCollectionHex<T extends Geometry>(
+    String bytesHex, {
+    BinaryFormat<GeometryContent> format = WKB.geometry,
+    Map<String, dynamic>? options,
+  }) =>
+      decodeCollection(
+        Uint8ListUtils.fromHex(bytesHex),
+        format: format,
+        options: options,
+      );
 
   @override
   void point(

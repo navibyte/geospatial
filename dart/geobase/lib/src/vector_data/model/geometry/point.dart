@@ -219,6 +219,9 @@ class Point implements SimpleGeometry {
   /// a default.
   ///
   /// Format or decoder implementation specific options can be set by [options].
+  ///
+  /// See also [Point.decodeHex] to decode from bytes represented as a hex
+  /// string.
   factory Point.decode(
     Uint8List bytes, {
     BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
@@ -226,6 +229,29 @@ class Point implements SimpleGeometry {
   }) =>
       GeometryBuilder.decode<Point>(
         bytes,
+        format: format,
+        options: options,
+      );
+
+  /// Decodes a point geometry from [bytesHex] (as a hex string)
+  /// conforming to [format].
+  ///
+  /// See [Point.decode] for more information.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a point with a 2D position (x: 10.1, y: 20.2) from a WKB encoded hex
+  /// // string
+  /// Point.decodeHex('010100000033333333333324403333333333333440');
+  /// ```
+  factory Point.decodeHex(
+    String bytesHex, {
+    BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
+    Map<String, dynamic>? options,
+  }) =>
+      GeometryBuilder.decodeHex<Point>(
+        bytesHex,
         format: format,
         options: options,
       );

@@ -1,8 +1,10 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
 // Docs: https://github.com/navibyte/geospatial
+
+// ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:typed_data';
 
@@ -384,6 +386,9 @@ class LineString extends SimpleGeometry {
   /// a default.
   ///
   /// Format or decoder implementation specific options can be set by [options].
+  ///
+  /// See also [LineString.decodeHex] to decode from bytes represented as a hex
+  /// string.
   factory LineString.decode(
     Uint8List bytes, {
     BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
@@ -391,6 +396,29 @@ class LineString extends SimpleGeometry {
   }) =>
       GeometryBuilder.decode<LineString>(
         bytes,
+        format: format,
+        options: options,
+      );
+
+  /// Decodes a line string geometry from [bytesHex] (as a hex string)
+  /// conforming to [format].
+  ///
+  /// See [LineString.decode] for more information.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a line string with three 2D positions (10.0,20.0,12.5,22.5,15.0,25.0)
+  /// // from a WKB encoded hex string
+  /// LineString.decodeHex('0102000000030000003333333333332440333333333333244033333333333334403333333333333440cdcccccccc4c3e40cdcccccccc4c3e40');
+  /// ```
+  factory LineString.decodeHex(
+    String bytesHex, {
+    BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
+    Map<String, dynamic>? options,
+  }) =>
+      GeometryBuilder.decodeHex<LineString>(
+        bytesHex,
         format: format,
         options: options,
       );

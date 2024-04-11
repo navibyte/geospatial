@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+// ignore_for_file: lines_longer_than_80_chars
+
 import 'dart:typed_data';
 
 import '/src/common/codes/coords.dart';
@@ -286,6 +288,9 @@ class MultiPoint extends SimpleGeometry {
   /// a default.
   ///
   /// Format or decoder implementation specific options can be set by [options].
+  ///
+  /// See also [MultiPoint.decodeHex] to decode from bytes represented as a hex
+  /// string.
   factory MultiPoint.decode(
     Uint8List bytes, {
     BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
@@ -293,6 +298,29 @@ class MultiPoint extends SimpleGeometry {
   }) =>
       GeometryBuilder.decode<MultiPoint>(
         bytes,
+        format: format,
+        options: options,
+      );
+
+  /// Decodes a multi point geometry from [bytesHex] (as a hex string)
+  /// conforming to [format].
+  ///
+  /// See [MultiPoint.decode] for more information.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a multi point with three 2D positions (10.1,10.1,20.2,20.2,30.3,30.3)
+  /// // from a WKB encoded hex string
+  /// MultiPoint.decodeHex('0104000000030000000101000000333333333333244033333333333324400101000000333333333333344033333333333334400101000000cdcccccccc4c3e40cdcccccccc4c3e40');
+  /// ```
+  factory MultiPoint.decodeHex(
+    String bytesHex, {
+    BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
+    Map<String, dynamic>? options,
+  }) =>
+      GeometryBuilder.decodeHex<MultiPoint>(
+        bytesHex,
         format: format,
         options: options,
       );

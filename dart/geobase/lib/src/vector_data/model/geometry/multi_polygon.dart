@@ -1,8 +1,10 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
 // Docs: https://github.com/navibyte/geospatial
+
+// ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:typed_data';
 
@@ -465,6 +467,9 @@ class MultiPolygon extends SimpleGeometry {
   /// a default.
   ///
   /// Format or decoder implementation specific options can be set by [options].
+  ///
+  /// See also [MultiPolygon.decodeHex] to decode from bytes represented as a
+  /// hex string.
   factory MultiPolygon.decode(
     Uint8List bytes, {
     BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
@@ -472,6 +477,29 @@ class MultiPolygon extends SimpleGeometry {
   }) =>
       GeometryBuilder.decode<MultiPolygon>(
         bytes,
+        format: format,
+        options: options,
+      );
+
+  /// Decodes a multi polygon geometry from [bytesHex] (as a hex string)
+  /// conforming to [format].
+  ///
+  /// See [MultiPolygon.decode] for more information.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a multi polygon from a WKB encoded hex string - same geometry as WKT:
+  /// // "MULTIPOLYGON(((35 10,45 45,15 40,10 20,35 10)))"
+  /// MultiPolygon.decodeHex('0106000000010000000103000000010000000500000000000000008041400000000000002440000000000080464000000000008046400000000000002e4000000000000044400000000000002440000000000000344000000000008041400000000000002440');
+  /// ```
+  factory MultiPolygon.decodeHex(
+    String bytesHex, {
+    BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
+    Map<String, dynamic>? options,
+  }) =>
+      GeometryBuilder.decodeHex<MultiPolygon>(
+        bytesHex,
         format: format,
         options: options,
       );

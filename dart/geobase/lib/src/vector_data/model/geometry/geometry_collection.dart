@@ -1,8 +1,10 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
 // Docs: https://github.com/navibyte/geospatial
+
+// ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:typed_data';
 
@@ -179,6 +181,8 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   /// a default.
   ///
   /// Format or decoder implementation specific options can be set by [options].
+  ///
+  /// See also [decodeHex] to decode from bytes represented as a hex string.
   static GeometryCollection<T> decode<T extends Geometry>(
     Uint8List bytes, {
     BinaryFormat<GeometryContent> format = WKB.geometry,
@@ -186,6 +190,29 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   }) =>
       GeometryBuilder.decodeCollection<T>(
         bytes,
+        format: format,
+        options: options,
+      );
+
+  /// Decodes a geometry collection with elements of [T] from [bytesHex] (as a
+  /// hex string) conforming to [format].
+  ///
+  /// See [decode] for more information.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a geometry collection from a WKB encoded hex string - same geometry as
+  /// // WKT: "GEOMETRYCOLLECTION(POINT(10.1 20.2),POINT(10.1 20.2),LINESTRING(10.1 10.1,20.2 20.2,30.3 30.3))"
+  /// GeometryCollection.decodeHex('0107000000030000000101000000333333333333244033333333333334400101000000333333333333244033333333333334400102000000030000003333333333332440333333333333244033333333333334403333333333333440cdcccccccc4c3e40cdcccccccc4c3e40');
+  /// ```
+  static GeometryCollection<T> decodeHex<T extends Geometry>(
+    String bytesHex, {
+    BinaryFormat<GeometryContent> format = WKB.geometry,
+    Map<String, dynamic>? options,
+  }) =>
+      GeometryBuilder.decodeCollectionHex<T>(
+        bytesHex,
         format: format,
         options: options,
       );

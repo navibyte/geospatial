@@ -1,8 +1,10 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
 // Docs: https://github.com/navibyte/geospatial
+
+// ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:typed_data';
 
@@ -651,6 +653,9 @@ class Polygon extends SimpleGeometry {
   /// a default.
   ///
   /// Format or decoder implementation specific options can be set by [options].
+  ///
+  /// See also [Polygon.decodeHex] to decode from bytes represented as a hex
+  /// string.
   factory Polygon.decode(
     Uint8List bytes, {
     BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
@@ -658,6 +663,29 @@ class Polygon extends SimpleGeometry {
   }) =>
       GeometryBuilder.decode<Polygon>(
         bytes,
+        format: format,
+        options: options,
+      );
+
+  /// Decodes a polygon geometry from [bytesHex] (as a hex string)
+  /// conforming to [format].
+  ///
+  /// See [Polygon.decode] for more information.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a polygon with five 2D positions (10.1,10.1,20.2,10.1,20.2,20.2,
+  /// // 10.1,20.2,10.1,10.1) from a WKB encoded hex string
+  /// Polygon.decodeHex('010300000001000000050000003333333333332440333333333333244033333333333334403333333333332440333333333333344033333333333334403333333333332440333333333333344033333333333324403333333333332440');
+  /// ```
+  factory Polygon.decodeHex(
+    String bytesHex, {
+    BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
+    Map<String, dynamic>? options,
+  }) =>
+      GeometryBuilder.decodeHex<Polygon>(
+        bytesHex,
         format: format,
         options: options,
       );

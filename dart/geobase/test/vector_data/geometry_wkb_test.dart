@@ -9,9 +9,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:geobase/geobase.dart';
 import 'package:geobase/src/utils/byte_utils.dart';
-import 'package:geobase/vector.dart';
-import 'package:geobase/vector_data.dart';
 
 import 'package:test/test.dart';
 
@@ -143,15 +142,35 @@ void main() {
         final wkt = testCase[1] as String;
         final srid = testCase[2] as int;
 
-        // get WKB or EWKB representation as bytes
-        final wkbBytes = Uint8ListUtils.fromHex(hex);
-
-        // decode a geometry
-        final geom = GeometryBuilder.decode(wkbBytes, format: WKB.geometry);
+        // decode a geometry using geometry builder directly
+        final geom = GeometryBuilder.decodeHex(hex, format: WKB.geometry);
         expect(geom.toText(format: WKT.geometry), wkt);
 
+        // decode a geometry using geometry specific factories
+        if (wkt.startsWith('POINT')) {
+          expect(Point.decodeHex(hex).toText(format: WKT.geometry), wkt);
+        } else if (wkt.startsWith('LINESTRING')) {
+          expect(LineString.decodeHex(hex).toText(format: WKT.geometry), wkt);
+        } else if (wkt.startsWith('POLYGON')) {
+          expect(Polygon.decodeHex(hex).toText(format: WKT.geometry), wkt);
+        } else if (wkt.startsWith('MULTIPOINT')) {
+          expect(MultiPoint.decodeHex(hex).toText(format: WKT.geometry), wkt);
+        } else if (wkt.startsWith('MULTILINESTRING')) {
+          expect(
+            MultiLineString.decodeHex(hex).toText(format: WKT.geometry),
+            wkt,
+          );
+        } else if (wkt.startsWith('MULTIPOLYGON')) {
+          expect(MultiPolygon.decodeHex(hex).toText(format: WKT.geometry), wkt);
+        } else if (wkt.startsWith('GEOMETRYCOLLECTION')) {
+          expect(
+            GeometryCollection.decodeHex(hex).toText(format: WKT.geometry),
+            wkt,
+          );
+        }
+
         // check also an optional SRID
-        final sridFromWkb = _getSRID(wkbBytes);
+        final sridFromWkb = _getSRID(hex);
         // if(sridFromWkb != srid) {
         //   print('$wkt $srid $sridFromWkb');
         // }
@@ -170,7 +189,8 @@ void main() {
   });
 }
 
-int _getSRID(Uint8List bytes) {
+int _getSRID(String hex) {
+  final bytes = Uint8ListUtils.fromHex(hex);
   if (bytes[0] == 0) {
     // big endian -> SRID flag is on byte 1
     if ((bytes[1] & 0x20) != 0) {
