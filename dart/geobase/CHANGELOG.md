@@ -5,7 +5,7 @@
 NOTE: Version 1.1.0 currently under development (1.1.0-dev.0).
 
 🧩 Features:
-* [Pretty printing and more output specifiers on GeoJSON and WKT format writers #98]
+* [Enhanced coordinate value output for positions and text data formats #98](https://github.com/navibyte/geospatial/issues/98)
 
 ## 1.0.2
 
