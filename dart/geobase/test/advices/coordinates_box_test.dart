@@ -555,14 +555,17 @@ void _doTest(Box box) {
         box.copyWith(minM: 41.0, maxM: 46.0).values,
         [10.0, 20.0, 30.0, 41.0, 15.0, 25.0, 35.0, 46.0],
       );
-      expect(box.toText(), '10.0,20.0,30.0,40.0,15.0,25.0,35.0,45.0');
+      expect(
+        box.toText(compactNums: false),
+        '10.0,20.0,30.0,40.0,15.0,25.0,35.0,45.0',
+      );
       expect(
         box.toText(delimiter: ' '),
-        '10.0 20.0 30.0 40.0 15.0 25.0 35.0 45.0',
+        '10 20 30 40 15 25 35 45',
       );
       expect(
         box.toText(swapXY: true),
-        '20.0,10.0,30.0,40.0,25.0,15.0,35.0,45.0',
+        '20,10,30,40,25,15,35,45',
       );
       expect(box.toText(decimals: 0), '10,20,30,40,15,25,35,45');
     } else {
@@ -609,14 +612,17 @@ void _doTest(Box box) {
         box.copyWith(minM: 41.0, maxM: 46.0).values,
         [10.0, 20.0, 30.0, 41.0, 15.0, 25.0, 35.0, 46.0],
       );
-      expect(box.toText(), '10.0,20.0,30.0,15.0,25.0,35.0');
+      expect(
+        box.toText(decimals: 2, compactNums: false),
+        '10.00,20.00,30.00,15.00,25.00,35.00',
+      );
       expect(
         box.toText(delimiter: ' '),
-        '10.0 20.0 30.0 15.0 25.0 35.0',
+        '10 20 30 15 25 35',
       );
       expect(
         box.toText(swapXY: true),
-        '20.0,10.0,30.0,25.0,15.0,35.0',
+        '20,10,30,25,15,35',
       );
       expect(box.toText(decimals: 0), '10,20,30,15,25,35');
     }
@@ -668,14 +674,14 @@ void _doTest(Box box) {
         box.copyWith(minM: 41.0, maxM: 46.0).values,
         [10.0, 20.0, 41.0, 15.0, 25.0, 46.0],
       );
-      expect(box.toText(), '10.0,20.0,40.0,15.0,25.0,45.0');
+      expect(box.toText(), '10,20,40,15,25,45');
       expect(
         box.toText(delimiter: ' '),
-        '10.0 20.0 40.0 15.0 25.0 45.0',
+        '10 20 40 15 25 45',
       );
       expect(
         box.toText(swapXY: true),
-        '20.0,10.0,40.0,25.0,15.0,45.0',
+        '20,10,40,25,15,45',
       );
       expect(box.toText(decimals: 0), '10,20,40,15,25,45');
     } else {
@@ -722,9 +728,9 @@ void _doTest(Box box) {
         box.copyWith(minM: 41.0, maxM: 46.0).values,
         [10.0, 20.0, 41.0, 15.0, 25.0, 46.0],
       );
-      expect(box.toText(), '10.0,20.0,15.0,25.0');
-      expect(box.toText(delimiter: ' '), '10.0 20.0 15.0 25.0');
-      expect(box.toText(swapXY: true), '20.0,10.0,25.0,15.0');
+      expect(box.toText(), '10,20,15,25');
+      expect(box.toText(delimiter: ' '), '10 20 15 25');
+      expect(box.toText(swapXY: true), '20,10,25,15');
       expect(box.toText(decimals: 0), '10,20,15,25');
     }
     expect(box.equals3D(other), false);

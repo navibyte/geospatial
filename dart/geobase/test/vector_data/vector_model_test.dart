@@ -579,8 +579,8 @@ void main() {
 
       final pg = Polygon.parse(polygon);
       final pgb = pg.populated();
-      expect(pgb.bounds?.toText(), '5.0,4.0,12.0,10.1');
-      expect(pg.calculateBounds()?.toText(), '5.0,4.0,12.0,10.1');
+      expect(pgb.bounds?.toText(), '5,4,12,10.1');
+      expect(pg.calculateBounds()?.toText(), '5,4,12,10.1');
 
       final mpo = MultiPoint.parse(multiPoint);
       final mpob = mpo.populated();
@@ -592,13 +592,13 @@ void main() {
 
       final mls = MultiLineString.parse(multiLineString);
       final mlsb = mls.populated();
-      expect(mlsb.bounds?.toText(), '5.0,4.0,13.0,11.1');
-      expect(mls.calculateBounds()?.toText(), '5.0,4.0,13.0,11.1');
+      expect(mlsb.bounds?.toText(), '5,4,13,11.1');
+      expect(mls.calculateBounds()?.toText(), '5,4,13,11.1');
 
       final mpg = MultiPolygon.parse(multiPolygon);
       final mpgb = mpg.populated();
-      expect(mpgb.bounds?.toText(), '5.0,4.0,12.0,10.1');
-      expect(mpg.calculateBounds()?.toText(), '5.0,4.0,12.0,10.1');
+      expect(mpgb.bounds?.toText(), '5,4,12,10.1');
+      expect(mpg.calculateBounds()?.toText(), '5,4,12,10.1');
     });
 
     test('Simple geometries from positions', () {

@@ -583,10 +583,16 @@ void _doTestPosition(Position pos) {
       expect(pos.copyWith(y: 21.0).values, [10.0, 21.0, 30.0, 40.0]);
       expect(pos.copyWith(z: 31.0).values, [10.0, 20.0, 31.0, 40.0]);
       expect(pos.copyWith(m: 41.0).values, [10.0, 20.0, 30.0, 41.0]);
-      expect(pos.toText(), '10.0,20.0,30.0,40.0');
-      expect(pos.toText(delimiter: ' '), '10.0 20.0 30.0 40.0');
-      expect(pos.toText(swapXY: true), '20.0,10.0,30.0,40.0');
+      expect(pos.toText(compactNums: false), '10.0,20.0,30.0,40.0');
+      expect(pos.toText(delimiter: ' '), '10 20 30 40');
+      expect(pos.toText(swapXY: true), '20,10,30,40');
       expect(pos.toText(decimals: 0), '10,20,30,40');
+      expect(pos.toText(decimals: 0, compactNums: false), '10,20,30,40');
+      expect(
+        pos.toText(decimals: 2, compactNums: false),
+        '10.00,20.00,30.00,40.00',
+      );
+      expect(pos.toText(decimals: 2), '10,20,30,40');
     } else {
       expect(pos[2], 30.0);
       expect(pos[3], 0.0);
@@ -601,7 +607,7 @@ void _doTestPosition(Position pos) {
       expect(pos.copyWith(y: 21.0).values, [10.0, 21.0, 30.0]);
       expect(pos.copyWith(z: 31.0).values, [10.0, 20.0, 31.0]);
       expect(pos.copyWith(m: 41.0).values, [10.0, 20.0, 30.0, 41.0]);
-      expect(pos.toText(), '10.0,20.0,30.0');
+      expect(pos.toText(), '10,20,30');
     }
     expect(pos.equals3D(other), false);
     expect(pos.equals3D(other, toleranceHoriz: 0.1), false);
@@ -621,7 +627,7 @@ void _doTestPosition(Position pos) {
       expect(pos.copyWith(y: 21.0).values, [10.0, 21.0, 40.0]);
       expect(pos.copyWith(z: 31.0).values, [10.0, 20.0, 31.0, 40.0]);
       expect(pos.copyWith(m: 41.0).values, [10.0, 20.0, 41.0]);
-      expect(pos.toText(), '10.0,20.0,40.0');
+      expect(pos.toText(), '10,20,40');
     } else {
       expect(pos[2], 0.0);
       expect(pos[3], 0.0);
@@ -636,7 +642,7 @@ void _doTestPosition(Position pos) {
       expect(pos.copyWith(y: 21.0).values, [10.0, 21.0]);
       expect(pos.copyWith(z: 31.0).values, [10.0, 20.0, 31.0]);
       expect(pos.copyWith(m: 41.0).values, [10.0, 20.0, 41.0]);
-      expect(pos.toText(), '10.0,20.0');
+      expect(pos.toText(), '10,20');
     }
     expect(pos.equals3D(other), false);
     expect(pos.equals3D(other, toleranceHoriz: 0.1), false);
@@ -799,19 +805,19 @@ void _doTestPositionSeries(PositionSeries series, Coords type) {
       ]);
       expect(
         series.toText(),
-        '10.0,20.0,30.0,40.0,12.5,22.5,32.5,42.5,15.0,25.0,35.0,45.0',
+        '10,20,30,40,12.5,22.5,32.5,42.5,15,25,35,45',
       );
       expect(
         series.toText(delimiter: ';'),
-        '10.0;20.0;30.0;40.0;12.5;22.5;32.5;42.5;15.0;25.0;35.0;45.0',
+        '10;20;30;40;12.5;22.5;32.5;42.5;15;25;35;45',
       );
       expect(
         series.toText(delimiter: ' ', positionDelimiter: ','),
-        '10.0 20.0 30.0 40.0,12.5 22.5 32.5 42.5,15.0 25.0 35.0 45.0',
+        '10 20 30 40,12.5 22.5 32.5 42.5,15 25 35 45',
       );
       expect(
         series.toText(swapXY: true),
-        '20.0,10.0,30.0,40.0,22.5,12.5,32.5,42.5,25.0,15.0,35.0,45.0',
+        '20,10,30,40,22.5,12.5,32.5,42.5,25,15,35,45',
       );
     } else {
       expectedPositions = [
@@ -910,7 +916,7 @@ void _doTestPositionSeries(PositionSeries series, Coords type) {
       ]);
       expect(
         series.toText(),
-        '10.0,20.0,30.0,12.5,22.5,32.5,15.0,25.0,35.0',
+        '10,20,30,12.5,22.5,32.5,15,25,35',
       );
     }
     expect(series.equals3D(other), false);
@@ -1018,7 +1024,7 @@ void _doTestPositionSeries(PositionSeries series, Coords type) {
       ]);
       expect(
         series.toText(),
-        '10.0,20.0,40.0,12.5,22.5,42.5,15.0,25.0,45.0',
+        '10,20,40,12.5,22.5,42.5,15,25,45',
       );
     } else {
       expectedPositions = [
@@ -1116,7 +1122,7 @@ void _doTestPositionSeries(PositionSeries series, Coords type) {
       ]);
       expect(
         series.toText(),
-        '10.0,20.0,12.5,22.5,15.0,25.0',
+        '10,20,12.5,22.5,15,25',
       );
     }
     expect(series.equals3D(other), false);

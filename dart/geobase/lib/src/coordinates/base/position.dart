@@ -693,6 +693,9 @@ abstract class Position extends ValuePositionable {
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
   ///
+  /// If [compactNums] is true, any ".0" postfixes of numbers without fraction
+  /// digits are stripped.
+  ///
   /// Set [swapXY] to true to print y (or latitude) before x (or longitude).
   ///
   /// A sample with default parameters (for a 3D position):
@@ -704,6 +707,7 @@ abstract class Position extends ValuePositionable {
   String toText({
     String delimiter = ',',
     int? decimals,
+    bool compactNums = true,
     bool swapXY = false,
   }) {
     final buf = StringBuffer();
@@ -712,6 +716,7 @@ abstract class Position extends ValuePositionable {
       buf,
       delimiter: delimiter,
       decimals: decimals,
+      compactNums: compactNums,
       swapXY: swapXY,
     );
     return buf.toString();
@@ -979,6 +984,9 @@ abstract class Position extends ValuePositionable {
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
   ///
+  /// If [compactNums] is true, any ".0" postfixes of numbers without fraction
+  /// digits are stripped.
+  ///
   /// Set [swapXY] to true to print y (or latitude) before x (or longitude).
   ///
   /// A sample with default parameters (for a 3D point):
@@ -991,6 +999,7 @@ abstract class Position extends ValuePositionable {
     StringSink buffer, {
     String delimiter = ',',
     int? decimals,
+    bool compactNums = true,
     bool swapXY = false,
   }) {
     if (decimals != null) {
@@ -999,6 +1008,7 @@ abstract class Position extends ValuePositionable {
           toStringAsFixedWhenDecimals(
             swapXY ? position.y : position.x,
             decimals,
+            compact: compactNums,
           ),
         )
         ..write(delimiter)
@@ -1006,32 +1016,55 @@ abstract class Position extends ValuePositionable {
           toStringAsFixedWhenDecimals(
             swapXY ? position.x : position.y,
             decimals,
+            compact: compactNums,
           ),
         );
       if (position.is3D) {
         buffer
           ..write(delimiter)
-          ..write(toStringAsFixedWhenDecimals(position.z, decimals));
+          ..write(
+            toStringAsFixedWhenDecimals(
+              position.z,
+              decimals,
+              compact: compactNums,
+            ),
+          );
       }
       if (position.isMeasured) {
         buffer
           ..write(delimiter)
-          ..write(toStringAsFixedWhenDecimals(position.m, decimals));
+          ..write(
+            toStringAsFixedWhenDecimals(
+              position.m,
+              decimals,
+              compact: compactNums,
+            ),
+          );
       }
     } else {
       buffer
-        ..write(swapXY ? position.y : position.x)
+        ..write(
+          toStringCompact(
+            swapXY ? position.y : position.x,
+            compact: compactNums,
+          ),
+        )
         ..write(delimiter)
-        ..write(swapXY ? position.x : position.y);
+        ..write(
+          toStringCompact(
+            swapXY ? position.x : position.y,
+            compact: compactNums,
+          ),
+        );
       if (position.is3D) {
         buffer
           ..write(delimiter)
-          ..write(position.z);
+          ..write(toStringCompact(position.z, compact: compactNums));
       }
       if (position.isMeasured) {
         buffer
           ..write(delimiter)
-          ..write(position.m);
+          ..write(toStringCompact(position.m, compact: compactNums));
       }
     }
   }

@@ -241,11 +241,15 @@ extension PositionArrayExtension on Iterable<Position> {
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
   ///
+  /// If [compactNums] is true, any ".0" postfixes of numbers without fraction
+  /// digits are stripped.
+  ///
   /// Set [swapXY] to true to print y (or latitude) before x (or longitude).
   String toText({
     String delimiter = ',',
     String? positionDelimiter = ',',
     int? decimals,
+    bool compactNums = true,
     bool swapXY = false,
   }) {
     final buf = StringBuffer();
@@ -254,6 +258,7 @@ extension PositionArrayExtension on Iterable<Position> {
       delimiter: delimiter,
       positionDelimiter: positionDelimiter,
       decimals: decimals,
+      compactNums: compactNums,
       swapXY: swapXY,
     );
     return buf.toString();
@@ -267,12 +272,16 @@ extension PositionArrayExtension on Iterable<Position> {
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
   ///
+  /// If [compactNums] is true, any ".0" postfixes of numbers without fraction
+  /// digits are stripped.
+  ///
   /// Set [swapXY] to true to print y (or latitude) before x (or longitude).
   void writeValues(
     StringSink buffer, {
     String delimiter = ',',
     String? positionDelimiter,
     int? decimals,
+    bool compactNums = true,
     bool swapXY = false,
   }) {
     var isFirst = true;
@@ -290,6 +299,7 @@ extension PositionArrayExtension on Iterable<Position> {
         buffer,
         delimiter: delimiter,
         decimals: decimals,
+        compactNums: compactNums,
         swapXY: swapXY,
       );
     }

@@ -678,6 +678,7 @@ class _TestXYZM implements Projected {
   String toText({
     String delimiter = ',',
     int? decimals,
+    bool compactNums = true,
     bool swapXY = false,
   }) {
     final buf = StringBuffer();
@@ -686,6 +687,7 @@ class _TestXYZM implements Projected {
       buf,
       delimiter: delimiter,
       decimals: decimals,
+      compactNums: compactNums,
       swapXY: swapXY,
     );
     return buf.toString();

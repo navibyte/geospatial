@@ -91,10 +91,14 @@ abstract class ValuePositionable extends Positionable {
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
   ///
+  /// If [compactNums] is true, any ".0" postfixes of numbers without fraction
+  /// digits are stripped.
+  ///
   /// Set [swapXY] to true to print y (or latitude) before x (or longitude).
   String toText({
     String delimiter = ',',
     int? decimals,
+    bool compactNums = true,
     bool swapXY = false,
   });
 }

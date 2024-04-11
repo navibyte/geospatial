@@ -569,18 +569,27 @@ abstract class Box extends ValuePositionable {
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
   ///
+  /// If [compactNums] is true, any ".0" postfixes of number without fraction
+  /// digits are stripped.
+  ///
   /// Set [swapXY] to true to print y (or latitude) before x (or longitude).
   ///
   /// A sample with default parameters (for a 2D bounding box):
   /// `10.1,10.1,20.2,20.2`
   @override
-  String toText({String delimiter = ',', int? decimals, bool swapXY = false}) {
+  String toText({
+    String delimiter = ',',
+    int? decimals,
+    bool compactNums = true,
+    bool swapXY = false,
+  }) {
     final buf = StringBuffer();
     Box.writeValues(
       this,
       buf,
       delimiter: delimiter,
       decimals: decimals,
+      compactNums: compactNums,
       swapXY: swapXY,
     );
     return buf.toString();
@@ -985,6 +994,9 @@ abstract class Box extends ValuePositionable {
   ///
   /// Use [decimals] to set a number of decimals (not applied if no decimals).
   ///
+  /// If [compactNums] is true, any ".0" postfixes of number without fraction
+  /// digits are stripped.
+  ///
   /// Set [swapXY] to true to print y (or latitude) before x (or longitude).
   ///
   /// A sample with default parameters (for a 2D bounding box):
@@ -994,6 +1006,7 @@ abstract class Box extends ValuePositionable {
     StringSink buffer, {
     String delimiter = ',',
     int? decimals,
+    bool compactNums = true,
     bool swapXY = false,
   }) {
     Position.writeValues(
@@ -1001,6 +1014,7 @@ abstract class Box extends ValuePositionable {
       buffer,
       delimiter: delimiter,
       decimals: decimals,
+      compactNums: compactNums,
       swapXY: swapXY,
     );
     buffer.write(delimiter);
@@ -1009,6 +1023,7 @@ abstract class Box extends ValuePositionable {
       buffer,
       delimiter: delimiter,
       decimals: decimals,
+      compactNums: compactNums,
       swapXY: swapXY,
     );
   }
