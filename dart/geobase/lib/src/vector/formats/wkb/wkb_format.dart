@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -33,6 +33,11 @@ part 'wkb_encoder.dart';
 /// * [Well-Known binary from GEOS](https://libgeos.org/specifications/wkb/)
 class WKB {
   /// The Well-known binary (WKB) format for geometries.
+  /// 
+  /// Use `encoder` and `encoder` methods of the format instance to access an
+  /// encoder or an decoder for WKB.
+  ///
+  /// {@template geobase.WKB.geometry.types}
   ///
   /// Supported geometry types and their "WKB integer codes" for different
   /// coordinate types:
@@ -46,6 +51,15 @@ class WKB {
   /// `multiLineString`    | 0005 | 1005 | 2005 | 3005
   /// `multiPolygon`       | 0006 | 1006 | 2006 | 3006
   /// `geometryCollection` | 0007 | 1007 | 2007 | 3007
+  ///
+  /// {@endtemplate}
+  /// {@template geobase.WKB.geometry.endian}
+  ///
+  /// For WKB binary data encoding, the `Endian.little` (NDR) byte order is used
+  /// by default, however when accessing an encoder it's possible to specify
+  /// also the `Endian.big` (XDR) byte order.
+  ///
+  /// {@endtemplate}
   static const BinaryFormat<GeometryContent> geometry =
       _WkbGeometryBinaryFormat();
 }
@@ -53,14 +67,30 @@ class WKB {
 class _WkbGeometryBinaryFormat with BinaryFormat<GeometryContent> {
   const _WkbGeometryBinaryFormat();
 
+  /// Returns the WKB binary format encoder for geometry content.
+  ///
+  /// {@macro geobase.BinaryFormat.encoder}
+  ///
+  /// {@macro geobase.WKB.geometry.types}
+  ///
+  /// {@macro geobase.WKB.geometry.endian}
   @override
   ContentEncoder<GeometryContent> encoder({
     Endian? endian,
     Map<String, dynamic>? options,
   }) =>
-      // endian: unless nothing specified, WKB data is encoding as Endian.big
-      _WkbGeometryEncoder(endian: endian ?? Endian.big);
+      // endian: unless nothing specified, WKB data is encoding as Endian.little
+      _WkbGeometryEncoder(endian: endian ?? Endian.little);
 
+  /// Returns the WKB binary format decoder that decodes bytes as geometry
+  /// content to [builder].
+  ///
+  /// {@macro geobase.BinaryFormat.decoder}
+  /// 
+  /// For the WKB binary data encoding, any [endian] value given is ignored as
+  /// an endianess is read from data header fields.
+  ///
+  /// {@macro geobase.WKB.geometry.types}
   @override
   ContentDecoder decoder(
     GeometryContent builder, {

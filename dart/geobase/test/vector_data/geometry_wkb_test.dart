@@ -258,5 +258,7 @@ int _getSRID(String hex) {
   return 0; // unknown
 }
 
-Endian _getEndian(String hex) =>
-    hex.startsWith('01') ? Endian.little : Endian.big;
+// Parse [Endian] from a hex string (note that Endian.little is default, so
+// returning null).
+Endian? _getEndian(String hex) =>
+    hex.startsWith('01') ? null : Endian.big;

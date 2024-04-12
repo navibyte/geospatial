@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -13,6 +13,8 @@ import 'content_encoder.dart';
 mixin BinaryFormat<Content extends Object> {
   /// Returns a binary format encoder for [Content].
   ///
+  /// {@template geobase.BinaryFormat.encoder}
+  /// 
   /// After writing content objects into an encoder, the binary representation
   /// can be accessed using `toBytes()` of the encoder.
   ///
@@ -21,6 +23,8 @@ mixin BinaryFormat<Content extends Object> {
   ///
   /// Other format or encoder implementation specific options can be set by
   /// [options].
+  /// 
+  /// {@endtemplate}
   ContentEncoder<Content> encoder({
     Endian? endian,
     Map<String, dynamic>? options,
@@ -28,6 +32,8 @@ mixin BinaryFormat<Content extends Object> {
 
   /// Returns a binary format decoder that decodes bytes as [Content] to
   /// [builder].
+  ///
+ /// {@template geobase.BinaryFormat.decoder}
   ///
   /// Content decoded by a decoder is sent to a content interface represented
   /// by an object [builder].
@@ -38,6 +44,8 @@ mixin BinaryFormat<Content extends Object> {
   ///
   /// Other format or decoder implementation specific options can be set by
   /// [options].
+  /// 
+  /// {@endtemplate}
   ContentDecoder decoder(
     Content builder, {
     Endian? endian,
