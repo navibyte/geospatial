@@ -13,6 +13,7 @@ NOTE: Version 1.1.0 currently under development (1.1.0-dev.0).
   * CoordRefSys to support getting EPSG code as an integer.
   * Support encoding SRID to EWKB binary data.
   * Utilities to decode a byte order, a WKB flavor and SRID from WKB bytes.
+  * A sample for decoding and encoding EWKB binary data.
 
 ## 1.0.2
 

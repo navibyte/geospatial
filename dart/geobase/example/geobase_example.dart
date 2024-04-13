@@ -56,6 +56,7 @@ void main() {
   _wkt();
   _wkbSample1();
   _wkbSample2();
+  _ewkbSample();
 
   // projections
   _wgs84ToWebMercatorViaPositions();
@@ -1063,6 +1064,59 @@ void _wkbSample2() {
       format: GeoJSON.geometryFormat(conf: GeoJsonConf(ignoreMeasured: true)),
     ),
   );
+}
+
+void _ewkbSample() {
+  // References:
+  // [PostGIS](https://postgis.net/docs/ST_AsEWKB.html)
+  // [GEOS](https://libgeos.org/specifications/wkb/)
+
+  // to get a sample point, first parse a 3D point from WKT encoded string
+  final p = Point.parse('POINT Z(-0.0014 51.4778 45)', format: WKT.geometry);
+
+  // to encode a geometry as WKB/EWKB use toBytes() or toBytesHex() methods
+
+  // encode as standard WKB data (format: `WKB.geometry`), prints:
+  // 01e9030000c7bab88d06f056bfb003e78c28bd49400000000000804640
+  final wkbHex = p.toBytesHex(format: WKB.geometry);
+  print(wkbHex);
+
+  // encode as Extended WKB data (format: `WKB.geometryExtended`), prints:
+  // 0101000080c7bab88d06f056bfb003e78c28bd49400000000000804640
+  final ewkbHex = p.toBytesHex(format: WKB.geometryExtended);
+  print(ewkbHex);
+
+  // otherwise encoded data equals, but bytes for the geometry type varies
+
+  // there are some helper methods to analyse WKB/EWKB bytes or hex strings
+  // (decodeFlavor, decodeEndian, decodeSRID and versions with hex postfix)
+
+  // prints: "WkbFlavor.standard - WkbFlavor.extended"
+  print('${WKB.decodeFlavorHex(wkbHex)} - ${WKB.decodeFlavorHex(ewkbHex)}');
+
+  // when decoding WKB or EWKB data, a variant is detected automatically, so
+  // both `WKB.geometry` and `WKB.geometryExtended` can be used
+  final pointFromWkb = Point.decodeHex(wkbHex, format: WKB.geometry);
+  final pointFromEwkb = Point.decodeHex(ewkbHex, format: WKB.geometry);
+  print(pointFromWkb.equals3D(pointFromEwkb)); // prints "true"
+
+  // SRID can be encoded only on EWKB data, this sample prints:
+  // 01010000a0e6100000c7bab88d06f056bfb003e78c28bd49400000000000804640
+  final ewkbHexWithSRID =
+      p.toBytesHex(format: WKB.geometryExtended, crs: CoordRefSys.EPSG_4326);
+  print(ewkbHexWithSRID);
+
+  // if you have WKB or EWKB data, but not sure which, then you can fist check
+  // a flavor and whether it contains SRID, prints: "SRID from EWKB data: 4326"
+  if (WKB.decodeFlavorHex(ewkbHexWithSRID) == WkbFlavor.extended) {
+    final srid = WKB.decodeSRIDHex(ewkbHexWithSRID);
+    if (srid != null) {
+      print('SRID from EWKB data: $srid');
+
+      // after finding out CRS, an actual point can be decoded
+      // Point.decodeHex(ewkbHexWithSRID, format: WKB.geometry);
+    }
+  }
 }
 
 void _temporalData() {
