@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -63,12 +63,23 @@ abstract class CoordRefSysResolver {
   /// implementations.
   bool swapXY(String id, {GeoRepresentation? logic});
 
+  /// Returns an EPSG code according to the common `EPSG:{code}` template
+  /// for [id] if the coordinate reference system is recognized by the
+  /// [EPSG register](https://epsg.org/).
+  ///
+  /// For example for `http://www.opengis.net/def/crs/EPSG/0/4326` (WGS 84
+  /// latitude/longitude) this getter returns `4326` as an integer, but for
+  /// `http://www.opengis.net/def/crs/OGC/1.3/CRS84` this returns null as CRS84
+  /// (WGS 84 longitude/latitude) do not have an exact corresponding identifier
+  /// in the EPSG register.
+  int? epsgCode(String id);
+
   /// Returns an EPSG identifier according to the common `EPSG:{code}` template
   /// for [id] if the coordinate reference system is recognized by the
   /// [EPSG register](https://epsg.org/).
   ///
   /// For example for `http://www.opengis.net/def/crs/EPSG/0/4326` (WGS 84
-  /// latitude/longitude) this getter returns `EPSG:4326`, but for
+  /// latitude/longitude) this getter returns `EPSG:4326` as a string, but for
   /// `http://www.opengis.net/def/crs/OGC/1.3/CRS84` this returns null as CRS84
   /// (WGS 84 longitude/latitude) do not have an exact corresponding identifier
   /// in the EPSG register.
@@ -189,6 +200,25 @@ class _BasicCoordRefSysRegistry implements CoordRefSysResolver {
         // => no need to swap
         return false;
     }
+  }
+
+  @override
+  int? epsgCode(String id) {
+    if (id.startsWith(_epsgPrefix) && id.length >= _epsgPrefix.length + 1) {
+      final code = int.tryParse(id.substring(_epsgPrefix.length));
+      if (code != null) {
+        return code;
+      }
+    }
+    if (id.startsWith(_opengisEPSG0Prefix) &&
+        id.length >= _opengisEPSG0Prefix.length + 1) {
+      final code = int.tryParse(id.substring(_opengisEPSG0Prefix.length));
+      if (code != null) {
+        return code;
+      }
+    }
+
+    return null; // do not know
   }
 
   @override
