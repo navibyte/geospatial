@@ -6,6 +6,11 @@
 
 import 'coords.dart';
 
+// EWKB type flags
+const _ewkbDimensionalityFlagZ = 0x80000000;
+const _ewkbDimensionalityFlagM = 0x40000000;
+const _ewkbSridFlag = 0x20000000;
+
 /// An enum for geometry types.
 ///
 /// Geometry types introduced above are based on the
@@ -118,7 +123,42 @@ enum Geom {
   ///
   /// References:
   /// * [Simple Feature Access - Part 1: Common Architecture](https://www.ogc.org/standards/sfa)
+  ///
+  /// See also [extendedWkbId] to get a geometry type as used by Extended WKB.
   int wkbId(Coords coordinateType) => coordinateType.wkbId + wkbId2D;
+
+  /// The Extended WKB (EWKB) type for this geometry type, the given
+  /// [coordinateType] and [hasSRID].
+  ///
+  /// The base value of the geometry type is:
+  /// * `1` for the `point` type
+  /// * `2` for the `lineString` type
+  /// * `3` for the `polygon` type
+  /// * `4` for the `multiPoint` type
+  /// * `5` for the `multiLineString` type
+  /// * `6` for the `multiPolygon` type
+  /// * `7` for the `geometryCollection` type
+  ///
+  /// Following Extended WKB (EWKB) flags are added to the returned id using
+  /// the bit-wise OR operator:
+  /// * If `coordinateType.is3D` is true, then flag `0x80000000` is set.
+  /// * If `coordinateType.isMeasured` is true, then flag `0x40000000` is set.
+  /// * If [hasSRID] is true, then flag `0x20000000` is set.
+  ///
+  /// See also [wkbId] to get a geometry type as specified by the standard.
+  int extendedWkbId(Coords coordinateType, {bool hasSRID = false}) {
+    var id = wkbId2D;
+    if (coordinateType.is3D) {
+      id |= _ewkbDimensionalityFlagZ;
+    }
+    if (coordinateType.isMeasured) {
+      id |= _ewkbDimensionalityFlagM;
+    }
+    if (hasSRID) {
+      id |= _ewkbSridFlag;
+    }
+    return id;
+  }
 
   /// Selects a [Geom] enum based on the WKB type [id].
   ///

@@ -10,9 +10,11 @@ class _WkbGeometryEncoder
     with GeometryContent
     implements ContentEncoder<GeometryContent> {
   final ByteWriter _buffer;
+  final WkbFlavor flavor;
 
   _WkbGeometryEncoder({
     required Endian endian,
+    required this.flavor,
   }) : _buffer = ByteWriter.buffered(
           endian: endian,
         );
@@ -231,7 +233,14 @@ class _WkbGeometryEncoder
 
     // enum type (WKBGeometryType) as integer is calculated from geometry and
     // coordinate types as specified by this library
-    final type = geomType.wkbId(coordType);
+    final int type;
+    if (flavor == WkbFlavor.standard) {
+      // WKB geometry type as specified by the standard
+      type = geomType.wkbId(coordType);
+    } else {
+      // WKB geometry type as used by PostGIS-specific EWKB
+      type = geomType.extendedWkbId(coordType);
+    }
 
     // write geometry type (as specified by the WKBGeometryType enum)
     _buffer.writeUint32(type);

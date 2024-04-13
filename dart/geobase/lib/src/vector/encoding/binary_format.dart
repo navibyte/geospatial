@@ -14,7 +14,7 @@ mixin BinaryFormat<Content extends Object> {
   /// Returns a binary format encoder for [Content].
   ///
   /// {@template geobase.BinaryFormat.encoder}
-  /// 
+  ///
   /// After writing content objects into an encoder, the binary representation
   /// can be accessed using `toBytes()` of the encoder.
   ///
@@ -23,7 +23,7 @@ mixin BinaryFormat<Content extends Object> {
   ///
   /// Other format or encoder implementation specific options can be set by
   /// [options].
-  /// 
+  ///
   /// {@endtemplate}
   ContentEncoder<Content> encoder({
     Endian? endian,
@@ -33,7 +33,7 @@ mixin BinaryFormat<Content extends Object> {
   /// Returns a binary format decoder that decodes bytes as [Content] to
   /// [builder].
   ///
- /// {@template geobase.BinaryFormat.decoder}
+  /// {@template geobase.BinaryFormat.decoder}
   ///
   /// Content decoded by a decoder is sent to a content interface represented
   /// by an object [builder].
@@ -44,7 +44,7 @@ mixin BinaryFormat<Content extends Object> {
   ///
   /// Other format or decoder implementation specific options can be set by
   /// [options].
-  /// 
+  ///
   /// {@endtemplate}
   ContentDecoder decoder(
     Content builder, {

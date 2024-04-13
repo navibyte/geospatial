@@ -9,6 +9,7 @@ NOTE: Version 1.1.0 currently under development (1.1.0-dev.0).
 * [Add decodeHex and toBytesHex to geometry objects and builders #227](https://github.com/navibyte/geospatial/issues/227)
 * [Add EWKB encoding and decoding support on geobase #165](https://github.com/navibyte/geospatial/issues/165)
   * Default endianess to Endian.little in WKB and some docs updated. 
+  * Support EWKB dimensionality flags for z and m.
 
 ## 1.0.2
 

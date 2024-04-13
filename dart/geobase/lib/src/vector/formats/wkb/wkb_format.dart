@@ -24,7 +24,23 @@ import '/src/vector/encoding/content_encoder.dart';
 part 'wkb_decoder.dart';
 part 'wkb_encoder.dart';
 
-/// The Well-known binary (WKB) format, see [geometry] for accessing the format.
+/// The flavor (or a variation) of the Well-known binary (WKB) specification.
+///
+/// This is used when encoding data to the WKB binary representation to specify
+/// how bytes are written. However when decoding data a variation is
+/// transparently detected without need to specify it.
+enum WkbFlavor {
+  /// The standard WKB specified by
+  /// [Simple Feature Access - Part 1: Common Architecture](https://www.ogc.org/standards/sfa)
+  standard,
+
+  /// The PostGIS-specific Extended WKB (or EWKB) as documented by
+  /// [Well-Known binary from GEOS](https://libgeos.org/specifications/wkb/).
+  extended,
+}
+
+/// The Well-known binary (WKB) format, see [geometry] for the standard WKB and
+/// [geometryExtended] for the Extended WKB (EWKB).
 ///
 /// More information:
 /// * [Well-known binary](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary).
@@ -33,7 +49,7 @@ part 'wkb_encoder.dart';
 /// * [Well-Known binary from GEOS](https://libgeos.org/specifications/wkb/)
 class WKB {
   /// The Well-known binary (WKB) format for geometries.
-  /// 
+  ///
   /// Use `encoder` and `encoder` methods of the format instance to access an
   /// encoder or an decoder for WKB.
   ///
@@ -60,12 +76,37 @@ class WKB {
   /// also the `Endian.big` (XDR) byte order.
   ///
   /// {@endtemplate}
+  ///
+  /// See also [geometryExtended] to get a format for the Extended WKB (EWKB).
   static const BinaryFormat<GeometryContent> geometry =
-      _WkbGeometryBinaryFormat();
+      _WkbGeometryBinaryFormat(flavor: WkbFlavor.standard);
+
+  /// The Extended WKB (EWKB) format for geometries.
+  ///
+  /// Use `encoder` and `encoder` methods of the format instance to access an
+  /// encoder or an decoder for EWKB.
+  ///
+  /// {@macro geobase.WKB.geometry.types}
+  ///
+  /// When encoding EWKB data 2D type codes are used with dimensionalty flags
+  /// added as described below.
+  ///
+  /// Supports also Extended WKB (EWKB) flags on a geometry type:
+  /// * 3D coordinates: flag `0x80000000` is set
+  /// * Measured coordinates: flag `0x40000000` is set
+  /// * CRS known: `0x20000000` is set
+  ///
+  /// {@macro geobase.WKB.geometry.endian}
+  ///
+  /// See also [geometry] to get a format for the standard WKB.
+  static const BinaryFormat<GeometryContent> geometryExtended =
+      _WkbGeometryBinaryFormat(flavor: WkbFlavor.extended);
 }
 
 class _WkbGeometryBinaryFormat with BinaryFormat<GeometryContent> {
-  const _WkbGeometryBinaryFormat();
+  final WkbFlavor flavor;
+
+  const _WkbGeometryBinaryFormat({required this.flavor});
 
   /// Returns the WKB binary format encoder for geometry content.
   ///
@@ -79,14 +120,18 @@ class _WkbGeometryBinaryFormat with BinaryFormat<GeometryContent> {
     Endian? endian,
     Map<String, dynamic>? options,
   }) =>
-      // endian: unless nothing specified, WKB data is encoding as Endian.little
-      _WkbGeometryEncoder(endian: endian ?? Endian.little);
+      _WkbGeometryEncoder(
+        // unless nothing specified, WKB data is encoded as Endian.little
+        endian: endian ?? Endian.little,
+
+        flavor: flavor,
+      );
 
   /// Returns the WKB binary format decoder that decodes bytes as geometry
   /// content to [builder].
   ///
   /// {@macro geobase.BinaryFormat.decoder}
-  /// 
+  ///
   /// For the WKB binary data encoding, any [endian] value given is ignored as
   /// an endianess is read from data header fields.
   ///
