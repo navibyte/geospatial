@@ -147,6 +147,7 @@ class MultiPoint extends SimpleGeometry {
   ///
   /// Use [crs] to give hints (like axis order, and whether x and y must
   /// be swapped when read in) about coordinate reference system in text input.
+  /// When data itself have CRS information it overrides this value.
   ///
   /// Format or decoder implementation specific options can be set by [options].
   ///
@@ -287,6 +288,10 @@ class MultiPoint extends SimpleGeometry {
   /// When [format] is not given, then the geometry format of [WKB] is used as
   /// a default.
   ///
+  /// Use [crs] to give hints (like axis order, and whether x and y must
+  /// be swapped when read in) about coordinate reference system in binary
+  /// input. When data itself have CRS information it overrides this value.
+  ///
   /// Format or decoder implementation specific options can be set by [options].
   ///
   /// See also [MultiPoint.decodeHex] to decode from bytes represented as a hex
@@ -294,11 +299,13 @@ class MultiPoint extends SimpleGeometry {
   factory MultiPoint.decode(
     Uint8List bytes, {
     BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) =>
       GeometryBuilder.decode<MultiPoint>(
         bytes,
         format: format,
+        crs: crs,
         options: options,
       );
 
@@ -317,11 +324,13 @@ class MultiPoint extends SimpleGeometry {
   factory MultiPoint.decodeHex(
     String bytesHex, {
     BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) =>
       GeometryBuilder.decodeHex<MultiPoint>(
         bytesHex,
         format: format,
+        crs: crs,
         options: options,
       );
 

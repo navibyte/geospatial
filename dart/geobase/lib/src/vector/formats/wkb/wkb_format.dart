@@ -9,6 +9,7 @@ import 'dart:typed_data';
 
 import '/src/common/codes/coords.dart';
 import '/src/common/codes/geom.dart';
+import '/src/common/reference/coord_ref_sys.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/base/position_series.dart';
@@ -118,13 +119,15 @@ class _WkbGeometryBinaryFormat with BinaryFormat<GeometryContent> {
   @override
   ContentEncoder<GeometryContent> encoder({
     Endian? endian,
-    Map<String, dynamic>? options,
+    CoordRefSys? crs,
+    Map<String, dynamic>? options, // options ignored for encoding WKB
   }) =>
       _WkbGeometryEncoder(
         // unless nothing specified, WKB data is encoded as Endian.little
         endian: endian ?? Endian.little,
 
         flavor: flavor,
+        crs: crs,
       );
 
   /// Returns the WKB binary format decoder that decodes bytes as geometry
@@ -140,7 +143,8 @@ class _WkbGeometryBinaryFormat with BinaryFormat<GeometryContent> {
   ContentDecoder decoder(
     GeometryContent builder, {
     Endian? endian,
-    Map<String, dynamic>? options,
+    CoordRefSys? crs, // a CRS hint ignored for decoding WKB
+    Map<String, dynamic>? options, // options ignored for decoding WKB
   }) =>
       // any endian given is ignored, because WKB data has this info on headers
       _WkbGeometryDecoder(builder);

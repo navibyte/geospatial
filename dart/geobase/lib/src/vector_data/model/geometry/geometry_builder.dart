@@ -124,6 +124,7 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
   ///
   /// Use [crs] to give hints (like axis order, and whether x and y must
   /// be swapped when read in) about coordinate reference system in text input.
+  /// When data itself have CRS information it overrides this value.
   ///
   /// Format or decoder implementation specific options can be set by [options].
   static R parse<R extends Geometry>(
@@ -166,6 +167,7 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
   ///
   /// Use [crs] to give hints (like axis order, and whether x and y must
   /// be swapped when read in) about coordinate reference system in text input.
+  /// When data itself have CRS information it overrides this value.
   ///
   /// Format or decoder implementation specific options can be set by [options].
   static GeometryCollection<T> parseCollection<T extends Geometry>(
@@ -206,12 +208,17 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
   /// When [format] is not given, then the geometry format of [WKB] is used as
   /// a default.
   ///
+  /// Use [crs] to give hints (like axis order, and whether x and y must
+  /// be swapped when read in) about coordinate reference system in binary
+  /// input. When data itself have CRS information it overrides this value.
+  ///
   /// Format or decoder implementation specific options can be set by [options].
   ///
   /// See also [decodeHex] to decode from bytes represented as a hex string.
   static R decode<R extends Geometry>(
     Uint8List bytes, {
     BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) {
     R? result;
@@ -225,7 +232,7 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
     });
 
     // get decoder with the content decoded sent to builder
-    final decoder = format.decoder(builder, options: options);
+    final decoder = format.decoder(builder, options: options, crs: crs);
 
     // decode and return result if succesful
     decoder.decodeBytes(bytes);
@@ -243,11 +250,13 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
   static R decodeHex<R extends Geometry>(
     String bytesHex, {
     BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) =>
       decode(
         Uint8ListUtils.fromHex(bytesHex),
         format: format,
+        crs: crs,
         options: options,
       );
 
@@ -257,6 +266,10 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
   /// When [format] is not given, then the geometry format of [WKB] is used as
   /// a default.
   ///
+  /// Use [crs] to give hints (like axis order, and whether x and y must
+  /// be swapped when read in) about coordinate reference system in binary
+  /// input. When data itself have CRS information it overrides this value.
+  ///
   /// Format or decoder implementation specific options can be set by [options].
   ///
   /// See also [decodeCollectionHex] to decode from bytes represented as a hex
@@ -264,6 +277,7 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
   static GeometryCollection<T> decodeCollection<T extends Geometry>(
     Uint8List bytes, {
     BinaryFormat<GeometryContent> format = WKB.geometry,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) {
     GeometryCollection<T>? result;
@@ -278,7 +292,7 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
     });
 
     // get decoder with the content decoded sent to builder
-    final decoder = format.decoder(builder, options: options);
+    final decoder = format.decoder(builder, options: options, crs: crs);
 
     // decode and return result if succesful
     decoder.decodeBytes(bytes);
@@ -296,11 +310,13 @@ class GeometryBuilder<T extends Geometry, E extends Geometry>
   static GeometryCollection<T> decodeCollectionHex<T extends Geometry>(
     String bytesHex, {
     BinaryFormat<GeometryContent> format = WKB.geometry,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) =>
       decodeCollection(
         Uint8ListUtils.fromHex(bytesHex),
         format: format,
+        crs: crs,
         options: options,
       );
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -25,6 +25,7 @@ abstract class TextWriterFormat<Content extends Object> {
   ///
   /// Use [crs] to give hints (like axis order, and whether x and y must
   /// be swapped when writing) about coordinate reference system in text output.
+  /// When data itself have CRS information it overrides this value.
   ///
   /// Other format or encoder implementation specific options can be set by
   /// [options].
@@ -46,6 +47,7 @@ abstract class TextReaderFormat<Content extends Object> {
   ///
   /// Use [crs] to give hints (like axis order, and whether x and y must
   /// be swapped when read in) about coordinate reference system in text input.
+  /// When data itself have CRS information it overrides this value.
   ///
   /// Format or decoder implementation specific options can be set by [options].
   ContentDecoder decoder(

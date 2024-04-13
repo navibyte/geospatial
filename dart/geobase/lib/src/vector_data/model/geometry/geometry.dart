@@ -172,6 +172,7 @@ abstract class Geometry extends Bounded {
   ///
   /// Use [crs] to give hints (like axis order, and whether x and y must
   /// be swapped when writing) about coordinate reference system in text output.
+  /// When data itself have CRS information it overrides this value.
   ///
   /// Other format or encoder implementation specific options can be set by
   /// [options].
@@ -195,6 +196,10 @@ abstract class Geometry extends Bounded {
   /// An optional [endian] specifies endianness for byte sequences written. Some
   /// encoders might ignore this, and some has a default value for it.
   ///
+  /// Use [crs] to give hints (like axis order, and whether x and y must
+  /// be swapped when read in) about coordinate reference system in binary
+  /// output. When data itself have CRS information it overrides this value.
+  ///
   /// Other format or encoder implementation specific options can be set by
   /// [options].
   ///
@@ -202,9 +207,10 @@ abstract class Geometry extends Bounded {
   Uint8List toBytes({
     BinaryFormat<GeometryContent> format = WKB.geometry,
     Endian? endian,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) {
-    final encoder = format.encoder(endian: endian, options: options);
+    final encoder = format.encoder(endian: endian, crs: crs, options: options);
     writeTo(encoder.writer);
     return encoder.toBytes();
   }
@@ -216,9 +222,11 @@ abstract class Geometry extends Bounded {
   String toBytesHex({
     BinaryFormat<GeometryContent> format = WKB.geometry,
     Endian? endian,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) =>
-      toBytes(format: format, endian: endian, options: options).toHex();
+      toBytes(format: format, endian: endian, crs: crs, options: options)
+          .toHex();
 
   /// The string representation of this geometry object as specified by
   /// [GeoJSON].
@@ -261,10 +269,21 @@ abstract class SimpleGeometry extends Geometry {
   Uint8List toBytes({
     BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
     Endian? endian,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) {
-    final encoder = format.encoder(endian: endian, options: options);
+    final encoder = format.encoder(endian: endian, options: options, crs: crs);
     writeTo(encoder.writer);
     return encoder.toBytes();
   }
+
+  @override
+  String toBytesHex({
+    BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
+    Endian? endian,
+    CoordRefSys? crs,
+    Map<String, dynamic>? options,
+  }) =>
+      toBytes(format: format, endian: endian, crs: crs, options: options)
+          .toHex();
 }

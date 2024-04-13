@@ -120,6 +120,7 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   ///
   /// Use [crs] to give hints (like axis order, and whether x and y must
   /// be swapped when read in) about coordinate reference system in text input.
+  /// When data itself have CRS information it overrides this value.
   ///
   /// Format or decoder implementation specific options can be set by [options].
   ///
@@ -180,17 +181,23 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   /// When [format] is not given, then the geometry format of [WKB] is used as
   /// a default.
   ///
+  /// Use [crs] to give hints (like axis order, and whether x and y must
+  /// be swapped when read in) about coordinate reference system in binary
+  /// input. When data itself have CRS information it overrides this value.
+  ///
   /// Format or decoder implementation specific options can be set by [options].
   ///
   /// See also [decodeHex] to decode from bytes represented as a hex string.
   static GeometryCollection<T> decode<T extends Geometry>(
     Uint8List bytes, {
     BinaryFormat<GeometryContent> format = WKB.geometry,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) =>
       GeometryBuilder.decodeCollection<T>(
         bytes,
         format: format,
+        crs: crs,
         options: options,
       );
 
@@ -209,11 +216,13 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   static GeometryCollection<T> decodeHex<T extends Geometry>(
     String bytesHex, {
     BinaryFormat<GeometryContent> format = WKB.geometry,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) =>
       GeometryBuilder.decodeCollectionHex<T>(
         bytesHex,
         format: format,
+        crs: crs,
         options: options,
       );
 

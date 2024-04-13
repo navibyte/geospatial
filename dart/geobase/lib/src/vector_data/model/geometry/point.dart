@@ -95,6 +95,7 @@ class Point implements SimpleGeometry {
   ///
   /// Use [crs] to give hints (like axis order, and whether x and y must
   /// be swapped when read in) about coordinate reference system in text input.
+  /// When data itself have CRS information it overrides this value.
   ///
   /// Format or decoder implementation specific options can be set by [options].
   ///
@@ -219,6 +220,10 @@ class Point implements SimpleGeometry {
   /// When [format] is not given, then the geometry format of [WKB] is used as
   /// a default.
   ///
+  /// Use [crs] to give hints (like axis order, and whether x and y must
+  /// be swapped when read in) about coordinate reference system in binary
+  /// input. When data itself have CRS information it overrides this value.
+  ///
   /// Format or decoder implementation specific options can be set by [options].
   ///
   /// See also [Point.decodeHex] to decode from bytes represented as a hex
@@ -226,11 +231,13 @@ class Point implements SimpleGeometry {
   factory Point.decode(
     Uint8List bytes, {
     BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) =>
       GeometryBuilder.decode<Point>(
         bytes,
         format: format,
+        crs: crs,
         options: options,
       );
 
@@ -249,11 +256,13 @@ class Point implements SimpleGeometry {
   factory Point.decodeHex(
     String bytesHex, {
     BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) =>
       GeometryBuilder.decodeHex<Point>(
         bytesHex,
         format: format,
+        crs: crs,
         options: options,
       );
 
@@ -350,9 +359,10 @@ class Point implements SimpleGeometry {
   Uint8List toBytes({
     BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
     Endian? endian,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) {
-    final encoder = format.encoder(endian: endian, options: options);
+    final encoder = format.encoder(endian: endian, options: options, crs: crs);
     writeTo(encoder.writer);
     return encoder.toBytes();
   }
@@ -361,9 +371,11 @@ class Point implements SimpleGeometry {
   String toBytesHex({
     BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
     Endian? endian,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) =>
-      toBytes(format: format, endian: endian, options: options).toHex();
+      toBytes(format: format, endian: endian, options: options, crs: crs)
+          .toHex();
 
   @override
   bool equalsCoords(Geometry other) =>

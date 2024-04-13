@@ -11,6 +11,7 @@ NOTE: Version 1.1.0 currently under development (1.1.0-dev.0).
   * Default endianess to Endian.little in WKB and some docs updated. 
   * Support EWKB dimensionality flags for z and m.
   * CoordRefSys to support getting EPSG code as an integer.
+  * Support encoding SRID to EWKB binary data.
 
 ## 1.0.2
 

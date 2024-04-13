@@ -203,6 +203,7 @@ class LineString extends SimpleGeometry {
   ///
   /// Use [crs] to give hints (like axis order, and whether x and y must
   /// be swapped when read in) about coordinate reference system in text input.
+  /// When data itself have CRS information it overrides this value.
   ///
   /// Format or decoder implementation specific options can be set by [options].
   ///
@@ -385,6 +386,10 @@ class LineString extends SimpleGeometry {
   /// When [format] is not given, then the geometry format of [WKB] is used as
   /// a default.
   ///
+  /// Use [crs] to give hints (like axis order, and whether x and y must
+  /// be swapped when read in) about coordinate reference system in binary
+  /// input. When data itself have CRS information it overrides this value.
+  ///
   /// Format or decoder implementation specific options can be set by [options].
   ///
   /// See also [LineString.decodeHex] to decode from bytes represented as a hex
@@ -392,11 +397,13 @@ class LineString extends SimpleGeometry {
   factory LineString.decode(
     Uint8List bytes, {
     BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) =>
       GeometryBuilder.decode<LineString>(
         bytes,
         format: format,
+        crs: crs,
         options: options,
       );
 
@@ -415,11 +422,13 @@ class LineString extends SimpleGeometry {
   factory LineString.decodeHex(
     String bytesHex, {
     BinaryFormat<SimpleGeometryContent> format = WKB.geometry,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) =>
       GeometryBuilder.decodeHex<LineString>(
         bytesHex,
         format: format,
+        crs: crs,
         options: options,
       );
 

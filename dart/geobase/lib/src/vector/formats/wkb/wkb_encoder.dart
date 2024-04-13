@@ -11,10 +11,12 @@ class _WkbGeometryEncoder
     implements ContentEncoder<GeometryContent> {
   final ByteWriter _buffer;
   final WkbFlavor flavor;
+  final CoordRefSys? crs;
 
   _WkbGeometryEncoder({
     required Endian endian,
     required this.flavor,
+    this.crs,
   }) : _buffer = ByteWriter.buffered(
           endian: endian,
         );
@@ -231,6 +233,10 @@ class _WkbGeometryEncoder
         break;
     }
 
+    /// whether CRS information is available (as an EPSG integer code)
+    final srid = crs?.epsgCode;
+    final hasSRID = srid != null;
+
     // enum type (WKBGeometryType) as integer is calculated from geometry and
     // coordinate types as specified by this library
     final int type;
@@ -239,11 +245,16 @@ class _WkbGeometryEncoder
       type = geomType.wkbId(coordType);
     } else {
       // WKB geometry type as used by PostGIS-specific EWKB
-      type = geomType.extendedWkbId(coordType);
+      type = geomType.extendedWkbId(coordType, hasSRID: hasSRID);
     }
 
     // write geometry type (as specified by the WKBGeometryType enum)
     _buffer.writeUint32(type);
+
+    // for EWKB write SRID if such id is available
+    if (hasSRID && flavor == WkbFlavor.extended) {
+      _buffer.writeUint32(srid);
+    }
   }
 
   void _writePosition(Position point, Coords type) {

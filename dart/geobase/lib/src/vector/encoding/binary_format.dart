@@ -6,6 +6,8 @@
 
 import 'dart:typed_data';
 
+import '/src/common/reference/coord_ref_sys.dart';
+
 import 'content_decoder.dart';
 import 'content_encoder.dart';
 
@@ -21,12 +23,17 @@ mixin BinaryFormat<Content extends Object> {
   /// An optional [endian] specifies endianness for byte sequences written. Some
   /// encoders might ignore this, and some has a default value for it.
   ///
+  /// Use [crs] to give hints (like axis order, and whether x and y must
+  /// be swapped when writing) about coordinate reference system in binary
+  /// output. When data itself have CRS information it overrides this value.
+  ///
   /// Other format or encoder implementation specific options can be set by
   /// [options].
   ///
   /// {@endtemplate}
   ContentEncoder<Content> encoder({
     Endian? endian,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   });
 
@@ -42,6 +49,10 @@ mixin BinaryFormat<Content extends Object> {
   /// decoders might ignore this, and some resolve it by reading data to be
   /// decoded.
   ///
+  /// Use [crs] to give hints (like axis order, and whether x and y must
+  /// be swapped when writing) about coordinate reference system in binary
+  /// output. When data itself have CRS information it overrides this value.
+  ///
   /// Other format or decoder implementation specific options can be set by
   /// [options].
   ///
@@ -49,6 +60,7 @@ mixin BinaryFormat<Content extends Object> {
   ContentDecoder decoder(
     Content builder, {
     Endian? endian,
+    CoordRefSys? crs,
     Map<String, dynamic>? options,
   });
 }
