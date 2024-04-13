@@ -29,23 +29,12 @@ void main() {
       // decode bytes from base64 encoded string
       final bytes = base64.decode('AQEAACDmEAAAr8+c9Sl2VECSDzCpkG85QA==');
 
-      // NOTE the sample data above is not a valid WKB byte sequence
-      // * https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry
-      //    * See section: "Well-known binary"
-      // * The first byte indicates the byte order for the data
-      //    * here "01" means "little endian" - this is interpreted correctly
-      // * The next 4 bytes are a 32-bit unsigned integer for the geometry type
-      //    * here "01000020" in little endian is integer 536870913
-      //    * that is not a WKB geometry type, so exception should be thrown
-      //
-      // Seems that such data is PostGIS specific EKWB format
-      // * https://postgis.net/docs/ST_AsEWKB.html
-      // * https://postgis.net/docs/using_postgis_dbmanagement.html#EWKB_EWKT
-      // * https://libgeos.org/specifications/wkb/
-
       // decode EWKB data using standard WKB format (should ignore SRID data)
       final point = Point.decode(bytes, format: WKB.geometry);
       expect(point.toText(format: WKT.geometry), 'POINT(81.846311 25.4358011)');
+      expect(WKB.decodeEndian(bytes), Endian.little);
+      expect(WKB.decodeFlavor(bytes), WkbFlavor.extended);
+      expect(WKB.decodeSRID(bytes), 4326);
     });
 
     test('Geobase issue #224 (EWKB sample data) 2', () {
@@ -63,6 +52,9 @@ void main() {
       final point = Point.decode(bytes, format: WKB.geometry);
 
       expect(point.toText(format: WKT.geometry), 'POINT(81.846311 25.4358011)');
+      expect(WKB.decodeEndian(bytes), Endian.little);
+      expect(WKB.decodeFlavor(bytes), WkbFlavor.extended);
+      expect(WKB.decodeSRID(bytes), 4326);
     });
 
     test('MariaDB samples (standard WKB)', () {
@@ -78,6 +70,9 @@ void main() {
       // decode WKB
       final point = Point.decode(bytes, format: WKB.geometry);
       expect(point.toText(format: WKT.geometry), 'POINT(2 4)');
+      expect(WKB.decodeEndian(bytes), Endian.big);
+      expect(WKB.decodeFlavor(bytes), WkbFlavor.standard);
+      expect(WKB.decodeSRID(bytes), isNull);
     });
 
     test('MySQL samples (standard WKB)', () {
@@ -93,6 +88,9 @@ void main() {
       // decode WKB
       final point = Point.decode(bytes, format: WKB.geometry);
       expect(point.toText(format: WKT.geometry), 'POINT(1 -1)');
+      expect(WKB.decodeEndian(bytes), Endian.little);
+      expect(WKB.decodeFlavor(bytes), WkbFlavor.standard);
+      expect(WKB.decodeSRID(bytes), isNull);
     });
 
     test('GEOS samples (standard WKB)', () {
@@ -113,6 +111,9 @@ void main() {
         line.toText(format: WKT.geometry),
         'LINESTRING(0 0,1 1,2 1)',
       );
+      expect(WKB.decodeEndian(bytes), Endian.little);
+      expect(WKB.decodeFlavor(bytes), WkbFlavor.standard);
+      expect(WKB.decodeSRID(bytes), isNull);
     });
 
     test('OpenLayers samples (standard WKB)', () {
@@ -133,6 +134,9 @@ void main() {
         polygon.toText(format: WKT.geometry),
         'POLYGON((10.689 -25.092,34.595 -20.17,38.814 -35.639,13.502 -39.155,10.689 -25.092))',
       );
+      expect(WKB.decodeEndian(bytes), Endian.little);
+      expect(WKB.decodeFlavor(bytes), WkbFlavor.standard);
+      expect(WKB.decodeSRID(bytes), isNull);
     });
 
     test('HEXWKB/HEXEWKB samples', () {
@@ -147,13 +151,18 @@ void main() {
         final geom = GeometryBuilder.decodeHex(hex, format: WKB.geometry);
         expect(geom.toText(format: WKT.geometry), wkt);
 
+        // check for flavor
+        final flavorFromWkb = WKB.decodeFlavorHex(hex);
+        expect(
+          flavorFromWkb,
+          expectEWKB ? WkbFlavor.extended : WkbFlavor.standard,
+        );
+
         // check also an optional SRID
-        final sridFromWkb = _getSRID(hex);
-        // if(sridFromWkb != srid) {
-        //   print('$wkt $srid $sridFromWkb');
-        // }
-        expect(sridFromWkb, srid);
-        final crs = srid != 0 ? CoordRefSys.id('EPSG:$sridFromWkb') : null;
+        final sridFromWkb = WKB.decodeSRIDHex(hex);
+        expect(sridFromWkb ?? 0, srid);
+        final crs =
+            sridFromWkb != null ? CoordRefSys.id('EPSG:$sridFromWkb') : null;
 
         // decode a geometry using geometry specific factories
         if (wkt.startsWith('POINT')) {
@@ -161,14 +170,14 @@ void main() {
           if (!expectEWKB) {
             expect(
               Point.parse(wkt, format: WKT.geometry)
-                  .toBytesHex(endian: _getEndian(hex)),
+                  .toBytesHex(endian: WKB.decodeEndianHex(hex)),
               hex,
             );
           } else {
             expect(
               Point.parse(wkt, format: WKT.geometry).toBytesHex(
                 format: WKB.geometryExtended,
-                endian: _getEndian(hex),
+                endian: WKB.decodeEndianHex(hex),
                 crs: crs,
               ),
               hex,
@@ -179,14 +188,14 @@ void main() {
           if (!expectEWKB) {
             expect(
               LineString.parse(wkt, format: WKT.geometry)
-                  .toBytesHex(endian: _getEndian(hex)),
+                  .toBytesHex(endian: WKB.decodeEndianHex(hex)),
               hex,
             );
           } else {
             expect(
               LineString.parse(wkt, format: WKT.geometry).toBytesHex(
                 format: WKB.geometryExtended,
-                endian: _getEndian(hex),
+                endian: WKB.decodeEndianHex(hex),
                 crs: crs,
               ),
               hex,
@@ -197,14 +206,14 @@ void main() {
           if (!expectEWKB) {
             expect(
               Polygon.parse(wkt, format: WKT.geometry)
-                  .toBytesHex(endian: _getEndian(hex)),
+                  .toBytesHex(endian: WKB.decodeEndianHex(hex)),
               hex,
             );
           } else {
             expect(
               Polygon.parse(wkt, format: WKT.geometry).toBytesHex(
                 format: WKB.geometryExtended,
-                endian: _getEndian(hex),
+                endian: WKB.decodeEndianHex(hex),
                 crs: crs,
               ),
               hex,
@@ -215,14 +224,14 @@ void main() {
           if (!expectEWKB) {
             expect(
               MultiPoint.parse(wkt, format: WKT.geometry)
-                  .toBytesHex(endian: _getEndian(hex)),
+                  .toBytesHex(endian: WKB.decodeEndianHex(hex)),
               hex,
             );
           } else {
             expect(
               MultiPoint.parse(wkt, format: WKT.geometry).toBytesHex(
                 format: WKB.geometryExtended,
-                endian: _getEndian(hex),
+                endian: WKB.decodeEndianHex(hex),
                 crs: crs,
               ),
               hex,
@@ -236,14 +245,14 @@ void main() {
           if (!expectEWKB) {
             expect(
               MultiLineString.parse(wkt, format: WKT.geometry)
-                  .toBytesHex(endian: _getEndian(hex)),
+                  .toBytesHex(endian: WKB.decodeEndianHex(hex)),
               hex,
             );
           } else {
             expect(
               MultiLineString.parse(wkt, format: WKT.geometry).toBytesHex(
                 format: WKB.geometryExtended,
-                endian: _getEndian(hex),
+                endian: WKB.decodeEndianHex(hex),
                 crs: crs,
               ),
               hex,
@@ -254,14 +263,14 @@ void main() {
           if (!expectEWKB) {
             expect(
               MultiPolygon.parse(wkt, format: WKT.geometry)
-                  .toBytesHex(endian: _getEndian(hex)),
+                  .toBytesHex(endian: WKB.decodeEndianHex(hex)),
               hex,
             );
           } else {
             expect(
               MultiPolygon.parse(wkt, format: WKT.geometry).toBytesHex(
                 format: WKB.geometryExtended,
-                endian: _getEndian(hex),
+                endian: WKB.decodeEndianHex(hex),
                 crs: crs,
               ),
               hex,
@@ -275,14 +284,14 @@ void main() {
           if (!expectEWKB) {
             expect(
               GeometryCollection.parse(wkt, format: WKT.geometry)
-                  .toBytesHex(endian: _getEndian(hex)),
+                  .toBytesHex(endian: WKB.decodeEndianHex(hex)),
               hex,
             );
           } else {
             expect(
               GeometryCollection.parse(wkt, format: WKT.geometry).toBytesHex(
                 format: WKB.geometryExtended,
-                endian: _getEndian(hex),
+                endian: WKB.decodeEndianHex(hex),
                 crs: crs,
               ),
               hex,
@@ -302,26 +311,3 @@ void main() {
     });
   });
 }
-
-int _getSRID(String hex) {
-  final bytes = Uint8ListUtils.fromHex(hex);
-  if (bytes[0] == 0) {
-    // big endian -> SRID flag is on byte 1
-    if ((bytes[1] & 0x20) != 0) {
-      // has SRID on bytes 5 to 8 (most significant first)
-      return (bytes[5] << 24) | (bytes[6] << 16) | (bytes[7] << 8) | bytes[8];
-    }
-  } else {
-    // little endian -> SRID flag is on byte 4
-    if ((bytes[4] & 0x20) != 0) {
-      // has SRID on bytes 5 to 8 (most significant last)
-      return (bytes[8] << 24) | (bytes[7] << 16) | (bytes[6] << 8) | bytes[5];
-    }
-  }
-
-  return 0; // unknown
-}
-
-// Parse [Endian] from a hex string (note that Endian.little is default, so
-// returning null).
-Endian? _getEndian(String hex) => hex.startsWith('01') ? null : Endian.big;

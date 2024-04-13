@@ -14,6 +14,7 @@ import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/base/position_series.dart';
 import '/src/utils/byte_reader.dart';
+import '/src/utils/byte_utils.dart';
 import '/src/utils/byte_writer.dart';
 import '/src/utils/coord_type.dart';
 import '/src/utils/format_validation.dart';
@@ -102,6 +103,88 @@ class WKB {
   /// See also [geometry] to get a format for the standard WKB.
   static const BinaryFormat<GeometryContent> geometryExtended =
       _WkbGeometryBinaryFormat(flavor: WkbFlavor.extended);
+
+  /// Decodes a byte order (`Endian.little` or `Endian.big`) from [bytes]
+  /// representing standard WKB or Extended WKB (EWKB) data.
+  static Endian decodeEndian(Uint8List bytes) {
+    if (bytes.isNotEmpty) {
+      if (bytes[0] == 0) {
+        return Endian.big;
+      } else if (bytes[0] == 1) {
+        return Endian.little;
+      }
+    }
+    throw const FormatException('not wkb data');
+  }
+
+  /// Decodes a byte order (`Endian.little` or `Endian.big`) from [bytesHex] (as
+  /// a hex string) representing standard WKB or Extended WKB (EWKB) data.
+  static Endian decodeEndianHex(String bytesHex) =>
+      decodeEndian(Uint8ListUtils.fromHex(bytesHex));
+
+  /// Decodes a format flavor from [bytes] representing standard WKB or Extended
+  /// WKB (EWKB) data.
+  static WkbFlavor decodeFlavor(Uint8List bytes) {
+    if (bytes.length >= 5) {
+      final endian = decodeEndian(bytes);
+      if (endian == Endian.big) {
+        // big endian -> EWKB flags are on byte 1
+        if ((bytes[1]) != 0) {
+          return WkbFlavor.extended;
+        }
+      } else {
+        // little endian -> EWKB flags are on byte 4
+        if ((bytes[4]) != 0) {
+          return WkbFlavor.extended;
+        }
+      }
+      return WkbFlavor.standard;
+    }
+    throw const FormatException('not wkb data');
+  }
+
+  /// Decodes a format flavor from [bytesHex] (as a hex string) representing
+  /// standard WKB or Extended WKB (EWKB) data.
+  static WkbFlavor decodeFlavorHex(String bytesHex) =>
+      decodeFlavor(Uint8ListUtils.fromHex(bytesHex));
+
+  /// Decodes an optional SRID from [bytes] representing Extended WKB (EWKB)
+  /// data.
+  ///
+  /// Returns null if SRID is not available.
+  static int? decodeSRID(Uint8List bytes) {
+    if (bytes.length >= 5) {
+      final endian = decodeEndian(bytes);
+      if (endian == Endian.big) {
+        // big endian -> SRID flag is on byte 1
+        if ((bytes[1] & 0x20) != 0 && bytes.length >= 9) {
+          // has SRID on bytes 5 to 8 (most significant first)
+          return (bytes[5] << 24) |
+              (bytes[6] << 16) |
+              (bytes[7] << 8) |
+              bytes[8];
+        }
+      } else {
+        // little endian -> SRID flag is on byte 4
+        if ((bytes[4] & 0x20) != 0 && bytes.length >= 9) {
+          // has SRID on bytes 5 to 8 (most significant last)
+          return (bytes[8] << 24) |
+              (bytes[7] << 16) |
+              (bytes[6] << 8) |
+              bytes[5];
+        }
+      }
+    }
+
+    return null; // unknown
+  }
+
+  /// Decodes an optional SRID from [bytesHex] (as a hex string) representing
+  /// Extended WKB (EWKB) data.
+  ///
+  /// Returns null if SRID is not available.
+  static int? decodeSRIDHex(String bytesHex) =>
+      decodeSRID(Uint8ListUtils.fromHex(bytesHex));
 }
 
 class _WkbGeometryBinaryFormat with BinaryFormat<GeometryContent> {
