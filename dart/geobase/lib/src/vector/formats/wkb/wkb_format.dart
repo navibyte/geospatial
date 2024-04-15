@@ -37,7 +37,9 @@ enum WkbFlavor {
   standard,
 
   /// The PostGIS-specific Extended WKB (or EWKB) as documented by
-  /// [Well-Known binary from GEOS](https://libgeos.org/specifications/wkb/).
+  /// [Well-Known binary from GEOS](https://libgeos.org/specifications/wkb/) and
+  /// specified by a PostGIS document called
+  /// [ZM values and SRID for Simple Features](https://github.com/postgis/postgis/blob/2.1.0/doc/ZMSgeoms.txt).
   extended,
 }
 
@@ -49,6 +51,7 @@ enum WkbFlavor {
 /// * [Simple Feature Access - Part 1: Common Architecture](https://www.ogc.org/standards/sfa)
 /// * [ISO 13249-3](https://www.iso.org/standard/60343.html)
 /// * [Well-Known binary from GEOS](https://libgeos.org/specifications/wkb/)
+/// * [ZM values and SRID for Simple Features](https://github.com/postgis/postgis/blob/2.1.0/doc/ZMSgeoms.txt)
 class WKB {
   /// The Well-known binary (WKB) format for geometries.
   ///
