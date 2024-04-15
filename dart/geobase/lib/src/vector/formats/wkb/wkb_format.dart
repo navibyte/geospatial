@@ -188,6 +188,16 @@ class WKB {
   /// Returns null if SRID is not available.
   static int? decodeSRIDHex(String bytesHex) =>
       decodeSRID(Uint8ListUtils.fromHex(bytesHex));
+
+  /// Decodes a coordinate type from [bytes] representing standard WKB or
+  /// Extended WKB (EWKB) data.
+  static Coords decodeCoordType(Uint8List bytes) =>
+      _WkbGeometryDecoder._decodeCoordTypeFromBytes(bytes);
+
+  /// Decodes a coordinate type from [bytesHex] (as a hex string) representing
+  /// standard WKB or Extended WKB (EWKB) data.
+  static Coords decodeCoordTypeHex(String bytesHex) =>
+      decodeCoordType(Uint8ListUtils.fromHex(bytesHex));
 }
 
 class _WkbGeometryBinaryFormat with BinaryFormat<GeometryContent> {

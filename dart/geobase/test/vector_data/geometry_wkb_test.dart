@@ -35,6 +35,7 @@ void main() {
       expect(WKB.decodeEndian(bytes), Endian.little);
       expect(WKB.decodeFlavor(bytes), WkbFlavor.extended);
       expect(WKB.decodeSRID(bytes), 4326);
+      expect(WKB.decodeCoordType(bytes), Coords.xy);
     });
 
     test('Geobase issue #224 (EWKB sample data) 2', () {
@@ -55,6 +56,7 @@ void main() {
       expect(WKB.decodeEndian(bytes), Endian.little);
       expect(WKB.decodeFlavor(bytes), WkbFlavor.extended);
       expect(WKB.decodeSRID(bytes), 4326);
+      expect(WKB.decodeCoordType(bytes), Coords.xy);
     });
 
     test('MariaDB samples (standard WKB)', () {
@@ -73,6 +75,7 @@ void main() {
       expect(WKB.decodeEndian(bytes), Endian.big);
       expect(WKB.decodeFlavor(bytes), WkbFlavor.standard);
       expect(WKB.decodeSRID(bytes), isNull);
+      expect(WKB.decodeCoordType(bytes), Coords.xy);
     });
 
     test('MySQL samples (standard WKB)', () {
@@ -91,6 +94,7 @@ void main() {
       expect(WKB.decodeEndian(bytes), Endian.little);
       expect(WKB.decodeFlavor(bytes), WkbFlavor.standard);
       expect(WKB.decodeSRID(bytes), isNull);
+      expect(WKB.decodeCoordType(bytes), Coords.xy);
     });
 
     test('GEOS samples (standard WKB)', () {
@@ -114,6 +118,7 @@ void main() {
       expect(WKB.decodeEndian(bytes), Endian.little);
       expect(WKB.decodeFlavor(bytes), WkbFlavor.standard);
       expect(WKB.decodeSRID(bytes), isNull);
+      expect(WKB.decodeCoordType(bytes), Coords.xy);
     });
 
     test('OpenLayers samples (standard WKB)', () {
@@ -137,6 +142,7 @@ void main() {
       expect(WKB.decodeEndian(bytes), Endian.little);
       expect(WKB.decodeFlavor(bytes), WkbFlavor.standard);
       expect(WKB.decodeSRID(bytes), isNull);
+      expect(WKB.decodeCoordType(bytes), Coords.xy);
     });
 
     test('HEXWKB/HEXEWKB samples', () {
@@ -146,6 +152,7 @@ void main() {
         final wkt = testCase[1] as String;
         final srid = testCase[2] as int;
         final expectEWKB = testCase[3] as bool;
+        final coordType = testCase[4] as Coords;
 
         // decode a geometry using geometry builder directly
         final geom = GeometryBuilder.decodeHex(hex, format: WKB.geometry);
@@ -163,6 +170,10 @@ void main() {
         expect(sridFromWkb ?? 0, srid);
         final crs =
             sridFromWkb != null ? CoordRefSys.id('EPSG:$sridFromWkb') : null;
+
+        // check coord type
+        final ct = WKB.decodeCoordTypeHex(hex);
+        expect(ct, coordType);
 
         // decode a geometry using geometry specific factories
         if (wkt.startsWith('POINT')) {

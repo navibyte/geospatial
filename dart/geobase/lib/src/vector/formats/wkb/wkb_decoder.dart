@@ -32,6 +32,33 @@ class _WkbGeometryDecoder implements ContentDecoder {
   @override
   void decodeData(dynamic source, {Map<String, dynamic>? options}) =>
       const FormatException('Unsupported input data');
+
+  static Coords _decodeCoordTypeFromBytes(Uint8List source) {
+    final buffer = ByteReader.view(source);
+
+    // read byte order
+    final endian = _readByteOrder(buffer);
+
+    // read geometry type (as specified by the WKBGeometryType enum)
+    final typeId = buffer.readUint32(endian);
+
+    // resolve coordinate type from WKB id
+    return Coords.fromWkbId(typeId);
+  }
+}
+
+Endian _readByteOrder(ByteReader buffer) {
+  final byteOrder = buffer.readInt8();
+  switch (byteOrder) {
+    // wkbXDR (= 0 // Big Endian) value of the WKBByteOrder enum
+    case 0:
+      return Endian.big;
+    // wkbNDR (= 1 // Little Endian) value of the WKBByteOrder enum
+    case 1:
+      return Endian.little;
+    default:
+      throw const FormatException('Invalid byte order (endian)');
+  }
 }
 
 class _WkbGeometryBufferDecoder {
@@ -61,7 +88,7 @@ class _WkbGeometryBufferDecoder {
 
   void _buildGeometry() {
     // read byte order
-    final endian = _readByteOrder();
+    final endian = _readByteOrder(buffer);
 
     // read geometry type (as specified by the WKBGeometryType enum)
     final typeId = buffer.readUint32(endian);
@@ -183,20 +210,6 @@ class _WkbGeometryBufferDecoder {
     }
   }
 
-  Endian _readByteOrder() {
-    final byteOrder = buffer.readInt8();
-    switch (byteOrder) {
-      // wkbXDR (= 0 // Big Endian) value of the WKBByteOrder enum
-      case 0:
-        return Endian.big;
-      // wkbNDR (= 1 // Little Endian) value of the WKBByteOrder enum
-      case 1:
-        return Endian.little;
-      default:
-        throw const FormatException('Invalid byte order (endian)');
-    }
-  }
-
   Coords _readCoordTypeAndExpectGeomType(Geom expectGeomType, Endian endian) {
     // read geometry type (as specified by the WKBGeometryType enum)
     final typeId = buffer.readUint32(endian);
@@ -261,7 +274,7 @@ class _WkbGeometryBufferDecoder {
         numPoints,
         (_) {
           // read byte order + type, expect point geom, and return coord type
-          final pointEndian = _readByteOrder();
+          final pointEndian = _readByteOrder(buffer);
           final pointCoordType = _readCoordTypeAndExpectGeomType(
             Geom.point,
             pointEndian,
@@ -341,7 +354,7 @@ class _WkbGeometryBufferDecoder {
         numLineStrings,
         (_) {
           // read byte order + type, expect line string, and return coord type
-          final lineStringEndian = _readByteOrder();
+          final lineStringEndian = _readByteOrder(buffer);
           final lineStringCoordType = _readCoordTypeAndExpectGeomType(
             Geom.lineString,
             lineStringEndian,
@@ -386,7 +399,7 @@ class _WkbGeometryBufferDecoder {
         numPolygons,
         (_) {
           // read byte order + type, expect polygon, and return coord type
-          final polygonEndian = _readByteOrder();
+          final polygonEndian = _readByteOrder(buffer);
           final polygonCoordType = _readCoordTypeAndExpectGeomType(
             Geom.polygon,
             polygonEndian,

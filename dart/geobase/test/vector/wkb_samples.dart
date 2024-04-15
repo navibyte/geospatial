@@ -1,3 +1,5 @@
+import 'package:geobase/coordinates.dart';
+
 // ignore_for_file: lines_longer_than_80_chars
 
 const wkbGeometries = [
@@ -15,12 +17,14 @@ const wkbGeometries = [
     'POLYGON((0 0,0 1,1 1,1 0,0 0))',
     0,
     false,
+    Coords.xy,
   ],
   [
     '000000000300000001000000050000000000000000000000000000000000000000000000003ff00000000000003ff00000000000003ff00000000000003ff0000000000000000000000000000000000000000000000000000000000000',
     'POLYGON((0 0,0 1,1 1,1 0,0 0))',
     0,
     false,
+    Coords.xy,
   ],
 
   // sample data (HEXEWKB) from
@@ -31,12 +35,14 @@ const wkbGeometries = [
     'POLYGON((0 0,0 1,1 1,1 0,0 0))',
     4326,
     true,
+    Coords.xy,
   ],
   [
     '0020000003000010e600000001000000050000000000000000000000000000000000000000000000003ff00000000000003ff00000000000003ff00000000000003ff0000000000000000000000000000000000000000000000000000000000000',
     'POLYGON((0 0,0 1,1 1,1 0,0 0))',
     4326,
     true,
+    Coords.xy,
   ],
 
   // sample data (HEXEWKB) from
@@ -46,6 +52,7 @@ const wkbGeometries = [
     'POINT(0 0)',
     4,
     true,
+    Coords.xy,
   ],
 
   // sample data (HEXEWKB) from
@@ -55,12 +62,14 @@ const wkbGeometries = [
     'POINT(-123 34)',
     4267,
     true,
+    Coords.xy,
   ],
   [
     '0101000020E6100000B8A1164EC5725140D1650CC83FB83840',
     'POINT(69.79329254350785 24.719723227526462)',
     4326,
     true,
+    Coords.xy,
   ],
 
   // WKT sample data from "wkt_samples.dart" and converted to HEXEWKB using
@@ -70,42 +79,49 @@ const wkbGeometries = [
     'POINT(10.1 20.2)',
     0,
     false,
+    Coords.xy,
   ],
   [
     '0102000000030000003333333333332440333333333333244033333333333334403333333333333440cdcccccccc4c3e40cdcccccccc4c3e40',
     'LINESTRING(10.1 10.1,20.2 20.2,30.3 30.3)',
     0,
     false,
+    Coords.xy,
   ],
   [
     '010300000001000000050000003333333333332440333333333333244033333333333334403333333333332440333333333333344033333333333334403333333333332440333333333333344033333333333324403333333333332440',
     'POLYGON((10.1 10.1,20.2 10.1,20.2 20.2,10.1 20.2,10.1 10.1))',
     0,
     false,
+    Coords.xy,
   ], //
   [
     '0104000000030000000101000000333333333333244033333333333324400101000000333333333333344033333333333334400101000000cdcccccccc4c3e40cdcccccccc4c3e40',
     'MULTIPOINT(10.1 10.1,20.2 20.2,30.3 30.3)',
     0,
     false,
+    Coords.xy,
   ],
   [
     '01050000000100000001020000000500000000000000008041400000000000002440000000000080464000000000008046400000000000002e4000000000000044400000000000002440000000000000344000000000008041400000000000002440',
     'MULTILINESTRING((35 10,45 45,15 40,10 20,35 10))',
     0,
     false,
+    Coords.xy,
   ],
   [
     '0106000000010000000103000000010000000500000000000000008041400000000000002440000000000080464000000000008046400000000000002e4000000000000044400000000000002440000000000000344000000000008041400000000000002440',
     'MULTIPOLYGON(((35 10,45 45,15 40,10 20,35 10)))',
     0,
     false,
+    Coords.xy,
   ],
   [
     '0107000000030000000101000000333333333333244033333333333334400101000000333333333333244033333333333334400102000000030000003333333333332440333333333333244033333333333334403333333333333440cdcccccccc4c3e40cdcccccccc4c3e40',
     'GEOMETRYCOLLECTION(POINT(10.1 20.2),POINT(10.1 20.2),LINESTRING(10.1 10.1,20.2 20.2,30.3 30.3))',
     0,
     false,
+    Coords.xy,
   ],
 
   // EKWB flag variations
@@ -116,6 +132,7 @@ const wkbGeometries = [
     'POINT(10.1 20.2)',
     0,
     false,
+    Coords.xy,
   ],
   [
     // xyz without srid
@@ -124,6 +141,7 @@ const wkbGeometries = [
     'POINT Z(10.1 20.2 10.1)',
     0,
     true,
+    Coords.xyz,
   ],
   [
     // xym without srid
@@ -132,6 +150,7 @@ const wkbGeometries = [
     'POINT M(10.1 20.2 20.2)',
     0,
     true,
+    Coords.xym,
   ],
   [
     // xyzm without srid
@@ -140,6 +159,7 @@ const wkbGeometries = [
     'POINT ZM(10.1 20.2 10.1 20.2)',
     0,
     true,
+    Coords.xyzm,
   ],
   [
     // xy with srid
@@ -148,6 +168,7 @@ const wkbGeometries = [
     'POINT(10.1 20.2)',
     4326,
     true,
+    Coords.xy,
   ],
   [
     // xyz with srid
@@ -156,6 +177,7 @@ const wkbGeometries = [
     'POINT Z(10.1 20.2 10.1)',
     4326,
     true,
+    Coords.xyz,
   ],
   [
     // xym with srid
@@ -164,6 +186,7 @@ const wkbGeometries = [
     'POINT M(10.1 20.2 20.2)',
     4326,
     true,
+    Coords.xym,
   ],
   [
     // xyzm with srid
@@ -172,5 +195,6 @@ const wkbGeometries = [
     'POINT ZM(10.1 20.2 10.1 20.2)',
     4326,
     true,
+    Coords.xyzm,
   ],
 ];
