@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -41,13 +41,28 @@ class _WktGeometryTextDecoder implements ContentDecoder {
   void decodeData(dynamic source) => decodeText(source.toString());
 
   void _parseGeometry(String text, GeometryContent builder) {
+    // ignore any SRID prefixed on a geometry representation (EWKT)
+    // (https://github.com/postgis/postgis/blob/2.1.0/doc/ZMSgeoms.txt)
+    final String cleaned;
+    if (text.startsWith('SRID')) {
+      final sep = text.indexOf(';');
+      if (sep > 0 && sep + 1 < text.length) {
+        cleaned = text.substring(sep + 1).trim();
+      } else {
+        throw _invalidWkt(text);
+      }
+    } else {
+      cleaned = text;
+    }
+
+    // parse a geometry from WKT text
     for (var type = 0; type < _types.length; type++) {
-      if (text.startsWith(_types[type])) {
+      if (cleaned.startsWith(_types[type])) {
         var i = _types[type].length;
         var expectM = false;
         var expectZ = false;
-        while (i < text.length) {
-          final c = text[i];
+        while (i < cleaned.length) {
+          final c = cleaned[i];
           switch (c) {
             case 'M':
               expectM = true;
@@ -56,7 +71,7 @@ class _WktGeometryTextDecoder implements ContentDecoder {
               expectZ = true;
               break;
             case 'E':
-              if (text.startsWith('EMPTY', i)) {
+              if (cleaned.startsWith('EMPTY', i)) {
                 switch (type) {
                   case 0: // POINT
                     builder.emptyGeometry(Geom.point);
@@ -84,9 +99,10 @@ class _WktGeometryTextDecoder implements ContentDecoder {
                 throw _invalidWkt(text);
               }
             case '(':
-              if (text[text.length - 1] == ')') {
-                final data = text.substring(i + 1, text.length - 1);
-                final coordsType = _coordType(expectZ, expectM);
+              if (cleaned[cleaned.length - 1] == ')') {
+                final data = cleaned.substring(i + 1, cleaned.length - 1);
+                final coordsType =
+                    _parseCoordType(data, _coordType(expectZ, expectM));
                 switch (type) {
                   case 0: // POINT
                     builder.point(
@@ -138,6 +154,41 @@ class _WktGeometryTextDecoder implements ContentDecoder {
       }
     }
     throw _invalidWkt(text);
+  }
+
+  Coords _parseCoordType(String data, Coords expected) {
+    if (expected == Coords.xy) {
+      // Should analyze:
+      //  "POINT(1 2)" ==> Coords.xy
+      //  "POINT(1 2 3)" ==> Coords.xyz
+      //  "POINT(1 2 3 4)" ==> Coords.xyzm
+      //  "POLYGON((35 10,45 45,15 40,10 20,35 10))" ==> Coords.xy
+      //  "POLYGON((35 10 2,45 45 2,15 40 2,10 20 2,35 10 2))" ==> Coords.xyz
+      //  "POLYGON((35 10 2 3,45 45 2 3,15 40 2 3,10 20 2 3,35 10 2 3))" => xyzm
+
+      var str = data;
+      final epi = str.indexOf(')');
+      if (epi != -1) {
+        str = str.substring(0, epi);
+        final spi = str.lastIndexOf('(');
+        if (spi != -1 && spi + 1 < str.length) {
+          str = str.substring(spi + 1);
+        }
+      }
+      final ci = str.indexOf(',');
+      if (ci != -1) {
+        str = str.substring(0, ci);
+      }
+
+      final coordValues = str.trim().split(_splitByWhitespace);
+      final len = coordValues.length;
+      if (len == 3) {
+        return Coords.xyz;
+      } else if (len == 4) {
+        return Coords.xyzm;
+      }
+    }
+    return expected;
   }
 
   /// Parses a position from [text] with coordinates separated by white space.

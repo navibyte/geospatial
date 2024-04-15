@@ -14,6 +14,8 @@ NOTE: Version 1.1.0 currently under development (1.1.0-dev.0).
   * Support encoding SRID to EWKB binary data.
   * Utilities to decode a byte order, a WKB flavor and SRID from WKB bytes.
   * A sample for decoding and encoding EWKB binary data.
+* [Add EWKT support](https://github.com/navibyte/geospatial/issues/29)
+  * Support decoding also EWKT data (ignoring an optional srid).
 
 ## 1.0.2
 
