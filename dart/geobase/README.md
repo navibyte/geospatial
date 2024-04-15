@@ -1247,6 +1247,43 @@ Such format encoders (and formatting without geometry objects) are suppported
 also for GeoJSON. However for both WKT and GeoJSON encoding might be easier
 using concrete geometry model objects.
 
+### EWKT
+
+A PostGIS-specific variation of WKT is called Extended WKT (EWKT). See the
+[specification](https://github.com/postgis/postgis/blob/2.1.0/doc/ZMSgeoms.txt).
+
+Decoding EWKT text strings is supported:
+
+```dart
+  const wktPoints = [
+    /// A 2D point represented as WKT text.
+    'POINT(-0.0014 51.4778)',
+
+    /// A 3D point represented as WKT text.
+    'POINT Z(-0.0014 51.4778 45)',
+
+    /// A 3D point with SRID represented as EWKT text.
+    'SRID=4326;POINT(-0.0014 51.4778 45)',
+
+    /// A measured point represented as EWKT text.
+    'POINTM(-0.0014 51.4778 100.0)',
+  ];
+
+  // decode SRID, s coordType and a point geometry (with a position) from input
+  for (final p in wktPoints) {
+    final srid = WKT.decodeSRID(p);
+    final coordType = WKT.decodeCoordType(p);
+    final pos = Point.parse(p, format: WKT.geometry).position;
+    print('$srid $coordType ${pos.x} ${pos.y} ${pos.optZ} ${pos.optM}');
+  }
+
+  // the previous sample prints:
+  //   null Coords.xy -0.0014 51.4778 null null
+  //   null Coords.xyz -0.0014 51.4778 45.0 null
+  //   4326 Coords.xyz -0.0014 51.4778 45.0 null
+  //   null Coords.xym -0.0014 51.4778 null 100.0
+```
+
 ### WKB
 
 The `WKB` class provides encoders and decoders for

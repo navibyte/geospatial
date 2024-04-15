@@ -54,6 +54,7 @@ void main() {
   _geoJsonWithDefaultCRS();
   _geoJsonWithAlternativeCRS();
   _wkt();
+  _ewkt();
   _wkbSample1();
   _wkbSample2();
   _ewkbSample();
@@ -997,6 +998,36 @@ void _wkt() {
     [10.123, 20.25, -30.95, -1.999].xyzm,
   );
   print(encoder.toText());
+}
+
+void _ewkt() {
+  const wktPoints = [
+    /// A 2D point represented as WKT text.
+    'POINT(-0.0014 51.4778)',
+
+    /// A 3D point represented as WKT text.
+    'POINT Z(-0.0014 51.4778 45)',
+
+    /// A 3D point with SRID represented as EWKT text.
+    'SRID=4326;POINT(-0.0014 51.4778 45)',
+
+    /// A measured point represented as EWKT text.
+    'POINTM(-0.0014 51.4778 100.0)',
+  ];
+
+  // decode SRID, s coordType and a point geometry (with a position) from input
+  for (final p in wktPoints) {
+    final srid = WKT.decodeSRID(p);
+    final coordType = WKT.decodeCoordType(p);
+    final pos = Point.parse(p, format: WKT.geometry).position;
+    print('$srid $coordType ${pos.x} ${pos.y} ${pos.optZ} ${pos.optM}');
+  }
+
+  // the previous sample prints:
+  //   null Coords.xy -0.0014 51.4778 null null
+  //   null Coords.xyz -0.0014 51.4778 45.0 null
+  //   4326 Coords.xyz -0.0014 51.4778 45.0 null
+  //   null Coords.xym -0.0014 51.4778 null 100.0
 }
 
 void _wkbSample1() {

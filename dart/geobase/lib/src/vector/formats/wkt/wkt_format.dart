@@ -95,8 +95,8 @@ class WKT {
     return null; // unknown
   }
 
-  /// Decodes a coordinate dimension from [text] representing Extended WKT
-  /// (EWKT) data.
+  /// Decodes a coordinate type from [text] representing Extended WKT (EWKT)
+  /// data.
   ///
   /// Examples:
   ///
