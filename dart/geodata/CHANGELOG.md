@@ -1,4 +1,8 @@
-## 1.0.0+1
+## 1.1.0
+
+[geodata release 1.1.0](https://github.com/navibyte/geospatial/milestone/1)
+
+NOTE: Version 1.1.0 currently under development (1.1.0-dev.0).
 
 🛠 Maintenance:
 * Adding trailing commas to avoid "Missing a required trailing comma" message.
