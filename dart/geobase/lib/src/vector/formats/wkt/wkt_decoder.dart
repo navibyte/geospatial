@@ -41,6 +41,9 @@ class _WktGeometryTextDecoder implements ContentDecoder {
   void decodeData(dynamic source) => decodeText(source.toString());
 
   void _parseGeometry(String text, GeometryContent builder) {
+    // the method "_parseDimension" is adapted from this method
+    // so if this method changes, that should be re-adapated also!
+
     // ignore any SRID prefixed on a geometry representation (EWKT)
     // (https://github.com/postgis/postgis/blob/2.1.0/doc/ZMSgeoms.txt)
     final String cleaned;
@@ -156,7 +159,63 @@ class _WktGeometryTextDecoder implements ContentDecoder {
     throw _invalidWkt(text);
   }
 
-  Coords _parseCoordType(String data, Coords expected) {
+  static Coords _parseCoordTypeFrom(String source) {
+    // this method is adapted from the "_parseGeometry" method above
+    // so if that method changes, this should be re-adapated also!
+
+    final text = source.trim().toUpperCase();
+
+    final String cleaned;
+    if (text.startsWith('SRID')) {
+      final sep = text.indexOf(';');
+      if (sep > 0 && sep + 1 < text.length) {
+        cleaned = text.substring(sep + 1).trim();
+      } else {
+        throw _invalidWkt(text);
+      }
+    } else {
+      cleaned = text;
+    }
+
+    for (var type = 0; type < _types.length; type++) {
+      if (cleaned.startsWith(_types[type])) {
+        var i = _types[type].length;
+        var expectM = false;
+        var expectZ = false;
+        while (i < cleaned.length) {
+          final c = cleaned[i];
+          switch (c) {
+            case 'M':
+              expectM = true;
+              break;
+            case 'Z':
+              expectZ = true;
+              break;
+            case 'E':
+              if (cleaned.startsWith('EMPTY', i)) {
+                return Coords.xy;
+              } else {
+                throw _invalidWkt(text);
+              }
+            case '(':
+              if (cleaned[cleaned.length - 1] == ')') {
+                final data = cleaned.substring(i + 1, cleaned.length - 1);
+                return _parseCoordType(data, _coordType(expectZ, expectM));
+              } else {
+                throw _invalidWkt(text);
+              }
+            default:
+              if (!_isBlank(c)) throw _invalidWkt(text);
+          }
+          i++;
+        }
+        break;
+      }
+    }
+    throw _invalidWkt(text);
+  }
+
+  static Coords _parseCoordType(String data, Coords expected) {
     if (expected == Coords.xy) {
       // Should analyze:
       //  "POINT(1 2)" ==> Coords.xy

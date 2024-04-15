@@ -16,6 +16,7 @@ NOTE: Version 1.1.0 currently under development (1.1.0-dev.0).
   * A sample for decoding and encoding EWKB binary data.
 * [Add EWKT support](https://github.com/navibyte/geospatial/issues/29)
   * Support decoding also EWKT data (ignoring an optional srid).
+  * Utilities to decode a coordinate type and SRID from WKT text.
 
 ## 1.0.2
 

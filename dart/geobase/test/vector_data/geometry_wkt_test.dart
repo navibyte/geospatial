@@ -6,6 +6,7 @@
 
 // ignore_for_file: lines_longer_than_80_chars, avoid_redundant_argument_values
 
+import 'package:geobase/coordinates.dart';
 import 'package:geobase/vector.dart';
 import 'package:geobase/vector_data.dart';
 
@@ -19,6 +20,8 @@ void main() {
       for (final test in wktGeometries2) {
         final input = test[0] as List<String>;
         final geom = test[1] as Geometry;
+        final srid = test[2] as int?;
+        final dim = test[3] as Coords;
 
         for (final wkt in input) {
           const spaces = [' (', '( ', '   (  ', '(  '];
@@ -30,13 +33,18 @@ void main() {
               DefaultFormat.geometry,
             ];
             for (final format in formats) {
+              final source = wkt.replaceAll('(', sp);
               expect(
                 GeometryBuilder.parse(
-                  wkt.replaceAll('(', sp),
+                  source,
                   format: WKT.geometry,
                 ).toText(format: format),
                 geom.toText(format: format),
               );
+              if (srid != null && source.contains('SRID')) {
+                expect(WKT.decodeSRID(source), srid);
+              }
+              expect(WKT.decodeCoordType(source), dim);
             }
           }
         }

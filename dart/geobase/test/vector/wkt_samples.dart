@@ -44,20 +44,28 @@ final wktGeometries2 = [
   [
     ['POINT(-44.3 60.1)', 'SRID=4326;POINT(-44.3 60.1)'],
     Point([-44.3, 60.1].xy),
+    4326,
+    Coords.xy,
   ],
 
   // https://github.com/postgis/postgis/blob/2.1.0/doc/ZMSgeoms.txt
   [
     ['POINT(1 2)', 'SRID=4326;POINT(1 2)'],
     Point([1.0, 2.0].xy),
+    4326,
+    Coords.xy,
   ],
   [
     ['POINT Z(1 2 3)', 'POINT(1 2 3)', 'SRID=4326;POINT(1 2 3)'],
     Point([1.0, 2.0, 3.0].xyz),
+    4326,
+    Coords.xyz,
   ],
   [
     ['POINT M(1 2 3)', 'POINTM(1 2 3)', 'SRID=4326;POINTM(1 2 3)'],
     Point([1.0, 2.0, 3.0].xym),
+    4326,
+    Coords.xym,
   ],
   [
     [
@@ -67,6 +75,8 @@ final wktGeometries2 = [
       ' SRID   =   4326  ;   POINT    ( 1    2    3      4   )     ',
     ],
     Point([1.0, 2.0, 3.0, 4.0].xyzm),
+    4326,
+    Coords.xyzm,
   ],
   [
     [
@@ -87,6 +97,8 @@ final wktGeometries2 = [
         ),
       ],
     ),
+    4326,
+    Coords.xym,
   ],
 
   // https://postgis.net/docs/using_postgis_dbmanagement.html#EWKB_EWKT
@@ -98,6 +110,8 @@ final wktGeometries2 = [
         [1.0, 2.0, 1.0].xym,
       ],
     ),
+    4326,
+    Coords.xym,
   ],
 
   // https://postgis.net/docs/ST_GeomFromEWKT.html
@@ -113,6 +127,8 @@ final wktGeometries2 = [
         //
       ].positions(),
     ),
+    4269,
+    Coords.xy,
   ],
   [
     [
@@ -220,5 +236,7 @@ final wktGeometries2 = [
         ],
       ],
     ),
+    4269,
+    Coords.xy,
   ],
 ];

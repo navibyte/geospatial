@@ -65,6 +65,50 @@ class WKT {
 
   /// The WKT text format (encoding and decoding) for geometry objects.
   static const TextFormat<GeometryContent> geometry = _WktGeometryTextFormat();
+
+  /// Decodes an optional SRID from [text] representing Extended WKT (EWKT)
+  /// data.
+  ///
+  /// Returns null if SRID is not available.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // this sample decodes `4326` from the given EWKT string
+  /// WKT.decodeSRID('SRID=4326;POINT(-0.0014 51.4778 45)');
+  /// ```
+  static int? decodeSRID(String text) {
+    final upper = text.toUpperCase();
+    var start = upper.indexOf('SRID');
+    if (start != -1) {
+      final len = upper.length;
+      if (start + 4 < len) {
+        start = upper.indexOf('=', start + 4);
+        if (start != -1 && start + 1 < len) {
+          final sep = text.indexOf(';', start + 1);
+          if (sep != -1) {
+            return int.tryParse(text.substring(start + 1, sep).trim());
+          }
+        }
+      }
+    }
+    return null; // unknown
+  }
+
+  /// Decodes a coordinate dimension from [text] representing Extended WKT
+  /// (EWKT) data.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // this sample decodes `Coords.xyz` from the given EWKT string
+  /// WKT.decodeCoordType('SRID=4326;POINT(-0.0014 51.4778 45)');
+  ///
+  /// // this sample decodes `Coords.xym` from the given EWKT string
+  /// WKT.decodeCoordType('SRID=4326;POINTM(-0.0014 51.4778 100.0)');
+  /// ```
+  static Coords decodeCoordType(String text) =>
+      _WktGeometryTextDecoder._parseCoordTypeFrom(text);
 }
 
 class _WktGeometryTextFormat with TextFormat<GeometryContent> {
