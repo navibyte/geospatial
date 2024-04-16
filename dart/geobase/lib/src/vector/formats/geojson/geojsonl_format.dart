@@ -29,9 +29,27 @@ part of 'geojson_format.dart';
 /// * GDAL: [GeoJSONSeq: sequence of GeoJSON features](https://gdal.org/drivers/vector/geojsonseq.html)
 /// * Interline: [Even more geospatial tools supporting the "GeoJSONL" format](https://www.interline.io/blog/here-cli-supports-geojsonl/)
 /// * Steve Bennet: [Newline-delimited GeoJSON](https://stevage.github.io/ndgeojson/)
+/// * [JSON Lines](https://jsonlines.org/)
+/// * [JSON Lines format: Why jsonl is what you need for data streams?](https://dbconvert.com/blog/json-lines-data-stream/)
+/// * [JavaScript Object Notation (JSON) Text Sequences](https://tools.ietf.org/html/rfc7464)
 ///
 /// See also the [GeoJSON] format for traditional GeoJSON decoding / encoding.
 class GeoJSONL {
+  /// The content type (`application/x-ndjson`) for "Newline delimited JSON"
+  /// by the specification
+  /// [NDJSON - Newline delimited JSON](https://github.com/ndjson/ndjson-spec).
+  static const contentTypeNDJSON = 'application/x-ndjson';
+
+  /// The content type (`application/geo+json-seq`) for GeoJSON Text Sequences
+  /// by [RFC 8142](https://tools.ietf.org/html/rfc8142).
+  static const contentTypeGeoJSONSeq = 'application/geo+json-seq';
+
+  /// The content type (`application/json-seq`) for JSON Text Sequences
+  /// by [RFC 7464](https://tools.ietf.org/html/rfc7464).
+  static const contentTypeJSONSeq = 'application/json-seq';
+
+  // application/jsonl
+
   /// The newline-delimited GeoJSON text format (encoding and decoding) for
   /// feature objects.
   static const TextFormat<FeatureContent> feature =

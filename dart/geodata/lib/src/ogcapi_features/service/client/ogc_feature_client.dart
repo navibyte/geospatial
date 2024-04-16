@@ -120,7 +120,7 @@ class OGCAPIFeatures {
 
 // JSON content types
 const _contentTypeJSON = 'application/json';
-const _contentTypeGeoJSON = 'application/geo+json';
+const _contentTypeGeoJSON = GeoJSON.contentType;
 const _contentTypeJSONSchema = 'application/schema+json';
 
 // collection items of geospatial features (actual data)

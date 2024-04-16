@@ -37,6 +37,10 @@ class GeoJSONFeatures {
   /// When given [headers] are injected to http requests (however some can be
   /// overridden by the feature source implementation).
   ///
+  /// Use [contentTypes] to provide a list of accepted content types used when
+  /// accessing a web resource. If not given then
+  /// `['application/geo+json', 'application/json']` is used as a default.
+  ///
   /// When [format] is not given, then [GeoJSON] with default settings is used
   /// as a default. Note that currently only [GeoJSON] and [GeoJSONL] format are
   /// tested, but it's possible to inject other format implementations too (or
@@ -48,6 +52,7 @@ class GeoJSONFeatures {
     required Uri location,
     Client? client,
     Map<String, String>? headers,
+    List<String>? contentTypes,
     TextReaderFormat<FeatureContent> format = GeoJSON.feature,
     CoordRefSys? crs,
   }) =>
@@ -57,6 +62,7 @@ class GeoJSONFeatures {
           client: client,
           headers: headers,
         ),
+        contentTypes: contentTypes ?? [GeoJSON.contentType, 'application/json'],
         format: format,
         crs: crs,
       );
@@ -80,6 +86,7 @@ class GeoJSONFeatures {
   }) =>
       _GeoJSONFeatureSource(
         source,
+        contentTypes: [GeoJSON.contentType, 'application/json'],
         format: format,
         crs: crs,
       );
@@ -93,6 +100,7 @@ class _GeoJSONFeatureSource implements BasicFeatureSource {
   const _GeoJSONFeatureSource(
     this.source, {
     this.adapter,
+    required this.contentTypes,
     required this.format,
     this.crs,
   });
@@ -104,6 +112,9 @@ class _GeoJSONFeatureSource implements BasicFeatureSource {
 
   // for a web resource adapter must be set
   final FeatureHttpAdapter? adapter;
+
+  // content types for accept and to be checked
+  final List<String> contentTypes;
 
   final TextReaderFormat<FeatureContent> format;
 
@@ -150,6 +161,10 @@ class _GeoJSONFeatureSource implements BasicFeatureSource {
       return adapter!.getEntityFromText(
         src,
         toEntity: (text, _) => _parseFeatureItems(limit, text, format, crs),
+        headers: {
+          'accept': contentTypes.join(', '),
+        },
+        expect: contentTypes,
       );
     } else if (src is Future<String> Function()) {
       // read a future returned by a function

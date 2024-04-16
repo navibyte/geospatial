@@ -165,6 +165,10 @@ class GeoJsonConf with EquatableMixin {
 /// See also the [GeoJSONL] format for decoding and encoding GeoJSON features
 /// in a text sequence with features delimited by line feeds.
 class GeoJSON {
+  /// The content type (`application/geo+json`) for GeoJSON by
+  /// [RFC 7946](https://tools.ietf.org/html/rfc7946).
+  static const contentType = 'application/geo+json';
+
   /// The GeoJSON text format (encoding only) for coordinate objects.
   static const TextWriterFormat<CoordinateContent> coordinate =
       TextWriterFormatImplConf(GeoJsonTextWriter.new);
