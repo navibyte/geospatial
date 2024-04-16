@@ -19,7 +19,10 @@ part of 'geojson_format.dart';
 /// * a record-separator (RS) character, see
 ///   [RFC 8142 standard: GeoJSON Text Sequences](https://tools.ietf.org/html/rfc8142)
 ///
-/// For encoding this implementation uses newline (LF) character as a delimiter.
+/// For encoding this implementation uses newline (LF) character as a delimiter
+/// by default. To customize encoder output you can use `options` named
+/// `GeoJSONL.delimiterBefore` and `GeoJSONL.delimiterAfter` taking values of
+/// `String?`.
 ///
 /// Other references:
 /// * [NDJSON - Newline delimited JSON](https://github.com/ndjson/ndjson-spec)
@@ -65,10 +68,11 @@ class _GeoJsonLFeatureTextFormat with TextFormat<FeatureContent> {
     CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) =>
-      GeoJsonTextWriter(
+      _GeoJsonLFeatureTexEncoder(
         buffer: buffer,
         decimals: decimals,
         crs: crs,
+        options: options,
         conf: conf,
       );
 }
@@ -196,3 +200,82 @@ bool _isLineSeparator(String s) =>
     s == '\r' ||
     // record separator (RS) - 0x1E
     s == '\u{1e}';
+
+class _GeoJsonLFeatureTexEncoder
+    with FeatureContent
+    implements ContentEncoder<FeatureContent> {
+  final int? decimals;
+  final CoordRefSys? crs;
+  final GeoJsonConf? conf;
+
+  late final StringSink _buffer;
+  late final String? _delimiterBefore;
+  late final String _delimiterAfter;
+
+  _GeoJsonLFeatureTexEncoder({
+    StringSink? buffer,
+    this.decimals,
+    this.crs,
+    Map<String, dynamic>? options,
+    this.conf,
+  }) {
+    _buffer = buffer ?? StringBuffer();
+
+    // by default no delimiter before a feature text, but `\n` after a feature
+    final o = options;
+    _delimiterBefore =
+        o != null ? o['GeoJSONL.delimiterBefore'] as String? : null;
+    _delimiterAfter =
+        (o != null ? o['GeoJSONL.delimiterAfter'] as String? : null) ?? '\n';
+  }
+
+  @override
+  FeatureContent get writer => this;
+
+  @override
+  void featureCollection(
+    WriteFeatures features, {
+    int? count,
+    Box? bounds,
+    Map<String, dynamic>? custom,
+  }) {
+    features.call(this);
+  }
+
+  @override
+  void feature({
+    Object? id,
+    WriteGeometries? geometry,
+    Map<String, dynamic>? properties,
+    Box? bounds,
+    Map<String, dynamic>? custom,
+  }) {
+    if (_delimiterBefore != null) {
+      _buffer.write(_delimiterBefore);
+    }
+
+    GeoJsonTextWriter<FeatureContent>(
+      buffer: _buffer,
+      decimals: decimals,
+      crs: crs,
+      conf: conf,
+    ).feature(
+      id: id,
+      geometry: geometry,
+      properties: properties,
+      bounds: bounds,
+      custom: custom,
+    );
+
+    _buffer.write(_delimiterAfter);
+  }
+
+  @override
+  Uint8List toBytes() => Uint8List.fromList(utf8.encode(toText()));
+
+  @override
+  String toText() => _buffer.toString();
+
+  @override
+  String toString() => toText();
+}

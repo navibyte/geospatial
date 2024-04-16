@@ -14,16 +14,17 @@ import '../vector/geojson_samples.dart';
 void main() {
   group('Features on GeoJSONL', () {
     const lineSeparators = [
-      ['', '\n'],
-      ['', '\r\n'],
-      ['', '\n\r'],
+      [null, '\n'],
+      [null, '\r\n'],
+      [null, '\n\r'],
       ['\u{1e}', '\n'],
       ['\u{1e}', '\r\n'],
       [' ', ' \n'],
       ['\t', '\t\n'],
+      ['\n', '\r\n \t \n'],
     ];
 
-    test('Decoding from GeoJSONL', () {
+    test('Decoding and encoding from GeoJSONL', () {
       final expectedFeatureCollection = '{"type":"FeatureCollection",'
           '"features":[${geoJsonFeatures.join(',')}]}';
       final expectedFeatureCollectionFrom2 = '{"type":"FeatureCollection",'
@@ -36,10 +37,13 @@ void main() {
         // create test GeoJSONL text with given separators
         final buf = StringBuffer();
         for (final featureJson in geoJsonFeatures) {
-          buf
-            ..write(sep[0])
-            ..write(featureJson)
-            ..write(sep[1]);
+          if (sep[0] != null) {
+            buf.write(sep[0]);
+          }
+          buf.write(featureJson);
+          if (sep[1] != null) {
+            buf.write(sep[1]);
+          }
         }
         final source = buf.toString();
 
@@ -79,6 +83,28 @@ void main() {
           options: {'itemOffset': 2},
         );
         expect(f2.toString(), geoJsonFeatures[2]);
+
+        // encode a feature collection to GeoJSONL text
+
+        final encodeOptions = !(sep[0] == null && sep[1] == '\n')
+            ? {
+                'GeoJSONL.delimiterBefore': sep[0],
+                'GeoJSONL.delimiterAfter': sep[1],
+              }
+            : null;
+        final fcOutput = fc.toText(
+          format: GeoJSONL.feature,
+          options: encodeOptions,
+        );
+        expect(fcOutput, source);
+
+        // encode a single feature to GeoJSONL text
+
+        final f2Output = f2.toText(
+          format: GeoJSONL.feature,
+          options: encodeOptions,
+        );
+        expect(f2Output, '${sep[0] ?? ''}${geoJsonFeatures[2]}${sep[1] ?? ''}');
       }
     });
   });
