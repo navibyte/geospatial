@@ -6,18 +6,20 @@
 
 part of 'geojson_format.dart';
 
-/// The GeoJSON Text Sequences (or "Newline-delimited GeoJSON") text format for
+/// The newline-delimited GeoJSON (or "GeoJSON Text Sequences") text format for
 /// [feature] objects.
 ///
 /// Supports a text file with each line containing exactly one feature. Features
 /// are delimited by line feeds, not commas. A text file represents a feature
 /// collection, but no "FeatureCollection" element is encoded.
 ///
-/// Features in a sequence can be separated by:
+/// Features in a sequence can be separated by (supported when decoding):
 /// * a newline (LF) character, see
 ///   [Newline Delimited JSON](http://ndjson.org/)
 /// * a record-separator (RS) character, see
 ///   [RFC 8142 standard: GeoJSON Text Sequences](https://tools.ietf.org/html/rfc8142)
+///
+/// For encoding this implementation uses newline (LF) character as a delimiter.
 ///
 /// Other references:
 /// * [NDJSON - Newline delimited JSON](https://github.com/ndjson/ndjson-spec)
@@ -26,20 +28,20 @@ part of 'geojson_format.dart';
 /// * Steve Bennet: [Newline-delimited GeoJSON](https://stevage.github.io/ndgeojson/)
 ///
 /// See also the [GeoJSON] format for traditional GeoJSON decoding / encoding.
-class GeoJSONSeq {
-  /// The GeoJSON Text Sequences text format (encoding and decoding) for feature
-  /// objects.
+class GeoJSONL {
+  /// The newline-delimited GeoJSON text format (encoding and decoding) for
+  /// feature objects.
   static const TextFormat<FeatureContent> feature =
-      _GeoJsonSeqFeatureTextFormat();
+      _GeoJsonLFeatureTextFormat();
 
-  /// The GeoJSON Text Sequences text format (encoding and decoding) for feature
-  /// objects with optional [conf].
+  /// The newline-delimited GeoJSON text format (encoding and decoding) for
+  /// feature objects with optional [conf].
   static TextFormat<FeatureContent> featureFormat({GeoJsonConf? conf}) =>
-      _GeoJsonSeqFeatureTextFormat(conf: conf);
+      _GeoJsonLFeatureTextFormat(conf: conf);
 }
 
-class _GeoJsonSeqFeatureTextFormat with TextFormat<FeatureContent> {
-  const _GeoJsonSeqFeatureTextFormat({this.conf});
+class _GeoJsonLFeatureTextFormat with TextFormat<FeatureContent> {
+  const _GeoJsonLFeatureTextFormat({this.conf});
 
   final GeoJsonConf? conf;
 
@@ -49,7 +51,7 @@ class _GeoJsonSeqFeatureTextFormat with TextFormat<FeatureContent> {
     CoordRefSys? crs,
     Map<String, dynamic>? options,
   }) =>
-      _GeoJsonSeqFeatureTextDecoder(
+      _GeoJsonLFeatureTextDecoder(
         builder,
         crs: crs,
         options: options,
@@ -71,7 +73,7 @@ class _GeoJsonSeqFeatureTextFormat with TextFormat<FeatureContent> {
       );
 }
 
-class _GeoJsonSeqFeatureTextDecoder implements ContentDecoder {
+class _GeoJsonLFeatureTextDecoder implements ContentDecoder {
   // NOTE: this is an adapted version of _GeoJsonFeatureTextDecoder located in
   //       geojson_decoder.dart - both have some common code that should be
   //       kept in sync when changing code
@@ -81,7 +83,7 @@ class _GeoJsonSeqFeatureTextDecoder implements ContentDecoder {
   final Map<String, dynamic>? options;
   final GeoJsonConf? conf;
 
-  _GeoJsonSeqFeatureTextDecoder(
+  _GeoJsonLFeatureTextDecoder(
     this.builder, {
     this.crs,
     this.options,
@@ -98,7 +100,7 @@ class _GeoJsonSeqFeatureTextDecoder implements ContentDecoder {
   void decodeData(dynamic source) {
     try {
       // expect source as a list of string objects each containing a feature
-      // (in GeoJSONSeq each feature is separately encoded as GeoJSON)
+      // (in GeoJSONL each feature is separately encoded as GeoJSON)
       final root = source as Iterable<String>;
 
       // swap x and y if CRS has y-x (lat-lon) order (and logic is auth based)
@@ -142,7 +144,7 @@ class _GeoJsonSeqFeatureTextDecoder implements ContentDecoder {
     } catch (err) {
       // Errors might occur when casting invalid data from external sources.
       // We want to throw FormatException to clients however.
-      throw FormatException('Not valid GeoJSONSeq data (error: $err)');
+      throw FormatException('Not valid GeoJSONL data (error: $err)');
     }
   }
 }

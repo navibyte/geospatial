@@ -12,7 +12,7 @@ import 'package:test/test.dart';
 import '../vector/geojson_samples.dart';
 
 void main() {
-  group('Features on GeoJSONSeq', () {
+  group('Features on GeoJSONL', () {
     const lineSeparators = [
       ['', '\n'],
       ['', '\r\n'],
@@ -23,7 +23,7 @@ void main() {
       ['\t', '\t\n'],
     ];
 
-    test('Decoding from GeoJSONSeq', () {
+    test('Decoding from GeoJSONL', () {
       final expectedFeatureCollection = '{"type":"FeatureCollection",'
           '"features":[${geoJsonFeatures.join(',')}]}';
       final expectedFeatureCollectionFrom2 = '{"type":"FeatureCollection",'
@@ -33,7 +33,7 @@ void main() {
           '"features":[${geoJsonFeatures.skip(2).take(2).join(',')}]}';
 
       for (final sep in lineSeparators) {
-        // create test GeoJSONSeq text with given separators
+        // create test GeoJSONL text with given separators
         final buf = StringBuffer();
         for (final featureJson in geoJsonFeatures) {
           buf
@@ -43,39 +43,39 @@ void main() {
         }
         final source = buf.toString();
 
-        // parse a feature collection from GeoJSONSeq text
+        // parse a feature collection from GeoJSONL text
 
         final fc = FeatureCollection.parse(
           source,
-          format: GeoJSONSeq.feature,
+          format: GeoJSONL.feature,
         );
         expect(fc.toString(), expectedFeatureCollection);
 
         final fcFrom2 = FeatureCollection.parse(
           source,
-          format: GeoJSONSeq.feature,
+          format: GeoJSONL.feature,
           options: {'itemOffset': 2},
         );
 
         expect(fcFrom2.toString(), expectedFeatureCollectionFrom2);
         final fcFrom2Limit2 = FeatureCollection.parse(
           source,
-          format: GeoJSONSeq.feature,
+          format: GeoJSONL.feature,
           options: {'itemOffset': 2, 'itemLimit': 2},
         );
         expect(fcFrom2Limit2.toString(), expectedFeatureCollectionFrom2Limit2);
 
-        // parse a single feature from GeoJSONSeq text (get a first one)
+        // parse a single feature from GeoJSONL text (get a first one)
 
         final f0 = Feature.parse(
           source,
-          format: GeoJSONSeq.feature,
+          format: GeoJSONL.feature,
         );
         expect(f0.toString(), geoJsonFeatures.first);
 
         final f2 = Feature.parse(
           source,
-          format: GeoJSONSeq.feature,
+          format: GeoJSONL.feature,
           options: {'itemOffset': 2},
         );
         expect(f2.toString(), geoJsonFeatures[2]);
