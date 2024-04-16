@@ -4,6 +4,9 @@
 
 NOTE: Version 1.1.0 currently under development (1.1.0-dev.0).
 
+🧩 Features:
+* [Support for GeoJSON Text Sequences](https://github.com/navibyte/geospatial/issues/217)
+
 🛠 Maintenance:
 * Adding trailing commas to avoid "Missing a required trailing comma" message.
 

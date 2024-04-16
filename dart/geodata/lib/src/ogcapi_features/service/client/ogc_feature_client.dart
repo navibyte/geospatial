@@ -1,8 +1,10 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
 // Docs: https://github.com/navibyte/geospatial
+
+import 'dart:convert';
 
 import 'package:geobase/common.dart';
 import 'package:geobase/coordinates.dart';
@@ -157,9 +159,11 @@ class _OGCFeatureClientHttp extends OGCClientHttp implements OGCFeatureService {
       _cachedConformance.getAsync(() {
         // fetch data as JSON Object, and parse conformance classes
         final url = resolveSubResource(endpoint, 'conformance');
-        return adapter.getEntityFromJson(
+        return adapter.getEntityFromText(
           url,
-          toEntity: (data, _) {
+          toEntity: (text, _) {
+            final data = json.decode(text);
+
             if (data is Map<String, dynamic>) {
               // standard: root has JSON Object with "conformsTo" containing
               // conformance classes

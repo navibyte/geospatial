@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -54,21 +54,23 @@ class FeatureHttpAdapter {
     Map<String, String>? headers = _acceptJSON,
     List<String>? expect = _expectJSON,
   }) =>
-      getEntityFromJson(
+      getEntityFromText(
         url,
-        toEntity: (data, responseHeaders) =>
-            toEntity(data as Map<String, dynamic>, responseHeaders),
+        toEntity: (text, responseHeaders) {
+          final data = json.decode(text);
+          return toEntity(data as Map<String, dynamic>, responseHeaders);
+        },
         headers: headers,
         expect: expect,
       );
 
   /// Makes `GET` request to [url] with optional [headers].
   ///
-  /// Returns an entity mapped from JSON element using [toEntity].
-  Future<T> getEntityFromJson<T>(
+  /// Returns an entity mapped from body text using [toEntity].
+  Future<T> getEntityFromText<T>(
     Uri url, {
     required T Function(
-      dynamic data,
+      String text,
       Map<String, String> responseHeaders,
     ) toEntity,
     Map<String, String>? headers = _acceptJSON,
@@ -101,11 +103,8 @@ class FeatureHttpAdapter {
             }
           }
 
-          // decode JSON
-          final data = json.decode(response.body);
-
-          // map JSON data to an entity
-          return toEntity(data, response.headers);
+          // map response body text to an entity
+          return toEntity(response.body, response.headers);
         case 302:
           throw const ServiceException(FeatureFailure.found);
         case 303:
