@@ -27,6 +27,7 @@ import '/src/vector/encoding/content_encoder.dart';
 import '/src/vector/encoding/text_format.dart';
 
 part 'geojson_decoder.dart';
+part 'geojson_seq_format.dart';
 
 /// Optional configuration parameters for formatting (and parsing) GeoJSON.
 class GeoJsonConf with EquatableMixin {
@@ -160,6 +161,9 @@ class GeoJsonConf with EquatableMixin {
 /// and whether x and y must be swapped when writing) about coordinate reference
 /// system in text output. When `crs` is available then `crs.swapXY` is used to
 /// determine whether swapping (x/longitude <-> y/latitude) should occur.
+///
+/// See also the [GeoJSONSeq] format for decoding and encoding GeoJSON features
+/// in a text sequence with features delimited by line feeds.
 class GeoJSON {
   /// The GeoJSON text format (encoding only) for coordinate objects.
   static const TextWriterFormat<CoordinateContent> coordinate =

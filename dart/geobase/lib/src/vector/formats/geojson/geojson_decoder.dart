@@ -57,6 +57,10 @@ class _GeoJsonGeometryTextDecoder implements ContentDecoder {
 }
 
 class _GeoJsonFeatureTextDecoder implements ContentDecoder {
+  // NOTE: there is also an adapted version called _GeoJsonSeqFeatureTextDecoder
+  //       located in geojson_seq_format.dart - both have some common code that
+  //       should be kept in sync when changing code
+
   final FeatureContent builder;
   final CoordRefSys? crs;
   final Map<String, dynamic>? options;

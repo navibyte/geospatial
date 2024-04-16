@@ -19,6 +19,7 @@ NOTE: Version 1.1.0 currently under development (1.1.0-dev.0).
   * Support decoding also EWKT data (ignoring an optional srid).
   * Utilities to decode a coordinate type and SRID from WKT text.
   * A sample for decoding EWKT text data.
+* [Support for GeoJSON Text Sequences](https://github.com/navibyte/geospatial/issues/217)
 
 ## 1.0.2
 

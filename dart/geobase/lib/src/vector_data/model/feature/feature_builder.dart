@@ -34,6 +34,13 @@ class FeatureBuilder<T extends FeatureObject, E extends Geometry>
   void _add(FeatureObject object) {
     if (object is T) {
       _addObject.call(object);
+    } else if (object is FeatureCollection) {
+      if (object.features.isNotEmpty) {
+        final first = object.features.first;
+        if (first is T) {
+          _addObject.call(first as T);
+        }
+      }
     }
   }
 
