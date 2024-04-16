@@ -52,6 +52,7 @@ void main() {
 
   // vector data
   _geoJsonWithDefaultCRS();
+  _geoJsonNewLineDelimited();
   _geoJsonWithAlternativeCRS();
   _wkt();
   _ewkt();
@@ -914,6 +915,23 @@ void _geoJsonWithDefaultCRS() {
       print('    $key: ${feature.properties[key]}');
     }
   }
+}
+
+void _geoJsonNewLineDelimited() {
+  /// a feature collection encoded as GeoJSONL and containing two features that
+  /// are delimited by the newline character \n
+  const sample = '''
+    {"type":"Feature","id":"ROG","geometry":{"type":"Point","coordinates":[-0.0014,51.4778,45]},"properties":{"title":"Royal Observatory","place":"Greenwich"}}
+    {"type":"Feature","id":"TB","geometry":{"type":"Point","coordinates":[-0.075406,51.5055]},"properties":{"title":"Tower Bridge","built":1886}}
+    ''';
+
+  // parse a FeatureCollection object using the decoder for the GeoJSONL format
+  final collection = FeatureCollection.parse(sample, format: GeoJSONL.feature);
+
+  // ... use features read and returned in a feature collection object ...
+
+  // encode back to GeoJSONL data
+  print(collection.toText(format: GeoJSONL.feature, decimals: 5));
 }
 
 void _geoJsonWithAlternativeCRS() {

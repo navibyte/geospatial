@@ -1122,6 +1122,46 @@ representations:
 All geometry, feature and feature collection classes has similar `parse` methods
 to support parsing from GeoJSON.
 
+### GeoJSONL - newline-delimited GeoJSON
+
+[GeoJSONL](https://www.interline.io/blog/geojsonl-extracts/) or
+[newline-delimited GeoJSON](https://stevage.github.io/ndgeojson/) (or
+[GeoJSON Text Sequences](https://datatracker.ietf.org/doc/html/rfc8142)) is an
+optimized variant of GeoJSON to encode sequences of geospatial features. A text
+file conforming to this format represents one feature collection (without
+*FeatureCollection* element encoded). Such a file may contain any number of
+features that are separated by the newline character (`\n`).
+
+Advantages of using GeoJSONL over the standard GeoJSON include efficiency when
+streaming or storing very large number geospatial features. It's also much
+simpler to decode newline-delimited GeoJSON data than hierarchically structured
+standard GeoJSON data. A client could also skip some features on a stream
+without parsing all data.
+
+The decoder provided by `geobase` supports reading features delimited by
+newline (`\n`), carriage-return followed by newline (`\r\n`) and
+record-separator (RS) characters. By default the encoder delimits features using
+the `\n` character.
+
+A short sample describes how to use this format:
+
+```dart
+  /// a feature collection encoded as GeoJSONL and containing two features that
+  /// are delimited by the newline character \n
+  const sample = '''
+    {"type":"Feature","id":"ROG","geometry":{"type":"Point","coordinates":[-0.0014,51.4778,45]},"properties":{"title":"Royal Observatory","place":"Greenwich"}}
+    {"type":"Feature","id":"TB","geometry":{"type":"Point","coordinates":[-0.075406,51.5055]},"properties":{"title":"Tower Bridge","built":1886}}
+    ''';
+
+  // parse a FeatureCollection object using the decoder for the GeoJSONL format
+  final collection = FeatureCollection.parse(sample, format: GeoJSONL.feature);
+
+  // ... use features read and returned in a feature collection object ...
+
+  // encode back to GeoJSONL data
+  print(collection.toText(format: GeoJSONL.feature, decimals: 5));
+```
+
 ### GeoJSON with alternative coordinate reference systems
 
 When using GeoJSON to represent geospatial data in "alternative coordinate
