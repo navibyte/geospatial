@@ -215,6 +215,25 @@ Future<void> _readFeatures(BasicFeatureSource source) async {
 The full sample for accessing GeoJSON feature sources is available in
 [geojson_example.dart](example/geojson_example.dart).
 
+### GeoJSONL - newline-delimited GeoJSON
+
+[GeoJSONL](https://www.interline.io/blog/geojsonl-extracts/) or
+[newline-delimited GeoJSON](https://stevage.github.io/ndgeojson/) (or
+[GeoJSON Text Sequences](https://datatracker.ietf.org/doc/html/rfc8142)) is an
+optimized variant of GeoJSON to encode sequences of geospatial features. A text
+file conforming to this format represents one feature collection (without
+*FeatureCollection* element encoded). Such a file may contain any number of
+features that are separated by the newline character (`\n`).
+
+Decoding and encoding data for this format is supported by the
+[geobase](https://pub.dev/packages/geobase) package just like it's supporting
+the standard GeoJSON too.
+
+When accessing newline-delimited GeoJSON data with the `geodata` package, you
+should assign `format: GeoJSONL.feature` when creating a feature source either
+with `GeoJSONFeatures.http()` or `GeoJSONFeatures.any()`. Otherwise the usage
+patterns introduced for the standard GeoJSON applies also here.
+
 ### OGC API Features client
 
 #### Part 1: Core
