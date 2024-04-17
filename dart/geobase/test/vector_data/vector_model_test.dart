@@ -1334,15 +1334,34 @@ void main() {
 
       final point = Point(positions[3]);
       expect(point.centroid2D()!.toText(decimals: 3), '3,1');
+      expect(point.boundsAligned2D()!.toText(decimals: 3), '3,1');
 
       final multiPoint = MultiPoint(positions);
       expect(multiPoint.centroid2D()!.toText(decimals: 3), '2.130,2.522');
+      expect(multiPoint.boundsAligned2D()!.toText(decimals: 3), '2.500,3');
+      expect(
+        multiPoint
+            .boundsAligned2D(align: Aligned.northCenter)!
+            .toText(decimals: 3),
+        '2.500,6',
+      );
+      expect(
+        multiPoint
+            .boundsAligned2D(align: Aligned.southWest)!
+            .toText(decimals: 3),
+        '0,0',
+      );
 
       final lineString = LineString(shape);
       expect(lineString.centroid2D()!.toText(decimals: 3), '2.508,2.996');
+      expect(lineString.boundsAligned2D()!.toText(decimals: 3), '2.500,3');
 
       final multiLineString1 = MultiLineString([shape]);
       expect(multiLineString1.centroid2D()!.toText(decimals: 3), '2.508,2.996');
+      expect(
+        multiLineString1.boundsAligned2D()!.toText(decimals: 3),
+        '2.500,3',
+      );
 
       final polygon = Polygon([shape]);
       final polygonResults = [
@@ -1356,16 +1375,19 @@ void main() {
       for (final res in polygonResults) {
         expect(res!.toText(decimals: 3), '2.583,3.229');
       }
+      expect(polygon.boundsAligned2D()!.toText(decimals: 3), '2.500,3');
 
       final multiPolygon1 = MultiPolygon([
         [shape],
       ]);
       expect(multiPolygon1.centroid2D()!.toText(decimals: 3), '2.583,3.229');
+      expect(multiPolygon1.boundsAligned2D()!.toText(decimals: 3), '2.500,3');
 
       final geomColl1 = GeometryCollection([
         Polygon([shape]),
       ]);
       expect(geomColl1.centroid2D()!.toText(decimals: 3), '2.583,3.229');
+      expect(geomColl1.boundsAligned2D()!.toText(decimals: 3), '2.500,3');
       final geomColl2 = GeometryCollection([
         Polygon([shape]),
         LineString(shape),

@@ -10,6 +10,7 @@ import '/src/common/codes/coords.dart';
 import '/src/common/codes/geom.dart';
 import '/src/common/constants/epsilon.dart';
 import '/src/common/reference/coord_ref_sys.dart';
+import '/src/coordinates/base/aligned.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/base/position_scheme.dart';
@@ -291,6 +292,16 @@ class Point implements SimpleGeometry {
   Box? getBounds({PositionScheme scheme = Position.scheme}) =>
       calculateBounds(scheme: scheme);
 
+  @override
+  Position? boundsAligned2D({
+    Aligned align = Aligned.center,
+    PositionScheme scheme = Position.scheme,
+  }) =>
+      scheme.position.call(
+        x: position.x,
+        y: position.y,
+      );
+
   /// The bounding box for this point, min and max with the same point position.
   @override
   Box calculateBounds({PositionScheme scheme = Position.scheme}) =>
@@ -341,8 +352,6 @@ class Point implements SimpleGeometry {
           : scheme.position(
               x: position.x,
               y: position.y,
-              z: position.optZ,
-              m: position.optM,
             );
 
   @override

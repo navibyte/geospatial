@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -6,6 +6,7 @@
 
 import '/src/coordinates/projection/projection.dart';
 
+import 'aligned.dart';
 import 'box.dart';
 import 'position.dart';
 import 'position_scheme.dart';
@@ -61,6 +62,25 @@ abstract class Bounded extends Positionable {
         ? b
         : calculateBounds(scheme: scheme);
   }
+
+  /// Returns an aligned 2D position relative to a bounding box accessed by
+  /// [getBounds].
+  ///
+  /// By default a returned aligned position is a center point, but this can be
+  /// customized using [align].
+  ///
+  /// Returns null if [getBounds] returns null.
+  ///
+  /// Use [scheme] to set the position scheme:
+  /// * `Position.scheme` for generic position data (geographic, projected or
+  ///    any other), this is also the default
+  /// * `Projected.scheme` for projected position data
+  /// * `Geographic.scheme` for geographic position data
+  Position? boundsAligned2D({
+    Aligned align = Aligned.center,
+    PositionScheme scheme = Position.scheme,
+  }) =>
+      getBounds(scheme: scheme)?.aligned2D(align);
 
   /// Returns an object of the same subtype as this with certain data members
   /// populated.

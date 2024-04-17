@@ -164,7 +164,11 @@ abstract class Geometry extends Bounded {
   /// * `Projected.scheme` for projected position data
   /// * `Geographic.scheme` for geographic position data
   ///
-  /// See also [Centroid](https://en.wikipedia.org/wiki/Centroid) in Wikipedia.
+  /// See also [boundsAligned2D] that allows calculating a center position or
+  /// other aligned position related to a bounding box.
+  ///
+  /// More info about [Centroid](https://en.wikipedia.org/wiki/Centroid) can be
+  /// read in Wikipedia.
   Position? centroid2D({PositionScheme scheme = Position.scheme}) => null;
 
   @override
