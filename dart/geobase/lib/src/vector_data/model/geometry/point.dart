@@ -7,6 +7,7 @@
 import 'dart:typed_data';
 
 import '/src/common/codes/coords.dart';
+import '/src/common/codes/dimensionality.dart';
 import '/src/common/codes/geom.dart';
 import '/src/common/constants/epsilon.dart';
 import '/src/common/reference/coord_ref_sys.dart';
@@ -344,6 +345,9 @@ class Point implements SimpleGeometry {
 
   @override
   double area2D() => 0.0;
+
+  @override
+  Dimensionality dimensionality2D() => Dimensionality.punctual;
 
   @override
   Position? centroid2D({PositionScheme scheme = Position.scheme}) =>

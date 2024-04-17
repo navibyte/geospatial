@@ -13,6 +13,7 @@ NOTE: Version 1.1.0 currently under development (1.1.0-dev.0).
 * [Centroid for all geometry objects #223](https://github.com/navibyte/geospatial/issues/223)
 * [Factories to create multi geometries from geometry lists #229](https://github.com/navibyte/geospatial/issues/229)
 * [Item accessor operator and length in geometry and feature collections #230](https://github.com/navibyte/geospatial/issues/230)
+* [True dimensionality for geometry #231](https://github.com/navibyte/geospatial/issues/231)
 
 ## 1.0.2
 

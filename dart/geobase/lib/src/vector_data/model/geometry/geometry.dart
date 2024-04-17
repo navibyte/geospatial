@@ -8,6 +8,7 @@ import 'dart:typed_data';
 
 import 'package:meta/meta.dart';
 
+import '/src/common/codes/dimensionality.dart';
 import '/src/common/codes/geom.dart';
 import '/src/common/constants/epsilon.dart';
 import '/src/common/reference/coord_ref_sys.dart';
@@ -141,6 +142,28 @@ abstract class Geometry extends Bounded {
   /// extensions for `Iterable<Geographic>` and `PositionSeries` implemented by
   /// the `package:geobase/geodesy.dart` library.
   double area2D();
+
+  /// Returns the true *dimensionality* of this geometry in 2D.
+  ///
+  /// The value returned:
+  /// * If `area2D() > 0.0` then `Dimensionality.areal` is returned.
+  /// * Otherwise if `length2D() > 0.0` then `Dimensionality.linear` is
+  ///   returned.
+  /// * Otherwise `Dimensionality.punctual` is returned.
+  ///
+  /// This mean that even if a polygon geometry is "areal" the value
+  /// `Dimensionality.areal` is returned only if a polygon has non-zero area.
+  ///
+  /// See also [Dimensionality].
+  Dimensionality dimensionality2D() {
+    if (area2D() > 0.0) {
+      return Dimensionality.areal;
+    } else if (length2D() > 0.0) {
+      return Dimensionality.linear;
+    }
+
+    return Dimensionality.punctual;
+  }
 
   /// Returns the centroid of this geometry calculated in a cartesian 2D plane.
   ///

@@ -1348,6 +1348,7 @@ void main() {
       final point = Point(positions[3]);
       expect(point.centroid2D()!.toText(decimals: 3), '3,1');
       expect(point.boundsAligned2D()!.toText(decimals: 3), '3,1');
+      expect(point.dimensionality2D(), Dimensionality.punctual);
 
       final multiPoint = MultiPoint(positions);
       expect(multiPoint.centroid2D()!.toText(decimals: 3), '2.130,2.522');
@@ -1364,10 +1365,16 @@ void main() {
             .toText(decimals: 3),
         '0,0',
       );
+      expect(multiPoint.dimensionality2D(), Dimensionality.punctual);
 
       final lineString = LineString(shape);
       expect(lineString.centroid2D()!.toText(decimals: 3), '2.508,2.996');
       expect(lineString.boundsAligned2D()!.toText(decimals: 3), '2.500,3');
+      expect(lineString.dimensionality2D(), Dimensionality.linear);
+      final lineString2 = LineString.build(const [2.0, 5.0, 2.0, 5.0]);
+      expect(lineString2.centroid2D()!.toText(decimals: 3), '2,5');
+      expect(lineString2.boundsAligned2D()!.toText(decimals: 3), '2,5');
+      expect(lineString2.dimensionality2D(), Dimensionality.punctual);
 
       final multiLineString1 = MultiLineString([shape]);
       expect(multiLineString1.centroid2D()!.toText(decimals: 3), '2.508,2.996');
@@ -1375,6 +1382,7 @@ void main() {
         multiLineString1.boundsAligned2D()!.toText(decimals: 3),
         '2.500,3',
       );
+      expect(multiLineString1.dimensionality2D(), Dimensionality.linear);
 
       final polygon = Polygon([shape]);
       final polygonResults = [
@@ -1389,33 +1397,39 @@ void main() {
         expect(res!.toText(decimals: 3), '2.583,3.229');
       }
       expect(polygon.boundsAligned2D()!.toText(decimals: 3), '2.500,3');
+      expect(polygon.dimensionality2D(), Dimensionality.areal);
 
       final multiPolygon1 = MultiPolygon([
         [shape],
       ]);
       expect(multiPolygon1.centroid2D()!.toText(decimals: 3), '2.583,3.229');
       expect(multiPolygon1.boundsAligned2D()!.toText(decimals: 3), '2.500,3');
+      expect(multiPolygon1.dimensionality2D(), Dimensionality.areal);
 
       final geomColl1 = GeometryCollection([
         Polygon([shape]),
       ]);
       expect(geomColl1.centroid2D()!.toText(decimals: 3), '2.583,3.229');
       expect(geomColl1.boundsAligned2D()!.toText(decimals: 3), '2.500,3');
+      expect(geomColl1.dimensionality2D(), Dimensionality.areal);
       final geomColl2 = GeometryCollection([
         Polygon([shape]),
         LineString(shape),
         MultiPoint(positions),
       ]);
       expect(geomColl2.centroid2D()!.toText(decimals: 3), '2.583,3.229');
+      expect(geomColl2.dimensionality2D(), Dimensionality.areal);
       final geomColl3 = GeometryCollection([
         LineString(shape),
         MultiPoint(positions),
       ]);
       expect(geomColl3.centroid2D()!.toText(decimals: 3), '2.508,2.996');
+      expect(geomColl3.dimensionality2D(), Dimensionality.linear);
       final geomColl4 = GeometryCollection([
         MultiPoint(positions),
       ]);
       expect(geomColl4.centroid2D()!.toText(decimals: 3), '2.130,2.522');
+      expect(geomColl4.dimensionality2D(), Dimensionality.punctual);
     });
 
     test('Centroid2D for polygon with hole case 1', () {
@@ -1554,10 +1568,13 @@ void main() {
       expect(col4.centroid2D()?.toText(), '6.5,6.5');
       final col5 = GeometryCollection(geoms.sublist(1, 4));
       expect(col5.centroid2D()?.toText(), '11.5,11.5');
+      expect(col5.dimensionality2D(), Dimensionality.areal);
       final col6 = GeometryCollection(geoms.sublist(2, 4));
       expect(col6.centroid2D()?.toText(), '11.5,11');
+      expect(col6.dimensionality2D(), Dimensionality.linear);
       final col7 = GeometryCollection(geoms.sublist(3, 4));
       expect(col7.centroid2D()?.toText(), '11,11');
+      expect(col7.dimensionality2D(), Dimensionality.punctual);
 
       final mpl = MultiPolygon.fromGeometries(geoms.sublist(0, 2));
       expect(mpl.centroid2D()?.toText(), '6.5,6.5');
