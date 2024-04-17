@@ -335,6 +335,9 @@ class Point implements SimpleGeometry {
   double area2D() => 0.0;
 
   @override
+  Position? centroid2D() => position;
+
+  @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
       isEmptyByGeometry
           ? writer.emptyGeometry(Geom.point, name: name)

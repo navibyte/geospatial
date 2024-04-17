@@ -142,6 +142,25 @@ abstract class Geometry extends Bounded {
   /// the `package:geobase/geodesy.dart` library.
   double area2D();
 
+  /// Returns the centroid of this geometry calculated in a cartesian 2D plane.
+  ///
+  /// The *centroid* is - as by definition - *a geometric center of mass of a
+  /// geometry*.
+  ///
+  /// The centroid is computed according to dimensionality of a geometry:
+  /// * *areal* geometries: weighted by the area of areal geometries like
+  ///    polygons.
+  /// * *linear* geometries: computed from midpoints of line segments that
+  ///    are weighted by the length of each line segment.
+  /// * *punctuat* geometries: the arithmetic mean of all separate positions.
+  ///
+  /// Note that a centroid do not always locate inside a geometry.
+  ///
+  /// Returns null if a centroid position could not be calculated.
+  ///
+  /// See also [Centroid](https://en.wikipedia.org/wiki/Centroid) in Wikipedia.
+  Position? centroid2D() => null;
+
   @override
   bool equalsCoords(Geometry other);
 

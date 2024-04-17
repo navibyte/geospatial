@@ -21,6 +21,7 @@ import '/src/coordinates/projection/projection.dart';
 import '/src/utils/bounded_utils.dart';
 import '/src/utils/coord_positions.dart';
 import '/src/utils/coord_type.dart';
+import '/src/utils/geometry_calculations_cartesian.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
@@ -629,6 +630,22 @@ class MultiPolygon extends SimpleGeometry {
       }
     }
     return area;
+  }
+
+  @override
+  Position? centroid2D() {
+    final calculator = CompositeCentroid();
+    for (final pol in polygons) {
+      final centroid = pol.centroid2D();
+      if (centroid != null) {
+        calculator.addCentroid2D(
+          centroid,
+          area: pol.area2D(),
+          length: pol.exterior?.length2D(),
+        );
+      }
+    }
+    return calculator.centroid();
   }
 
   @override

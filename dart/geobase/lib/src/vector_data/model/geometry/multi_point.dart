@@ -20,6 +20,7 @@ import '/src/coordinates/projection/projection.dart';
 import '/src/utils/bounded_utils.dart';
 import '/src/utils/coord_positions.dart';
 import '/src/utils/coord_type.dart';
+import '/src/utils/geometry_calculations_cartesian.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
@@ -419,6 +420,15 @@ class MultiPoint extends SimpleGeometry {
 
   @override
   double area2D() => 0.0;
+
+  @override
+  Position? centroid2D() {
+    final calculator = CompositeCentroid();
+    for (final pos in positions) {
+      calculator.addCentroidXY(x: pos.x, y: pos.y);
+    }
+    return calculator.centroid();
+  }
 
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>

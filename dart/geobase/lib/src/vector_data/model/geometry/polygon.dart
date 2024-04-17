@@ -19,6 +19,7 @@ import '/src/coordinates/base/position_series.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/utils/bounded_utils.dart';
 import '/src/utils/coord_positions.dart';
+import '/src/utils/geometry_calculations_cartesian.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
@@ -802,6 +803,43 @@ class Polygon extends SimpleGeometry {
       }
     }
     return area;
+  }
+
+  @override
+  Position? centroid2D() {
+    final ext = exterior;
+    if (ext != null) {
+      final cext = ext.centroid2D();
+      if (cext != null) {
+        final aext = ext.signedArea2D().abs();
+        if (aext > 0.0) {
+          final calculator = CompositeCentroid()
+            // "positive" weighted centroid for an exterior ring
+            ..addCentroid2D(cext, area: aext);
+
+          // "negative" weighted centroids for interior rings
+          // (only holes with area are used)
+          for (final hole in interior) {
+            final chole = hole.centroid2D();
+            if (chole != null) {
+              final ahole = hole.signedArea2D().abs();
+              if (ahole > 0.0) {
+                calculator.addCentroid2D(chole, area: -ahole);
+              }
+            }
+          }
+
+          // return composite if non-null, otherwise just centroid for exterior
+          final composite = calculator.centroid();
+          return composite ?? cext;
+        } else {
+          // no area, return linear or punctual centroid for exterior
+          return cext;
+        }
+      }
+    }
+
+    return null;
   }
 
   @override

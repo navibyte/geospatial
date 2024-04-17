@@ -1303,6 +1303,246 @@ void main() {
         1.75,
       );
     });
+
+    test('Centroid2D for shape', () {
+      final positions = [
+        [1.0, 0.0].xy,
+        [1.0, 1.0].xy,
+        [3.0, 0.0].xy,
+        [3.0, 1.0].xy,
+        [2.0, 2.0].xy,
+        [1.0, 1.0].xy,
+        [1.0, 2.0].xy,
+        [2.0, 3.0].xy,
+        [1.0, 3.0].xy,
+        [1.0, 4.0].xy,
+        [2.0, 5.0].xy,
+        [4.0, 5.0].xy,
+        [4.0, 2.0].xy,
+        [3.0, 3.0].xy,
+        [3.0, 2.0].xy,
+        [4.0, 1.0].xy,
+        [5.0, 1.0].xy,
+        [5.0, 6.0].xy,
+        [1.0, 6.0].xy,
+        [1.0, 5.0].xy,
+        [0.0, 4.0].xy,
+        [0.0, 1.0].xy,
+        [1.0, 0.0].xy,
+      ];
+      final shape = positions.series();
+
+      final point = Point(positions[3]);
+      expect(point.centroid2D()!.toText(decimals: 3), '3,1');
+
+      final multiPoint = MultiPoint(positions);
+      expect(multiPoint.centroid2D()!.toText(decimals: 3), '2.130,2.522');
+
+      final lineString = LineString(shape);
+      expect(lineString.centroid2D()!.toText(decimals: 3), '2.508,2.996');
+
+      final multiLineString1 = MultiLineString([shape]);
+      expect(multiLineString1.centroid2D()!.toText(decimals: 3), '2.508,2.996');
+
+      final polygon = Polygon([shape]);
+      expect(polygon.centroid2D()!.toText(decimals: 3), '2.583,3.229');
+
+      final multiPolygon1 = MultiPolygon([
+        [shape],
+      ]);
+      expect(multiPolygon1.centroid2D()!.toText(decimals: 3), '2.583,3.229');
+
+      final geomColl1 = GeometryCollection([
+        Polygon([shape]),
+      ]);
+      expect(geomColl1.centroid2D()!.toText(decimals: 3), '2.583,3.229');
+      final geomColl2 = GeometryCollection([
+        Polygon([shape]),
+        LineString(shape),
+        MultiPoint(positions),
+      ]);
+      expect(geomColl2.centroid2D()!.toText(decimals: 3), '2.583,3.229');
+      final geomColl3 = GeometryCollection([
+        LineString(shape),
+        MultiPoint(positions),
+      ]);
+      expect(geomColl3.centroid2D()!.toText(decimals: 3), '2.508,2.996');
+      final geomColl4 = GeometryCollection([
+        MultiPoint(positions),
+      ]);
+      expect(geomColl4.centroid2D()!.toText(decimals: 3), '2.130,2.522');
+    });
+
+    test('Centroid2D for polygon with hole case 1', () {
+      final exteriorCCW = [
+        [0.0, 0.0].xy,
+        [3.0, 0.0].xy,
+        [3.0, 6.0].xy,
+        [0.0, 6.0].xy,
+        [0.0, 0.0].xy,
+      ];
+      final holeCW = [
+        [1.0, 4.0].xy,
+        [1.0, 5.0].xy,
+        [2.0, 5.0].xy,
+        [2.0, 4.0].xy,
+        [1.0, 4.0].xy,
+      ];
+      final exterior = exteriorCCW.series();
+      final hole = holeCW.series();
+
+      // basic cases
+      final pol = Polygon([exterior]);
+      expect(
+        pol.centroid2D()!.toText(decimals: 3, compactNums: false),
+        '1.500,3.000',
+      );
+      final hol = Polygon([hole]);
+      expect(
+        hol.centroid2D()!.toText(decimals: 3, compactNums: false),
+        '1.500,4.500',
+      );
+      final polHol = Polygon([exterior, hole]);
+      expect(
+        polHol.centroid2D()!.toText(decimals: 3, compactNums: false),
+        '1.500,2.912',
+      );
+
+      // special cases
+
+      // polygon with hole same size as exterior (not actually an area, but
+      // algorithm gets then centroid for exterior)
+      final polHolSP1 = Polygon([exterior, exterior]);
+      expect(
+        polHolSP1.centroid2D()!.toText(decimals: 3, compactNums: false),
+        '1.500,3.000',
+      );
+
+      // polygon with hole slightly smaller than exterior
+      const delta = 0.000000001;
+      final polHolSP2 = Polygon([
+        exterior,
+        [
+          [0.0 + delta, 0.0 + delta].xy,
+          [3.0 - delta, 0.0 + delta].xy,
+          [3.0 - delta, 6.0 - delta].xy,
+          [0.0 + delta, 6.0 - delta].xy,
+          [0.0 + delta, 0.0 + delta].xy,
+        ].series(),
+      ]);
+      expect(
+        polHolSP2.centroid2D()!.toText(decimals: 3, compactNums: false),
+        '1.500,3.000',
+      );
+
+      // polygon with hole slightly larger than exterior (even if not actually
+      // valid geometry)
+      final polHolSP3 = Polygon([
+        exterior,
+        [
+          [0.0 - delta, 0.0 - delta].xy,
+          [3.0 + delta, 0.0 - delta].xy,
+          [3.0 + delta, 6.0 + delta].xy,
+          [0.0 - delta, 6.0 + delta].xy,
+          [0.0 - delta, 0.0 - delta].xy,
+        ].series(),
+      ]);
+      expect(
+        polHolSP3.centroid2D()!.toText(decimals: 3, compactNums: false),
+        '1.500,3.000',
+      );
+
+      // polygon with hole taking half of exterior out
+      final polHolSP4 = Polygon([
+        exterior,
+        [
+          [0.0, 0.0].xy,
+          [3.0, 0.0].xy,
+          [3.0, 3.0].xy,
+          [0.0, 3.0].xy,
+          [0.0, 0.0].xy,
+        ].series(),
+      ]);
+      expect(
+        polHolSP4.centroid2D()!.toText(decimals: 3, compactNums: false),
+        '1.500,4.500',
+      );
+    });
+
+    test('Centroid2D for geometry collection and multi polygon', () {
+      const polygons = [
+        [
+          'POLYGON((1 1, 2 1, 2 2, 1 2, 1 1))',
+          'POINT(1.5 1.5)',
+        ],
+        [
+          'POLYGON((11 11, 12 11, 12 12, 11 12, 11 11))',
+          'POINT(11.5 11.5)',
+        ],
+        [
+          'POLYGON((11 11, 12 11, 12 11, 11 11, 11 11))', // linear, no area
+          'POINT(11.5 11.0)',
+        ],
+        [
+          'POLYGON((11 11, 11 11, 11 11, 11 11, 11 11))', // punctual, no area
+          'POINT(11.0 11.0)',
+        ],
+      ];
+
+      final geoms = <Polygon>[];
+      for (final testCase in polygons) {
+        final pol = Polygon.parse(testCase[0], format: WKT.geometry);
+        final centroid = Point.parse(testCase[1], format: WKT.geometry);
+
+        expect(pol.centroid2D()?.toText(), centroid.position.toText());
+
+        geoms.add(pol);
+      }
+
+      final coll = GeometryCollection(geoms.sublist(0, 2));
+      expect(coll.centroid2D()?.toText(), '6.5,6.5');
+      final coll2 = GeometryCollection(geoms.sublist(1, 2));
+      expect(coll2.centroid2D()?.toText(), '11.5,11.5');
+      final coll3 = GeometryCollection(const <Polygon>[]);
+      expect(coll3.centroid2D()?.toText(), isNull);
+      final col4 = GeometryCollection(geoms.sublist(0, 4));
+      expect(col4.centroid2D()?.toText(), '6.5,6.5');
+      final col5 = GeometryCollection(geoms.sublist(1, 4));
+      expect(col5.centroid2D()?.toText(), '11.5,11.5');
+      final col6 = GeometryCollection(geoms.sublist(2, 4));
+      expect(col6.centroid2D()?.toText(), '11.5,11');
+      final col7 = GeometryCollection(geoms.sublist(3, 4));
+      expect(col7.centroid2D()?.toText(), '11,11');
+
+      final mpl = MultiPolygon.from(
+        geoms.sublist(0, 2).map((pol) => pol.rings.map((e) => e.positions)),
+      );
+      expect(mpl.centroid2D()?.toText(), '6.5,6.5');
+      final mp2 = MultiPolygon.from(
+        geoms.sublist(1, 2).map((pol) => pol.rings.map((e) => e.positions)),
+      );
+      expect(mp2.centroid2D()?.toText(), '11.5,11.5');
+      final mp3 = MultiPolygon.from(
+        const <Polygon>[].map((pol) => pol.rings.map((e) => e.positions)),
+      );
+      expect(mp3.centroid2D()?.toText(), isNull);
+      final mp4 = MultiPolygon.from(
+        geoms.sublist(0, 4).map((pol) => pol.rings.map((e) => e.positions)),
+      );
+      expect(mp4.centroid2D()?.toText(), '6.5,6.5');
+      final mp5 = MultiPolygon.from(
+        geoms.sublist(1, 4).map((pol) => pol.rings.map((e) => e.positions)),
+      );
+      expect(mp5.centroid2D()?.toText(), '11.5,11.5');
+      final mp6 = MultiPolygon.from(
+        geoms.sublist(2, 4).map((pol) => pol.rings.map((e) => e.positions)),
+      );
+      expect(mp6.centroid2D()?.toText(), '11.5,11');
+      final mp7 = MultiPolygon.from(
+        geoms.sublist(3, 4).map((pol) => pol.rings.map((e) => e.positions)),
+      );
+      expect(mp7.centroid2D()?.toText(), '11,11');
+    });
   });
 }
 

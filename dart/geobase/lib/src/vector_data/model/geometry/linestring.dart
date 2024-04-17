@@ -9,6 +9,7 @@
 import 'dart:typed_data';
 
 import '/src/common/codes/coords.dart';
+import '/src/common/codes/dimensionality.dart';
 import '/src/common/codes/geom.dart';
 import '/src/common/constants/epsilon.dart';
 import '/src/common/reference/coord_ref_sys.dart';
@@ -505,6 +506,10 @@ class LineString extends SimpleGeometry {
 
   @override
   double area2D() => 0.0;
+
+  @override
+  Position? centroid2D() =>
+      chain.centroid2D(dimensionality: Dimensionality.linear);
 
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
