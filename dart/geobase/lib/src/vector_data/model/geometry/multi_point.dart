@@ -422,12 +422,12 @@ class MultiPoint extends SimpleGeometry {
   double area2D() => 0.0;
 
   @override
-  Position? centroid2D() {
+  Position? centroid2D({PositionScheme scheme = Position.scheme}) {
     final calculator = CompositeCentroid();
     for (final pos in positions) {
       calculator.addCentroidXY(x: pos.x, y: pos.y);
     }
-    return calculator.centroid();
+    return calculator.centroid2D(scheme: scheme);
   }
 
   @override

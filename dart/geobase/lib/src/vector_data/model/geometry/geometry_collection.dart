@@ -360,10 +360,10 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   }
 
   @override
-  Position? centroid2D() {
+  Position? centroid2D({PositionScheme scheme = Position.scheme}) {
     final calculator = CompositeCentroid();
     for (final geom in geometries) {
-      final centroid = geom.centroid2D();
+      final centroid = geom.centroid2D(scheme: scheme);
       if (centroid != null) {
         calculator.addCentroid2D(
           centroid,
@@ -372,7 +372,7 @@ class GeometryCollection<E extends Geometry> extends Geometry {
         );
       }
     }
-    return calculator.centroid();
+    return calculator.centroid2D(scheme: scheme);
   }
 
   @override

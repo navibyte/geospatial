@@ -335,7 +335,15 @@ class Point implements SimpleGeometry {
   double area2D() => 0.0;
 
   @override
-  Position? centroid2D() => position;
+  Position? centroid2D({PositionScheme scheme = Position.scheme}) =>
+      scheme.conformsWith(position.conforming)
+          ? position
+          : scheme.position(
+              x: position.x,
+              y: position.y,
+              z: position.optZ,
+              m: position.optM,
+            );
 
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>

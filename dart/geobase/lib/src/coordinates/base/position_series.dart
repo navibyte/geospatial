@@ -1024,9 +1024,16 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
   ///
   /// Returns null if a centroid position could not be calculated.
   ///
+  /// Use [scheme] to set the position scheme:
+  /// * `Position.scheme` for generic position data (geographic, projected or
+  ///    any other), this is also the default
+  /// * `Projected.scheme` for projected position data
+  /// * `Geographic.scheme` for geographic position data
+  ///
   /// See also [Centroid](https://en.wikipedia.org/wiki/Centroid) in Wikipedia.
   Position? centroid2D({
     Dimensionality dimensionality = Dimensionality.areal,
+    PositionScheme scheme = Position.scheme,
   }) {
     final topoDim = dimensionality.topologicalDimension;
     final posCount = positionCount;
@@ -1052,7 +1059,7 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
       }
       if (area.abs() > 0.0) {
         final area6 = 6.0 * (area / 2.0);
-        return Position.create(
+        return scheme.position.call(
           x: cx / area6,
           y: cy / area6,
         );
@@ -1081,7 +1088,7 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
         y1 = y2;
       }
       if (length > 0.0) {
-        return Position.create(
+        return scheme.position.call(
           x: cx / length,
           y: cy / length,
         );
@@ -1096,7 +1103,7 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
         cx += x(i);
         cy += y(i);
       }
-      return Position.create(
+      return scheme.position.call(
         x: cx / posCount,
         y: cy / posCount,
       );

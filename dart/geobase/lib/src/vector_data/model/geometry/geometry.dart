@@ -158,8 +158,14 @@ abstract class Geometry extends Bounded {
   ///
   /// Returns null if a centroid position could not be calculated.
   ///
+  /// Use [scheme] to set the position scheme:
+  /// * `Position.scheme` for generic position data (geographic, projected or
+  ///    any other), this is also the default
+  /// * `Projected.scheme` for projected position data
+  /// * `Geographic.scheme` for geographic position data
+  ///
   /// See also [Centroid](https://en.wikipedia.org/wiki/Centroid) in Wikipedia.
-  Position? centroid2D() => null;
+  Position? centroid2D({PositionScheme scheme = Position.scheme}) => null;
 
   @override
   bool equalsCoords(Geometry other);

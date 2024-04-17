@@ -806,10 +806,10 @@ class Polygon extends SimpleGeometry {
   }
 
   @override
-  Position? centroid2D() {
+  Position? centroid2D({PositionScheme scheme = Position.scheme}) {
     final ext = exterior;
     if (ext != null) {
-      final cext = ext.centroid2D();
+      final cext = ext.centroid2D(scheme: scheme);
       if (cext != null) {
         final aext = ext.signedArea2D().abs();
         if (aext > 0.0) {
@@ -820,7 +820,7 @@ class Polygon extends SimpleGeometry {
           // "negative" weighted centroids for interior rings
           // (only holes with area are used)
           for (final hole in interior) {
-            final chole = hole.centroid2D();
+            final chole = hole.centroid2D(scheme: scheme);
             if (chole != null) {
               final ahole = hole.signedArea2D().abs();
               if (ahole > 0.0) {
@@ -830,7 +830,7 @@ class Polygon extends SimpleGeometry {
           }
 
           // return composite if non-null, otherwise just centroid for exterior
-          final composite = calculator.centroid();
+          final composite = calculator.centroid2D(scheme: scheme);
           return composite ?? cext;
         } else {
           // no area, return linear or punctual centroid for exterior

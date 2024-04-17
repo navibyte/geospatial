@@ -471,10 +471,13 @@ class MultiLineString extends SimpleGeometry {
   double area2D() => 0.0;
 
   @override
-  Position? centroid2D() {
+  Position? centroid2D({PositionScheme scheme = Position.scheme}) {
     final calculator = CompositeCentroid();
     for (final chain in chains) {
-      final centroid = chain.centroid2D(dimensionality: Dimensionality.linear);
+      final centroid = chain.centroid2D(
+        dimensionality: Dimensionality.linear,
+        scheme: scheme,
+      );
       if (centroid != null) {
         calculator.addCentroid2D(
           centroid,
@@ -482,7 +485,7 @@ class MultiLineString extends SimpleGeometry {
         );
       }
     }
-    return calculator.centroid();
+    return calculator.centroid2D(scheme: scheme);
   }
 
   @override

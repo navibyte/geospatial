@@ -508,8 +508,8 @@ class LineString extends SimpleGeometry {
   double area2D() => 0.0;
 
   @override
-  Position? centroid2D() =>
-      chain.centroid2D(dimensionality: Dimensionality.linear);
+  Position? centroid2D({PositionScheme scheme = Position.scheme}) =>
+      chain.centroid2D(dimensionality: Dimensionality.linear, scheme: scheme);
 
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>

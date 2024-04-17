@@ -633,10 +633,10 @@ class MultiPolygon extends SimpleGeometry {
   }
 
   @override
-  Position? centroid2D() {
+  Position? centroid2D({PositionScheme scheme = Position.scheme}) {
     final calculator = CompositeCentroid();
     for (final pol in polygons) {
-      final centroid = pol.centroid2D();
+      final centroid = pol.centroid2D(scheme: scheme);
       if (centroid != null) {
         calculator.addCentroid2D(
           centroid,
@@ -645,7 +645,7 @@ class MultiPolygon extends SimpleGeometry {
         );
       }
     }
-    return calculator.centroid();
+    return calculator.centroid2D(scheme: scheme);
   }
 
   @override

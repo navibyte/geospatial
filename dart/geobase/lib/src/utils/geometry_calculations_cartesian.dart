@@ -7,6 +7,7 @@
 import 'package:meta/meta.dart';
 
 import '/src/coordinates/base/position.dart';
+import '/src/coordinates/base/position_scheme.dart';
 
 /// A helper class to calculate areal, linear or punctual centroids for
 /// composite geometries.
@@ -63,19 +64,19 @@ class CompositeCentroid {
     }
   }
 
-  Position? centroid() {
+  Position? centroid2D({PositionScheme scheme = Position.scheme}) {
     if (_areaSum > 0.0) {
-      return Position.create(
+      return scheme.position.call(
         x: _arealX / _areaSum,
         y: _arealY / _areaSum,
       );
     } else if (_lengthSum > 0.0) {
-      return Position.create(
+      return scheme.position.call(
         x: _linearX / _lengthSum,
         y: _linearY / _lengthSum,
       );
     } else if (_numPoints > 0) {
-      return Position.create(
+      return scheme.position.call(
         x: _punctualX / _numPoints,
         y: _punctualY / _numPoints,
       );

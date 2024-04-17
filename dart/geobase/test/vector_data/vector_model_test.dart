@@ -1345,7 +1345,17 @@ void main() {
       expect(multiLineString1.centroid2D()!.toText(decimals: 3), '2.508,2.996');
 
       final polygon = Polygon([shape]);
-      expect(polygon.centroid2D()!.toText(decimals: 3), '2.583,3.229');
+      final polygonResults = [
+        polygon.centroid2D(),
+        polygon.centroid2D(scheme: Projected.scheme),
+        polygon.centroid2D(scheme: Geographic.scheme),
+      ];
+      expect(polygonResults[0] is Position, true);
+      expect(polygonResults[1] is Projected, true);
+      expect(polygonResults[2] is Geographic, true);
+      for (final res in polygonResults) {
+        expect(res!.toText(decimals: 3), '2.583,3.229');
+      }
 
       final multiPolygon1 = MultiPolygon([
         [shape],
