@@ -1772,11 +1772,17 @@ void testMultiPolygon(MultiPolygon multiPolygon) {
   testPositionSeries(multiPolygon.ringArrays.first.first.range(0, 3));
 }
 
-/// Tests `MultiGeometryCollection` geometry.
+/// Tests `GeometryCollection` geometry.
 void testGeometryCollection(GeometryCollection collection) {
+  expect(collection.geometries.length, 3);
   testPoint(collection.geometries[0] as Point);
   testPoint(collection.geometries[1] as Point);
   testLineString(collection.geometries[2] as LineString);
+
+  expect(collection.length, 3);
+  testPoint(collection[0] as Point);
+  testPoint(collection[1] as Point);
+  testLineString(collection[2] as LineString);
 }
 
 void _doTestPolygon(Polygon polygon, {int ringCount = 1}) {

@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -280,6 +280,8 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
       );
 
   /// All feature items in this feature collection.
+  ///
+  /// See also [length] and [operator []] for a shortcut to access features.
   List<E> get features => _features;
 
   /// Returns true if this feature collection do not contain any features.
@@ -290,6 +292,18 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
   /// object contained is empty)".
   @override
   bool get isEmptyByGeometry => features.isEmpty;
+
+  /// The number of features in this feature collection.
+  ///
+  /// See also [features].
+  int get length => _features.length;
+
+  /// The feature at the given [index] in this feature collection.
+  ///
+  /// The given [index] must be non-negative and less than [length].
+  ///
+  /// See also [features].
+  E operator [](int index) => _features[index];
 
   @override
   Coords get coordType => _coordType;

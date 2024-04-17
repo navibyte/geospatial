@@ -329,4 +329,8 @@ void testFeatureCollection(FeatureCollection collection) {
   expect(collection.features.length, 2);
   testFeatureP(collection.features[0]);
   testFeatureLS(collection.features[1]);
+
+  expect(collection.length, 2);
+  testFeatureP(collection[0]);
+  testFeatureLS(collection[1]);
 }

@@ -237,7 +237,21 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   bool get isEmptyByGeometry => _geometries.isEmpty;
 
   /// All geometry items in this geometry collection.
+  ///
+  /// See also [length] and [operator []] for a shortcut to access geometries.
   List<E> get geometries => _geometries;
+
+  /// The number of geometries in this geometry collection.
+  ///
+  /// See also [geometries].
+  int get length => _geometries.length;
+
+  /// The geometry at the given [index] in this geometry collection.
+  ///
+  /// The given [index] must be non-negative and less than [length].
+  ///
+  /// See also [geometries].
+  E operator [](int index) => _geometries[index];
 
   /// Returns a new geometry collection with all geometries mapped using
   /// [toGeometry].
