@@ -151,6 +151,21 @@ class MultiPolygon extends SimpleGeometry {
         bounds: bounds,
       );
 
+  /// A multi polygon from an array of [polygons] (each item as an instance
+  /// of [Polygon]).
+  ///
+  /// A new instance shares arrays of linear rings with the source.
+  ///
+  /// An optional [bounds] set a minimum bounding box for a geometry.
+  factory MultiPolygon.fromGeometries(
+    Iterable<Polygon> polygons, {
+    Box? bounds,
+  }) =>
+      MultiPolygon(
+        polygons.map((polygon) => polygon.rings).toList(growable: false),
+        bounds: bounds,
+      );
+
   /// Builds a multi polygon from an array of [polygons] (each with an array of
   /// rings).
   ///

@@ -11,6 +11,7 @@ NOTE: Version 1.1.0 currently under development (1.1.0-dev.0).
 * [Add EWKT support](https://github.com/navibyte/geospatial/issues/29)
 * [Support for GeoJSON Text Sequences](https://github.com/navibyte/geospatial/issues/217)
 * [Centroid for all geometry objects #223](https://github.com/navibyte/geospatial/issues/223)
+* [Factories to create multi geometries from geometry lists #229](https://github.com/navibyte/geospatial/issues/229)
 
 ## 1.0.2
 

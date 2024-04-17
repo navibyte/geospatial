@@ -589,16 +589,29 @@ void main() {
         mpo.calculateBounds()?.toText(),
         '-1.1,-3.49,-1.1,-1.1,3.5,-1.1,11.3,0.23',
       );
+      final mpo2 = MultiPoint.fromGeometries([po, pob], bounds: pob.bounds);
+      final mpob2 = mpo2.populated();
+      expect(mpo2.bounds?.toText(), '1.5,2.5,1.5,2.5');
+      expect(mpob2.bounds?.toText(), '1.5,2.5,1.5,2.5');
 
       final mls = MultiLineString.parse(multiLineString);
       final mlsb = mls.populated();
       expect(mlsb.bounds?.toText(), '5,4,13,11.1');
       expect(mls.calculateBounds()?.toText(), '5,4,13,11.1');
+      final mls2 =
+          MultiLineString.fromGeometries([ls, lsb], bounds: lsb.bounds);
+      final mlsb2 = mls2.unpopulated().populated();
+      expect(mls2.bounds?.toText(), '-1.1,-3.49,3.5,-1.1');
+      expect(mlsb2.bounds?.toText(), '-1.1,-3.49,3.5,-1.1');
 
       final mpg = MultiPolygon.parse(multiPolygon);
       final mpgb = mpg.populated();
       expect(mpgb.bounds?.toText(), '5,4,12,10.1');
       expect(mpg.calculateBounds()?.toText(), '5,4,12,10.1');
+      final mpg2 = MultiPolygon.fromGeometries([pg, pgb], bounds: pgb.bounds);
+      final mpgb2 = mpg.unpopulated().populated();
+      expect(mpg2.bounds?.toText(), '5,4,12,10.1');
+      expect(mpgb2.bounds?.toText(), '5,4,12,10.1');
     });
 
     test('Simple geometries from positions', () {
@@ -1546,33 +1559,19 @@ void main() {
       final col7 = GeometryCollection(geoms.sublist(3, 4));
       expect(col7.centroid2D()?.toText(), '11,11');
 
-      final mpl = MultiPolygon.from(
-        geoms.sublist(0, 2).map((pol) => pol.rings.map((e) => e.positions)),
-      );
+      final mpl = MultiPolygon.fromGeometries(geoms.sublist(0, 2));
       expect(mpl.centroid2D()?.toText(), '6.5,6.5');
-      final mp2 = MultiPolygon.from(
-        geoms.sublist(1, 2).map((pol) => pol.rings.map((e) => e.positions)),
-      );
+      final mp2 = MultiPolygon.fromGeometries(geoms.sublist(1, 2));
       expect(mp2.centroid2D()?.toText(), '11.5,11.5');
-      final mp3 = MultiPolygon.from(
-        const <Polygon>[].map((pol) => pol.rings.map((e) => e.positions)),
-      );
+      final mp3 = MultiPolygon.fromGeometries(const <Polygon>[]);
       expect(mp3.centroid2D()?.toText(), isNull);
-      final mp4 = MultiPolygon.from(
-        geoms.sublist(0, 4).map((pol) => pol.rings.map((e) => e.positions)),
-      );
+      final mp4 = MultiPolygon.fromGeometries(geoms.sublist(0, 4));
       expect(mp4.centroid2D()?.toText(), '6.5,6.5');
-      final mp5 = MultiPolygon.from(
-        geoms.sublist(1, 4).map((pol) => pol.rings.map((e) => e.positions)),
-      );
+      final mp5 = MultiPolygon.fromGeometries(geoms.sublist(1, 4));
       expect(mp5.centroid2D()?.toText(), '11.5,11.5');
-      final mp6 = MultiPolygon.from(
-        geoms.sublist(2, 4).map((pol) => pol.rings.map((e) => e.positions)),
-      );
+      final mp6 = MultiPolygon.fromGeometries(geoms.sublist(2, 4));
       expect(mp6.centroid2D()?.toText(), '11.5,11');
-      final mp7 = MultiPolygon.from(
-        geoms.sublist(3, 4).map((pol) => pol.rings.map((e) => e.positions)),
-      );
+      final mp7 = MultiPolygon.fromGeometries(geoms.sublist(3, 4));
       expect(mp7.centroid2D()?.toText(), '11,11');
     });
   });

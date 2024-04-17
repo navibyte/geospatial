@@ -89,6 +89,17 @@ class MultiPoint extends SimpleGeometry {
         bounds: bounds,
       );
 
+  /// A multi point geometry from an iterable of `Point` objects in [points].
+  ///
+  /// A new instance shares positions (of `Point` objects) with the source.
+  ///
+  /// An optional [bounds] set a minimum bounding box for a geometry.
+  factory MultiPoint.fromGeometries(Iterable<Point> points, {Box? bounds}) =>
+      MultiPoint(
+        points.map((point) => point.position).toList(growable: false),
+        bounds: bounds,
+      );
+
   /// Builds a multi point geometry from an array of [points] (each with a
   /// position).
   ///

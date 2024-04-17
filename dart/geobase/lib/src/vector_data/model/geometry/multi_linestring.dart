@@ -115,6 +115,21 @@ class MultiLineString extends SimpleGeometry {
         bounds: bounds,
       );
 
+  /// A multi line string from an iterable of [lineStrings] (each item as an
+  /// instance of [LineString]).
+  ///
+  /// A new instance shares chains of positions with the source.
+  ///
+  /// An optional [bounds] set a minimum bounding box for a geometry.
+  factory MultiLineString.fromGeometries(
+    Iterable<LineString> lineStrings, {
+    Box? bounds,
+  }) =>
+      MultiLineString(
+        lineStrings.map((line) => line.chain).toList(growable: false),
+        bounds: bounds,
+      );
+
   /// Builds a multi line string from an array of [lineStrings] (each with a
   /// chain of positions).
   ///
