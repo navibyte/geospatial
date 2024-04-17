@@ -276,7 +276,7 @@ Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geobase: ^1.0.2
+  geobase: ^1.1.0-dev.0
 ```
 
 Import it:
