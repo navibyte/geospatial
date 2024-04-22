@@ -2,7 +2,7 @@
 
 [geobase release 1.1.0](https://github.com/navibyte/geospatial/milestone/1)
 
-NOTE: Version 1.1.0 currently under development (1.1.0-dev.0).
+✨ New (2024-04-22): Support for Newline-delimited GeoJSON, EWKT and EWKB added. Check out [the blog post](https://medium.com/@navibyte/decode-and-encode-geojson-wkt-and-wkb-in-dart-and-flutter-apps-ab2ef4ece2f1).
 
 🧩 Features:
 * [Enhanced coordinate value output for positions and text data formats #98](https://github.com/navibyte/geospatial/issues/98)
