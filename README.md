@@ -11,6 +11,8 @@ schemes, vector data models and formats, and geospatial Web APIs.
 
 [![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev/) [![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)](https://flutter.dev/)
 
+✨ New (2024-04-22):  The stable version 1.1.0 adds support for Newline-delimited GeoJSON, EWKT and EWKB. See also the article [Decode and encode GeoJSON, WKT and WKB in Dart and Flutter apps](https://medium.com/@navibyte/decode-and-encode-geojson-wkt-and-wkb-in-dart-and-flutter-apps-ab2ef4ece2f1).
+
 ✨ New (2023-10-29): The stable version 1.0.0 is now ready. See also the article [Geospatial tools for Dart - version 1.0 published](https://medium.com/@navibyte/geospatial-tools-for-dart-version-1-0-published-0f9673e510b3) at Medium.
 
 ## :package: Packages
@@ -120,6 +122,10 @@ Geospatial feature and feature collections can be instantiated easily too:
   ]);
 ```
 
+### GeoJSON, WKT and WKB with geobase
+
+More details in the article (2024-04-14) [Decode and encode GeoJSON, WKT and WKB in Dart and Flutter apps](https://medium.com/@navibyte/decode-and-encode-geojson-wkt-and-wkb-in-dart-and-flutter-apps-ab2ef4ece2f1).
+
 GeoJSON, WKT and WKB formats are supported as input and output:
 
 ```dart
@@ -140,6 +146,77 @@ GeoJSON, WKT and WKB formats are supported as input and output:
 
   // Decode a geometry from WKB bytes.
   LineString.decode(bytes, format: WKB.geometry);
+```
+
+A sample showing more deeply how to handle WKB and EWKB binary data:
+
+```dart
+  // to get a sample point, first parse a 3D point from WKT encoded string
+  final p = Point.parse('POINT Z(-0.0014 51.4778 45)', format: WKT.geometry);
+
+  // to encode a geometry as WKB/EWKB use toBytes() or toBytesHex() methods
+
+  // encode as standard WKB data (format: `WKB.geometry`), prints:
+  // 01e9030000c7bab88d06f056bfb003e78c28bd49400000000000804640
+  final wkbHex = p.toBytesHex(format: WKB.geometry);
+  print(wkbHex);
+
+  // encode as Extended WKB data (format: `WKB.geometryExtended`), prints:
+  // 0101000080c7bab88d06f056bfb003e78c28bd49400000000000804640
+  final ewkbHex = p.toBytesHex(format: WKB.geometryExtended);
+  print(ewkbHex);
+
+  // otherwise encoded data equals, but bytes for the geometry type varies
+
+  // there are some helper methods to analyse WKB/EWKB bytes or hex strings
+  // (decodeFlavor, decodeEndian, decodeSRID and versions with hex postfix)
+
+  // prints: "WkbFlavor.standard - WkbFlavor.extended"
+  print('${WKB.decodeFlavorHex(wkbHex)} - ${WKB.decodeFlavorHex(ewkbHex)}');
+
+  // when decoding WKB or EWKB data, a variant is detected automatically, so
+  // both `WKB.geometry` and `WKB.geometryExtended` can be used
+  final pointFromWkb = Point.decodeHex(wkbHex, format: WKB.geometry);
+  final pointFromEwkb = Point.decodeHex(ewkbHex, format: WKB.geometry);
+  print(pointFromWkb.equals3D(pointFromEwkb)); // prints "true"
+
+  // SRID can be encoded only on EWKB data, this sample prints:
+  // 01010000a0e6100000c7bab88d06f056bfb003e78c28bd49400000000000804640
+  final ewkbHexWithSRID =
+      p.toBytesHex(format: WKB.geometryExtended, crs: CoordRefSys.EPSG_4326);
+  print(ewkbHexWithSRID);
+
+  // if you have WKB or EWKB data, but not sure which, then you can fist check
+  // a flavor and whether it contains SRID, prints: "SRID from EWKB data: 4326"
+  if (WKB.decodeFlavorHex(ewkbHexWithSRID) == WkbFlavor.extended) {
+    final srid = WKB.decodeSRIDHex(ewkbHexWithSRID);
+    if (srid != null) {
+      print('SRID from EWKB data: $srid');
+
+      // after finding out CRS, an actual point can be decoded
+      // Point.decodeHex(ewkbHexWithSRID, format: WKB.geometry);
+    }
+  }
+```
+
+Using Newline-delimited GeoJSON (or "GeoJSONL") is as easy as using the
+standard GeoJSON:
+
+```dart
+  /// a feature collection encoded as GeoJSONL and containing two features that
+  /// are delimited by the newline character \n
+  const sample = '''
+    {"type":"Feature","id":"ROG","geometry":{"type":"Point","coordinates":[-0.0014,51.4778,45]},"properties":{"title":"Royal Observatory","place":"Greenwich"}}
+    {"type":"Feature","id":"TB","geometry":{"type":"Point","coordinates":[-0.075406,51.5055]},"properties":{"title":"Tower Bridge","built":1886}}
+    ''';
+
+  // parse a FeatureCollection object using the decoder for the GeoJSONL format
+  final collection = FeatureCollection.parse(sample, format: GeoJSONL.feature);
+
+  // ... use features read and returned in a feature collection object ...
+
+  // encode back to GeoJSONL data
+  print(collection.toText(format: GeoJSONL.feature, decimals: 5));
 ```
 
 ### Access GeoJSON resources with geodata
@@ -198,8 +275,15 @@ Code          | Description
 
 ## :newspaper_roll: News
 
+2024-04-22
+* ✨ The [stable version 1.1.0](https://github.com/navibyte/geospatial/milestone/1) adds support for Newline-delimited GeoJSON, EWKT and EWKB.
+* See also the article [Decode and encode GeoJSON, WKT and WKB in Dart and Flutter apps](https://medium.com/@navibyte/decode-and-encode-geojson-wkt-and-wkb-in-dart-and-flutter-apps-ab2ef4ece2f1).
+* Published packages at pub.dev:
+  * [geobase version 1.1.0](https://pub.dev/packages/geobase/versions/1.1.0)
+  * [geodata version 1.1.0](https://pub.dev/packages/geodata/versions/1.1.0)
+
 2023-10-29
-* ✨ New (2023-10-29): The stable version 1.0.0 is now ready. See also the article [Geospatial tools for Dart - version 1.0 published](https://medium.com/@navibyte/geospatial-tools-for-dart-version-1-0-published-0f9673e510b3) at Medium
+* ✨ The stable version 1.0.0 is now ready. See also the article [Geospatial tools for Dart - version 1.0 published](https://medium.com/@navibyte/geospatial-tools-for-dart-version-1-0-published-0f9673e510b3) at Medium
 * [geobase version 1.0.0](https://github.com/navibyte/geospatial/issues/175)
 * [geodata version 1.0.0](https://github.com/navibyte/geospatial/issues/187)
 
@@ -258,6 +342,9 @@ Some external links and other resources.
 
 Geospatial:
 * [GeoJSON](https://geojson.org/) based on [RFC 7946](https://tools.ietf.org/html/rfc7946)
+* [Newline-delimited GeoJSON](https://stevage.github.io/ndgeojson/) with variants specified elsewhere:
+  * [GeoJSONL](https://www.interline.io/blog/geojsonl-extracts/)
+  * [GeoJSON Text Sequences](https://datatracker.ietf.org/doc/html/rfc8142)
 * [Simple Feature Access - Part 1: Common Architecture](https://www.ogc.org/standards/sfa)
 * [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) (Well-known text representation of geometry)  
 * [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary) (Well-known binary)
@@ -293,7 +380,9 @@ SDKs:
 * [Flutter](https://flutter.dev/) 
 
 Latest on Dart SDKs
-* [Dart 3](https://medium.com/dartlang/announcing-dart-3-53f065a10635) with 100% sound null safety, new features (records, patterns, and class modifiers),  and a peek into the future.
+* [Dart 3.3](https://medium.com/dartlang/dart-3-3-325bf2bf6c13) with extension types,  evolving JavaScript-interoperability and experimental support for WebAssembly.
+* [Dart 3.2](https://medium.com/dartlang/dart-3-2-c8de8fe1b91f) with improved language & developer experience.
+* [Dart 3](https://medium.com/dartlang/announcing-dart-3-53f065a10635) with 100% sound null safety, new features (records, patterns, and class modifiers), and a peek into the future.
 * [Dart 3 alpha](https://medium.com/dartlang/dart-3-alpha-f1458fb9d232) with records, patterns, access controls, portability advancements and the new Dart 3 type system (100% sound null safety)
 * [Dart 2.18](https://medium.com/dartlang/dart-2-18-f4b3101f146c) with Objective-C & Swift interop, and improved type inference
 * [Dart 2.17](https://medium.com/dartlang/dart-2-17-b216bfc80c5d) with enum member support, parameter forwarding to super classes, flexibility for named parameters, and more
@@ -304,6 +393,9 @@ Latest on Dart SDKs
 * [Dart 2.12](https://medium.com/dartlang/announcing-dart-2-12-499a6e689c87) with sound null safety
 
 Latest on Flutter SDKs
+* [Flutter 3.19](https://medium.com/flutter/whats-new-in-flutter-3-19-58b1aae242d2) running on Dart 3.3 and Gemini API integration, Impeller updates, and Windows Arm64 support.
+* [Flutter 3.16](https://medium.com/flutter/whats-new-in-flutter-3-16-dba6cb1015d1) running on Dart 3.2 and with Material 3 by default, Impeller preview for Android, etc.
+* [Flutter 3.13](https://medium.com/flutter/whats-new-in-flutter-3-13-479d9b11df4d) running on Dart 3.1 and with new 2D scrolling widgets and faster graphics.
 * [Flutter 3.10](https://medium.com/flutter/whats-new-in-flutter-3-10-b21db2c38c73) running on Dart 3 and with seamless web and mobile integration, and stable Impleller for iOS.
 * [Flutter 3.7](https://medium.com/flutter/whats-new-in-flutter-3-7-38cbea71133c) with Material 3 updates and iOS improvements
 * [Flutter 3.3](https://medium.com/flutter/announcing-flutter-3-3-at-flutter-vikings-6f213e068793)
