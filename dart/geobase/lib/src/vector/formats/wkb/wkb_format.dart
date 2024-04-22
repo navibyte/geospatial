@@ -74,6 +74,7 @@ class WKB {
   /// `geometryCollection` | 0007 | 1007 | 2007 | 3007
   ///
   /// {@endtemplate}
+  /// 
   /// {@template geobase.WKB.geometry.endian}
   ///
   /// For WKB binary data encoding, the `Endian.little` (NDR) byte order is used
