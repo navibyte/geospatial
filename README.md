@@ -32,16 +32,16 @@ Key features of the [geobase](https://pub.dev/packages/geobase) package:
 * 🧩 simple geometries (point, line string, polygon, multi point, multi line string, multi polygon, geometry collection)
 * 🔷 features (with id, properties and geometry) and feature collections
 * 📅 temporal data structures (instant, interval) and spatial extents
-* 📃 vector data formats supported ([GeoJSON](https://geojson.org/), [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry), [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary)
+* 📃 vector data formats supported ([GeoJSON](https://geojson.org/), [Newline-delimited GeoJSON](https://stevage.github.io/ndgeojson/), [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry), [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary)
 )
 * 🗺️ coordinate projections (web mercator + based on the external [proj4dart](https://pub.dev/packages/proj4dart) library)
 * 🔢 tiling schemes and tile matrix sets (web mercator, global geodetic)
 
 Key features of the [geodata](https://pub.dev/packages/geodata) package:
 
-* 🪄 Client-side data source abstraction for geospatial feature service Web APIs
-* 🌐 The [GeoJSON](https://geojson.org/) client to read features from static web resources and local files
-* 🌎 The [OGC API Features](https://ogcapi.ogc.org/features/) client to access metadata and feature items from a compliant geospatial Web API providing GeoJSON data
+* 🪄 Client-side data source abstraction for geospatial feature service Web APIs.
+* 🌐 The [GeoJSON](https://geojson.org/) client to read features from static web resources and local files, supports also [Newline-delimited GeoJSON](https://stevage.github.io/ndgeojson/) data.
+* 🌎 The [OGC API Features](https://ogcapi.ogc.org/features/) client to access metadata and feature items from a compliant geospatial Web API providing GeoJSON data.
 
 Client-side support for the OGC API Features standard:
 

@@ -14,9 +14,9 @@ Geospatial feature service Web APIs with support for
 
 Key features:
 
-* 🪄 Client-side data source abstraction for geospatial feature service Web APIs
-* 🌐 The [GeoJSON](https://geojson.org/) client to read features from static web resources and local files
-* 🌎 The [OGC API Features](https://ogcapi.ogc.org/features/) client to access metadata and feature items from a compliant geospatial Web API providing GeoJSON data
+* 🪄 Client-side data source abstraction for geospatial feature service Web APIs.
+* 🌐 The [GeoJSON](https://geojson.org/) client to read features from static web resources and local files, supports also [Newline-delimited GeoJSON](https://stevage.github.io/ndgeojson/) data.
+* 🌎 The [OGC API Features](https://ogcapi.ogc.org/features/) client to access metadata and feature items from a compliant geospatial Web API providing GeoJSON data.
 
 Client-side support for the OGC API Features standard:
 
