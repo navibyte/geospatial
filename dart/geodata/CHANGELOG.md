@@ -2,7 +2,7 @@
 
 [geodata release 1.1.0](https://github.com/navibyte/geospatial/milestone/1)
 
-NOTE: Version 1.1.0 currently under development (1.1.0-dev.0).
+✨ New (2024-04-22):  The stable version 1.1.0 adds support for Newline-delimited GeoJSON. See the related [blog post](https://medium.com/@navibyte/decode-and-encode-geojson-wkt-and-wkb-in-dart-and-flutter-apps-ab2ef4ece2f1) about geobase changes.
 
 🧩 Features:
 * [Support for GeoJSON Text Sequences](https://github.com/navibyte/geospatial/issues/217)
