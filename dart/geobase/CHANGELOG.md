@@ -1,3 +1,15 @@
+## 1.2.0
+
+[geobase release 1.2.0](https://github.com/navibyte/geospatial/milestone/4)
+
+✨ New [documentation site](https://geospatial.navibyte.dev) published!
+
+🛠 Refactoring:
+* [Shorten and streamline package readme docs #234](https://github.com/navibyte/geospatial/issues/234)
+
+No functional changes on classes and functions, but major changes on
+documentation with the publication of the new docs website.
+
 ## 1.1.0
 
 [geobase release 1.1.0](https://github.com/navibyte/geospatial/milestone/1)
