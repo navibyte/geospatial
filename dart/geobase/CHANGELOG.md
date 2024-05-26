@@ -2,7 +2,8 @@
 
 [geobase release 1.2.0](https://github.com/navibyte/geospatial/milestone/4)
 
-✨ New [documentation site](https://geospatial.navibyte.dev) published!
+✨ New (2024-05-26): The new documentation website ([geospatial.navibyte.dev](https://geospatial.navibyte.dev/)) for the [geobase](https://geospatial.navibyte.dev/v1/geobase/)
+package documentation published along with the stable version 1.2.0.
 
 🛠 Refactoring:
 * [Shorten and streamline package readme docs #234](https://github.com/navibyte/geospatial/issues/234)
