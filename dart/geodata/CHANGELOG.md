@@ -1,3 +1,7 @@
+## 1.2.1
+
+Small documentation link fixes.
+
 ## 1.2.0
 
 [geodata release 1.2.0](https://github.com/navibyte/geospatial/milestone/4)

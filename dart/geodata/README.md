@@ -154,7 +154,7 @@ Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geodata: ^1.2.0
+  geodata: ^1.2.1
 ```
 
 Import it:
@@ -170,10 +170,11 @@ Other documentation:
 
 > 📚 **Concepts**: If coordinates, geometries, features and feature collections
 > are unfamiliar concepts, you might want to read more about
-> [geometries](https://pub.dev/packages/geobase#geometries),
-> [geospatial features](https://pub.dev/packages/geobase#geospatial-features)
-> and [GeoJSON](https://pub.dev/packages/geobase#vector-data-formats) in the
-> documentation of the [geobase](https://pub.dev/packages/geobase) package.
+> [geometries](https://geospatial.navibyte.dev/v1/geobase/geometry/),
+> [geospatial features](https://geospatial.navibyte.dev/v1/geobase/features/)
+> and [GeoJSON](https://geospatial.navibyte.dev/v1/geobase/formats/#geojson) in
+> the [geobase](https://geospatial.navibyte.dev/v1/geobase/) package
+> documentation.
 > 
 > 🚀 **Samples**: 
 > The [Geospatial demos for Dart](https://github.com/navibyte/geospatial_demos)
