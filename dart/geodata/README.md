@@ -154,7 +154,7 @@ Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geodata: ^1.1.0
+  geodata: ^1.2.0
 ```
 
 Import it:
