@@ -11,6 +11,10 @@ schemes, vector data models and formats, and geospatial Web APIs.
 
 [![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev/) [![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)](https://flutter.dev/)
 
+✨ New (2024-05-26): The new documentation website ([geospatial.navibyte.dev](https://geospatial.navibyte.dev/)) for [geobase](https://geospatial.navibyte.dev/v1/geobase/)
+and [geodata](https://geospatial.navibyte.dev/v1/geodata/)
+package documentation published along with the stable version 1.2.0.
+
 ✨ New (2024-04-22):  The stable version 1.1.0 adds support for Newline-delimited GeoJSON, EWKT and EWKB. See also the article [Decode and encode GeoJSON, WKT and WKB in Dart and Flutter apps](https://medium.com/@navibyte/decode-and-encode-geojson-wkt-and-wkb-in-dart-and-flutter-apps-ab2ef4ece2f1).
 
 ✨ New (2023-10-29): The stable version 1.0.0 is now ready. See also the article [Geospatial tools for Dart - version 1.0 published](https://medium.com/@navibyte/geospatial-tools-for-dart-version-1-0-published-0f9673e510b3) at Medium.
@@ -24,6 +28,37 @@ Code           | Package | Description
 -------------- | --------| -----------
 :globe_with_meridians: [geobase](dart/geobase) | [![pub package](https://img.shields.io/pub/v/geobase.svg)](https://pub.dev/packages/geobase) | Geospatial data structures (coordinates, geometries, features, metadata), spherical geodesy, projections and tiling schemes. Vector data format support for [GeoJSON](https://geojson.org/), [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) and [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary).
 :earth_americas: [geodata](dart/geodata) | [![pub package](https://img.shields.io/pub/v/geodata.svg)](https://pub.dev/packages/geodata) | Geospatial feature service Web APIs with support for [GeoJSON](https://geojson.org/) and [OGC API Features](https://ogcapi.ogc.org/features/) clients.
+
+## 📚 Documentation
+
+Comprehensive guidance on how to use package and about
+*Geospatial tools for Dart* is available on the
+[geospatial.navibyte.dev](https://geospatial.navibyte.dev/) website.
+
+Overview topics about *Geospatial tools for Dart*:
+
+* [⛳️ Getting started](https://geospatial.navibyte.dev/v1/start/)
+* [📖 Introduction](https://geospatial.navibyte.dev/v1/start/intro/)
+* [💼 Code project](https://geospatial.navibyte.dev/reference/project/)
+* [📚 API documentation](https://geospatial.navibyte.dev/reference/api/)
+
+The [geobase](https://geospatial.navibyte.dev/v1/geobase/)
+package documentation by chapters:
+
+* [📍 Coordinates](https://geospatial.navibyte.dev/v1/geobase/coordinates/)
+* [🧩 Simple geometries](https://geospatial.navibyte.dev/v1/geobase/geometry/)
+* [🔷 Geospatial features](https://geospatial.navibyte.dev/v1/geobase/features/)
+* [📃 Vector formats](https://geospatial.navibyte.dev/v1/geobase/formats/)
+* [📅 Metadata](https://geospatial.navibyte.dev/v1/geobase/metadata/)
+* [🗺️ Projections](https://geospatial.navibyte.dev/v1/geobase/projections/)
+* [📐 Spherical geodesy](https://geospatial.navibyte.dev/v1/geobase/spherical-geodesy/)
+* [🔢 Tiling schemes](https://geospatial.navibyte.dev/v1/geobase/tiling-schemes/)
+
+The [geodata](https://geospatial.navibyte.dev/v1/geodata/)
+package documentation by chapters:
+
+* [🌐 GeoJSON Web API client](https://geospatial.navibyte.dev/v1/geodata/geojson-client/)
+* [🌎 OGC API Features client](https://geospatial.navibyte.dev/v1/geodata/ogcfeat-client/)
 
 ## :sparkles: Features
 
@@ -263,6 +298,9 @@ for (final feat in features) {
 
 ## :rocket: Demos and samples
 
+More guidance and code examples are provided on the
+[geospatial.navibyte.dev](https://geospatial.navibyte.dev/) documentation site.
+
 ✨ See also the
 [Geospatial demos for Dart](https://github.com/navibyte/geospatial_demos) code
 repository for demo and sample apps demonstrating the usage of
@@ -305,6 +343,8 @@ See also older news in the [changelog](CHANGELOG.md) of this repository.
 🧩 See [open issues](https://github.com/navibyte/geospatial/issues) for planned features, requests for change, and observed bugs.
 
 💡 Any comments, questions, suggestions of new features and other other contributions are welcome, of course!
+
+📚 Documentation: [geospatial.navibyte.dev](https://geospatial.navibyte.dev/)
 
 🪄 Active packages in this repository: 
 * [geobase](https://pub.dev/packages/geobase) 
