@@ -1,29 +1,50 @@
-2023-10-29
+## 2024-05-26
+
+* ✨ The stable version 1.2.0 with the brand new documentation site published at [geospatial.navibyte.dev](https://geospatial.navibyte.dev/).
+* Published packages at pub.dev:
+  * [geobase version 1.2.0](https://pub.dev/packages/geobase/versions/1.2.0)
+  * [geodata version 1.2.1](https://pub.dev/packages/geodata/versions/1.2.1)
+
+## 2024-04-22
+
+* ✨ The [stable version 1.1.0](https://github.com/navibyte/geospatial/milestone/1) adds support for Newline-delimited GeoJSON, EWKT and EWKB.
+* See also the article [Decode and encode GeoJSON, WKT and WKB in Dart and Flutter apps](https://medium.com/@navibyte/decode-and-encode-geojson-wkt-and-wkb-in-dart-and-flutter-apps-ab2ef4ece2f1).
+* Published packages at pub.dev:
+  * [geobase version 1.1.0](https://pub.dev/packages/geobase/versions/1.1.0)
+  * [geodata version 1.1.0](https://pub.dev/packages/geodata/versions/1.1.0)
+
+## 2023-10-29
+
 * ✨ New (2023-10-29): The stable version 1.0.0 is now ready. See also the article [Geospatial tools for Dart - version 1.0 published](https://medium.com/@navibyte/geospatial-tools-for-dart-version-1-0-published-0f9673e510b3) at Medium
 * [geobase version 1.0.0](https://github.com/navibyte/geospatial/issues/175)
 * [geodata version 1.0.0](https://github.com/navibyte/geospatial/issues/187)
 
-2023-09-30
+## 2023-09-30
+
 * [geobase version 0.6.0](https://github.com/navibyte/geospatial/issues/193)
   * ✨ Optimizing data structures (*Position*, *PositionSeries*, *Box*) used by simple geometries. Fixes, tests and documentation.
 * [geodata version 0.13.0](https://github.com/navibyte/geospatial/issues/198)
 
-2023-08-11
+## 2023-08-11
+
 * [geobase version 0.5.0](https://github.com/navibyte/geospatial/issues/174)
   * ✨ Spherical geodesy functions (distance, bearing, destination point, etc.) for *great circle* and *rhumb line* paths.
 * [geodata version 0.12.0](https://github.com/navibyte/geospatial/issues/177)
   * ✨ Better client-side support for OGC API Features (Part 1 and 2).
 
-2023-03-19
+## 2023-03-19
+
 * ✨ New: Updated docs with class and flow diagrams:
   * [geobase](https://pub.dev/packages/geobase/versions/0.4.2) (0.4.2)
   * [geodata](https://pub.dev/packages/geodata/versions/0.11.4) (0.11.4)
 
-2022-12-02
+##2022-12-02
+
 * [geobase version 0.4.0](https://github.com/navibyte/geospatial/issues/161)
 * [geodata version 0.11.0](https://github.com/navibyte/geospatial/issues/162)
 
-2022-08-21
+## 2022-08-21
+
 * [geobase](https://pub.dev/packages/geobase/versions/0.3.0) (0.3.0), see [changelog](dart/geobase/CHANGELOG.md#030) for details
   * ✨ New: Data structures for simple geometries, features and feature collections.
   * ✨ New: Support for [Well-known binary](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary) (WKB). Text and binary data formats, encodings and content interfaces also redesigned.  

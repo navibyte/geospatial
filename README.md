@@ -312,6 +312,12 @@ Code          | Description
 [earthquake_map](https://github.com/navibyte/geospatial_demos/tree/main/earthquake_map) | Shows earthquakes fetched from the [USGS web service](https://earthquake.usgs.gov/earthquakes/feed/) on a basic map view. The demo uses both [geobase](https://pub.dev/packages/geobase) and [geodata](https://pub.dev/packages/geodata) packages for geospatial data accesss. Discusses also state management based on [Riverpod](https://riverpod.dev/). The map UI is based on the [Google Maps Flutter](https://pub.dev/packages/google_maps_flutter) plugin.
 
 ## :newspaper_roll: News
+ 
+2024-05-26
+* ✨ The stable version 1.2.0 with the brand new documentation site published at [geospatial.navibyte.dev](https://geospatial.navibyte.dev/).
+* Published packages at pub.dev:
+  * [geobase version 1.2.0](https://pub.dev/packages/geobase/versions/1.2.0)
+  * [geodata version 1.2.1](https://pub.dev/packages/geodata/versions/1.2.1)
 
 2024-04-22
 * ✨ The [stable version 1.1.0](https://github.com/navibyte/geospatial/milestone/1) adds support for Newline-delimited GeoJSON, EWKT and EWKB.
@@ -420,6 +426,7 @@ SDKs:
 * [Flutter](https://flutter.dev/) 
 
 Latest on Dart SDKs
+* [Dart 3.4](https://medium.com/dartlang/dart-3-4-bd8d23b4462a) with WebAssembly (WASM) updates and the roadmap for Dart *macros*. 
 * [Dart 3.3](https://medium.com/dartlang/dart-3-3-325bf2bf6c13) with extension types,  evolving JavaScript-interoperability and experimental support for WebAssembly.
 * [Dart 3.2](https://medium.com/dartlang/dart-3-2-c8de8fe1b91f) with improved language & developer experience.
 * [Dart 3](https://medium.com/dartlang/announcing-dart-3-53f065a10635) with 100% sound null safety, new features (records, patterns, and class modifiers), and a peek into the future.
@@ -433,6 +440,7 @@ Latest on Dart SDKs
 * [Dart 2.12](https://medium.com/dartlang/announcing-dart-2-12-499a6e689c87) with sound null safety
 
 Latest on Flutter SDKs
+* [Flutter 3.22](https://medium.com/flutter/whats-new-in-flutter-3-22-fbde6c164fe3) running on Dart 3.4 and stable support for WebAssembly (WASM), Graphics rendering enhancements, and AI updates.
 * [Flutter 3.19](https://medium.com/flutter/whats-new-in-flutter-3-19-58b1aae242d2) running on Dart 3.3 and Gemini API integration, Impeller updates, and Windows Arm64 support.
 * [Flutter 3.16](https://medium.com/flutter/whats-new-in-flutter-3-16-dba6cb1015d1) running on Dart 3.2 and with Material 3 by default, Impeller preview for Android, etc.
 * [Flutter 3.13](https://medium.com/flutter/whats-new-in-flutter-3-13-479d9b11df4d) running on Dart 3.1 and with new 2D scrolling widgets and faster graphics.
