@@ -1,3 +1,12 @@
+## 1.3.0
+
+NOTE: Version 1.3.0 currently under development (1.3.0-dev.0).
+
+[geobase release 1.3.0](https://github.com/navibyte/geospatial/milestone/5)
+
+🛠 Maintenance:
+* Add dependency on the `collections` package (for `PriorityQueue`).
+
 ## 1.2.0
 
 [geobase release 1.2.0](https://github.com/navibyte/geospatial/milestone/4)
