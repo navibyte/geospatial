@@ -17,6 +17,8 @@ import '/src/coordinates/base/position.dart';
 import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/base/position_series.dart';
 import '/src/coordinates/projection/projection.dart';
+import '/src/geometric/base/distanced_position.dart';
+import '/src/geometric/cartesian/areal/cartesian_areal_extension.dart';
 import '/src/utils/bounded_utils.dart';
 import '/src/utils/coord_positions.dart';
 import '/src/utils/geometry_calculations_cartesian.dart';
@@ -841,6 +843,44 @@ class Polygon extends SimpleGeometry {
 
     return null;
   }
+
+  /// Calculates `polylabel` for this polygon.
+  ///
+  /// The `polylabel` is a fast algorithm for finding polygon
+  /// *pole of inaccessibility*, the most distant internal point from the
+  /// polygon exterior ring (not to be confused with centroid).
+  ///
+  /// Use [precision] to set the precision for calculations (by default `1.0`).
+  /// 
+  /// Use [scheme] to set the position scheme:
+  /// * `Position.scheme` for generic position data (geographic, projected or
+  ///    any other), this is also the default
+  /// * `Projected.scheme` for projected position data
+  /// * `Geographic.scheme` for geographic position data
+  /// 
+  /// Examples:
+  ///
+  /// ```dart
+  /// // A polygon geometry (with an exterior ring and one interior ring as a hole).
+  /// final polygon = Polygon.build([
+  ///   [35.0, 10.0, 45.0, 45.0, 15.0, 40.0, 10.0, 20.0, 35.0, 10.0],
+  ///   [20.0, 30.0, 35.0, 35.0, 30.0, 20.0, 20.0, 30.0],
+  /// ]);
+  /// 
+  /// // Prints: "Polylabel pos: 17.65625,24.21875 dist: 5.745242597140699"
+  /// final p = polygon.polylabel2D(precision: 2.0);
+  /// print('Polylabel pos: ${p.position} dist: ${p.distance}');
+  /// ```
+  /// 
+  /// See also [CartesianArealExtension.polylabel2D].
+  DistancedPosition polylabel2D({
+    double precision = 1.0,
+    PositionScheme scheme = Position.scheme,
+  }) =>
+      _rings.polylabel2D(
+        precision: precision,
+        scheme: scheme,
+      );
 
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>

@@ -25,7 +25,15 @@ extension CartesianArealExtension on Iterable<PositionSeries> {
   /// 
   /// The `polylabel` is a fast algorithm for finding polygon
   /// *pole of inaccessibility*, the most distant internal point from the
-  /// polygon outline (not to be confused with centroid).
+  /// polygon exterior ring (not to be confused with centroid).
+  /// 
+  /// Use [precision] to set the precision for calculations (by default `1.0`).
+  /// 
+  /// Use [scheme] to set the position scheme:
+  /// * `Position.scheme` for generic position data (geographic, projected or
+  ///    any other), this is also the default
+  /// * `Projected.scheme` for projected position data
+  /// * `Geographic.scheme` for geographic position data
   /// 
   /// The algorithm is ported from the
   /// [mapbox/polylabel](https://github.com/mapbox/polylabel) package based on

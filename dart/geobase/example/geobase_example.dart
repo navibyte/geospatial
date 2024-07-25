@@ -34,6 +34,7 @@ void main() {
 
   // geometric
   _geometricCartesianPolylabel();
+  _geometricCartesianPolylabelFromGeometry();
 
   // geometries
   _geometryTypes2D();
@@ -660,6 +661,18 @@ void _geometricCartesianPolylabel() {
 
   // Prints: "Polylabel pos: 17.3828125,23.9453125 dist: 6.131941618102092"
   final p = polygon.polylabel2D(precision: 0.5);
+  print('Polylabel pos: ${p.position} dist: ${p.distance}');
+}
+
+void _geometricCartesianPolylabelFromGeometry() {
+  // A polygon geometry (with an exterior ring and one interior ring as a hole).
+  final polygon = Polygon.build([
+    [35.0, 10.0, 45.0, 45.0, 15.0, 40.0, 10.0, 20.0, 35.0, 10.0],
+    [20.0, 30.0, 35.0, 35.0, 30.0, 20.0, 20.0, 30.0],
+  ]);
+
+  // Prints: "Polylabel pos: 17.65625,24.21875 dist: 5.745242597140699"
+  final p = polygon.polylabel2D(precision: 2.0);
   print('Polylabel pos: ${p.position} dist: ${p.distance}');
 }
 
