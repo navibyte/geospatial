@@ -477,6 +477,18 @@ void main() {
         Projected.build(const [1, 2, 3, 4]),
       );
     });
+
+    test('distanceToLineSegment2D tests', () {
+      final pos = [2.0, 2.0].xy;
+      void testDist(Position start, Position end, double dist) {
+        expect(pos.distanceToLineSegment2D(start, end), dist);
+      }
+      testDist([2.0, 2.0].xy, [2.0, 2.0].xy, 0.0);
+      testDist([1.9, 2.0].xy, [2.1, 2.0].xy, 0.0);
+      testDist([1.9, 3.0].xy, [2.1, 3.0].xy, 1.0);
+      testDist([2.0, 3.0].xy, [3.0, 3.0].xy, 1.0);
+      testDist([3.0, 3.0].xy, [4.0, 3.0].xy, math.sqrt(2));
+    });
   });
 
   group('Position values printed as String', () {
@@ -735,6 +747,25 @@ class _TestXYZM implements Projected {
               (y - destination.y) * (y - destination.y) +
               (z - destination.z) * (z - destination.z),
         );
+
+  @override
+  double distanceToLineSegment2D(Position start, Position end) {
+    final deltaX = end.x - start.x;
+    final deltyY = end.y - start.y;
+
+    final norm = deltaX * deltaX + deltyY * deltyY;
+
+    final u = (((x - start.x) * deltaX + (y - start.y) * deltyY) / norm)
+        .clamp(0.0, 1.0);
+
+    final lineX = start.x + u * deltaX;
+    final lineY = start.y + u * deltyY;
+
+    final dx = lineX - x;
+    final dy = lineY - y;
+
+    return math.sqrt(dx * dx + dy * dy);
+  }
 
   @override
   double bearingTo2D(Position destination) => this == destination

@@ -8,6 +8,7 @@ NOTE: Version 1.3.0 currently under development (1.3.0-dev.0).
 * [Add visual center point calculations for polygons #237](https://github.com/navibyte/geospatial/issues/237)
 * [Centroid2D as available from sub package geometric #240](https://github.com/navibyte/geospatial/issues/240)
 * [Add point-in-polygon function #236](https://github.com/navibyte/geospatial/issues/236)
+* [Add distance-to-from-point function #238](https://github.com/navibyte/geospatial/issues/238)
 
 🛠 Maintenance:
 * Add dependency on the `collections` package (for `PriorityQueue`).

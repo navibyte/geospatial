@@ -674,6 +674,11 @@ void _geometricCartesianPolygon() {
   final inside = polygon.isPointInPolygon2D([20.0, 20.0].xy);
   final outside = polygon.isPointInPolygon2D([10.0, 10.0].xy);
   print('(20,20) => $inside, (10,10) => $outside');
+
+  // prints: (20,20) => 3.7139067635410368, (10,10) => 9.284766908852593
+  final dist1 = polygon.distanceTo2D([20.0, 20.0].xy);
+  final dist2 = polygon.distanceTo2D([10.0, 10.0].xy);
+  print('(20,20) => $dist1, (10,10) => $dist2');
 }
 
 void _geometricCartesianPolygonFromGeometry() {
@@ -695,6 +700,11 @@ void _geometricCartesianPolygonFromGeometry() {
   final inside = polygon.isPointInPolygon2D([20.0, 20.0].xy);
   final outside = polygon.isPointInPolygon2D([10.0, 10.0].xy);
   print('(20,20) => $inside, (10,10) => $outside');
+
+  // prints: (20,20) => 3.7139067635410368, (10,10) => 9.284766908852593
+  final dist1 = polygon.distanceTo2D([20.0, 20.0].xy);
+  final dist2 = polygon.distanceTo2D([10.0, 10.0].xy);
+  print('(20,20) => $dist1, (10,10) => $dist2');
 }
 
 void _geometryTypes2D() {

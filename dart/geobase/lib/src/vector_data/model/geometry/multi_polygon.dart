@@ -664,6 +664,18 @@ class MultiPolygon extends SimpleGeometry {
     return calculator.centroid2D(scheme: scheme);
   }
 
+  @override
+  double distanceTo2D(Position destination) {
+    var minDistance = double.infinity;
+    for (final pol in polygons) {
+      final dist = pol.distanceTo2D(destination);
+      if (dist < minDistance) {
+        minDistance = dist;
+      }
+    }
+    return minDistance;
+  }
+
   /// Returns true if [point] is inside this multi polygon.
   ///
   /// See also [CartesianArealExtension.isPointInPolygon2D] and

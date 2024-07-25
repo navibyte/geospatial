@@ -183,4 +183,33 @@ extension CartesianArealExtension on Iterable<PositionSeries> {
 
     return false;
   }
+
+  /// Returns a distance from the outline of a polygon represented by this to
+  /// [destination] calculated in a cartesian 2D plane.
+  ///
+  /// Returns `double.infinity` if a distance could not be calculated.
+  /// 
+  /// Examples:
+  /// 
+  /// ```dart
+  /// final polygon = [
+  ///  [35.0, 10.0, 45.0, 45.0, 15.0, 40.0, 10.0, 20.0, 35.0, 10.0].positions(),
+  ///  [20.0, 30.0, 35.0, 35.0, 30.0, 20.0, 20.0, 30.0].positions(),
+  /// ];
+  ///
+  /// // prints: (20,20) => 3.7139067635410368, (10,10) => 9.284766908852593
+  /// final dist1 = polygon.distanceTo2D([20.0, 20.0].xy);
+  /// final dist2 = polygon.distanceTo2D([10.0, 10.0].xy);
+  /// print('(20,20) => $dist1, (10,10) => $dist2');
+  /// ```
+  double distanceTo2D(Position destination) {
+    var minDistance = double.infinity;
+    for (final ring in this) {
+      final dist = ring.distanceTo2D(destination);
+      if (dist < minDistance) {
+        minDistance = dist;
+      }
+    }
+    return minDistance;
+  }
 }

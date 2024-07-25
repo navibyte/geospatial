@@ -359,6 +359,10 @@ class Point implements SimpleGeometry {
             );
 
   @override
+  double distanceTo2D(Position destination) =>
+      position.distanceTo2D(destination);
+
+  @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
       isEmptyByGeometry
           ? writer.emptyGeometry(Geom.point, name: name)

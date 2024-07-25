@@ -562,6 +562,26 @@ abstract class Position extends ValuePositionable {
               (z - destination.z) * (z - destination.z),
         );
 
+  /// Returns a distance from this to a line segment formed by [start] and [end]
+  /// positions calculated in a cartesian 2D plane.
+  double distanceToLineSegment2D(Position start, Position end) {
+    final deltaX = end.x - start.x;
+    final deltyY = end.y - start.y;
+
+    final norm = deltaX * deltaX + deltyY * deltyY;
+
+    final u = (((x - start.x) * deltaX + (y - start.y) * deltyY) / norm)
+        .clamp(0.0, 1.0);
+
+    final lineX = start.x + u * deltaX;
+    final lineY = start.y + u * deltyY;
+
+    final dx = lineX - x;
+    final dy = lineY - y;
+
+    return math.sqrt(dx * dx + dy * dy);
+  }
+
   /// Returns a bearing from this to [destination] calculated in a cartesian
   /// 2D plane.
   ///

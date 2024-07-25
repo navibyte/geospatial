@@ -390,6 +390,18 @@ class GeometryCollection<E extends Geometry> extends Geometry {
   }
 
   @override
+  double distanceTo2D(Position destination) {
+    var minDistance = double.infinity;
+    for (final geom in geometries) {
+      final dist = geom.distanceTo2D(destination);
+      if (dist < minDistance) {
+        minDistance = dist;
+      }
+    }
+    return minDistance;
+  }
+
+  @override
   void writeTo(GeometryContent writer, {String? name}) => isEmptyByGeometry
       ? writer.emptyGeometry(Geom.geometryCollection, name: name)
       : writer.geometryCollection(

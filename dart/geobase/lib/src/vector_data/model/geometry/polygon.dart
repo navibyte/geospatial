@@ -810,6 +810,9 @@ class Polygon extends SimpleGeometry {
   Position? centroid2D({PositionScheme scheme = Position.scheme}) =>
       _rings.centroid2D(scheme: scheme);
 
+  @override
+  double distanceTo2D(Position destination) => _rings.distanceTo2D(destination);
+
   /// Calculates `polylabel` for this polygon.
   ///
   /// The `polylabel` is a fast algorithm for finding polygon

@@ -442,6 +442,18 @@ class MultiPoint extends SimpleGeometry {
   }
 
   @override
+  double distanceTo2D(Position destination) {
+    var minDistance = double.infinity;
+    for (final pos in positions) {
+      final dist = pos.distanceTo2D(destination);
+      if (dist < minDistance) {
+        minDistance = dist;
+      }
+    }
+    return minDistance;
+  }
+
+  @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
       isEmptyByGeometry
           ? writer.emptyGeometry(Geom.multiPoint, name: name)

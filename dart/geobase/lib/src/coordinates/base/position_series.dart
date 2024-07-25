@@ -1174,6 +1174,73 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
     return intersections % 2 != 0;
   }
 
+  /// Returns a distance from this to [destination] calculated in a cartesian 2D
+  /// plane.
+  ///
+  /// The distance is computed according to [dimensionality]:
+  /// * `Dimensionality.volymetric`: not supported, works as `areal`
+  /// * `Dimensionality.areal`: a distance to the outline of a polygon
+  ///    represented by this position series.
+  /// * `Dimensionality.linear`:  a distance to the nearest line segment of a
+  ///    line string represented by this position series.
+  /// * `Dimensionality.punctual`: a distance to the nearest position in this
+  ///    position series.
+  ///
+  /// Returns `double.infinity` if a distance could not be calculated.
+  ///
+  /// See also [Position.distanceTo2D] for calculating a distance between two
+  /// points and [Position.distanceToLineSegment2D] for a distance between a
+  /// point and a line segment.
+  double distanceTo2D(
+    Position destination, {
+    Dimensionality dimensionality = Dimensionality.linear,
+  }) {
+    final topoDim = dimensionality.topologicalDimension;
+    final posCount = positionCount;
+
+    // Areal geometry (distance to polygon outline).
+    if (topoDim >= 2 && posCount >= 3) {
+      var minDistance = double.infinity;
+      for (var i = 0; i < posCount; i++) {
+        final dist = destination.distanceToLineSegment2D(
+          this[i],
+          this[(i + 1) % posCount],
+        );
+        if (dist < minDistance) {
+          minDistance = dist;
+        }
+      }
+      return minDistance;
+    }
+
+    // Linear geometry (distance to nearest line segment).
+    if (topoDim >= 1 && posCount >= 2) {
+      var minDistance = double.infinity;
+      for (var i = 0; i < posCount - 1; i++) {
+        final dist = destination.distanceToLineSegment2D(this[i], this[i + 1]);
+        if (dist < minDistance) {
+          minDistance = dist;
+        }
+      }
+      return minDistance;
+    }
+
+    // Punctual geometry (distance to nearest point).
+    if (posCount >= 1) {
+      var minDistance = double.infinity;
+      for (var i = 0; i < posCount; i++) {
+        final dist = destination.distanceTo2D(this[i]);
+        if (dist < minDistance) {
+          minDistance = dist;
+        }
+      }
+      return minDistance;
+    }
+
+    // could not calculate
+    return double.infinity;
+  }
+
   /// Returns a position series with coordinate values of all positions scaled
   /// by [factor].
   PositionSeries operator *(double factor) => PositionSeries.from(

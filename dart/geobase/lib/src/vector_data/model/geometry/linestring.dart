@@ -512,6 +512,9 @@ class LineString extends SimpleGeometry {
       chain.centroid2D(dimensionality: Dimensionality.linear, scheme: scheme);
 
   @override
+  double distanceTo2D(Position destination) => chain.distanceTo2D(destination);
+
+  @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
       isEmptyByGeometry
           ? writer.emptyGeometry(Geom.lineString, name: name)

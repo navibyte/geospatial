@@ -175,7 +175,7 @@ abstract class Geometry extends Bounded {
   ///    polygons.
   /// * *linear* geometries: computed from midpoints of line segments that
   ///    are weighted by the length of each line segment.
-  /// * *punctuat* geometries: the arithmetic mean of all separate positions.
+  /// * *punctual* geometries: the arithmetic mean of all separate positions.
   ///
   /// Note that a centroid do not always locate inside a geometry.
   ///
@@ -193,6 +193,17 @@ abstract class Geometry extends Bounded {
   /// More info about [Centroid](https://en.wikipedia.org/wiki/Centroid) can be
   /// read in Wikipedia.
   Position? centroid2D({PositionScheme scheme = Position.scheme}) => null;
+
+  /// Returns a distance from this to [destination] calculated in a cartesian 2D
+  /// plane.
+  ///
+  /// The distance is computed according to dimensionality of a geometry:
+  /// * *areal* geometries: a shortest distance to the outline of a polygon
+  /// * *linear* geometries: a distance to the nearest line segment
+  /// * *punctual* geometries: a distance to the nearest position
+  ///
+  /// Returns `double.infinity` if a distance could not be calculated.
+  double distanceTo2D(Position destination);
 
   @override
   bool equalsCoords(Geometry other);

@@ -504,6 +504,18 @@ class MultiLineString extends SimpleGeometry {
   }
 
   @override
+  double distanceTo2D(Position destination) {
+    var minDistance = double.infinity;
+    for (final chain in chains) {
+      final dist = chain.distanceTo2D(destination);
+      if (dist < minDistance) {
+        minDistance = dist;
+      }
+    }
+    return minDistance;
+  }
+
+  @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
       isEmptyByGeometry
           ? writer.emptyGeometry(Geom.multiLineString, name: name)

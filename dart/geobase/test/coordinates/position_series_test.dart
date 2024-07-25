@@ -8,6 +8,8 @@
 // ignore_for_file: avoid_redundant_argument_values
 // ignore_for_file: missing_whitespace_between_adjacent_strings
 
+import 'dart:math' as math;
+
 import 'package:geobase/coordinates.dart';
 import 'package:geobase/src/utils/coord_calculations_cartesian.dart';
 
@@ -792,7 +794,7 @@ void main() {
       expect(series3xyz.reversed().length3D(), 3.0);
     });
 
-    test('Area2D and centroid2D', () {
+    test('Area2D and centroid2D (and partially distance2D)', () {
       final rectangle = [
         [1.0, 1.0].xy,
         [2.0, 1.0].xy,
@@ -820,6 +822,27 @@ void main() {
       expect(
         rectangle.centroid2D(dimensionality: Dimensionality.linear),
         [1.5, 1.5].xy,
+      );
+      expect(
+        rectangle.distanceTo2D(
+          [1.5, 1.5].xy,
+          dimensionality: Dimensionality.areal,
+        ),
+        0.5,
+      );
+      expect(
+        rectangle.distanceTo2D(
+          [1.5, 2.5].xy,
+          dimensionality: Dimensionality.linear,
+        ),
+        0.5,
+      );
+      expect(
+        rectangle.distanceTo2D(
+          [1.5, 2.5].xy,
+          dimensionality: Dimensionality.punctual,
+        ),
+        0.7071067811865476,
       );
 
       final centroidTest1 = [
@@ -1054,6 +1077,47 @@ void main() {
       );
       expect(stPolygon2.reversed().signedArea2D(), closeTo(928.625, 0.001));
       expect(stPolygon2.length2D(), closeTo(122.630744000095, 0.000000001));
+    });
+
+    test('distanceTo2D tests', () {
+      void testAreal(PositionSeries series, Position pos, double dist) {
+        expect(
+          series.distanceTo2D(pos, dimensionality: Dimensionality.areal),
+          dist,
+        );
+      }
+      void testLinear(PositionSeries series, Position pos, double dist) {
+        expect(
+          series.distanceTo2D(pos, dimensionality: Dimensionality.linear),
+          dist,
+        );
+      }
+      void testPunctual(PositionSeries series, Position pos, double dist) {
+        expect(
+          series.distanceTo2D(pos, dimensionality: Dimensionality.punctual),
+          dist,
+        );
+      }
+      final s1 = [0.0, 0.0, 1.0, 1.0, 3.0, 1.0].positions();
+      testAreal(s1, [2.0, 0.0].xy, 0.6324555320336759);
+      testAreal(s1, [1.5, 0.0].xy, 0.4743416490252569);
+      testLinear(s1, [2.0, 0.0].xy, 1.0);
+      testPunctual(s1, [2.0, 0.0].xy, math.sqrt2);
+
+      final s2 = [0.0, 0.0, 0.0, 1.0, 10.0, 1.0, 10.0, 0.0].positions();
+      testAreal(s2, [0.5, 0.5].xy, 0.5);
+      testLinear(s2, [0.5, 0.5].xy, 0.5);
+      testPunctual(s2, [0.5, 0.5].xy, math.sqrt2 / 2);
+      testAreal(s2, [9.0, 0.0].xy, 0.0);
+      testAreal(s2, [9.0, 0.5].xy, 0.5);
+      testLinear(s2, [9.0, 0.0].xy, 1.0);
+      testPunctual(s2, [9.0, 0.0].xy, 1.0);
+      testAreal(s2, [5.0, 0.0].xy, 0.0);
+      testLinear(s2, [5.0, 0.0].xy, 1.0);
+      testPunctual(s2, [5.0, 0.0].xy, 5.0);
+      testAreal(s2, [5.0, 0.5].xy, 0.5);
+      testLinear(s2, [5.0, 0.5].xy, 0.5);
+      testPunctual(s2, [5.0, 0.5].xy, 5.024937810560445);
     });
 
     test('Scale', () {
