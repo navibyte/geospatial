@@ -32,6 +32,22 @@ extension CartesianArealExtension on Iterable<PositionSeries> {
   /// JavaScript and published by MapBox. See also the
   /// [blog post](https://blog.mapbox.com/a-new-algorithm-for-finding-a-visual-center-of-a-polygon-7c77e6492fbc)
   /// (Aug 2016) by Vladimir Agafonkin introducing it.
+  /// 
+  /// Examples:
+  /// 
+  /// ```dart
+  /// // A polygon (with an exterior ring and one interior ring as a hole) as an
+  /// // `Iterable<PositionSeries>` that is each ring is represented by an instance
+  /// // of `PositionSeries`.
+  /// final polygon = [
+  ///  [35.0, 10.0, 45.0, 45.0, 15.0, 40.0, 10.0, 20.0, 35.0, 10.0].positions(),
+  ///  [20.0, 30.0, 35.0, 35.0, 30.0, 20.0, 20.0, 30.0].positions(),
+  /// ];
+  /// 
+  /// // Prints: "Polylabel pos: 17.3828125,23.9453125 dist: 6.131941618102092"
+  /// final p = polygon.polylabel(precision: 0.5);
+  /// print('Polylabel pos: ${p.position} dist: ${p.distance}');
+  /// ```
   DistancedPosition polylabel({
     double precision = 1.0,
     bool debug = false,

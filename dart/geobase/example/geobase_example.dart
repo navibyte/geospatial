@@ -32,6 +32,9 @@ void main() {
   _sphericalGeodesyGreatCircle();
   _sphericalGeodesyRhumbLine();
 
+  // geometric
+  _geometricCartesianPolylabel();
+
   // geometries
   _geometryTypes2D();
   _point();
@@ -644,6 +647,20 @@ void _sphericalGeodesyRhumbLine() {
   // prints: 8° 48.3′ N, 80° 44.0′ E
   final midPoint = greenwich.rhumb.midPointTo(sydney);
   print(midPoint.latLonDms(format: dm));
+}
+
+void _geometricCartesianPolylabel() {
+  // A polygon (with an exterior ring and one interior ring as a hole) as an
+  // `Iterable<PositionSeries>` that is each ring is represented by an instance
+  // of `PositionSeries`.
+  final polygon = [
+    [35.0, 10.0, 45.0, 45.0, 15.0, 40.0, 10.0, 20.0, 35.0, 10.0].positions(),
+    [20.0, 30.0, 35.0, 35.0, 30.0, 20.0, 20.0, 30.0].positions(),
+  ];
+
+  // Prints: "Polylabel pos: 17.3828125,23.9453125 dist: 6.131941618102092"
+  final p = polygon.polylabel(precision: 0.5);
+  print('Polylabel pos: ${p.position} dist: ${p.distance}');
 }
 
 void _geometryTypes2D() {
