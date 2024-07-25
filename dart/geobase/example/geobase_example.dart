@@ -659,7 +659,7 @@ void _geometricCartesianPolylabel() {
   ];
 
   // Prints: "Polylabel pos: 17.3828125,23.9453125 dist: 6.131941618102092"
-  final p = polygon.polylabel(precision: 0.5);
+  final p = polygon.polylabel2D(precision: 0.5);
   print('Polylabel pos: ${p.position} dist: ${p.distance}');
 }
 

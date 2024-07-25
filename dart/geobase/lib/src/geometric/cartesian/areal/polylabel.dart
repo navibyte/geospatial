@@ -30,7 +30,7 @@ SOFTWARE.
 
 part of 'cartesian_areal_extension.dart';
 
-DistancedPosition _polylabel(
+DistancedPosition _polylabel2D(
   Iterable<PositionSeries> polygon, {
   double precision = 1.0,
   bool debug = false,

@@ -46,7 +46,7 @@ void main() {
     final water2 = _readPolygon('water2');
 
     test('finds pole of inaccessibility for water1 and precision 1', () {
-      final p = water1.polylabel(precision: 1.0);
+      final p = water1.polylabel2D(precision: 1.0);
       expect(
         p,
         DistancedPosition(
@@ -57,7 +57,7 @@ void main() {
     });
 
     test('finds pole of inaccessibility for water1 and precision 50', () {
-      final p = water1.polylabel(precision: 50.0);
+      final p = water1.polylabel2D(precision: 50.0);
       expect(
         p,
         DistancedPosition(
@@ -68,7 +68,7 @@ void main() {
     });
 
     test('finds pole of inaccessibility for water2 and precision 1', () {
-      final p = water2.polylabel(precision: 1.0);
+      final p = water2.polylabel2D(precision: 1.0);
       expect(
         p,
         DistancedPosition(
@@ -81,7 +81,7 @@ void main() {
     test('works on degenerate polygons', () {
       final p1 = [
         [0.0, 0.0, 1.0, 0.0, 2.0, 0.0, 0.0, 0.0].positions(),
-      ].polylabel();
+      ].polylabel2D();
       expect(
         p1,
         DistancedPosition(
@@ -92,7 +92,7 @@ void main() {
 
       final p2 = [
         [0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0].positions(),
-      ].polylabel();
+      ].polylabel2D();
       expect(
         p2,
         DistancedPosition(

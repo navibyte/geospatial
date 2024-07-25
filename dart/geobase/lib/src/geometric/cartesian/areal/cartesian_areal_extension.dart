@@ -45,15 +45,15 @@ extension CartesianArealExtension on Iterable<PositionSeries> {
   /// ];
   /// 
   /// // Prints: "Polylabel pos: 17.3828125,23.9453125 dist: 6.131941618102092"
-  /// final p = polygon.polylabel(precision: 0.5);
+  /// final p = polygon.polylabel2D(precision: 0.5);
   /// print('Polylabel pos: ${p.position} dist: ${p.distance}');
   /// ```
-  DistancedPosition polylabel({
+  DistancedPosition polylabel2D({
     double precision = 1.0,
     bool debug = false,
     PositionScheme scheme = Position.scheme,
   }) =>
-      _polylabel(
+      _polylabel2D(
         this,
         precision: precision,
         debug: debug,
