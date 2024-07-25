@@ -21,7 +21,6 @@ import '/src/geometric/base/distanced_position.dart';
 import '/src/geometric/cartesian/areal/cartesian_areal_extension.dart';
 import '/src/utils/bounded_utils.dart';
 import '/src/utils/coord_positions.dart';
-import '/src/utils/geometry_calculations_cartesian.dart';
 import '/src/vector/content/simple_geometry_content.dart';
 import '/src/vector/encoding/binary_format.dart';
 import '/src/vector/encoding/text_format.dart';
@@ -808,41 +807,8 @@ class Polygon extends SimpleGeometry {
   }
 
   @override
-  Position? centroid2D({PositionScheme scheme = Position.scheme}) {
-    final ext = exterior;
-    if (ext != null) {
-      final cext = ext.centroid2D(scheme: scheme);
-      if (cext != null) {
-        final aext = ext.signedArea2D().abs();
-        if (aext > 0.0) {
-          final calculator = CompositeCentroid()
-            // "positive" weighted centroid for an exterior ring
-            ..addCentroid2D(cext, area: aext);
-
-          // "negative" weighted centroids for interior rings
-          // (only holes with area are used)
-          for (final hole in interior) {
-            final chole = hole.centroid2D(scheme: scheme);
-            if (chole != null) {
-              final ahole = hole.signedArea2D().abs();
-              if (ahole > 0.0) {
-                calculator.addCentroid2D(chole, area: -ahole);
-              }
-            }
-          }
-
-          // return composite if non-null, otherwise just centroid for exterior
-          final composite = calculator.centroid2D(scheme: scheme);
-          return composite ?? cext;
-        } else {
-          // no area, return linear or punctual centroid for exterior
-          return cext;
-        }
-      }
-    }
-
-    return null;
-  }
+  Position? centroid2D({PositionScheme scheme = Position.scheme}) =>
+      _rings.centroid2D(scheme: scheme);
 
   /// Calculates `polylabel` for this polygon.
   ///
@@ -851,13 +817,13 @@ class Polygon extends SimpleGeometry {
   /// polygon exterior ring (not to be confused with centroid).
   ///
   /// Use [precision] to set the precision for calculations (by default `1.0`).
-  /// 
+  ///
   /// Use [scheme] to set the position scheme:
   /// * `Position.scheme` for generic position data (geographic, projected or
   ///    any other), this is also the default
   /// * `Projected.scheme` for projected position data
   /// * `Geographic.scheme` for geographic position data
-  /// 
+  ///
   /// Examples:
   ///
   /// ```dart
@@ -866,12 +832,12 @@ class Polygon extends SimpleGeometry {
   ///   [35.0, 10.0, 45.0, 45.0, 15.0, 40.0, 10.0, 20.0, 35.0, 10.0],
   ///   [20.0, 30.0, 35.0, 35.0, 30.0, 20.0, 20.0, 30.0],
   /// ]);
-  /// 
+  ///
   /// // Prints: "Polylabel pos: 17.65625,24.21875 dist: 5.745242597140699"
   /// final p = polygon.polylabel2D(precision: 2.0);
   /// print('Polylabel pos: ${p.position} dist: ${p.distance}');
   /// ```
-  /// 
+  ///
   /// See also [CartesianArealExtension.polylabel2D].
   DistancedPosition polylabel2D({
     double precision = 1.0,
