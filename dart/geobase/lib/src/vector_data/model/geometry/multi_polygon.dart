@@ -18,6 +18,7 @@ import '/src/coordinates/base/position_extensions.dart';
 import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/base/position_series.dart';
 import '/src/coordinates/projection/projection.dart';
+import '/src/geometric/cartesian/areal/cartesian_areal_extension.dart';
 import '/src/utils/bounded_utils.dart';
 import '/src/utils/coord_positions.dart';
 import '/src/utils/coord_type.dart';
@@ -661,6 +662,19 @@ class MultiPolygon extends SimpleGeometry {
       }
     }
     return calculator.centroid2D(scheme: scheme);
+  }
+
+  /// Returns true if [point] is inside this multi polygon.
+  ///
+  /// See also [CartesianArealExtension.isPointInPolygon2D] and
+  /// [Polygon.isPointInPolygon2D] for reference.
+  bool isPointInPolygon2D(Position point) {
+    for (final pol in polygons) {
+      if (pol.isPointInPolygon2D(point)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @override

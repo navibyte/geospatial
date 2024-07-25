@@ -848,6 +848,26 @@ class Polygon extends SimpleGeometry {
         scheme: scheme,
       );
 
+  /// Returns true if [point] is inside this polygon.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // A polygon geometry (with an exterior ring and one interior ring as a hole).
+  /// final polygon = Polygon.build([
+  ///   [35.0, 10.0, 45.0, 45.0, 15.0, 40.0, 10.0, 20.0, 35.0, 10.0],
+  ///   [20.0, 30.0, 35.0, 35.0, 30.0, 20.0, 20.0, 30.0],
+  /// ]);
+  ///
+  /// // prints: (20,20) => true, (10,10) => false
+  /// final inside = polygon.isPointInPolygon2D([20.0, 20.0].xy);
+  /// final outside = polygon.isPointInPolygon2D([10.0, 10.0].xy);
+  /// print('(20,20) => $inside, (10,10) => $outside');
+  /// ```
+  ///
+  /// See also [CartesianArealExtension.isPointInPolygon2D].
+  bool isPointInPolygon2D(Position point) => _rings.isPointInPolygon2D(point);
+
   @override
   void writeTo(SimpleGeometryContent writer, {String? name}) =>
       isEmptyByGeometry

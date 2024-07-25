@@ -428,6 +428,9 @@ void _positionSeriesManipulation() {
   // the centroid position of a polygon - prints "3.9,3.7"
   print(polygon.centroid2D()!.toText(decimals: 1));
 
+  // point in polygon - prints "true" (in this case the centroid is also inside)
+  print(polygon.isPointInPolygon2D([3.9, 3.7].xy));
+
   // a closed linear ring with positions in the clockwise (CW) order
   final reversed = polygon.reversed();
 
@@ -666,6 +669,11 @@ void _geometricCartesianPolygon() {
   // Prints: "Polylabel pos: 17.3828125,23.9453125 dist: 6.131941618102092"
   final p = polygon.polylabel2D(precision: 0.5);
   print('Polylabel pos: ${p.position} dist: ${p.distance}');
+
+  // prints: (20,20) => true, (10,10) => false
+  final inside = polygon.isPointInPolygon2D([20.0, 20.0].xy);
+  final outside = polygon.isPointInPolygon2D([10.0, 10.0].xy);
+  print('(20,20) => $inside, (10,10) => $outside');
 }
 
 void _geometricCartesianPolygonFromGeometry() {
@@ -682,6 +690,11 @@ void _geometricCartesianPolygonFromGeometry() {
   // Prints: "Polylabel pos: 17.65625,24.21875 dist: 5.745242597140699"
   final p = polygon.polylabel2D(precision: 2.0);
   print('Polylabel pos: ${p.position} dist: ${p.distance}');
+
+  // prints: (20,20) => true, (10,10) => false
+  final inside = polygon.isPointInPolygon2D([20.0, 20.0].xy);
+  final outside = polygon.isPointInPolygon2D([10.0, 10.0].xy);
+  print('(20,20) => $inside, (10,10) => $outside');
 }
 
 void _geometryTypes2D() {

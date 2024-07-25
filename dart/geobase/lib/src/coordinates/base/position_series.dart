@@ -1113,6 +1113,67 @@ abstract class PositionSeries extends Bounded implements ValuePositionable {
     return null;
   }
 
+  /// Returns true if [point] is inside a valid polygon represented by this
+  /// position series calculated in a cartesian 2D plane.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // a closed linear ring with positions in the counterclockwise (CCW) order
+  /// final polygon = [
+  ///   [1.0, 6.0].xy,
+  ///   [3.0, 1.0].xy,
+  ///   [7.0, 2.0].xy,
+  ///   [4.0, 4.0].xy,
+  ///   [8.0, 5.0].xy,
+  ///   [1.0, 6.0].xy,
+  /// ].series();
+  ///
+  /// // point in polygon - prints "true"
+  /// print(polygon.isPointInPolygon2D([3.9, 3.7].xy));
+  /// ```
+  bool isPointInPolygon2D(Position point) {
+    if (positionCount < 3) {
+      return false;
+    }
+
+    var intersections = 0;
+    for (var i = 0, len = positionCount; i < len; i++) {
+      final vertex1 = this[i];
+      final vertex2 = this[(i + 1) % len];
+
+      // Check if the point is exactly on a vertex
+      if ((point.x == vertex1.x && point.y == vertex1.y) ||
+          (point.x == vertex2.x && point.y == vertex2.y)) {
+        return true;
+      }
+
+      // Check if the point is exactly on a horizontal edge
+      if (vertex1.y == vertex2.y &&
+          point.y == vertex1.y &&
+          point.x >= math.min(vertex1.x, vertex2.x) &&
+          point.x <= math.max(vertex1.x, vertex2.x)) {
+        return true;
+      }
+
+      // Check if the ray intersects the edge
+      if ((point.y > math.min(vertex1.y, vertex2.y) &&
+              point.y <= math.max(vertex1.y, vertex2.y)) &&
+          (point.x <= math.max(vertex1.x, vertex2.x))) {
+        if (vertex1.y != vertex2.y) {
+          final xIntersect = (point.y - vertex1.y) *
+                  (vertex2.x - vertex1.x) /
+                  (vertex2.y - vertex1.y) +
+              vertex1.x;
+          if (vertex1.x == vertex2.x || point.x <= xIntersect) {
+            intersections++;
+          }
+        }
+      }
+    }
+    return intersections % 2 != 0;
+  }
+
   /// Returns a position series with coordinate values of all positions scaled
   /// by [factor].
   PositionSeries operator *(double factor) => PositionSeries.from(

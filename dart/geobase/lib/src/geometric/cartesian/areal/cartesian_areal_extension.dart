@@ -145,4 +145,42 @@ extension CartesianArealExtension on Iterable<PositionSeries> {
         debug: debug,
         scheme: scheme,
       );
+
+  /// Returns true if [point] is inside a valid polygon represented by this
+  /// iterable of position series objects calculated in a cartesian 2D plane.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  /// // A polygon (with an exterior ring and one interior ring as a hole) as an
+  /// // `Iterable<PositionSeries>` that is each ring is represented by an instance
+  /// // of `PositionSeries`.
+  /// final polygon = [
+  ///  [35.0, 10.0, 45.0, 45.0, 15.0, 40.0, 10.0, 20.0, 35.0, 10.0].positions(),
+  ///  [20.0, 30.0, 35.0, 35.0, 30.0, 20.0, 20.0, 30.0].positions(),
+  /// ];
+  ///
+  /// // prints: (20,20) => true, (10,10) => false
+  /// final inside = polygon.isPointInPolygon2D([20.0, 20.0].xy);
+  /// final outside = polygon.isPointInPolygon2D([10.0, 10.0].xy);
+  /// print('(20,20) => $inside, (10,10) => $outside');
+  /// ```
+  bool isPointInPolygon2D(Position point) {
+    // the exterior linear ring
+    final ext = firstOrNull;
+
+    // point must be inside the exterior linear ring ...
+    if (ext != null && ext.isPointInPolygon2D(point)) {
+      // ... but it must be outside of any optional interior linear rings
+      final interior = skip(1);
+      for (final hole in interior) {
+        if (hole.isPointInPolygon2D(point)) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    return false;
+  }
 }
