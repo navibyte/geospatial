@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -13,6 +13,7 @@
 /// * position, bounding box and positions series (with coordinate arrays)
 /// * geographic (longitude-latitude) and projected positions and bounding boxes
 /// * spherical geodesy functions for *great circle* and *rhumb line* paths
+/// * geometric functions for cartesian calculations
 /// * simple geometries (point, line string, polygon, multi point, multi line string, multi polygon, geometry collection)
 /// * features (with id, properties and geometry) and feature collections
 /// * temporal data structures (instant, interval) and spatial extents
@@ -66,6 +67,10 @@ export 'src/coordinates/scalable/scalable2i.dart';
 // geodesy
 export 'src/geodesy/spherical/spherical_great_circle.dart';
 export 'src/geodesy/spherical/spherical_rhumb_line.dart';
+
+// geometric
+export 'src/geometric/base/distanced_position.dart';
+export 'src/geometric/cartesian/areal/cartesian_areal_extension.dart';
 
 // meta
 export 'src/meta/extent/geo_extent.dart';

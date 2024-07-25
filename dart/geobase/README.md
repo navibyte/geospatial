@@ -345,6 +345,7 @@ Package                | Description
 **common**             | Common codes, constants, functions, presentation helpers and reference systems related to geospatial applications.
 **coordinates**        | Position, bounding box and positions series (with coordinate arrays).
 **geodesy**            | Spherical geodesy functions for *great circle* and *rhumb line* paths.
+**geometric**          | Geometric functions for cartesian calculations.
 **meta**               | Temporal data structures (instant, interval) and spatial extents.
 **projections**        | Geospatial projections (currently only between WGS84 and Web Mercator).
 **projections_proj4d** | Projections provided by the external [proj4dart](https://pub.dev/packages/proj4dart) package.
@@ -353,6 +354,7 @@ Package                | Description
 **vector_data**        | Data structures for geometries, features and feature collections.
 
 External packages `geobase` is depending on:
+* [collections](https://pub.dev/packages/collections) for priority queues and collection utilities
 * [equatable](https://pub.dev/packages/equatable) for equality and hash utils
 * [meta](https://pub.dev/packages/meta) for annotations
 * [proj4dart](https://pub.dev/packages/proj4dart) for coordinate projections
