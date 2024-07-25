@@ -41,3 +41,23 @@ Dart code file ported to this project | Related original JavaScript code
 ------------------------------------- | --------------------------------
 [dms.dart](lib/src/common/presentation/dms.dart) | [dms.js](https://github.com/chrisveness/geodesy/blob/master/dms.js)
 [dms_ported_test.dart](test/coordinates/dms_ported_test.dart) | [dms-tests.js](https://github.com/chrisveness/geodesy/blob/master/test/dms-tests.js)
+
+### Polylabel algorithm by Mapbox
+
+Source: https://github.com/mapbox/polylabel
+
+License: [ISC License](https://github.com/mapbox/polylabel/blob/master/LICENSE)
+
+Copyright: Copyright (c) 2016 Mapbox
+
+See also the
+[blog post](https://blog.mapbox.com/a-new-algorithm-for-finding-a-visual-center-of-a-polygon-7c77e6492fbc)
+(Aug 2016) by Vladimir Agafonkin introducing the `polylabel` algorithm.
+ 
+Dart code file ported to this project | Related original JavaScript code
+------------------------------------- | --------------------------------
+[polylabel.dart](lib/src/geometric/cartesian/areal/polylabel.dart) | [polylabel.js](https://github.com/mapbox/polylabel/blob/master/polylabel.js)
+[cartesian_areal_polylabel_test.dart](test/geometric/cartesian_areal_polylabel_test.dart) | [test.js](https://github.com/mapbox/polylabel/blob/master/test/test.js)
+
+Also [JSON files](https://github.com/mapbox/polylabel/tree/master/test/fixtures)
+from the source repository used by tests are ported.
