@@ -1,4 +1,4 @@
-/// Geometric functions for cartesian calculations.
+/// Cartesian 2D calculations (centroid, polylabel, point-in-polygon, distance).
 ///
 /// This libary exports a subset of `package:geobase/geobase.dart`.
 ///

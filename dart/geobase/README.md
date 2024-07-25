@@ -23,9 +23,10 @@ package documentation published along with the stable version 1.2.0.
 
 Key features:
 * 🌐 geographic (longitude-latitude) and projected positions and bounding boxes
-* 📐 spherical geodesy functions for *great circle* and *rhumb line* paths
 * 🧩 simple geometries (point, line string, polygon, multi point, multi line string, multi polygon, geometry collection)
 * 🔷 features (with id, properties and geometry) and feature collections
+* 📐 spherical geodesy functions for *great circle* and *rhumb line* paths
+* 📏 cartesian 2D calculations (centroid, polylabel, point-in-polygon, distance).
 * 📅 temporal data structures (instant, interval) and spatial extents
 * 📃 vector data formats supported ([GeoJSON](https://geojson.org/), [Newline-delimited GeoJSON](https://stevage.github.io/ndgeojson/), [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry), [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary)
 )
@@ -345,7 +346,7 @@ Package                | Description
 **common**             | Common codes, constants, functions, presentation helpers and reference systems related to geospatial applications.
 **coordinates**        | Position, bounding box and positions series (with coordinate arrays).
 **geodesy**            | Spherical geodesy functions for *great circle* and *rhumb line* paths.
-**geometric**          | Geometric functions for cartesian calculations.
+**geometric**          | Cartesian 2D calculations (centroid, polylabel, point-in-polygon, distance).
 **meta**               | Temporal data structures (instant, interval) and spatial extents.
 **projections**        | Geospatial projections (currently only between WGS84 and Web Mercator).
 **projections_proj4d** | Projections provided by the external [proj4dart](https://pub.dev/packages/proj4dart) package.
