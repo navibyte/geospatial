@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-// ignore_for_file: avoid_print, prefer_const_constructors, prefer_const_literals_to_create_immutables, cascade_invocations, lines_longer_than_80_chars, avoid_redundant_argument_values, omit_local_variable_types
+// ignore_for_file: avoid_print, prefer_const_constructors, prefer_const_literals_to_create_immutables, cascade_invocations, lines_longer_than_80_chars, avoid_redundant_argument_values, omit_local_variable_types, unused_local_variable
 
 import 'package:geobase/geobase.dart';
 
@@ -35,6 +35,7 @@ void main() {
   // geometric
   _geometricCartesianPolygon();
   _geometricCartesianPolygonFromGeometry();
+  _geometricCartesianPolygonFromGeometryManipulation();
 
   // geometries
   _geometryTypes2D();
@@ -654,9 +655,9 @@ void _sphericalGeodesyRhumbLine() {
 }
 
 void _geometricCartesianPolygon() {
-  // A polygon (with an exterior ring and one interior ring as a hole) as an
-  // `Iterable<PositionSeries>` that is each ring is represented by an instance
-  // of `PositionSeries`.
+  // Polygon data (with an exterior ring and one interior ring as a hole) as an
+  // `Iterable<PositionSeries>`. Each ring is represented by an instance of
+  // `PositionSeries` constructed by `positions()` method.
   final polygon = [
     [35.0, 10.0, 45.0, 45.0, 15.0, 40.0, 10.0, 20.0, 35.0, 10.0].positions(),
     [20.0, 30.0, 35.0, 35.0, 30.0, 20.0, 20.0, 30.0].positions(),
@@ -670,12 +671,12 @@ void _geometricCartesianPolygon() {
   final p = polygon.polylabel2D(precision: 0.5);
   print('Polylabel pos: ${p.position} dist: ${p.distance}');
 
-  // prints: (20,20) => true, (10,10) => false
+  // prints: "(20,20) => true, (10,10) => false"
   final inside = polygon.isPointInPolygon2D([20.0, 20.0].xy);
   final outside = polygon.isPointInPolygon2D([10.0, 10.0].xy);
   print('(20,20) => $inside, (10,10) => $outside');
 
-  // prints: (20,20) => 3.7139067635410368, (10,10) => 9.284766908852593
+  // prints: "(20,20) => 3.7139067635410368, (10,10) => 9.284766908852593"
   final dist1 = polygon.distanceTo2D([20.0, 20.0].xy);
   final dist2 = polygon.distanceTo2D([10.0, 10.0].xy);
   print('(20,20) => $dist1, (10,10) => $dist2');
@@ -688,6 +689,29 @@ void _geometricCartesianPolygonFromGeometry() {
     [20.0, 30.0, 35.0, 35.0, 30.0, 20.0, 20.0, 30.0],
   ]);
 
+  // Prints: "Bounding box: 10.0,10.0,45.0,45.0"
+  // Values contained in the bbox in this case: min-x, min-y, max-x, max-y
+  final bbox = polygon.calculateBounds();
+  print('Bounding box: ${bbox?.toText(decimals: 1, compactNums: false)}');
+
+  // Bbox center, prints: "Bbox center: 27.5,27.5"
+  final center = bbox?.aligned2D();
+  print('Bbox center: ${center?.toText(decimals: 1)}');
+
+  // It's also possible to calculate aligned points inside a bounding box.
+  // X = The horizontal distance fraction.
+  //    The value -1.0 represents the west side edge of the box.
+  //    The value 0.0 represents the center horizontally.
+  //    The value 1.0 represents the east side edge of the box.
+  // Y = The vertical distance fraction.
+  //    The value -1.0 represents the south side edge of the box.
+  //    The value 0.0 represents the center vertically.
+  //    The value 1.0 represents the north side edge of the box.
+
+  // Bbox aligned, prints: "Bbox aligned: 36.250,36.250"
+  final aligned = bbox?.aligned2D(Aligned(x: 0.5, y: 0.5));
+  print('Bbox aligned: ${aligned?.toText(decimals: 3)}');
+
   // Prints: "Centroid pos: 27.407,28.765"
   final centroid = polygon.centroid2D();
   print('Centroid pos: ${centroid?.toText(decimals: 3)}');
@@ -696,15 +720,80 @@ void _geometricCartesianPolygonFromGeometry() {
   final p = polygon.polylabel2D(precision: 2.0);
   print('Polylabel pos: ${p.position} dist: ${p.distance}');
 
-  // prints: (20,20) => true, (10,10) => false
+  // prints: "(20,20) => true, (10,10) => false"
   final inside = polygon.isPointInPolygon2D([20.0, 20.0].xy);
   final outside = polygon.isPointInPolygon2D([10.0, 10.0].xy);
   print('(20,20) => $inside, (10,10) => $outside');
 
-  // prints: (20,20) => 3.7139067635410368, (10,10) => 9.284766908852593
+  // prints: "(20,20) => 3.7139067635410368, (10,10) => 9.284766908852593"
   final dist1 = polygon.distanceTo2D([20.0, 20.0].xy);
   final dist2 = polygon.distanceTo2D([10.0, 10.0].xy);
   print('(20,20) => $dist1, (10,10) => $dist2');
+
+  // Polygon outer ring length, inner ring length and total outline length.
+  // "Outer 114.35571426165451 + inner 45.76491222541475 = 160.12062648706927"
+  final outerLength = polygon.exterior?.length2D();
+  final innerLength = polygon.interior.first.length2D();
+  final totalLength = polygon.length2D();
+  print('Outer $outerLength + inner $innerLength = $totalLength');
+
+  // Polygon outer ring area, inner ring area and total outline area.
+  // Prints: "Outer 775.0 - inner 100.0 = 675.0"
+  final outerArea = polygon.exterior?.signedArea2D().abs();
+  final innerArea = polygon.interior.first.signedArea2D().abs();
+  final totalArea = polygon.area2D();
+  print('Outer $outerArea - inner $innerArea = $totalArea');
+}
+
+void _geometricCartesianPolygonFromGeometryManipulation() {
+  // Polygon linear rings each an `PositionSeries` instance constructed by
+  // `positions()` method.
+  final exteriorRing =
+      [35.0, 10.0, 45.0, 45.0, 15.0, 40.0, 10.0, 20.0, 35.0, 10.0].positions();
+  final interiorRing =
+      [20.0, 30.0, 35.0, 35.0, 30.0, 20.0, 20.0, 30.0].positions();
+
+  // Polygon data as `Iterable<PositionSeries>`.
+  final polygonData = [exteriorRing, interiorRing];
+
+  // A polygon geometry (with an exterior ring and one interior ring as a hole).
+  final polygon = Polygon(polygonData);
+
+  // `PositionSeries` objects can be modified and used to construct new polygons
+  final exteriorRingEnlargenedBy10percent = exteriorRing * 1.1;
+  final interiorRingPositionsChanged = interiorRing.rangeReplaced(1, 3, [
+    [35.5, 35.5].xy,
+    [30.5, 20.5].xy,
+  ]);
+  final modifiedPolygon = Polygon(
+    [exteriorRingEnlargenedBy10percent, interiorRingPositionsChanged],
+  );
+
+  // Accessing coordinate value data in PositionSeries object.
+  print('Position count: ${exteriorRing.positionCount}'); // 5
+  print('Value count: ${exteriorRing.valueCount}'); // 10
+  print('Is closed: ${exteriorRing.isClosed}'); // true
+  print('Is 3D: ${exteriorRing.is3D}'); // false
+  print('Is measured: ${exteriorRing.isMeasured}'); // false
+  print('Coordinate dimension: ${exteriorRing.coordinateDimension}'); // 2
+  print('Spatial dimension: ${exteriorRing.spatialDimension}'); // 2
+  print('Coordinate type: ${exteriorRing.coordType}'); // Coords.xy
+  print('First position: ${exteriorRing.firstOrNull}'); // 35.0,10.0
+  print('Last position: ${exteriorRing.lastOrNull}'); // 35.0,10.0
+  print('X coordinate at position 1: ${exteriorRing.x(1)}'); // 45.0
+  print('Y coordinate at position 3: ${exteriorRing.y(3)}'); // 20.0
+ 
+  // Looping positions by accessing coordinate values (best to use this option
+  // when a position series is constructed from a double coordinate value array)
+  for(int i = 0, len = exteriorRing.positionCount; i < len; i++) {
+    print('X: ${exteriorRing.x(i)} Y: ${exteriorRing.y(i)} (at $i)'); 
+  }
+
+  // Looping positions by accessing `Position` objects (best to use this option
+  // when a position series is constructed from `Position` instances)
+  for(final pos in exteriorRing.positions) {
+    print('X: ${pos.x} Y: ${pos.y}'); 
+  }
 }
 
 void _geometryTypes2D() {

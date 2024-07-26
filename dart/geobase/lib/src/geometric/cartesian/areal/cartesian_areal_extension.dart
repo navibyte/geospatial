@@ -44,9 +44,9 @@ extension CartesianArealExtension on Iterable<PositionSeries> {
   /// Examples:
   ///
   /// ```dart
-  /// // A polygon (with an exterior ring and one interior ring as a hole) as an
-  /// // `Iterable<PositionSeries>` that is each ring is represented by an instance
-  /// // of `PositionSeries`.
+  /// // Polygon data (with an exterior ring and one interior ring as a hole) as an
+  /// // `Iterable<PositionSeries>`. Each ring is represented by an instance of
+  /// // `PositionSeries` constructed by `positions()` method.
   /// final polygon = [
   ///  [35.0, 10.0, 45.0, 45.0, 15.0, 40.0, 10.0, 20.0, 35.0, 10.0].positions(),
   ///  [20.0, 30.0, 35.0, 35.0, 30.0, 20.0, 20.0, 30.0].positions(),
@@ -122,9 +122,9 @@ extension CartesianArealExtension on Iterable<PositionSeries> {
   /// Examples:
   ///
   /// ```dart
-  /// // A polygon (with an exterior ring and one interior ring as a hole) as an
-  /// // `Iterable<PositionSeries>` that is each ring is represented by an instance
-  /// // of `PositionSeries`.
+  /// // Polygon data (with an exterior ring and one interior ring as a hole) as an
+  /// // `Iterable<PositionSeries>`. Each ring is represented by an instance of
+  /// // `PositionSeries` constructed by `positions()` method.
   /// final polygon = [
   ///  [35.0, 10.0, 45.0, 45.0, 15.0, 40.0, 10.0, 20.0, 35.0, 10.0].positions(),
   ///  [20.0, 30.0, 35.0, 35.0, 30.0, 20.0, 20.0, 30.0].positions(),
@@ -152,9 +152,9 @@ extension CartesianArealExtension on Iterable<PositionSeries> {
   /// Examples:
   ///
   /// ```dart
-  /// // A polygon (with an exterior ring and one interior ring as a hole) as an
-  /// // `Iterable<PositionSeries>` that is each ring is represented by an instance
-  /// // of `PositionSeries`.
+  /// // Polygon data (with an exterior ring and one interior ring as a hole) as an
+  /// // `Iterable<PositionSeries>`. Each ring is represented by an instance of
+  /// // `PositionSeries` constructed by `positions()` method.
   /// final polygon = [
   ///  [35.0, 10.0, 45.0, 45.0, 15.0, 40.0, 10.0, 20.0, 35.0, 10.0].positions(),
   ///  [20.0, 30.0, 35.0, 35.0, 30.0, 20.0, 20.0, 30.0].positions(),
@@ -192,6 +192,9 @@ extension CartesianArealExtension on Iterable<PositionSeries> {
   /// Examples:
   /// 
   /// ```dart
+  /// // Polygon data (with an exterior ring and one interior ring as a hole) as an
+  /// // `Iterable<PositionSeries>`. Each ring is represented by an instance of
+  /// // `PositionSeries` constructed by `positions()` method.
   /// final polygon = [
   ///  [35.0, 10.0, 45.0, 45.0, 15.0, 40.0, 10.0, 20.0, 35.0, 10.0].positions(),
   ///  [20.0, 30.0, 35.0, 35.0, 30.0, 20.0, 20.0, 30.0].positions(),
