@@ -11,6 +11,8 @@ schemes, vector data models and formats, and geospatial Web APIs.
 
 [![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev/) [![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)](https://flutter.dev/)
 
+✨ New (2024-07-26): The stable version 1.3.0 with centroid, polylabel, point-in-polygon and other cartesian 2D calculations enhanced - [read more](https://geospatial.navibyte.dev/v1/geobase/geometry-calculations/)!
+
 ✨ New (2024-05-26): The new documentation website ([geospatial.navibyte.dev](https://geospatial.navibyte.dev/)) for [geobase](https://geospatial.navibyte.dev/v1/geobase/)
 and [geodata](https://geospatial.navibyte.dev/v1/geodata/)
 package documentation published along with the stable version 1.2.0.
@@ -316,7 +318,7 @@ Code          | Description
 ## :newspaper_roll: News
 
 2024-07-26
-* ✨ The [stable version 1.3.0](https://github.com/navibyte/geospatial/milestone/5) with centroid, polylabel, point-in-polygon and other cartesian 2D calculations enhanced - [read more](https://geospatial.navibyte.dev/v1/geobase/geometry-calculations/)
+* ✨ The [stable version 1.3.0](https://github.com/navibyte/geospatial/milestone/5) with centroid, polylabel, point-in-polygon and other cartesian 2D calculations enhanced - [read more](https://geospatial.navibyte.dev/v1/geobase/geometry-calculations/)!
 * All docs: [geospatial.navibyte.dev](https://geospatial.navibyte.dev/).
 * Published packages at pub.dev:
   * [geobase version 1.3.0](https://pub.dev/packages/geobase/versions/1.3.0)

@@ -782,17 +782,17 @@ void _geometricCartesianPolygonFromGeometryManipulation() {
   print('Last position: ${exteriorRing.lastOrNull}'); // 35.0,10.0
   print('X coordinate at position 1: ${exteriorRing.x(1)}'); // 45.0
   print('Y coordinate at position 3: ${exteriorRing.y(3)}'); // 20.0
- 
+
   // Looping positions by accessing coordinate values (best to use this option
   // when a position series is constructed from a double coordinate value array)
-  for(int i = 0, len = exteriorRing.positionCount; i < len; i++) {
-    print('X: ${exteriorRing.x(i)} Y: ${exteriorRing.y(i)} (at $i)'); 
+  for (int i = 0, len = exteriorRing.positionCount; i < len; i++) {
+    print('X: ${exteriorRing.x(i)} Y: ${exteriorRing.y(i)} (at $i)');
   }
 
   // Looping positions by accessing `Position` objects (best to use this option
   // when a position series is constructed from `Position` instances)
-  for(final pos in exteriorRing.positions) {
-    print('X: ${pos.x} Y: ${pos.y}'); 
+  for (final pos in exteriorRing.positions) {
+    print('X: ${pos.x} Y: ${pos.y}');
   }
 }
 

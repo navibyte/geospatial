@@ -483,6 +483,7 @@ void main() {
       void testDist(Position start, Position end, double dist) {
         expect(pos.distanceToLineSegment2D(start, end), dist);
       }
+
       testDist([2.0, 2.0].xy, [2.0, 2.0].xy, 0.0);
       testDist([1.9, 2.0].xy, [2.1, 2.0].xy, 0.0);
       testDist([1.9, 3.0].xy, [2.1, 3.0].xy, 1.0);

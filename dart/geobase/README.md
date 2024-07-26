@@ -10,7 +10,7 @@ and [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geomet
 
 ## Features
 
-✨ New (2024-07-26): The stable version 1.3.0 with centroid, polylabel, point-in-polygon and other cartesian 2D calculations enhanced - [read more](https://geospatial.navibyte.dev/v1/geobase/geometry-calculations/)
+✨ New (2024-07-26): The stable version 1.3.0 with centroid, polylabel, point-in-polygon and other cartesian 2D calculations enhanced - [read more](https://geospatial.navibyte.dev/v1/geobase/geometry-calculations/)!
 
 ✨ New (2024-05-26): The new documentation website ([geospatial.navibyte.dev](https://geospatial.navibyte.dev/)) for the [geobase](https://geospatial.navibyte.dev/v1/geobase/)
 package documentation published along with the stable version 1.2.0.
@@ -304,7 +304,7 @@ Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geobase: ^1.3.0-dev.1
+  geobase: ^1.3.0
 ```
 
 Import it:

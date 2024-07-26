@@ -1,6 +1,6 @@
 ## 2024-07-26
 
-* ✨ The [stable version 1.3.0](https://github.com/navibyte/geospatial/milestone/5) with centroid, polylabel, point-in-polygon and other cartesian 2D calculations enhanced - [read more](https://geospatial.navibyte.dev/v1/geobase/geometry-calculations/)
+* ✨ The [stable version 1.3.0](https://github.com/navibyte/geospatial/milestone/5) with centroid, polylabel, point-in-polygon and other cartesian 2D calculations enhanced - [read more](https://geospatial.navibyte.dev/v1/geobase/geometry-calculations/)!
 * All docs: [geospatial.navibyte.dev](https://geospatial.navibyte.dev/).
 * Published packages at pub.dev:
   * [geobase version 1.3.0](https://pub.dev/packages/geobase/versions/1.3.0)

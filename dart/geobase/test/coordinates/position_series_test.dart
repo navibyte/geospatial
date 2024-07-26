@@ -1086,18 +1086,21 @@ void main() {
           dist,
         );
       }
+
       void testLinear(PositionSeries series, Position pos, double dist) {
         expect(
           series.distanceTo2D(pos, dimensionality: Dimensionality.linear),
           dist,
         );
       }
+
       void testPunctual(PositionSeries series, Position pos, double dist) {
         expect(
           series.distanceTo2D(pos, dimensionality: Dimensionality.punctual),
           dist,
         );
       }
+
       final s1 = [0.0, 0.0, 1.0, 1.0, 3.0, 1.0].positions();
       testAreal(s1, [2.0, 0.0].xy, 0.6324555320336759);
       testAreal(s1, [1.5, 0.0].xy, 0.4743416490252569);

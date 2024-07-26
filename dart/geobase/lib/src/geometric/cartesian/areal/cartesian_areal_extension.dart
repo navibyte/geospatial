@@ -188,9 +188,9 @@ extension CartesianArealExtension on Iterable<PositionSeries> {
   /// [destination] calculated in a cartesian 2D plane.
   ///
   /// Returns `double.infinity` if a distance could not be calculated.
-  /// 
+  ///
   /// Examples:
-  /// 
+  ///
   /// ```dart
   /// // Polygon data (with an exterior ring and one interior ring as a hole) as an
   /// // `Iterable<PositionSeries>`. Each ring is represented by an instance of
