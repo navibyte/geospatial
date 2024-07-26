@@ -1,8 +1,8 @@
 ## 1.3.0
 
-NOTE: Version 1.3.0 currently under development (1.3.0-dev.1).
-
 [geobase release 1.3.0](https://github.com/navibyte/geospatial/milestone/5)
+
+✨ New (2024-07-26): The stable version 1.3.0 with centroid, polylabel, point-in-polygon and other cartesian 2D calculations enhanced - [read more](https://geospatial.navibyte.dev/v1/geobase/geometry-calculations/)
 
 🧩 Features:
 * [Add visual center point calculations for polygons #237](https://github.com/navibyte/geospatial/issues/237)

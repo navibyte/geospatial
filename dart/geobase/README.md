@@ -10,23 +10,21 @@ and [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geomet
 
 ## Features
 
+✨ New (2024-07-26): The stable version 1.3.0 with centroid, polylabel, point-in-polygon and other cartesian 2D calculations enhanced - [read more](https://geospatial.navibyte.dev/v1/geobase/geometry-calculations/)
+
 ✨ New (2024-05-26): The new documentation website ([geospatial.navibyte.dev](https://geospatial.navibyte.dev/)) for the [geobase](https://geospatial.navibyte.dev/v1/geobase/)
 package documentation published along with the stable version 1.2.0.
 
 ✨ New (2024-04-22): Support for Newline-delimited GeoJSON, EWKT and EWKB added. Check out [the blog post](https://medium.com/@navibyte/decode-and-encode-geojson-wkt-and-wkb-in-dart-and-flutter-apps-ab2ef4ece2f1).
-
-✨ New (2023-10): The stable version 1.0.0 is now ready. See also the article [Geospatial tools for Dart - version 1.0 published](https://medium.com/@navibyte/geospatial-tools-for-dart-version-1-0-published-0f9673e510b3) at Medium.
-
-✨ New (2023-07): Spherical geodesy functions (distance, bearing, destination point, etc.) for *great circle* and *rhumb line* paths.
 
 <a title="Ktrinko, CC0, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Eckert4.jpg"><img alt="World map with Natural Earth data, Excert projection" src="https://raw.githubusercontent.com/navibyte/geospatial_docs/v2023-08-12/assets/doc/projections/eckert4/320px-Eckert4.jpg" align="right"></a>
 
 Key features:
 * 🌐 geographic (longitude-latitude) and projected positions and bounding boxes
 * 🧩 simple geometries (point, line string, polygon, multi point, multi line string, multi polygon, geometry collection)
+* 📏 cartesian 2D calculations (centroid, polylabel, point-in-polygon, distance).
 * 🔷 features (with id, properties and geometry) and feature collections
 * 📐 spherical geodesy functions for *great circle* and *rhumb line* paths
-* 📏 cartesian 2D calculations (centroid, polylabel, point-in-polygon, distance).
 * 📅 temporal data structures (instant, interval) and spatial extents
 * 📃 vector data formats supported ([GeoJSON](https://geojson.org/), [Newline-delimited GeoJSON](https://stevage.github.io/ndgeojson/), [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry), [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary)
 )
@@ -44,6 +42,7 @@ package documentation by chapters:
 
 * [📍 Coordinates](https://geospatial.navibyte.dev/v1/geobase/coordinates/)
 * [🧩 Simple geometries](https://geospatial.navibyte.dev/v1/geobase/geometry/)
+* [📏 Geometry calculations](https://geospatial.navibyte.dev/v1/geobase/geometry-calculations/)
 * [🔷 Geospatial features](https://geospatial.navibyte.dev/v1/geobase/features/)
 * [📃 Vector formats](https://geospatial.navibyte.dev/v1/geobase/formats/)
 * [📅 Metadata](https://geospatial.navibyte.dev/v1/geobase/metadata/)

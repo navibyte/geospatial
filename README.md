@@ -47,6 +47,7 @@ package documentation by chapters:
 
 * [📍 Coordinates](https://geospatial.navibyte.dev/v1/geobase/coordinates/)
 * [🧩 Simple geometries](https://geospatial.navibyte.dev/v1/geobase/geometry/)
+* [📏 Geometry calculations](https://geospatial.navibyte.dev/v1/geobase/geometry-calculations/)
 * [🔷 Geospatial features](https://geospatial.navibyte.dev/v1/geobase/features/)
 * [📃 Vector formats](https://geospatial.navibyte.dev/v1/geobase/formats/)
 * [📅 Metadata](https://geospatial.navibyte.dev/v1/geobase/metadata/)
@@ -66,9 +67,9 @@ Key features of the [geobase](https://pub.dev/packages/geobase) package:
 
 * 🌐 geographic (longitude-latitude) and projected positions and bounding boxes
 * 🧩 simple geometries (point, line string, polygon, multi point, multi line string, multi polygon, geometry collection)
+* 📏 cartesian 2D calculations (centroid, polylabel, point-in-polygon, distance).
 * 🔷 features (with id, properties and geometry) and feature collections
 * 📐 spherical geodesy functions for *great circle* and *rhumb line* paths
-* 📏 cartesian 2D calculations (centroid, polylabel, point-in-polygon, distance).
 * 📅 temporal data structures (instant, interval) and spatial extents
 * 📃 vector data formats supported ([GeoJSON](https://geojson.org/), [Newline-delimited GeoJSON](https://stevage.github.io/ndgeojson/), [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry), [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary)
 )
@@ -313,7 +314,13 @@ Code          | Description
 [earthquake_map](https://github.com/navibyte/geospatial_demos/tree/main/earthquake_map) | Shows earthquakes fetched from the [USGS web service](https://earthquake.usgs.gov/earthquakes/feed/) on a basic map view. The demo uses both [geobase](https://pub.dev/packages/geobase) and [geodata](https://pub.dev/packages/geodata) packages for geospatial data accesss. Discusses also state management based on [Riverpod](https://riverpod.dev/). The map UI is based on the [Google Maps Flutter](https://pub.dev/packages/google_maps_flutter) plugin.
 
 ## :newspaper_roll: News
- 
+
+2024-07-26
+* ✨ The [stable version 1.3.0](https://github.com/navibyte/geospatial/milestone/5) with centroid, polylabel, point-in-polygon and other cartesian 2D calculations enhanced - [read more](https://geospatial.navibyte.dev/v1/geobase/geometry-calculations/)
+* All docs: [geospatial.navibyte.dev](https://geospatial.navibyte.dev/).
+* Published packages at pub.dev:
+  * [geobase version 1.3.0](https://pub.dev/packages/geobase/versions/1.3.0)
+
 2024-05-26
 * ✨ The stable version 1.2.0 with the brand new documentation site published at [geospatial.navibyte.dev](https://geospatial.navibyte.dev/).
 * Published packages at pub.dev:
@@ -331,17 +338,6 @@ Code          | Description
 * ✨ The stable version 1.0.0 is now ready. See also the article [Geospatial tools for Dart - version 1.0 published](https://medium.com/@navibyte/geospatial-tools-for-dart-version-1-0-published-0f9673e510b3) at Medium
 * [geobase version 1.0.0](https://github.com/navibyte/geospatial/issues/175)
 * [geodata version 1.0.0](https://github.com/navibyte/geospatial/issues/187)
-
-2023-09-30
-* [geobase version 0.6.0](https://github.com/navibyte/geospatial/issues/193)
-  * ✨ Optimizing data structures (*Position*, *PositionSeries*, *Box*) used by simple geometries. Fixes, tests and documentation.
-* [geodata version 0.13.0](https://github.com/navibyte/geospatial/issues/198)
-
-2023-08-11
-* [geobase version 0.5.0](https://github.com/navibyte/geospatial/issues/174)
-  * ✨ Spherical geodesy functions (distance, bearing, destination point, etc.) for *great circle* and *rhumb line* paths.
-* [geodata version 0.12.0](https://github.com/navibyte/geospatial/issues/177)
-  * ✨ Better client-side support for OGC API Features (Part 1 and 2).
 
 See also older news in the [changelog](CHANGELOG.md) of this repository.
 
