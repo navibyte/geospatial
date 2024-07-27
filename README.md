@@ -9,6 +9,8 @@
 geometries, feature objects, metadata, spherical geodesy, projections, tiling
 schemes, vector data models and formats, and geospatial Web APIs.
 
+Read the docs 👉 [geospatial.navibyte.dev](https://geospatial.navibyte.dev/)! 
+
 [![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev/) [![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)](https://flutter.dev/)
 
 ✨ New (2024-07-26): The stable version 1.3.0 with centroid, polylabel, point-in-polygon and other cartesian 2D calculations enhanced - [read more](https://geospatial.navibyte.dev/v1/geobase/geometry-calculations/)!
@@ -485,6 +487,7 @@ this repository:
 
 Package @ pub.dev | Code @ GitHub | Description
 ----------------- | ------------- | -----------
+[collection](https://pub.dev/packages/collection) | [dart-lang/collection](https://github.com/dart-lang/collection) | Collections and utilities functions and classes related to collections. 
 [equatable](https://pub.dev/packages/equatable) | [felangel/equatable](https://github.com/felangel/equatable) | Simplify Equality Comparisons | A Dart abstract class that helps to implement equality without needing to explicitly override == and hashCode.
 [http](https://pub.dev/packages/http) | [dart-lang/http](https://github.com/dart-lang/http) | A composable API for making HTTP requests in Dart.
 [meta](https://pub.dev/packages/meta) | [dart-lang/sdk](https://github.com/dart-lang/sdk/tree/master/pkg/meta) | This package defines annotations that can be used by the tools that are shipped with the Dart SDK.
