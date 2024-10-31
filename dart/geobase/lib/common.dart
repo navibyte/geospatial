@@ -15,7 +15,8 @@
 /// * Functions: conversions between radians and degrees, geographic coordinate
 ///   helpers.
 /// * Presentation: DMS (degree-minutes-seconds geographic representations).
-/// * Reference: Coordinate and temporal reference systems.
+/// * Reference: Coordinate and temporal reference systems. Reference
+///   ellipsoids.
 ///
 /// This libary exports a subset of `package:geobase/geobase.dart`.
 ///
@@ -47,5 +48,6 @@ export 'src/common/presentation/dms.dart';
 // reference
 export 'src/common/reference/coord_ref_sys.dart';
 export 'src/common/reference/coord_ref_sys_resolver.dart';
+export 'src/common/reference/ellipsoid.dart';
 export 'src/common/reference/temporal_ref_sys.dart';
 export 'src/common/reference/temporal_ref_sys_resolver.dart';

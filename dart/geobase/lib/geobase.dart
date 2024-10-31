@@ -42,6 +42,7 @@ export 'src/common/functions/position_functions.dart';
 export 'src/common/presentation/dms.dart';
 export 'src/common/reference/coord_ref_sys.dart';
 export 'src/common/reference/coord_ref_sys_resolver.dart';
+export 'src/common/reference/ellipsoid.dart';
 export 'src/common/reference/temporal_ref_sys.dart';
 export 'src/common/reference/temporal_ref_sys_resolver.dart';
 

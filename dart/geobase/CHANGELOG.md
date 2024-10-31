@@ -1,3 +1,12 @@
+## 1.4.0
+
+⚠️ NOTE: Version 1.4.0 currently under development (1.4.0-dev.0).
+
+[geobase release 1.4.0](https://github.com/navibyte/geospatial/milestone/6)
+
+🧩 Features:
+* [Add a class for an earth ellipsoid with common default values #242](https://github.com/navibyte/geospatial/issues/242)
+
 ## 1.3.0
 
 ✨ New (2024-07-26): The stable version 1.3.0 with centroid, polylabel, point-in-polygon and other cartesian 2D calculations enhanced - [read more](https://geospatial.navibyte.dev/v1/geobase/geometry-calculations/)!
