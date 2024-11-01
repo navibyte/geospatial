@@ -45,15 +45,9 @@ abstract class Geodetic {
   /// Returns the distance along the surface of the earth from the current
   /// [position] to [destination].
   ///
-  /// Parameters:
-  /// * [radius]: The radius of earth (defaults to mean radius in metres).
-  ///
   /// The distance between this position and the destination is measured in same
   /// units as the given radius.
-  double distanceTo(
-    Geographic destination, {
-    double radius = 6371000.0,
-  });
+  double distanceTo(Geographic destination);
 
   /// Returns the initial bearing from the current [position] to [destination].
   ///
@@ -75,10 +69,8 @@ abstract class Geodetic {
   /// Parameters:
   /// * [distance]: Distance travelled (same units as radius, default: metres).
   /// * [bearing]: Initial bearing in degrees from north (0°..360°).
-  /// * [radius]: The radius of earth (defaults to mean radius in metres).
   Geographic destinationPoint({
     required double distance,
     required double bearing,
-    double radius = 6371000.0,
   });
 }
