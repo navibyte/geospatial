@@ -344,7 +344,7 @@ Package                | Description
 ---------------------- | ----------- 
 **common**             | Common codes, constants, functions, presentation helpers and reference systems related to geospatial applications.
 **coordinates**        | Position, bounding box and positions series (with coordinate arrays).
-**geodesy**            | Spherical geodesy functions for *great circle* and *rhumb line* paths.
+**geodesy**            | Spherical (*great circle*, *rhumb line*) and ellipsoidal geodesy tools.
 **geometric**          | Cartesian 2D calculations (centroid, polylabel, point-in-polygon, distance).
 **meta**               | Temporal data structures (instant, interval) and spatial extents.
 **projections**        | Geospatial projections (currently only between WGS84 and Web Mercator).

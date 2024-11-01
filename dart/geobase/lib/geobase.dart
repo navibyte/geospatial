@@ -12,7 +12,7 @@
 /// Key features:
 /// * position, bounding box and positions series (with coordinate arrays)
 /// * geographic (longitude-latitude) and projected positions and bounding boxes
-/// * spherical geodesy functions for *great circle* and *rhumb line* paths
+/// * spherical (*great circle*, *rhumb line*) and ellipsoidal geodesy tools
 /// * geometric functions for cartesian calculations
 /// * simple geometries (point, line string, polygon, multi point, multi line string, multi polygon, geometry collection)
 /// * features (with id, properties and geometry) and feature collections
@@ -66,6 +66,7 @@ export 'src/coordinates/scalable/scalable.dart';
 export 'src/coordinates/scalable/scalable2i.dart';
 
 // geodesy
+export 'src/geodesy/ellipsoidal/ellipsoidal.dart';
 export 'src/geodesy/spherical/spherical_great_circle.dart';
 export 'src/geodesy/spherical/spherical_rhumb_line.dart';
 

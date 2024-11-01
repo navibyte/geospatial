@@ -73,7 +73,7 @@ Key features of the [geobase](https://pub.dev/packages/geobase) package:
 * 🧩 simple geometries (point, line string, polygon, multi point, multi line string, multi polygon, geometry collection)
 * 📏 cartesian 2D calculations (centroid, polylabel, point-in-polygon, distance).
 * 🔷 features (with id, properties and geometry) and feature collections
-* 📐 spherical geodesy functions for *great circle* and *rhumb line* paths
+* 📐 spherical (*great circle*, *rhumb line*) and ellipsoidal geodesy tools
 * 📅 temporal data structures (instant, interval) and spatial extents
 * 📃 vector data formats supported ([GeoJSON](https://geojson.org/), [Newline-delimited GeoJSON](https://stevage.github.io/ndgeojson/), [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry), [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary)
 )
