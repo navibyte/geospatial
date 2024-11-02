@@ -67,6 +67,7 @@ export 'src/coordinates/scalable/scalable2i.dart';
 
 // geodesy
 export 'src/geodesy/ellipsoidal/ellipsoidal.dart';
+export 'src/geodesy/ellipsoidal/ellipsoidal_vincenty.dart';
 export 'src/geodesy/spherical/spherical_great_circle.dart';
 export 'src/geodesy/spherical/spherical_rhumb_line.dart';
 
