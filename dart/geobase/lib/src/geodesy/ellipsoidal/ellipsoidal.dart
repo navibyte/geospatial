@@ -39,9 +39,13 @@ import '/src/coordinates/geographic/geographic.dart';
 /// The base class for calculations related to the Earth surface modeled by
 /// ellipsoidal reference frames.
 ///
-/// The class provides tranformations between geocentric cartesian coordinates
+/// {@template geobase.geodesy.ellipsoidal.overview}
+/// 
+/// Provides tranformations between geocentric cartesian coordinates
 /// represented by ECEF (earth-centric earth-fixed) positions and geographic
 /// positions (latitude and longitude as geodetic coordinates).
+///
+/// {@endtemplate}
 ///
 /// {@template geobase.geodesy.ellipsoidal.ecef}
 ///
@@ -52,6 +56,9 @@ import '/src/coordinates/geographic/geographic.dart';
 /// * Z coordinate in metres (the axis pointing to 90°N).
 ///
 /// {@endtemplate}
+/// 
+/// See also the [EllipsoidalExtension] extension with alternative way of
+/// accessing these transformations.
 @immutable
 class Ellipsoidal {
   /// The current reference ellipsoid used for calculations.
@@ -64,8 +71,12 @@ class Ellipsoidal {
   /// current geographic position (latitude and longitude as geodetic
   /// coordinates).
   ///
+  /// {@template geobase.geodesy.ellipsoidal.parameters}
+  ///
   /// Parameters:
   /// * [ellipsoid]: A reference ellipsoid with ellipsoidal parameters.
+  ///
+  /// {@endtemplate}
   const Ellipsoidal(this.position, {this.ellipsoid = Ellipsoid.WGS84});
 
   /// Create an object for ellipsoidal calculations with a current position
@@ -73,60 +84,16 @@ class Ellipsoidal {
   ///
   /// {@macro geobase.geodesy.ellipsoidal.ecef}
   ///
-  /// Parameters:
-  /// * [ellipsoid]: A reference ellipsoid with ellipsoidal parameters.
-  factory Ellipsoidal.fromCartesian(
+  /// {@macro geobase.geodesy.ellipsoidal.parameters}
+  factory Ellipsoidal.fromGeocentricCartesian(
     Position geocentric, {
     Ellipsoid ellipsoid = Ellipsoid.WGS84,
   }) {
-    // ε = epsilon, β = beta, ν = nu
-
-    // source geocentric cartesian position
-    final x = geocentric.x;
-    final y = geocentric.y;
-    final z = geocentric.z;
-
-    // ellipsoidal parameters
-    final a = ellipsoid.a;
-    final b = ellipsoid.b;
-    final f = ellipsoid.f;
-
-    final eSq = 2.0 * f - f * f; // 1st eccentricity squared ≡ (a²−b²)/a²
-    final epsilon2 = eSq / (1.0 - eSq); // 2nd eccentricity squared ≡ (a²−b²)/b²
-    final p = sqrt(x * x + y * y); // distance from minor axis
-    final R = sqrt(p * p + z * z); // polar radius
-
-    // parametric latitude (Bowring eqn.17, replacing tanβ = z·a / p·b)
-    final tanBeta = (b * z) / (a * p) * (1.0 + epsilon2 * b / R);
-    final sinBeta = tanBeta / sqrt(1.0 + tanBeta * tanBeta);
-    final cosBeta = sinBeta / tanBeta;
-
-    // geodetic latitude (Bowring eqn.18: tanφ = z+ε²⋅b⋅sin³β / p−e²⋅cos³β)
-    final lat = cosBeta.isNaN
-        ? 0.0
-        : atan2(
-            z + epsilon2 * b * sinBeta * sinBeta * sinBeta,
-            p - eSq * a * cosBeta * cosBeta * cosBeta,
-          );
-
-    // longitude
-    final lon = atan2(y, x);
-
-    // height above ellipsoid (Bowring eqn.7)
-    final sinLat = sin(lat);
-    final cosLat = cos(lat);
-    final nu = a /
-        sqrt(
-          1.0 - eSq * sinLat * sinLat,
-        ); // length of the normal terminated by the minor axis
-    final h = p * cosLat + z * sinLat - (a * a / nu);
-
     // an instance with target geographic position
     return Ellipsoidal(
-      Geographic(
-        lat: lat.toDegrees(),
-        lon: lon.toDegrees(),
-        elev: h,
+      EllipsoidalExtension.fromGeocentricCartesian(
+        geocentric,
+        ellipsoid: ellipsoid,
       ),
       ellipsoid: ellipsoid,
     );
@@ -136,7 +103,7 @@ class Ellipsoidal {
   /// geodetic coordinates) to geocentric cartesian coordinates (X, Y, Z).
   ///
   ///{@macro geobase.geodesy.ellipsoidal.ecef}
-  Position toCartesian() {
+  Position toGeocentricCartesian() {
     // source geographic position
     final lat = position.lat.toRadians();
     final lon = position.lon.toRadians();
@@ -177,4 +144,84 @@ class Ellipsoidal {
 
   @override
   int get hashCode => Object.hash(ellipsoid, position);
+}
+
+
+/// An extension of the [Geographic] class providing calculations related to the
+/// Earth surface modeled by ellipsoidal reference frames.
+///
+/// {@macro geobase.geodesy.ellipsoidal.overview}
+/// 
+/// See also the [Ellipsoidal] base class with alternative way of accessing
+/// these transformations.
+extension EllipsoidalExtension on Geographic {
+  /// Transform this geographic position (latitude and longitude as
+  /// geodetic coordinates) to geocentric cartesian coordinates (X, Y, Z).
+  ///
+  /// {@macro geobase.geodesy.ellipsoidal.ecef}
+  ///
+  /// {@macro geobase.geodesy.ellipsoidal.parameters}
+  Position toGeocentricCartesian({Ellipsoid ellipsoid = Ellipsoid.WGS84}) =>
+      Ellipsoidal(this, ellipsoid: ellipsoid).toGeocentricCartesian();
+
+  /// Create an object for ellipsoidal calculations with a current position
+  /// transformed from [geocentric] cartesian coordinates (X, Y, Z).
+  ///
+  /// {@macro geobase.geodesy.ellipsoidal.ecef}
+  ///
+  /// Parameters:
+  /// * [ellipsoid]: A reference ellipsoid with ellipsoidal parameters.
+  static Geographic fromGeocentricCartesian(
+    Position geocentric, {
+    Ellipsoid ellipsoid = Ellipsoid.WGS84,
+  }) {
+    // ε = epsilon, β = beta, ν = nu
+
+    // source geocentric cartesian position
+    final x = geocentric.x;
+    final y = geocentric.y;
+    final z = geocentric.z;
+
+    // ellipsoidal parameters
+    final a = ellipsoid.a;
+    final b = ellipsoid.b;
+    final f = ellipsoid.f;
+
+    final eSq = 2.0 * f - f * f; // 1st eccentricity squared ≡ (a²−b²)/a²
+    final epsilon2 = eSq / (1.0 - eSq); // 2nd eccentricity squared ≡ (a²−b²)/b²
+    final p = sqrt(x * x + y * y); // distance from minor axis
+    final R = sqrt(p * p + z * z); // polar radius
+
+    // parametric latitude (Bowring eqn.17, replacing tanβ = z·a / p·b)
+    final tanBeta = (b * z) / (a * p) * (1.0 + epsilon2 * b / R);
+    final sinBeta = tanBeta / sqrt(1.0 + tanBeta * tanBeta);
+    final cosBeta = sinBeta / tanBeta;
+
+    // geodetic latitude (Bowring eqn.18: tanφ = z+ε²⋅b⋅sin³β / p−e²⋅cos³β)
+    final lat = cosBeta.isNaN
+        ? 0.0
+        : atan2(
+            z + epsilon2 * b * sinBeta * sinBeta * sinBeta,
+            p - eSq * a * cosBeta * cosBeta * cosBeta,
+          );
+
+    // geodetic longitude
+    final lon = atan2(y, x);
+
+    // height above ellipsoid (Bowring eqn.7)
+    final sinLat = sin(lat);
+    final cosLat = cos(lat);
+    final nu = a /
+        sqrt(
+          1.0 - eSq * sinLat * sinLat,
+        ); // length of the normal terminated by the minor axis
+    final h = p * cosLat + z * sinLat - (a * a / nu);
+
+    // create a geographic position
+    return Geographic(
+      lat: lat.toDegrees(),
+      lon: lon.toDegrees(),
+      elev: h,
+    );
+  }
 }

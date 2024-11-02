@@ -9,6 +9,7 @@
 import 'dart:math';
 
 import 'package:geobase/geobase.dart';
+import 'package:geobase/src/geodesy/ellipsoidal/ellipsoidal.dart';
 
 import 'package:test/test.dart';
 
@@ -28,7 +29,7 @@ void main() {
         final latLon1 = Ellipsoidal(geo1);
 
         expect(
-          Ellipsoidal.fromCartesian(latLon1.toCartesian())
+          Ellipsoidal.fromGeocentricCartesian(latLon1.toGeocentricCartesian())
               .position
               .toText(decimals: 8, compactNums: false),
           geo1.toText(decimals: 8, compactNums: false),
@@ -47,7 +48,8 @@ void main() {
         final ellisoid1 = i.isEven ? Ellipsoid.WGS84 : Ellipsoid.GRS80;
         final latLon1 = Ellipsoidal(geo1, ellipsoid: ellisoid1);
         expect(
-          Ellipsoidal.fromCartesian(latLon1.toCartesian(), ellipsoid: ellisoid1)
+          Ellipsoidal.fromGeocentricCartesian(latLon1.toGeocentricCartesian(),
+                  ellipsoid: ellisoid1)
               .position
               .toText(decimals: 7, compactNums: false),
           geo1.toText(decimals: 7, compactNums: false),
@@ -78,18 +80,20 @@ void main() {
 
       for (final t in testCases) {
         final geo1 = t[0] as Geographic;
-        final latLon1 = Ellipsoidal(geo1, ellipsoid: t[2] as Ellipsoid);
+        final ellipsoid1 = t[2] as Ellipsoid;
         final gc1 = t[1] as Position;
         final decimals = t[3] as int;
 
         expect(
-          latLon1.toCartesian().toText(decimals: decimals),
+          geo1
+              .toGeocentricCartesian(ellipsoid: ellipsoid1)
+              .toText(decimals: decimals),
           gc1.toText(decimals: decimals),
         );
 
         expect(
-          Ellipsoidal.fromCartesian(gc1)
-              .position
+          EllipsoidalExtension.fromGeocentricCartesian(gc1,
+                  ellipsoid: ellipsoid1)
               .toText(decimals: decimals, compactNums: false),
           geo1.toText(decimals: decimals, compactNums: false),
         );
@@ -103,9 +107,9 @@ void main() {
       final gc1 =
           Position.create(x: 4027893.924, y: 307041.993, z: 4919474.294);
 
-      final latLon1 = Ellipsoidal.fromCartesian(gc1).position;
-      expect(latLon1.lat, closeTo(50.7978, 0.0001));
-      expect(latLon1.lon, closeTo(4.3592, 0.0001));
+      final geo1 = EllipsoidalExtension.fromGeocentricCartesian(gc1);
+      expect(geo1.lat, closeTo(50.7978, 0.0001));
+      expect(geo1.lon, closeTo(4.3592, 0.0001));
     });
   });
 }
