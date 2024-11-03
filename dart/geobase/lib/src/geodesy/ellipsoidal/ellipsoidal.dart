@@ -40,7 +40,7 @@ import '/src/coordinates/geographic/geographic.dart';
 /// ellipsoidal reference frames.
 ///
 /// {@template geobase.geodesy.ellipsoidal.overview}
-/// 
+///
 /// Provides tranformations between geocentric cartesian coordinates
 /// represented by ECEF (earth-centric earth-fixed) positions and geographic
 /// positions (latitude and longitude as geodetic coordinates).
@@ -56,7 +56,7 @@ import '/src/coordinates/geographic/geographic.dart';
 /// * Z coordinate in metres (the axis pointing to 90°N).
 ///
 /// {@endtemplate}
-/// 
+///
 /// See also the [EllipsoidalExtension] extension with alternative way of
 /// accessing these transformations.
 @immutable
@@ -146,12 +146,11 @@ class Ellipsoidal {
   int get hashCode => Object.hash(ellipsoid, position);
 }
 
-
 /// An extension of the [Geographic] class providing calculations related to the
 /// Earth surface modeled by ellipsoidal reference frames.
 ///
 /// {@macro geobase.geodesy.ellipsoidal.overview}
-/// 
+///
 /// See also the [Ellipsoidal] base class with alternative way of accessing
 /// these transformations.
 extension EllipsoidalExtension on Geographic {

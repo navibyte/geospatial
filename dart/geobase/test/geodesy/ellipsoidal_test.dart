@@ -79,7 +79,7 @@ void main() {
         ],
         [
           // test values generated using
-          // https://www.oc.nps.edu/oc2902w/coord/llhxyz.htm  
+          // https://www.oc.nps.edu/oc2902w/coord/llhxyz.htm
           const Geographic(lat: 51.4778, lon: -0.0014, elev: 45.0),
           Position.create(x: 3980609.0, y: -97.0, z: 4966860.0),
           Ellipsoid.WGS84,
