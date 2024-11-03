@@ -32,6 +32,7 @@ export 'src/coordinates/base/positionable.dart';
 export 'src/coordinates/base/value_positionable.dart';
 export 'src/coordinates/geographic/geobox.dart';
 export 'src/coordinates/geographic/geographic.dart';
+export 'src/coordinates/geographic/geographic_bearing.dart';
 export 'src/coordinates/projected/projbox.dart';
 export 'src/coordinates/projected/projected.dart';
 export 'src/coordinates/projection/projection.dart';

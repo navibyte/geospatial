@@ -8,6 +8,7 @@
 * [Add a class for an earth ellipsoid with common default values #242](https://github.com/navibyte/geospatial/issues/242)
 * [Coordinate transformation between geocentric cartesian coordinates and geographic coordinates #243](https://github.com/navibyte/geospatial/issues/243)
 * [Vincenty calculations (distances and bearings) between geographic points #244](https://github.com/navibyte/geospatial/issues/244)
+* [Add GeographicBearing class to represent a bearing with a geographic position #245](https://github.com/navibyte/geospatial/issues/245)
 
 ## 1.3.0
 
