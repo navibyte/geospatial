@@ -31,7 +31,7 @@ void main() {
 
         expect(
           Ellipsoidal.fromGeocentricCartesian(latLon1.toGeocentricCartesian())
-              .position
+              .origin
               .toText(decimals: 8, compactNums: false),
           geo1.toText(decimals: 8, compactNums: false),
         );
@@ -51,7 +51,7 @@ void main() {
         expect(
           Ellipsoidal.fromGeocentricCartesian(latLon1.toGeocentricCartesian(),
                   ellipsoid: ellisoid1)
-              .position
+              .origin
               .toText(decimals: 7, compactNums: false),
           geo1.toText(decimals: 7, compactNums: false),
         );

@@ -167,6 +167,13 @@ void _intro() {
   // Midpoint: 28° 34.0′ N, 104° 41.6′ E
   greenwich.spherical.midPointTo(sydney);
 
+  // Vincenty ellipsoidal geodesy functions provide also `inverse` and `direct`
+  // methods to calculate shortest arcs along a geodesic on the ellipsoid. The
+  // returned arc object contains origin and destination points, initial and
+  // final bearings, and distance between points.
+  greenwich.vincenty().inverse(sydney);
+  greenwich.vincenty().direct(distance: 10000, bearing: 61.0);
+
   // -------
 
   // Geometry primitive and multi geometry objects.
@@ -667,33 +674,40 @@ void _ellipsoidalGeodesyVincenty() {
   const dd = Dms(decimals: 2);
   const dm = Dms.narrowSpace(type: DmsType.degMin, decimals: 2);
 
-  // prints: 16983.3 km
-  final distanceKm = greenwich.vincenty().distanceTo(sydney) / 1000.0;
+  // the shortest arc along a geodesic on the ellipsoid surface between points
+  final arc1 = greenwich.vincenty().inverse(sydney);
+
+  // prints (distance of the geodesic): 16983.3 km
+  final distanceKm = arc1.distance / 1000.0;
   print('${distanceKm.toStringAsFixed(1)} km');
 
-  // to use alternative ellipsoids set an optional argument on `vincenty` method
-  final distanceMetersGRS80 =
-      greenwich.vincenty(ellipsoid: Ellipsoid.GRS80).distanceTo(sydney);
-
   // prints (bearing varies along the geodesic): 60.59° -> 139.15°
-  final initialBearing = greenwich.vincenty().initialBearingTo(sydney);
-  final finalBearing = greenwich.vincenty().finalBearingTo(sydney);
+  final initialBearing = arc1.bearing;
+  final finalBearing = arc1.finalBearing;
   print('${dd.bearing(initialBearing)} -> ${dd.bearing(finalBearing)}');
 
-  // prints: 51° 31.28′ N, 0° 07.48′ E
-  final destPoint =
-      greenwich.vincenty().destinationPoint(distance: 10000, bearing: 61.0);
-  print(destPoint.latLonDms(format: dm));
+  // the shortest arc along a geodesic from greenwich to the initial direction
+  // defined by `bearing` and the length by `distance`
+  // prints: 51° 31.28′ N, 0° 07.48′ E - bearing: 61.10°
+  final arc2 = greenwich.vincenty().direct(distance: 10000, bearing: 61.0);
+  final dest = arc2.destination;
+  final destBrng = arc2.finalBearing;
+  print('${dest.latLonDms(format: dm)} - bearing: ${dd.bearing(destBrng)}');
 
-  // prints: 28° 52.77′ N, 104° 48.82′ E
+  // mid point, prints: 28° 52.77′ N, 104° 48.82′ E
   final midPoint = greenwich.vincenty().midPointTo(sydney);
   print(midPoint.latLonDms(format: dm));
 
   // prints 10 intermediate points, fraction 0.6: 16° 30.55′ N, 114° 36.83′ E
   for (var fr = 0.0; fr < 1.0; fr += 0.1) {
     final ip = greenwich.vincenty().intermediatePointTo(sydney, fraction: fr);
-    print('${fr.toStringAsFixed(1)}: ${ip.latLonDms(format: dm)}');
+    final point = ip.origin;
+    print('${fr.toStringAsFixed(1)}: ${point.latLonDms(format: dm)}');
   }
+
+  // to use alternative ellipsoids set an optional argument on `vincenty` method
+  final distanceMetersGRS80 =
+      greenwich.vincenty(ellipsoid: Ellipsoid.GRS80).distanceTo(sydney);
 }
 
 void _sphericalGeodesyGreatCircle() {

@@ -51,7 +51,8 @@ void main() {
     test(
       'finalBearingOn',
       () {
-        final brng = p2.finalBearingOn(distance: 54972.271, bearing: 306.86816);
+        final brng =
+            p2.direct(distance: 54972.271, bearing: 306.86816).finalBearing;
         expect(brng.toStringAsFixed(4), '307.1736');
       },
     );
@@ -60,7 +61,7 @@ void main() {
       'intermediatePointTo',
       () {
         final dest = p1.intermediatePointTo(dest1, fraction: 0.5);
-        expect(dest.latLonDms(), '54.3639°N, 4.5304°W');
+        expect(dest.origin.latLonDms(), '54.3639°N, 4.5304°W');
       },
     );
 
@@ -205,15 +206,15 @@ void main() {
         jog.latLonDms(),
       );
       expect(
-        _fixed(leV.finalBearingOn(distance: dist, bearing: brngInit), 3),
+        _fixed(leV.direct(distance: dist, bearing: brngInit).finalBearing, 3),
         _fixed(brngFinal, 3),
       );
       expect(
-        leV.intermediatePointTo(jog, fraction: 0.0).latLonDms(),
+        leV.intermediatePointTo(jog, fraction: 0.0).origin.latLonDms(),
         le.latLonDms(),
       );
       expect(
-        leV.intermediatePointTo(jog, fraction: 1.0).latLonDms(),
+        leV.intermediatePointTo(jog, fraction: 1.0).origin.latLonDms(),
         jog.latLonDms(),
       );
     });
@@ -248,7 +249,8 @@ void main() {
       );
       expect(
         dms.bearing(
-          v1.finalBearingOn(distance: dist, bearing: dms.parse(azFwd)) - 180.0,
+          v1.direct(distance: dist, bearing: dms.parse(azFwd)).finalBearing -
+              180.0,
         ),
         azRev,
       );

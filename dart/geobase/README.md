@@ -148,6 +148,13 @@ Coordinates for *pixels* and *tiles* in tiling schemes:
 
   // Midpoint: 28° 34.0′ N, 104° 41.6′ E
   greenwich.spherical.midPointTo(sydney);
+
+  // Vincenty ellipsoidal geodesy functions provide also `inverse` and `direct`
+  // methods to calculate shortest arcs along a geodesic on the ellipsoid. The
+  // returned arc object contains origin and destination points, initial and
+  // final bearings, and distance between points.
+  greenwich.vincenty().inverse(sydney);
+  greenwich.vincenty().direct(distance: 10000, bearing: 61.0);
 ```
 
 Geometry primitive and multi geometry objects:

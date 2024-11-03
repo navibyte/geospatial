@@ -31,13 +31,15 @@ import '/src/common/functions/position_functions.dart';
 import '/src/common/reference/ellipsoid.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/geographic/geographic.dart';
+import '/src/coordinates/geographic/geographic_bearing.dart';
 import '/src/geodesy/base/geodetic.dart';
+import '/src/geodesy/base/geodetic_arc_segment.dart';
 
 import 'ellipsoidal.dart';
 
 /// An extension for easier access to [EllipsoidalVincenty].
 extension EllipsoidalVincentyExtension on Geographic {
-  /// {@template geobase.geodesy.ellipsoidal.create}
+  /// {@template geobase.geodesy.ellipsoidal_vincenty.create}
   ///
   /// Create an object calculating distances, bearings, destinations, etc on
   /// the ellipsoidal earth model devised by Thaddeus Vincenty.
@@ -46,6 +48,13 @@ extension EllipsoidalVincentyExtension on Geographic {
   /// bearings.
   ///
   /// {@endtemplate}
+  ///
+  /// Use `direct` method to calculate the shortest arc starting from an origin
+  /// geographic position with the geodesic arc defined by `distance` and
+  /// `bearing`.
+  ///
+  /// Use `inverse` method to calculate the shortest arc between two geographic
+  /// positions (origin and destination).
   ///
   /// This position is used as the current position.
   ///
@@ -65,23 +74,38 @@ extension EllipsoidalVincentyExtension on Geographic {
 /// From: T Vincenty, "Direct and Inverse Solutions of Geodesics on the
 /// Ellipsoid with application of nested equations", Survey Review, vol XXIII
 /// no 176, 1975. www.ngs.noaa.gov/PUBS_LIB/inverse.pdf.
+///
+/// {@template geobase.geodesy.ellipsoidal_vincenty.main_methods}
+///
+/// Use [direct] method to calculate the shortest arc starting from an [origin]
+/// geographic position with the geodesic arc defined by `distance` and
+/// `bearing`.
+///
+/// Use [inverse] method to calculate the shortest arc between two geographic
+/// positions ([origin] and destination).
+///
+/// {@endtemplate}
 @immutable
 class EllipsoidalVincenty extends Ellipsoidal implements Geodetic {
-  /// {@macro geobase.geodesy.ellipsoidal.create}
+  /// {@macro geobase.geodesy.ellipsoidal_vincenty.create}
   ///
-  /// The given [position] is used as the current position.
+  /// The given position is used as the origin position.
   ///
   /// {@macro geobase.geodesy.ellipsoidal.parameters}
-  const EllipsoidalVincenty(super.position, {super.ellipsoid});
-
-  /// {@macro geobase.geodesy.ellipsoidal.create}
   ///
-  /// The current position is transformed from the given [geocentric] cartesian
+  /// {@macro geobase.geodesy.ellipsoidal_vincenty.main_methods}
+  const EllipsoidalVincenty(super.origin, {super.ellipsoid});
+
+  /// {@macro geobase.geodesy.ellipsoidal_vincenty.create}
+  ///
+  /// The origin position is transformed from the given [geocentric] cartesian
   /// coordinates (X, Y, Z).
   ///
   /// {@macro geobase.geodesy.ellipsoidal.ecef}
   ///
   /// {@macro geobase.geodesy.ellipsoidal.parameters}
+  ///
+  /// {@macro geobase.geodesy.ellipsoidal_vincenty.main_methods}
   factory EllipsoidalVincenty.fromGeocentricCartesian(
     Position geocentric, {
     Ellipsoid ellipsoid = Ellipsoid.WGS84,
@@ -96,11 +120,66 @@ class EllipsoidalVincenty extends Ellipsoidal implements Geodetic {
     );
   }
 
+  /// The origin geographic position for calculations.
   @override
-  EllipsoidalVincenty copyWith({Geographic? position}) =>
-      position != null ? EllipsoidalVincenty(position) : this;
+  Geographic get position => origin;
 
-  /// Returns the distance from the current [position] to [destination] along a
+  @override
+  EllipsoidalVincenty copyWith({Geographic? position, Ellipsoid? ellipsoid}) =>
+      position != null || ellipsoid != null
+          ? EllipsoidalVincenty(
+              position ?? this.position,
+              ellipsoid: ellipsoid ?? this.ellipsoid,
+            )
+          : this;
+
+  /// Returns the shortest arc segment from the [origin] position to the
+  /// [destination] point along a geodesic on the surface of the ellipsoid,
+  /// using the Vincenty inverse solution.
+  ///
+  /// The distance between origin and destination positions is measured in
+  /// meters. Bearings are measured in degrees from north (0°..360°). NaN is
+  /// returned for bearings and distances if failed to converge.
+  ///
+  /// Examples:
+  /// ```dart
+  ///   const p1 = Geographic(lat: 50.06632, lon: -5.71475);
+  ///   const p2 = Geographic(lat: 58.64402, lon: -3.07009);
+  ///   final arc = p1.vincenty().inverse(p2);
+  ///
+  ///   // distance (969954.166 m)
+  ///   final dist = arc.distance;
+  ///
+  ///   // initial bearing (9.1419°)
+  ///   final initialBrng = arc.bearing;
+  ///
+  ///   // final bearing (11.2972°)
+  ///   final finalBrng = arc.finalBearing;
+  /// ```
+  GeodeticArcSegment inverse(Geographic destination) {
+    if (origin == destination) {
+      return GeodeticArcSegment(
+        origin: origin,
+        bearing: double.nan,
+        distance: 0.0,
+        finalBearing: double.nan,
+        destination: destination,
+      );
+    }
+    try {
+      return _inverse(destination);
+    } catch (_) {
+      return GeodeticArcSegment(
+        origin: origin,
+        bearing: double.nan,
+        distance: double.nan,
+        finalBearing: double.nan,
+        destination: destination,
+      );
+    }
+  }
+
+  /// Returns the distance from the [origin] position to [destination] along a
   /// geodesic on the surface of the ellipsoid, using Vincenty inverse solution.
   ///
   /// The distance between this position and the destination is measured in
@@ -114,7 +193,7 @@ class EllipsoidalVincenty extends Ellipsoidal implements Geodetic {
   /// ```
   @override
   double distanceTo(Geographic destination) {
-    if (position == destination) return 0.0;
+    if (origin == destination) return 0.0;
     try {
       return _inverse(destination).distance;
     } catch (_) {
@@ -122,7 +201,7 @@ class EllipsoidalVincenty extends Ellipsoidal implements Geodetic {
     }
   }
 
-  /// Returns the bearing from the current position to [destination] along a
+  /// Returns the bearing from the [origin] position to [destination] along a
   /// geodesic on the surface of the ellipsoid, using Vincenty inverse solution.
   ///
   /// The bearing is measured in degrees from north (0°..360°). NaN is returned
@@ -136,15 +215,15 @@ class EllipsoidalVincenty extends Ellipsoidal implements Geodetic {
   /// ```
   @override
   double initialBearingTo(Geographic destination) {
-    if (position == destination) return double.nan;
+    if (origin == destination) return double.nan;
     try {
-      return _inverse(destination).initialBearing;
+      return _inverse(destination).bearing;
     } catch (_) {
       return double.nan;
     }
   }
 
-  /// Returns the bearing from the current position to [destination] along a
+  /// Returns the bearing from the [origin] position to [destination] along a
   /// geodesic on the surface of the ellipsoid, using Vincenty inverse solution.
   ///
   /// The bearing is measured in degrees from north (0°..360°). NaN is returned
@@ -158,7 +237,7 @@ class EllipsoidalVincenty extends Ellipsoidal implements Geodetic {
   /// ```
   @override
   double finalBearingTo(Geographic destination) {
-    if (position == destination) return double.nan;
+    if (origin == destination) return double.nan;
     try {
       return _inverse(destination).finalBearing;
     } catch (_) {
@@ -166,9 +245,9 @@ class EllipsoidalVincenty extends Ellipsoidal implements Geodetic {
     }
   }
 
-  /// Returns the final bearing having travelled along a geodesic on the
-  /// surface of the ellipsoid from the current position the given distance on
-  /// the given bearing.
+  /// Returns the shortest arc segment from the [origin] position to a
+  /// destination point along a geodesic on the surface of the ellipsoid
+  /// defined by [distance] and [bearing].
   ///
   /// Parameters:
   /// * [distance]: Distance travelled along the geodesic in metres.
@@ -178,21 +257,26 @@ class EllipsoidalVincenty extends Ellipsoidal implements Geodetic {
   /// ```dart
   ///   const p1 = Geographic(lat: -37.95103, lon: 144.42487);
   ///
+  ///   // the shortest arc segment from `p1` to the direction of `bearing`
+  ///   final arc =
+  ///          p1.vincenty().direct(distance: 54972.271, bearing: 306.86816);
+  ///
   ///   // final bearing (307.1736°)
-  ///   final b2 = p1.vincenty().
-  ///        finalBearingOn(distance: 54972.271, bearing: 306.86816);
+  ///   final b2 = arc.finalBearing;
+  ///
+  ///   // destination point (lat: 37.6528°S, lon: 143.9265°E)
+  ///   final p2 = arc.destination;
   /// ```
-  double finalBearingOn({
+  GeodeticArcSegment direct({
     required double distance,
     required double bearing,
   }) {
-    if (distance == 0.0) return bearing;
-    return _direct(distance, bearing).finalBearing;
+    return _direct(distance, bearing);
   }
 
-  /// Returns the destination point having travelled along a geodesic on the
-  /// surface of the ellipsoid from the current position the given distance on
-  /// the given bearing.
+  /// Returns the destination point on a shortest arc segment from the [origin]
+  /// position to a destination point along a geodesic on the surface of the
+  /// ellipsoid defined by [distance] and [bearing].
   ///
   /// Parameters:
   /// * [distance]: Distance travelled along the geodesic in metres.
@@ -211,12 +295,12 @@ class EllipsoidalVincenty extends Ellipsoidal implements Geodetic {
     required double distance,
     required double bearing,
   }) {
-    if (distance == 0.0) return position;
-    return _direct(distance, bearing).point;
+    if (distance == 0.0) return origin;
+    return _direct(distance, bearing).destination;
   }
 
   /// Returns the midpoint (along a geodesic on the surface of the ellipsoid)
-  /// between the current position and [destination].
+  /// between the [origin] position and [destination].
   ///
   /// Examples:
   /// ```dart
@@ -228,12 +312,13 @@ class EllipsoidalVincenty extends Ellipsoidal implements Geodetic {
   /// ```
   @override
   Geographic midPointTo(Geographic destination) {
-    if (position == destination) return position;
-    return intermediatePointTo(destination, fraction: 0.5);
+    if (origin == destination) return origin;
+    return intermediatePointTo(destination, fraction: 0.5).origin;
   }
 
-  /// Returns the point at given fraction between the current position and
-  /// [destination] (along a geodesic on the surface of the ellipsoid).
+  /// Returns the point (with a bearing) at given fraction between the [origin]
+  /// position and [destination] (along a geodesic on the surface of the
+  /// ellipsoid).
   ///
   /// Parameters:
   /// * [fraction]: 0.0 = this position, 1.0 = destination
@@ -243,35 +328,51 @@ class EllipsoidalVincenty extends Ellipsoidal implements Geodetic {
   ///   const p1 = Geographic(lat: 50.06632, lon: -5.71475);
   ///   const p2 = Geographic(lat: 58.64402, lon: -3.07009);
   ///
+  ///   final intermed = p1.vincenty().intermediatePointTo(p2, fraction: 0.5);
+  ///
   ///   // intermediate point (lat: 54.3639°N, lon: 004.5304°W)
-  ///   final pMid = p1.vincenty().intermediatePointTo(p2, fraction: 0.5);
+  ///   final pos = intermed.position;
+  ///
+  ///   // bearing at the intermediate point
+  ///   final brng = intermed.bearing;
   /// ```
-  Geographic intermediatePointTo(
+  GeographicBearing intermediatePointTo(
     Geographic destination, {
     required double fraction,
   }) {
+    /*
     if (fraction == 0.0) return position;
     if (fraction == 1.0) return destination;
     if (position == destination) return position;
+  */
 
     final inverse = _inverse(destination);
     final dist = inverse.distance;
-    final brng = inverse.initialBearing;
-    return brng.isNaN
-        ? position
-        : destinationPoint(distance: dist * fraction, bearing: brng);
+    final brng = inverse.bearing;
+
+    if (brng.isNaN) {
+      return GeographicBearing(origin: origin, bearing: double.nan);
+    } else {
+      final direct = _direct(dist * fraction, brng);
+      return GeographicBearing(
+        origin: direct.destination,
+        bearing: direct.finalBearing,
+      );
+    }
   }
 
   /// Vincenty direct calculation.
-  _DirectResult _direct(double distance, double initialBearing) {
+  GeodeticArcSegment _direct(double distance, double initialBearing) {
     if (distance.isNaN) {
       throw throw FormatException('invalid distance $distance');
     }
     if (distance == 0) {
-      return _DirectResult(
-        point: position,
+      return GeodeticArcSegment(
+        origin: origin,
+        bearing: double.nan,
+        destination: origin,
         finalBearing: double.nan,
-        iterations: 0,
+        distance: 0.0,
       );
     }
     if (initialBearing.isNaN) {
@@ -280,8 +381,8 @@ class EllipsoidalVincenty extends Ellipsoidal implements Geodetic {
 
     // symbols: α = alfa, σ = sigma, Δ = delta
 
-    final lat1 = position.lat.toRadians();
-    final lon1 = position.lon.toRadians();
+    final lat1 = origin.lat.toRadians();
+    final lon1 = origin.lon.toRadians();
     final alfa1 = initialBearing.toRadians();
     final s = distance;
 
@@ -364,17 +465,19 @@ class EllipsoidalVincenty extends Ellipsoidal implements Geodetic {
 
     final alfa2 = atan2(sinAlfa, -x);
 
-    return _DirectResult(
-      point: Geographic(lat: lat2.toDegrees(), lon: lon2.toDegrees()),
+    return GeodeticArcSegment(
+      origin: origin,
+      bearing: initialBearing,
+      distance: distance,
       finalBearing: alfa2.toDegrees().wrap360(),
-      iterations: iterations,
+      destination: Geographic(lat: lat2.toDegrees(), lon: lon2.toDegrees()),
     );
   }
 
   /// Vincenty inverse calculation.
-  _InverseResult _inverse(Geographic destination) {
-    final lat1 = position.lat.toRadians();
-    final lon1 = position.lon.toRadians();
+  GeodeticArcSegment _inverse(Geographic destination) {
+    final lat1 = origin.lat.toRadians();
+    final lon1 = origin.lon.toRadians();
     final lat2 = destination.lat.toRadians();
     final lon2 = destination.lon.toRadians();
 
@@ -489,37 +592,13 @@ class EllipsoidalVincenty extends Ellipsoidal implements Geodetic {
         ? pi
         : atan2(cosU1 * sinLon, -sinU1 * cosU2 + cosU1 * sinU2 * cosLon);
 
-    return _InverseResult(
+    return GeodeticArcSegment(
+      origin: origin,
+      destination: destination,
       distance: s,
-      initialBearing:
-          s.abs() < epsilon ? double.nan : alfa1.toDegrees().wrap360(),
+      bearing: s.abs() < epsilon ? double.nan : alfa1.toDegrees().wrap360(),
       finalBearing:
           s.abs() < epsilon ? double.nan : alfa2.toDegrees().wrap360(),
-      iterations: iterations,
     );
   }
-}
-
-class _DirectResult {
-  final Geographic point;
-  final double finalBearing;
-  final int iterations;
-  _DirectResult({
-    required this.point,
-    required this.finalBearing,
-    required this.iterations,
-  });
-}
-
-class _InverseResult {
-  final double distance;
-  final double initialBearing;
-  final double finalBearing;
-  final int iterations;
-  _InverseResult({
-    required this.distance,
-    required this.initialBearing,
-    required this.finalBearing,
-    required this.iterations,
-  });
 }

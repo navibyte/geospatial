@@ -61,13 +61,13 @@ import '/src/coordinates/geographic/geographic.dart';
 /// accessing these transformations.
 @immutable
 class Ellipsoidal {
-  /// The current reference ellipsoid used for calculations.
+  /// The reference ellipsoid used for calculations.
   final Ellipsoid ellipsoid;
 
-  /// The current geographic position for calculations.
-  final Geographic position;
+  /// The origin geographic position for calculations.
+  final Geographic origin;
 
-  /// Create an object for ellipsoidal calculations with [position] as the
+  /// Create an object for ellipsoidal calculations with [origin] as the
   /// current geographic position (latitude and longitude as geodetic
   /// coordinates).
   ///
@@ -77,9 +77,9 @@ class Ellipsoidal {
   /// * [ellipsoid]: A reference ellipsoid with ellipsoidal parameters.
   ///
   /// {@endtemplate}
-  const Ellipsoidal(this.position, {this.ellipsoid = Ellipsoid.WGS84});
+  const Ellipsoidal(this.origin, {this.ellipsoid = Ellipsoid.WGS84});
 
-  /// Create an object for ellipsoidal calculations with a current position
+  /// Create an object for ellipsoidal calculations with a origin position
   /// transformed from [geocentric] cartesian coordinates (X, Y, Z).
   ///
   /// {@macro geobase.geodesy.ellipsoidal.ecef}
@@ -99,15 +99,15 @@ class Ellipsoidal {
     );
   }
 
-  /// Transform the current geographic [position] (latitude and longitude as
+  /// Transform the geographic position at [origin] (latitude and longitude as
   /// geodetic coordinates) to geocentric cartesian coordinates (X, Y, Z).
   ///
   ///{@macro geobase.geodesy.ellipsoidal.ecef}
   Position toGeocentricCartesian() {
     // source geographic position
-    final lat = position.lat.toRadians();
-    final lon = position.lon.toRadians();
-    final h = position.elev;
+    final lat = origin.lat.toRadians();
+    final lon = origin.lon.toRadians();
+    final h = origin.elev;
     final sinLat = sin(lat);
     final cosLat = cos(lat);
     final sinLon = sin(lon);
@@ -133,17 +133,17 @@ class Ellipsoidal {
 
   @override
   String toString() {
-    return '$position;$ellipsoid';
+    return '$origin;$ellipsoid';
   }
 
   @override
   bool operator ==(Object other) =>
       other is Ellipsoidal &&
       ellipsoid == other.ellipsoid &&
-      position == other.position;
+      origin == other.origin;
 
   @override
-  int get hashCode => Object.hash(ellipsoid, position);
+  int get hashCode => Object.hash(ellipsoid, origin);
 }
 
 /// An extension of the [Geographic] class providing calculations related to the
@@ -163,8 +163,8 @@ extension EllipsoidalExtension on Geographic {
   Position toGeocentricCartesian({Ellipsoid ellipsoid = Ellipsoid.WGS84}) =>
       Ellipsoidal(this, ellipsoid: ellipsoid).toGeocentricCartesian();
 
-  /// Create an object for ellipsoidal calculations with a current position
-  /// transformed from [geocentric] cartesian coordinates (X, Y, Z).
+  /// Transform the given [geocentric] cartesian coordinates (X, Y, Z) to
+  /// geographic coordinates (latitude and longitude).
   ///
   /// {@macro geobase.geodesy.ellipsoidal.ecef}
   ///
