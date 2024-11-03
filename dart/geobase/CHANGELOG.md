@@ -9,6 +9,7 @@
 * [Coordinate transformation between geocentric cartesian coordinates and geographic coordinates #243](https://github.com/navibyte/geospatial/issues/243)
 * [Vincenty calculations (distances and bearings) between geographic points #244](https://github.com/navibyte/geospatial/issues/244)
 * [Add GeographicBearing class to represent a bearing with a geographic position #245](https://github.com/navibyte/geospatial/issues/245)
+* [Add GeodeticArcSegment class to represent a geodesic arc between two points on an ellipsoid or a sphere #246](https://github.com/navibyte/geospatial/issues/246)
 
 ## 1.3.0
 
