@@ -1,6 +1,6 @@
 name: geobase
 description: Geospatial data, geometry, geodesy, projections, tiling schemes, and vector formats (GeoJSON, WKT, WKB). 
-version: 1.4.0-dev.0
+version: 1.4.0-dev.1
 repository: https://github.com/navibyte/geospatial
 homepage: https://geospatial.navibyte.dev/
 

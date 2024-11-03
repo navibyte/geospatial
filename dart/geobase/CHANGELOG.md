@@ -1,6 +1,6 @@
 ## 1.4.0
 
-⚠️ NOTE: Version 1.4.0 currently under development (1.4.0-dev.0).
+⚠️ NOTE: Version 1.4.0 currently under development (1.4.0-dev.1).
 
 [geobase release 1.4.0](https://github.com/navibyte/geospatial/milestone/6)
 
