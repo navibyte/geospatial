@@ -282,8 +282,9 @@ The GeoJSON format is supported as text input and output for features:
 ```
 
 Collections of feature objects are modeled as `FeatureCollection` objects. See
-the chapter about [geospatial features](#geospatial-features) for more
-information.
+the documentation chapter about
+[geospatial features](https://geospatial.navibyte.dev/v1/geobase/features/)
+for more information.
 
 Temporal instants and intervals, and geospatial extents:
 
@@ -304,9 +305,12 @@ Temporal instants and intervals, and geospatial extents:
 
 Coordinate projections, tiling schemes (web mercator, global geodetic) and
 coordinate array classes are some of the more advanced topics not introduced
-here. Please see separate chapters about [projections](#projections),
-[tiling schemes](#tiling-schemes) and [coordinate arrays](#coordinate-arrays) to
-learn about them.
+here. Please see chapters about
+[projections](https://geospatial.navibyte.dev/v1/geobase/projections/),
+[tiling schemes](https://geospatial.navibyte.dev/v1/geobase/tiling-schemes/) and
+[coordinate arrays](https://geospatial.navibyte.dev/v1/geobase/topics/#-coordinate-arrays)
+on the [documentation website](https://geospatial.navibyte.dev/) to learn about
+them.
 
 ## Usage
 
@@ -391,7 +395,9 @@ Please see the
 
 This project contains portions of derivative work. 
 
-See details about [DERIVATIVE](DERIVATIVE.md) work.
+See details about
+[DERIVATIVE](https://github.com/navibyte/geospatial/blob/main/dart/geobase/)
+work.
 
 Source repositories used when porting functionality to Dart and this project:
 * [geodesy](https://github.com/chrisveness/geodesy) by Chris Veness 2002-2024

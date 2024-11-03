@@ -8,6 +8,7 @@
 /// * https://github.com/chrisveness/geodesy
 /// * www.movable-type.co.uk/scripts/latlong.html
 /// * www.movable-type.co.uk/scripts/geodesy-library.html#latlon-spherical
+/// * https://www.movable-type.co.uk/scripts/latlong-vincenty.html
 ///
 /// This libary exports a subset of `package:geobase/geobase.dart`.
 ///
