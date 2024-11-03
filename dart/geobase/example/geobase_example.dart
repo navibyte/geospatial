@@ -29,6 +29,8 @@ void main() {
   _scalableCoordinates();
 
   // geodesy
+  _ellipsoidalGeodesy();
+  _ellipsoidalGeodesyVincenty();
   _sphericalGeodesyGreatCircle();
   _sphericalGeodesyRhumbLine();
 
@@ -132,13 +134,28 @@ void _intro() {
 
   // -------
 
-  // Spherical geodesy functions for great circle (shown) and rhumb line paths.
+  // Ellipsoidal and spherical geodesy functions to calculate distances etc.
 
   final greenwich = Geographic.parseDms(lat: '51°28′40″ N', lon: '0°00′05″ W');
   final sydney = Geographic.parseDms(lat: '33.8688° S', lon: '151.2093° E');
 
-  // Distance (~ 16988 km)
+  // How to calculate distances using ellipsoidal Vincenty, spherical
+  // great-circle and spherical rhumb line methods is shown first.
+
+  // The distance along a geodesic on the ellipsoid surface (16983.3 km).
+  greenwich.vincenty().distanceTo(sydney);
+
+  // By default the WGS84 reference ellipsoid is used but this can be changed.
+  greenwich.vincenty(ellipsoid: Ellipsoid.GRS80).distanceTo(sydney);
+
+  // The distance along a spherical great-circle path (16987.9 km).
   greenwich.spherical.distanceTo(sydney);
+
+  // The distance along a spherical rhumb line path (17669.8 km).
+  greenwich.rhumb.distanceTo(sydney);
+
+  // Also bearings, destination points and mid points (or intermediate points)
+  // are provided for all methods, but below shown only for great-circle paths.
 
   // Destination point (10 km to bearing 61°): 51° 31.3′ N, 0° 07.5′ E
   greenwich.spherical.initialBearingTo(sydney);
@@ -582,40 +599,143 @@ void _scalableCoordinates() {
   pixel.zoomTo(13); // => Scalable2i(zoom: 13, x: 368, y: 160));
 }
 
-void _sphericalGeodesyGreatCircle() {
+void _ellipsoidalGeodesy() {
+  // a sample geographic position with geodetic latitude and longitude
+  const geographic1 = Geographic(lat: 51.4778, lon: -0.0014, elev: 45.0);
+
+  // same as ECEF (earth-centric earth-fixed) geocentric cartesian coordinates
+  final geocentric1 = geographic1.toGeocentricCartesian();
+
+  // returned object is of type `Position` with x, y and z cartesian coordinates
+  // prints (X, Y, Z): 3980609.2373, -97.2646, 4966859.7285
+  print(geocentric1.toText(decimals: 4, delimiter: ', '));
+
+  // let's try inverse, first create a geocentric cartesian position (ECEF)
+  final geocentric2 =
+      Position.create(x: 3980609.2373, y: -97.2646, z: 4966859.7285);
+
+  // convert this to a geographic position with geodetic latitude and longitude
+  final geographic2 = EllipsoidalExtension.fromGeocentricCartesian(geocentric1);
+
+  // returned object is of the type `Geographic`
+  // prints (longitude, latitude, elevation): -0.0014, 51.4778, 45.0000
+  print(geographic2.toText(decimals: 4, delimiter: ', ', compactNums: false));
+
+  // -------
+
+  // Samples above used the WGS84 reference ellipsoid for ellipsoidal
+  // calculations. You can also use other ellipsoids on `toGeocentricCartesian`
+  // and `fromGeocentricCartesian` methods.
+
+  // create a geocentric cartesian coordinates based on the GRS80 ellipsoid from
+  // the same geodetic coordinate values as specified on `geographic1`
+  final geocentricGRS80 =
+      geographic1.toGeocentricCartesian(ellipsoid: Ellipsoid.GRS80);
+
+  // prints (X, Y, Z): 3980609.2373, -97.2646, 4966859.7284
+  print(geocentricGRS80.toText(decimals: 4, delimiter: ', '));
+
+  // As WGS84 and GRS80 ellipsoids are very close to each other you may notice
+  // only a small difference compared to values printed from `geocentric1`.
+
+  // If needed it's also possible to define other ellipsoid parametrs, like:
+  Ellipsoid(
+    id: 'airy',
+    name: 'Airy 1830',
+    a: 6377563.396,
+    b: 6356256.909,
+    f: 1.0 / 299.3249646,
+  );
+}
+
+void _ellipsoidalGeodesyVincenty() {
+  // Distances & bearings between points, and destination points calculated on
+  // an ellipsoidal earth model, along geodesics on the surface of a reference
+  // ellipsoid selected.
+  //
+  // Calculations are based on ‘direct and inverse solutions of geodesics on the
+  // ellipsoid’ devised by Thaddeus Vincenty.
+  //
+  // Calculations are accurate to within 0.5mm in distances and 0.000015″ in
+  // bearings.
+
   // sample geographic positions
   final greenwich = Geographic.parseDms(lat: '51°28′40″ N', lon: '0°00′05″ W');
   final sydney = Geographic.parseDms(lat: '33.8688° S', lon: '151.2093° E');
 
   // decimal degrees (DD) and degrees-minutes (DM) formats
-  const dd = Dms(decimals: 0);
-  const dm = Dms.narrowSpace(type: DmsType.degMin, decimals: 1);
+  const dd = Dms(decimals: 2);
+  const dm = Dms.narrowSpace(type: DmsType.degMin, decimals: 2);
 
-  // prints: 16988 km
+  // prints: 16983.3 km
+  final distanceKm = greenwich.vincenty().distanceTo(sydney) / 1000.0;
+  print('${distanceKm.toStringAsFixed(1)} km');
+
+  // to use alternative ellipsoids set an optional argument on `vincenty` method
+  final distanceMetersGRS80 =
+      greenwich.vincenty(ellipsoid: Ellipsoid.GRS80).distanceTo(sydney);
+
+  // prints (bearing varies along the geodesic): 60.59° -> 139.15°
+  final initialBearing = greenwich.vincenty().initialBearingTo(sydney);
+  final finalBearing = greenwich.vincenty().finalBearingTo(sydney);
+  print('${dd.bearing(initialBearing)} -> ${dd.bearing(finalBearing)}');
+
+  // prints: 51° 31.28′ N, 0° 07.48′ E
+  final destPoint =
+      greenwich.vincenty().destinationPoint(distance: 10000, bearing: 61.0);
+  print(destPoint.latLonDms(format: dm));
+
+  // prints: 28° 52.77′ N, 104° 48.82′ E
+  final midPoint = greenwich.vincenty().midPointTo(sydney);
+  print(midPoint.latLonDms(format: dm));
+
+  // prints 10 intermediate points, fraction 0.6: 16° 30.55′ N, 114° 36.83′ E
+  for (var fr = 0.0; fr < 1.0; fr += 0.1) {
+    final ip = greenwich.vincenty().intermediatePointTo(sydney, fraction: fr);
+    print('${fr.toStringAsFixed(1)}: ${ip.latLonDms(format: dm)}');
+  }
+}
+
+void _sphericalGeodesyGreatCircle() {
+  // Distances & bearings between points, and destination points calculated on
+  // a spherical earth model, along (orthodromic) great-circle paths.
+  //
+  // This is faster than using ellipsoidal geodesy with Vincenty methods, but
+  // not as accurate (however the accuracy may be enough for many use cases).
+
+  // sample geographic positions
+  final greenwich = Geographic.parseDms(lat: '51°28′40″ N', lon: '0°00′05″ W');
+  final sydney = Geographic.parseDms(lat: '33.8688° S', lon: '151.2093° E');
+
+  // decimal degrees (DD) and degrees-minutes (DM) formats
+  const dd = Dms(decimals: 2);
+  const dm = Dms.narrowSpace(type: DmsType.degMin, decimals: 2);
+
+  // prints: 16987.9 km
   final distanceKm = greenwich.spherical.distanceTo(sydney) / 1000.0;
-  print('${distanceKm.toStringAsFixed(0)} km');
+  print('${distanceKm.toStringAsFixed(1)} km');
 
-  // prints (bearing varies along the great circle path): 61° -> 139°
+  // prints (bearing varies along the great circle path): 60.94° -> 139.03°
   final initialBearing = greenwich.spherical.initialBearingTo(sydney);
   final finalBearing = greenwich.spherical.finalBearingTo(sydney);
   print('${dd.bearing(initialBearing)} -> ${dd.bearing(finalBearing)}');
 
-  // prints: 51° 31.3′ N, 0° 07.5′ E
+  // prints: 51° 31.28′ N, 0° 07.50′ E
   final destPoint =
       greenwich.spherical.destinationPoint(distance: 10000, bearing: 61.0);
   print(destPoint.latLonDms(format: dm));
 
-  // prints: 28° 34.0′ N, 104° 41.6′ E
+  // prints: 28° 33.97′ N, 104° 41.62′ E
   final midPoint = greenwich.spherical.midPointTo(sydney);
   print(midPoint.latLonDms(format: dm));
 
-  // prints 10 intermediate points, like fraction 0.6: 16° 14.5′ N, 114° 29.3′ E
+  // prints 10 intermediate points, fraction 0.6: 16° 14.46′ N, 114° 29.30′ E
   for (var fr = 0.0; fr < 1.0; fr += 0.1) {
     final ip = greenwich.spherical.intermediatePointTo(sydney, fraction: fr);
     print('${fr.toStringAsFixed(1)}: ${ip.latLonDms(format: dm)}');
   }
 
-  // prints: 0° 00.0′ N, 125° 19.0′ E
+  // prints: 0° 00.00′ N, 125° 18.98′ E
   final intersection = greenwich.spherical.intersectionWith(
     bearing: 61.0,
     other: const Geographic(lat: 0.0, lon: 179.0),
@@ -627,29 +747,32 @@ void _sphericalGeodesyGreatCircle() {
 }
 
 void _sphericalGeodesyRhumbLine() {
+  // Distances & bearings between points, and destination points calculated on
+  // a spherical earth model, along (loxodromic) rhumb lines.
+
   // sample geographic positions
   final greenwich = Geographic.parseDms(lat: '51°28′40″ N', lon: '0°00′05″ W');
   final sydney = Geographic.parseDms(lat: '33.8688° S', lon: '151.2093° E');
 
   // decimal degrees (DD) and degrees-minutes (DM) formats
-  const dd = Dms(decimals: 0);
-  const dm = Dms.narrowSpace(type: DmsType.degMin, decimals: 1);
+  const dd = Dms(decimals: 2);
+  const dm = Dms.narrowSpace(type: DmsType.degMin, decimals: 2);
 
-  // prints: 17670 km
+  // prints: 17669.8 km
   final distanceKm = greenwich.rhumb.distanceTo(sydney) / 1000.0;
-  print('${distanceKm.toStringAsFixed(0)} km');
+  print('${distanceKm.toStringAsFixed(1)} km');
 
-  // prints (bearing remains the same along the rhumb line path): 122° -> 122°
+  // prints (bearing remains the same along the rhumb line): 122.49° -> 122.49°
   final initialBearing = greenwich.rhumb.initialBearingTo(sydney);
   final finalBearing = greenwich.rhumb.finalBearingTo(sydney);
   print('${dd.bearing(initialBearing)} -> ${dd.bearing(finalBearing)}');
 
-  // prints: 51° 25.8′ N, 0° 07.3′ E
+  // prints: 51° 25.80′ N, 0° 07.26′ E
   final destPoint =
       greenwich.spherical.destinationPoint(distance: 10000, bearing: 122.0);
   print(destPoint.latLonDms(format: dm));
 
-  // prints: 8° 48.3′ N, 80° 44.0′ E
+  // prints: 8° 48.27′ N, 80° 43.98′ E
   final midPoint = greenwich.rhumb.midPointTo(sydney);
   print(midPoint.latLonDms(format: dm));
 }

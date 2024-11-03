@@ -73,7 +73,7 @@ Key features of the [geobase](https://pub.dev/packages/geobase) package:
 * 🧩 simple geometries (point, line string, polygon, multi point, multi line string, multi polygon, geometry collection)
 * 📏 cartesian 2D calculations (centroid, polylabel, point-in-polygon, distance).
 * 🔷 features (with id, properties and geometry) and feature collections
-* 📐 spherical (*great circle*, *rhumb line*) and ellipsoidal geodesy tools
+* 📐 ellipsoidal (*vincenty*) and spherical (*great circle*, *rhumb line*) geodesy tools
 * 📅 temporal data structures (instant, interval) and spatial extents
 * 📃 vector data formats supported ([GeoJSON](https://geojson.org/), [Newline-delimited GeoJSON](https://stevage.github.io/ndgeojson/), [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry), [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary)
 )
@@ -98,21 +98,35 @@ OGC API - Features - Part 3: Filtering (draft) | Partially supported (conformanc
 
 ### Geodesy functions with geobase
 
-Spherical geodesy functions for *great circle* (shown below) and *rhumb line*
-paths:
+*Ellipsoidal* and *spherical* geodesy functions to calculate distances etc.:
 
 ```dart
   final greenwich = Geographic.parseDms(lat: '51°28′40″ N', lon: '0°00′05″ W');
   final sydney = Geographic.parseDms(lat: '33.8688° S', lon: '151.2093° E');
 
-  // Distance (~ 16988 km)
+  // How to calculate distances using ellipsoidal Vincenty, spherical
+  // great-circle and spherical rhumb line methods is shown first.
+
+  // The distance along a geodesic on the ellipsoid surface (16983.3 km).
+  greenwich.vincenty().distanceTo(sydney);
+
+  // By default the WGS84 reference ellipsoid is used but this can be changed.
+  greenwich.vincenty(ellipsoid: Ellipsoid.GRS80).distanceTo(sydney);
+
+  // The distance along a spherical great-circle path (16987.9 km).
   greenwich.spherical.distanceTo(sydney);
 
-  // Initial and final bearing: 61° -> 139°
+  // The distance along a spherical rhumb line path (17669.8 km).
+  greenwich.rhumb.distanceTo(sydney);
+
+  // Also bearings, destination points and mid points (or intermediate points)
+  // are provided for all methods, but below shown only for great-circle paths.
+
+  // Destination point (10 km to bearing 61°): 51° 31.3′ N, 0° 07.5′ E
   greenwich.spherical.initialBearingTo(sydney);
   greenwich.spherical.finalBearingTo(sydney);
 
-  // Destination point (10 km to bearing 61°): 51° 31.3′ N, 0° 07.5′ E
+  // Destination point: 51° 31.3′ N, 0° 07.5′ E
   greenwich.spherical.destinationPoint(distance: 10000, bearing: 61.0);
 
   // Midpoint: 28° 34.0′ N, 104° 41.6′ E

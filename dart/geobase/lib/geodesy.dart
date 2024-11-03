@@ -1,4 +1,5 @@
-/// Spherical (*great circle*, *rhumb line*) and ellipsoidal geodesy tools.
+/// Ellipsoidal (*vincenty*) and spherical (*great circle*, *rhumb line*)
+/// geodesy tools.
 ///
 /// Spherical and ellipsoidal geodesy tools by Chris Veness 2002-2024 (MIT
 /// Licence) ported to Dart by Navibyte.

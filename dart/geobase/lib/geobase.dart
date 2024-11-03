@@ -6,13 +6,13 @@
 
 // ignore_for_file: lines_longer_than_80_chars
 
-/// Geospatial data, spherical geodesy, projections, tiling schemes and vector
+/// Geospatial data, geometry, geodesy, projections, tiling schemes and vector
 /// data.
 ///
 /// Key features:
 /// * position, bounding box and positions series (with coordinate arrays)
 /// * geographic (longitude-latitude) and projected positions and bounding boxes
-/// * spherical (*great circle*, *rhumb line*) and ellipsoidal geodesy tools
+/// * ellipsoidal (*vincenty*) and spherical (*great circle*, *rhumb line*) geodesy tools
 /// * geometric functions for cartesian calculations
 /// * simple geometries (point, line string, polygon, multi point, multi line string, multi polygon, geometry collection)
 /// * features (with id, properties and geometry) and feature collections
