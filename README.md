@@ -393,7 +393,7 @@ This project contains portions of derivative work:
 * [geobase](dart/geobase): details about [DERIVATIVE](dart/geobase/DERIVATIVE.md) work.
 
 Source repositories used when porting functionality to Dart and this project:
-* [geodesy](https://github.com/chrisveness/geodesy) by Chris Veness 2002-2022
+* [geodesy](https://github.com/chrisveness/geodesy) by Chris Veness 2002-2024
 * [polylabel](https://github.com/mapbox/polylabel) by Mapbox 2016-2024
 
 ## :star: Links and other resources

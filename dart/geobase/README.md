@@ -392,3 +392,7 @@ Please see the
 This project contains portions of derivative work. 
 
 See details about [DERIVATIVE](DERIVATIVE.md) work.
+
+Source repositories used when porting functionality to Dart and this project:
+* [geodesy](https://github.com/chrisveness/geodesy) by Chris Veness 2002-2024
+* [polylabel](https://github.com/mapbox/polylabel) by Mapbox 2016-2024
