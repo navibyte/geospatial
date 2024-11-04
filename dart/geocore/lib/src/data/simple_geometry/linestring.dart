@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+// ignore_for_file: avoid_redundant_argument_values
+
 import 'package:equatable/equatable.dart';
 import 'package:geobase/coordinates.dart';
 import 'package:geobase/vector.dart';
