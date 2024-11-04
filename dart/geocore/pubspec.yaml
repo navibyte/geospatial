@@ -1,6 +1,6 @@
 name: geocore
 description: Geospatial data structures (points, geometry, features, meta) and parsers (GeoJSON, WKT) for Dart. 
-version: 0.10.1
+version: 0.10.2
 repository: https://github.com/navibyte/geospatial
 homepage: https://github.com/navibyte/geospatial/tree/main/dart/geocore
 
@@ -17,4 +17,4 @@ dependencies:
 
 dev_dependencies:
   test: ^1.24.0
-  very_good_analysis: ^5.0.0
+  very_good_analysis: ^6.0.0

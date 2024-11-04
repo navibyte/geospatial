@@ -129,25 +129,25 @@ class GeoJsonConf {
 /// `{"type":"LineString","coordinates":[[10.1,10.1],[20.2,20.2],[30.3,30.3]]}`
 ///
 /// Multi line string (with 2D points):
-/// ```
+/// ```json
 ///   {"type":"MultiLineString",
 ///    "coordinates":[[[10.1,10.1],[20.2,20.2],[30.3,30.3]]]}
 /// ```
 ///
 /// Polygon (with 2D points):
-/// ```
+/// ```json
 ///   {"type":"Polygon",
 ///    "coordinates":[[[35,10],[45,45],[15,40],[10,20],[35,10]]]}
 /// ```
 ///
 /// MultiPolygon (with 2D points):
-/// ```
+/// ```json
 ///   {"type":"Polygon",
 ///    "coordinates":[[[[35,10],[45,45],[15,40],[10,20],[35,10]]]]}
 /// ```
 ///
 /// Feature:
-/// ```
+/// ```json
 ///   {"type": "Feature",
 ///    "id":1,
 ///    "properties": {"prop1": 100},

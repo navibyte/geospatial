@@ -1,3 +1,5 @@
+// ignore_for_file: missing_code_block_language_in_doc_comment
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 /* Latitude/longitude spherical geodesy tools                         (c) Chris Veness 2002-2022  */
 /*                                                                                   MIT Licence  */

@@ -1,3 +1,8 @@
+## 0.10.2
+
+🛠 Maintenance:
+* [Update very_good_analysis version to 6.0.0 #249](https://github.com/navibyte/geospatial/issues/249)
+
 ## 0.10.1+1
 
 🛠 Maintenance:
