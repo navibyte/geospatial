@@ -340,20 +340,26 @@ class EllipsoidalVincenty extends Ellipsoidal implements Geodetic {
     Geographic destination, {
     required double fraction,
   }) {
-    /*
-    if (fraction == 0.0) return position;
-    if (fraction == 1.0) return destination;
-    if (position == destination) return position;
-  */
+    if (position == destination) {
+      return GeographicBearing(origin: position, bearing: double.nan);
+    }
 
     final inverse = _inverse(destination);
-    final dist = inverse.distance;
-    final brng = inverse.bearing;
 
-    if (brng.isNaN) {
-      return GeographicBearing(origin: origin, bearing: double.nan);
+    if (inverse.bearing.isNaN) {
+      return GeographicBearing(origin: inverse.origin, bearing: double.nan);
+    } else if (fraction == 0.0) {
+      return GeographicBearing(
+        origin: inverse.origin,
+        bearing: inverse.bearing,
+      );
+    } else if (fraction == 1.0) {
+      return GeographicBearing(
+        origin: inverse.destination,
+        bearing: inverse.finalBearing,
+      );
     } else {
-      final direct = _direct(dist * fraction, brng);
+      final direct = _direct(inverse.distance * fraction, inverse.bearing);
       return GeographicBearing(
         origin: direct.destination,
         bearing: direct.finalBearing,

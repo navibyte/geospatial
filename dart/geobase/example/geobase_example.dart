@@ -674,7 +674,7 @@ void _ellipsoidalGeodesyVincenty() {
   const dd = Dms(decimals: 2);
   const dm = Dms.narrowSpace(type: DmsType.degMin, decimals: 2);
 
-  // the shortest arc along a geodesic on the ellipsoid surface between points
+  // the shortest arc along the geodesic on the ellipsoid surface between points
   final arc1 = greenwich.vincenty().inverse(sydney);
 
   // prints (distance of the geodesic): 16983.3 km
@@ -686,7 +686,7 @@ void _ellipsoidalGeodesyVincenty() {
   final finalBearing = arc1.finalBearing;
   print('${dd.bearing(initialBearing)} -> ${dd.bearing(finalBearing)}');
 
-  // the shortest arc along a geodesic from greenwich to the initial direction
+  // the shortest arc along the geodesic from greenwich to the initial direction
   // defined by `bearing` and the length by `distance`
   // prints: 51° 31.28′ N, 0° 07.48′ E - bearing: 61.10°
   final arc2 = greenwich.vincenty().direct(distance: 10000, bearing: 61.0);
@@ -698,16 +698,48 @@ void _ellipsoidalGeodesyVincenty() {
   final midPoint = greenwich.vincenty().midPointTo(sydney);
   print(midPoint.latLonDms(format: dm));
 
-  // prints 10 intermediate points, fraction 0.6: 16° 30.55′ N, 114° 36.83′ E
+  // intermediate points along the geodesic between Greenwich and Sydney
+  // prints 10 points with bearings on intermediate geographic positions:
+  // 0.0: 51° 28.67′ N, 0° 00.08′ W - bearing: 60.59°
+  // 0.1: 56° 39.07′ N, 24° 34.88′ E - bearing: 80.62°
+  // 0.2: 56° 03.20′ N, 52° 13.09′ E - bearing: 103.76°
+  // 0.3: 49° 56.60′ N, 75° 34.27′ E - bearing: 122.53°
+  // 0.4: 40° 19.81′ N, 92° 27.98′ E - bearing: 134.59°
+  // 0.5: 28° 52.77′ N, 104° 48.82′ E - bearing: 141.66°
+  // 0.6: 16° 30.55′ N, 114° 36.83′ E - bearing: 145.47°
+  // 0.7: 3° 43.29′ N, 123° 12.60′ E - bearing: 146.99°
+  // 0.8: 9° 09.07′ S, 131° 33.47′ E - bearing: 146.59°
+  // 0.9: 21° 48.54′ S, 140° 31.88′ E - bearing: 144.18°
+  // 1.0: 33° 52.13′ S, 151° 12.56′ E - bearing: 139.15°
   for (var fr = 0.0; fr < 1.0; fr += 0.1) {
     final ip = greenwich.vincenty().intermediatePointTo(sydney, fraction: fr);
     final point = ip.origin;
-    print('${fr.toStringAsFixed(1)}: ${point.latLonDms(format: dm)}');
+    final pointBrng = ip.bearing;
+    print('${fr.toStringAsFixed(1)}: ${point.latLonDms(format: dm)}'
+        ' - bearing: ${dd.bearing(pointBrng)}');
   }
 
   // to use alternative ellipsoids set an optional argument on `vincenty` method
-  final distanceMetersGRS80 =
+  final distanceGRS80 =
       greenwich.vincenty(ellipsoid: Ellipsoid.GRS80).distanceTo(sydney);
+
+  // custom ellipsoids can be used also
+  final airy = Ellipsoid(
+    id: 'airy',
+    name: 'Airy 1830',
+    a: 6377563.396,
+    b: 6356256.909,
+    f: 1.0 / 299.3249646,
+  );
+  final distanceAiry = greenwich.vincenty(ellipsoid: airy).distanceTo(sydney);
+
+  // Distances printed: 16983280.66025 m, 16983280.66013 m, 16981837.55212 m
+  // (Note only very small difference between WGS84 and GRS80 ellipsoids,
+  //  however this level of "accuracy" is out of nominal accuracy of measured
+  //  points and Vincenty calculations with 0.5 mm expected accuracy)
+  print('Distance WGS84: ${(distanceKm * 1000.0).toStringAsFixed(5)} m');
+  print('Distance GRS80: ${distanceGRS80.toStringAsFixed(5)} m');
+  print('Distance Airy1830: ${distanceAiry.toStringAsFixed(5)} m');
 }
 
 void _sphericalGeodesyGreatCircle() {
@@ -743,7 +775,19 @@ void _sphericalGeodesyGreatCircle() {
   final midPoint = greenwich.spherical.midPointTo(sydney);
   print(midPoint.latLonDms(format: dm));
 
-  // prints 10 intermediate points, fraction 0.6: 16° 14.46′ N, 114° 29.30′ E
+  // intermediate points along the great circle between Greenwich and Sydney
+  // prints 10 intermediate geographic positions:
+  // 0.0: 51° 28.67′ N, 0° 00.08′ W
+  // 0.1: 56° 33.44′ N, 24° 42.13′ E
+  // 0.2: 55° 50.76′ N, 52° 19.42′ E
+  // 0.3: 49° 39.17′ N, 75° 34.08′ E
+  // 0.4: 40° 00.39′ N, 92° 22.91′ E
+  // 0.5: 28° 33.97′ N, 104° 41.62′ E
+  // 0.6: 16° 14.46′ N, 114° 29.30′ E
+  // 0.7: 3° 31.26′ N, 123° 05.85′ E
+  // 0.8: 9° 16.56′ S, 131° 28.24′ E
+  // 0.9: 21° 51.83′ S, 140° 28.86′ E
+  // 1.0: 33° 52.13′ S, 151° 12.56′ E
   for (var fr = 0.0; fr < 1.0; fr += 0.1) {
     final ip = greenwich.spherical.intermediatePointTo(sydney, fraction: fr);
     print('${fr.toStringAsFixed(1)}: ${ip.latLonDms(format: dm)}');
