@@ -1,3 +1,12 @@
+## 1.4.0
+
+⚠️ NOTE: Version 1.4.0 currently under development (1.4.0-dev.0).
+
+[geodata release 1.4.0](https://github.com/navibyte/geospatial/milestone/6)
+
+🛠 Refactoring:
+* [Change some external dependency version requirements to any - at least for http package #247](https://github.com/navibyte/geospatial/issues/247)
+
 ## 1.2.1
 
 Small documentation link fixes.
