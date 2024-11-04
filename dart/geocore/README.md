@@ -5,9 +5,26 @@ Geospatial data structures (points, geometry, features, meta) and parsers
 
  <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_MultiPoint.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/v2023-08-12/assets/doc/data/features/SFA_MultiPoint.svg"></a> <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_LineString.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/v2023-08-12/assets/doc/data/features/SFA_LineString.svg"></a> <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_Polygon.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/v2023-08-12/assets/doc/data/features/SFA_Polygon.svg"></a> <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_Polygon_with_hole.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/v2023-08-12/assets/doc/data/features/SFA_Polygon_with_hole.svg"></a> <a title="Mwtoews, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:SFA_GeometryCollection.svg"><img src="https://raw.githubusercontent.com/navibyte/geospatial_docs/v2023-08-12/assets/doc/data/features/SFA_GeometryCollection.svg"></a>
 
+## Roadmap
+
+⚠️ Status: After the `geocore` version 0.10.0 (published at 2022-08-21), no
+new features has been added to this package.
+
+**This package shall be officially discontinued by the end of 2025**.
+
+✅ All key features, and even more, has been implemented to other packages with
+code published on the same [geospatial](https://github.com/navibyte/geospatial) repository on GitHub.
+
+💡 You can find these new packages, [geobase](https://pub.dev/packages/geobase)
+and [geodata](https://pub.dev/packages/geodata), also on pub.dev.
+
+📚 Comprehensive guidance on how to use those packages is available on the
+[geospatial.navibyte.dev](https://geospatial.navibyte.dev/) documentation
+website. 
+
 ## Features
 
-Key features:
+Key features of the `geocore` package:
 * 🚀 geospatial data structures (geometry, features and metadata)
 * 🌐 *geographic* coordinates (longitude-latitude)
 * 🗺️ *projected* coordinates (cartesian XYZ)
@@ -39,20 +56,6 @@ import `package:geocore/geocore.dart`
 
 There are also partial packages containing only a certain subset. See the
 [Packages](#packages) section below.
-
-## Roadmap
-
-> **Note**: After the `geocore` version 0.10.0 (published at 2022-08-21), no new
-> features are currently planned on this package. 
-
-New features shall be actively added and development continues on following
-packages:
-* [geobase](https://pub.dev/packages/geobase) : Geospatial data structures (coordinates, geometries, features, metadata), projections and tiling schemes. Vector data format support for [GeoJSON](https://geojson.org/), [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) and [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary).
-* [geodata](https://pub.dev/packages/geodata) : Geospatial feature service Web APIs with support for [GeoJSON](https://geojson.org/) and [OGC API Features](https://ogcapi.ogc.org/features/) clients.
-
-Also `geocore` package shall be maintained as a part of the
-[geospatial](https://github.com/navibyte/geospatial) repository. See also
-GitHub [issues](https://github.com/navibyte/geospatial/issues).
 
 ## Introduction
 

@@ -3,6 +3,27 @@
 🛠 Maintenance:
 * [Update very_good_analysis version to 6.0.0 #249](https://github.com/navibyte/geospatial/issues/249)
 
+📚 Documentation:
+* [Notes about roadmap of the geocore package #250](https://github.com/navibyte/geospatial/issues/250)
+
+Notes documented on the README and the issue #250 mentioned above copied also
+here:
+
+⚠️ Status: After the `geocore` version 0.10.0 (published at 2022-08-21), no
+new features has been added to this package.
+
+**This package shall be officially discontinued by the end of 2025**.
+
+✅ All key features, and even more, has been implemented to other packages with
+code published on the same [geospatial](https://github.com/navibyte/geospatial) repository on GitHub.
+
+💡 You can find these new packages, [geobase](https://pub.dev/packages/geobase)
+and [geodata](https://pub.dev/packages/geodata), also on pub.dev.
+
+📚 Comprehensive guidance on how to use those packages is available on the
+[geospatial.navibyte.dev](https://geospatial.navibyte.dev/) documentation
+website. 
+
 ## 0.10.1+1
 
 🛠 Maintenance:
