@@ -8,7 +8,7 @@ import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
-import 'package:equatable/equatable.dart';
+import 'package:meta/meta.dart';
 
 import '/src/common/codes/coords.dart';
 import '/src/common/codes/geo_representation.dart';
@@ -30,7 +30,8 @@ part 'geojson_decoder.dart';
 part 'geojsonl_format.dart';
 
 /// Optional configuration parameters for formatting (and parsing) GeoJSON.
-class GeoJsonConf with EquatableMixin {
+@immutable
+class GeoJsonConf {
   /// Use this to set logic whether coordinate axis order should be
   /// authority-based (the default) or always lon-lat order.
   final GeoRepresentation? crsLogic;
@@ -80,14 +81,30 @@ class GeoJsonConf with EquatableMixin {
   });
 
   @override
-  List<Object?> get props => [
+  String toString() {
+    return '$crsLogic;$singlePrecision;$ignoreMeasured;$ignoreForeignMembers;'
+        '$printNonDefaultCrs;$compactNums';
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      other is GeoJsonConf &&
+      crsLogic == other.crsLogic &&
+      singlePrecision == other.singlePrecision &&
+      ignoreMeasured == other.ignoreMeasured &&
+      ignoreForeignMembers == other.ignoreForeignMembers &&
+      printNonDefaultCrs == other.printNonDefaultCrs &&
+      compactNums == other.compactNums;
+
+  @override
+  int get hashCode => Object.hash(
         crsLogic,
         singlePrecision,
         ignoreMeasured,
         ignoreForeignMembers,
         printNonDefaultCrs,
         compactNums,
-      ];
+      );
 }
 
 /// The GeoJSON text format for [coordinate], [geometry] and [feature] objects.

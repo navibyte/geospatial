@@ -11,6 +11,9 @@
 * [Add GeographicBearing class to represent a bearing with a geographic position #245](https://github.com/navibyte/geospatial/issues/245)
 * [Add GeodeticArcSegment class to represent a geodesic arc between two points on an ellipsoid or a sphere #246](https://github.com/navibyte/geospatial/issues/246)
 
+🛠 Refactoring:
+* [Remove dependency on equatable package #248](https://github.com/navibyte/geospatial/issues/248)
+
 ## 1.3.0
 
 ✨ New (2024-07-26): The stable version 1.3.0 with centroid, polylabel, point-in-polygon and other cartesian 2D calculations enhanced - [read more](https://geospatial.navibyte.dev/v1/geobase/geometry-calculations/)!

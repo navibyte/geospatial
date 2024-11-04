@@ -16,7 +16,6 @@ environment:
 
 dependencies:
   collection: ^1.18.0
-  equatable: ^2.0.0
   meta: ^1.7.0
   proj4dart: ^2.0.0
       
