@@ -17,6 +17,9 @@
 🛠 Maintenance:
 * [Update very_good_analysis version to 6.0.0 #249](https://github.com/navibyte/geospatial/issues/249)
 
+📚 Documentation updates
+* [New chapter about ellipsoidal geodesy calculations on the documentation site #251](https://github.com/navibyte/geospatial/issues/251)
+
 ## 1.3.0
 
 ✨ New (2024-07-26): The stable version 1.3.0 with centroid, polylabel, point-in-polygon and other cartesian 2D calculations enhanced - [read more](https://geospatial.navibyte.dev/v1/geobase/geometry-calculations/)!

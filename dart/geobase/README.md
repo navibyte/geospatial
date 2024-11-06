@@ -45,9 +45,10 @@ package documentation by chapters:
 * [📏 Geometry calculations](https://geospatial.navibyte.dev/v1/geobase/geometry-calculations/)
 * [🔷 Geospatial features](https://geospatial.navibyte.dev/v1/geobase/features/)
 * [📃 Vector formats](https://geospatial.navibyte.dev/v1/geobase/formats/)
+* [🔵 Ellipsoidal geodesy](https://geospatial.navibyte.dev/v1/geobase/ellipsoidal-geodesy/)
+* [📐 Spherical geodesy](https://geospatial.navibyte.dev/v1/geobase/spherical-geodesy/)
 * [📅 Metadata](https://geospatial.navibyte.dev/v1/geobase/metadata/)
 * [🗺️ Projections](https://geospatial.navibyte.dev/v1/geobase/projections/)
-* [📐 Spherical geodesy](https://geospatial.navibyte.dev/v1/geobase/spherical-geodesy/)
 * [🔢 Tiling schemes](https://geospatial.navibyte.dev/v1/geobase/tiling-schemes/)
 
 See also overview topics about *Geospatial tools for Dart*:
