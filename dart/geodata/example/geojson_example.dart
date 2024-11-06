@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -15,11 +15,19 @@ import 'dart:io' show File;
 
 import 'package:geodata/geojson_client.dart';
 
+import 'package:http/http.dart' as http;
+import 'package:http/retry.dart';
+
 Future<void> main(List<String> args) async {
   // read GeoJSON for earthquakes from web using HTTP(S)
   print('GeoJSON features from HTTP');
   await _readFeatures(
     GeoJSONFeatures.http(
+      // set the HTTP client using the standard HTTP retry client on API calls
+      // (when not set, the default `http.Client()` is used without retry logic)
+      client: RetryClient(http.Client(), retries: 4),
+
+      // API address
       location: Uri.parse(
         'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/'
         '2.5_day.geojson',

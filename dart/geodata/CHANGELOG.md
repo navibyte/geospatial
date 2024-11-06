@@ -10,6 +10,9 @@
 🛠 Maintenance:
 * [Update very_good_analysis version to 6.0.0 #249](https://github.com/navibyte/geospatial/issues/249)
 
+📚 Documentation updates:
+* [Add retry support on http feature sources #166](https://github.com/navibyte/geospatial/issues/166)
+
 ## 1.2.1
 
 Small documentation link fixes.

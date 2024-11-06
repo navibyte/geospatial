@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -17,6 +17,9 @@ import 'package:geobase/vector.dart';
 import 'package:geobase/vector_data.dart';
 import 'package:geodata/ogcapi_features_client.dart';
 
+import 'package:http/http.dart' as http;
+import 'package:http/retry.dart';
+
 /// This example demonstrates accessing metadata and geospatial feature items
 /// from a GeoJSON based feature collection provided by a RESTful service
 /// conforming to the [OGC API Features](https://ogcapi.ogc.org/features/)
@@ -31,6 +34,10 @@ Future<void> main(List<String> args) async {
   // create an OGC API Features client for the open ldproxy demo service
   // (see https://demo.ldproxy.net/zoomstack for more info)
   final client = OGCAPIFeatures.http(
+    // set the HTTP client using the standard HTTP retry client on API calls
+    // (when not set, the default `http.Client()` is used without retry logic)
+    client: RetryClient(http.Client(), retries: 4),
+
     // an URI to the landing page of the service
     endpoint: Uri.parse('https://demo.ldproxy.net/zoomstack'),
 

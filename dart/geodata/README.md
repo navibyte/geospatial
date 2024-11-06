@@ -144,6 +144,32 @@ feature sets.
 In the step 6 it's also possible to get links to related resources, and
 optionally also to get a number of matched or returned features in a response.
 
+### Using the standard HTTP RetryClient
+
+When accessing static GeoJSON web resources or an OGC API Features service, it's
+also possible to define a retry policy using the standard `http` package.
+
+For example the step 1 would look something like this on that case.
+
+```dart
+  // 1. Get a client instance for a Web API endpoint.
+  final client = OGCAPIFeatures.http(
+    // set the HTTP client using the standard HTTP retry client on API calls
+    // (when not set, the default `http.Client()` is used without retry logic)
+    client: RetryClient(http.Client(), retries: 4),
+    
+    // an URI to the landing page of the service
+    endpoint: Uri.parse('...'),
+  );
+```
+
+This example of using a retry client requires also following imports:
+
+```dart
+import 'package:http/http.dart' as http;
+import 'package:http/retry.dart';
+```
+
 ## Usage
 
 The package requires at least [Dart](https://dart.dev/) SDK 2.17, and it
