@@ -1,10 +1,8 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
 // Docs: https://github.com/navibyte/geospatial
-
-import 'package:equatable/equatable.dart';
 
 import 'package:meta/meta.dart';
 
@@ -12,7 +10,7 @@ import 'package:meta/meta.dart';
 ///
 /// Compatible with: http://schemas.opengis.net/ogcapi/features/part1/1.0/openapi/schemas/link.yaml
 @immutable
-class Link with EquatableMixin {
+class Link {
   /// The `href` part of a link.
   final Uri href;
 
@@ -86,5 +84,20 @@ class Link with EquatableMixin {
       };
 
   @override
-  List<Object?> get props => [href, rel, type, hreflang, title, length];
+  String toString() {
+    return '$href;$rel;$type;$hreflang;$title;$length';
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      other is Link &&
+      href == other.href &&
+      rel == other.rel &&
+      type == other.type &&
+      hreflang == other.hreflang &&
+      title == other.title &&
+      length == other.length;
+
+  @override
+  int get hashCode => Object.hash(href, rel, type, hreflang, title, length);
 }

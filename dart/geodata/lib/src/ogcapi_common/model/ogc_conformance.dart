@@ -1,10 +1,9 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 /// A wrapper for conformance classes for a OGC API Common compliant service.
@@ -15,7 +14,7 @@ import 'package:meta/meta.dart';
 /// * `OGC API - Common - Part 1: Core`
 /// * `OGC API - Common - Part 2: Geospatial Data`
 @immutable
-class OGCConformance extends Equatable {
+class OGCConformance {
   /// Conformance classes a service is conforming to.
   final Iterable<String> classes;
 
@@ -131,7 +130,24 @@ class OGCConformance extends Equatable {
   }
 
   @override
-  List<Object?> get props => [classes];
+  String toString() => (StringBuffer()..writeAll(classes, ',')).toString();
+
+  @override
+  bool operator ==(Object other) {
+    if (other is OGCConformance) {
+      if (classes.length != other.classes.length) return false;
+      final iter = other.classes.iterator;
+      for (final item in classes) {
+        if (!iter.moveNext()) return false;
+        if (item != iter.current) return false;
+      }
+      return true;
+    }
+    return false;
+  }
+
+  @override
+  int get hashCode => Object.hashAll(classes);
 
   /// The `Core` conformance class for the
   /// `OGC API - Common - Part 1: Core` standard.

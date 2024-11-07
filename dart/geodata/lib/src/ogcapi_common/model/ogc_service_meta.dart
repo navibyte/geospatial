@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -38,5 +38,6 @@ abstract class OGCServiceMeta extends ResourceMeta {
   Future<OpenAPIDocument> openAPI();
 
   @override
-  List<Object?> get props => [title, description, attribution, links];
+  // ignore: hash_and_equals
+  bool operator ==(Object other) => other is OGCServiceMeta && super == other;
 }

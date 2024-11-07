@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -31,6 +31,21 @@ class CollectionMeta extends ResourceMeta {
   final GeoExtent? extent;
 
   @override
-  List<Object?> get props =>
-      [id, title, description, attribution, links, extent];
+  String toString() {
+    return '$id;$title;$description;$attribution;$links;$extent';
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      other is CollectionMeta &&
+      id == other.id &&
+      title == other.title &&
+      description == other.description &&
+      attribution == other.attribution &&
+      links == other.links &&
+      extent == other.extent;
+
+  @override
+  int get hashCode =>
+      Object.hash(id, title, description, attribution, links, extent);
 }

@@ -1,16 +1,15 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
 // Docs: https://github.com/navibyte/geospatial
 
-import 'package:equatable/equatable.dart';
 import 'package:geobase/common.dart';
 import 'package:meta/meta.dart';
 
 /// A base query for requesting data from a geospatial data source.
 @immutable
-class GeospatialQuery with EquatableMixin {
+class GeospatialQuery {
   /// A base query for requesting data from a geospatial data source.
   const GeospatialQuery({
     this.crs,
@@ -38,5 +37,16 @@ class GeospatialQuery with EquatableMixin {
       parameters?.map((key, value) => MapEntry(key, value.toString()));
 
   @override
-  List<Object?> get props => [crs, parameters];
+  String toString() {
+    return '$crs;$parameters';
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      other is GeospatialQuery &&
+      crs == other.crs &&
+      parameters == other.parameters;
+
+  @override
+  int get hashCode => Object.hash(crs, parameters);
 }

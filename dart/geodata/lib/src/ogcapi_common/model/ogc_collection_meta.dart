@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -60,16 +60,26 @@ class OGCCollectionMeta extends CollectionMeta {
   final num? storageCrsCoordinateEpoch;
 
   @override
-  List<Object?> get props => [
-        id,
-        title,
-        description,
-        attribution,
-        links,
-        extent,
+  String toString() {
+    return '${super.toString()};$itemType;'
+        '$crs;$storageCrs;$storageCrsCoordinateEpoch';
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      other is OGCCollectionMeta &&
+      super == other &&
+      itemType == other.itemType &&
+      crs == other.crs &&
+      storageCrs == other.storageCrs &&
+      storageCrsCoordinateEpoch == other.storageCrsCoordinateEpoch;
+
+  @override
+  int get hashCode => Object.hash(
+        super.hashCode,
         itemType,
         crs,
         storageCrs,
         storageCrsCoordinateEpoch,
-      ];
+      );
 }

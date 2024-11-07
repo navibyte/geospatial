@@ -6,6 +6,7 @@
 
 🛠 Refactoring:
 * [Change some external dependency version requirements to any - at least for http package #247](https://github.com/navibyte/geospatial/issues/247)
+* [Remove dependency on equatable package #248](https://github.com/navibyte/geospatial/issues/248)
 
 🛠 Maintenance:
 * [Update very_good_analysis version to 6.0.0 #249](https://github.com/navibyte/geospatial/issues/249)

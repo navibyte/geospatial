@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -8,7 +8,6 @@
 
 import 'dart:convert';
 
-import 'package:equatable/equatable.dart';
 import 'package:geobase/common.dart';
 import 'package:geobase/coordinates.dart';
 import 'package:geobase/vector_data.dart';
@@ -54,9 +53,6 @@ const _defaultMaxPagedResults = 2;
 
 /// A simple CLI to read features from standard OGC API Features services.
 Future<void> main(List<String> args) async {
-  // configure Equatable to apply toString() default impls
-  EquatableConfig.stringify = true;
-
   // check enough args
   if (args.length < 3) {
     print(

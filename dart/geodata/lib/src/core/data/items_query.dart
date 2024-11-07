@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -21,5 +21,17 @@ class ItemsQuery extends GeospatialQuery {
   final int? limit;
 
   @override
-  List<Object?> get props => [crs, limit, parameters];
+  String toString() {
+    return '$crs;$limit;$parameters';
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      other is ItemsQuery &&
+      crs == other.crs &&
+      limit == other.limit &&
+      parameters == other.parameters;
+
+  @override
+  int get hashCode => Object.hash(crs, limit, parameters);
 }

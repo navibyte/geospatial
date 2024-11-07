@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -54,5 +54,27 @@ class BoundedItemsQuery extends ItemsQuery {
   final Temporal? timeFrame;
 
   @override
-  List<Object?> get props => [crs, bboxCrs, bbox, timeFrame, limit, parameters];
+  String toString() {
+    return '$crs;$bboxCrs;$bbox;$timeFrame;$limit;$parameters';
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      other is BoundedItemsQuery &&
+      crs == other.crs &&
+      bboxCrs == other.bboxCrs &&
+      bbox == other.bbox &&
+      timeFrame == other.timeFrame &&
+      limit == other.limit &&
+      parameters == other.parameters;
+
+  @override
+  int get hashCode => Object.hash(
+        crs,
+        bboxCrs,
+        bbox,
+        timeFrame,
+        limit,
+        parameters,
+      );
 }

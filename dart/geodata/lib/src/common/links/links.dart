@@ -1,10 +1,8 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
 // Docs: https://github.com/navibyte/geospatial
-
-import 'package:equatable/equatable.dart';
 
 import 'package:meta/meta.dart';
 
@@ -18,7 +16,7 @@ import 'link.dart';
 /// See also [OGC API Features](https://ogcapi.ogc.org/features/) standard
 /// "Part 1: Core" section "5.2. Link relations" for reference.
 @immutable
-class Links with EquatableMixin {
+class Links {
   final List<Link> _items;
 
   /// Creates a metadata container for links as a view of [source].
@@ -40,9 +38,6 @@ class Links with EquatableMixin {
 
   /// All links as a list.
   List<Link> get all => _items;
-
-  @override
-  List<Object?> get props => [all];
 
   Iterable<Link> _byRelInternal(String rel, {String? type, String? hreflang}) =>
       all.where(
@@ -285,4 +280,23 @@ class Links with EquatableMixin {
             ),
           )
           .toList(growable: false);
+
+  @override
+  String toString() => (StringBuffer()..writeAll(_items, ',')).toString();
+
+  @override
+  bool operator ==(Object other) {
+    // implementation adapted from Object.hashAll documentation.
+    if (other is Links) {
+      if (_items.length != other._items.length) return false;
+      for (var i = 0; i < _items.length; i++) {
+        if (_items[i] != other._items[i]) return false;
+      }
+      return true;
+    }
+    return false;
+  }
+
+  @override
+  int get hashCode => Object.hashAll(_items);
 }

@@ -1,10 +1,8 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
 // Docs: https://github.com/navibyte/geospatial
-
-import 'package:equatable/equatable.dart';
 
 import 'package:meta/meta.dart';
 
@@ -13,7 +11,7 @@ import '/src/common/links/links_aware.dart';
 
 /// Basic metadata about some resource.
 @immutable
-class ResourceMeta with LinksAware, EquatableMixin {
+class ResourceMeta with LinksAware {
   /// A new resource metadata instance with [title], [description],
   /// [attribution] and [links].
   const ResourceMeta({
@@ -37,5 +35,18 @@ class ResourceMeta with LinksAware, EquatableMixin {
   final Links links;
 
   @override
-  List<Object?> get props => [title, description, attribution, links];
+  String toString() {
+    return '$title;$description;$attribution;$links';
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      other is ResourceMeta &&
+      title == other.title &&
+      description == other.description &&
+      attribution == other.attribution &&
+      links == other.links;
+
+  @override
+  int get hashCode => Object.hash(title, description, attribution, links);
 }

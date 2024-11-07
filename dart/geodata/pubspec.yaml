@@ -16,9 +16,7 @@ environment:
   sdk: '>=2.17.0 <4.0.0'
 
 dependencies:
-  #equatable: ^2.0.0
   #http: ^0.13.0
-  equatable: any
   http: any
   meta: ^1.7.0
 
