@@ -12,6 +12,7 @@
 
 📚 Documentation updates:
 * [Add retry support on http feature sources #166](https://github.com/navibyte/geospatial/issues/166)
+* [Update docs to link latest "OGC API - Features - Part 3: Filtering" approved standard versions #252](https://github.com/navibyte/geospatial/issues/252)
 
 ## 1.2.1
 

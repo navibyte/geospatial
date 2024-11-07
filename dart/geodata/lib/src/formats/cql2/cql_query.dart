@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -13,9 +13,9 @@ import 'package:meta/meta.dart';
 ///
 /// References:
 /// * [OGC API - Features](https://github.com/opengeospatial/ogcapi-features) -
-///   Part 3: Filtering (draft).
+///   [Part 3: Filtering](https://docs.ogc.org/is/19-079r2/19-079r2.html).
 /// * Common Query Language,
-///   [CQL2 draft](https://docs.ogc.org/DRAFTS/21-065.html).
+///   [CQL2](https://docs.ogc.org/is/21-065r2/21-065r2.html).
 @immutable
 class CQLQuery {
   final String _filter;

@@ -30,7 +30,7 @@ package documentation published along with the stable version 1.2.0.
 
 Code           | Package | Description 
 -------------- | --------| -----------
-:globe_with_meridians: [geobase](dart/geobase) | [![pub package](https://img.shields.io/pub/v/geobase.svg)](https://pub.dev/packages/geobase) | Geospatial data structures (coordinates, geometries, features, metadata), spherical geodesy, projections and tiling schemes. Vector data format support for [GeoJSON](https://geojson.org/), [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) and [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary).
+:globe_with_meridians: [geobase](dart/geobase) | [![pub package](https://img.shields.io/pub/v/geobase.svg)](https://pub.dev/packages/geobase) | Geospatial data structures (coordinates, geometries, features, metadata), ellipsoidal and spherical geodesy, projections and tiling schemes. Vector data format support for [GeoJSON](https://geojson.org/), [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) and [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary).
 :earth_americas: [geodata](dart/geodata) | [![pub package](https://img.shields.io/pub/v/geodata.svg)](https://pub.dev/packages/geodata) | Geospatial feature service Web APIs with support for [GeoJSON](https://geojson.org/) and [OGC API Features](https://ogcapi.ogc.org/features/) clients.
 
 ## 📚 Documentation
@@ -54,9 +54,10 @@ package documentation by chapters:
 * [📏 Geometry calculations](https://geospatial.navibyte.dev/v1/geobase/geometry-calculations/)
 * [🔷 Geospatial features](https://geospatial.navibyte.dev/v1/geobase/features/)
 * [📃 Vector formats](https://geospatial.navibyte.dev/v1/geobase/formats/)
+* [🔵 Ellipsoidal geodesy](https://geospatial.navibyte.dev/v1/geobase/ellipsoidal-geodesy/)
+* [📐 Spherical geodesy](https://geospatial.navibyte.dev/v1/geobase/spherical-geodesy/)
 * [📅 Metadata](https://geospatial.navibyte.dev/v1/geobase/metadata/)
 * [🗺️ Projections](https://geospatial.navibyte.dev/v1/geobase/projections/)
-* [📐 Spherical geodesy](https://geospatial.navibyte.dev/v1/geobase/spherical-geodesy/)
 * [🔢 Tiling schemes](https://geospatial.navibyte.dev/v1/geobase/tiling-schemes/)
 
 The [geodata](https://geospatial.navibyte.dev/v1/geodata/)
@@ -92,7 +93,7 @@ Standard part | Support in this package
 ------------- | -----------------------
 [OGC API - Features - Part 1: Core](https://docs.ogc.org/is/17-069r4/17-069r4.html) | Supported for accessing metadata and GeoJSON feature collections.
 [OGC API - Features - Part 2: Coordinate Reference Systems by Reference](https://docs.ogc.org/is/18-058r1/18-058r1.html) | Supported.
-OGC API - Features - Part 3: Filtering (draft) | Partially supported (conformance classes, queryables, features filter).
+[OGC API - Features - Part 3: Filtering](https://docs.ogc.org/is/19-079r2/19-079r2.html)<br/>[Common Query Language (CQL2)](https://docs.ogc.org/is/21-065r2/21-065r2.html) | Partially supported (conformance classes, queryables, features filter).
 
 ## :keyboard: Sample code
 

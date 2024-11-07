@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -20,9 +20,12 @@ import 'package:meta/meta.dart';
 /// however, so for certain special use cases original JSON Schema tree in
 /// [content] might be needed.
 ///
-/// See also:
-/// * https://github.com/opengeospatial/ogcapi-features (see Part 3 / Filtering)
-/// * https://json-schema.org/
+/// References:
+/// * [OGC API - Features](https://github.com/opengeospatial/ogcapi-features) -
+///   [Part 3: Filtering](https://docs.ogc.org/is/19-079r2/19-079r2.html).
+/// * Common Query Language,
+///   [CQL2](https://docs.ogc.org/is/21-065r2/21-065r2.html).
+/// * [JSON Schema](https://json-schema.org/)
 @immutable
 class OGCQueryableObject {
   const OGCQueryableObject._({

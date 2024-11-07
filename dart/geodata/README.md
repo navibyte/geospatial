@@ -29,7 +29,7 @@ Standard part | Support in this package
 ------------- | -----------------------
 [OGC API - Features - Part 1: Core](https://docs.ogc.org/is/17-069r4/17-069r4.html) | Supported for accessing metadata and GeoJSON feature collections.
 [OGC API - Features - Part 2: Coordinate Reference Systems by Reference](https://docs.ogc.org/is/18-058r1/18-058r1.html) | Supported.
-OGC API - Features - Part 3: Filtering (draft) | Partially supported (conformance classes, queryables, features filter).
+[OGC API - Features - Part 3: Filtering](https://docs.ogc.org/is/19-079r2/19-079r2.html)<br/>[Common Query Language (CQL2)](https://docs.ogc.org/is/21-065r2/21-065r2.html) | Partially supported (conformance classes, queryables, features filter).
 
 ## Documentation
 
