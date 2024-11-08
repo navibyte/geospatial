@@ -64,3 +64,15 @@ Dart code file ported to this project | Related original JavaScript code
 
 Also [JSON files](https://github.com/mapbox/polylabel/tree/master/test/fixtures)
 from the source repository used by tests are ported.
+
+### TinyQueue by Vladimir Agafonkin
+
+Source: https://github.com/mourner/tinyqueue
+
+License: [ISC License](https://github.com/mourner/tinyqueue/blob/main/LICENSE)
+
+Copyright: Copyright (c) 2017, Vladimir Agafonkin
+
+Dart code file ported to this project | Related original JavaScript code
+------------------------------------- | --------------------------------
+[tiny_queue.dart](lib/src/utils/tiny_queue.dart) | [index.js](https://github.com/mourner/tinyqueue/blob/main/index.js)
