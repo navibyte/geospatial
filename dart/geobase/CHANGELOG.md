@@ -13,6 +13,7 @@
 
 🛠 Refactoring:
 * [Remove dependency on equatable package #248](https://github.com/navibyte/geospatial/issues/248)
+* [Refactor polylabel function to use TinyQueue ported from JavaScript #253](https://github.com/navibyte/geospatial/issues/253)
 
 🛠 Maintenance:
 * [Update very_good_analysis version to 6.0.0 #249](https://github.com/navibyte/geospatial/issues/249)
