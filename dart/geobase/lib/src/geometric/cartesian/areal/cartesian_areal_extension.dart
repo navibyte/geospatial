@@ -6,13 +6,12 @@
 
 import 'dart:math' as math;
 
-import 'package:collection/collection.dart';
-
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/base/position_series.dart';
 import '/src/geometric/base/distanced_position.dart';
 import '/src/utils/geometry_calculations_cartesian.dart';
+import '/src/utils/tiny_queue.dart';
 
 part 'polylabel.dart';
 
@@ -58,7 +57,8 @@ extension CartesianArealExtension on Iterable<PositionSeries> {
   /// ```
   Position? centroid2D({PositionScheme scheme = Position.scheme}) {
     // the exterior linear ring
-    final ext = firstOrNull;
+    final iter = iterator;
+    final ext = iter.moveNext() ? iter.current : null; // firstOrNull;
 
     if (ext != null) {
       // optional interior linear rings
@@ -167,7 +167,8 @@ extension CartesianArealExtension on Iterable<PositionSeries> {
   /// ```
   bool isPointInPolygon2D(Position point) {
     // the exterior linear ring
-    final ext = firstOrNull;
+    final iter = iterator;
+    final ext = iter.moveNext() ? iter.current : null; // firstOrNull;
 
     // point must be inside the exterior linear ring ...
     if (ext != null && ext.isPointInPolygon2D(point)) {

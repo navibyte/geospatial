@@ -62,7 +62,7 @@ DistancedPosition _polylabel2D(
 
   // a priority queue of cells in order of their "potential" (max distance to
   // polygon)
-  final cellQueue = PriorityQueue<_Cell>((a, b) => b.max.compareTo(a.max));
+  final cellQueue = TinyQueue<_Cell>([], (a, b) => b.max.compareTo(a.max));
 
   // take centroid as the first best guess
   var bestCell = _getCentroidCell(polygon);
@@ -79,7 +79,7 @@ DistancedPosition _polylabel2D(
     final cell = _Cell(x, y, h, polygon);
     numProbes++;
     if (cell.max > bestCell.d + precision) {
-      cellQueue.add(cell);
+      cellQueue.push(cell);
     }
 
     // update the best cell if we found a better one
@@ -100,9 +100,10 @@ DistancedPosition _polylabel2D(
     }
   }
 
-  while (cellQueue.isNotEmpty) {
-    // pick the most promising cell from the queue
-    final promising = cellQueue.removeFirst();
+  // pop : pick the most promising cell from the queue
+  _Cell? promising;
+  while ((promising = cellQueue.pop()) != null) {
+    if (promising == null) break;
 
     // do not drill down further if there's no chance of a better solution
     if (promising.max - bestCell.d <= precision) {
