@@ -23,10 +23,6 @@ Future<void> main(List<String> args) async {
   print('GeoJSON features from HTTP');
   await _readFeatures(
     GeoJSONFeatures.http(
-      // set the HTTP client using the standard HTTP retry client on API calls
-      // (when not set, the default `http.Client()` is used without retry logic)
-      client: RetryClient(http.Client(), retries: 4),
-
       // API address
       location: Uri.parse(
         'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/'
@@ -34,6 +30,25 @@ Future<void> main(List<String> args) async {
       ),
     ),
   );
+
+  // same thing but using the standard HTTP retry client on API calls
+  final httpClient = RetryClient(http.Client(), retries: 4);
+  try {
+    await _readFeatures(
+      GeoJSONFeatures.http(
+        // set HTTP client (if not set the default `http.Client()` is used)
+        client: httpClient,
+
+        // API address
+        location: Uri.parse(
+          'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/'
+          '2.5_day.geojson',
+        ),
+      ),
+    );
+  } finally {
+    httpClient.close();
+  }
 
   // same thing but reading a local file
   print('');

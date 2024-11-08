@@ -31,12 +31,23 @@ import 'package:http/retry.dart';
 ///   Supported for accessing metadata and GeoJSON feature collections.
 /// * [OGC API - Features - Part 2: Coordinate Reference Systems by Reference](https://docs.ogc.org/is/18-058r1/18-058r1.html)
 Future<void> main(List<String> args) async {
+  // Create an instance of the standard HTTP retry client for API calls
+  final httpClient = RetryClient(http.Client(), retries: 4);
+
+  try {
+    await _testOGCFeatService(httpClient);
+  } finally {
+    // ensure the HTTP client is closed after using
+    httpClient.close();
+  }
+}
+
+Future<void> _testOGCFeatService(http.Client httpClient) async {
   // create an OGC API Features client for the open ldproxy demo service
   // (see https://demo.ldproxy.net/zoomstack for more info)
   final client = OGCAPIFeatures.http(
-    // set the HTTP client using the standard HTTP retry client on API calls
-    // (when not set, the default `http.Client()` is used without retry logic)
-    client: RetryClient(http.Client(), retries: 4),
+    // set HTTP client (if not set the default `http.Client()` is used)
+    client: httpClient,
 
     // an URI to the landing page of the service
     endpoint: Uri.parse('https://demo.ldproxy.net/zoomstack'),

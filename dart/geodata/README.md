@@ -148,19 +148,40 @@ optionally also to get a number of matched or returned features in a response.
 
 When accessing static GeoJSON web resources or an OGC API Features service, it's
 also possible to define a retry policy using the standard `http` package.
+However you must also manage the life cycle of such a HTTP client instance by
+ensuring it's closed after making API calls.
 
-For example the step 1 would look something like this on that case.
+A sample accessing OGC API Features service with custom HTTP client:
 
 ```dart
-  // 1. Get a client instance for a Web API endpoint.
-  final client = OGCAPIFeatures.http(
-    // set the HTTP client using the standard HTTP retry client on API calls
-    // (when not set, the default `http.Client()` is used without retry logic)
-    client: RetryClient(http.Client(), retries: 4),
-    
-    // an URI to the landing page of the service
-    endpoint: Uri.parse('...'),
-  );
+  // Create an instance of the standard HTTP retry client for API calls
+  final httpClient = RetryClient(http.Client(), retries: 4);
+
+  try {
+    // 1. Get a client instance for a Web API endpoint.
+    final client = OGCAPIFeatures.http(
+      // set HTTP client (if not set the default `http.Client()` is used)
+      client: httpClient,
+      
+      // an URI to the landing page of the service
+      endpoint: Uri.parse('...'),
+    );
+
+    // 2. Access/check metadata (meta, OpenAPI, conformance, collections) as needed.
+    final conformance = await client.conformance();
+    if (!conformance.conformsToFeaturesCore(geoJSON: true)) {
+      return; // not conforming to core and GeoJSON - so return
+    }
+
+    // 3. Get a feature source for a specific collection.
+    final source = await client.collection('my_collection');
+
+    // ... other steps just like previously demonstrated ...
+
+  } finally {
+    // ensure the HTTP client is closed after using
+    httpClient.close();
+  }
 ```
 
 This example of using a retry client requires also following imports:

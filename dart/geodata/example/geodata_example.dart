@@ -13,9 +13,6 @@ To test run this from command line: dart example/geodata_example.dart
 import 'package:geobase/geobase.dart';
 import 'package:geodata/ogcapi_features_client.dart';
 
-import 'package:http/http.dart' as http;
-import 'package:http/retry.dart';
-
 /// This example demonstrates accessing metadata and geospatial feature items
 /// from a GeoJSON based feature collection provided by a RESTful service
 /// conforming to the [OGC API Features](https://ogcapi.ogc.org/features/)
@@ -39,10 +36,6 @@ Future<void> main(List<String> args) async {
   // create an OGC API Features client for the open pygeoapi demo service
   // (see https://pygeoapi.io/ and https://demo.pygeoapi.io for more info)
   final client = OGCAPIFeatures.http(
-    // set the HTTP client using the standard HTTP retry client on API calls
-    // (when not set, the default `http.Client()` is used without retry logic)
-    client: RetryClient(http.Client(), retries: 4),
-
     // The API endpoint serving an OGC API Features demo service (of pygeoapi)
     endpoint: Uri.parse('https://demo.pygeoapi.io/master/'),
   );
