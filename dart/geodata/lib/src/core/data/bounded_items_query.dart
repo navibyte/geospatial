@@ -8,6 +8,8 @@ import 'package:geobase/common.dart';
 import 'package:geobase/coordinates.dart';
 import 'package:geobase/meta.dart';
 
+import '/src/utils/object_utils.dart';
+
 import 'items_query.dart';
 
 /// A query with bounds for requesting items from a geospatial data source.
@@ -55,18 +57,19 @@ class BoundedItemsQuery extends ItemsQuery {
 
   @override
   String toString() {
-    return '$crs;$bboxCrs;$bbox;$timeFrame;$limit;$parameters';
+    return '$crs;$bboxCrs;$bbox;$timeFrame;$limit;$mapToString(parameters)';
   }
 
   @override
   bool operator ==(Object other) =>
-      other is BoundedItemsQuery &&
-      crs == other.crs &&
-      bboxCrs == other.bboxCrs &&
-      bbox == other.bbox &&
-      timeFrame == other.timeFrame &&
-      limit == other.limit &&
-      parameters == other.parameters;
+      identical(this, other) ||
+      (other is BoundedItemsQuery &&
+          crs == other.crs &&
+          bboxCrs == other.bboxCrs &&
+          bbox == other.bbox &&
+          timeFrame == other.timeFrame &&
+          limit == other.limit &&
+          testMapEquality(parameters, other.parameters));
 
   @override
   int get hashCode => Object.hash(
@@ -75,6 +78,6 @@ class BoundedItemsQuery extends ItemsQuery {
         bbox,
         timeFrame,
         limit,
-        parameters,
+        mapHashCode(parameters),
       );
 }

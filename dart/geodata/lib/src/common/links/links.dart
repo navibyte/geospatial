@@ -6,6 +6,8 @@
 
 import 'package:meta/meta.dart';
 
+import '/src/utils/object_utils.dart';
+
 import 'link.dart';
 
 /// A metadata container for links.
@@ -282,20 +284,12 @@ class Links {
           .toList(growable: false);
 
   @override
-  String toString() => (StringBuffer()..writeAll(_items, ',')).toString();
+  String toString() => listToString(_items);
 
   @override
-  bool operator ==(Object other) {
-    // implementation adapted from Object.hashAll documentation.
-    if (other is Links) {
-      if (_items.length != other._items.length) return false;
-      for (var i = 0; i < _items.length; i++) {
-        if (_items[i] != other._items[i]) return false;
-      }
-      return true;
-    }
-    return false;
-  }
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Links && testListEquality(_items, other._items));
 
   @override
   int get hashCode => Object.hashAll(_items);

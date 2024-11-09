@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import '/src/utils/object_utils.dart';
+
 import 'geospatial_query.dart';
 
 /// A query for requesting an item from a geospatial data source.
@@ -22,16 +24,17 @@ class ItemQuery extends GeospatialQuery {
 
   @override
   String toString() {
-    return '$id;$crs;$parameters';
+    return '$id;$crs;$mapToString(parameters)';
   }
 
   @override
   bool operator ==(Object other) =>
-      other is ItemQuery &&
-      id == other.id &&
-      crs == other.crs &&
-      parameters == other.parameters;
+      identical(this, other) ||
+      (other is ItemQuery &&
+          id == other.id &&
+          crs == other.crs &&
+          testMapEquality(parameters, other.parameters));
 
   @override
-  int get hashCode => Object.hash(id, crs, parameters);
+  int get hashCode => Object.hash(id, crs, mapHashCode(parameters));
 }

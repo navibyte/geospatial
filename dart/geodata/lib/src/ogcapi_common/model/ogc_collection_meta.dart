@@ -7,6 +7,7 @@
 import 'package:geobase/common.dart';
 
 import '/src/core/base/collection_meta.dart';
+import '/src/utils/object_utils.dart';
 
 /// Metadata for a collection resource (like OGC API collection).
 ///
@@ -62,23 +63,24 @@ class OGCCollectionMeta extends CollectionMeta {
   @override
   String toString() {
     return '${super.toString()};$itemType;'
-        '$crs;$storageCrs;$storageCrsCoordinateEpoch';
+        'listToString($crs);$storageCrs;$storageCrsCoordinateEpoch';
   }
 
   @override
   bool operator ==(Object other) =>
-      other is OGCCollectionMeta &&
-      super == other &&
-      itemType == other.itemType &&
-      crs == other.crs &&
-      storageCrs == other.storageCrs &&
-      storageCrsCoordinateEpoch == other.storageCrsCoordinateEpoch;
+      identical(this, other) ||
+      (other is OGCCollectionMeta &&
+          super == other &&
+          itemType == other.itemType &&
+          testIterableEquality(crs, other.crs) &&
+          storageCrs == other.storageCrs &&
+          storageCrsCoordinateEpoch == other.storageCrsCoordinateEpoch);
 
   @override
   int get hashCode => Object.hash(
         super.hashCode,
         itemType,
-        crs,
+        Object.hashAll(crs),
         storageCrs,
         storageCrsCoordinateEpoch,
       );

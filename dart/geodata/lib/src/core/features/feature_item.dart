@@ -8,6 +8,7 @@ import 'package:geobase/vector_data.dart';
 import 'package:meta/meta.dart';
 
 import '/src/common/meta/meta_aware.dart';
+import '/src/utils/object_utils.dart';
 
 /// A result from a feature source containing [feature] and [meta] data.
 @immutable
@@ -24,13 +25,16 @@ class FeatureItem with MetaAware {
 
   @override
   String toString() {
-    return '$feature;$meta';
+    return '$feature;$mapToString(meta)';
   }
 
   @override
   bool operator ==(Object other) =>
-      other is FeatureItem && feature == other.feature && meta == other.meta;
+      identical(this, other) ||
+      (other is FeatureItem &&
+          feature == other.feature &&
+          testMapEquality(meta, other.meta));
 
   @override
-  int get hashCode => Object.hash(feature, meta);
+  int get hashCode => Object.hash(feature, mapHashCode(meta));
 }

@@ -7,6 +7,8 @@
 import 'package:geobase/common.dart';
 import 'package:meta/meta.dart';
 
+import '/src/utils/object_utils.dart';
+
 /// A base query for requesting data from a geospatial data source.
 @immutable
 class GeospatialQuery {
@@ -38,15 +40,16 @@ class GeospatialQuery {
 
   @override
   String toString() {
-    return '$crs;$parameters';
+    return '$crs;$mapToString(parameters)';
   }
 
   @override
   bool operator ==(Object other) =>
-      other is GeospatialQuery &&
-      crs == other.crs &&
-      parameters == other.parameters;
+      identical(this, other) ||
+      (other is GeospatialQuery &&
+          crs == other.crs &&
+          testMapEquality(parameters, other.parameters));
 
   @override
-  int get hashCode => Object.hash(crs, parameters);
+  int get hashCode => Object.hash(crs, mapHashCode(parameters));
 }

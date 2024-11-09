@@ -6,6 +6,8 @@
 
 import 'package:meta/meta.dart';
 
+import '/src/utils/object_utils.dart';
+
 /// A wrapper for conformance classes for a OGC API Common compliant service.
 ///
 /// See [OGC API Common](https://github.com/opengeospatial/ogcapi-common).
@@ -130,21 +132,12 @@ class OGCConformance {
   }
 
   @override
-  String toString() => (StringBuffer()..writeAll(classes, ',')).toString();
+  String toString() => listToString(classes);
 
   @override
-  bool operator ==(Object other) {
-    if (other is OGCConformance) {
-      if (classes.length != other.classes.length) return false;
-      final iter = other.classes.iterator;
-      for (final item in classes) {
-        if (!iter.moveNext()) return false;
-        if (item != iter.current) return false;
-      }
-      return true;
-    }
-    return false;
-  }
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is OGCConformance && testIterableEquality(classes, other.classes));
 
   @override
   int get hashCode => Object.hashAll(classes);
