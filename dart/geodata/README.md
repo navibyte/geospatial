@@ -8,14 +8,15 @@ Geospatial feature service Web APIs with support for
 
 ## Features
 
+✨ New (2024-11-10): The stable version 1.3.0 with some refactoring (the
+dependecy to `equatable` removed, the constraint on `http` is now
+`>=0.13.0 <2.0.0` instead of `^0.13.0` that did not allow latest 1.0+ versions),
+code maintenance and documentation updates.
+
 ✨ New (2024-05-26): The new documentation website ([geospatial.navibyte.dev](https://geospatial.navibyte.dev/)) for the [geodata](https://geospatial.navibyte.dev/v1/geodata/)
 package documentation published along with the stable version 1.2.0.
 
 ✨ New (2024-04-22):  The stable version 1.1.0 adds support for Newline-delimited GeoJSON. See the related [blog post](https://medium.com/@navibyte/decode-and-encode-geojson-wkt-and-wkb-in-dart-and-flutter-apps-ab2ef4ece2f1) about geobase changes.
-
-✨ New (2023-10): The stable version 1.0.0 is now ready. See also the article [Geospatial tools for Dart - version 1.0 published](https://medium.com/@navibyte/geospatial-tools-for-dart-version-1-0-published-0f9673e510b3) at Medium.
-
-✨ New (2023-07): better client-side support for OGC API Features (Part 1 and 2).
 
 Key features:
 
@@ -201,7 +202,7 @@ Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geodata: ^1.2.1
+  geodata: ^1.4.0
 ```
 
 Import it:
@@ -241,7 +242,6 @@ Package            | Exports also | Description
 **ogcapi_features_client** |  common, core, formats | A client-side data source to read features from OGC API Features services.
 
 External packages `geodata` is depending on:
-* [equatable](https://pub.dev/packages/equatable) for equality and hash utils
 * [geobase](https://pub.dev/packages/geobase) for base geospatial data structures
 * [http](https://pub.dev/packages/http) for a http client
 * [meta](https://pub.dev/packages/meta) for annotations

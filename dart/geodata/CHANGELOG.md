@@ -1,8 +1,11 @@
-## 1.4.0
+## 1.3.0
 
-⚠️ NOTE: Version 1.4.0 currently under development (1.4.0-dev.0).
+✨ New (2024-11-10): The stable version 1.3.0 with some refactoring (the
+dependecy to `equatable` removed, the constraint on `http` is now
+`>=0.13.0 <2.0.0` instead of `^0.13.0` that did not allow latest 1.0+ versions),
+code maintenance and documentation updates.
 
-[geodata release 1.4.0](https://github.com/navibyte/geospatial/milestone/6)
+[geodata release 1.3.0](https://github.com/navibyte/geospatial/milestone/6)
 
 🛠 Refactoring:
 * [Change some external dependency version requirements to any - at least for http package #247](https://github.com/navibyte/geospatial/issues/247)
