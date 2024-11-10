@@ -41,11 +41,12 @@ class ResourceMeta with LinksAware {
 
   @override
   bool operator ==(Object other) =>
-      other is ResourceMeta &&
-      title == other.title &&
-      description == other.description &&
-      attribution == other.attribution &&
-      links == other.links;
+      identical(this, other) ||
+      (other is ResourceMeta &&
+          title == other.title &&
+          description == other.description &&
+          attribution == other.attribution &&
+          links == other.links);
 
   @override
   int get hashCode => Object.hash(title, description, attribution, links);

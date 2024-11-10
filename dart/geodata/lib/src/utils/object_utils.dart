@@ -17,7 +17,7 @@ bool testIterableEquality<E>(Iterable<E>? list1, Iterable<E>? list2) {
         return false;
       }
     } while (iter1.moveNext());
-    if(iter2.moveNext()) return false;
+    if (iter2.moveNext()) return false;
   } else {
     return !iter2.moveNext();
   }

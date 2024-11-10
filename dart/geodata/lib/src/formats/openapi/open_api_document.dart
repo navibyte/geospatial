@@ -1,10 +1,12 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
 // Docs: https://github.com/navibyte/geospatial
 
 import 'package:meta/meta.dart';
+
+import '/src/utils/object_utils.dart';
 
 /// An OpenAPI document for some service with raw content parsed in [content].
 ///
@@ -56,12 +58,15 @@ class OpenAPIDocument {
       );
 
   @override
-  String toString() => content.toString();
+  String toString() => '$openapi;$mapToString(content)';
 
   @override
   bool operator ==(Object other) =>
-      other is OpenAPIDocument && content == other.content;
+      identical(this, other) ||
+      (other is OpenAPIDocument &&
+          openapi == other.openapi &&
+          testMapEquality(content, other.content));
 
   @override
-  int get hashCode => content.hashCode;
+  int get hashCode => Object.hash(openapi, mapHashCode(content));
 }

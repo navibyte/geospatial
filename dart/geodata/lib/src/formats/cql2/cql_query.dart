@@ -96,15 +96,15 @@ class CQLQuery {
   CoordRefSys? get filterCrs => _filterCrs;
 
   @override
-  String toString() =>
-      '{filter: $filter, filterLang: $filterLang, filterCrs: $filterCrs}';
+  String toString() => '$filter;$filterLang;$filterCrs';
 
   @override
   bool operator ==(Object other) =>
-      other is CQLQuery &&
-      filter == other.filter &&
-      filterLang == other.filterLang &&
-      filterCrs == other.filterCrs;
+      identical(this, other) ||
+      (other is CQLQuery &&
+          filter == other.filter &&
+          filterLang == other.filterLang &&
+          filterCrs == other.filterCrs);
 
   @override
   int get hashCode => Object.hash(filter, filterLang, filterCrs);

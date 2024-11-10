@@ -1,10 +1,8 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
 // Docs: https://github.com/navibyte/geospatial
-
-import 'package:meta/meta.dart';
 
 import '/src/ogcapi_common/model/ogc_conformance.dart';
 
@@ -20,7 +18,6 @@ import '/src/ogcapi_common/model/ogc_conformance.dart';
 /// The class extends [OGCConformance] that knows also conformance classes for:
 /// * `OGC API - Common - Part 1: Core`
 /// * `OGC API - Common - Part 2: Geospatial Data`
-@immutable
 class OGCFeatureConformance extends OGCConformance {
   /// Creates a wrapper for conformance classes a service is conforming to.
   const OGCFeatureConformance(super.classes);
@@ -150,6 +147,11 @@ class OGCFeatureConformance extends OGCConformance {
         (filter == null || isFilter == filter) &&
         (featuresFilter == null || isFeaturesFilter == featuresFilter);
   }
+
+  @override
+  // ignore: hash_and_equals
+  bool operator ==(Object other) =>
+      other is OGCFeatureConformance && super == other;
 
   /// The `Core` conformance class for the
   /// `OGC API - Features - Part 1: Core` standard.

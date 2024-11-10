@@ -37,13 +37,14 @@ class CollectionMeta extends ResourceMeta {
 
   @override
   bool operator ==(Object other) =>
-      other is CollectionMeta &&
-      id == other.id &&
-      title == other.title &&
-      description == other.description &&
-      attribution == other.attribution &&
-      links == other.links &&
-      extent == other.extent;
+      identical(this, other) ||
+      (other is CollectionMeta &&
+          id == other.id &&
+          title == other.title &&
+          description == other.description &&
+          attribution == other.attribution &&
+          links == other.links &&
+          extent == other.extent);
 
   @override
   int get hashCode =>

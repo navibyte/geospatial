@@ -6,6 +6,8 @@
 
 import 'package:meta/meta.dart';
 
+import '/src/utils/object_utils.dart';
+
 /// Represents `Queryables` document for an OGC API service parsed from JSON
 /// Schema data.
 ///
@@ -96,15 +98,21 @@ class OGCQueryableObject {
   /// have at least "type" and "title" attributes.
   final Map<String, OGCQueryableProperty> properties;
 
+  // NOTE: not all properties are used on toString, equality test and hashCode
+  //       (actually only `content` is set, other properties are just copies)
+
   @override
-  String toString() => content.toString();
+  String toString() => '$id;$mapToString(content)';
 
   @override
   bool operator ==(Object other) =>
-      other is OGCQueryableObject && content == other.content;
+      identical(this, other) ||
+      (other is OGCQueryableObject &&
+          id == other.id &&
+          testMapEquality(content, other.content));
 
   @override
-  int get hashCode => content.hashCode;
+  int get hashCode => Object.hash(id, mapHashCode(content));
 }
 
 /// A queryable non-geospatial property.

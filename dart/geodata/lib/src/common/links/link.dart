@@ -90,13 +90,14 @@ class Link {
 
   @override
   bool operator ==(Object other) =>
-      other is Link &&
-      href == other.href &&
-      rel == other.rel &&
-      type == other.type &&
-      hreflang == other.hreflang &&
-      title == other.title &&
-      length == other.length;
+      identical(this, other) ||
+      (other is Link &&
+          href == other.href &&
+          rel == other.rel &&
+          type == other.type &&
+          hreflang == other.hreflang &&
+          title == other.title &&
+          length == other.length);
 
   @override
   int get hashCode => Object.hash(href, rel, type, hreflang, title, length);
