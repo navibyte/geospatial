@@ -13,6 +13,8 @@ Read the docs 👉 [geospatial.navibyte.dev](https://geospatial.navibyte.dev/)!
 
 [![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev/) [![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)](https://flutter.dev/)
 
+✨ New (2024-11-10): The stable release with [ellipsoidal geodesy functions](https://geospatial.navibyte.dev/v1/geobase/ellipsoidal-geodesy/) letting you calculate distances, bearings, destination positions and intermediate points along the Earth surface accurately.
+
 ✨ New (2024-07-26): The stable version 1.3.0 with centroid, polylabel, point-in-polygon and other cartesian 2D calculations enhanced - [read more](https://geospatial.navibyte.dev/v1/geobase/geometry-calculations/)!
 
 ✨ New (2024-05-26): The new documentation website ([geospatial.navibyte.dev](https://geospatial.navibyte.dev/)) for [geobase](https://geospatial.navibyte.dev/v1/geobase/)
@@ -341,6 +343,13 @@ Code          | Description
 
 ## :newspaper_roll: News
 
+2024-11-10
+* ✨ The stable release with [ellipsoidal geodesy functions](https://geospatial.navibyte.dev/v1/geobase/ellipsoidal-geodesy/) letting you calculate distances, bearings, destination positions and intermediate points along the Earth surface accurately.
+* All docs: [geospatial.navibyte.dev](https://geospatial.navibyte.dev/).
+* Published packages at pub.dev:
+  * [geobase version 1.4.0](https://pub.dev/packages/geobase/versions/1.4.0+1)
+  * [geodata version 1.3.0](https://pub.dev/packages/geodata/versions/1.3.0)
+
 2024-07-26
 * ✨ The [stable version 1.3.0](https://github.com/navibyte/geospatial/milestone/5) with centroid, polylabel, point-in-polygon and other cartesian 2D calculations enhanced - [read more](https://geospatial.navibyte.dev/v1/geobase/geometry-calculations/)!
 * All docs: [geospatial.navibyte.dev](https://geospatial.navibyte.dev/).
@@ -451,6 +460,7 @@ SDKs:
 * [Flutter](https://flutter.dev/) 
 
 Latest on Dart SDKs
+* [Dart 3.5](https://medium.com/dartlang/dart-3-5-6ca36259fa2f) with improvements in interoperability and an update on the Dart roadmap.
 * [Dart 3.4](https://medium.com/dartlang/dart-3-4-bd8d23b4462a) with WebAssembly (WASM) updates and the roadmap for Dart *macros*. 
 * [Dart 3.3](https://medium.com/dartlang/dart-3-3-325bf2bf6c13) with extension types,  evolving JavaScript-interoperability and experimental support for WebAssembly.
 * [Dart 3.2](https://medium.com/dartlang/dart-3-2-c8de8fe1b91f) with improved language & developer experience.
@@ -465,6 +475,7 @@ Latest on Dart SDKs
 * [Dart 2.12](https://medium.com/dartlang/announcing-dart-2-12-499a6e689c87) with sound null safety
 
 Latest on Flutter SDKs
+* [Flutter 3.24](https://medium.com/flutter/whats-new-in-flutter-3-24-6c040f87d1e4) running on Dart 3.5 and with Multi-View Embedding and preview on Flutter GPU. 
 * [Flutter 3.22](https://medium.com/flutter/whats-new-in-flutter-3-22-fbde6c164fe3) running on Dart 3.4 and stable support for WebAssembly (WASM), Graphics rendering enhancements, and AI updates.
 * [Flutter 3.19](https://medium.com/flutter/whats-new-in-flutter-3-19-58b1aae242d2) running on Dart 3.3 and Gemini API integration, Impeller updates, and Windows Arm64 support.
 * [Flutter 3.16](https://medium.com/flutter/whats-new-in-flutter-3-16-dba6cb1015d1) running on Dart 3.2 and with Material 3 by default, Impeller preview for Android, etc.
@@ -506,12 +517,10 @@ There are thousands of excellent libraries available at
 [pub.dev](https://pub.dev/).
 
 Here listed only those that are used (depended directly) by code packages of
-this repository:
+this repository (on the latest release):
 
 Package @ pub.dev | Code @ GitHub | Description
 ----------------- | ------------- | -----------
-[collection](https://pub.dev/packages/collection) | [dart-lang/collection](https://github.com/dart-lang/collection) | Collections and utilities functions and classes related to collections. 
-[equatable](https://pub.dev/packages/equatable) | [felangel/equatable](https://github.com/felangel/equatable) | Simplify Equality Comparisons | A Dart abstract class that helps to implement equality without needing to explicitly override == and hashCode.
 [http](https://pub.dev/packages/http) | [dart-lang/http](https://github.com/dart-lang/http) | A composable API for making HTTP requests in Dart.
 [meta](https://pub.dev/packages/meta) | [dart-lang/sdk](https://github.com/dart-lang/sdk/tree/master/pkg/meta) | This package defines annotations that can be used by the tools that are shipped with the Dart SDK.
 [proj4dart](https://pub.dev/packages/proj4dart) | [maRci002/proj4dart](https://github.com/maRci002/proj4dart) | Proj4dart is a Dart library to transform point coordinates from one coordinate system to another, including datum transformations (Dart version of proj4js/proj4js).
@@ -521,4 +530,6 @@ In some previous releases also following are utilized:
 
 Package @ pub.dev | Code @ GitHub | Description
 ----------------- | ------------- | -----------
+[collection](https://pub.dev/packages/collection) | [dart-lang/collection](https://github.com/dart-lang/collection) | Collections and utilities functions and classes related to collections. 
+[equatable](https://pub.dev/packages/equatable) | [felangel/equatable](https://github.com/felangel/equatable) | Simplify Equality Comparisons | A Dart abstract class that helps to implement equality without needing to explicitly override == and hashCode.
 [synchronized](https://pub.dev/packages/synchronized) | [tekartik/synchronized.dart](https://github.com/tekartik/synchronized.dart/tree/master/synchronized) | Basic lock mechanism to prevent concurrent access to asynchronous code.

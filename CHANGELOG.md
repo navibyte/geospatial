@@ -1,3 +1,11 @@
+## 2024-11-10
+
+* ✨ The stable release with [ellipsoidal geodesy functions](https://geospatial.navibyte.dev/v1/geobase/ellipsoidal-geodesy/) letting you calculate distances, bearings, destination positions and intermediate points along the Earth surface accurately.
+* All docs: [geospatial.navibyte.dev](https://geospatial.navibyte.dev/).
+* Published packages at pub.dev:
+  * [geobase version 1.4.0](https://pub.dev/packages/geobase/versions/1.4.0+1)
+  * [geodata version 1.3.0](https://pub.dev/packages/geodata/versions/1.3.0)
+
 ## 2024-07-26
 
 * ✨ The [stable version 1.3.0](https://github.com/navibyte/geospatial/milestone/5) with centroid, polylabel, point-in-polygon and other cartesian 2D calculations enhanced - [read more](https://geospatial.navibyte.dev/v1/geobase/geometry-calculations/)!
