@@ -1,3 +1,7 @@
+## 1.4.0+1
+
+Small documentation link fixes.
+
 ## 1.4.0
 
 ✨ New (2024-11-10): The stable version 1.4.0 with [ellipsoidal geodesy functions](https://geospatial.navibyte.dev/v1/geobase/ellipsoidal-geodesy/) letting you calculate distances, bearings, destination positions and intermediate points along the Earth surface accurately.

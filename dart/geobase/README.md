@@ -382,8 +382,6 @@ Package                | Description
 **vector_data**        | Data structures for geometries, features and feature collections.
 
 External packages `geobase` is depending on:
-* [collection](https://pub.dev/packages/collection) for priority queues and collection utilities
-* [equatable](https://pub.dev/packages/equatable) for equality and hash utils
 * [meta](https://pub.dev/packages/meta) for annotations
 * [proj4dart](https://pub.dev/packages/proj4dart) for coordinate projections
 
@@ -406,7 +404,7 @@ Please see the
 This project contains portions of derivative work. 
 
 See details about
-[DERIVATIVE](https://github.com/navibyte/geospatial/blob/main/dart/geobase/)
+[DERIVATIVE](https://github.com/navibyte/geospatial/blob/main/dart/geobase/DERIVATIVE.md)
 work.
 
 Source repositories used when porting functionality to Dart and this project:
