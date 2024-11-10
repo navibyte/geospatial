@@ -442,7 +442,7 @@ class Point implements SimpleGeometry {
 
   @override
   bool operator ==(Object other) =>
-      other is Point && position == other.position;
+      identical(this, other) || (other is Point && position == other.position);
 
   @override
   int get hashCode => position.hashCode;

@@ -24,8 +24,6 @@
 
 import 'dart:math';
 
-import 'package:meta/meta.dart';
-
 import '/src/common/constants/epsilon.dart';
 import '/src/common/functions/position_functions.dart';
 import '/src/common/reference/ellipsoid.dart';
@@ -85,7 +83,6 @@ extension EllipsoidalVincentyExtension on Geographic {
 /// positions ([origin] and destination).
 ///
 /// {@endtemplate}
-@immutable
 class EllipsoidalVincenty extends Ellipsoidal implements Geodetic {
   /// {@macro geobase.geodesy.ellipsoidal_vincenty.create}
   ///

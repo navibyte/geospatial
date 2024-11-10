@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -55,7 +55,8 @@ class Instant extends Temporal {
   String toString() => time.toIso8601String();
 
   @override
-  bool operator ==(Object other) => other is Instant && time == other.time;
+  bool operator ==(Object other) =>
+      identical(this, other) || (other is Instant && time == other.time);
 
   @override
   int get hashCode => time.hashCode;

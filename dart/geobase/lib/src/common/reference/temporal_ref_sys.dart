@@ -66,7 +66,8 @@ class TemporalRefSys {
   String toString() => id;
 
   @override
-  bool operator ==(Object other) => other is TemporalRefSys && id == other.id;
+  bool operator ==(Object other) =>
+      identical(this, other) || (other is TemporalRefSys && id == other.id);
 
   @override
   int get hashCode => id.hashCode;

@@ -511,9 +511,10 @@ class MultiPoint extends SimpleGeometry {
 
   @override
   bool operator ==(Object other) =>
-      other is MultiPoint &&
-      bounds == other.bounds &&
-      positions == other.positions;
+      identical(this, other) ||
+      (other is MultiPoint &&
+          bounds == other.bounds &&
+          positions == other.positions);
 
   @override
   int get hashCode => Object.hash(bounds, positions);

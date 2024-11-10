@@ -566,7 +566,8 @@ class LineString extends SimpleGeometry {
 
   @override
   bool operator ==(Object other) =>
-      other is LineString && bounds == other.bounds && chain == other.chain;
+      identical(this, other) ||
+      (other is LineString && bounds == other.bounds && chain == other.chain);
 
   @override
   int get hashCode => Object.hash(bounds, chain);

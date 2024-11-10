@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -311,4 +311,20 @@ class WebMercatorQuad extends GeoTileMatrixSet {
     }
     return str.toString();
   }
+
+  @override
+  String toString() {
+    return '$maxZoom;$tileSize;$origin';
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is WebMercatorQuad &&
+          maxZoom == other.maxZoom &&
+          tileSize == other.tileSize &&
+          origin == other.origin);
+
+  @override
+  int get hashCode => Object.hash(maxZoom, tileSize, origin);
 }

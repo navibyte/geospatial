@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -75,4 +75,14 @@ class PositionScheme {
 
   /// Returns true if this scheme conforms with [other].
   bool conformsWith(PositionScheme other) => this == other;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PositionScheme &&
+          _position == other._position &&
+          _box == other._box);
+
+  @override
+  int get hashCode => Object.hash(_position, _box);
 }

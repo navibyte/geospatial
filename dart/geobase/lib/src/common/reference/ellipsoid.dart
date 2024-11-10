@@ -71,7 +71,8 @@ class Ellipsoid {
 
   @override
   bool operator ==(Object other) =>
-      other is Ellipsoid && a == other.a && b == other.b && f == other.f;
+      identical(this, other) ||
+      (other is Ellipsoid && a == other.a && b == other.b && f == other.f);
 
   @override
   int get hashCode => Object.hash(a, b, f);

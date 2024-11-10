@@ -24,7 +24,7 @@
 
 // Adaptations on the derivative work (the Dart port):
 //
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -40,6 +40,7 @@ import '/src/common/functions/position_functions.dart';
 import '/src/coordinates/base/position_series.dart';
 import '/src/coordinates/geographic/geographic.dart';
 import '/src/geodesy/base/geodetic.dart';
+import '/src/utils/object_utils.dart';
 
 /// An extension for easier access to [SphericalGreatCircle].
 extension SphericalGreatCircleExtension on Geographic {
@@ -615,6 +616,17 @@ static intersection(p1, brng1, p2, brng2) {
       loni2.toDegrees().wrapLongitude(),
     ];
   }
+
+  @override
+  String toString() => position.toString();
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SphericalGreatCircle && position == other.position);
+
+  @override
+  int get hashCode => position.hashCode;
 }
 
 /// Calculations for line strings (as an iterable of geographic positions) on a
@@ -770,4 +782,16 @@ class SphericalGreatCircleLineString {
     final enclosed = sumDelta.abs() < 90.0; // 0°-ish
     return enclosed;
   }
+
+  @override
+  String toString() => listToString(lineString);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SphericalGreatCircleLineString &&
+          testIterableEquality(lineString, other.lineString));
+
+  @override
+  int get hashCode => Object.hashAll(lineString);
 }

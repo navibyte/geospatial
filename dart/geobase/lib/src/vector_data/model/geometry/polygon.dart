@@ -933,7 +933,8 @@ class Polygon extends SimpleGeometry {
 
   @override
   bool operator ==(Object other) =>
-      other is Polygon && bounds == other.bounds && rings == other.rings;
+      identical(this, other) ||
+      (other is Polygon && bounds == other.bounds && rings == other.rings);
 
   @override
   int get hashCode => Object.hash(bounds, rings);

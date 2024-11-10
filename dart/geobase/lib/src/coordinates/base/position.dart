@@ -1236,7 +1236,8 @@ class _PositionCoords extends Position {
 
   @override
   bool operator ==(Object other) =>
-      other is Position && Position.testEquals(this, other);
+      identical(this, other) ||
+      (other is Position && Position.testEquals(this, other));
 
   @override
   int get hashCode => Position.hash(this);

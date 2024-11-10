@@ -19,7 +19,7 @@
 
 // Adaptations on the derivative work (the Dart port):
 //
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -30,6 +30,8 @@
 // * [ISO 6709:2022](https://www.iso.org/standard/75147.html)
 
 import 'dart:math';
+
+import 'package:meta/meta.dart';
 
 import '/src/common/codes/cardinal_precision.dart';
 import '/src/common/codes/dms_type.dart';
@@ -190,6 +192,7 @@ final _regExpMinusOrSW = RegExp(r'^-|[WS]$', caseSensitive: false);
 /// A default implementation for [DmsFormat] abstract base class, that defines
 /// methods for parsing and formatting degrees/minutes/seconds on latitude,
 /// longitude and bearing values.
+@immutable
 class Dms extends DmsFormat {
   final DmsType _type;
   final String _separator;
@@ -656,4 +659,37 @@ class Dms extends DmsFormat {
       buf.write(brng);
     }
   }
+
+  @override
+  String toString() {
+    return '$_type;$_separator;$_decimals;$_signedDegrees;$_zeroPadDegrees;'
+        '$_zeroPadMinSec;$_degree;$_prime;$_doublePrime';
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Dms &&
+          _type == other._type &&
+          _separator == other._separator &&
+          _decimals == other._decimals &&
+          _signedDegrees == other._signedDegrees &&
+          _zeroPadDegrees == other._zeroPadDegrees &&
+          _zeroPadMinSec == other._zeroPadMinSec &&
+          _degree == other._degree &&
+          _prime == other._prime &&
+          _doublePrime == other._doublePrime);
+
+  @override
+  int get hashCode => Object.hash(
+        _type,
+        _separator,
+        _decimals,
+        _signedDegrees,
+        _zeroPadDegrees,
+        _zeroPadMinSec,
+        _degree,
+        _prime,
+        _doublePrime,
+      );
 }

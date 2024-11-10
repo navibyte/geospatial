@@ -58,12 +58,13 @@ class GeodeticArcSegment extends GeographicBearing {
 
   @override
   bool operator ==(Object other) =>
-      other is GeodeticArcSegment &&
-      origin == other.origin &&
-      bearing == other.bearing &&
-      distance == other.distance &&
-      finalBearing == other.finalBearing &&
-      destination == other.destination;
+      identical(this, other) ||
+      (other is GeodeticArcSegment &&
+          origin == other.origin &&
+          bearing == other.bearing &&
+          distance == other.distance &&
+          finalBearing == other.finalBearing &&
+          destination == other.destination);
 
   @override
   int get hashCode => Object.hash(

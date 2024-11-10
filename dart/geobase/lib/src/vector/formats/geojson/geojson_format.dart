@@ -88,13 +88,14 @@ class GeoJsonConf {
 
   @override
   bool operator ==(Object other) =>
-      other is GeoJsonConf &&
-      crsLogic == other.crsLogic &&
-      singlePrecision == other.singlePrecision &&
-      ignoreMeasured == other.ignoreMeasured &&
-      ignoreForeignMembers == other.ignoreForeignMembers &&
-      printNonDefaultCrs == other.printNonDefaultCrs &&
-      compactNums == other.compactNums;
+      identical(this, other) ||
+      (other is GeoJsonConf &&
+          crsLogic == other.crsLogic &&
+          singlePrecision == other.singlePrecision &&
+          ignoreMeasured == other.ignoreMeasured &&
+          ignoreForeignMembers == other.ignoreForeignMembers &&
+          printNonDefaultCrs == other.printNonDefaultCrs &&
+          compactNums == other.compactNums);
 
   @override
   int get hashCode => Object.hash(

@@ -22,14 +22,15 @@ class DistancedPosition<T extends Position> {
 
   @override
   String toString() {
-    return '$position,$distance';
+    return '$position;$distance';
   }
 
   @override
   bool operator ==(Object other) =>
-      other is DistancedPosition &&
-      position == other.position &&
-      distance == other.distance;
+      identical(this, other) ||
+      (other is DistancedPosition &&
+          position == other.position &&
+          distance == other.distance);
 
   @override
   int get hashCode => Object.hash(position, distance);

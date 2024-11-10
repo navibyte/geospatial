@@ -138,9 +138,10 @@ class Ellipsoidal {
 
   @override
   bool operator ==(Object other) =>
-      other is Ellipsoidal &&
-      ellipsoid == other.ellipsoid &&
-      origin == other.origin;
+      identical(this, other) ||
+      (other is Ellipsoidal &&
+          ellipsoid == other.ellipsoid &&
+          origin == other.origin);
 
   @override
   int get hashCode => Object.hash(ellipsoid, origin);

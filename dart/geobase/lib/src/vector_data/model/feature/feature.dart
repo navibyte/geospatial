@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -12,6 +12,7 @@ import '/src/coordinates/base/position.dart';
 import '/src/coordinates/base/position_scheme.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/utils/bounded_utils.dart';
+import '/src/utils/object_utils.dart';
 import '/src/vector/content/feature_content.dart';
 import '/src/vector/content/geometry_content.dart';
 import '/src/vector/encoding/text_format.dart';
@@ -500,17 +501,18 @@ class Feature<T extends Geometry> extends FeatureObject {
 
   @override
   bool operator ==(Object other) =>
-      other is Feature &&
-      id == other.id &&
-      properties == other.properties &&
-      bounds == other.bounds &&
-      geometry == other.geometry &&
-      custom == other.custom;
+      identical(this, other) ||
+      (other is Feature &&
+          id == other.id &&
+          testMapEquality(properties, other.properties) &&
+          bounds == other.bounds &&
+          geometry == other.geometry &&
+          custom == other.custom);
 
   @override
   int get hashCode => Object.hash(
         id,
-        properties,
+        mapHashCode(properties),
         bounds,
         geometry,
         custom,

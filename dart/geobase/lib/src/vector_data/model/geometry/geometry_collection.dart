@@ -470,9 +470,10 @@ class GeometryCollection<E extends Geometry> extends Geometry {
 
   @override
   bool operator ==(Object other) =>
-      other is GeometryCollection &&
-      bounds == other.bounds &&
-      geometries == other.geometries;
+      identical(this, other) ||
+      (other is GeometryCollection &&
+          bounds == other.bounds &&
+          geometries == other.geometries);
 
   @override
   int get hashCode => Object.hash(bounds, geometries);

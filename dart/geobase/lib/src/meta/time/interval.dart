@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -175,9 +175,10 @@ class Interval extends Temporal {
 
   @override
   bool operator ==(Object other) =>
-      other is Interval &&
-      startTime == other.startTime &&
-      endTime == other.endTime;
+      identical(this, other) ||
+      (other is Interval &&
+          startTime == other.startTime &&
+          endTime == other.endTime);
 
   @override
   int get hashCode => Object.hash(startTime, endTime);

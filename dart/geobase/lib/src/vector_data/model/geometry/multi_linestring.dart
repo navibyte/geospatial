@@ -577,9 +577,10 @@ class MultiLineString extends SimpleGeometry {
 
   @override
   bool operator ==(Object other) =>
-      other is MultiLineString &&
-      bounds == other.bounds &&
-      chains == other.chains;
+      identical(this, other) ||
+      (other is MultiLineString &&
+          bounds == other.bounds &&
+          chains == other.chains);
 
   @override
   int get hashCode => Object.hash(bounds, chains);

@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -8,6 +8,7 @@ import 'package:meta/meta.dart';
 
 import '/src/common/reference/temporal_ref_sys.dart';
 import '/src/meta/time/interval.dart';
+import '/src/utils/object_utils.dart';
 
 /// An extent with 1 to N intervals in defined temporal coordinate reference
 /// system.
@@ -74,29 +75,17 @@ class TemporalExtent {
     for (final item in intervals) {
       buf
         ..write(',')
-        ..write(item)
-        ..write('');
+        ..write(item);
     }
     return buf.toString();
   }
 
   @override
-  bool operator ==(Object other) {
-    if (other is TemporalExtent && trs == other.trs) {
-      final items1 = intervals;
-      final items2 = other.intervals;
-      if (items1.length == items2.length) {
-        final iter2 = items2.iterator;
-        for (final item1 in items1) {
-          if (!(iter2.moveNext() && item1 == iter2.current)) {
-            return false;
-          }
-        }
-        return true;
-      }
-    }
-    return false;
-  }
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TemporalExtent &&
+          trs == other.trs &&
+          testIterableEquality(intervals, other.intervals));
 
   @override
   int get hashCode => Object.hash(trs, Object.hashAll(intervals));

@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -171,7 +171,11 @@ class Scalable2i implements Scalable {
 
   @override
   bool operator ==(Object other) =>
-      other is Scalable2i && zoom == other.zoom && x == other.x && y == other.y;
+      identical(this, other) ||
+      (other is Scalable2i &&
+          zoom == other.zoom &&
+          x == other.x &&
+          y == other.y);
 
   @override
   int get hashCode => Object.hash(zoom, x, y);

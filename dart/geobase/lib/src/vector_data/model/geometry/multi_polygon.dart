@@ -751,9 +751,10 @@ class MultiPolygon extends SimpleGeometry {
 
   @override
   bool operator ==(Object other) =>
-      other is MultiPolygon &&
-      bounds == other.bounds &&
-      ringArrays == other.ringArrays;
+      identical(this, other) ||
+      (other is MultiPolygon &&
+          bounds == other.bounds &&
+          ringArrays == other.ringArrays);
 
   @override
   int get hashCode => Object.hash(bounds, ringArrays);

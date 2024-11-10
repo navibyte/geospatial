@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -8,6 +8,7 @@ import 'package:meta/meta.dart';
 
 import '/src/common/reference/coord_ref_sys.dart';
 import '/src/coordinates/base/box.dart';
+import '/src/utils/object_utils.dart';
 
 /// An extent with 1 to N bounding boxes in defined coordinate reference system.
 @immutable
@@ -80,22 +81,11 @@ class SpatialExtent<T extends Box> {
   }
 
   @override
-  bool operator ==(Object other) {
-    if (other is SpatialExtent<T> && crs == other.crs) {
-      final items1 = boxes;
-      final items2 = other.boxes;
-      if (items1.length == items2.length) {
-        final iter2 = items2.iterator;
-        for (final item1 in items1) {
-          if (!(iter2.moveNext() && item1 == iter2.current)) {
-            return false;
-          }
-        }
-        return true;
-      }
-    }
-    return false;
-  }
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SpatialExtent<T> &&
+          crs == other.crs &&
+          testIterableEquality(boxes, other.boxes));
 
   @override
   int get hashCode => Object.hash(crs, Object.hashAll(boxes));

@@ -1579,11 +1579,12 @@ class _PositionArray extends PositionSeries {
 
   @override
   bool operator ==(Object other) =>
-      other is _PositionArray &&
-      _type == other._type &&
-      bounds == other.bounds &&
-      _reversed == other._reversed &&
-      _data == other._data;
+      identical(this, other) ||
+      (other is _PositionArray &&
+          _type == other._type &&
+          bounds == other.bounds &&
+          _reversed == other._reversed &&
+          _data == other._data);
 
   @override
   int get hashCode => Object.hash(_type, bounds, _reversed, _data);
@@ -1917,11 +1918,12 @@ class _PositionDataCoords extends PositionSeries {
 
   @override
   bool operator ==(Object other) =>
-      other is _PositionDataCoords &&
-      _type == other._type &&
-      bounds == other.bounds &&
-      _reversed == other._reversed &&
-      _data == other._data;
+      identical(this, other) ||
+      (other is _PositionDataCoords &&
+          _type == other._type &&
+          bounds == other.bounds &&
+          _reversed == other._reversed &&
+          _data == other._data);
 
   @override
   int get hashCode => Object.hash(_type, bounds, _reversed, _data);

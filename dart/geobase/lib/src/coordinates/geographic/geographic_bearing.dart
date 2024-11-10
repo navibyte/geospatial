@@ -39,9 +39,10 @@ class GeographicBearing {
 
   @override
   bool operator ==(Object other) =>
-      other is GeographicBearing &&
-      origin == other.origin &&
-      bearing == other.bearing;
+      identical(this, other) ||
+      (other is GeographicBearing &&
+          origin == other.origin &&
+          bearing == other.bearing);
 
   @override
   int get hashCode => Object.hash(origin, bearing);

@@ -507,10 +507,11 @@ class FeatureCollection<E extends Feature> extends FeatureObject {
 
   @override
   bool operator ==(Object other) =>
-      other is FeatureCollection &&
-      bounds == other.bounds &&
-      features == other.features &&
-      custom == other.custom;
+      identical(this, other) ||
+      (other is FeatureCollection &&
+          bounds == other.bounds &&
+          features == other.features &&
+          custom == other.custom);
 
   @override
   int get hashCode => Object.hash(bounds, features, custom);
