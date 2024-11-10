@@ -10,6 +10,8 @@ and [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geomet
 
 ## Features
 
+✨ New (2024-11-10): The stable version 1.4.0 with [ellipsoidal geodesy functions](https://geospatial.navibyte.dev/v1/geobase/ellipsoidal-geodesy/) letting you calculate distances, bearings, destination positions and intermediate points along the Earth surface accurately.
+
 ✨ New (2024-07-26): The stable version 1.3.0 with centroid, polylabel, point-in-polygon and other cartesian 2D calculations enhanced - [read more](https://geospatial.navibyte.dev/v1/geobase/geometry-calculations/)!
 
 ✨ New (2024-05-26): The new documentation website ([geospatial.navibyte.dev](https://geospatial.navibyte.dev/)) for the [geobase](https://geospatial.navibyte.dev/v1/geobase/)
@@ -330,7 +332,7 @@ Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geobase: ^1.4.0-dev.1
+  geobase: ^1.4.0
 ```
 
 Import it:
