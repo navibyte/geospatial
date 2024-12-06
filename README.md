@@ -13,6 +13,8 @@ Read the docs 👉 [geospatial.navibyte.dev](https://geospatial.navibyte.dev/)!
 
 [![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev/) [![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)](https://flutter.dev/)
 
+🗺️ [Roadmap 2025: The current state and candidate issues for the geobase package](https://github.com/navibyte/geospatial/issues/254).
+
 ✨ New (2024-11-10): The stable release with [ellipsoidal geodesy functions](https://geospatial.navibyte.dev/v1/geobase/ellipsoidal-geodesy/) letting you calculate distances, bearings, destination positions and intermediate points along the Earth surface accurately.
 
 ✨ New (2024-07-26): The stable version 1.3.0 with centroid, polylabel, point-in-polygon and other cartesian 2D calculations enhanced - [read more](https://geospatial.navibyte.dev/v1/geobase/geometry-calculations/)!
@@ -377,6 +379,8 @@ Code          | Description
 See also older news in the [changelog](CHANGELOG.md) of this repository.
 
 ## :building_construction: Roadmap
+
+🗺️ [Roadmap 2025: The current state and candidate issues for the geobase package](https://github.com/navibyte/geospatial/issues/254).
 
 🧩 See [open issues](https://github.com/navibyte/geospatial/issues) for planned features, requests for change, and observed bugs.
 
