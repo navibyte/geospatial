@@ -7,6 +7,7 @@
 import '/src/common/codes/coords.dart';
 import '/src/common/constants/epsilon.dart';
 import '/src/common/reference/coord_ref_sys.dart';
+import '/src/coordinates/base/bounded.dart';
 import '/src/coordinates/base/box.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/base/position_extensions.dart';
