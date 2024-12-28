@@ -1,3 +1,7 @@
+## 1.4.0
+
+NOTE: [geodata version 1.4.0](https://github.com/navibyte/geospatial/milestone/7) currently under development (1.4.0-dev.0).
+
 ## 1.3.0
 
 ✨ New (2024-11-10): The stable version 1.3.0 with some refactoring (the
