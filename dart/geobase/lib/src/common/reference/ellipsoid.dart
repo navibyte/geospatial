@@ -68,14 +68,19 @@ class Ellipsoid {
 
   @override
   String toString() {
-    return '$a,$b,$f';
+    return '$id;$name;$a;$b;$f';
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Ellipsoid && a == other.a && b == other.b && f == other.f);
+      (other is Ellipsoid &&
+          id == other.id &&
+          name == other.name &&
+          a == other.a &&
+          b == other.b &&
+          f == other.f);
 
   @override
-  int get hashCode => Object.hash(a, b, f);
+  int get hashCode => Object.hash(id, name, a, b, f);
 }
