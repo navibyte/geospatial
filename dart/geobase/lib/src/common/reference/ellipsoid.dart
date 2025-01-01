@@ -1,17 +1,19 @@
-// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2025 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
 // Docs: https://github.com/navibyte/geospatial
 
-// ignore_for_file: constant_identifier_names
+// ignore_for_file: constant_identifier_names, lines_longer_than_80_chars
 
 import 'package:meta/meta.dart';
 
 /// A reference ellipsoid with ellipsoidal parameters (a, b and f).
 ///
 /// See also Wikipedia about
-/// [Earth ellipsoid](https://en.wikipedia.org/wiki/Earth_ellipsoid).
+/// [Earth ellipsoid](https://en.wikipedia.org/wiki/Earth_ellipsoid) and
+/// PROJ documentation about
+/// [ellipsoids](https://proj.org/en/stable/usage/ellipsoids.html).
 @immutable
 class Ellipsoid {
   /// The id (*short name*) of a reference ellisoid.

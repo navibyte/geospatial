@@ -31,6 +31,7 @@ Latitude/longitude spherical geodesy tools (see [latlong.html](https://www.movab
 Dart code file ported to this project | Related original JavaScript code
 ------------------------------------- | --------------------------------
 [geodetic.dart](lib/src/geodesy/base/geodetic.dart) | [latlon-spherical.js](https://github.com/chrisveness/geodesy/blob/master/latlon-spherical.js)
+[datum.dart](lib/src/geodesy/ellipsoidal/datum.dart) | [latlon-ellipsoidal-datum.js](https://github.com/chrisveness/geodesy/blob/master/latlon-ellipsoidal-datum.js)
 [ellipsoidal.dart](lib/src/geodesy/ellipsoidal/ellipsoidal.dart) | [latlon-ellipsoidal.js](https://github.com/chrisveness/geodesy/blob/master/latlon-ellipsoidal.js)
 [ellipsoidal_vincenty.dart](lib/src/geodesy/ellipsoidal/ellipsoidal_vincenty.dart) | [latlon-ellipsoidal-vincenty.js](https://github.com/chrisveness/geodesy/blob/master/latlon-ellipsoidal-vincenty.js)
 [spherical_great_circle.dart](lib/src/geodesy/spherical/spherical_great_circle.dart) | [latlon-spherical.js](https://github.com/chrisveness/geodesy/blob/master/latlon-spherical.js)
