@@ -10,7 +10,7 @@
 /// Features:
 /// * Enums (codes): geospatial coordinate, geometry types, dimensionality,
 ///   canvas origin, cardinal direction, DMS type, geo representation, axis
-///   order.
+///   order, hemisphere.
 /// * Constants: epsilon, geodetic and screen related constants.
 /// * Functions: conversions between radians and degrees, geographic coordinate
 ///   helpers.
@@ -32,6 +32,7 @@ export 'src/common/codes/dimensionality.dart';
 export 'src/common/codes/dms_type.dart';
 export 'src/common/codes/geo_representation.dart';
 export 'src/common/codes/geom.dart';
+export 'src/common/codes/hemisphere.dart';
 
 // constants
 export 'src/common/constants/epsilon.dart';
