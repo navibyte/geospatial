@@ -20,9 +20,6 @@
  * more transform parameters are available from earth-info.nga.mil/GandG/coordsys/datums/NATO_DT.pdf,
  * www.fieldenmaps.info/cconv/web/cconv_params.js
  */
-/* note:
- * - ETRS89 reference frames are coincident with WGS-84 at epoch 1989.0 (ie null transform) at the one metre level.
- */
 
 // Geodesy tools for conversions between (historical) datums (see license above)
 // by Chris Veness ported to Dart by Navibyte.
@@ -42,9 +39,130 @@
 
 import '/src/common/reference/ellipsoid.dart';
 
+/// A geodetic datum with a reference ellipsoid and datum transformation
+/// parameters.
+///
+/// This class also contains definitions (as static constants) for some
+/// historical geodetic datums: a latitude/longitude point defines a geographic
+/// location on or above/below the  earth’s surface, measured in degrees from
+/// the equator & the International Reference Meridian and metres above the
+/// ellipsoid, and based on a given datum. The datum is based on a reference
+/// ellipsoid and tied to geodetic survey reference points.
+///
+/// Modern geodesy is generally based on the WGS84 datum (as used for instance
+/// by GPS systems), but previously various reference ellipsoids and datum
+/// references were used.
+///
+/// This class provides references to ellipsoid parameters and datum
+/// transformation parameters, and methods for converting between different
+/// (generally historical) datums.
+class Datum {
+  /// The reference ellipsoid for the datum.
+  final Ellipsoid ellipsoid;
+
+  /// The datum transformation parameters to transform coordinates.
+  ///
+  /// A tranform list contains exactly seven parameters:
+  /// `[tx, ty, tz, s, rx, ry, rz]`.
+  ///
+  /// Units of parameters: `t` in metres, `s` in ppm, `r` in arcseconds.
+  final List<double> transform;
+
+  /// Create a geodesic datum with a reference [ellipsoid] and datum
+  /// parameters to [transform] coordinates.
+  const Datum({
+    required this.ellipsoid,
+    required this.transform,
+  });
+
+  /// The `WGS84` (World Geodetic System 1984) datum.
+  static const WGS84 = Datum(
+    ellipsoid: Ellipsoid.WGS84,
+    transform: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+  );
+
+  /// The `ETRS89` (European Terrestrial Reference System 1989) datum.
+  /// 
+  /// ETRS89 reference frames are coincident with [WGS84] at epoch 1989.0 (ie.
+  /// null transform) at the one metre level.
+  static const ETRS89 = Datum(
+    ellipsoid: Ellipsoid.GRS80,
+    transform: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+  ); // epsg.io/1149; @ 1-metre level
+
+  /// The `ED50` (European Datum 1950) datum.
+  static const ED50 = Datum(
+    ellipsoid: HistoricalEllipsoids.Intl1924,
+    transform: [89.5, 93.8, 123.1, -1.2, 0.0, 0.0, 0.156],
+  ); // epsg.io/1311
+
+  /// The `Irl1975` (Ireland 1975) datum.
+  static const Irl1975 = Datum(
+    ellipsoid: HistoricalEllipsoids.AiryModified,
+    transform: [-482.530, 130.596, -564.557, -8.150, 1.042, 0.214, 0.631],
+  ); // epsg.io/1954
+
+  /// The `NAD27` (North American Datum 1927) datum.
+  static const NAD27 = Datum(
+    ellipsoid: HistoricalEllipsoids.Clarke1866,
+    transform: [8, -160, -176, 0, 0, 0, 0],
+  );
+
+  /// The `NAD83` (North American Datum 1983) datum.
+  static const NAD83 = Datum(
+    ellipsoid: Ellipsoid.GRS80,
+    transform: [
+      0.9956,
+      -1.9103,
+      -0.5215,
+      -0.00062,
+      0.025915,
+      0.009426,
+      0.011599,
+    ],
+  );
+
+  /// The `NTF` (Nouvelle Triangulation Francaise) datum.
+  static const NTF = Datum(
+    ellipsoid: HistoricalEllipsoids.Clarke1880IGN,
+    transform: [168, 60, -320, 0, 0, 0, 0],
+  );
+
+  /// The `OSGB36` (Ordnance Survey Great Britain 1936) datum.
+  static const OSGB36 = Datum(
+    ellipsoid: HistoricalEllipsoids.Airy1830,
+    transform: [
+      -446.448,
+      125.157,
+      -542.060,
+      20.4894,
+      -0.1502,
+      -0.2470,
+      -0.8421,
+    ],
+  ); // epsg.io/1314
+
+  /// The `Potsdam` datum.
+  static const Potsdam = Datum(
+    ellipsoid: HistoricalEllipsoids.Bessel1841,
+    transform: [-582, -105, -414, -8.3, 1.04, 0.35, -3.08],
+  );
+
+  /// The `TokyoJapan` datum.
+  static const TokyoJapan = Datum(
+    ellipsoid: HistoricalEllipsoids.Bessel1841,
+    transform: [148, -507, -685, 0, 0, 0, 0],
+  );
+
+  /// The `WGS72` (World Geodetic System 1972) datum.
+  static const WGS72 = Datum(
+    ellipsoid: HistoricalEllipsoids.WGS72,
+    transform: [0, 0, -4.5, -0.22, 0, 0, 0.554],
+  );
+}
+
 /// Some historical geodetic ellipsoids defined as static constants.
 class HistoricalEllipsoids {
-
   /// Ellisoidal parameters for the `Airy1830` reference ellipsoid.
   static const Airy1830 = Ellipsoid(
     id: 'airy',
