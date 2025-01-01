@@ -1,3 +1,7 @@
+## 1.5.0
+
+NOTE: [geodata version 1.5.0](https://github.com/navibyte/geospatial/milestone/8) currently under development (1.5.0-dev.0).
+
 ## 1.4.0+1
 
 Small documentation link fixes.
