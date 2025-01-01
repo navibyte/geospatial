@@ -37,7 +37,10 @@
 
 // ignore_for_file: lines_longer_than_80_chars, constant_identifier_names
 
+import 'package:meta/meta.dart';
+
 import '/src/common/reference/ellipsoid.dart';
+import '/src/utils/object_utils.dart';
 
 /// A geodetic datum with a reference ellipsoid and datum transformation
 /// parameters.
@@ -56,6 +59,7 @@ import '/src/common/reference/ellipsoid.dart';
 /// This class provides references to ellipsoid parameters and datum
 /// transformation parameters, and methods for converting between different
 /// (generally historical) datums.
+@immutable
 class Datum {
   /// The reference ellipsoid for the datum.
   final Ellipsoid ellipsoid;
@@ -82,7 +86,7 @@ class Datum {
   );
 
   /// The `ETRS89` (European Terrestrial Reference System 1989) datum.
-  /// 
+  ///
   /// ETRS89 reference frames are coincident with [WGS84] at epoch 1989.0 (ie.
   /// null transform) at the one metre level.
   static const ETRS89 = Datum(
@@ -159,6 +163,19 @@ class Datum {
     ellipsoid: HistoricalEllipsoids.WGS72,
     transform: [0, 0, -4.5, -0.22, 0, 0, 0.554],
   );
+
+  @override
+  String toString() => '$ellipsoid;${listToString(transform)}';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Datum &&
+          ellipsoid == other.ellipsoid &&
+          testListEquality(transform, other.transform));
+
+  @override
+  int get hashCode => Object.hash(ellipsoid, Object.hashAll(transform));
 }
 
 /// Some historical geodetic ellipsoids defined as static constants.
