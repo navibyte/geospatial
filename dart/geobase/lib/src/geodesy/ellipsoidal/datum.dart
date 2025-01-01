@@ -178,11 +178,11 @@ class Datum {
   ///
   /// The returned position is a geographic position in the [to] datum.
   Geographic convertGeographic(Geographic geographic, {required Datum to}) {
-    final geocentric = geographic.toGeocentricCartesian(ellipsoid: ellipsoid);
+    final geocentric = geographic.toGeocentricCartesianDatum(datum: this);
     final converted = convertGeocentric(geocentric, to: to);
-    return EllipsoidalExtension.fromGeocentricCartesian(
+    return EllipsoidalExtension.fromGeocentricCartesianDatum(
       converted,
-      ellipsoid: to.ellipsoid,
+      datum: to,
     );
   }
 

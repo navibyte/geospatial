@@ -17,7 +17,7 @@
 
 // Adaptations on the derivative work (the Dart port):
 //
-// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2025 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -35,6 +35,8 @@ import '/src/common/functions/position_functions.dart';
 import '/src/common/reference/ellipsoid.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/geographic/geographic.dart';
+
+import 'datum.dart';
 
 /// The base class for calculations related to the Earth surface modeled by
 /// ellipsoidal reference frames.
@@ -61,7 +63,18 @@ import '/src/coordinates/geographic/geographic.dart';
 /// accessing these transformations.
 @immutable
 class Ellipsoidal {
+  /// An optional datum used for calculations with a reference ellipsoid and
+  /// datum transformation parameters.
+  ///
+  /// See also [ellipsoid].
+  final Datum? datum;
+
   /// The reference ellipsoid used for calculations.
+  ///
+  /// When [datum] is provided, this [ellipsoid] property equals to the
+  /// ellipsoid of the datum.
+  ///
+  /// See also [datum].
   final Ellipsoid ellipsoid;
 
   /// The origin geographic position for calculations.
@@ -69,7 +82,7 @@ class Ellipsoidal {
 
   /// Create an object for ellipsoidal calculations with [origin] as the
   /// current geographic position (latitude and longitude as geodetic
-  /// coordinates).
+  /// coordinates) based on the given [ellipsoid].
   ///
   /// {@template geobase.geodesy.ellipsoidal.parameters}
   ///
@@ -77,10 +90,26 @@ class Ellipsoidal {
   /// * [ellipsoid]: A reference ellipsoid with ellipsoidal parameters.
   ///
   /// {@endtemplate}
-  const Ellipsoidal(this.origin, {this.ellipsoid = Ellipsoid.WGS84});
+  const Ellipsoidal(this.origin, {this.ellipsoid = Ellipsoid.WGS84})
+      : datum = null;
+
+  /// Create an object for ellipsoidal calculations with [origin] as the
+  /// current geographic position (latitude and longitude as geodetic
+  /// coordinates) based on the given [datum].
+  ///
+  /// {@template geobase.geodesy.ellipsoidal.datum}
+  ///
+  /// Parameters:
+  /// * [datum]: A datum with a reference ellipsoid and datum transformation
+  ///   parameters.
+  ///
+  /// {@endtemplate}
+  Ellipsoidal.datum(this.origin, {Datum this.datum = Datum.WGS84})
+      : ellipsoid = datum.ellipsoid;
 
   /// Create an object for ellipsoidal calculations with a origin position
-  /// transformed from [geocentric] cartesian coordinates (X, Y, Z).
+  /// transformed from [geocentric] cartesian coordinates (X, Y, Z) based on the
+  /// given [ellipsoid].
   ///
   /// {@macro geobase.geodesy.ellipsoidal.ecef}
   ///
@@ -96,6 +125,27 @@ class Ellipsoidal {
         ellipsoid: ellipsoid,
       ),
       ellipsoid: ellipsoid,
+    );
+  }
+
+  /// Create an object for ellipsoidal calculations with a origin position
+  /// transformed from [geocentric] cartesian coordinates (X, Y, Z) based on the
+  /// given [datum].
+  ///
+  /// {@macro geobase.geodesy.ellipsoidal.ecef}
+  ///
+  /// {@macro geobase.geodesy.ellipsoidal.datum}
+  factory Ellipsoidal.fromGeocentricCartesianDatum(
+    Position geocentric, {
+    Datum datum = Datum.WGS84,
+  }) {
+    // an instance with target geographic position
+    return Ellipsoidal.datum(
+      EllipsoidalExtension.fromGeocentricCartesianDatum(
+        geocentric,
+        datum: datum,
+      ),
+      datum: datum,
     );
   }
 
@@ -156,7 +206,8 @@ class Ellipsoidal {
 /// these transformations.
 extension EllipsoidalExtension on Geographic {
   /// Transform this geographic position (latitude and longitude as
-  /// geodetic coordinates) to geocentric cartesian coordinates (X, Y, Z).
+  /// geodetic coordinates) to geocentric cartesian coordinates (X, Y, Z) based
+  /// on the given [ellipsoid].
   ///
   /// {@macro geobase.geodesy.ellipsoidal.ecef}
   ///
@@ -164,13 +215,37 @@ extension EllipsoidalExtension on Geographic {
   Position toGeocentricCartesian({Ellipsoid ellipsoid = Ellipsoid.WGS84}) =>
       Ellipsoidal(this, ellipsoid: ellipsoid).toGeocentricCartesian();
 
-  /// Transform the given [geocentric] cartesian coordinates (X, Y, Z) to
-  /// geographic coordinates (latitude and longitude).
+  /// Transform this geographic position (latitude and longitude as
+  /// geodetic coordinates) to geocentric cartesian coordinates (X, Y, Z) based
+  /// on the given [datum].
   ///
   /// {@macro geobase.geodesy.ellipsoidal.ecef}
   ///
-  /// Parameters:
-  /// * [ellipsoid]: A reference ellipsoid with ellipsoidal parameters.
+  /// {@macro geobase.geodesy.ellipsoidal.datum}
+  Position toGeocentricCartesianDatum({Datum datum = Datum.WGS84}) =>
+      Ellipsoidal.datum(this, datum: datum).toGeocentricCartesian();
+
+  /// Transform the given [geocentric] cartesian coordinates (X, Y, Z) to
+  /// geographic coordinates (latitude and longitude) based on the given
+  /// [datum].
+  ///
+  /// {@macro geobase.geodesy.ellipsoidal.ecef}
+  ///
+  /// {@macro geobase.geodesy.ellipsoidal.datum}
+  static Geographic fromGeocentricCartesianDatum(
+    Position geocentric, {
+    Datum datum = Datum.WGS84,
+  }) {
+    return fromGeocentricCartesian(geocentric, ellipsoid: datum.ellipsoid);
+  }
+
+  /// Transform the given [geocentric] cartesian coordinates (X, Y, Z) to
+  /// geographic coordinates (latitude and longitude) based on the given
+  /// [ellipsoid].
+  ///
+  /// {@macro geobase.geodesy.ellipsoidal.ecef}
+  ///
+  /// {@macro geobase.geodesy.ellipsoidal.parameters}
   static Geographic fromGeocentricCartesian(
     Position geocentric, {
     Ellipsoid ellipsoid = Ellipsoid.WGS84,
