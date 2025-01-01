@@ -121,4 +121,30 @@ void main() {
       expect(geo1.lon, closeTo(4.3592, 0.0001));
     });
   });
+
+  group('Ellipsoidal calculations on datums', () {
+    test('Datum conversions using Datum class', () {
+      // test values
+      // https://github.com/chrisveness/geodesy/blob/master/test/latlon-ellipsoidal-datum-tests.js
+
+      const geo1 = Geographic(lat: 51.47788, lon: -0.00147);
+      final gc1 = geo1.toGeocentricCartesian();
+      final gc1conv = Datum.WGS84.convertGeocentric(gc1, to: Datum.OSGB36);
+      final geo1conv = EllipsoidalExtension.fromGeocentricCartesian(gc1conv,
+          ellipsoid: Datum.OSGB36.ellipsoid);
+      expect(geo1conv.latDms(), '51.4774°N');
+      expect(geo1conv.lonDms(), '0.0001°E');
+
+      final gc2 = Position.create(
+        x: 4027893.924,
+        y: 307041.993,
+        z: 4919474.294,
+      );
+      final gc2conv = Datum.WGS84.convertGeocentric(gc2, to: Datum.OSGB36);
+      final geo2conv = EllipsoidalExtension.fromGeocentricCartesian(gc2conv,
+          ellipsoid: Datum.OSGB36.ellipsoid);
+      expect(geo2conv.latDms(), '50.7971°N');
+      expect(geo2conv.lonDms(), '4.3612°E');
+    });
+  });
 }

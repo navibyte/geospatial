@@ -39,7 +39,9 @@
 
 import 'package:meta/meta.dart';
 
+import '/src/common/functions/position_functions.dart';
 import '/src/common/reference/ellipsoid.dart';
+import '/src/coordinates/base/position.dart';
 import '/src/utils/object_utils.dart';
 
 /// A geodetic datum with a reference ellipsoid and datum transformation
@@ -163,6 +165,60 @@ class Datum {
     ellipsoid: HistoricalEllipsoids.WGS72,
     transform: [0, 0, -4.5, -0.22, 0, 0, 0.554],
   );
+
+  /// Converts the cartesian [geocentric] position (X, Y, Z) to another datum a
+  /// specified by [to] using the Helmert 7-parameter transformation.
+  ///
+  /// The returned position is also a cartesian geocentric position (X, Y, Z) in
+  /// the [to] datum.
+  Position convertGeocentric(Position geocentric, {required Datum to}) {
+    if (this == WGS84) {
+      // converting from WGS 84
+      return _applyTransform(geocentric, to.transform);
+    } else if (to == WGS84) {
+      // converting to WGS 84; use inverse transform
+      return _applyTransform(
+        geocentric,
+        transform.map((e) => -e).toList(growable: false),
+      );
+    }
+
+    // neither this.datum nor toDatum are WGS84: convert this to WGS84 first
+    return _applyTransform(
+      convertGeocentric(geocentric, to: WGS84),
+      to.transform,
+    );
+  }
+
+  Position _applyTransform(Position origin, List<double> t) {
+    final x1 = origin.x;
+    final y1 = origin.y;
+    final z1 = origin.z;
+
+    // transform parameters
+
+    // x-shift in metres
+    final tx = t[0];
+    // y-shift in metres
+    final ty = t[1];
+    // z-shift in metres
+    final tz = t[2];
+    // scale: normalise parts-per-million to (s+1)
+    final s = t[3] / 1e6 + 1.0;
+    // x-rotation: normalise arcseconds to radians
+    final rx = (t[4] / 3600.0).toRadians();
+    // y-rotation: normalise arcseconds to radians
+    final ry = (t[5] / 3600.0).toRadians();
+    // z-rotation: normalise arcseconds to radians
+    final rz = (t[6] / 3600.0).toRadians();
+
+    // apply transform
+    final x2 = tx + x1 * s - y1 * rz + z1 * ry;
+    final y2 = ty + x1 * rz + y1 * s - z1 * rx;
+    final z2 = tz - x1 * ry + y1 * rx + z1 * s;
+
+    return Position.create(x: x2, y: y2, z: z2);
+  }
 
   @override
   String toString() => '$ellipsoid;${listToString(transform)}';
