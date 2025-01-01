@@ -42,7 +42,10 @@ import 'package:meta/meta.dart';
 import '/src/common/functions/position_functions.dart';
 import '/src/common/reference/ellipsoid.dart';
 import '/src/coordinates/base/position.dart';
+import '/src/coordinates/geographic/geographic.dart';
 import '/src/utils/object_utils.dart';
+
+import 'ellipsoidal.dart';
 
 /// A geodetic datum with a reference ellipsoid and datum transformation
 /// parameters.
@@ -166,13 +169,34 @@ class Datum {
     transform: [0, 0, -4.5, -0.22, 0, 0, 0.554],
   );
 
-  /// Converts the cartesian [geocentric] position (X, Y, Z) to another datum a
-  /// specified by [to] using the Helmert 7-parameter transformation.
+  /// Converts the [geographic] position in this datum to another datum specified
+  /// by [to].
   ///
-  /// The returned position is also a cartesian geocentric position (X, Y, Z) in
-  /// the [to] datum.
+  /// The geographic position is first converted to geocentric cartesian, then
+  /// the Helmert 7-parameter transformation is applied to convert the position,
+  /// and finally the result is converted back to a geographic position.
+  ///
+  /// The returned position is a geographic position in the [to] datum.
+  Geographic convertGeographic(Geographic geographic, {required Datum to}) {
+    final geocentric = geographic.toGeocentricCartesian(ellipsoid: ellipsoid);
+    final converted = convertGeocentric(geocentric, to: to);
+    return EllipsoidalExtension.fromGeocentricCartesian(
+      converted,
+      ellipsoid: to.ellipsoid,
+    );
+  }
+
+  /// Converts the cartesian [geocentric] position (X, Y, Z) in this datum to
+  /// another datum a specified by [to] using the Helmert 7-parameter
+  /// transformation.
+  ///
+  /// The returned position is a cartesian geocentric position (X, Y, Z) in the
+  /// [to] datum.
   Position convertGeocentric(Position geocentric, {required Datum to}) {
-    if (this == WGS84) {
+    if (this == to) {
+      // no datum change
+      return geocentric;
+    } else if (this == WGS84) {
       // converting from WGS 84
       return _applyTransform(geocentric, to.transform);
     } else if (to == WGS84) {
@@ -183,7 +207,7 @@ class Datum {
       );
     }
 
-    // neither this.datum nor toDatum are WGS84: convert this to WGS84 first
+    // neither this.datum nor toDatum are WGS84: convert origin to WGS84 first
     return _applyTransform(
       convertGeocentric(geocentric, to: WGS84),
       to.transform,
@@ -204,7 +228,7 @@ class Datum {
     // z-shift in metres
     final tz = t[2];
     // scale: normalise parts-per-million to (s+1)
-    final s = t[3] / 1e6 + 1.0;
+    final s = t[3] / 1.0e6 + 1.0;
     // x-rotation: normalise arcseconds to radians
     final rx = (t[4] / 3600.0).toRadians();
     // y-rotation: normalise arcseconds to radians
