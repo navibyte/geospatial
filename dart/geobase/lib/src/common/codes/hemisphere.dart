@@ -16,4 +16,16 @@ enum Hemisphere {
   final String symbol;
 
   const Hemisphere(this.symbol);
+
+  /// Get a hemisphere by its [symbol].
+  static Hemisphere fromSymbol(String symbol) {
+    switch (symbol.toUpperCase()) {
+      case 'N':
+        return north;
+      case 'S':
+        return south;
+      default:
+        throw FormatException('Invalid hemisphere symbol: $symbol');
+    }
+  }
 }

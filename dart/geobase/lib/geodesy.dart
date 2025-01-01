@@ -16,7 +16,9 @@
 library geodesy;
 
 export 'src/geodesy/base/geodetic_arc_segment.dart';
+export 'src/geodesy/ellipsoidal/datum.dart';
 export 'src/geodesy/ellipsoidal/ellipsoidal.dart';
 export 'src/geodesy/ellipsoidal/ellipsoidal_vincenty.dart';
+export 'src/geodesy/ellipsoidal/utm.dart';
 export 'src/geodesy/spherical/spherical_great_circle.dart';
 export 'src/geodesy/spherical/spherical_rhumb_line.dart';

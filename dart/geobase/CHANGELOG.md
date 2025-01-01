@@ -4,6 +4,7 @@ NOTE: [geodata version 1.5.0](https://github.com/navibyte/geospatial/milestone/8
 
 🧩 Features:
 * [Port conversions between (historical) ellipsoidal datums to Dart #256](https://github.com/navibyte/geospatial/issues/256)
+* [Port UTM / WGS-84 conversion functions to Dart #257](https://github.com/navibyte/geospatial/issues/257)
 
 ## 1.4.0+1
 
