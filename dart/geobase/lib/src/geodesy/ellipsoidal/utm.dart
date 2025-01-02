@@ -24,6 +24,7 @@
 import 'package:meta/meta.dart';
 
 import '/src/common/codes/hemisphere.dart';
+import '/src/coordinates/base/position.dart';
 import '/src/coordinates/projected/projected.dart';
 
 import 'datum.dart';
@@ -42,7 +43,7 @@ import 'datum.dart';
 /// {@macro geobase.geodesy.utm.meta.scale}
 ///
 /// {@macro geobase.geodesy.utm.wikipedia}
-/// 
+///
 /// See also [Utm] for representing projected UTM coordinates.
 @immutable
 class UtmMeta<T extends Object> {
@@ -117,7 +118,7 @@ class UtmMeta<T extends Object> {
 /// in Wikipedia for more information.
 ///
 /// {@endtemplate}
-/// 
+///
 /// See also [UtmMeta] for metadata related to UTM calculations.
 @immutable
 class Utm {
@@ -226,6 +227,49 @@ class Utm {
     );
   }
 
+  /// Parses projected UTM coordinates from [text], by default in the following
+  /// order: zone, hemisphere, easting, northing (ie. `31 N 448251 5411932`).
+  ///
+  /// Coordinate values in [text] are separated by [delimiter] (default is
+  /// whitespace).
+  ///
+  /// If [swapXY] is true, then swaps x and y for the result.
+  ///
+  /// Throws FormatException if coordinates are invalid.
+  ///
+  /// Examples:
+  /// ```dart
+  ///   // UTM coordinates with 2D position in zone 31N and WGS84 datum
+  ///   // (easting 448251.0, northing 5411932.0).
+  ///   final utmCoord = Utm.parse('31 N 448251 5411932');
+  ///
+  ///   // UTM coordinates with 3D position in zone 31N and WGS84 datum
+  ///   // (easting 448251.0, northing 5411932.0, elevation 100.0).
+  ///   final utmWithElev = Utm.parse('31 N 448251 5411932 100');
+  ///
+  ///   // With swapped x and y (=> easting 448251.0, northing 5411932.0).
+  ///   final utmSwapped = Utm.parse('31 N 5411932 448251', swapXY: true);
+  /// ```
+  factory Utm.parse(
+    String text, {
+    Pattern? delimiter,
+    bool swapXY = false,
+    Datum datum = Datum.WGS84,
+  }) {
+    final parts = text.trim().split(delimiter ?? RegExp(r'\s+'));
+    if (parts.length < 4 || parts.length > 5) {
+      throw FormatException('invalid UTM coordinate ‘$text’');
+    }
+
+    final zone = int.parse(parts[0]);
+    final hemisphere = parts[1];
+    final easting = double.parse(parts[swapXY ? 3 : 2]);
+    final northing = double.parse(parts[swapXY ? 2 : 3]);
+    final elev = parts.length >= 5 ? double.parse(parts[4]) : null;
+
+    return Utm(zone, hemisphere, easting, northing, elev: elev, datum: datum);
+  }
+
   /// Creates UTM coordinates with [zone], [hemisphere] and the [projected]
   /// position based on [datum].
   ///
@@ -239,10 +283,48 @@ class Utm {
     required this.datum,
   });
 
-  @override
-  String toString() {
-    return '$zone;$hemisphere;$projected;$datum';
+  /// The UTM coordinate string representation with values separated by
+  /// [delimiter] (default is whitespace).
+  ///
+  /// Use [decimals] to set a number of decimals (not applied if no decimals).
+  ///
+  /// If [compactNums] is true, any ".0" postfixes of numbers without fraction
+  /// digits are stripped.
+  ///
+  /// Set [swapXY] to true to print y (or northing) before x (or easting).
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  ///   final utmCoord = Utm(31, 'N', 448251.0, 5411932.0);
+  ///   print(utmCoord.toText()); // '31 N 448251 5411932'
+  /// ```
+  String toText({
+    String delimiter = ' ',
+    int decimals = 0,
+    bool compactNums = true,
+    bool swapXY = false,
+  }) {
+    final buf = StringBuffer()
+      ..write(zone)
+      ..write(delimiter)
+      ..write(hemisphere.symbol)
+      ..write(delimiter);
+
+    Position.writeValues(
+      projected,
+      buf,
+      delimiter: delimiter,
+      decimals: decimals,
+      compactNums: compactNums,
+      swapXY: swapXY,
+    );
+
+    return buf.toString();
   }
+
+  @override
+  String toString() => toText(decimals: 3);
 
   @override
   bool operator ==(Object other) =>

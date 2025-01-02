@@ -26,7 +26,7 @@ License: [MIT License](https://github.com/chrisveness/geodesy/blob/master/LICENS
 
 Copyright: (c) Chris Veness 2002-2024
 
-Latitude/longitude spherical geodesy tools (see [latlong.html](https://www.movable-type.co.uk/scripts/latlong.html) and [geodesy-library.html#latlon-spherical](https://www.movable-type.co.uk/scripts/geodesy-library.html#latlon-spherical)) and ellipsoidal geodesy tools (see [latlong-vincenty.html](https://www.movable-type.co.uk/scripts/latlong-vincenty.html)):
+Latitude/longitude spherical geodesy tools (see [latlong.html](https://www.movable-type.co.uk/scripts/latlong.html) and [geodesy-library.html#latlon-spherical](https://www.movable-type.co.uk/scripts/geodesy-library.html#latlon-spherical)), ellipsoidal geodesy tools (see [latlong-vincenty.html](https://www.movable-type.co.uk/scripts/latlong-vincenty.html)) and [UTM/MGRS tools](www.movable-type.co.uk/scripts/latlong-utm-mgrs.html):
 
 Dart code file ported to this project | Related original JavaScript code
 ------------------------------------- | --------------------------------
@@ -34,10 +34,12 @@ Dart code file ported to this project | Related original JavaScript code
 [datum.dart](lib/src/geodesy/ellipsoidal/datum.dart) | [latlon-ellipsoidal-datum.js](https://github.com/chrisveness/geodesy/blob/master/latlon-ellipsoidal-datum.js)
 [ellipsoidal.dart](lib/src/geodesy/ellipsoidal/ellipsoidal.dart) | [latlon-ellipsoidal.js](https://github.com/chrisveness/geodesy/blob/master/latlon-ellipsoidal.js)
 [ellipsoidal_vincenty.dart](lib/src/geodesy/ellipsoidal/ellipsoidal_vincenty.dart) | [latlon-ellipsoidal-vincenty.js](https://github.com/chrisveness/geodesy/blob/master/latlon-ellipsoidal-vincenty.js)
+[utm.dart](lib/src/geodesy/ellipsoidal/utm.dart) | [utm.js](https://github.com/chrisveness/geodesy/blob/master/utm.js)
 [spherical_great_circle.dart](lib/src/geodesy/spherical/spherical_great_circle.dart) | [latlon-spherical.js](https://github.com/chrisveness/geodesy/blob/master/latlon-spherical.js)
 [spherical_rhumb_line.dart](lib/src/geodesy/spherical/spherical_rhumb_line.dart) | [latlon-spherical.js](https://github.com/chrisveness/geodesy/blob/master/latlon-spherical.js)
 [ellipsoidal_vincenty_test.dart](test/geodesy/ellipsoidal_vincenty_test.dart) | [latlon-ellipsoidal-vincenty-tests.js](https://github.com/chrisveness/geodesy/blob/master/test/latlon-ellipsoidal-vincenty-tests.js)
 [spherical_ported_test.dart](test/geodesy/spherical_ported_test.dart) | [latlon-spherical-tests.js](https://github.com/chrisveness/geodesy/blob/master/test/latlon-spherical-tests.js)
+[utm_ported_test.dart](test/geodesy/utm_ported_test.dart) | [utm-mgrs-tests.js](https://github.com/chrisveness/geodesy/blob/master/test/utm-mgrs-tests.js)
 
 Geodesy representation conversion functions:
 
