@@ -37,6 +37,7 @@ import '/src/coordinates/base/position.dart';
 import '/src/coordinates/geographic/geographic.dart';
 
 import 'datum.dart';
+import 'ellipsoidal_extension.dart';
 
 /// The base class for calculations related to the Earth surface modeled by
 /// ellipsoidal reference frames.
@@ -92,58 +93,57 @@ class Ellipsoidal {
   const Ellipsoidal(this.origin, {this.ellipsoid = Ellipsoid.WGS84})
       : datum = null;
 
-  /// Create an object for ellipsoidal calculations with [origin] as the
-  /// current geographic position (latitude and longitude as geodetic
-  /// coordinates) based on the given [datum].
-  ///
-  /// {@template geobase.geodesy.ellipsoidal.datum}
-  ///
-  /// Use [datum] to set a datum with a reference ellipsoid and datum
-  /// transformation parameters.
-  ///
-  /// {@endtemplate}
-  Ellipsoidal.datum(this.origin, {Datum this.datum = Datum.WGS84})
+  Ellipsoidal._datum(this.origin, {Datum this.datum = Datum.WGS84})
       : ellipsoid = datum.ellipsoid;
 
-  /// Create an object for ellipsoidal calculations with a origin position
-  /// transformed from [geocentric] cartesian coordinates (X, Y, Z) based on the
-  /// given [ellipsoid].
+  /// Create an object for ellipsoidal calculations with [origin] as the
+  /// current geographic position (latitude and longitude as geodetic
+  /// coordinates) based on the given [datum] or [ellipsoid].
   ///
-  /// {@macro geobase.geodesy.ellipsoidal.ecef}
+  /// {@template geobase.geodesy.ellipsoidal.datumOrEllipsoid}
   ///
-  /// {@macro geobase.geodesy.ellipsoidal.parameters}
-  factory Ellipsoidal.fromGeocentricCartesian(
-    Position geocentric, {
-    Ellipsoid ellipsoid = Ellipsoid.WGS84,
+  /// If both [datum] and [ellipsoid] are provided, they must be compatible. If
+  /// neither is provided, the default WGS84 ellipsoid is used.
+  ///
+  /// {@endtemplate}
+  factory Ellipsoidal.fromGeographic(
+    Geographic origin, {
+    Datum? datum,
+    Ellipsoid? ellipsoid,
   }) {
-    // an instance with target geographic position
-    return Ellipsoidal(
-      EllipsoidalExtension.fromGeocentricCartesian(
-        geocentric,
-        ellipsoid: ellipsoid,
-      ),
-      ellipsoid: ellipsoid,
-    );
+    _checkDatumAndEllipsoid(datum, ellipsoid);
+
+    if (datum != null) {
+      // use the provided datum
+      return Ellipsoidal._datum(origin, datum: datum);
+    } else if (ellipsoid != null) {
+      // use the provided ellipsoid
+      return Ellipsoidal(origin, ellipsoid: ellipsoid);
+    } else {
+      // use the default WGS84 ellipsoid
+      return Ellipsoidal(origin);
+    }
   }
 
   /// Create an object for ellipsoidal calculations with a origin position
   /// transformed from [geocentric] cartesian coordinates (X, Y, Z) based on the
-  /// given [datum].
+  /// given [datum] or [ellipsoid].
   ///
   /// {@macro geobase.geodesy.ellipsoidal.ecef}
   ///
-  /// {@macro geobase.geodesy.ellipsoidal.datum}
-  factory Ellipsoidal.fromGeocentricCartesianDatum(
+  /// {@macro geobase.geodesy.ellipsoidal.datumOrEllipsoid}
+  factory Ellipsoidal.fromGeocentricCartesian(
     Position geocentric, {
-    Datum datum = Datum.WGS84,
+    Datum? datum,
+    Ellipsoid? ellipsoid,
   }) {
+    _checkDatumAndEllipsoid(datum, ellipsoid);
+    final e = ellipsoid ?? datum?.ellipsoid ?? Ellipsoid.WGS84;
+
     // an instance with target geographic position
-    return Ellipsoidal.datum(
-      EllipsoidalExtension.fromGeocentricCartesianDatum(
-        geocentric,
-        datum: datum,
-      ),
-      datum: datum,
+    return Ellipsoidal(
+      _fromGeocentricCartesian(geocentric, ellipsoid: e),
+      ellipsoid: e,
     );
   }
 
@@ -193,58 +193,8 @@ class Ellipsoidal {
 
   @override
   int get hashCode => Object.hash(ellipsoid, origin);
-}
 
-/// An extension of the [Geographic] class providing calculations related to the
-/// Earth surface modeled by ellipsoidal reference frames.
-///
-/// {@macro geobase.geodesy.ellipsoidal.overview}
-///
-/// See also the [Ellipsoidal] base class with alternative way of accessing
-/// these transformations.
-extension EllipsoidalExtension on Geographic {
-  /// Transform this geographic position (latitude and longitude as
-  /// geodetic coordinates) to geocentric cartesian coordinates (X, Y, Z) based
-  /// on the given [ellipsoid].
-  ///
-  /// {@macro geobase.geodesy.ellipsoidal.ecef}
-  ///
-  /// {@macro geobase.geodesy.ellipsoidal.parameters}
-  Position toGeocentricCartesian({Ellipsoid ellipsoid = Ellipsoid.WGS84}) =>
-      Ellipsoidal(this, ellipsoid: ellipsoid).toGeocentricCartesian();
-
-  /// Transform this geographic position (latitude and longitude as
-  /// geodetic coordinates) to geocentric cartesian coordinates (X, Y, Z) based
-  /// on the given [datum].
-  ///
-  /// {@macro geobase.geodesy.ellipsoidal.ecef}
-  ///
-  /// {@macro geobase.geodesy.ellipsoidal.datum}
-  Position toGeocentricCartesianDatum({Datum datum = Datum.WGS84}) =>
-      Ellipsoidal.datum(this, datum: datum).toGeocentricCartesian();
-
-  /// Transform the given [geocentric] cartesian coordinates (X, Y, Z) to
-  /// geographic coordinates (latitude and longitude) based on the given
-  /// [datum].
-  ///
-  /// {@macro geobase.geodesy.ellipsoidal.ecef}
-  ///
-  /// {@macro geobase.geodesy.ellipsoidal.datum}
-  static Geographic fromGeocentricCartesianDatum(
-    Position geocentric, {
-    Datum datum = Datum.WGS84,
-  }) {
-    return fromGeocentricCartesian(geocentric, ellipsoid: datum.ellipsoid);
-  }
-
-  /// Transform the given [geocentric] cartesian coordinates (X, Y, Z) to
-  /// geographic coordinates (latitude and longitude) based on the given
-  /// [ellipsoid].
-  ///
-  /// {@macro geobase.geodesy.ellipsoidal.ecef}
-  ///
-  /// {@macro geobase.geodesy.ellipsoidal.parameters}
-  static Geographic fromGeocentricCartesian(
+  static Geographic _fromGeocentricCartesian(
     Position geocentric, {
     Ellipsoid ellipsoid = Ellipsoid.WGS84,
   }) {
@@ -296,5 +246,12 @@ extension EllipsoidalExtension on Geographic {
       lon: lon.toDegrees(),
       elev: h,
     );
+  }
+}
+
+void _checkDatumAndEllipsoid(Datum? datum, Ellipsoid? ellipsoid) {
+  // check if datum and ellipsoid are compatible
+  if (datum != null && ellipsoid != null && datum.ellipsoid != ellipsoid) {
+    throw const FormatException('Datum and ellipsoid must be compatible.');
   }
 }

@@ -34,6 +34,7 @@ export 'src/common/codes/dimensionality.dart';
 export 'src/common/codes/dms_type.dart';
 export 'src/common/codes/geo_representation.dart';
 export 'src/common/codes/geom.dart';
+export 'src/common/codes/hemisphere.dart';
 export 'src/common/constants/epsilon.dart';
 export 'src/common/constants/geodetic.dart';
 export 'src/common/constants/screen_ppi.dart';
@@ -68,8 +69,11 @@ export 'src/coordinates/scalable/scalable2i.dart';
 
 // geodesy
 export 'src/geodesy/base/geodetic_arc_segment.dart';
+export 'src/geodesy/ellipsoidal/datum.dart';
 export 'src/geodesy/ellipsoidal/ellipsoidal.dart';
+export 'src/geodesy/ellipsoidal/ellipsoidal_extension.dart';
 export 'src/geodesy/ellipsoidal/ellipsoidal_vincenty.dart';
+export 'src/geodesy/ellipsoidal/utm.dart';
 export 'src/geodesy/spherical/spherical_great_circle.dart';
 export 'src/geodesy/spherical/spherical_rhumb_line.dart';
 

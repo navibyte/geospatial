@@ -35,6 +35,7 @@ import '/src/utils/math_utils.dart';
 
 import 'datum.dart';
 import 'ellipsoidal.dart';
+import 'ellipsoidal_extension.dart';
 
 /// {@template geobase.geodesy.utm.meta}
 ///
@@ -318,10 +319,7 @@ class Utm {
     Datum datum = Datum.WGS84,
   }) {
     return Utm.fromGeographicMeta(
-      EllipsoidalExtension.fromGeocentricCartesianDatum(
-        geocentric,
-        datum: datum,
-      ),
+      EllipsoidalExtension.fromGeocentricCartesian(geocentric, datum: datum),
       zone: zone,
       datum: datum,
     ).position;
@@ -841,7 +839,7 @@ class Utm {
     );
 
     return UtmMeta(
-      Ellipsoidal.datum(geographic, datum: datum),
+      Ellipsoidal.fromGeographic(geographic, datum: datum),
       convergence: convergence,
       scale: scale,
     );

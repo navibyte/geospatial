@@ -132,8 +132,7 @@ void main() {
       const geo1 = Geographic(lat: 51.47788, lon: -0.00147);
       final gc1 = geo1.toGeocentricCartesian();
       final gc1conv = Datum.WGS84.convertGeocentric(gc1, to: Datum.OSGB36);
-      final geo1conv = EllipsoidalExtension.fromGeocentricCartesianDatum(
-          gc1conv,
+      final geo1conv = EllipsoidalExtension.fromGeocentricCartesian(gc1conv,
           datum: Datum.OSGB36);
       expect(geo1conv.latDms(dms6), '51.477364°N');
       expect(geo1conv.lonDms(dms6), '0.000150°E');
@@ -144,8 +143,7 @@ void main() {
         z: 4919474.294,
       );
       final gc2conv = Datum.WGS84.convertGeocentric(gc2, to: Datum.OSGB36);
-      final geo2conv = EllipsoidalExtension.fromGeocentricCartesianDatum(
-          gc2conv,
+      final geo2conv = EllipsoidalExtension.fromGeocentricCartesian(gc2conv,
           datum: Datum.OSGB36);
       expect(geo2conv.latDms(), '50.7971°N');
       expect(geo2conv.lonDms(), '4.3612°E');

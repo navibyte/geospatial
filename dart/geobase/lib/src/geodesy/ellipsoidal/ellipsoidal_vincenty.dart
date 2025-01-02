@@ -16,7 +16,7 @@
 
 // Adaptations on the derivative work (the Dart port):
 //
-// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2025 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -34,6 +34,7 @@ import '/src/geodesy/base/geodetic.dart';
 import '/src/geodesy/base/geodetic_arc_segment.dart';
 
 import 'ellipsoidal.dart';
+import 'ellipsoidal_extension.dart';
 
 /// An extension for easier access to [EllipsoidalVincenty].
 extension EllipsoidalVincentyExtension on Geographic {

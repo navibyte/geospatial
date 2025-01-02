@@ -45,7 +45,7 @@ import '/src/coordinates/base/position.dart';
 import '/src/coordinates/geographic/geographic.dart';
 import '/src/utils/object_utils.dart';
 
-import 'ellipsoidal.dart';
+import 'ellipsoidal_extension.dart';
 
 /// A geodetic datum with a reference ellipsoid and datum transformation
 /// parameters.
@@ -178,12 +178,9 @@ class Datum {
   ///
   /// The returned position is a geographic position in the [to] datum.
   Geographic convertGeographic(Geographic geographic, {required Datum to}) {
-    final geocentric = geographic.toGeocentricCartesianDatum(datum: this);
+    final geocentric = geographic.toGeocentricCartesian(datum: this);
     final converted = convertGeocentric(geocentric, to: to);
-    return EllipsoidalExtension.fromGeocentricCartesianDatum(
-      converted,
-      datum: to,
-    );
+    return EllipsoidalExtension.fromGeocentricCartesian(converted, datum: to);
   }
 
   /// Converts the cartesian [geocentric] position (X, Y, Z) in this datum to
