@@ -21,13 +21,20 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'dart:math';
+
 import 'package:meta/meta.dart';
 
 import '/src/common/codes/hemisphere.dart';
+import '/src/common/functions/position_functions.dart';
+import '/src/common/reference/ellipsoid.dart';
 import '/src/coordinates/base/position.dart';
+import '/src/coordinates/geographic/geographic.dart';
 import '/src/coordinates/projected/projected.dart';
+import '/src/utils/math_utils.dart';
 
 import 'datum.dart';
+import 'ellipsoidal.dart';
 
 /// {@template geobase.geodesy.utm.meta}
 ///
@@ -235,6 +242,8 @@ class Utm {
   ///
   /// If [swapXY] is true, then swaps x and y for the result.
   ///
+  /// {@macro geobase.geodesy.ellipsoidal.datum}
+  ///
   /// Throws FormatException if coordinates are invalid.
   ///
   /// Examples:
@@ -282,6 +291,561 @@ class Utm {
     required this.projected,
     required this.datum,
   });
+
+  /// Creates projected UTM coordinates by converting it from a [geocentric]
+  /// cartesian position based on the [datum].
+  ///
+  /// {@macro geobase.geodesy.ellipsoidal.ecef}
+  ///
+  /// {@macro geobase.geodesy.utm.fromGeographic}
+  ///
+  /// {@macro geobase.geodesy.ellipsoidal.datum}
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  ///   const geographic = Geographic(lat: 48.8582, lon: 2.2945);
+  ///   final geocentric =
+  ///       geographic.toGeocentricCartesianDatum(datum: Datum.WGS84);
+  ///
+  ///   // UTM projected coordinates: 31 N 448252 5411933
+  ///   final utmCoord =
+  ///       Utm.fromGeocentricCartesian(geocentric, datum: Datum.WGS84);
+  /// ```
+  factory Utm.fromGeocentricCartesian(
+    Position geocentric, {
+    int? zone,
+    Datum datum = Datum.WGS84,
+  }) {
+    return Utm.fromGeographicMeta(
+      EllipsoidalExtension.fromGeocentricCartesianDatum(
+        geocentric,
+        datum: datum,
+      ),
+      zone: zone,
+      datum: datum,
+    ).position;
+  }
+
+  /// Creates projected UTM coordinates by converting it from an [ellipsoidal]
+  /// position that contains the geographic `origin` position and an optional
+  /// `datum`.
+  ///
+  /// If `datum` in [ellipsoidal] is not specified, then the WGS84 datum is
+  /// used unless the `ellipsoid` is something other than `Ellipsoid.WGS84`,
+  /// in which case a `FormatException` is thrown.
+  ///
+  /// {@macro geobase.geodesy.utm.fromGeographic}
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  ///   const geographic = Geographic(lat: 48.8582, lon: 2.2945);
+  ///   final ellipsoidal = Ellipsoidal.datum(geographic, datum: Datum.WGS84);
+  ///
+  ///   // UTM projected coordinates: 31 N 448252 5411933
+  ///   final utmCoord = Utm.fromEllipsoidal(ellipsoidal);
+  /// ```
+  factory Utm.fromEllipsoidal(
+    Ellipsoidal ellipsoidal, {
+    int? zone,
+  }) {
+    var datum = ellipsoidal.datum;
+    if (datum == null) {
+      if (ellipsoidal.ellipsoid != Ellipsoid.WGS84) {
+        throw const FormatException(
+          'datum must be specified if ellipsoid is not WGS84',
+        );
+      }
+      datum = Datum.WGS84;
+    }
+    return Utm.fromGeographicMeta(
+      ellipsoidal.origin,
+      zone: zone,
+      datum: datum,
+    ).position;
+  }
+
+  /// Creates projected UTM coordinates by converting it from a [geographic]
+  /// position based on the [datum].
+  ///
+  /// {@macro geobase.geodesy.ellipsoidal.datum}
+  ///
+  /// {@macro geobase.geodesy.utm.fromGeographic}
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  ///   const geographic = Geographic(lat: 48.8582, lon: 2.2945);
+  ///
+  ///   // UTM projected coordinates: 31 N 448252 5411933
+  ///   final utmCoord = Utm.fromGeographic(geographic, datum: Datum.WGS84);
+  /// ```
+  factory Utm.fromGeographic(
+    Geographic geographic, {
+    int? zone,
+    Datum datum = Datum.WGS84,
+  }) {
+    return Utm.fromGeographicMeta(
+      geographic,
+      zone: zone,
+      datum: datum,
+    ).position;
+  }
+
+  // symbols: η = eta, ξ = xi, β = beta, τ = tau, δ = delta, σ = sigma
+  //          φ = phi, λ = lambda, γ = gamma, α = alpha
+  //          ʹ = P (prime)
+  //          ʺ = PP (double prime)
+
+  /// Creates projected UTM coordinates wrapped inside metadata object by
+  /// converting it from a [geographic] position based on the [datum].
+  ///
+  /// The metadata includes UTM `convergence` and `scale` at the calculated
+  /// projected position.
+  ///
+  /// {@macro geobase.geodesy.ellipsoidal.datum}
+  ///
+  /// {@template geobase.geodesy.utm.fromGeographic}
+  ///
+  /// Set [zone] to specify a zone explicitely rather than using the
+  /// zone within which the [geographic] position lies. Note that overriding the
+  /// UTM zone has the potential to result in negative eastings, and strange
+  /// results within Norway/Svalbard exceptions.
+  ///
+  /// Throws FormatException if coordinates are invalid (eg. latitude outside
+  /// UTM limits).
+  ///
+  /// {@endtemplate}
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  ///   const geographic = Geographic(lat: 48.8582, lon: 2.2945);
+  ///
+  ///   // UTM projected coordinates: 31 N 448252 5411933
+  ///   final utmMeta = Utm.fromGeographicMeta(geographic, datum: Datum.WGS84);
+  //    final utmCoord = utmMeta.position;
+  ///   final convergence = utmMeta.convergence;
+  ///   final scale = utmMeta.scale;
+  /// ```
+  static UtmMeta<Utm> fromGeographicMeta(
+    Geographic geographic, {
+    int? zone,
+    Datum datum = Datum.WGS84,
+  }) {
+    final lat = geographic.lat;
+    final lon = geographic.lon;
+
+    if (!(-80 <= lat && lat <= 84)) {
+      throw FormatException('latitude ‘${geographic.lat}’ outside UTM limits');
+    }
+
+    const falseEasting = 500.0e3;
+    const falseNorthing = 10000.0e3;
+
+    // longitudinal zone
+    var utmZone = zone ?? ((lon + 180.0) / 6.0).floor() + 1;
+    if (!(1 <= utmZone && utmZone <= 60)) {
+      throw FormatException('invalid UTM zone $utmZone');
+    }
+
+    // longitude of central meridian
+    var lambda0 = ((utmZone - 1) * 6.0 - 180.0 + 3.0).toRadians();
+
+    // handle Norway/Svalbard exceptions
+    // grid zones are 8° tall; 0°N is offset 10 into latitude bands array
+    final sixDegreesRad = 6.0.toRadians();
+    const mgrsLatBands = 'CDEFGHJKLMNPQRSTUVWXX'; // X is repeated for 80-84°N
+    final latBand =
+        mgrsLatBands[(lat / 8 + 10).floor().clamp(0, mgrsLatBands.length - 1)];
+    // adjust zone & central meridian for Norway
+    if (utmZone == 31 && latBand == 'V' && lon >= 3) {
+      utmZone++;
+      lambda0 += sixDegreesRad;
+    }
+    // adjust zone & central meridian for Svalbard
+    if (utmZone == 32 && latBand == 'X' && lon < 9) {
+      utmZone--;
+      lambda0 -= sixDegreesRad;
+    }
+    if (utmZone == 32 && latBand == 'X' && lon >= 9) {
+      utmZone++;
+      lambda0 += sixDegreesRad;
+    }
+    if (utmZone == 34 && latBand == 'X' && lon < 21) {
+      utmZone--;
+      lambda0 -= sixDegreesRad;
+    }
+    if (utmZone == 34 && latBand == 'X' && lon >= 21) {
+      utmZone++;
+      lambda0 += sixDegreesRad;
+    }
+    if (utmZone == 36 && latBand == 'X' && lon < 33) {
+      utmZone--;
+      lambda0 -= sixDegreesRad;
+    }
+    if (utmZone == 36 && latBand == 'X' && lon >= 33) {
+      utmZone++;
+      lambda0 += sixDegreesRad;
+    }
+
+    final phi = lat.toRadians(); // latitude ± from equator
+    final lambda =
+        lon.toRadians() - lambda0; // longitude ± from central meridian
+
+    // Ellipsoidal params (ie. WGS-84: a = 6378137, f = 1/298.257223563)
+    final a = datum.ellipsoid.a;
+    final f = datum.ellipsoid.f;
+
+    // UTM scale on the central meridian
+    const k0 = 0.9996;
+
+    // ---- easting, northing: Karney 2011 Eq 7-14, 29, 35:
+
+    final e = sqrt(f * (2 - f)); // eccentricity
+    final n = f / (2 - f); // 3rd flattening
+    final n2 = n * n, n3 = n * n2, n4 = n * n3, n5 = n * n4, n6 = n * n5;
+
+    final cosLambda = cos(lambda);
+    final sinLambda = sin(lambda);
+    final tanLambda = tan(lambda);
+
+    // τ ≡ tanφ, τʹ ≡ tanφʹ; prime (ʹ) indicates angles on the conformal sphere
+    final tau = tan(phi);
+    final sigma = sinh(e * atanh(e * tau / sqrt(1 + tau * tau)));
+
+    final tauPrime =
+        tau * sqrt(1 + sigma * sigma) - sigma * sqrt(1 + tau * tau);
+
+    final xiPrime = atan2(tauPrime, cosLambda);
+    final etaPrime =
+        asinh(sinLambda / sqrt(tauPrime * tauPrime + cosLambda * cosLambda));
+
+    // 2πA is the circumference of a meridian
+    final A = a / (1 + n) * (1 + 1 / 4 * n2 + 1 / 64 * n4 + 1 / 256 * n6);
+
+    // note α is one-based array (6th order Krüger expressions)
+    final alpha = [
+      null,
+      1 / 2 * n -
+          2 / 3 * n2 +
+          5 / 16 * n3 +
+          41 / 180 * n4 -
+          127 / 288 * n5 +
+          7891 / 37800 * n6,
+      13 / 48 * n2 -
+          3 / 5 * n3 +
+          557 / 1440 * n4 +
+          281 / 630 * n5 -
+          1983433 / 1935360 * n6,
+      61 / 240 * n3 -
+          103 / 140 * n4 +
+          15061 / 26880 * n5 +
+          167603 / 181440 * n6,
+      49561 / 161280 * n4 - 179 / 168 * n5 + 6601661 / 7257600 * n6,
+      34729 / 80640 * n5 - 3418889 / 1995840 * n6,
+      212378941 / 319334400 * n6,
+    ];
+
+    var xi = xiPrime;
+    for (var j = 1; j <= 6; j++) {
+      xi += (alpha[j] ?? 0.0) * sin(2 * j * xiPrime) * cosh(2 * j * etaPrime);
+    }
+
+    var eta = etaPrime;
+    for (var j = 1; j <= 6; j++) {
+      eta += (alpha[j] ?? 0.0) * cos(2 * j * xiPrime) * sinh(2 * j * etaPrime);
+    }
+
+    var easting = k0 * A * eta; // easting == x
+    var northing = k0 * A * xi; // northing == y
+
+    // ---- convergence: Karney 2011 Eq 23, 24
+
+    var pPrime = 1.0;
+    for (var j = 1; j <= 6; j++) {
+      pPrime += 2 *
+          j *
+          (alpha[j] ?? 0.0) *
+          cos(2 * j * xiPrime) *
+          cosh(2 * j * etaPrime);
+    }
+    var qPrime = 0.0;
+    for (var j = 1; j <= 6; j++) {
+      qPrime += 2 *
+          j *
+          (alpha[j] ?? 0.0) *
+          sin(2 * j * xiPrime) *
+          sinh(2 * j * etaPrime);
+    }
+
+    final gammaPrime =
+        atan(tauPrime / sqrt(1 + tauPrime * tauPrime) * tanLambda);
+    final gammaDoublePrime = atan2(qPrime, pPrime);
+
+    final gamma = gammaPrime + gammaDoublePrime;
+
+    // ---- scale: Karney 2011 Eq 25
+
+    final sinPhi = sin(phi);
+    final kPrime = sqrt(1 - e * e * sinPhi * sinPhi) *
+        sqrt(1 + tau * tau) /
+        sqrt(tauPrime * tauPrime + cosLambda * cosLambda);
+    final kDoublePrime = A / a * sqrt(pPrime * pPrime + qPrime * qPrime);
+
+    final k = k0 * kPrime * kDoublePrime;
+
+    // shift x/y to false origins
+    easting = easting + falseEasting; // make x relative to false easting
+    if (northing < 0) {
+      // make y in southern hemisphere relative to false northing
+      northing = northing + falseNorthing;
+    }
+
+    // round to reasonable precision
+    easting = double.parse(easting.toStringAsFixed(9)); // nm precision
+    northing = double.parse(northing.toStringAsFixed(9)); // nm precision
+    final convergence = double.parse(gamma.toDegrees().toStringAsFixed(9));
+    final scale = double.parse(k.toStringAsFixed(12));
+
+    // hemisphere
+    final h = lat >= 0 ? Hemisphere.north : Hemisphere.south;
+
+    // projected UTM coordinates
+    final projected = Projected(
+      x: easting,
+      y: northing,
+      z: geographic.optElev, // do not convert optional elevation (in meters)
+      m: geographic.optM, // do not convert optional M value
+    );
+
+    return UtmMeta(
+      Utm._coordinates(
+        utmZone,
+        h,
+        projected: projected,
+        datum: datum,
+      ),
+      convergence: convergence,
+      scale: scale,
+    );
+  }
+
+  /// {@template geobase.geodesy.utm.unproject}
+  ///
+  /// Converts UTM coordinates of this and represented by [zone], [hemisphere]
+  /// and [projected] based on the [datum] to a geographic position.
+  ///
+  /// Implements Karney’s method, using Krüger series to order n⁶, giving
+  /// results accurate to 5nm for distances up to 3900km from the central
+  /// meridian.
+  ///
+  /// {@endtemplate}
+  ///
+  /// This method returns a [Geographic] position object.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  ///   final utm = Utm(31, 'N', 448251.795, 5411932.678);
+  ///
+  ///   final geographic = utm.toGeographic(); // 48°51′29.52″N, 002°17′40.20″E
+  /// ```
+  ///
+  /// See also [toGeographicMeta] and [toEllipsoidalMeta] for methods returning
+  /// a geographic position with metadata.
+  Geographic toGeographic() => toEllipsoidalMeta().position.origin;
+
+  /// {@macro geobase.geodesy.utm.unproject}
+  ///
+  /// This method returns a geographic position wrapped into an [UtmMeta]
+  /// object. The metadata includes UTM `convergence` and `scale` at the
+  /// calculated geographic position.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  ///  final utm = Utm(31, 'N', 448251.795, 5411932.678);
+  ///
+  ///  final meta = utm.toGeographicMeta();
+  ///  final geographic = meta.position; // 48°51′29.52″N, 002°17′40.20″E
+  ///  final convergence = meta.convergence;
+  ///  final scale = meta.scale;
+  /// ```
+  ///
+  /// See also [toGeographic] for a method returning a geographic position only.
+  UtmMeta<Geographic> toGeographicMeta() {
+    final meta = toEllipsoidalMeta();
+    return UtmMeta(
+      meta.position.origin,
+      convergence: meta.convergence,
+      scale: meta.scale,
+    );
+  }
+
+  /// {@macro geobase.geodesy.utm.unproject}
+  ///
+  /// This method returns a geographic position with the ellipsoidal datum
+  /// wrapped into an [UtmMeta] object. The metadata includes UTM `convergence`
+  /// and `scale` at the calculated geographic position.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  ///  final utm = Utm(31, 'N', 448251.795, 5411932.678);
+  ///
+  ///  final meta = utm.toEllipsoidalMeta();
+  ///  final geographic = meta.position.origin; // 48°51′29.52″N, 002°17′40.20″E
+  ///  final datum = meta.position.datum;
+  ///  final convergence = meta.convergence;
+  ///  final scale = meta.scale;
+  /// ```
+  ///
+  /// See also [toGeographic] for a method returning a geographic position only.
+  UtmMeta<Ellipsoidal> toEllipsoidalMeta() {
+    final easting = projected.x;
+    final northing = projected.y;
+
+    const falseEasting = 500.0e3;
+    const falseNorthing = 10000.0e3;
+
+    // Ellipsoidal params (ie. WGS-84: a = 6378137, f = 1/298.257223563)
+    final a = datum.ellipsoid.a;
+    final f = datum.ellipsoid.f;
+
+    // UTM scale on the central meridian
+    const k0 = 0.9996;
+
+    // make x ± relative to central meridian
+    final x = easting - falseEasting;
+    // make y ± relative to equator
+    final y =
+        hemisphere == Hemisphere.south ? northing - falseNorthing : northing;
+
+    // ---- from Karney 2011 Eq 15-22, 36:
+
+    final e = sqrt(f * (2 - f)); // eccentricity
+    final n = f / (2 - f); // 3rd flattening
+    final n2 = n * n, n3 = n * n2, n4 = n * n3, n5 = n * n4, n6 = n * n5;
+
+    // 2πA is the circumference of a meridian
+    final A = a / (1 + n) * (1 + 1 / 4 * n2 + 1 / 64 * n4 + 1 / 256 * n6);
+
+    final eta = x / (k0 * A);
+    final xi = y / (k0 * A);
+
+    // note beta is one-based array (6th order Krüger expressions)
+    final beta = [
+      null,
+      1 / 2 * n -
+          2 / 3 * n2 +
+          37 / 96 * n3 -
+          1 / 360 * n4 -
+          81 / 512 * n5 +
+          96199 / 604800 * n6,
+      1 / 48 * n2 +
+          1 / 15 * n3 -
+          437 / 1440 * n4 +
+          46 / 105 * n5 -
+          1118711 / 3870720 * n6,
+      17 / 480 * n3 - 37 / 840 * n4 - 209 / 4480 * n5 + 5569 / 90720 * n6,
+      4397 / 161280 * n4 - 11 / 504 * n5 - 830251 / 7257600 * n6,
+      4583 / 161280 * n5 - 108847 / 3991680 * n6,
+      20648693 / 638668800 * n6,
+    ];
+
+    var xiPrime = xi;
+    for (var j = 1; j <= 6; j++) {
+      xiPrime -= (beta[j] ?? 0.0) * sin(2 * j * xi) * cosh(2 * j * eta);
+    }
+
+    var etaPrime = eta;
+    for (var j = 1; j <= 6; j++) {
+      etaPrime -= (beta[j] ?? 0.0) * cos(2 * j * xi) * sinh(2 * j * eta);
+    }
+
+    final sinhEtaPrime = sinh(etaPrime);
+    final sinXiPrime = sin(xiPrime), cosXiP = cos(xiPrime);
+
+    final tauPrime =
+        sinXiPrime / sqrt(sinhEtaPrime * sinhEtaPrime + cosXiP * cosXiP);
+
+    double? deltaTaui;
+    var taui = tauPrime;
+    do {
+      final sigmai = sinh(e * atanh(e * taui / sqrt(1 + taui * taui)));
+      final tauiPrime =
+          taui * sqrt(1 + sigmai * sigmai) - sigmai * sqrt(1 + taui * taui);
+      deltaTaui = (tauPrime - tauiPrime) /
+          sqrt(1 + tauiPrime * tauiPrime) *
+          (1 + (1 - e * e) * taui * taui) /
+          ((1 - e * e) * sqrt(1 + taui * taui));
+      taui += deltaTaui;
+    } while (deltaTaui.abs() >
+        1.0e-12); // using IEEE 754 δτi -> 0 after 2-3 iterations
+    // note relatively large convergence test as δτi toggles on ±1.12e-16 for eg
+    // 31 N 400000 5000000
+
+    final tau = taui;
+
+    final phi = atan(tau);
+
+    var lambda = atan2(sinhEtaPrime, cosXiP);
+
+    // ---- convergence: Karney 2011 Eq 26, 27
+
+    var p = 1.0;
+    for (var j = 1; j <= 6; j++) {
+      p -= 2 * j * (beta[j] ?? 0.0) * cos(2 * j * xi) * cosh(2 * j * eta);
+    }
+    var q = 0.0;
+    for (var j = 1; j <= 6; j++) {
+      q += 2 * j * (beta[j] ?? 0.0) * sin(2 * j * xi) * sinh(2 * j * eta);
+    }
+
+    final gammaPrime = atan(tan(xiPrime) * tanh(etaPrime));
+    final gammaDoublePrime = atan2(q, p);
+
+    final gamma = gammaPrime + gammaDoublePrime;
+
+    // ---- scale: Karney 2011 Eq 28
+
+    final sinPhi = sin(phi);
+    final kPrime = sqrt(1 - e * e * sinPhi * sinPhi) *
+        sqrt(1 + tau * tau) *
+        sqrt(sinhEtaPrime * sinhEtaPrime + cosXiP * cosXiP);
+    final kDoublePrime = A / a / sqrt(p * p + q * q);
+
+    final k = k0 * kPrime * kDoublePrime;
+
+    // longitude of central meridian
+    final lambda0 = ((zone - 1) * 6.0 - 180.0 + 3.0).toRadians();
+    // move λ from zonal to global coordinates
+    lambda += lambda0;
+
+    // round to reasonable precision
+    // nm precision (1nm = 10^-14°)
+    final lat = double.parse(phi.toDegrees().toStringAsFixed(14));
+    // (strictly lat rounding should be φ⋅cosφ!)
+    final lon = double.parse(lambda.toDegrees().toStringAsFixed(14));
+    final convergence = double.parse(gamma.toDegrees().toStringAsFixed(9));
+    final scale = double.parse(k.toStringAsFixed(12));
+
+    // unprojected geographic position
+    final geographic = Geographic(
+      lat: lat,
+      lon: lon,
+      elev: projected.optZ, // do not convert optional elevation (in meters)
+      m: projected.optM, // do not convert optional M value
+    );
+
+    return UtmMeta(
+      Ellipsoidal.datum(geographic, datum: datum),
+      convergence: convergence,
+      scale: scale,
+    );
+  }
 
   /// The UTM coordinate string representation with values separated by
   /// [delimiter] (default is whitespace).

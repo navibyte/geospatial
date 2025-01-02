@@ -86,8 +86,7 @@ class Ellipsoidal {
   ///
   /// {@template geobase.geodesy.ellipsoidal.parameters}
   ///
-  /// Parameters:
-  /// * [ellipsoid]: A reference ellipsoid with ellipsoidal parameters.
+  /// Use [ellipsoid] to set a reference ellipsoid with ellipsoidal parameters.
   ///
   /// {@endtemplate}
   const Ellipsoidal(this.origin, {this.ellipsoid = Ellipsoid.WGS84})
@@ -99,9 +98,8 @@ class Ellipsoidal {
   ///
   /// {@template geobase.geodesy.ellipsoidal.datum}
   ///
-  /// Parameters:
-  /// * [datum]: A datum with a reference ellipsoid and datum transformation
-  ///   parameters.
+  /// Use [datum] to set a datum with a reference ellipsoid and datum
+  /// transformation parameters.
   ///
   /// {@endtemplate}
   Ellipsoidal.datum(this.origin, {Datum this.datum = Datum.WGS84})
