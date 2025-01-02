@@ -5,7 +5,7 @@
 /* www.movable-type.co.uk/scripts/geodesy-library.html#utm                                        */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-// ignore_for_file: lines_longer_than_80_chars
+// ignore_for_file: lines_longer_than_80_chars, avoid_multiple_declarations_per_line
 
 // UTM / WGS-84 Conversion Functions (see license above) by Chris Veness ported
 // to Dart by Navibyte.
@@ -28,15 +28,113 @@ import '/src/coordinates/projected/projected.dart';
 
 import 'datum.dart';
 
+/// {@template geobase.geodesy.utm.meta}
+///
+/// Metadata ([convergence] and [scale]) as a result from UTM calculations
+/// related to [position].
+///
+/// {@endtemplate}
+///
+/// {@macro geobase.geodesy.utm.meta.position}
+///
+/// {@macro geobase.geodesy.utm.meta.convergence}
+///
+/// {@macro geobase.geodesy.utm.meta.scale}
+///
+/// {@macro geobase.geodesy.utm.wikipedia}
+/// 
+/// See also [Utm] for representing projected UTM coordinates.
+@immutable
+class UtmMeta<T extends Object> {
+  /// {@template geobase.geodesy.utm.meta.position}
+  ///
+  /// The [position] represents either a geographic position or projected UTM
+  /// coordinates as indicated by [T], potentially with the geodetic datum
+  /// information.
+  ///
+  /// {@endtemplate}
+  final T position;
+
+  /// {@template geobase.geodesy.utm.meta.convergence}
+  ///
+  /// The meridian [convergence] specifies the bearing of the grid north
+  /// clockwise from the true north, in degrees.
+  ///
+  /// {@endtemplate}
+  final double convergence;
+
+  /// {@template geobase.geodesy.utm.meta.scale}
+  ///
+  /// The [scale] represents the UTM grid scale factor at [position].
+  ///
+  /// According to [Wikipedia](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system)
+  /// the scale factor at the central meridian is specified to be 0.9996 of true
+  /// scale for most UTM systems in use.
+  ///
+  /// {@endtemplate}
+  final double scale;
+
+  /// {@macro geobase.geodesy.utm.meta}
+  ///
+  /// {@macro geobase.geodesy.utm.meta.position}
+  ///
+  /// {@macro geobase.geodesy.utm.meta.convergence}
+  ///
+  /// {@macro geobase.geodesy.utm.meta.scale}
+  const UtmMeta(
+    this.position, {
+    required this.convergence,
+    required this.scale,
+  });
+
+  @override
+  String toString() => '$position;$convergence;$scale';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is UtmMeta &&
+          position == other.position &&
+          convergence == other.convergence &&
+          scale == other.scale);
+
+  @override
+  int get hashCode => Object.hash(position, convergence, scale);
+}
+
 /// UTM coordinates, with functions to parse them and convert them to
 /// geographic points.
+///
+/// {@macro geobase.geodesy.utm.zone}
+///
+/// {@macro geobase.geodesy.utm.hemisphere}
+///
+/// {@macro geobase.geodesy.utm.projected}
+///
+/// {@template geobase.geodesy.utm.wikipedia}
+///
+/// See also [Universal Transverse Mercator](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system)
+/// in Wikipedia for more information.
+///
+/// {@endtemplate}
+/// 
+/// See also [UtmMeta] for metadata related to UTM calculations.
 @immutable
 class Utm {
-  /// UTM 6° longitudinal zone (1..60 covering 180°W..180°E).
+  /// {@template geobase.geodesy.utm.zone}
+  ///
+  /// The [zone] represents UTM 6° longitudinal zone (1..60 covering
+  /// 180°W..180°E).
+  ///
+  /// {@endtemplate}
   final int zone;
 
-  /// The hemisphere of the Earth (north or south), represented as 'N' or 'S'
-  /// in UTM coordinates.
+  /// {@template geobase.geodesy.utm.hemisphere}
+  ///
+  /// The [hemisphere] of the Earth (north or south) is represented by 'N' or
+  /// 'S' in UTM coordinates.
+  ///
+  /// {@endtemplate}
   final Hemisphere hemisphere;
 
   /// The [projected] position as UTM coordinates (x=easting, y=northing,
@@ -50,37 +148,29 @@ class Utm {
   /// (S).
   ///
   /// 2D positions are constructed as `Projected(x: easting, y: northing)`
-  /// and 3D positions as `Projected(x: easting, y: northing, z: elev)`..
-  /// 
+  /// and 3D positions as `Projected(x: easting, y: northing, z: elev)`.
+  ///
   /// The [datum] indicates the geodetic reference (ie. ellipsoid and other
   /// parameters) used when projecting geographic coordinates to projected
   /// coordinates.
-  /// 
+  ///
   /// {@endtemplate}
   final Projected projected;
 
   /// The datum used for calculations with a reference ellipsoid and datum
   /// transformation parameters.
-  /// 
+  ///
   /// See also [projected].
   final Datum datum;
 
-  /// Meridian convergence (bearing of grid north clockwise from true north),
-  /// in degrees.
-  final double? convergence;
-
-  /// Grid scale factor.
-  final double? scale;
-
   /// Creates UTM coordinates with [zone], [hemisphere], [easting], [northing]
   /// and an optional [elev] (elevation or altitude) based on the [datum].
-  /// 
+  ///
+  /// {@macro geobase.geodesy.utm.zone}
+  ///
+  /// {@macro geobase.geodesy.utm.hemisphere}
+  ///
   /// {@macro geobase.geodesy.utm.projected}
-  ///
-  /// Set [convergence] for meridian convergence (bearing of grid north
-  /// clockwise from true north), in degrees.
-  ///
-  /// Set [scale] for grid scale factor.
   ///
   /// If [verifyEN] is true it's validated that easting/northing is within
   /// 'normal' values (may be suppressed for extended coherent coordinates or
@@ -103,8 +193,6 @@ class Utm {
     double northing, {
     double? elev,
     Datum datum = Datum.WGS84,
-    double? convergence,
-    double? scale,
     bool verifyEN = true,
   }) {
     // validate zone and hemisphere
@@ -122,41 +210,38 @@ class Utm {
         if (!(0.0 <= northing && northing < 9329006.0)) {
           throw FormatException('invalid UTM northing $northing');
         }
-      } else { // southern hemisphere
+      } else {
+        // southern hemisphere
         if (!(1116914.0 < northing && northing <= 10000.0e3)) {
           throw FormatException('invalid UTM northing $northing');
         }
       }
     }
 
-    return Utm._position(
+    return Utm._coordinates(
       zone,
       hemisphereValue,
       projected: Projected(x: easting, y: northing, z: elev),
       datum: datum,
-      convergence: convergence,
-      scale: scale,
     );
   }
 
-  /// Creates an UTM coordinate with [zone], [hemisphere] and the [projected]
+  /// Creates UTM coordinates with [zone], [hemisphere] and the [projected]
   /// position based on [datum].
   ///
   /// A 2D position should be constructed as
   /// `Projected(x: easting, y: northing)` and a 3D position as
   /// `Projected(x: easting, y: northing, z: elev)`.
-  const Utm._position(
+  const Utm._coordinates(
     this.zone,
     this.hemisphere, {
     required this.projected,
     required this.datum,
-    this.convergence,
-    this.scale,
   });
 
   @override
   String toString() {
-    return '$zone;$hemisphere;$projected;$datum;$convergence;$scale';
+    return '$zone;$hemisphere;$projected;$datum';
   }
 
   @override
@@ -166,9 +251,7 @@ class Utm {
           zone == other.zone &&
           hemisphere == other.hemisphere &&
           projected == other.projected &&
-          datum == other.datum &&
-          convergence == other.convergence &&
-          scale == other.scale);
+          datum == other.datum);
 
   @override
   int get hashCode => Object.hash(
@@ -176,7 +259,5 @@ class Utm {
         hemisphere,
         projected,
         datum,
-        convergence,
-        scale,
       );
 }
