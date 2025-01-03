@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_redundant_argument_values
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 /* Geodesy Test Harness - utm/mgrs                                    (c) Chris Veness 2014-2021  */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
@@ -16,6 +18,8 @@ import 'package:geobase/geodesy.dart';
 import 'package:test/test.dart';
 
 // useful for manual checks: www.rcn.montana.edu/resources/converter.aspx
+
+// see also `utm_test.dart` for more tests on UTM/MGRS
 
 void main() {
   group('@examples UTM', () {
@@ -41,6 +45,13 @@ void main() {
       final geo1 = Utm.parse('48 N 377298.745 1483034.794').toGeographic();
       final utm2 = Utm.fromGeographic(geo1);
       expect(utm2.toText(decimals: 3), '48 N 377298.745 1483034.794');
+    });
+  });
+
+  group('@examples MGRS', () {
+    test('constructor', () {
+      expect(
+          Mgrs(31, 'U', 'D', 'Q', 48251, 11932).toText(), '31U DQ 48251 11932');
     });
   });
 
@@ -75,6 +86,105 @@ void main() {
 
     test('northing S fail', () {
       expect(() => Utm(1, 'S', 0, 1116e3), throwsFormatException);
+    });
+  });
+
+  group('MGRS constructor fail', () {
+    test('bad zone', () {
+      // 'invalid MGRS zone ‘0’'
+      expect(() => Mgrs(0, 'C', 'A', 'A', 0, 0), throwsFormatException);
+    });
+
+    test('bad band', () {
+      // 'invalid MGRS band ‘A’'
+      expect(() => Mgrs(1, 'A', 'A', 'A', 0, 0), throwsFormatException);
+    });
+
+    test('bad grid sq easting', () {
+      // 'invalid MGRS 100km grid square column ‘I’ for zone 1'
+      expect(() => Mgrs(1, 'C', 'I', 'A', 0, 0), throwsFormatException);
+    });
+
+    test('bad grid sq northing', () {
+      // 'invalid MGRS 100km grid square row ‘I’'
+      expect(() => Mgrs(1, 'C', 'A', 'I', 0, 0), throwsFormatException);
+    });
+
+    test('invalid grid sq e', () {
+      // 'invalid MGRS 100km grid square column ‘A’ for zone 2'
+      expect(() => Mgrs(2, 'C', 'A', 'A', 0, 0), throwsFormatException);
+    });
+
+    test('big easting', () {
+      // 'invalid MGRS easting ‘999999’'
+      expect(() => Mgrs(1, 'C', 'A', 'A', 999999, 0), throwsFormatException);
+    });
+
+    test('big northing', () {
+      // 'invalid MGRS northing ‘999999’'
+      expect(() => Mgrs(1, 'C', 'A', 'A', 0, 999999), throwsFormatException);
+    });
+
+    test('bad multiples', () {
+      // 'invalid MGRS band ‘A’, invalid MGRS 100km grid square row ‘I’'
+      expect(() => Mgrs(1, 'A', 'A', 'I', 0, 0), throwsFormatException);
+    });
+  });
+
+  group('toString', () {
+    test('toString fail', () {
+      // 'invalid precision ‘3’'
+      expect(() => Mgrs(1, 'C', 'A', 'A', 0, 0).toText(digits: 3),
+          throwsFormatException);
+    });
+  });
+
+  group('MGRS parse', () {
+   
+    // note Wikipedia considers 4Q & 4Q FJ to be valid MGRS values; this library
+    //expects easting & northing;
+
+    test('Wikipedia 4Q FJ 1 6', () {
+      expect(Mgrs.parse('4Q FJ 1 6').toText(digits: 2), '4Q FJ 1 6');
+      expect(Mgrs.parse('4Q FJ 1 6').toText(digits: 2, zeroPadZone: true),
+          '04Q FJ 1 6');
+    });
+
+    test('Wikipedia 4Q FJ 12 67', () {
+      expect(Mgrs.parse('4Q FJ 12 67').toText(digits: 4), '4Q FJ 12 67');
+    });
+
+    test('Wikipedia 4Q FJ 123 678', () {
+      expect(Mgrs.parse('4Q FJ 123 678').toText(digits: 6), '4Q FJ 123 678');
+    });
+
+    test('Wikipedia 4Q FJ 1234 6789', () {
+      expect(
+          Mgrs.parse('4Q FJ 1234 6789').toText(digits: 8), '4Q FJ 1234 6789');
+    });
+
+    test('Wikipedia 4Q FJ 12345 67890', () {
+      expect(Mgrs.parse('4Q FJ 12345 67890').toText(digits: 10),
+          '4Q FJ 12345 67890');
+    });
+
+    // Defense Mapping Agency Technical Manual 8358.1: Datums, Ellipsoids,
+    // Grids, and Grid Reference Systems 3-4
+    
+    test('DMA 18SUU80', () {
+      expect(Mgrs.parse('18SUU80').toText(digits: 2), '18S UU 8 0');
+    });
+
+    test('DMA 18SUU8401', () {
+      expect(Mgrs.parse('18SUU8401').toText(digits: 4), '18S UU 84 01');
+    });
+
+    test('DMA 18SUU8360140', () {
+      expect(Mgrs.parse('18SUU836014').toText(digits: 6), '18S UU 836 014');
+    });
+
+    test('parse fail 2', () {
+      expect(() => Mgrs.parse('Cambridge'), throwsFormatException);
     });
   });
 

@@ -21,6 +21,8 @@
 
 // ignore_for_file: lines_longer_than_80_chars
 
+import 'dart:math';
+
 import 'package:meta/meta.dart';
 
 import 'datum.dart';
@@ -29,10 +31,10 @@ import 'datum.dart';
 const _latBands = 'CDEFGHJKLMNPQRSTUVWXX'; // X is repeated for 80-84°N
 
 /// 100km grid square column (‘e’) letters repeat every third zone
-const _e100kLetters = ['ABCDEFGH', 'JKLMNPQR', 'STUVWXYZ'];
+const _columnLetters = ['ABCDEFGH', 'JKLMNPQR', 'STUVWXYZ'];
 
 /// 100km grid square row (‘n’) letters repeat every other zone
-const _n100kLetters = ['ABCDEFGHJKLMNPQRSTUV', 'FGHJKLMNPQRSTUVABCDE'];
+const _rowLetters = ['ABCDEFGHJKLMNPQRSTUV', 'FGHJKLMNPQRSTUVABCDE'];
 
 /// A grid zone as a polygon of 6° × 8° in MGRS/NATO grid references.
 ///
@@ -93,6 +95,41 @@ class MgrsGridZone {
     this.band,
   );
 
+  /// The MGRS grid zone string representation.
+  ///
+  /// {@macro geobase.geodesy.mgrs.distinquishFromUTM}
+  ///
+  /// {@macro geobase.geodesy.mgrs.zoneLeadingZero}
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  ///   // a sample MGRS grid zone `31U`
+  ///   final mgrsGridZone = MgrsGridZone(31, 'U');
+  ///
+  ///   // the default format
+  ///   print(mgrsGridZone.toText()); // '31U'
+  ///
+  ///   // another sample `4Q`
+  ///   final mgrsGridZone2 = MgrsGridZone(4, 'Q');
+  ///
+  ///   // zone without a leading zero
+  ///   print(mgrsGridZone2.toText()); // '4Q'
+  ///
+  ///   // zone with a leading zero
+  ///   print(mgrsGridZone2.toText(zeroPadZone: true)); // '04Q'
+  /// ```
+  String toText({bool zeroPadZone = false}) {
+    // ensure leading zeros on zone if `zeroPadZone` is set true
+    final zPadded =
+        zeroPadZone ? zone.toString().padLeft(2, '0') : zone.toString();
+
+    return '$zPadded$band';
+  }
+
+  @override
+  String toString() => toText();
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -115,31 +152,33 @@ class MgrsGridZone {
 ///
 /// See [Mgrs] for more information and representing MGRS grid references.
 class MgrsGridSquare extends MgrsGridZone {
-  /// {@template geobase.geodesy.mgrs.e100k}
+  /// {@template geobase.geodesy.mgrs.column}
   ///
-  /// The [e100k] represents the first letter (E) of a 100km grid square.
-  ///
-  /// {@endtemplate}
-  final String e100k;
-
-  /// {@template geobase.geodesy.mgrs.e100k}
-  ///
-  /// The [n100k] represents the second letter (N) of a 100km grid square.
+  /// The [column] (or "e100k") represents the first letter (E) of a 100km grid
+  /// square. Allowed letter characters are A..Z, omitting I and O.
   ///
   /// {@endtemplate}
-  final String n100k;
+  final String column;
 
-  /// Creates a MGRS 100km grid square with [zone], [band], [e100k] and [n100k].
+  /// {@template geobase.geodesy.mgrs.row}
+  ///
+  /// The [row] (or "n100k") represents the second letter (N) of a 100km grid
+  /// square. Allowed letter characters are A..V, omitting I and O.
+  ///
+  /// {@endtemplate}
+  final String row;
+
+  /// Creates a MGRS 100km grid square with [zone], [band], [column] and [row].
   ///
   /// {@macro geobase.geodesy.utm.zone}
   ///
   /// {@macro geobase.geodesy.mgrs.band}
   ///
-  /// {@macro geobase.geodesy.mgrs.e100k}
+  /// {@macro geobase.geodesy.mgrs.column}
   ///
-  /// {@macro geobase.geodesy.mgrs.n100k}
+  /// {@macro geobase.geodesy.mgrs.row}
   ///
-  /// Throws a [FormatException] if MGRS zone, band, e100k or n100k is invalid.
+  /// Throws a [FormatException] if MGRS zone, band, column or row is invalid.
   ///
   /// Examples:
   ///
@@ -150,8 +189,8 @@ class MgrsGridSquare extends MgrsGridZone {
   factory MgrsGridSquare(
     int zone,
     String band,
-    String e100k,
-    String n100k,
+    String column,
+    String row,
   ) {
     // validate zone
     if (!(1 <= zone && zone <= 60)) {
@@ -163,12 +202,14 @@ class MgrsGridSquare extends MgrsGridZone {
     if (band.length != 1 || !_latBands.contains(band)) {
       errors.add('invalid MGRS band `$band`');
     }
-    if (e100k.length != 1 || !_e100kLetters[(zone - 1) % 3].contains(e100k)) {
-      errors
-          .add('invalid MGRS 100km grid square column `$e100k` for zone $zone');
+    if (column.length != 1 ||
+        !_columnLetters[(zone - 1) % 3].contains(column)) {
+      errors.add(
+        'invalid MGRS 100km grid square column `$column` for zone $zone',
+      );
     }
-    if (n100k.length != 1 || !_n100kLetters[0].contains(n100k)) {
-      errors.add('invalid MGRS 100km grid square row `$n100k`');
+    if (row.length != 1 || !_rowLetters[0].contains(row)) {
+      errors.add('invalid MGRS 100km grid square row `$row`');
     }
     if (errors.isNotEmpty) {
       throw FormatException(errors.join(', '));
@@ -177,17 +218,61 @@ class MgrsGridSquare extends MgrsGridZone {
     return MgrsGridSquare._coordinates(
       zone,
       band,
-      e100k,
-      n100k,
+      column,
+      row,
     );
   }
 
   const MgrsGridSquare._coordinates(
     super.zone,
     super.band,
-    this.e100k,
-    this.n100k,
+    this.column,
+    this.row,
   ) : super._coordinates();
+
+  /// The MGRS grid square string representation with components separated by
+  /// whitespace by default.
+  ///
+  /// {@macro geobase.geodesy.mgrs.distinquishFromUTM}
+  ///
+  /// {@macro geobase.geodesy.mgrs.militaryStyle}
+  ///
+  /// {@macro geobase.geodesy.mgrs.zoneLeadingZero}
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  ///   // a sample MGRS grid square `31U DQ`
+  ///   final mgrsGridSquare = MgrsGridSquare(31, 'U', 'D', 'Q');
+  ///
+  ///   // the default format
+  ///   print(mgrsGridSquare.toText()); // '31U DQ'
+  ///
+  ///   // the military style
+  ///   print(mgrsGridSquare.toText(militaryStyle: true)); // '31UDQ'
+  ///
+  ///   // another sample `4Q FJ`
+  ///   final mgrsGridSquare2 = MgrsGridSquare(4, 'Q', 'F', 'J');
+  ///
+  ///   // zone without a leading zero
+  ///   print(mgrsGridSquare2.toText()); // '4Q FJ'
+  ///
+  ///   // zone with a leading zero
+  ///   print(mgrsGridSquare2.toText(zeroPadZone: true)); // '04Q FJ'
+  /// ```
+  @override
+  String toText({
+    bool militaryStyle = false,
+    bool zeroPadZone = false,
+  }) {
+    // ensure leading zeros on zone if `zeroPadZone` is set true
+    final zPadded =
+        zeroPadZone ? zone.toString().padLeft(2, '0') : zone.toString();
+
+    return militaryStyle
+        ? '$zPadded$band$column$row'
+        : '$zPadded$band $column$row';
+  }
 
   @override
   bool operator ==(Object other) =>
@@ -195,11 +280,11 @@ class MgrsGridSquare extends MgrsGridZone {
       (other is MgrsGridSquare &&
           zone == other.zone &&
           band == other.band &&
-          e100k == other.e100k &&
-          n100k == other.n100k);
+          column == other.column &&
+          row == other.row);
 
   @override
-  int get hashCode => Object.hash(zone, band, e100k, n100k);
+  int get hashCode => Object.hash(zone, band, column, row);
 }
 
 /// {@template geobase.geodesy.mgrs.about}
@@ -229,7 +314,7 @@ class MgrsGridSquare extends MgrsGridZone {
 @immutable
 class Mgrs {
   /// The 100km grid square identified by a grid zone designator (GZD) and a
-  /// 00km square identification.
+  /// 100km square identification.
   final MgrsGridSquare gridSquare;
 
   /// {@template geobase.geodesy.mgrs.easting}
@@ -250,16 +335,16 @@ class Mgrs {
   /// transformation parameters.
   final Datum datum;
 
-  /// Creates a MGRS grid reference with [zone], [band], [e100k], [n100k],
+  /// Creates a MGRS grid reference with [zone], [band], [column], [row],
   /// [easting], [northing] based on the [datum] (used in the UTM projection).
   ///
   /// {@macro geobase.geodesy.utm.zone}
   ///
   /// {@macro geobase.geodesy.mgrs.band}
   ///
-  /// {@macro geobase.geodesy.mgrs.e100k}
+  /// {@macro geobase.geodesy.mgrs.column}
   ///
-  /// {@macro geobase.geodesy.mgrs.n100k}
+  /// {@macro geobase.geodesy.mgrs.row}
   ///
   /// {@macro geobase.geodesy.mgrs.easting}
   ///
@@ -267,7 +352,7 @@ class Mgrs {
   ///
   /// {@macro geobase.geodesy.utm.datum}
   ///
-  /// Throws a [FormatException] if MGRS zone, band, e100k, n100k, easting or
+  /// Throws a [FormatException] if MGRS zone, band, column, row, easting or
   /// northing is invalid.
   ///
   /// Examples:
@@ -282,19 +367,19 @@ class Mgrs {
   factory Mgrs(
     int zone,
     String band,
-    String e100k,
-    String n100k,
+    String column,
+    String row,
     int easting,
     int northing, {
     Datum datum = Datum.WGS84,
   }) {
     // create 100 km grid square, validating zone, band and 100km grid square
-    // letters (e100k and n100k)
-    final gridSquare = MgrsGridSquare._coordinates(
+    // letters (column + row)
+    final gridSquare = MgrsGridSquare(
       zone,
       band,
-      e100k,
-      n100k,
+      column, // e100k
+      row, // n100k
     );
 
     // validate easting and northing
@@ -324,6 +409,206 @@ class Mgrs {
     required this.datum,
   });
 
+  /// Parses a MGRS grid reference from a text string like '31U DQ 48251 11932'.
+  ///
+  /// The input text should contains following elements:
+  /// * grid zone designator (GZD), e.g. ‘31U’, where zone is 1-60 and band is
+  ///   C..X covering 80°S..84°N
+  /// * 100km grid square letter-pair, e.g. ‘DQ’, where each letter represents
+  ///   100km grid square column (‘e’) and row (‘n’) respectively
+  /// * easting, e.g. ‘48251’ (metres)
+  /// * northing, e.g. ‘11932’ (metres)
+  ///
+  /// {@macro geobase.geodesy.utm.datum}
+  ///
+  /// Throws FormatException if coordinates are invalid.
+  ///
+  /// Examples:
+  /// ```dart
+  ///   // The MGRS grid reference parsed from text (same as using the default
+  ///   // constructor `Mgrs(31, 'U', 'D', 'Q', 48251, 11932)`).
+  ///   final mgrsRef = Mgrs.parse('31U DQ 48251 11932');
+  ///
+  ///   // Military style without separators.
+  ///   final mgrsRefMil = Mgrs.parse('31UDQ4825111932');
+  /// ```
+  factory Mgrs.parse(
+    String text, {
+    Datum datum = Datum.WGS84,
+  }) {
+    // this shall contain: [ gzd, en100k, easting, northing ]
+    List<String>? ref;
+
+    // check for military-style grid reference with no separators
+    final trimmed = text.trim();
+    if (trimmed.length >= 6 && RegExp(r'\s+').allMatches(trimmed).isEmpty) {
+      // no whitespace found and at least 6 characters, should contain also
+      //easting and northing
+
+      // convert mgrsGridRef to standard space-separated format
+      final exp =
+          RegExp(r'(\d\d?[A-Z])([A-Z]{2})([0-9]{2,10})', caseSensitive: false)
+              .allMatches(text)
+              .map((m) => m.groups([1, 2, 3]));
+      if (exp.isEmpty) {
+        throw FormatException('invalid MGRS grid reference `$text`');
+      }
+      final parsed = exp.first;
+
+      final gzd = parsed[0]!;
+      final en100k = parsed[1]!;
+      final en = parsed[2]!;
+      final easting = en.substring(0, en.length ~/ 2);
+      final northing = en.substring(en.length ~/ 2);
+
+      ref = [gzd, en100k, easting, northing];
+    }
+
+    // if ref still null then match separate elements (separated by whitespace)
+    // the result should contain: [ gzd, en100k, easting, northing ]
+    ref ??= trimmed.split(RegExp(r'\s+'));
+
+    // check for 4 elements in MGRS grid reference
+    if (ref.length != 4) {
+      throw FormatException('invalid MGRS grid reference `$text`');
+    }
+
+    // split grid ref into gzd, en100k, e, n
+    final gzd = ref[0];
+    final en100k = ref[1];
+    final e = ref[2];
+    final n = ref[3];
+    if (!(gzd.length == 2 || gzd.length == 3) || en100k.length != 2) {
+      throw FormatException('invalid MGRS grid reference `$text`');
+    }
+
+    // split gzd into zone (one or two digits), band (one letter)
+    final gzdLen = gzd.length;
+    final zone = int.parse(gzd.substring(0, gzdLen - 1));
+    final band = gzd.substring(gzdLen - 1, gzdLen);
+
+    // split 100km letter-pair into column and row letters
+    final column = en100k[0];
+    final row = en100k[1];
+
+    final easting = _parseCoordinate(e);
+    final northing = _parseCoordinate(n);
+
+    // use the default constructor as it also validates the coordinates (and
+    // constructs also a MgrsGridSquare object)
+    return Mgrs(
+      zone,
+      band,
+      column,
+      row,
+      easting,
+      northing,
+      datum: datum,
+    );
+  }
+
+  /// The MGRS grid reference string representation with components separated by
+  /// whitespace by default.
+  ///
+  /// {@template geobase.geodesy.mgrs.distinquishFromUTM}
+  ///
+  /// To distinguish from civilian UTM coordinate representations, no space is
+  /// included within the zone/band grid zone designator.
+  ///
+  /// {@endtemplate}
+  ///
+  /// {@template geobase.geodesy.mgrs.militaryStyle}
+  ///
+  /// Components are separated by spaces by default. For a military-style
+  /// unseparated string set [militaryStyle] to true.
+  ///
+  /// {@endtemplate}
+  ///
+  /// {@template geobase.geodesy.mgrs.zoneLeadingZero}
+  ///
+  /// If [zeroPadZone] is true, then all zone numbers (1..60) are formatted with
+  /// two digits, e.g. `31` or `04`. By default only significant digits are
+  /// formatted, e.g. `31` or `4`.
+  ///
+  /// {@endtemplate}
+  ///
+  /// Note that MGRS grid references get truncated, not rounded (unlike UTM
+  /// coordinates); grid references indicate a bounding square, rather than a
+  /// point, with the size of the square indicated by the precision - a
+  /// precision of 10 indicates a 1-metre square, a precision of 4 indicates
+  /// a 1,000-metre square (hence 31U DQ 48 11 indicates a 1km square with SW
+  /// corner at 31 N 448000 5411000, which would include the 1m square
+  /// 31U DQ 48251 11932).
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  ///   // a sample MGRS reference `31U DQ 48251 11932`
+  ///   final mgrsRef = Mgrs(31, 'U', 'D', 'Q', 48251, 11932);
+  ///
+  ///   // 10 digits, the precision level 1 m
+  ///   print(mgrsRef.toText()); // '31U DQ 48251 11932'
+  ///
+  ///   // 8 digits, the precision level 10 m
+  ///   print(mgrsRef.toText(digits: 8)); // '31U DQ 4825 1193'
+  ///
+  ///   // 4 digits, the precision level 1 km
+  ///   print(mgrsRef.toText(digits: 4)); // '31U DQ 48 11'
+  ///
+  ///   // 4 digits, the precision level 1 km, military style
+  ///   print(mgrsRef.toText(digits: 4, militaryStyle: true)); // '31UDQ4811'
+  ///
+  ///   // another sample `4Q FJ 02345 07890`
+  ///   final mgrsRef2 = Mgrs.parse('4Q FJ 02345 07890');
+  ///
+  ///   // zone without a leading zero, 10 digits
+  ///   print(mgrsRef2.toText()); // '4Q FJ 02345 07890'
+  ///
+  ///   // zone with a leading zero, 10 digits
+  ///   print(mgrsRef2.toText(zeroPadZone: true)); // '04Q FJ 02345 07890'
+  /// ```
+  String toText({
+    int digits = 10,
+    bool militaryStyle = false,
+    bool zeroPadZone = false,
+  }) {
+    if (!(digits == 2 ||
+        digits == 4 ||
+        digits == 6 ||
+        digits == 8 ||
+        digits == 10)) {
+      throw FormatException('invalid precision `$digits`');
+    }
+
+    final zone = gridSquare.zone;
+    final band = gridSquare.band;
+    final column = gridSquare.column;
+    final row = gridSquare.row;
+
+    // truncate to required precision
+    final digitsPer2 = digits ~/ 2;
+    final eRounded =
+        digitsPer2 == 5 ? easting : (easting / pow(10, 5 - digitsPer2)).floor();
+    final nRounded = digitsPer2 == 5
+        ? northing
+        : (northing / pow(10, 5 - digitsPer2)).floor();
+
+    // ensure leading zeros on zone if `zeroPadZone` is set true
+    final zPadded =
+        zeroPadZone ? zone.toString().padLeft(2, '0') : zone.toString();
+
+    // ensure leading zeros on easting and northing when needed
+    final ePadded = eRounded.toString().padLeft(digitsPer2, '0');
+    final nPadded = nRounded.toString().padLeft(digitsPer2, '0');
+
+    return militaryStyle
+        ? '$zPadded$band$column$row$ePadded$nPadded'
+        : '$zPadded$band $column$row $ePadded $nPadded';
+  }
+
+  @override
+  String toString() => toText();
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -335,4 +620,23 @@ class Mgrs {
 
   @override
   int get hashCode => Object.hash(gridSquare, easting, northing, datum);
+}
+
+int _parseCoordinate(String text) {
+  // decimal point allowed only if at least 5 digits before it
+  final index = text.indexOf('.');
+  if (index != -1 && index < 5) {
+    throw FormatException('invalid MGRS coordinate `$text`');
+  }
+
+  // standardise to 10-digit refs - ie metres) (but only if < 10-digit refs,
+  // to allow decimals)
+  final padded = text.length >= 5 ? text : text.padRight(5, '0');
+
+  // parse and truncate to integer
+  final coord = int.tryParse(padded) ?? double.tryParse(padded)?.floor();
+  if (coord == null || coord < 0 || coord > 99999) {
+    throw FormatException('invalid MGRS coordinate `$text`');
+  }
+  return coord;
 }
