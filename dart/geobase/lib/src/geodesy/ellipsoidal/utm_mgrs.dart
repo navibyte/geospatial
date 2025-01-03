@@ -34,32 +34,19 @@ const _e100kLetters = ['ABCDEFGH', 'JKLMNPQR', 'STUVWXYZ'];
 /// 100km grid square row (‘n’) letters repeat every other zone
 const _n100kLetters = ['ABCDEFGHJKLMNPQRSTUV', 'FGHJKLMNPQRSTUVABCDE'];
 
-/// {@template geobase.geodesy.mgrs.about}
+/// A grid zone as a polygon of 6° × 8° in MGRS/NATO grid references.
 ///
-/// Military Grid Reference System (MGRS/NATO) grid references, with methods to
-/// parse references, and to convert between MGRS references and UTM
-/// coordinates.
+/// Grid zones are identified by grid zone designator (GZD) like `31U` with
+/// 6° longitudinal [zone] and 8° latitudinal [band].
 ///
-/// Military Grid Reference System (MGRS/NATO) grid references provides
-/// geocoordinate references covering the entire globe, based on the UTM
-/// projection.
+/// According to
+/// [Wikipedia](https://en.wikipedia.org/wiki/Military_Grid_Reference_System)
+/// the intersection of a UTM zone and a latitude band is (normally) a 6° × 8°
+/// polygon called a *grid zone*.
 ///
-/// MGRS references comprise a grid zone designator, a 100km square
-/// identification, and an easting and northing (in metres); e.g.
-/// ‘31U DQ 48251 11932’.
-///
-/// Depending on requirements, some parts of the reference may be omitted
-/// (implied), and eastings/northings may be given to varying resolution.
-///
-/// See also [Military Grid Reference System](https://en.wikipedia.org/wiki/Military_Grid_Reference_System)
-/// in Wikipedia for more information.
-///
-/// Other refererences:
-/// * [US National Grid](www.fgdc.gov/standards/projects/FGDC-standards-projects/usng/fgdc_std_011_2001_usng.pdf)
-///
-/// {@endtemplate}
+/// See [Mgrs] for more information and representing MGRS grid references.
 @immutable
-class Mgrs {
+class MgrsGridZone {
   /// {@macro geobase.geodesy.utm.zone}
   final int zone;
 
@@ -70,6 +57,64 @@ class Mgrs {
   /// {@endtemplate}
   final String band;
 
+  /// Creates a MGRS grid zone with [zone] and [band].
+  ///
+  /// {@macro geobase.geodesy.utm.zone}
+  ///
+  /// {@macro geobase.geodesy.mgrs.band}
+  ///
+  /// Throws a [FormatException] if MGRS zone or band is invalid.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  ///   // MGRS grid zone with zone 31 and band U.
+  ///   final mgrsGridZone = MgrsGridZone(31, 'U');
+  /// ```
+  factory MgrsGridZone(int zone, String band) {
+    // validate zone
+    if (!(1 <= zone && zone <= 60)) {
+      throw FormatException('invalid MGRS zone $zone');
+    }
+
+    // validate band
+    if (band.length != 1 || !_latBands.contains(band)) {
+      throw FormatException('invalid MGRS band `$band`');
+    }
+
+    return MgrsGridZone._coordinates(
+      zone,
+      band,
+    );
+  }
+
+  const MgrsGridZone._coordinates(
+    this.zone,
+    this.band,
+  );
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MgrsGridZone && zone == other.zone && band == other.band);
+
+  @override
+  int get hashCode => Object.hash(zone, band);
+}
+
+/// The 100km grid square (or the 100,000-meter square identifier) as a part of
+/// the grid zone in MGRS/NATO grid references.
+///
+/// Grid squares are identified by grid zone designators (GZD) like `31U`, see
+/// [MgrsGridZone], and 100 km Grid Square IDs like `DQ`.
+///
+/// According to
+/// [Wikipedia](https://en.wikipedia.org/wiki/Military_Grid_Reference_System)
+/// each UTM zone is divided into 100,000 meter squares, so that their corners
+/// have UTM-coordinates that are multiples of 100,000 meters.
+///
+/// See [Mgrs] for more information and representing MGRS grid references.
+class MgrsGridSquare extends MgrsGridZone {
   /// {@template geobase.geodesy.mgrs.e100k}
   ///
   /// The [e100k] represents the first letter (E) of a 100km grid square.
@@ -83,6 +128,109 @@ class Mgrs {
   ///
   /// {@endtemplate}
   final String n100k;
+
+  /// Creates a MGRS 100km grid square with [zone], [band], [e100k] and [n100k].
+  ///
+  /// {@macro geobase.geodesy.utm.zone}
+  ///
+  /// {@macro geobase.geodesy.mgrs.band}
+  ///
+  /// {@macro geobase.geodesy.mgrs.e100k}
+  ///
+  /// {@macro geobase.geodesy.mgrs.n100k}
+  ///
+  /// Throws a [FormatException] if MGRS zone, band, e100k or n100k is invalid.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  ///   // MGRS grid square with zone 31, band U, 100 km grid DQ.
+  ///   final mgrsGridSquare = MgrsGridSquare(31, 'U', 'D', 'Q');
+  /// ```
+  factory MgrsGridSquare(
+    int zone,
+    String band,
+    String e100k,
+    String n100k,
+  ) {
+    // validate zone
+    if (!(1 <= zone && zone <= 60)) {
+      throw FormatException('invalid MGRS zone $zone');
+    }
+
+    // validate band and 100km grid square letters
+    final errors = <String>[];
+    if (band.length != 1 || !_latBands.contains(band)) {
+      errors.add('invalid MGRS band `$band`');
+    }
+    if (e100k.length != 1 || !_e100kLetters[(zone - 1) % 3].contains(e100k)) {
+      errors
+          .add('invalid MGRS 100km grid square column `$e100k` for zone $zone');
+    }
+    if (n100k.length != 1 || !_n100kLetters[0].contains(n100k)) {
+      errors.add('invalid MGRS 100km grid square row `$n100k`');
+    }
+    if (errors.isNotEmpty) {
+      throw FormatException(errors.join(', '));
+    }
+
+    return MgrsGridSquare._coordinates(
+      zone,
+      band,
+      e100k,
+      n100k,
+    );
+  }
+
+  const MgrsGridSquare._coordinates(
+    super.zone,
+    super.band,
+    this.e100k,
+    this.n100k,
+  ) : super._coordinates();
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MgrsGridSquare &&
+          zone == other.zone &&
+          band == other.band &&
+          e100k == other.e100k &&
+          n100k == other.n100k);
+
+  @override
+  int get hashCode => Object.hash(zone, band, e100k, n100k);
+}
+
+/// {@template geobase.geodesy.mgrs.about}
+///
+/// Military Grid Reference System (MGRS/NATO) grid references, with methods to
+/// parse references, and to convert between MGRS references and UTM
+/// coordinates.
+///
+/// Military Grid Reference System (MGRS/NATO) grid references provides
+/// geocoordinate references covering the entire globe, based on the UTM
+/// projection.
+///
+/// MGRS references comprise a grid zone designator (GZD) (see [MgrsGridZone]),
+/// a 100km square identification (see [MgrsGridSquare]), and an easting and
+/// northing (in metres); e.g. ‘31U DQ 48251 11932’.
+///
+/// Depending on requirements, some parts of the reference may be omitted
+/// (implied), and eastings/northings may be given to varying resolution.
+///
+/// See also [Military Grid Reference System](https://en.wikipedia.org/wiki/Military_Grid_Reference_System)
+/// in Wikipedia for more information.
+///
+/// Other refererences:
+/// * [US National Grid](www.fgdc.gov/standards/projects/FGDC-standards-projects/usng/fgdc_std_011_2001_usng.pdf)
+///
+/// {@endtemplate}
+@immutable
+class Mgrs {
+  /// The 100km grid square identified by a grid zone designator (GZD) and a
+  /// 00km square identification.
+  final MgrsGridSquare gridSquare;
 
   /// {@template geobase.geodesy.mgrs.easting}
   ///
@@ -119,8 +267,8 @@ class Mgrs {
   ///
   /// {@macro geobase.geodesy.utm.datum}
   ///
-  /// May throw a [FormatException] if MGRS zone, band, e100k, n100k, easting,
-  /// northing or other attributes are invalid.
+  /// Throws a [FormatException] if MGRS zone, band, e100k, n100k, easting or
+  /// northing is invalid.
   ///
   /// Examples:
   ///
@@ -140,22 +288,17 @@ class Mgrs {
     int northing, {
     Datum datum = Datum.WGS84,
   }) {
-    // validate zone
-    if (!(1 <= zone && zone <= 60)) {
-      throw FormatException('invalid MGRS zone $zone');
-    }
+    // create 100 km grid square, validating zone, band and 100km grid square
+    // letters (e100k and n100k)
+    final gridSquare = MgrsGridSquare._coordinates(
+      zone,
+      band,
+      e100k,
+      n100k,
+    );
 
-    // validate band, 100km grid square letters, easting and northing
+    // validate easting and northing
     final errors = <String>[];
-    if (band.length != 1 || !_latBands.contains(band)) {
-      errors.add('invalid MGRS band `$band`');
-    }
-    if (e100k.length != 1 || !_e100kLetters[(zone - 1) % 3].contains(e100k)) {
-      errors.add('invalid MGRS 100km grid square column `$e100k` for zone $zone');
-    }
-    if (n100k.length != 1 || !_n100kLetters[0].contains(n100k)) {
-      errors.add('invalid MGRS 100km grid square row `$n100k`');
-    }
     if (easting < 0 || easting > 99999) {
       errors.add('invalid MGRS easting `$easting`');
     }
@@ -167,10 +310,7 @@ class Mgrs {
     }
 
     return Mgrs._coordinates(
-      zone,
-      band,
-      e100k,
-      n100k,
+      gridSquare,
       easting,
       northing,
       datum: datum,
@@ -178,10 +318,7 @@ class Mgrs {
   }
 
   const Mgrs._coordinates(
-    this.zone,
-    this.band,
-    this.e100k,
-    this.n100k,
+    this.gridSquare,
     this.easting,
     this.northing, {
     required this.datum,
@@ -191,15 +328,11 @@ class Mgrs {
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Mgrs &&
-          zone == other.zone &&
-          band == other.band &&
-          e100k == other.e100k &&
-          n100k == other.n100k &&
+          gridSquare == other.gridSquare &&
           easting == other.easting &&
           northing == other.northing &&
           datum == other.datum);
 
   @override
-  int get hashCode =>
-      Object.hash(zone, band, e100k, n100k, easting, northing, datum);
+  int get hashCode => Object.hash(gridSquare, easting, northing, datum);
 }
