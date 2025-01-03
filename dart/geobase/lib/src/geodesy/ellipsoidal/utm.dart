@@ -151,10 +151,11 @@ class Utm {
   ///
   /// {@template geobase.geodesy.utm.projected}
   ///
-  /// Easting is in metres from false easting (-500km from central meridian).
+  /// Easting is in metres from the false easting (-500km from the central
+  /// meridian).
   ///
-  /// Northing is in metres from equator (N) or from false northing -10,000km
-  /// (S).
+  /// Northing is in metres from the equator (N) or from the false northing
+  /// -10,000km (S).
   ///
   /// 2D positions are constructed as `Projected(x: easting, y: northing)`
   /// and 3D positions as `Projected(x: easting, y: northing, z: elev)`.
@@ -164,7 +165,21 @@ class Utm {
   /// coordinates.
   ///
   /// {@endtemplate}
+  ///
+  /// See also [easting] and [northing] for direct access to the coordinates.
   final Projected projected;
+
+  /// The easting (x) in metres from the false easting (-500km from the central
+  /// meridian).
+  ///
+  /// See also [projected] for the full UTM projected position.
+  double get easting => projected.x;
+
+  /// The northing (y) in metres from the equator (N) or from the false northing
+  /// -10,000km (S).
+  ///
+  /// See also [projected] for the full UTM projected position.
+  double get northing => projected.y;
 
   /// The datum used for calculations with a reference ellipsoid and datum
   /// transformation parameters.
@@ -722,9 +737,6 @@ class Utm {
   ///
   /// See also [toGeographic] for a method returning a geographic position only.
   UtmMeta<Ellipsoidal> toEllipsoidalMeta({bool roundResults = true}) {
-    final easting = projected.x;
-    final northing = projected.y;
-
     const falseEasting = 500.0e3;
     const falseNorthing = 10000.0e3;
 
