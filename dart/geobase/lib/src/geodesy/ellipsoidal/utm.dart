@@ -413,7 +413,7 @@ class Utm {
   /// {@template geobase.geodesy.utm.fromGeographic}
   ///
   /// Set [zone] to specify a zone explicitely rather than using the
-  /// zone within which the [geographic] position lies. Note that overriding the
+  /// zone within which the geographic position lies. Note that overriding the
   /// UTM zone has the potential to result in negative eastings, and strange
   /// results within Norway/Svalbard exceptions.
   ///

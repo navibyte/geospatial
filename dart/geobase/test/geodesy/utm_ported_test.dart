@@ -144,6 +144,18 @@ void main() {
     });
   });
 
+  group('latitude/longitude -> UTM - ellipsoidal extension', () {
+    test('bergen', () {
+      const geo1 = Geographic(lat: 60.39135, lon: 5.3249);
+      expect(geo1.toUtm().toText(decimals: 2), '32 N 297508.41 6700645.30');
+    });
+
+    test('bergen scale', () {
+      const geo1 = Geographic(lat: 60.39135, lon: 5.3249);
+      expect(geo1.toUtmMeta().scale, 1.000102473211);
+    });
+  });
+
   group('UTM -> latitude/longitude', () {
     test('0,0', () {
       expect(

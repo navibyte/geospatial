@@ -10,16 +10,18 @@ import '/src/coordinates/geographic/geographic.dart';
 
 import 'datum.dart';
 import 'ellipsoidal.dart';
+import 'utm.dart';
 
 /// An extension of the [Geographic] class providing calculations related to the
-/// Earth surface modeled by ellipsoidal reference frames.
+/// Earth surface modeled by ellipsoidal reference frames (or datums).
 ///
 /// {@macro geobase.geodesy.ellipsoidal.overview}
 ///
 /// See also the [Ellipsoidal] base class with alternative way of accessing
-/// these transformations.
+/// these transformations and [Utm] for conversions on projected UTM
+/// coordinates.
 extension EllipsoidalExtension on Geographic {
-  /// Transform this geographic position (latitude and longitude as
+  /// Transfors this geographic position (latitude and longitude as
   /// geodetic coordinates) to geocentric cartesian coordinates (X, Y, Z) based
   /// on the given [datum] or [ellipsoid].
   ///
@@ -30,7 +32,7 @@ extension EllipsoidalExtension on Geographic {
       Ellipsoidal.fromGeographic(this, datum: datum, ellipsoid: ellipsoid)
           .toGeocentricCartesian();
 
-  /// Transform the given [geocentric] cartesian coordinates (X, Y, Z) to
+  /// Transforms the given [geocentric] cartesian coordinates (X, Y, Z) to
   /// geographic coordinates (latitude and longitude) based on the given
   /// [datum] or [ellipsoid].
   ///
@@ -47,4 +49,66 @@ extension EllipsoidalExtension on Geographic {
         datum: datum,
         ellipsoid: ellipsoid,
       ).origin;
+
+  /// Transforms this geographic position (latitude and longitude as
+  /// geodetic coordinates) to projected UTM coordinates with conversions based
+  /// on the [datum].
+  ///
+  /// {@macro geobase.geodesy.ellipsoidal.datum}
+  ///
+  /// {@macro geobase.geodesy.utm.fromGeographic}
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  ///   const geographic = Geographic(lat: 48.8582, lon: 2.2945);
+  ///
+  ///   // UTM projected coordinates: 31 N 448252 5411933
+  ///   final utmCoord = geographic.toUtm(datum: Datum.WGS84);
+  /// ```
+  Utm toUtm({
+    int? zone,
+    Datum datum = Datum.WGS84,
+    bool roundResults = true,
+  }) =>
+      Utm.fromGeographic(
+        this,
+        zone: zone,
+        datum: datum,
+        roundResults: roundResults,
+      );
+
+  /// Transforms this geographic position (latitude and longitude as
+  /// geodetic coordinates) to projected UTM coordinates wrapped inside metadata
+  /// object with conversions based on the [datum].
+  ///
+  /// The metadata includes UTM `convergence` and `scale` at the calculated
+  /// projected position.
+  ///
+  /// {@macro geobase.geodesy.ellipsoidal.datum}
+  ///
+  /// {@macro geobase.geodesy.utm.fromGeographic}
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  ///   const geographic = Geographic(lat: 48.8582, lon: 2.2945);
+  ///
+  ///   // UTM projected coordinates: 31 N 448252 5411933
+  ///   final utmMeta = geographic.toUtmMeta(datum: Datum.WGS84);
+  //    final utmCoord = utmMeta.position;
+  ///   final convergence = utmMeta.convergence;
+  ///   final scale = utmMeta.scale;
+  /// ```
+  UtmMeta<Utm> toUtmMeta({
+    int? zone,
+    Datum datum = Datum.WGS84,
+    bool roundResults = true,
+  }) =>
+      Utm.fromGeographicMeta(
+        this,
+        zone: zone,
+        datum: datum,
+        roundResults: roundResults,
+      );
 }
