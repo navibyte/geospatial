@@ -35,6 +35,7 @@ Dart code file ported to this project | Related original JavaScript code
 [ellipsoidal.dart](lib/src/geodesy/ellipsoidal/ellipsoidal.dart) | [latlon-ellipsoidal.js](https://github.com/chrisveness/geodesy/blob/master/latlon-ellipsoidal.js)
 [ellipsoidal_vincenty.dart](lib/src/geodesy/ellipsoidal/ellipsoidal_vincenty.dart) | [latlon-ellipsoidal-vincenty.js](https://github.com/chrisveness/geodesy/blob/master/latlon-ellipsoidal-vincenty.js)
 [utm.dart](lib/src/geodesy/ellipsoidal/utm.dart) | [utm.js](https://github.com/chrisveness/geodesy/blob/master/utm.js)
+[utm_mgrs.dart](lib/src/geodesy/ellipsoidal/utm_mgrs.dart) | [mgrs.js](https://github.com/chrisveness/geodesy/blob/master/mgrs.js)
 [spherical_great_circle.dart](lib/src/geodesy/spherical/spherical_great_circle.dart) | [latlon-spherical.js](https://github.com/chrisveness/geodesy/blob/master/latlon-spherical.js)
 [spherical_rhumb_line.dart](lib/src/geodesy/spherical/spherical_rhumb_line.dart) | [latlon-spherical.js](https://github.com/chrisveness/geodesy/blob/master/latlon-spherical.js)
 [ellipsoidal_vincenty_test.dart](test/geodesy/ellipsoidal_vincenty_test.dart) | [latlon-ellipsoidal-vincenty-tests.js](https://github.com/chrisveness/geodesy/blob/master/test/latlon-ellipsoidal-vincenty-tests.js)

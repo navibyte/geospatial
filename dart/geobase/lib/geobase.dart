@@ -12,7 +12,7 @@
 /// Key features:
 /// * position, bounding box and positions series (with coordinate arrays)
 /// * geographic (longitude-latitude) and projected positions and bounding boxes
-/// * ellipsoidal (*vincenty*) and spherical (*great circle*, *rhumb line*) geodesy tools
+/// * ellipsoidal (*vincenty*) and spherical (*great circle*, *rhumb line*) geodesy tools, with UTM and MGRS coordinate conversions
 /// * geometric functions for cartesian calculations
 /// * simple geometries (point, line string, polygon, multi point, multi line string, multi polygon, geometry collection)
 /// * features (with id, properties and geometry) and feature collections
@@ -74,6 +74,7 @@ export 'src/geodesy/ellipsoidal/ellipsoidal.dart';
 export 'src/geodesy/ellipsoidal/ellipsoidal_extension.dart';
 export 'src/geodesy/ellipsoidal/ellipsoidal_vincenty.dart';
 export 'src/geodesy/ellipsoidal/utm.dart';
+export 'src/geodesy/ellipsoidal/utm_mgrs.dart';
 export 'src/geodesy/spherical/spherical_great_circle.dart';
 export 'src/geodesy/spherical/spherical_rhumb_line.dart';
 

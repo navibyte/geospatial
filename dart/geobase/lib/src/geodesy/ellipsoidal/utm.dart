@@ -195,6 +195,8 @@ class Utm {
   /// {@macro geobase.geodesy.utm.hemisphere}
   ///
   /// {@macro geobase.geodesy.utm.projected}
+  /// 
+  /// {@macro geobase.geodesy.utm.datum}
   ///
   /// If [verifyEN] is true it's validated that easting/northing is within
   /// 'normal' values (may be suppressed for extended coherent coordinates or
@@ -258,7 +260,12 @@ class Utm {
   ///
   /// If [swapXY] is true, then swaps x and y for the result.
   ///
-  /// {@macro geobase.geodesy.ellipsoidal.datum}
+  /// {@template geobase.geodesy.utm.datum}
+  /// 
+  /// Use [datum] to set the datum for calculations with a reference ellipsoid
+  /// and datum transformation parameters.
+  /// 
+  /// {@endtemplate}
   ///
   /// Throws FormatException if coordinates are invalid.
   ///
@@ -315,7 +322,7 @@ class Utm {
   ///
   /// {@macro geobase.geodesy.utm.fromGeographic}
   ///
-  /// {@macro geobase.geodesy.ellipsoidal.datum}
+  /// {@macro geobase.geodesy.utm.datum}
   ///
   /// Examples:
   ///
@@ -386,10 +393,10 @@ class Utm {
   /// Creates projected UTM coordinates by converting it from a [geographic]
   /// position based on the [datum].
   ///
-  /// {@macro geobase.geodesy.ellipsoidal.datum}
-  ///
   /// {@macro geobase.geodesy.utm.fromGeographic}
   ///
+  /// {@macro geobase.geodesy.utm.datum}
+  /// 
   /// Examples:
   ///
   /// ```dart
@@ -423,8 +430,6 @@ class Utm {
   /// The metadata includes UTM `convergence` and `scale` at the calculated
   /// projected position.
   ///
-  /// {@macro geobase.geodesy.ellipsoidal.datum}
-  ///
   /// {@template geobase.geodesy.utm.fromGeographic}
   ///
   /// Set [zone] to specify a zone explicitely rather than using the
@@ -440,6 +445,8 @@ class Utm {
   ///
   /// {@endtemplate}
   ///
+  /// {@macro geobase.geodesy.utm.datum}
+  /// 
   /// Examples:
   ///
   /// ```dart
