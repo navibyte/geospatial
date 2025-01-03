@@ -317,11 +317,13 @@ class Utm {
     Position geocentric, {
     int? zone,
     Datum datum = Datum.WGS84,
+    bool roundResults = true,
   }) {
     return Utm.fromGeographicMeta(
       EllipsoidalExtension.fromGeocentricCartesian(geocentric, datum: datum),
       zone: zone,
       datum: datum,
+      roundResults: roundResults,
     ).position;
   }
 
@@ -347,6 +349,7 @@ class Utm {
   factory Utm.fromEllipsoidal(
     Ellipsoidal ellipsoidal, {
     int? zone,
+    bool roundResults = true,
   }) {
     var datum = ellipsoidal.datum;
     if (datum == null) {
@@ -361,6 +364,7 @@ class Utm {
       ellipsoidal.origin,
       zone: zone,
       datum: datum,
+      roundResults: roundResults,
     ).position;
   }
 
@@ -383,11 +387,13 @@ class Utm {
     Geographic geographic, {
     int? zone,
     Datum datum = Datum.WGS84,
+    bool roundResults = true,
   }) {
     return Utm.fromGeographicMeta(
       geographic,
       zone: zone,
       datum: datum,
+      roundResults: roundResults,
     ).position;
   }
 
@@ -411,6 +417,9 @@ class Utm {
   /// UTM zone has the potential to result in negative eastings, and strange
   /// results within Norway/Svalbard exceptions.
   ///
+  /// If [roundResults] is true (default), then the results are rounded to the
+  /// reasonable precision, that is nm precision (1nm = 10^-14°).
+  ///
   /// Throws FormatException if coordinates are invalid (eg. latitude outside
   /// UTM limits).
   ///
@@ -431,6 +440,7 @@ class Utm {
     Geographic geographic, {
     int? zone,
     Datum datum = Datum.WGS84,
+    bool roundResults = true,
   }) {
     final lat = geographic.lat;
     final lon = geographic.lon;
@@ -601,11 +611,17 @@ class Utm {
       northing = northing + falseNorthing;
     }
 
-    // round to reasonable precision
-    easting = double.parse(easting.toStringAsFixed(9)); // nm precision
-    northing = double.parse(northing.toStringAsFixed(9)); // nm precision
-    final convergence = double.parse(gamma.toDegrees().toStringAsFixed(9));
-    final scale = double.parse(k.toStringAsFixed(12));
+    // round to reasonable precision when requested (roundResults is true)
+    easting = roundResults
+        ? double.parse(easting.toStringAsFixed(9)) // nm precision
+        : easting;
+    northing = roundResults
+        ? double.parse(northing.toStringAsFixed(9)) // nm precision
+        : northing;
+    final convergence = roundResults
+        ? double.parse(gamma.toDegrees().toStringAsFixed(9))
+        : gamma.toDegrees();
+    final scale = roundResults ? double.parse(k.toStringAsFixed(12)) : k;
 
     // hemisphere
     final h = lat >= 0 ? Hemisphere.north : Hemisphere.south;
@@ -639,6 +655,9 @@ class Utm {
   /// results accurate to 5nm for distances up to 3900km from the central
   /// meridian.
   ///
+  /// If [roundResults] is true (default), then the results are rounded to the
+  /// reasonable precision, that is nm precision (1nm = 10^-14°).
+  ///
   /// {@endtemplate}
   ///
   /// This method returns a [Geographic] position object.
@@ -653,7 +672,8 @@ class Utm {
   ///
   /// See also [toGeographicMeta] and [toEllipsoidalMeta] for methods returning
   /// a geographic position with metadata.
-  Geographic toGeographic() => toEllipsoidalMeta().position.origin;
+  Geographic toGeographic({bool roundResults = true}) =>
+      toEllipsoidalMeta(roundResults: roundResults).position.origin;
 
   /// {@macro geobase.geodesy.utm.unproject}
   ///
@@ -673,8 +693,8 @@ class Utm {
   /// ```
   ///
   /// See also [toGeographic] for a method returning a geographic position only.
-  UtmMeta<Geographic> toGeographicMeta() {
-    final meta = toEllipsoidalMeta();
+  UtmMeta<Geographic> toGeographicMeta({bool roundResults = true}) {
+    final meta = toEllipsoidalMeta(roundResults: roundResults);
     return UtmMeta(
       meta.position.origin,
       convergence: meta.convergence,
@@ -701,7 +721,7 @@ class Utm {
   /// ```
   ///
   /// See also [toGeographic] for a method returning a geographic position only.
-  UtmMeta<Ellipsoidal> toEllipsoidalMeta() {
+  UtmMeta<Ellipsoidal> toEllipsoidalMeta({bool roundResults = true}) {
     final easting = projected.x;
     final northing = projected.y;
 
@@ -822,13 +842,19 @@ class Utm {
     // move λ from zonal to global coordinates
     lambda += lambda0;
 
-    // round to reasonable precision
+    // round to reasonable precision when requested (roundResults is true)
     // nm precision (1nm = 10^-14°)
-    final lat = double.parse(phi.toDegrees().toStringAsFixed(14));
+    final lat = roundResults
+        ? double.parse(phi.toDegrees().toStringAsFixed(14))
+        : phi.toDegrees();
     // (strictly lat rounding should be φ⋅cosφ!)
-    final lon = double.parse(lambda.toDegrees().toStringAsFixed(14));
-    final convergence = double.parse(gamma.toDegrees().toStringAsFixed(9));
-    final scale = double.parse(k.toStringAsFixed(12));
+    final lon = roundResults
+        ? double.parse(lambda.toDegrees().toStringAsFixed(14))
+        : lambda.toDegrees();
+    final convergence = roundResults
+        ? double.parse(gamma.toDegrees().toStringAsFixed(9))
+        : gamma.toDegrees();
+    final scale = roundResults ? double.parse(k.toStringAsFixed(12)) : k;
 
     // unprojected geographic position
     final geographic = Geographic(

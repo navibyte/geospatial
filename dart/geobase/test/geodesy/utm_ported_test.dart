@@ -209,6 +209,14 @@ void main() {
       expect(Utm.parse('32 N 297508.410 6700645.296').toGeographicMeta().scale,
           1.000102473212);
     });
+
+    test('bergen scale - no rounding', () {
+      expect(
+          Utm.parse('32 N 297508.410 6700645.296')
+              .toGeographicMeta(roundResults: false)
+              .scale,
+          1.0001024732117445);
+    });
   });
 
   group('ED50 conversion', () {
