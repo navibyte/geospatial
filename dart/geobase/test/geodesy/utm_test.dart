@@ -166,15 +166,6 @@ void main() {
           '31 N 5411932 448251');
     });
 
-    test('Utm.fromGeocentricCartesian examples', () {
-      const geographic = Geographic(lat: 48.8582, lon: 2.2945);
-      final geocentric = geographic.toGeocentricCartesian(datum: Datum.WGS84);
-
-      final utmCoord =
-          Utm.fromGeocentricCartesian(geocentric, datum: Datum.WGS84);
-      expect(utmCoord.toText(), '31 N 448252 5411933');
-    });
-
     test('Utm.fromEllipsoidal examples', () {
       const geographic = Geographic(lat: 48.8582, lon: 2.2945);
       final ellipsoidal =

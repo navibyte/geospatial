@@ -37,7 +37,6 @@ import '/src/utils/math_utils.dart';
 
 import 'datum.dart';
 import 'ellipsoidal.dart';
-import 'ellipsoidal_extension.dart';
 import 'utm_mgrs.dart';
 
 /// {@template geobase.geodesy.utm.meta}
@@ -317,39 +316,6 @@ class Utm {
     required this.projected,
     required this.datum,
   });
-
-  /// Creates projected UTM coordinates by converting it from a [geocentric]
-  /// cartesian position based on the [datum].
-  ///
-  /// {@macro geobase.geodesy.ellipsoidal.ecef}
-  ///
-  /// {@macro geobase.geodesy.utm.fromGeographic}
-  ///
-  /// {@macro geobase.geodesy.utm.datum}
-  ///
-  /// Examples:
-  ///
-  /// ```dart
-  ///   const geographic = Geographic(lat: 48.8582, lon: 2.2945);
-  ///   final geocentric = geographic.toGeocentricCartesian(datum: Datum.WGS84);
-  ///
-  ///   // UTM projected coordinates: 31 N 448252 5411933
-  ///   final utmCoord =
-  ///       Utm.fromGeocentricCartesian(geocentric, datum: Datum.WGS84);
-  /// ```
-  factory Utm.fromGeocentricCartesian(
-    Position geocentric, {
-    int? zone,
-    Datum datum = Datum.WGS84,
-    bool roundResults = true,
-  }) {
-    return Utm.fromGeographicMeta(
-      EllipsoidalExtension.fromGeocentricCartesian(geocentric, datum: datum),
-      zone: zone,
-      datum: datum,
-      roundResults: roundResults,
-    ).position;
-  }
 
   /// Creates projected UTM coordinates by converting it from an [ellipsoidal]
   /// position that contains the geographic `origin` position and an optional
