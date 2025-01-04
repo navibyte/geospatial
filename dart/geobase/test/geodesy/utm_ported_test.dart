@@ -444,8 +444,8 @@ void main() {
     });
 
     test('01Q ≡ UTM 01P', () {
-      expect(Mgrs.parse('01Q ET 00000 68935').toUtm().toText(),
-          '1 N 500000 1768935');
+      expect(Mgrs.parse('01Q ET 00000 68935').toUtm().toText(zeroPadZone: true),
+          '01 N 500000 1768935');
     });
 
     // use correct latitude band base northing [#73]

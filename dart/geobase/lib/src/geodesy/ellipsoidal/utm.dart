@@ -25,6 +25,7 @@ import 'dart:math';
 
 import 'package:meta/meta.dart';
 
+import '/src/common/codes/coords.dart';
 import '/src/common/codes/hemisphere.dart';
 import '/src/common/constants/geodetic.dart';
 import '/src/common/functions/position_functions.dart';
@@ -903,6 +904,8 @@ class Utm {
   ///   final utmCoord = Utm(31, 'N', 448251, 5411932);
   ///   final mgrsRef = utmCoord.toMgrs(); // 31U DQ 48251 11932
   /// ```
+  /// 
+  /// See [Mgrs.fromUtm] for more details.
   Mgrs toMgrs() => Mgrs.fromUtm(this);
 
   /// The UTM coordinate string representation with values separated by
@@ -915,6 +918,12 @@ class Utm {
   ///
   /// Set [swapXY] to true to print y (or northing) before x (or easting).
   ///
+  /// Set [formatAlsoElevM] to true if any elevation or m coordinate values
+  /// optionally present in the [projected] position should be written on the
+  /// text output (`z` is elevation, `m` is optional M value).
+  ///
+  /// {@macro geobase.geodesy.mgrs.zoneLeadingZero}
+  ///
   /// Examples:
   ///
   /// ```dart
@@ -926,15 +935,26 @@ class Utm {
     int decimals = 0,
     bool compactNums = true,
     bool swapXY = false,
+    bool formatAlsoElevM = false,
+    bool zeroPadZone = false,
   }) {
+    // ensure leading zeros on zone if `zeroPadZone` is set true
+    final zPadded =
+        zeroPadZone ? zone.toString().padLeft(2, '0') : zone.toString();
+
     final buf = StringBuffer()
-      ..write(zone)
+      ..write(zPadded)
       ..write(delimiter)
       ..write(hemisphere.symbol)
       ..write(delimiter);
 
+    var pos = projected;
+    if (!formatAlsoElevM && (pos.is3D || pos.isMeasured)) {
+      pos = pos.copyByType(Coords.xy);
+    }
+
     Position.writeValues(
-      projected,
+      pos,
       buf,
       delimiter: delimiter,
       decimals: decimals,

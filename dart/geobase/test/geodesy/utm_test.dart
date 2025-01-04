@@ -156,8 +156,10 @@ void main() {
   group('UTM parse and text formats', () {
     test('Utm.parse examples', () {
       expect(Utm.parse('31 N 448251 5411932').toText(), '31 N 448251 5411932');
-      expect(Utm.parse('31 N 448251 5411932 100').toText(),
+      expect(Utm.parse('31 N 448251 5411932 100').toText(formatAlsoElevM: true),
           '31 N 448251 5411932 100');
+      expect(
+          Utm.parse('31 N 448251 5411932 100').toText(), '31 N 448251 5411932');
       expect(Utm.parse('31 N 5411932 448251', swapXY: true).toText(),
           '31 N 448251 5411932');
       expect(Utm.parse('31 N 448251 5411932').toText(swapXY: true),
@@ -170,7 +172,7 @@ void main() {
 
       final utmCoord =
           Utm.fromGeocentricCartesian(geocentric, datum: Datum.WGS84);
-      expect(utmCoord.toText(), '31 N 448252 5411933 0');
+      expect(utmCoord.toText(), '31 N 448252 5411933');
     });
 
     test('Utm.fromEllipsoidal examples', () {
