@@ -26,7 +26,7 @@ Key features:
 * 🧩 simple geometries (point, line string, polygon, multi point, multi line string, multi polygon, geometry collection)
 * 📏 cartesian 2D calculations (centroid, polylabel, point-in-polygon, distance).
 * 🔷 features (with id, properties and geometry) and feature collections
-* 📐 ellipsoidal (*vincenty*) and spherical (*great circle*, *rhumb line*) geodesy tools
+* 📐 ellipsoidal (*vincenty*) and spherical (*great circle*, *rhumb line*) geodesy tools, with [UTM](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system) and [MGRS](https://en.wikipedia.org/wiki/Military_Grid_Reference_System) coordinate conversions
 * 📅 temporal data structures (instant, interval) and spatial extents
 * 📃 vector data formats supported ([GeoJSON](https://geojson.org/), [Newline-delimited GeoJSON](https://stevage.github.io/ndgeojson/), [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry), [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary)
 )
@@ -158,6 +158,32 @@ Coordinates for *pixels* and *tiles* in tiling schemes:
   // final bearings, and distance between points.
   greenwich.vincenty().inverse(sydney);
   greenwich.vincenty().direct(distance: 10000, bearing: 61.0);
+```
+
+Universal Transverse Mercator (UTM) coordinates and Military Grid Reference
+System (MGRS) references based on the WGS84 ellipsoid are supported:
+
+```dart
+  // sample geographic position
+  final eiffel = Geographic(lat: 48.8582, lon: 2.2945);
+
+  // UTM coordinates for the position
+  final eiffelUtm = eiffel.toUtm();
+  print(eiffelUtm.toText()); // "31 N 448252 5411933"
+
+  // It's also possible to convert between UTM coordinates and MGRS references
+  print(eiffelUtm.toMgrs().toText()); // "31U DQ 48251 11932"
+
+  // UTM coordinates can be converted back to geographic coordinates;
+  print(eiffelUtm.toGeographic().latLonDms()); // "48.8582°N, 2.2945°E"
+
+  // MGRS references can be constructed from components too (4Q FJ 12345 67890)
+  final honoluluMgrs = Mgrs(4, 'Q', 'F', 'J', 12345, 67890);
+
+  // MGRS references can be printed in different precisions
+  print(honoluluMgrs.toText(digits: 8)); // "4Q FJ 1234 6789" (10 m precision)
+  print(honoluluMgrs.toText(digits: 4)); // "4Q FJ 12 67" (1 km precision)
+  print(honoluluMgrs.gridSquare.toText()); // "4Q FJ" (100 km precision)
 ```
 
 Geometry primitive and multi geometry objects:
@@ -372,7 +398,7 @@ Package                | Description
 ---------------------- | ----------- 
 **common**             | Common codes, constants, functions, presentation helpers and reference systems related to geospatial applications.
 **coordinates**        | Position, bounding box and positions series (with coordinate arrays).
-**geodesy**            | Ellipsoidal (*vincenty*) and spherical (*great circle*, *rhumb line*) geodesy tools.
+**geodesy**            | Ellipsoidal (*vincenty*) and spherical (*great circle*, *rhumb line*) geodesy tools, with UTM and MGRS coordinate conversions.
 **geometric**          | Cartesian 2D calculations (centroid, polylabel, point-in-polygon, distance).
 **meta**               | Temporal data structures (instant, interval) and spatial extents.
 **projections**        | Geospatial projections (currently only between WGS84 and Web Mercator).

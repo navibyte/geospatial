@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2025 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -33,6 +33,7 @@ void main() {
   _ellipsoidalGeodesyVincenty();
   _sphericalGeodesyGreatCircle();
   _sphericalGeodesyRhumbLine();
+  _utmAndMgrs();
 
   // geometric
   _geometricCartesianPolygon();
@@ -173,6 +174,32 @@ void _intro() {
   // final bearings, and distance between points.
   greenwich.vincenty().inverse(sydney);
   greenwich.vincenty().direct(distance: 10000, bearing: 61.0);
+
+  // -------
+
+  // Universal Transverse Mercator (UTM) coordinates and Military Grid Reference
+  // System (MGRS) references based on the WGS84 ellipsoid are supported.
+
+  // sample geographic position
+  final eiffel = Geographic(lat: 48.8582, lon: 2.2945);
+
+  // UTM coordinates for the position
+  final eiffelUtm = eiffel.toUtm();
+  print(eiffelUtm.toText()); // "31 N 448252 5411933"
+
+  // It's also possible to convert between UTM coordinates and MGRS references
+  print(eiffelUtm.toMgrs().toText()); // "31U DQ 48251 11932"
+
+  // UTM coordinates can be converted back to geographic coordinates;
+  print(eiffelUtm.toGeographic().latLonDms()); // "48.8582°N, 2.2945°E"
+
+  // MGRS references can be constructed from components too (4Q FJ 12345 67890)
+  final honoluluMgrs = Mgrs(4, 'Q', 'F', 'J', 12345, 67890);
+
+  // MGRS references can be printed in different precisions
+  print(honoluluMgrs.toText(digits: 8)); // "4Q FJ 1234 6789" (10 m precision)
+  print(honoluluMgrs.toText(digits: 4)); // "4Q FJ 12 67" (1 km precision)
+  print(honoluluMgrs.gridSquare.toText()); // "4Q FJ" (100 km precision)
 
   // -------
 
@@ -833,6 +860,71 @@ void _sphericalGeodesyRhumbLine() {
   // prints: 8° 48.27′ N, 80° 43.98′ E
   final midPoint = greenwich.rhumb.midPointTo(sydney);
   print(midPoint.latLonDms(format: dm));
+}
+
+void _utmAndMgrs() {
+  // Universal Transverse Mercator (UTM) coordinates and Military Grid Reference
+  // System (MGRS) references are based on the WGS84 ellipsoid.
+
+  // sample geographic position
+  final eiffel = Geographic(lat: 48.8582, lon: 2.2945);
+
+  // UTM coordinates for the position
+  final eiffelUtm = eiffel.toUtm();
+  print(eiffelUtm.toText()); // "31 N 448252 5411933"
+  print(eiffelUtm.zone); // "31" (longitudinal zone)
+  print(eiffelUtm.hemisphere.symbol); // "N" (hemisphere, N or S)
+  // UTM easting and northing are floating point values in meters
+  print(eiffelUtm.easting.toStringAsFixed(3)); // "448251.795"
+  print(eiffelUtm.northing.toStringAsFixed(3)); // "5411932.678"
+  // the projected position contains x (easting) and y (northing) values, with
+  // optional z (elevation) and m (measure) values
+  print(eiffelUtm.projected.toText(decimals: 3)); // "448251.795,5411932.678"
+
+  // UTM references can be constructed from components too
+  final eiffelUtm2 = Utm(31, 'N', eiffelUtm.easting, eiffelUtm.northing);
+  print(eiffelUtm == eiffelUtm2); // "true"
+
+  // MGRS grid reference for the position
+  final eiffelMgrs = eiffel.toMgrs();
+  print(eiffelMgrs.toText()); // "31U DQ 48251 11932"
+  print(eiffelMgrs.gridSquare.zone); // "31" (longitudinal zone)
+  print(eiffelMgrs.gridSquare.band); // "U" (latitudinal band)
+  print(eiffelMgrs.gridSquare.column); // "D" (100km square column)
+  print(eiffelMgrs.gridSquare.row); // "Q" (100km square row)
+  // MGRS easting and northing are integer values in meters, truncated from the
+  // UTM coordinates as MGRS grid references refer to squares rather than points
+  // (both values has a range from 0 to 99999 within a 100 km square)
+  print(eiffelMgrs.easting); // "48251"
+  print(eiffelMgrs.northing); // "11932"
+
+  // It's also possible to convert between UTM coordinates and MGRS references
+  print(eiffelUtm.toMgrs().toText()); // "31U DQ 48251 11932"
+  // Not the same as the original UTM coordinates because of the truncation
+  print(eiffelMgrs.toUtm().toText()); // "31 N 448251 5411932"
+
+  // UTM coordinates can be converted back to geographic coordinates;
+  print(eiffelUtm.toGeographic().latLonDms()); // "48.8582°N, 2.2945°E"
+
+  // MGRS references can be constructed from components too (4Q FJ 12345 67890)
+  final honoluluMgrs = Mgrs(4, 'Q', 'F', 'J', 12345, 67890);
+  final honoluluUtm = honoluluMgrs.toUtm();
+  print(honoluluMgrs.toText()); // "4Q FJ 12345 67890"
+  print(honoluluUtm.toText()); // "4 N 612345 2367890"
+
+  // The `toText()` for UTM has more options for formatting, for example:
+  print(eiffelUtm.toText(decimals: 3)); // "31 N 448251.795 5411932.678"
+  print(honoluluUtm.toText(zeroPadZone: true)); // "04 N 612345 2367890"
+  print(honoluluUtm.toText(swapXY: true)); // "4 N 2367890 612345"
+
+  // Also the `toText()` for MGRS has more options for formatting, for example:
+  print(honoluluMgrs.toText(zeroPadZone: true)); // "04Q FJ 12345 67890"
+  print(honoluluMgrs.toText(militaryStyle: true)); // "4QFJ1234567890"
+
+  // MGRS references can be printed in different precisions
+  print(honoluluMgrs.toText(digits: 8)); // "4Q FJ 1234 6789" (10 m precision)
+  print(honoluluMgrs.toText(digits: 4)); // "4Q FJ 12 67" (1 km precision)
+  print(honoluluMgrs.gridSquare.toText()); // "4Q FJ" (100 km precision)
 }
 
 void _geometricCartesianPolygon() {
