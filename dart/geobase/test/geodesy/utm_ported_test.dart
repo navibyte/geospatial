@@ -53,6 +53,19 @@ void main() {
       expect(
           Mgrs(31, 'U', 'D', 'Q', 48251, 11932).toText(), '31U DQ 48251 11932');
     });
+
+    test('toUtm', () {
+      expect(Mgrs.parse('31U DQ 48251 11932').toUtm().toText(),
+          '31 N 448251 5411932');
+    });
+
+    test('parse', () {
+      expect(Mgrs.parse('31U DQ 48251 11932').toText(), '31U DQ 48251 11932');
+    });
+
+    test('parse military-style', () {
+      expect(Mgrs.parse('31UDQ4825111932').toText(), '31U DQ 48251 11932');
+    });
   });
 
   group('@examples LatLon', () {
@@ -140,7 +153,6 @@ void main() {
   });
 
   group('MGRS parse', () {
-   
     // note Wikipedia considers 4Q & 4Q FJ to be valid MGRS values; this library
     //expects easting & northing;
 
@@ -170,7 +182,7 @@ void main() {
 
     // Defense Mapping Agency Technical Manual 8358.1: Datums, Ellipsoids,
     // Grids, and Grid Reference Systems 3-4
-    
+
     test('DMA 18SUU80', () {
       expect(Mgrs.parse('18SUU80').toText(digits: 2), '18S UU 8 0');
     });
@@ -341,6 +353,169 @@ void main() {
     });
   });
 
+  group('UTM -> MGRS', () {
+    test('0,0', () {
+      expect(Utm.parse('31 N 166021.443081 0.000000').toMgrs().toText(),
+          '31N AA 66021 00000');
+    });
+
+    test('1,1', () {
+      expect(Utm.parse('31 N 277438.263521 110597.972524').toMgrs().toText(),
+          '31N BB 77438 10597');
+    });
+
+    test('-1,-1', () {
+      expect(Utm.parse('30 S 722561.736479 9889402.027476').toMgrs().toText(),
+          '30M YD 22561 89402');
+    });
+
+    test('eiffel tower', () {
+      expect(Utm.parse('31 N 448251.898 5411943.794').toMgrs().toText(),
+          '31U DQ 48251 11943');
+    });
+
+    test('sidney o/h', () {
+      expect(Utm.parse('56 S 334873.199 6252266.092').toMgrs().toText(),
+          '56H LH 34873 52266');
+    });
+
+    test('white house', () {
+      expect(Utm.parse('18 N 323394.296 4307395.634').toMgrs().toText(),
+          '18S UJ 23394 07395');
+    });
+
+    test('rio christ', () {
+      expect(Utm.parse('23 S 683466.254 7460687.433').toMgrs().toText(),
+          '23K PQ 83466 60687');
+    });
+
+    test('bergen', () {
+      expect(Utm.parse('32 N 297508.410 6700645.296').toMgrs().toText(),
+          '32V KN 97508 00645');
+    });
+  });
+
+  group('MGRS -> UTM', () {
+    test('0,0', () {
+      expect(
+          Mgrs.parse('31N AA 66021 00000').toUtm().toText(), '31 N 166021 0');
+    });
+
+    test('1,1', () {
+      expect(Mgrs.parse('31N BB 77438 10597').toUtm().toText(),
+          '31 N 277438 110597');
+    });
+
+    test('-1,-1', () {
+      expect(Mgrs.parse('30M YD 22561 89402').toUtm().toText(),
+          '30 S 722561 9889402');
+    });
+
+    test('eiffel tower', () {
+      expect(Mgrs.parse('31U DQ 48251 11943').toUtm().toText(),
+          '31 N 448251 5411943');
+    });
+
+    test('sidney o/h', () {
+      expect(Mgrs.parse('56H LH 34873 52266').toUtm().toText(),
+          '56 S 334873 6252266');
+    });
+
+    test('white house', () {
+      expect(Mgrs.parse('18S UJ 23394 07395').toUtm().toText(),
+          '18 N 323394 4307395');
+    });
+
+    test('rio christ', () {
+      expect(Mgrs.parse('23K PQ 83466 60687').toUtm().toText(),
+          '23 S 683466 7460687');
+    });
+
+    test('bergen', () {
+      expect(Mgrs.parse('32V KN 97508 00645').toUtm().toText(),
+          '32 N 297508 6700645');
+    });
+
+    // forgiving parsing of 100km squares spanning bands
+
+    test('01P ≡ UTM 01Q', () {
+      expect(Mgrs.parse('01P ET 00000 68935').toUtm().toText(),
+          '1 N 500000 1768935');
+    });
+
+    test('01Q ≡ UTM 01P', () {
+      expect(Mgrs.parse('01Q ET 00000 68935').toUtm().toText(),
+          '1 N 500000 1768935');
+    });
+
+    // use correct latitude band base northing [#73]
+
+    test('nBand @ 3°', () {
+      expect(Utm.parse('31 N 500000 7097014').toMgrs().toUtm().toText(),
+          '31 N 500000 7097014');
+    });
+  });
+
+  group('round-tripping', () {
+    test('David Smith (CCS) N-0°', () {
+      expect(
+          const Geographic(lat: 64, lon: 0)
+              .toUtm()
+              .toMgrs()
+              .toUtm()
+              .toGeographic()
+              .latLonDms(),
+          '64.0000°N, 0.0000°W');
+    });
+
+    test('David Smith (CCS) N-3°', () {
+      expect(
+          const Geographic(lat: 64, lon: 3)
+              .toUtm()
+              .toMgrs()
+              .toUtm()
+              .toGeographic()
+              .latLonDms(),
+          '64.0000°N, 3.0000°E');
+    });
+
+    test('David Smith (CCS) S-0°', () {
+      expect(
+          const Geographic(lat: -64, lon: 0)
+              .toUtm()
+              .toMgrs()
+              .toUtm()
+              .toGeographic()
+              .latLonDms(),
+          '64.0000°S, 0.0000°W');
+    });
+
+    test('David Smith (CCS) S-3°', () {
+      expect(
+          const Geographic(lat: -64, lon: 3)
+              .toUtm()
+              .toMgrs()
+              .toUtm()
+              .toGeographic()
+              .latLonDms(),
+          '64.0000°S, 3.0000°E');
+    });
+
+    test('Rounding error @ 80°S', () {
+      expect(
+          const Geographic(lat: -80, lon: 0).toUtm().toGeographic().latLonDms(),
+          '80.0000°S, 0.0000°E');
+      expect(
+          const Geographic(lat: -80, lon: 0)
+              .toUtm()
+              .toMgrs()
+              .toUtm()
+              .toGeographic()
+              .latLonDms(),
+          '80.0000°S, 0.0000°W');
+    });
+  });
+
   group('ED50 conversion', () {
     const degMinSec = Dms(type: DmsType.degMinSec, decimals: 3);
     final helmertturm = // epsg.io/23033
@@ -392,6 +567,114 @@ void main() {
     test('#10 UTM->LL', () {
       expect(Utm.parse('57 N 450793 8586116').toGeographic().latLonDms(),
           '77.3450°N, 156.9876°E');
+    });
+
+    test('#01 LL->UTM', () {
+      expect(const Geographic(lat: 0.0000, lon: 0.0000).toUtm().toText(),
+          '31 N 166021 0');
+    });
+
+    test('#01 LL->MGRS', () {
+      expect(
+          const Geographic(lat: 0.0000, lon: 0.0000).toUtm().toMgrs().toText(),
+          '31N AA 66021 00000');
+    });
+
+    test('#02 LL->UTM', () {
+      expect(const Geographic(lat: 0.1300, lon: -0.2324).toUtm().toText(),
+          '30 N 808084 14386');
+    });
+
+    test('#02 LL->MGRS', () {
+      expect(
+          const Geographic(lat: 0.1300, lon: -0.2324).toUtm().toMgrs().toText(),
+          '30N ZF 08084 14385');
+    });
+
+    test('#03 LL->UTM', () {
+      expect(const Geographic(lat: -45.6456, lon: 23.3545).toUtm().toText(),
+          '34 S 683474 4942631');
+    });
+
+    test('#03 LL->MGRS', () {
+      expect(
+          const Geographic(lat: -45.6456, lon: 23.3545)
+              .toUtm()
+              .toMgrs()
+              .toText(),
+          '34G FQ 83473 42631');
+    });
+
+    test('#04 LL->UTM', () {
+      expect(const Geographic(lat: -12.7650, lon: -33.8765).toUtm().toText(),
+          '25 S 404859 8588691');
+    });
+
+    test('#04 LL->MGRS', () {
+      expect(
+          const Geographic(lat: -12.7650, lon: -33.8765)
+              .toUtm()
+              .toMgrs()
+              .toText(),
+          '25L DF 04859 88691');
+    });
+
+    test('#09 LL->UTM', () {
+      expect(const Geographic(lat: 23.4578, lon: -135.4545).toUtm().toText(),
+          '8 N 453580 2594273');
+    });
+
+    test('#09 LL->MGRS', () {
+      expect(
+          const Geographic(lat: 23.4578, lon: -135.4545)
+              .toUtm()
+              .toMgrs()
+              .toText(zeroPadZone: true),
+          '08Q ML 53580 94272');
+    });
+
+    test('#10 LL->UTM', () {
+      expect(const Geographic(lat: 77.3450, lon: 156.9876).toUtm().toText(),
+          '57 N 450794 8586116');
+    });
+
+    test('#10 LL->MGRS', () {
+      expect(
+          const Geographic(lat: 77.3450, lon: 156.9876)
+              .toUtm()
+              .toMgrs()
+              .toText(),
+          '57X VF 50793 86116');
+    });
+  });
+
+  group('MGRS varying resolution', () {
+    test('MGRS 4-digit -> UTM', () {
+      expect(
+          Mgrs.parse('12S TC 52 86').toUtm().toText(), '12 N 252000 3786000');
+    });
+
+    test('MGRS 10-digit -> UTM', () {
+      expect(Mgrs.parse('12S TC 52000 86000').toUtm().toText(),
+          '12 N 252000 3786000');
+    });
+
+    test('MGRS 10-digit+decimals', () {
+      expect(
+          Mgrs.parse('12S TC 52000.123 86000.123')
+              .toUtm()
+              .toText(decimals: 3, compactNums: false),
+          '12 N 252000.000 3786000.000');
+    });
+
+    test('MGRS truncate', () {
+      expect(Mgrs.parse('12S TC 52999.999 86999.999').toText(digits: 6),
+          '12S TC 529 869');
+    });
+
+    test('MGRS-UTM truncate', () {
+      expect(Mgrs.parse('12S TC 52999.999 86999.999').toUtm().toText(),
+          '12 N 252999 3786999');
     });
   });
 

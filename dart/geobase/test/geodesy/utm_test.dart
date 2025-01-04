@@ -6,6 +6,8 @@
 
 // ignore_for_file: require_trailing_commas, lines_longer_than_80_chars, avoid_redundant_argument_values
 
+import 'package:geobase/common.dart';
+import 'package:geobase/coordinates.dart';
 import 'package:geobase/geodesy.dart';
 
 import 'package:test/test.dart';
@@ -138,6 +140,90 @@ void main() {
       final mgrsRef2 = Mgrs.parse('4Q FJ 02345 07890');
       expect(mgrsRef2.toText(), '4Q FJ 02345 07890');
       expect(mgrsRef2.toText(zeroPadZone: true), '04Q FJ 02345 07890');
+    });
+  });
+
+  group('UTM parse and text formats', () {
+    test('Utm.parse examples', () {
+      expect(Utm.parse('31 N 448251 5411932').toText(), '31 N 448251 5411932');
+      expect(Utm.parse('31 N 448251 5411932 100').toText(),
+          '31 N 448251 5411932 100');
+      expect(Utm.parse('31 N 5411932 448251', swapXY: true).toText(),
+          '31 N 448251 5411932');
+      expect(Utm.parse('31 N 448251 5411932').toText(swapXY: true),
+          '31 N 5411932 448251');
+    });
+
+    test('Utm.fromGeocentricCartesian examples', () {
+      const geographic = Geographic(lat: 48.8582, lon: 2.2945);
+      final geocentric = geographic.toGeocentricCartesian(datum: Datum.WGS84);
+
+      final utmCoord =
+          Utm.fromGeocentricCartesian(geocentric, datum: Datum.WGS84);
+      expect(utmCoord.toText(), '31 N 448252 5411933 0');
+    });
+
+    test('Utm.fromEllipsoidal examples', () {
+      const geographic = Geographic(lat: 48.8582, lon: 2.2945);
+      final ellipsoidal =
+          Ellipsoidal.fromGeographic(geographic, datum: Datum.WGS84);
+
+      final utmCoord = Utm.fromEllipsoidal(ellipsoidal);
+      expect(utmCoord.toText(), '31 N 448252 5411933');
+    });
+
+    test('Utm.fromGeographic examples', () {
+      const geographic = Geographic(lat: 48.8582, lon: 2.2945);
+      final utmCoord = Utm.fromGeographic(geographic, datum: Datum.WGS84);
+      expect(utmCoord.toText(), '31 N 448252 5411933');
+      expect(utmCoord.toText(decimals: 3), '31 N 448251.795 5411932.678');
+    });
+
+    test('Utm.fromGeographicMeta examples', () {
+      const geographic = Geographic(lat: 48.8582, lon: 2.2945);
+
+      final utmMeta = Utm.fromGeographicMeta(geographic, datum: Datum.WGS84);
+      final utmCoord = utmMeta.position;
+      expect(utmCoord.toText(), '31 N 448252 5411933');
+    });
+
+    test('Utm.toGeographic examples', () {
+      final utm = Utm(31, 'N', 448251.795, 5411932.678);
+      final geographic = utm.toGeographic();
+      expect(geographic.latDms(), '48.8582°N');
+      expect(geographic.lonDms(), '2.2945°E');
+      expect(
+          geographic.latLonDms(
+              format: const Dms(
+                  type: DmsType.degMinSec, decimals: 2, zeroPadDegrees: true)),
+          '48°51′29.52″N, 002°17′40.20″E');
+    });
+
+    test('Utm.toEllipsoidalMeta examples', () {
+      final utm = Utm(31, 'N', 448251.795, 5411932.678);
+      final meta = utm.toEllipsoidalMeta();
+      final geographic = meta.position.origin;
+      expect(geographic.latDms(), '48.8582°N');
+      expect(geographic.lonDms(), '2.2945°E');
+    });
+
+    test('Utm.toMgrs examples', () {
+      final utm = Utm(31, 'N', 448251.795, 5411932.678);
+      final mgrsRef = utm.toMgrs();
+      expect(mgrsRef.toText(), '31U DQ 48251 11932');
+    });
+
+    test('Utm.toText examples', () {
+      final utmCoord = Utm(31, 'N', 448251.0, 5411932.0);
+      expect(utmCoord.toText(), '31 N 448251 5411932');
+    });
+  });
+
+  group('EllipsoidalExtension parse and text formats', () {
+    test('EllipsoidalExtension.toMgrs examples', () {
+      const geographic = Geographic(lat: 48.8582, lon: 2.2945);
+      final mgrsRef = geographic.toMgrs();
+      expect(mgrsRef.toText(), '31U DQ 48251 11932');
     });
   });
 }

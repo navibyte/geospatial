@@ -26,6 +26,7 @@ import 'dart:math';
 import 'package:meta/meta.dart';
 
 import '/src/common/codes/hemisphere.dart';
+import '/src/common/constants/geodetic.dart';
 import '/src/common/functions/position_functions.dart';
 import '/src/common/reference/ellipsoid.dart';
 import '/src/coordinates/base/position.dart';
@@ -36,6 +37,7 @@ import '/src/utils/math_utils.dart';
 import 'datum.dart';
 import 'ellipsoidal.dart';
 import 'ellipsoidal_extension.dart';
+import 'utm_mgrs.dart';
 
 /// {@template geobase.geodesy.utm.meta}
 ///
@@ -195,7 +197,7 @@ class Utm {
   /// {@macro geobase.geodesy.utm.hemisphere}
   ///
   /// {@macro geobase.geodesy.utm.projected}
-  /// 
+  ///
   /// {@macro geobase.geodesy.utm.datum}
   ///
   /// If [verifyEN] is true it's validated that easting/northing is within
@@ -261,10 +263,10 @@ class Utm {
   /// If [swapXY] is true, then swaps x and y for the result.
   ///
   /// {@template geobase.geodesy.utm.datum}
-  /// 
+  ///
   /// Use [datum] to set the datum for calculations with a reference ellipsoid
   /// and datum transformation parameters.
-  /// 
+  ///
   /// {@endtemplate}
   ///
   /// Throws FormatException if coordinates are invalid.
@@ -328,8 +330,7 @@ class Utm {
   ///
   /// ```dart
   ///   const geographic = Geographic(lat: 48.8582, lon: 2.2945);
-  ///   final geocentric =
-  ///       geographic.toGeocentricCartesianDatum(datum: Datum.WGS84);
+  ///   final geocentric = geographic.toGeocentricCartesian(datum: Datum.WGS84);
   ///
   ///   // UTM projected coordinates: 31 N 448252 5411933
   ///   final utmCoord =
@@ -363,7 +364,8 @@ class Utm {
   ///
   /// ```dart
   ///   const geographic = Geographic(lat: 48.8582, lon: 2.2945);
-  ///   final ellipsoidal = Ellipsoidal.datum(geographic, datum: Datum.WGS84);
+  ///   final ellipsoidal =
+  ///       Ellipsoidal.fromGeographic(geographic, datum: Datum.WGS84);
   ///
   ///   // UTM projected coordinates: 31 N 448252 5411933
   ///   final utmCoord = Utm.fromEllipsoidal(ellipsoidal);
@@ -396,7 +398,7 @@ class Utm {
   /// {@macro geobase.geodesy.utm.fromGeographic}
   ///
   /// {@macro geobase.geodesy.utm.datum}
-  /// 
+  ///
   /// Examples:
   ///
   /// ```dart
@@ -446,7 +448,7 @@ class Utm {
   /// {@endtemplate}
   ///
   /// {@macro geobase.geodesy.utm.datum}
-  /// 
+  ///
   /// Examples:
   ///
   /// ```dart
@@ -467,7 +469,7 @@ class Utm {
     final lat = geographic.lat;
     final lon = geographic.lon;
 
-    if (!(-80 <= lat && lat <= 84)) {
+    if (!(minLatitudeUTM <= lat && lat <= maxLatitudeUTM)) {
       throw FormatException('latitude ‘${geographic.lat}’ outside UTM limits');
     }
 
@@ -863,9 +865,10 @@ class Utm {
 
     // round to reasonable precision when requested (roundResults is true)
     // nm precision (1nm = 10^-14°)
-    final lat = roundResults
-        ? double.parse(phi.toDegrees().toStringAsFixed(14))
-        : phi.toDegrees();
+    final lat = (roundResults
+            ? double.parse(phi.toDegrees().toStringAsFixed(14))
+            : phi.toDegrees())
+        .clamp(minLatitudeUTM, maxLatitudeUTM);
     // (strictly lat rounding should be φ⋅cosφ!)
     final lon = roundResults
         ? double.parse(lambda.toDegrees().toStringAsFixed(14))
@@ -889,6 +892,18 @@ class Utm {
       scale: scale,
     );
   }
+
+  /// Converts UTM coordinates of this to the MGRS grid reference.
+  ///
+  /// May throw a FormatException if conversion fails.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  ///   final utmCoord = Utm(31, 'N', 448251, 5411932);
+  ///   final mgrsRef = utmCoord.toMgrs(); // 31U DQ 48251 11932
+  /// ```
+  Mgrs toMgrs() => Mgrs.fromUtm(this);
 
   /// The UTM coordinate string representation with values separated by
   /// [delimiter] (default is whitespace).

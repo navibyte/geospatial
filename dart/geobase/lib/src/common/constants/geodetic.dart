@@ -38,6 +38,18 @@ const minLatitudeWebMercator = -85.05112878;
 /// The value is `85.05112878`.
 const maxLatitudeWebMercator = 85.05112878;
 
+/// The minimum value for the geographic latitude inside the Universal
+/// Transverse Mercator (UTM) projection coverage.
+///
+/// The value is `-80.0`.
+const minLatitudeUTM = -80.0;
+
+/// The maximum value for the geographic latitude inside the Universal
+/// Transverse Mercator (UTM) projection coverage.
+///
+/// The value is `84.0`.
+const maxLatitudeUTM = 84.0;
+
 /// The earth equatorial radius in meters as specified by WGS 84.
 ///
 /// The value is `6378137.0`.

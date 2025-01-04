@@ -25,7 +25,11 @@ import 'dart:math';
 
 import 'package:meta/meta.dart';
 
+import '/src/coordinates/geographic/geographic.dart';
+
 import 'datum.dart';
+import 'ellipsoidal_extension.dart';
+import 'utm.dart';
 
 /// Latitude bands C..X 8° each, covering 80°S to 84°N
 const _latBands = 'CDEFGHJKLMNPQRSTUVWXX'; // X is repeated for 80-84°N
@@ -503,6 +507,111 @@ class Mgrs {
       row,
       easting,
       northing,
+      datum: datum,
+    );
+  }
+
+  /// Creates a MGRS grid reference from projected UTM coordinates.
+  ///
+  /// May throw a FormatException if conversion fails.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  ///   final utmCoord = Utm(31, 'N', 448251, 5411932);
+  ///   final mgrsRef = Mgrs.fromUtm(utmCoord); // 31U DQ 48251 11932
+  /// ```
+  factory Mgrs.fromUtm(Utm utm) {
+    // MGRS zone is same as UTM zone
+    final zone = utm.zone;
+
+    // convert UTM to lat/long to get latitude to determine band
+    final latlong = utm.toGeographic();
+    // grid zones are 8° tall, 0°N is 10th band
+    final band = _latBands[(latlong.lat / 8 + 10)
+        .floor()
+        .clamp(0, _latBands.length - 1)]; // latitude band
+
+    // columns in zone 1 are A-H, zone 2 J-R, zone 3 S-Z, then repeating every
+    // 3rd zone
+    final col = (utm.easting / 100000).floor();
+    // (note -1 because eastings start at 166e3 due to 500km false origin)
+    final e100k = _columnLetters[(zone - 1) % 3][col - 1];
+
+    // rows in even zones are A-V, in odd zones are F-E
+    final row = (utm.northing / 100000).floor() % 20;
+    final n100k = _rowLetters[(zone - 1) % 2][row];
+
+    // truncate easting/northing to within 100km grid square & round to 1-metre
+    // precision
+    final easting = (utm.easting % 100000).floor();
+    final northing = (utm.northing % 100000).floor();
+
+    return Mgrs(
+      zone,
+      band,
+      e100k,
+      n100k,
+      easting,
+      northing,
+      datum: utm.datum,
+    );
+  }
+
+  /// Converts this MGRS grid reference to the UTM projected coordinates.
+  ///
+  /// Grid references refer to squares rather than points (with the size of the
+  /// square indicated by the precision of the reference); this conversion will
+  /// return the UTM coordinate of the SW corner of the grid reference square.
+  ///
+  /// Returns the UTM coordinate of the SW corner of this MGRS grid reference.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  ///   final mgrsRef = Mgrs.parse('31U DQ 48251 11932');
+  ///   final utmCoord = mgrsRef.toUtm(); // 31 N 448251 5411932
+  /// ```
+  Utm toUtm() {
+    final zone = gridSquare.zone;
+    final isNorth =
+        _latBands.indexOf(gridSquare.band) >= _latBands.indexOf('N');
+    final hemisphere = isNorth ? 'N' : 'S';
+
+    // get easting specified by e100k (note +1 because eastings start at 166e3
+    // due to 500km false origin)
+    final col = _columnLetters[(zone - 1) % 3].indexOf(gridSquare.column) + 1;
+    final e100kNum = col * 100000; // e100k in metres
+
+    // get northing specified by n100k
+    final row = _rowLetters[(zone - 1) % 2].indexOf(gridSquare.row);
+    final n100kNum = row * 100000; // n100k in metres
+
+    // latitude of (bottom of) band, 10 bands above the equator, 8°latitude each
+    final latBand = (_latBands.indexOf(gridSquare.band) - 10) * 8;
+
+    // get southern-most northing of bottom of band, using floor() to extend to
+    // include entirety of bottom-most 100km square - note in northern
+    // hemisphere, centre of zone will be furthest south; in southern hemisphere
+    // extremity of zone will be furthest south, so use 3°E / 0°E
+    final position = Geographic(
+      lat: latBand.toDouble(),
+      lon: isNorth ? 3.0 : 0.0,
+    ).toUtm(datum: datum, roundResults: false);
+    final nBand = (position.northing / 100000.0).floor() * 100000;
+
+    // 100km grid square row letters repeat every 2,000km north; add enough
+    // 2,000km blocks to get into required band
+    var n2M = 0; // northing of 2,000km block
+    while (n2M + n100kNum + northing < nBand) {
+      n2M += 2000000;
+    }
+
+    return Utm(
+      gridSquare.zone,
+      hemisphere,
+      (e100kNum + easting).toDouble(),
+      (n2M + n100kNum + northing).toDouble(),
       datum: datum,
     );
   }

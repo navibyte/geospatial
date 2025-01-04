@@ -11,6 +11,7 @@ import '/src/coordinates/geographic/geographic.dart';
 import 'datum.dart';
 import 'ellipsoidal.dart';
 import 'utm.dart';
+import 'utm_mgrs.dart';
 
 /// An extension of the [Geographic] class providing calculations related to the
 /// Earth surface modeled by ellipsoidal reference frames (or datums).
@@ -21,7 +22,7 @@ import 'utm.dart';
 /// these transformations and [Utm] for conversions on projected UTM
 /// coordinates.
 extension EllipsoidalExtension on Geographic {
-  /// Transfors this geographic position (latitude and longitude as
+  /// Converts this geographic position (latitude and longitude as
   /// geodetic coordinates) to geocentric cartesian coordinates (X, Y, Z) based
   /// on the given [datum] or [ellipsoid].
   ///
@@ -32,7 +33,7 @@ extension EllipsoidalExtension on Geographic {
       Ellipsoidal.fromGeographic(this, datum: datum, ellipsoid: ellipsoid)
           .toGeocentricCartesian();
 
-  /// Transforms the given [geocentric] cartesian coordinates (X, Y, Z) to
+  /// Converts the given [geocentric] cartesian coordinates (X, Y, Z) to
   /// geographic coordinates (latitude and longitude) based on the given
   /// [datum] or [ellipsoid].
   ///
@@ -50,7 +51,7 @@ extension EllipsoidalExtension on Geographic {
         ellipsoid: ellipsoid,
       ).origin;
 
-  /// Transforms this geographic position (latitude and longitude as
+  /// Converts this geographic position (latitude and longitude as
   /// geodetic coordinates) to projected UTM coordinates with conversions based
   /// on the [datum].
   ///
@@ -78,7 +79,7 @@ extension EllipsoidalExtension on Geographic {
         roundResults: roundResults,
       );
 
-  /// Transforms this geographic position (latitude and longitude as
+  /// Converts this geographic position (latitude and longitude as
   /// geodetic coordinates) to projected UTM coordinates wrapped inside metadata
   /// object with conversions based on the [datum].
   ///
@@ -111,4 +112,19 @@ extension EllipsoidalExtension on Geographic {
         datum: datum,
         roundResults: roundResults,
       );
+
+  /// Converts this geographic position (latitude and longitude as
+  /// geodetic coordinates) first to projected UTM coordinates and then from
+  /// UTM coordinates to the MGRS grid reference.
+  ///
+  /// May throw a FormatException if conversion fails.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  ///   const geographic = Geographic(lat: 48.8582, lon: 2.2945);
+  ///   final mgrsRef = geographic.toMgrs(); // 31U DQ 48251 11932
+  /// ```
+  Mgrs toMgrs({Datum datum = Datum.WGS84}) =>
+      toUtm(datum: datum, roundResults: false).toMgrs();
 }
