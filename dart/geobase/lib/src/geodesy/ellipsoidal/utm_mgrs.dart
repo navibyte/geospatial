@@ -734,7 +734,7 @@ class Mgrs {
 int _parseCoordinate(String text) {
   // decimal point allowed only if at least 5 digits before it
   final index = text.indexOf('.');
-  if (index != -1 && index < 5) {
+  if ((index != -1 && index < 5) || text.startsWith('-')) {
     throw FormatException('invalid MGRS coordinate `$text`');
   }
 

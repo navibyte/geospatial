@@ -100,7 +100,17 @@ void main() {
       final refs = [
         '4O FJ 12345 67890', '4Q SI 12345 67890', '4O FJK 12345 67890', //
         'HQ FJ 12345 67890', '4Q FJ .12345 67890', '4Q FJ 1234.5 67890',
-        '4Q FJ 12345 678.0', '4Q FJ 12345 6789H'
+        '4Q FJ 12345 678.0', '4Q FJ 12345 6789H', '4Q FJ 12345 -67890',
+        '4Q FJ -1234 6789',
+      ];
+      for (final ref in refs) {
+        expect(() => Mgrs.parse(ref), throwsFormatException);
+      }
+    });
+
+    test('4Q FJ 0 0 with negative or invalid chars, should fail to parse', () {
+      final refs = [
+        '4Q FJ -0 0', '4Q FJ 0 -0', '4Q FJ 0.0 0.0', //
       ];
       for (final ref in refs) {
         expect(() => Mgrs.parse(ref), throwsFormatException);
