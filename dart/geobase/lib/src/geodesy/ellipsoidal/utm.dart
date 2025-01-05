@@ -172,12 +172,21 @@ class Utm {
 
   /// The easting (x) in metres from the false easting (-500km from the central
   /// meridian).
+  /// 
+  /// The normal value range is roughly 0..1000000m. The value can be
+  /// outside of this range if alternative zones are used and `verifyEN` is set
+  /// false when creating the UTM coordinates.
   ///
   /// See also [projected] for the full UTM projected position.
   double get easting => projected.x;
 
   /// The northing (y) in metres from the equator (N) or from the false northing
   /// -10,000km (S).
+  /// 
+  /// The normal value range is roughly 0..9329006m in the northern hemisphere
+  /// and 1116914..10000000m in the southern hemisphere. The value can be
+  /// outside of this range if alternative zones are used and `verifyEN` is set
+  /// false when creating the UTM coordinates.
   ///
   /// See also [projected] for the full UTM projected position.
   double get northing => projected.y;
@@ -189,7 +198,9 @@ class Utm {
   final Datum datum;
 
   /// Creates UTM coordinates with [zone], [hemisphere], [easting], [northing]
-  /// and an optional [elev] (elevation or altitude) based on the [datum].
+  /// based on the [datum].
+  ///
+  /// You can also provide optional [elev] (elevation) and [m] (measure value).
   ///
   /// {@macro geobase.geodesy.utm.zone}
   ///
@@ -199,9 +210,15 @@ class Utm {
   ///
   /// {@macro geobase.geodesy.utm.datum}
   ///
+  /// {@template geobase.geodesy.utm.verifyEN}
+  ///
   /// If [verifyEN] is true it's validated that easting/northing is within
   /// 'normal' values (may be suppressed for extended coherent coordinates or
-  /// alternative datums e.g. ED50, see epsg.io/23029).
+  /// alternative datums e.g. ED50, see epsg.io/23029). The 'normal' values are
+  /// roughly 0..1000000m for easting, and 0..9329006m for northing in the
+  /// northern hemisphere and 1116914..10000000m in the southern hemisphere.
+  ///
+  /// {@endtemplate}
   ///
   /// May throw a [FormatException] if the UTM zone, hemisphere, easting or
   /// northing are invalid.
@@ -219,6 +236,7 @@ class Utm {
     double easting,
     double northing, {
     double? elev,
+    double? m,
     Datum datum = Datum.WGS84,
     bool verifyEN = true,
   }) {
@@ -248,7 +266,7 @@ class Utm {
     return Utm._coordinates(
       zone,
       hemisphereValue,
-      projected: Projected(x: easting, y: northing, z: elev),
+      projected: Projected(x: easting, y: northing, z: elev, m: m),
       datum: datum,
     );
   }
@@ -259,7 +277,7 @@ class Utm {
   /// Coordinate values in [text] are separated by [delimiter] (default is
   /// whitespace).
   ///
-  /// If [swapXY] is true, then swaps x and y for the result.
+  /// If [swapXY] is true, then swaps x and y parsed from the text.
   ///
   /// {@template geobase.geodesy.utm.datum}
   ///
@@ -267,6 +285,8 @@ class Utm {
   /// and datum transformation parameters.
   ///
   /// {@endtemplate}
+  ///
+  /// {@macro geobase.geodesy.utm.verifyEN}
   ///
   /// Throws FormatException if coordinates are invalid.
   ///
@@ -280,6 +300,9 @@ class Utm {
   ///   // (easting 448251.0, northing 5411932.0, elevation 100.0).
   ///   final utmWithElev = Utm.parse('31 N 448251 5411932 100');
   ///
+  ///   // UTM coordinates with 3D position and measure.
+  ///   final utmWithElevM = Utm.parse('31 N 448251 5411932 100 5.0');
+  ///
   ///   // With swapped x and y (=> easting 448251.0, northing 5411932.0).
   ///   final utmSwapped = Utm.parse('31 N 5411932 448251', swapXY: true);
   /// ```
@@ -288,9 +311,10 @@ class Utm {
     Pattern? delimiter,
     bool swapXY = false,
     Datum datum = Datum.WGS84,
+    bool verifyEN = true,
   }) {
     final parts = text.trim().split(delimiter ?? RegExp(r'\s+'));
-    if (parts.length < 4 || parts.length > 5) {
+    if (parts.length < 4 || parts.length > 6) {
       throw FormatException('invalid UTM coordinate ‘$text’');
     }
 
@@ -299,8 +323,18 @@ class Utm {
     final easting = double.parse(parts[swapXY ? 3 : 2]);
     final northing = double.parse(parts[swapXY ? 2 : 3]);
     final elev = parts.length >= 5 ? double.parse(parts[4]) : null;
+    final m = parts.length >= 6 ? double.parse(parts[5]) : null;
 
-    return Utm(zone, hemisphere, easting, northing, elev: elev, datum: datum);
+    return Utm(
+      zone,
+      hemisphere,
+      easting,
+      northing,
+      elev: elev,
+      m: m,
+      datum: datum,
+      verifyEN: verifyEN,
+    );
   }
 
   /// Creates UTM coordinates with [zone], [hemisphere] and the [projected]
@@ -369,6 +403,8 @@ class Utm {
   ///
   /// {@macro geobase.geodesy.utm.datum}
   ///
+  /// {@macro geobase.geodesy.utm.verifyEN}
+  ///
   /// Examples:
   ///
   /// ```dart
@@ -382,12 +418,14 @@ class Utm {
     int? zone,
     Datum datum = Datum.WGS84,
     bool roundResults = true,
+    bool verifyEN = true,
   }) {
     return Utm.fromGeographicMeta(
       geographic,
       zone: zone,
       datum: datum,
       roundResults: roundResults,
+      verifyEN: verifyEN,
     ).position;
   }
 
@@ -407,7 +445,8 @@ class Utm {
   /// Set [zone] to specify a zone explicitely rather than using the
   /// zone within which the geographic position lies. Note that overriding the
   /// UTM zone has the potential to result in negative eastings, and strange
-  /// results within Norway/Svalbard exceptions.
+  /// results within Norway/Svalbard exceptions (you may need to set [verifyEN]
+  /// to false when overriding the zone).
   ///
   /// If [roundResults] is true (default), then the results are rounded to the
   /// reasonable precision, that is nm precision (1nm = 10^-14°).
@@ -418,6 +457,8 @@ class Utm {
   /// {@endtemplate}
   ///
   /// {@macro geobase.geodesy.utm.datum}
+  ///
+  /// {@macro geobase.geodesy.utm.verifyEN}
   ///
   /// Examples:
   ///
@@ -435,6 +476,7 @@ class Utm {
     int? zone,
     Datum datum = Datum.WGS84,
     bool roundResults = true,
+    bool verifyEN = true,
   }) {
     final lat = geographic.lat;
     final lon = geographic.lon;
@@ -618,22 +660,18 @@ class Utm {
     final scale = roundResults ? double.parse(k.toStringAsFixed(12)) : k;
 
     // hemisphere
-    final h = lat >= 0 ? Hemisphere.north : Hemisphere.south;
-
-    // projected UTM coordinates
-    final projected = Projected(
-      x: easting,
-      y: northing,
-      z: geographic.optElev, // do not convert optional elevation (in meters)
-      m: geographic.optM, // do not convert optional M value
-    );
+    final h = lat >= 0 ? 'N' : 'S';
 
     return UtmMeta(
-      Utm._coordinates(
+      Utm(
         utmZone,
         h,
-        projected: projected,
+        easting,
+        northing,
+        elev: geographic.optElev, // do not convert optional elevation (meters)
+        m: geographic.optM, // do not convert optional M value
         datum: datum,
+        verifyEN: verifyEN,
       ),
       convergence: convergence,
       scale: scale,

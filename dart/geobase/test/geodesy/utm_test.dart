@@ -160,6 +160,10 @@ void main() {
           '31 N 448251 5411932 100');
       expect(
           Utm.parse('31 N 448251 5411932 100').toText(), '31 N 448251 5411932');
+      expect(
+          Utm.parse('31 N 448251 5411932 100 5.0')
+              .toText(formatAlsoElevM: true),
+          '31 N 448251 5411932 100 5');
       expect(Utm.parse('31 N 5411932 448251', swapXY: true).toText(),
           '31 N 448251 5411932');
       expect(Utm.parse('31 N 448251 5411932').toText(swapXY: true),

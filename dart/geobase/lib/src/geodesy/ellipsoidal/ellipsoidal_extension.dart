@@ -58,6 +58,8 @@ extension EllipsoidalExtension on Geographic {
   /// {@macro geobase.geodesy.ellipsoidal.datum}
   ///
   /// {@macro geobase.geodesy.utm.fromGeographic}
+  /// 
+  /// {@macro geobase.geodesy.utm.verifyEN}
   ///
   /// Examples:
   ///
@@ -71,12 +73,14 @@ extension EllipsoidalExtension on Geographic {
     int? zone,
     Datum datum = Datum.WGS84,
     bool roundResults = true,
+    bool verifyEN = true,
   }) =>
       Utm.fromGeographic(
         this,
         zone: zone,
         datum: datum,
         roundResults: roundResults,
+        verifyEN: verifyEN,
       );
 
   /// Converts this geographic position (latitude and longitude as
@@ -89,6 +93,8 @@ extension EllipsoidalExtension on Geographic {
   /// {@macro geobase.geodesy.ellipsoidal.datum}
   ///
   /// {@macro geobase.geodesy.utm.fromGeographic}
+  /// 
+  /// {@macro geobase.geodesy.utm.verifyEN}
   ///
   /// Examples:
   ///
@@ -105,12 +111,14 @@ extension EllipsoidalExtension on Geographic {
     int? zone,
     Datum datum = Datum.WGS84,
     bool roundResults = true,
+    bool verifyEN = true,
   }) =>
       Utm.fromGeographicMeta(
         this,
         zone: zone,
         datum: datum,
         roundResults: roundResults,
+        verifyEN: verifyEN,
       );
 
   /// Converts this geographic position (latitude and longitude as

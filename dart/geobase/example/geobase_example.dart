@@ -881,7 +881,23 @@ void _utmAndMgrs() {
   // optional z (elevation) and m (measure) values
   print(eiffelUtm.projected.toText(decimals: 3)); // "448251.795,5411932.678"
 
-  // UTM references can be constructed from components too
+  // UTM coordinates for the position with extra metadata
+  final eiffelUtmMeta = eiffel.toUtmMeta();
+  print(eiffelUtmMeta.position.toText()); // "31 N 448251,5411932"
+  // The bearing of the grid north clockwise from the true north, in degrees.
+  print(eiffelUtmMeta.convergence.toStringAsFixed(3)); // "-0.531"
+  // The scale factor at the position (factor is 0.9996 at the central meridian)
+  print(eiffelUtmMeta.scale.toStringAsFixed(6)); // "0.999633"
+
+  // The UTM zone can be forced to neighbour zones too, but if the position is
+  // out of the defined limits of a zone, then the convergence gets larger and
+  // the scale error indicated by the scale factor increases.
+  final eiffelUtmZone30Meta = eiffel.toUtmMeta(zone: 30, verifyEN: false);
+  print(eiffelUtmZone30Meta.position.toText()); // "30 N 888277 5425221"
+  print(eiffelUtmZone30Meta.convergence.toStringAsFixed(3)); // "3.992"
+  print(eiffelUtmZone30Meta.scale.toStringAsFixed(6)); // "1.001453"
+
+  // UTM coordinates can be constructed from components too
   final eiffelUtm2 = Utm(31, 'N', eiffelUtm.easting, eiffelUtm.northing);
   print(eiffelUtm == eiffelUtm2); // "true"
 
