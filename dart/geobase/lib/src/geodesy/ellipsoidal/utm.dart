@@ -29,7 +29,6 @@ import '/src/common/codes/coords.dart';
 import '/src/common/codes/hemisphere.dart';
 import '/src/common/constants/geodetic.dart';
 import '/src/common/functions/position_functions.dart';
-import '/src/common/reference/ellipsoid.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/geographic/geographic.dart';
 import '/src/coordinates/projected/projected.dart';
@@ -317,6 +316,9 @@ class Utm {
     required this.datum,
   });
 
+  /*
+  // NOTE: commented out to keep the Utm class more focused
+
   /// Creates projected UTM coordinates by converting it from an [ellipsoidal]
   /// position that contains the geographic `origin` position and an optional
   /// `datum`.
@@ -358,6 +360,7 @@ class Utm {
       roundResults: roundResults,
     ).position;
   }
+  */
 
   /// Creates projected UTM coordinates by converting it from a [geographic]
   /// position based on the [datum].
@@ -661,10 +664,10 @@ class Utm {
   ///   final geographic = utm.toGeographic(); // 48°51′29.52″N, 002°17′40.20″E
   /// ```
   ///
-  /// See also [toGeographicMeta] and [toEllipsoidalMeta] for methods returning
+  /// See also [toGeographicMeta] and [_toEllipsoidalMeta] for methods returning
   /// a geographic position with metadata.
   Geographic toGeographic({bool roundResults = true}) =>
-      toEllipsoidalMeta(roundResults: roundResults).position.origin;
+      _toEllipsoidalMeta(roundResults: roundResults).position.origin;
 
   /// {@macro geobase.geodesy.utm.unproject}
   ///
@@ -685,7 +688,7 @@ class Utm {
   ///
   /// See also [toGeographic] for a method returning a geographic position only.
   UtmMeta<Geographic> toGeographicMeta({bool roundResults = true}) {
-    final meta = toEllipsoidalMeta(roundResults: roundResults);
+    final meta = _toEllipsoidalMeta(roundResults: roundResults);
     return UtmMeta(
       meta.position.origin,
       convergence: meta.convergence,
@@ -712,7 +715,7 @@ class Utm {
   /// ```
   ///
   /// See also [toGeographic] for a method returning a geographic position only.
-  UtmMeta<Ellipsoidal> toEllipsoidalMeta({bool roundResults = true}) {
+  UtmMeta<Ellipsoidal> _toEllipsoidalMeta({bool roundResults = true}) {
     const falseEasting = 500.0e3;
     const falseNorthing = 10000.0e3;
 

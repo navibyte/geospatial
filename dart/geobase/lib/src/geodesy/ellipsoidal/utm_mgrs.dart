@@ -28,7 +28,6 @@ import 'package:meta/meta.dart';
 import '/src/coordinates/geographic/geographic.dart';
 
 import 'datum.dart';
-import 'ellipsoidal_extension.dart';
 import 'utm.dart';
 
 /// Latitude bands C..X 8° each, covering 80°S to 84°N
@@ -594,10 +593,14 @@ class Mgrs {
     // include entirety of bottom-most 100km square - note in northern
     // hemisphere, centre of zone will be furthest south; in southern hemisphere
     // extremity of zone will be furthest south, so use 3°E / 0°E
-    final position = Geographic(
-      lat: latBand.toDouble(),
-      lon: isNorth ? 3.0 : 0.0,
-    ).toUtm(datum: datum, roundResults: false);
+    final position = Utm.fromGeographic(
+      Geographic(
+        lat: latBand.toDouble(),
+        lon: isNorth ? 3.0 : 0.0,
+      ),
+      datum: datum,
+      roundResults: false,
+    );
     final nBand = (position.northing / 100000.0).floor() * 100000;
 
     // 100km grid square row letters repeat every 2,000km north; add enough
