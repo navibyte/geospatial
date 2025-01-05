@@ -64,6 +64,11 @@ import 'ellipsoidal_extension.dart';
 /// This class provides references to ellipsoid parameters and datum
 /// transformation parameters, and methods for converting between different
 /// (generally historical) datums.
+/// 
+/// The datum transformation parameters are Helmert 7-parameter transformations.
+/// 
+/// Ellipsoids of historical datums are defined as static constants in the
+/// [HistoricalEllipsoids] class.
 @immutable
 class Datum {
   /// The reference ellipsoid for the datum.
@@ -79,6 +84,11 @@ class Datum {
 
   /// Create a geodesic datum with a reference [ellipsoid] and datum
   /// parameters to [transform] coordinates.
+  /// 
+  /// The [transform] list MUST contain exactly seven parameters:
+  /// `[tx, ty, tz, s, rx, ry, rz]`.
+  /// 
+  /// Units of parameters: `t` in metres, `s` in ppm, `r` in arcseconds.
   const Datum({
     required this.ellipsoid,
     required this.transform,
@@ -256,7 +266,12 @@ class Datum {
 }
 
 /// Some historical geodetic ellipsoids defined as static constants.
+/// 
+/// See also [Datum] for historical datums based on these ellipsoids along with
+/// datum transformation parameters.
 class HistoricalEllipsoids {
+  const HistoricalEllipsoids._();
+
   /// Ellisoidal parameters for the `Airy1830` reference ellipsoid.
   static const Airy1830 = Ellipsoid(
     id: 'airy',
