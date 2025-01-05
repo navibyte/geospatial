@@ -37,19 +37,18 @@ extension EllipsoidalExtension on Geographic {
   /// geographic coordinates (latitude and longitude) based on the given
   /// [datum] or [ellipsoid].
   ///
-  /// {@macro geobase.geodesy.ellipsoidal.ecef}
-  ///
-  /// {@macro geobase.geodesy.ellipsoidal.datumOrEllipsoid}
+  @Deprecated('Instead create a geocentric object using '
+      '`Geocentric.fromGeocentricCartesian` and then call `toGeographic`.')
   static Geographic fromGeocentricCartesian(
     Position geocentric, {
     Datum? datum,
     Ellipsoid? ellipsoid,
   }) =>
-      Ellipsoidal.fromGeocentricCartesian(
+      Geocentric.fromGeocentricCartesian(
         geocentric,
         datum: datum,
         ellipsoid: ellipsoid,
-      ).origin;
+      ).toGeographic();
 
   /// Converts this geographic position (latitude and longitude as
   /// geodetic coordinates) to projected UTM coordinates with conversions based
@@ -58,7 +57,7 @@ extension EllipsoidalExtension on Geographic {
   /// {@macro geobase.geodesy.ellipsoidal.datum}
   ///
   /// {@macro geobase.geodesy.utm.fromGeographic}
-  /// 
+  ///
   /// {@macro geobase.geodesy.utm.verifyEN}
   ///
   /// Examples:
@@ -93,7 +92,7 @@ extension EllipsoidalExtension on Geographic {
   /// {@macro geobase.geodesy.ellipsoidal.datum}
   ///
   /// {@macro geobase.geodesy.utm.fromGeographic}
-  /// 
+  ///
   /// {@macro geobase.geodesy.utm.verifyEN}
   ///
   /// Examples:

@@ -649,7 +649,8 @@ void _ellipsoidalGeodesy() {
       Position.create(x: 3980609.2373, y: -97.2646, z: 4966859.7285);
 
   // convert this to a geographic position with geodetic latitude and longitude
-  final geographic2 = EllipsoidalExtension.fromGeocentricCartesian(geocentric1);
+  final geographic2 =
+      Geocentric.fromGeocentricCartesian(geocentric1).toGeographic();
 
   // returned object is of the type `Geographic`
   // prints (longitude, latitude, elevation): -0.0014, 51.4778, 45.0000

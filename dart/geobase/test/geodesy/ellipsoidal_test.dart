@@ -101,8 +101,8 @@ void main() {
         );
 
         expect(
-          EllipsoidalExtension.fromGeocentricCartesian(gc1,
-                  ellipsoid: ellipsoid1)
+          Geocentric.fromGeocentricCartesian(gc1, ellipsoid: ellipsoid1)
+              .toGeographic()
               .toText(decimals: decimals, compactNums: false),
           geo1.toText(decimals: decimals, compactNums: false),
         );
@@ -116,7 +116,7 @@ void main() {
       final gc1 =
           Position.create(x: 4027893.924, y: 307041.993, z: 4919474.294);
 
-      final geo1 = EllipsoidalExtension.fromGeocentricCartesian(gc1);
+      final geo1 = Geocentric.fromGeocentricCartesian(gc1).toGeographic();
       expect(geo1.lat, closeTo(50.7978, 0.0001));
       expect(geo1.lon, closeTo(4.3592, 0.0001));
     });
@@ -131,9 +131,12 @@ void main() {
 
       const geo1 = Geographic(lat: 51.47788, lon: -0.00147);
       final gc1 = geo1.toGeocentricCartesian();
-      final gc1conv = Datum.WGS84.convertGeocentric(gc1, to: Datum.OSGB36);
-      final geo1conv = EllipsoidalExtension.fromGeocentricCartesian(gc1conv,
-          datum: Datum.OSGB36);
+      final gc1conv =
+          Datum.WGS84.convertGeocentricCartesian(gc1, to: Datum.OSGB36);
+      final geo1conv =
+          Geocentric.fromGeocentricCartesian(gc1conv, datum: Datum.OSGB36)
+              .toEllipsoidal()
+              .origin;
       expect(geo1conv.latDms(dms6), '51.477364°N');
       expect(geo1conv.lonDms(dms6), '0.000150°E');
 
@@ -142,9 +145,11 @@ void main() {
         y: 307041.993,
         z: 4919474.294,
       );
-      final gc2conv = Datum.WGS84.convertGeocentric(gc2, to: Datum.OSGB36);
-      final geo2conv = EllipsoidalExtension.fromGeocentricCartesian(gc2conv,
-          datum: Datum.OSGB36);
+      final gc2conv =
+          Datum.WGS84.convertGeocentricCartesian(gc2, to: Datum.OSGB36);
+      final geo2conv =
+          Ellipsoidal.fromGeocentricCartesian(gc2conv, datum: Datum.OSGB36)
+              .origin;
       expect(geo2conv.latDms(), '50.7971°N');
       expect(geo2conv.lonDms(), '4.3612°E');
     });
@@ -170,7 +175,7 @@ void main() {
         y: 307041.993,
         z: 4919474.294,
       );
-      final geo2 = EllipsoidalExtension.fromGeocentricCartesian(gc2);
+      final geo2 = Geocentric.fromGeocentricCartesian(gc2).toGeographic();
       final geo2conv = Datum.WGS84.convertGeographic(geo2, to: Datum.OSGB36);
       expect(geo2conv.latDms(), '50.7971°N');
       expect(geo2conv.lonDms(), '4.3612°E');

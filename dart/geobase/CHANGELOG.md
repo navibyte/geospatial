@@ -6,6 +6,7 @@ NOTE: [geobase version 1.5.0](https://github.com/navibyte/geospatial/milestone/8
 * [Port conversions between (historical) ellipsoidal datums to Dart #256](https://github.com/navibyte/geospatial/issues/256)
 * [Port UTM / WGS-84 conversion functions to Dart #257](https://github.com/navibyte/geospatial/issues/257)
 * [Port MGRS / UTM conversion functions to Dart #258](https://github.com/navibyte/geospatial/issues/258)
+* [Add Geocentric class on geodesy / ellipsoidal to represent ECEF (earth-centric earth-fixed) positions / calculations #260](https://github.com/navibyte/geospatial/issues/260)
 
 ## 1.4.0+1
 

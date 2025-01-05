@@ -25,6 +25,16 @@ import 'box.dart';
 import 'position_scheme.dart';
 import 'value_positionable.dart';
 
+/*
+  NOTE: for the V2 of the geobase following class hiearchy is planned:
+  * `Position` (x, y, z, m), the base class and generic positions on geometries
+    * `Cartesian` (x, y, z, m), for local and geocentric use cases
+      * `Projected` (x=easting, y=northing, z=elev, m), for map projections
+    * `Geographic` (x=lon, y=lat, z=elev, m), for geodetic lan/lon
+  * currently in V1 of the geobase `Cartesian` is not implemented
+  * z (elev) and m are optional
+*/
+
 /// Creates a new position of [T] from [x] and [y], and optional [z] and [m].
 ///
 /// For projected or cartesian positions (`Projected`), coordinates axis are

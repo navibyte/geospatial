@@ -34,7 +34,6 @@ import '/src/geodesy/base/geodetic.dart';
 import '/src/geodesy/base/geodetic_arc_segment.dart';
 
 import 'ellipsoidal.dart';
-import 'ellipsoidal_extension.dart';
 
 /// An extension for easier access to [EllipsoidalVincenty].
 extension EllipsoidalVincentyExtension on Geographic {
@@ -96,7 +95,7 @@ class EllipsoidalVincenty extends Ellipsoidal implements Geodetic {
 
   /// {@macro geobase.geodesy.ellipsoidal_vincenty.create}
   ///
-  /// The origin position is transformed from the given [geocentric] cartesian
+  /// The origin position is transformed from the given geocentric [cartesian]
   /// coordinates (X, Y, Z).
   ///
   /// {@macro geobase.geodesy.ellipsoidal.ecef}
@@ -105,15 +104,15 @@ class EllipsoidalVincenty extends Ellipsoidal implements Geodetic {
   ///
   /// {@macro geobase.geodesy.ellipsoidal_vincenty.main_methods}
   factory EllipsoidalVincenty.fromGeocentricCartesian(
-    Position geocentric, {
+    Position cartesian, {
     Ellipsoid ellipsoid = Ellipsoid.WGS84,
   }) {
     // an instance with target geographic position
     return EllipsoidalVincenty(
-      EllipsoidalExtension.fromGeocentricCartesian(
-        geocentric,
+      Geocentric.fromGeocentricCartesian(
+        cartesian,
         ellipsoid: ellipsoid,
-      ),
+      ).toGeographic(),
       ellipsoid: ellipsoid,
     );
   }
@@ -605,4 +604,10 @@ class EllipsoidalVincenty extends Ellipsoidal implements Geodetic {
           s.abs() < epsilon ? double.nan : alfa2.toDegrees().wrap360(),
     );
   }
+
+  @override
+  // ignore: hash_and_equals
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is EllipsoidalVincenty && super == other);
 }

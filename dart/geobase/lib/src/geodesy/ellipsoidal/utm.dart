@@ -172,7 +172,7 @@ class Utm {
 
   /// The easting (x) in metres from the false easting (-500km from the central
   /// meridian).
-  /// 
+  ///
   /// The normal value range is roughly 0..1000000m. The value can be
   /// outside of this range if alternative zones are used and `verifyEN` is set
   /// false when creating the UTM coordinates.
@@ -182,7 +182,7 @@ class Utm {
 
   /// The northing (y) in metres from the equator (N) or from the false northing
   /// -10,000km (S).
-  /// 
+  ///
   /// The normal value range is roughly 0..9329006m in the northern hemisphere
   /// and 1116914..10000000m in the southern hemisphere. The value can be
   /// outside of this range if alternative zones are used and `verifyEN` is set

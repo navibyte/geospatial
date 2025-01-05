@@ -45,7 +45,7 @@ import '/src/coordinates/base/position.dart';
 import '/src/coordinates/geographic/geographic.dart';
 import '/src/utils/object_utils.dart';
 
-import 'ellipsoidal_extension.dart';
+import 'ellipsoidal.dart';
 
 /// A geodetic datum with a reference ellipsoid and datum transformation
 /// parameters.
@@ -64,9 +64,9 @@ import 'ellipsoidal_extension.dart';
 /// This class provides references to ellipsoid parameters and datum
 /// transformation parameters, and methods for converting between different
 /// (generally historical) datums.
-/// 
+///
 /// The datum transformation parameters are Helmert 7-parameter transformations.
-/// 
+///
 /// Ellipsoids of historical datums are defined as static constants in the
 /// [HistoricalEllipsoids] class.
 @immutable
@@ -84,10 +84,10 @@ class Datum {
 
   /// Create a geodesic datum with a reference [ellipsoid] and datum
   /// parameters to [transform] coordinates.
-  /// 
+  ///
   /// The [transform] list MUST contain exactly seven parameters:
   /// `[tx, ty, tz, s, rx, ry, rz]`.
-  /// 
+  ///
   /// Units of parameters: `t` in metres, `s` in ppm, `r` in arcseconds.
   const Datum({
     required this.ellipsoid,
@@ -188,35 +188,42 @@ class Datum {
   ///
   /// The returned position is a geographic position in the [to] datum.
   Geographic convertGeographic(Geographic geographic, {required Datum to}) {
-    final geocentric = geographic.toGeocentricCartesian(datum: this);
-    final converted = convertGeocentric(geocentric, to: to);
-    return EllipsoidalExtension.fromGeocentricCartesian(converted, datum: to);
+    // using `this` datum to get geocentric position in `this` datum
+    final geocentric = Ellipsoidal.fromGeographic(geographic, datum: this)
+        .toGeocentricCartesian();
+
+    // using `to` datum to convert geocentric position to `to` datum
+    final converted = convertGeocentricCartesian(geocentric, to: to);
+
+    // using `to` datum to get geographic position from geocentric position
+    return Geocentric.fromGeocentricCartesian(converted, datum: to)
+        .toGeographic();
   }
 
-  /// Converts the cartesian [geocentric] position (X, Y, Z) in this datum to
+  /// Converts the geocentric [cartesian] position (X, Y, Z) in this datum to
   /// another datum a specified by [to] using the Helmert 7-parameter
   /// transformation.
   ///
-  /// The returned position is a cartesian geocentric position (X, Y, Z) in the
+  /// The returned position is a geocentric cartesian position (X, Y, Z) in the
   /// [to] datum.
-  Position convertGeocentric(Position geocentric, {required Datum to}) {
+  Position convertGeocentricCartesian(Position cartesian, {required Datum to}) {
     if (this == to) {
       // no datum change
-      return geocentric;
+      return cartesian;
     } else if (this == WGS84) {
       // converting from WGS 84
-      return _applyTransform(geocentric, to.transform);
+      return _applyTransform(cartesian, to.transform);
     } else if (to == WGS84) {
       // converting to WGS 84; use inverse transform
       return _applyTransform(
-        geocentric,
+        cartesian,
         transform.map((e) => -e).toList(growable: false),
       );
     }
 
     // neither this.datum nor toDatum are WGS84: convert origin to WGS84 first
     return _applyTransform(
-      convertGeocentric(geocentric, to: WGS84),
+      convertGeocentricCartesian(cartesian, to: WGS84),
       to.transform,
     );
   }
@@ -266,7 +273,7 @@ class Datum {
 }
 
 /// Some historical geodetic ellipsoids defined as static constants.
-/// 
+///
 /// See also [Datum] for historical datums based on these ellipsoids along with
 /// datum transformation parameters.
 class HistoricalEllipsoids {
