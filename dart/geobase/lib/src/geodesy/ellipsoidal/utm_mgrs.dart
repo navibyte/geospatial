@@ -297,13 +297,13 @@ class MgrsGridSquare extends MgrsGridZone {
 /// parse references, and to convert between MGRS references and UTM
 /// coordinates.
 ///
-/// Military Grid Reference System (MGRS/NATO) grid references provides
-/// geocoordinate references covering the entire globe, based on the UTM
-/// projection.
+/// MGRS grid references provide geocoordinate references covering the entire
+/// globe, based on the UTM projection.
 ///
-/// MGRS references comprise a grid zone designator (GZD) (see [MgrsGridZone]),
-/// a 100km square identification (see [MgrsGridSquare]), and an easting and
-/// northing (in metres); e.g. ‘31U DQ 48251 11932’.
+/// MGRS grid references comprise a grid zone designator (GZD) like `31U` (see
+/// [MgrsGridZone]), a 100km square identification like `DQ` (see
+/// [MgrsGridSquare]), and an easting and northing (in metres); e.g.
+/// ‘31U DQ 48251 11932’.
 ///
 /// Depending on requirements, some parts of the reference may be omitted
 /// (implied), and eastings/northings may be given to varying resolution.
