@@ -180,6 +180,14 @@ class CoordRefSys {
   static const CoordRefSys EPSG_3395 =
       CoordRefSys.id('http://www.opengis.net/def/crs/EPSG/0/3395');
 
+  /// The coordinate reference system identified by
+  /// 'http://www.opengis.net/def/crs/EPSG/0/4978'.
+  ///
+  /// References WGS 84 geocentric cartesian metric coordinates with geocentric
+  /// axes X, Y, Z.
+  static const CoordRefSys EPSG_4978 =
+      CoordRefSys.id('http://www.opengis.net/def/crs/EPSG/0/4978');
+
   @override
   String toString() => id;
 

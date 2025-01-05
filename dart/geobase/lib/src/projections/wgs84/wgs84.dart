@@ -1,16 +1,22 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2025 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
 // Docs: https://github.com/navibyte/geospatial
 
+// ignore_for_file: avoid_redundant_argument_values
+
+import '/src/common/reference/coord_ref_sys.dart';
 import '/src/coordinates/projection/projection_adapter.dart';
+import '/src/geodesy/ellipsoidal/datum.dart';
+import '/src/projections/ellipsoidal/ellipsoidal_projection_adapter.dart';
 
 import 'web_mercator_projection.dart';
 
 /// Projections for the WGS 84 geographic coordinate system.
 class WGS84 {
-  /// A projection adapter between WGS84 geographic and Web Mercator positions.
+  /// A projection adapter between WGS84 geographic and Web Mercator positions
+  /// (using "spherical development" of WGS84 ellipsoidal coordinates).
   ///
   /// Use `forward` of the adapter to return a projection for:
   /// * source: `lon` and `lat` geographic coordinates (WGS 84)
@@ -25,5 +31,26 @@ class WGS84 {
   /// changes.
   static const ProjectionAdapter webMercator = Wgs84ToWebMercatorAdapter();
 
-  // NOTE : UTM projections for WGS84, etc.
+  /// A projection adapter between WGS84 geographic and geocentric cartesian
+  /// positions (using the WGS84 ellipsoidal datum).
+  ///
+  /// Use `forward` of the adapter to return a projection for:
+  /// * source: `lon` and `lat` geographic coordinates (WGS 84)
+  /// * target: `x`, `y` and `z` coordinates ("EPSG:4978", WGS 84 / geocentric)
+  ///
+  /// Use `inverse` of the adapter to return a projection for:
+  /// * source: `x`, `y` and `z` coordinates ("EPSG:4978", WGS 84 / geocentric)
+  /// * target: `lon` and `lat` geographic coordinates (WGS 84)
+  ///
+  /// Other coordinates, if available in the source and if expected for target
+  /// coordinates, are just copied (`m` <=> `m`) without any changes.
+  static const ProjectionAdapter geocentric = EllipsoidalProjectionAdapter(
+    // source is geographic coordinates in WGS 84
+    sourceCrs: CoordRefSys.CRS84,
+    sourceDatum: Datum.WGS84,
+
+    // target is geocentric coordinates in WGS 84
+    targetCrs: CoordRefSys.EPSG_4978,
+    targetDatum: Datum.WGS84,
+  );
 }

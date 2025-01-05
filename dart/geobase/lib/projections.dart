@@ -1,10 +1,11 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2025 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// Geospatial projections (currently only between WGS84 and Web Mercator).
+/// WGS84 based projections; ellipsoidal (geographic, geocentric) and
+/// spherical (Web Mercator).
 ///
 /// This libary exports a subset of `package:geobase/geobase.dart`.
 ///
@@ -14,4 +15,5 @@
 /// Usage: import `package:geobase/projections.dart`
 library projections;
 
+export 'src/projections/ellipsoidal/ellipsoidal_projection_adapter.dart';
 export 'src/projections/wgs84/wgs84.dart';

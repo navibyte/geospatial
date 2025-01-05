@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2025 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -109,6 +109,8 @@ abstract class CoordRefSysResolver {
   /// * `http://www.opengis.net/def/crs/EPSG/0/3395` or (`EPSG:3395`): WGS 84
   ///    projected (World Mercator) metric coordinates ordered as specified by
   ///    `AxisOrder.xy`.
+  /// * `http://www.opengis.net/def/crs/EPSG/0/4978` or (`EPSG:4978`): WGS 84
+  ///    geocentric cartesian metric coordinates with geocentric axes X, Y, Z.
   ///
   /// The basic implementation of [normalizeId] only normalizes identifiers of
   /// the `EPSG:{code}` template to the
@@ -182,6 +184,8 @@ class _BasicCoordRefSysRegistry implements CoordRefSysResolver {
       case 'http://www.opengis.net/def/crs/EPSG/0/3857':
         return AxisOrder.xy;
       case 'http://www.opengis.net/def/crs/EPSG/0/3395':
+        return AxisOrder.xy;
+      case 'http://www.opengis.net/def/crs/EPSG/0/4978':
         return AxisOrder.xy;
     }
     return null; // do not know

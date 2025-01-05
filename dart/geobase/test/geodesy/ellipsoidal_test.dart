@@ -11,10 +11,32 @@ import 'dart:math';
 import 'package:geobase/common.dart';
 import 'package:geobase/coordinates.dart';
 import 'package:geobase/geodesy.dart';
+import 'package:geobase/projections.dart';
 
 import 'package:test/test.dart';
 
+/*
+  Tests for ellipsoidal calculations and conversions between geographic and
+  geocentric coordinates in:
+  * package:geobase/geodesy.dart (Ellipsoidal, Geocentric, ..)
+  * package:geobase/projections.dart (WGS84, EllipsoidalGeocentricAdapter, ..)
+*/
+
 void main() {
+  final wgs84geoToGc = WGS84.geocentric.forward;
+  final wgs84gcToGeo = WGS84.geocentric.inverse;
+
+  const wgs84toOSGB = EllipsoidalProjectionAdapter(
+    targetDatum: Datum.OSGB36,
+  );
+  const osgbToWgs84 = EllipsoidalProjectionAdapter(
+    sourceDatum: Datum.OSGB36,
+  );
+  const osgbToOsgb = EllipsoidalProjectionAdapter(
+    sourceDatum: Datum.OSGB36,
+    targetDatum: Datum.OSGB36,
+  );
+
   group('Ellipsoidal calculations', () {
     test('Geocentric - geographic self test1', () {
       final testCases = [
@@ -126,6 +148,8 @@ void main() {
     test('Geocentric - geographic test3', () {
       const geo1 = Geographic(
           lat: 51.4778, lon: -0.0014, elev: 45.0, m: 49.123209242932324);
+
+      // geodesy package
       final gc1 = Ellipsoidal.fromGeographic(geo1).toGeocentric();
       final geo1b = gc1.toGeographic();
       expect(geo1b.lat, closeTo(geo1.lat, 0.0000000001));
@@ -138,6 +162,12 @@ void main() {
       expect(geo1c.elev, 0.0);
       expect(geo1c.optElev, isNull);
       expect(geo1c.m, geo1.m);
+
+      // projections package
+      final gc1pr = wgs84geoToGc.project(geo1, to: Position.create);
+      expect(gc1pr, gc1.origin);
+      final geo1pr = wgs84gcToGeo.project(gc1pr, to: Geographic.create);
+      expect(geo1pr, geo1b);
     });
   });
 
@@ -180,6 +210,50 @@ void main() {
       expect(geo2conv.latDms(), '50.7971°N');
       expect(geo2conv.lonDms(), '4.3612°E');
       expect(geo2conv.optElev, isNull);
+      expect(geo2conv.optM, isNull);
+    });
+
+    test('Datum conversions using projections packages', () {
+      const dms6 = Dms(decimals: 6);
+
+      const geo1 = Geographic(lat: 51.47788, lon: -0.00147);
+      final gc1conv = wgs84toOSGB.forward.project(geo1, to: Position.create);
+      final geo1conv =
+          osgbToOsgb.inverse.project(gc1conv, to: Geographic.create);
+
+      expect(geo1conv.latDms(dms6), '51.477364°N');
+      expect(geo1conv.lonDms(dms6), '0.000150°E');
+      expect(geo1conv.optElev, isNotNull);
+      expect(geo1conv.optM, isNull);
+
+      final coords1 = [
+        -0.00147, 51.47788, 4.0, 2.0, //
+        -0.00147, 51.47788, 4.0, 2.0
+      ];
+      final coords1conv = wgs84toOSGB.forward.projectCoords(
+        coords1,
+        type: Coords.xyzm,
+      );
+      final coords1b = osgbToOsgb.inverse.projectCoords(
+        coords1conv,
+        type: Coords.xyzm,
+      );
+      expect(coords1b[0], closeTo(0.000150, 0.000001));
+      expect(coords1b[1], closeTo(51.477364, 0.000001));
+      expect(coords1b[3], 2.0);
+      expect(coords1b[4], closeTo(0.000150, 0.000001));
+      expect(coords1b[5], closeTo(51.477364, 0.000001));
+      expect(coords1b[7], 2.0);
+
+      final gc2 = Position.create(
+        x: 4027893.924,
+        y: 307041.993,
+        z: 4919474.294,
+      );
+      final geo2conv = osgbToWgs84.inverse.project(gc2, to: Geographic.create);
+      expect(geo2conv.latDms(), '50.7971°N');
+      expect(geo2conv.lonDms(), '4.3612°E');
+      expect(geo2conv.optElev, isNotNull);
       expect(geo2conv.optM, isNull);
     });
 
