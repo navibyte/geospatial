@@ -9,7 +9,7 @@
 /// * https://www.movable-type.co.uk/scripts/latlong.html
 /// * https://www.movable-type.co.uk/scripts/geodesy-library.html#latlon-spherical
 /// * https://www.movable-type.co.uk/scripts/latlong-vincenty.html
-/// * https://www.movable-type.co.uk/scripts/latlong-utm-mgrs.html  
+/// * https://www.movable-type.co.uk/scripts/latlong-utm-mgrs.html
 ///
 /// This libary exports a subset of `package:geobase/geobase.dart`.
 ///

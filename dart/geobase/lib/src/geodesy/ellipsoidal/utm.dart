@@ -870,7 +870,7 @@ class Utm {
   ///   final utmCoord = Utm(31, 'N', 448251, 5411932);
   ///   final mgrsRef = utmCoord.toMgrs(); // 31U DQ 48251 11932
   /// ```
-  /// 
+  ///
   /// See [Mgrs.fromUtm] for more details.
   Mgrs toMgrs() => Mgrs.fromUtm(this);
 
