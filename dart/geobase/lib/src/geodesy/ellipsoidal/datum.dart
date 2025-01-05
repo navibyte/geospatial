@@ -196,8 +196,10 @@ class Datum {
     final converted = convertGeocentricCartesian(geocentric, to: to);
 
     // using `to` datum to get geographic position from geocentric position
+    // (omit the elevation if the input geographic position was 2D even if
+    //  elevation could be non-zero after conversion to another datum)
     return Geocentric.fromGeocentricCartesian(converted, datum: to)
-        .toGeographic();
+        .toGeographic(omitElev: !geographic.is3D);
   }
 
   /// Converts the geocentric [cartesian] position (X, Y, Z) in this datum to
@@ -255,7 +257,12 @@ class Datum {
     final y2 = ty + x1 * rz + y1 * s - z1 * rx;
     final z2 = tz - x1 * ry + y1 * rx + z1 * s;
 
-    return Position.create(x: x2, y: y2, z: z2);
+    return Position.create(
+      x: x2,
+      y: y2,
+      z: z2,
+      m: origin.optM, // do not convert optional M value
+    );
   }
 
   @override

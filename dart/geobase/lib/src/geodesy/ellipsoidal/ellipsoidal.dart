@@ -160,16 +160,19 @@ class Ellipsoidal extends _EllipsoidalBase<Geographic> {
   /// {@macro geobase.geodesy.ellipsoidal.ecef}
   ///
   /// {@macro geobase.geodesy.ellipsoidal.datumOrEllipsoid}
+  ///
+  /// {@macro geobase.geodesy.ellipsoidal.omitElev}
   factory Ellipsoidal.fromGeocentricCartesian(
     Position cartesian, {
     Datum? datum,
     Ellipsoid? ellipsoid,
+    bool omitElev = false,
   }) =>
       Geocentric.fromGeocentricCartesian(
         cartesian,
         datum: datum,
         ellipsoid: ellipsoid,
-      ).toEllipsoidal();
+      ).toEllipsoidal(omitElev: omitElev);
 
   /// Transform the geographic position at [origin] (latitude and longitude as
   /// geodetic coordinates) to geocentric cartesian coordinates (X, Y, Z)
@@ -212,6 +215,7 @@ class Ellipsoidal extends _EllipsoidalBase<Geographic> {
       x: (nu + h) * cosLat * cosLon,
       y: (nu + h) * cosLat * sinLon,
       z: (nu * (1.0 - eSq) + h) * sinLat,
+      m: origin.optM, // do not convert optional M value
     );
   }
 
@@ -288,8 +292,11 @@ class Geocentric extends _EllipsoidalBase<Position> {
   /// Transform geocentric cartesian coordinates (X, Y, Z) at [origin] to a
   /// geographic position (latitude and longitude as geodetic coordinates)
   /// represented by an [Ellipsoidal] instance.
-  Ellipsoidal toEllipsoidal() => Ellipsoidal.fromGeographic(
-        toGeographic(),
+  ///
+  /// {@macro geobase.geodesy.ellipsoidal.omitElev}
+  Ellipsoidal toEllipsoidal({bool omitElev = false}) =>
+      Ellipsoidal.fromGeographic(
+        toGeographic(omitElev: omitElev),
         datum: datum,
         ellipsoid: ellipsoid,
       );
@@ -297,7 +304,16 @@ class Geocentric extends _EllipsoidalBase<Position> {
   /// Transform geocentric cartesian coordinates (X, Y, Z) at [origin] to a
   /// geographic position (latitude and longitude as geodetic coordinates)
   /// represented by a [Geographic] instance.
-  Geographic toGeographic() {
+  ///
+  /// {@template geobase.geodesy.ellipsoidal.omitElev}
+  ///
+  /// If [omitElev] is true, the optional elevation value is not calculated and
+  /// it's set to null on the result geographic position. This can be useful if
+  /// the elevation is near the ellipsoid surface and a non-zero elevation
+  /// potentially resulted from the calculation is not wanted.
+  ///
+  /// {@endtemplate}
+  Geographic toGeographic({bool omitElev = false}) {
     // ε = epsilon, β = beta, ν = nu
 
     // source geocentric cartesian position
@@ -331,20 +347,28 @@ class Geocentric extends _EllipsoidalBase<Position> {
     // geodetic longitude
     final lon = atan2(y, x);
 
-    // height above ellipsoid (Bowring eqn.7)
-    final sinLat = sin(lat);
-    final cosLat = cos(lat);
-    final nu = a /
-        sqrt(
-          1.0 - eSq * sinLat * sinLat,
-        ); // length of the normal terminated by the minor axis
-    final h = p * cosLat + z * sinLat - (a * a / nu);
+    // optional height above ellipsoid, calculated if omitElev is false
+    double? optElev;
+    if (omitElev) {
+      optElev = null;
+    } else {
+      // height above ellipsoid (Bowring eqn.7)
+      final sinLat = sin(lat);
+      final cosLat = cos(lat);
+      final nu = a /
+          sqrt(
+            1.0 - eSq * sinLat * sinLat,
+          ); // length of the normal terminated by the minor axis
+      final h = p * cosLat + z * sinLat - (a * a / nu);
+      optElev = h;
+    }
 
     // create a geographic position
     return Geographic(
       lat: lat.toDegrees(),
       lon: lon.toDegrees(),
-      elev: h,
+      elev: optElev,
+      m: origin.optM, // do not convert optional M value
     );
   }
 

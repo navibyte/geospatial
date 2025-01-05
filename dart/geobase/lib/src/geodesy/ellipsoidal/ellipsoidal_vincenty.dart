@@ -102,17 +102,20 @@ class EllipsoidalVincenty extends Ellipsoidal implements Geodetic {
   ///
   /// {@macro geobase.geodesy.ellipsoidal.parameters}
   ///
+  /// {@macro geobase.geodesy.ellipsoidal.omitElev}
+  ///
   /// {@macro geobase.geodesy.ellipsoidal_vincenty.main_methods}
   factory EllipsoidalVincenty.fromGeocentricCartesian(
     Position cartesian, {
     Ellipsoid ellipsoid = Ellipsoid.WGS84,
+    bool omitElev = false,
   }) {
     // an instance with target geographic position
     return EllipsoidalVincenty(
       Geocentric.fromGeocentricCartesian(
         cartesian,
         ellipsoid: ellipsoid,
-      ).toGeographic(),
+      ).toGeographic(omitElev: omitElev),
       ellipsoid: ellipsoid,
     );
   }

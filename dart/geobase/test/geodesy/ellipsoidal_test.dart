@@ -21,6 +21,7 @@ void main() {
         const Geographic(lat: 51.749822, lon: 5.398882, elev: 10.2234),
         const Geographic(lat: 0.0, lon: -23.484, elev: -2210.3232232),
         const Geographic(lat: -89.2, lon: -179.2, elev: -123.552345),
+        const Geographic(lat: -89.2, lon: -179.2, elev: -123.552345, m: 1.1),
         const Geographic(lat: 90.0, lon: -180.0, elev: 0.0),
         const Geographic(lat: -90.0, lon: 180.0, elev: 1000.0),
         const Geographic(lat: 0.0, lon: 0.0, elev: 0.0),
@@ -114,11 +115,29 @@ void main() {
       // https://github.com/chrisveness/geodesy/blob/master/latlon-ellipsoidal.js
 
       final gc1 =
-          Position.create(x: 4027893.924, y: 307041.993, z: 4919474.294);
+          Position.create(x: 4027893.924, y: 307041.993, z: 4919474.294, m: 2);
 
       final geo1 = Geocentric.fromGeocentricCartesian(gc1).toGeographic();
       expect(geo1.lat, closeTo(50.7978, 0.0001));
       expect(geo1.lon, closeTo(4.3592, 0.0001));
+      expect(geo1.m, 2);
+    });
+
+    test('Geocentric - geographic test3', () {
+      const geo1 = Geographic(
+          lat: 51.4778, lon: -0.0014, elev: 45.0, m: 49.123209242932324);
+      final gc1 = Ellipsoidal.fromGeographic(geo1).toGeocentric();
+      final geo1b = gc1.toGeographic();
+      expect(geo1b.lat, closeTo(geo1.lat, 0.0000000001));
+      expect(geo1b.lon, closeTo(geo1.lon, 0.0000000001));
+      expect(geo1b.elev, closeTo(geo1.elev, 0.000000000001));
+      expect(geo1b.m, geo1.m);
+      final geo1c = gc1.toGeographic(omitElev: true);
+      expect(geo1c.lat, closeTo(geo1.lat, 0.0000000001));
+      expect(geo1c.lon, closeTo(geo1.lon, 0.0000000001));
+      expect(geo1c.elev, 0.0);
+      expect(geo1c.optElev, isNull);
+      expect(geo1c.m, geo1.m);
     });
   });
 
@@ -139,6 +158,14 @@ void main() {
               .origin;
       expect(geo1conv.latDms(dms6), '51.477364°N');
       expect(geo1conv.lonDms(dms6), '0.000150°E');
+      expect(geo1conv.optElev, isNotNull);
+      expect(geo1conv.optM, isNull);
+
+      final geo1convb = Datum.WGS84.convertGeographic(geo1, to: Datum.OSGB36);
+      expect(geo1convb.latDms(dms6), '51.477364°N');
+      expect(geo1convb.lonDms(dms6), '0.000150°E');
+      expect(geo1convb.optElev, isNull);
+      expect(geo1convb.optM, isNull);
 
       final gc2 = Position.create(
         x: 4027893.924,
@@ -147,11 +174,13 @@ void main() {
       );
       final gc2conv =
           Datum.WGS84.convertGeocentricCartesian(gc2, to: Datum.OSGB36);
-      final geo2conv =
-          Ellipsoidal.fromGeocentricCartesian(gc2conv, datum: Datum.OSGB36)
-              .origin;
+      final geo2conv = Ellipsoidal.fromGeocentricCartesian(gc2conv,
+              datum: Datum.OSGB36, omitElev: true)
+          .origin;
       expect(geo2conv.latDms(), '50.7971°N');
       expect(geo2conv.lonDms(), '4.3612°E');
+      expect(geo2conv.optElev, isNull);
+      expect(geo2conv.optM, isNull);
     });
 
     test('Datum conversions using Datum class and geographic coordinates', () {
