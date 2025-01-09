@@ -26,13 +26,13 @@ void main() {
   final wgs84geoToGc = WGS84.geocentric.forward;
   final wgs84gcToGeo = WGS84.geocentric.inverse;
 
-  const wgs84toOSGB = EllipsoidalProjectionAdapter(
+  final wgs84toOSGB = EllipsoidalProjectionAdapter.geographicToGeocentric(
     targetDatum: Datum.OSGB36,
   );
-  const osgbToWgs84 = EllipsoidalProjectionAdapter(
+  final osgbToWgs84 = EllipsoidalProjectionAdapter.geographicToGeocentric(
     sourceDatum: Datum.OSGB36,
   );
-  const osgbToOsgb = EllipsoidalProjectionAdapter(
+  final osgbToOsgb = EllipsoidalProjectionAdapter.geographicToGeocentric(
     sourceDatum: Datum.OSGB36,
     targetDatum: Datum.OSGB36,
   );
@@ -181,7 +181,7 @@ void main() {
       const geo1 = Geographic(lat: 51.47788, lon: -0.00147);
       final gc1 = geo1.toGeocentricCartesian();
       final gc1conv =
-          Datum.WGS84.convertGeocentricCartesian(gc1, to: Datum.OSGB36);
+          Datum.WGS84.convertGeocentricCartesian(gc1, target: Datum.OSGB36);
       final geo1conv =
           Geocentric.fromGeocentricCartesian(gc1conv, datum: Datum.OSGB36)
               .toEllipsoidal()
@@ -191,7 +191,8 @@ void main() {
       expect(geo1conv.optElev, isNotNull);
       expect(geo1conv.optM, isNull);
 
-      final geo1convb = Datum.WGS84.convertGeographic(geo1, to: Datum.OSGB36);
+      final geo1convb =
+          Datum.WGS84.convertGeographic(geo1, target: Datum.OSGB36);
       expect(geo1convb.latDms(dms6), '51.477364°N');
       expect(geo1convb.lonDms(dms6), '0.000150°E');
       expect(geo1convb.optElev, isNull);
@@ -203,7 +204,7 @@ void main() {
         z: 4919474.294,
       );
       final gc2conv =
-          Datum.WGS84.convertGeocentricCartesian(gc2, to: Datum.OSGB36);
+          Datum.WGS84.convertGeocentricCartesian(gc2, target: Datum.OSGB36);
       final geo2conv = Ellipsoidal.fromGeocentricCartesian(gc2conv,
               datum: Datum.OSGB36, omitElev: true)
           .origin;
@@ -266,10 +267,12 @@ void main() {
       const degMinSec = Dms(type: DmsType.degMinSec, decimals: 3);
 
       const geo1 = Geographic(lat: 51.47788, lon: -0.00147);
-      final geo1conv = Datum.WGS84.convertGeographic(geo1, to: Datum.OSGB36);
+      final geo1conv =
+          Datum.WGS84.convertGeographic(geo1, target: Datum.OSGB36);
       expect(geo1conv.latDms(dms6), '51.477364°N');
       expect(geo1conv.lonDms(dms6), '0.000150°E');
-      final geo1b = Datum.OSGB36.convertGeographic(geo1conv, to: Datum.WGS84);
+      final geo1b =
+          Datum.OSGB36.convertGeographic(geo1conv, target: Datum.WGS84);
       expect(geo1b.latDms(dms5), '51.47788°N');
       expect(geo1b.lonDms(dms5), '0.00147°W');
 
@@ -279,24 +282,29 @@ void main() {
         z: 4919474.294,
       );
       final geo2 = Geocentric.fromGeocentricCartesian(gc2).toGeographic();
-      final geo2conv = Datum.WGS84.convertGeographic(geo2, to: Datum.OSGB36);
+      final geo2conv =
+          Datum.WGS84.convertGeographic(geo2, target: Datum.OSGB36);
       expect(geo2conv.latDms(), '50.7971°N');
       expect(geo2conv.lonDms(), '4.3612°E');
-      final geo2b = Datum.OSGB36.convertGeographic(geo2conv, to: Datum.WGS84);
+      final geo2b =
+          Datum.OSGB36.convertGeographic(geo2conv, target: Datum.WGS84);
       final gc2b = geo2b.toGeocentricCartesian();
       expect(gc2b.toText(decimals: 1), gc2.toText(decimals: 1));
 
       const geo3 = Geographic(lat: 53.0, lon: 1.0, elev: 50.0);
-      final geo3osgb = Datum.WGS84.convertGeographic(geo3, to: Datum.OSGB36);
+      final geo3osgb =
+          Datum.WGS84.convertGeographic(geo3, target: Datum.OSGB36);
       expect(geo3osgb.latLonDms(format: degMinSec),
           '52°59′58.719″N, 1°00′06.490″E, 3.99m');
 
-      final geo3ed = Datum.WGS84.convertGeographic(geo3, to: Datum.ED50);
+      final geo3ed = Datum.WGS84.convertGeographic(geo3, target: Datum.ED50);
       expect(geo3ed.latLonDms(format: degMinSec),
           '53°00′02.887″N, 1°00′05.101″E, 2.72m');
 
-      final geo3ed2 = Datum.OSGB36.convertGeographic(geo3osgb, to: Datum.ED50);
-      final geo3wgs2 = Datum.ED50.convertGeographic(geo3ed2, to: Datum.WGS84);
+      final geo3ed2 =
+          Datum.OSGB36.convertGeographic(geo3osgb, target: Datum.ED50);
+      final geo3wgs2 =
+          Datum.ED50.convertGeographic(geo3ed2, target: Datum.WGS84);
       expect(geo3wgs2.latLonDms(elevDecimals: 1), '53.0000°N, 1.0000°E, 50.0m');
     });
   });

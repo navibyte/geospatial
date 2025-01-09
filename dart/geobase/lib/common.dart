@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2025 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -10,7 +10,7 @@
 /// Features:
 /// * Enums (codes): geospatial coordinate, geometry types, dimensionality,
 ///   canvas origin, cardinal direction, DMS type, geo representation, axis
-///   order, hemisphere.
+///   order, hemisphere, coordinate reference system types.
 /// * Constants: epsilon, geodetic and screen related constants.
 /// * Functions: conversions between radians and degrees, geographic coordinate
 ///   helpers.
@@ -27,6 +27,7 @@ library common;
 export 'src/common/codes/axis_order.dart';
 export 'src/common/codes/canvas_origin.dart';
 export 'src/common/codes/cardinal_precision.dart';
+export 'src/common/codes/coord_ref_sys_type.dart';
 export 'src/common/codes/coords.dart';
 export 'src/common/codes/dimensionality.dart';
 export 'src/common/codes/dms_type.dart';

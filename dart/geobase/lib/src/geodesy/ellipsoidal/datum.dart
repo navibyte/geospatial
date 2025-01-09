@@ -37,15 +37,23 @@
 
 // ignore_for_file: lines_longer_than_80_chars, constant_identifier_names
 
+import 'dart:typed_data';
+
 import 'package:meta/meta.dart';
 
+import '/src/common/codes/coord_ref_sys_type.dart';
+import '/src/common/codes/coords.dart';
 import '/src/common/functions/position_functions.dart';
 import '/src/common/reference/ellipsoid.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/geographic/geographic.dart';
+import '/src/coordinates/projected/projected.dart';
+import '/src/utils/format_validation.dart';
 import '/src/utils/object_utils.dart';
 
 import 'ellipsoidal.dart';
+
+part 'datum_conversions.dart';
 
 /// A geodetic datum with a reference ellipsoid and datum transformation
 /// parameters.
@@ -71,6 +79,10 @@ import 'ellipsoidal.dart';
 /// [HistoricalEllipsoids] class.
 @immutable
 class Datum {
+  /// Whether this datum is WGS84 based on the WGS84 ellipsoidal and defining
+  /// a "null" datum transformation.
+  final bool isWGS84;
+
   /// The reference ellipsoid for the datum.
   final Ellipsoid ellipsoid;
 
@@ -80,7 +92,9 @@ class Datum {
   /// `[tx, ty, tz, s, rx, ry, rz]`.
   ///
   /// Units of parameters: `t` in metres, `s` in ppm, `r` in arcseconds.
-  final List<double> transform;
+  final List<double> _transform;
+
+  // NOTE: transform as `List<double>` can be refactored to a record in future.
 
   /// Create a geodesic datum with a reference [ellipsoid] and datum
   /// parameters to [transform] coordinates.
@@ -89,13 +103,15 @@ class Datum {
   /// `[tx, ty, tz, s, rx, ry, rz]`.
   ///
   /// Units of parameters: `t` in metres, `s` in ppm, `r` in arcseconds.
-  const Datum({
+  const Datum.fromParameters({
+    this.isWGS84 = false,
     required this.ellipsoid,
-    required this.transform,
-  });
+    required List<double> transform,
+  }) : _transform = transform;
 
   /// The `WGS84` (World Geodetic System 1984) datum.
-  static const WGS84 = Datum(
+  static const WGS84 = Datum.fromParameters(
+    isWGS84: true,
     ellipsoid: Ellipsoid.WGS84,
     transform: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
   );
@@ -104,31 +120,31 @@ class Datum {
   ///
   /// ETRS89 reference frames are coincident with [WGS84] at epoch 1989.0 (ie.
   /// null transform) at the one metre level.
-  static const ETRS89 = Datum(
+  static const ETRS89 = Datum.fromParameters(
     ellipsoid: Ellipsoid.GRS80,
     transform: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
   ); // epsg.io/1149; @ 1-metre level
 
   /// The `ED50` (European Datum 1950) datum.
-  static const ED50 = Datum(
+  static const ED50 = Datum.fromParameters(
     ellipsoid: HistoricalEllipsoids.Intl1924,
     transform: [89.5, 93.8, 123.1, -1.2, 0.0, 0.0, 0.156],
   ); // epsg.io/1311
 
   /// The `Irl1975` (Ireland 1975) datum.
-  static const Irl1975 = Datum(
+  static const Irl1975 = Datum.fromParameters(
     ellipsoid: HistoricalEllipsoids.AiryModified,
     transform: [-482.530, 130.596, -564.557, -8.150, 1.042, 0.214, 0.631],
   ); // epsg.io/1954
 
   /// The `NAD27` (North American Datum 1927) datum.
-  static const NAD27 = Datum(
+  static const NAD27 = Datum.fromParameters(
     ellipsoid: HistoricalEllipsoids.Clarke1866,
     transform: [8, -160, -176, 0, 0, 0, 0],
   );
 
   /// The `NAD83` (North American Datum 1983) datum.
-  static const NAD83 = Datum(
+  static const NAD83 = Datum.fromParameters(
     ellipsoid: Ellipsoid.GRS80,
     transform: [
       0.9956,
@@ -142,13 +158,13 @@ class Datum {
   );
 
   /// The `NTF` (Nouvelle Triangulation Francaise) datum.
-  static const NTF = Datum(
+  static const NTF = Datum.fromParameters(
     ellipsoid: HistoricalEllipsoids.Clarke1880IGN,
     transform: [168, 60, -320, 0, 0, 0, 0],
   );
 
   /// The `OSGB36` (Ordnance Survey Great Britain 1936) datum.
-  static const OSGB36 = Datum(
+  static const OSGB36 = Datum.fromParameters(
     ellipsoid: HistoricalEllipsoids.Airy1830,
     transform: [
       -446.448,
@@ -162,79 +178,165 @@ class Datum {
   ); // epsg.io/1314
 
   /// The `Potsdam` datum.
-  static const Potsdam = Datum(
+  static const Potsdam = Datum.fromParameters(
     ellipsoid: HistoricalEllipsoids.Bessel1841,
     transform: [-582, -105, -414, -8.3, 1.04, 0.35, -3.08],
   );
 
   /// The `TokyoJapan` datum.
-  static const TokyoJapan = Datum(
+  static const TokyoJapan = Datum.fromParameters(
     ellipsoid: HistoricalEllipsoids.Bessel1841,
     transform: [148, -507, -685, 0, 0, 0, 0],
   );
 
   /// The `WGS72` (World Geodetic System 1972) datum.
-  static const WGS72 = Datum(
+  static const WGS72 = Datum.fromParameters(
     ellipsoid: HistoricalEllipsoids.WGS72,
     transform: [0, 0, -4.5, -0.22, 0, 0, 0.554],
   );
 
   /// Converts the [geographic] position in this datum to another datum specified
-  /// by [to].
+  /// by [target].
   ///
   /// The geographic position is first converted to geocentric cartesian, then
   /// the Helmert 7-parameter transformation is applied to convert the position,
   /// and finally the result is converted back to a geographic position.
   ///
-  /// The returned position is a geographic position in the [to] datum.
-  Geographic convertGeographic(Geographic geographic, {required Datum to}) {
-    // using `this` datum to get geocentric position in `this` datum
-    final geocentric = Ellipsoidal.fromGeographic(geographic, datum: this)
-        .toGeocentricCartesian();
+  /// The returned position is a geographic position in the [target] datum.
+  Geographic convertGeographic(
+    Geographic geographic, {
+    required Datum target,
+  }) =>
+      _convertGeographicInternal(
+        lon: geographic.lon,
+        lat: geographic.lat,
+        elev: geographic.optElev,
+        m: geographic.optM,
+        target: target,
+        to: Geographic.create,
+        omitElev: !geographic.is3D,
+      );
 
-    // using `to` datum to convert geocentric position to `to` datum
-    final converted = convertGeocentricCartesian(geocentric, to: to);
+  R _convertGeographicInternal<R extends Position>({
+    required double lon,
+    required double lat,
+    double? elev,
+    double? m,
+    required Datum target,
+    required CreatePosition<R> to,
+    bool omitElev = false,
+  }) {
+    // use `this` datum to get geocentric position in `this` datum
+    final geocentric = geographicToGeocentricCartesian(
+      lon: lon,
+      lat: lat,
+      elev: elev,
+      m: m,
+      ellipsoid: ellipsoid, // ellipsoid of `this` datum
+      // Use `Projected.new` for efficiency on temporary object.
+      to: Projected.new,
+    );
 
-    // using `to` datum to get geographic position from geocentric position
+    // use `target` datum to convert geocentric position to `target` datum
+    final converted = _convertGeocentricCartesianInternal(
+      x: geocentric.x,
+      y: geocentric.y,
+      z: geocentric.z,
+      m: geocentric.optM,
+      target: target,
+      // Use `Projected.new` for efficiency on temporary object.
+      to: Projected.new,
+    );
+
+    // use `target` datum to get geographic position from geocentric position
     // (omit the elevation if the input geographic position was 2D even if
     //  elevation could be non-zero after conversion to another datum)
-    return Geocentric.fromGeocentricCartesian(converted, datum: to)
-        .toGeographic(omitElev: !geographic.is3D);
+    return geocentricCartesianToGeographic(
+      x: converted.x,
+      y: converted.y,
+      z: converted.z,
+      m: converted.optM,
+      ellipsoid: target.ellipsoid,
+      omitElev: omitElev,
+      to: to,
+    );
   }
 
   /// Converts the geocentric [cartesian] position (X, Y, Z) in this datum to
-  /// another datum a specified by [to] using the Helmert 7-parameter
+  /// another datum a specified by [target] using the Helmert 7-parameter
   /// transformation.
   ///
   /// The returned position is a geocentric cartesian position (X, Y, Z) in the
-  /// [to] datum.
-  Position convertGeocentricCartesian(Position cartesian, {required Datum to}) {
-    if (this == to) {
-      // no datum change
-      return cartesian;
-    } else if (this == WGS84) {
-      // converting from WGS 84
-      return _applyTransform(cartesian, to.transform);
-    } else if (to == WGS84) {
-      // converting to WGS 84; use inverse transform
+  /// [target] datum.
+  Position convertGeocentricCartesian(
+    Position cartesian, {
+    required Datum target,
+  }) =>
+      this == target
+          ? cartesian // no datum change
+          : _convertGeocentricCartesianInternal(
+              x: cartesian.x,
+              y: cartesian.y,
+              z: cartesian.z,
+              m: cartesian.optM,
+              target: target,
+              to: Position.create,
+            );
+
+  R _convertGeocentricCartesianInternal<R extends Position>({
+    required double x,
+    required double y,
+    required double z,
+    double? m,
+    required Datum target,
+    required CreatePosition<R> to,
+  }) {
+    if (isWGS84) {
+      // both this and target are WGS84: no tranform, just return position
+      if (target.isWGS84) {
+        return to.call(x: x, y: y, z: z, m: m);
+      }
+
+      // converting from WGS 84 datum to target datum
       return _applyTransform(
-        cartesian,
-        transform.map((e) => -e).toList(growable: false),
+        target._transform,
+        x1: x, y1: y, z1: z, m1: m, //
+        to: to,
+      );
+    } else if (target.isWGS84) {
+      // converting from source datum to WGS 84 datum; use inverse transform
+      return _applyTransform(
+        _transform.map((e) => -e).toList(growable: false),
+        x1: x, y1: y, z1: z, m1: m, //
+        to: to,
       );
     }
 
     // neither this.datum nor toDatum are WGS84: convert origin to WGS84 first
+    final wgs84 = _convertGeocentricCartesianInternal(
+      target: WGS84,
+      x: x, y: y, z: z, m: m, //
+      // Use `Projected.new` for efficiency on temporary object.
+      to: Projected.new,
+    );
     return _applyTransform(
-      convertGeocentricCartesian(cartesian, to: WGS84),
-      to.transform,
+      target._transform,
+      x1: wgs84.x,
+      y1: wgs84.y,
+      z1: wgs84.z,
+      m1: wgs84.optM,
+      to: to,
     );
   }
 
-  Position _applyTransform(Position origin, List<double> t) {
-    final x1 = origin.x;
-    final y1 = origin.y;
-    final z1 = origin.z;
-
+  R _applyTransform<R extends Position>(
+    List<double> t, {
+    required double x1,
+    required double y1,
+    required double z1,
+    double? m1,
+    required CreatePosition<R> to,
+  }) {
     // transform parameters
 
     // x-shift in metres
@@ -257,26 +359,28 @@ class Datum {
     final y2 = ty + x1 * rz + y1 * s - z1 * rx;
     final z2 = tz - x1 * ry + y1 * rx + z1 * s;
 
-    return Position.create(
+    return to.call(
       x: x2,
       y: y2,
       z: z2,
-      m: origin.optM, // do not convert optional M value
+      m: m1, // do not convert optional M value
     );
   }
 
   @override
-  String toString() => '$ellipsoid;${listToString(transform)}';
+  String toString() => '$isWGS84$ellipsoid;${listToString(_transform)}';
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Datum &&
+          isWGS84 == other.isWGS84 &&
           ellipsoid == other.ellipsoid &&
-          testListEquality(transform, other.transform));
+          testListEquality(_transform, other._transform));
 
   @override
-  int get hashCode => Object.hash(ellipsoid, Object.hashAll(transform));
+  int get hashCode =>
+      Object.hash(isWGS84, ellipsoid, Object.hashAll(_transform));
 }
 
 /// Some historical geodetic ellipsoids defined as static constants.

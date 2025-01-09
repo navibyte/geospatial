@@ -190,34 +190,14 @@ class Ellipsoidal extends _EllipsoidalBase<Geographic> {
   /// represented by a [Position] instance.
   ///
   /// {@macro geobase.geodesy.ellipsoidal.ecef}
-  Position toGeocentricCartesian() {
-    // source geographic position
-    final lat = origin.lat.toRadians();
-    final lon = origin.lon.toRadians();
-    final h = origin.elev;
-    final sinLat = sin(lat);
-    final cosLat = cos(lat);
-    final sinLon = sin(lon);
-    final cosLon = cos(lon);
-
-    // ellipsoidal parameters
-    final a = ellipsoid.a;
-    final f = ellipsoid.f;
-
-    // 1st eccentricity squared ≡ (a²-b²)/a²
-    final eSq = 2.0 * f - f * f;
-
-    // (ν = nu) radius of curvature in prime vertical
-    final nu = a / sqrt(1.0 - eSq * sinLat * sinLat);
-
-    // target geocentric cartesian position
-    return Position.create(
-      x: (nu + h) * cosLat * cosLon,
-      y: (nu + h) * cosLat * sinLon,
-      z: (nu * (1.0 - eSq) + h) * sinLat,
-      m: origin.optM, // do not convert optional M value
-    );
-  }
+  Position toGeocentricCartesian() => geographicToGeocentricCartesian(
+        lat: origin.lat,
+        lon: origin.lon,
+        elev: origin.optElev,
+        m: origin.optM,
+        ellipsoid: ellipsoid,
+        to: Position.create,
+      );
 
   @override
   // ignore: hash_and_equals
@@ -313,64 +293,16 @@ class Geocentric extends _EllipsoidalBase<Position> {
   /// potentially resulted from the calculation is not wanted.
   ///
   /// {@endtemplate}
-  Geographic toGeographic({bool omitElev = false}) {
-    // ε = epsilon, β = beta, ν = nu
-
-    // source geocentric cartesian position
-    final x = origin.x;
-    final y = origin.y;
-    final z = origin.z;
-
-    // ellipsoidal parameters
-    final a = ellipsoid.a;
-    final b = ellipsoid.b;
-    final f = ellipsoid.f;
-
-    final eSq = 2.0 * f - f * f; // 1st eccentricity squared ≡ (a²−b²)/a²
-    final epsilon2 = eSq / (1.0 - eSq); // 2nd eccentricity squared ≡ (a²−b²)/b²
-    final p = sqrt(x * x + y * y); // distance from minor axis
-    final R = sqrt(p * p + z * z); // polar radius
-
-    // parametric latitude (Bowring eqn.17, replacing tanβ = z·a / p·b)
-    final tanBeta = (b * z) / (a * p) * (1.0 + epsilon2 * b / R);
-    final sinBeta = tanBeta / sqrt(1.0 + tanBeta * tanBeta);
-    final cosBeta = sinBeta / tanBeta;
-
-    // geodetic latitude (Bowring eqn.18: tanφ = z+ε²⋅b⋅sin³β / p−e²⋅cos³β)
-    final lat = cosBeta.isNaN
-        ? 0.0
-        : atan2(
-            z + epsilon2 * b * sinBeta * sinBeta * sinBeta,
-            p - eSq * a * cosBeta * cosBeta * cosBeta,
-          );
-
-    // geodetic longitude
-    final lon = atan2(y, x);
-
-    // optional height above ellipsoid, calculated if omitElev is false
-    double? optElev;
-    if (omitElev) {
-      optElev = null;
-    } else {
-      // height above ellipsoid (Bowring eqn.7)
-      final sinLat = sin(lat);
-      final cosLat = cos(lat);
-      final nu = a /
-          sqrt(
-            1.0 - eSq * sinLat * sinLat,
-          ); // length of the normal terminated by the minor axis
-      final h = p * cosLat + z * sinLat - (a * a / nu);
-      optElev = h;
-    }
-
-    // create a geographic position
-    return Geographic(
-      lat: lat.toDegrees(),
-      lon: lon.toDegrees(),
-      elev: optElev,
-      m: origin.optM, // do not convert optional M value
-    );
-  }
+  Geographic toGeographic({bool omitElev = false}) =>
+      geocentricCartesianToGeographic(
+        x: origin.x,
+        y: origin.y,
+        z: origin.z,
+        m: origin.optM,
+        ellipsoid: ellipsoid,
+        to: Geographic.create,
+        omitElev: omitElev,
+      );
 
   @override
   // ignore: hash_and_equals
@@ -383,4 +315,121 @@ void _checkDatumAndEllipsoid(Datum? datum, Ellipsoid? ellipsoid) {
   if (datum != null && ellipsoid != null && datum.ellipsoid != ellipsoid) {
     throw const FormatException('Datum and ellipsoid must be compatible.');
   }
+}
+
+// -----------------------------------------------------------------------------
+// Internal functions to implement geocentric and geographic conversions with
+// as low overhead as possible. These functions are used by ellipsoidal and
+// datum classes.
+//
+// Functions are not exported, so marked as internal. In future these functions
+// could be optimized further by using records or other efficient data
+// structures.
+
+/// Internal function to convert geographic coordinates (longitude, latitudee)
+/// to geocentric cartesian coordinates (x, y, z).
+///
+/// Target position object is created using the [to] function.
+@internal
+R geographicToGeocentricCartesian<R extends Position>({
+  required double lon,
+  required double lat,
+  double? elev,
+  double? m,
+  required Ellipsoid ellipsoid,
+  required CreatePosition<R> to,
+}) {
+  // source geographic position
+  final latRad = lat.toRadians();
+  final lonRad = lon.toRadians();
+  final h = elev ?? 0.0; // if elev is null, set it to 0.0 (ellipsoid surface)
+  final sinLat = sin(latRad);
+  final cosLat = cos(latRad);
+  final sinLon = sin(lonRad);
+  final cosLon = cos(lonRad);
+
+  // ellipsoidal parameters
+  final a = ellipsoid.a;
+  final f = ellipsoid.f;
+
+  // 1st eccentricity squared ≡ (a²-b²)/a²
+  final eSq = 2.0 * f - f * f;
+
+  // (ν = nu) radius of curvature in prime vertical
+  final nu = a / sqrt(1.0 - eSq * sinLat * sinLat);
+
+  // target geocentric cartesian position
+  return to.call(
+    x: (nu + h) * cosLat * cosLon,
+    y: (nu + h) * cosLat * sinLon,
+    z: (nu * (1.0 - eSq) + h) * sinLat,
+    m: m, // do not convert optional M value
+  );
+}
+
+/// Internal function to convert geocentric cartesian coordinates (x, y, z) to
+/// geographic coordinates (longitude, latitude).
+///
+/// Target position object is created using the [to] function.
+@internal
+R geocentricCartesianToGeographic<R extends Position>({
+  required double x,
+  required double y,
+  required double z,
+  double? m,
+  required Ellipsoid ellipsoid,
+  required CreatePosition<R> to,
+  bool omitElev = false,
+}) {
+  // ε = epsilon, β = beta, ν = nu
+
+  // ellipsoidal parameters
+  final a = ellipsoid.a;
+  final b = ellipsoid.b;
+  final f = ellipsoid.f;
+
+  final eSq = 2.0 * f - f * f; // 1st eccentricity squared ≡ (a²−b²)/a²
+  final epsilon2 = eSq / (1.0 - eSq); // 2nd eccentricity squared ≡ (a²−b²)/b²
+  final p = sqrt(x * x + y * y); // distance from minor axis
+  final R = sqrt(p * p + z * z); // polar radius
+
+  // parametric latitude (Bowring eqn.17, replacing tanβ = z·a / p·b)
+  final tanBeta = (b * z) / (a * p) * (1.0 + epsilon2 * b / R);
+  final sinBeta = tanBeta / sqrt(1.0 + tanBeta * tanBeta);
+  final cosBeta = sinBeta / tanBeta;
+
+  // geodetic latitude (Bowring eqn.18: tanφ = z+ε²⋅b⋅sin³β / p−e²⋅cos³β)
+  final lat = cosBeta.isNaN
+      ? 0.0
+      : atan2(
+          z + epsilon2 * b * sinBeta * sinBeta * sinBeta,
+          p - eSq * a * cosBeta * cosBeta * cosBeta,
+        );
+
+  // geodetic longitude
+  final lon = atan2(y, x);
+
+  // optional height above ellipsoid, calculated if omitElev is false
+  double? optElev;
+  if (omitElev) {
+    optElev = null;
+  } else {
+    // height above ellipsoid (Bowring eqn.7)
+    final sinLat = sin(lat);
+    final cosLat = cos(lat);
+    final nu = a /
+        sqrt(
+          1.0 - eSq * sinLat * sinLat,
+        ); // length of the normal terminated by the minor axis
+    final h = p * cosLat + z * sinLat - (a * a / nu);
+    optElev = h;
+  }
+
+  // create a geographic position
+  return to.call(
+    x: lon.toDegrees(), // NOTE in position data structures x is longitude
+    y: lat.toDegrees(), // NOTE in position data structures y is latitude
+    z: optElev,
+    m: m, // do not convert optional M value
+  );
 }

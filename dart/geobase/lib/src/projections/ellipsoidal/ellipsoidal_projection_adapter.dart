@@ -4,21 +4,22 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import '/src/common/codes/coord_ref_sys_type.dart';
+import '/src/common/codes/coords.dart';
 import '/src/common/reference/coord_ref_sys.dart';
 import '/src/coordinates/base/position.dart';
-import '/src/coordinates/geographic/geographic.dart';
 import '/src/coordinates/projected/projected.dart';
 import '/src/coordinates/projection/projection.dart';
 import '/src/coordinates/projection/projection_adapter.dart';
 import '/src/geodesy/ellipsoidal/datum.dart';
-import '/src/geodesy/ellipsoidal/ellipsoidal.dart';
 
 import 'base_ellipsoidal_projection.dart';
 
-/// {@template geobase.projections.ellipsoidal.overview}
+/// A projection adapter based on geodetic transformations based on ellipsoidal
+/// Earth models. Source and target coordinates can geographic (longitude,
+/// latitude) or geocentric cartesian (X, Y, Z) positions.
 ///
-/// A projection adapter between *source* geographic (longitude, latitude) and
-/// *target* geocentric cartesian (X, Y, Z) positions.
+/// {@template geobase.projections.ellipsoidal.overview}
 ///
 /// For the [forward] projection [sourceCrs] defines the identifier of the
 /// source coordinate reference system (CRS) and [targetCrs] defines the
@@ -33,9 +34,13 @@ class EllipsoidalProjectionAdapter with ProjectionAdapter {
   @override
   final CoordRefSys targetCrs;
 
-  final Datum _sourceDatum;
-  final Datum _targetDatum;
+  final Projection _forward;
+  final Projection _inverse;
 
+  /// Create an adapter with the forward projection converting from geographic
+  /// coordinates (in source datum) to geographic coordinates (in target datum),
+  /// and the inverse projection converting vice versa.
+  ///
   /// {@macro geobase.projections.ellipsoidal.overview}
   ///
   /// {@template geobase.projections.ellipsoidal.datums}
@@ -49,111 +54,138 @@ class EllipsoidalProjectionAdapter with ProjectionAdapter {
   /// 7-parameter transformation is applied.
   ///
   /// {@endtemplate}
-  const EllipsoidalProjectionAdapter({
+  EllipsoidalProjectionAdapter.geographicToGeographic({
+    required this.sourceCrs,
+    required this.targetCrs,
+    required Datum sourceDatum,
+    required Datum targetDatum,
+  })  : _forward = _DatumToDatumProjection(
+          sourceCrsType: CoordRefSysType.geographic,
+          sourceDatum: sourceDatum,
+          targetCrsType: CoordRefSysType.geographic,
+          targetDatum: targetDatum,
+        ),
+        _inverse = _DatumToDatumProjection(
+          sourceCrsType: CoordRefSysType.geographic,
+          sourceDatum: targetDatum,
+          targetCrsType: CoordRefSysType.geographic,
+          targetDatum: sourceDatum,
+        );
+
+  /// Create an adapter with the forward projection converting from geographic
+  /// coordinates (in source datum) to geocentric coordinates (in target datum),
+  /// and the inverse projection converting vice versa.
+  ///
+  /// {@macro geobase.projections.ellipsoidal.overview}
+  ///
+  /// {@macro geobase.projections.ellipsoidal.datums}
+  EllipsoidalProjectionAdapter.geographicToGeocentric({
     this.sourceCrs = CoordRefSys.CRS84,
     this.targetCrs = CoordRefSys.EPSG_4978,
     Datum sourceDatum = Datum.WGS84,
     Datum targetDatum = Datum.WGS84,
-  })  : _targetDatum = targetDatum,
-        _sourceDatum = sourceDatum;
+  })  : _forward = _DatumToDatumProjection(
+          sourceCrsType: CoordRefSysType.geographic,
+          sourceDatum: sourceDatum,
+          targetCrsType: CoordRefSysType.geocentric,
+          targetDatum: targetDatum,
+        ),
+        _inverse = _DatumToDatumProjection(
+          sourceCrsType: CoordRefSysType.geocentric,
+          sourceDatum: targetDatum,
+          targetCrsType: CoordRefSysType.geographic,
+          targetDatum: sourceDatum,
+        );
+
+  /// Create an adapter with the forward projection converting from geocentric
+  /// coordinates (in source datum) to geocentric coordinates (in target datum),
+  /// and the inverse projection converting vice versa.
+  ///
+  /// {@macro geobase.projections.ellipsoidal.overview}
+  ///
+  /// {@macro geobase.projections.ellipsoidal.datums}
+  EllipsoidalProjectionAdapter.geocentricToGeocentric({
+    required this.sourceCrs,
+    required this.targetCrs,
+    required Datum sourceDatum,
+    required Datum targetDatum,
+  })  : _forward = _DatumToDatumProjection(
+          sourceCrsType: CoordRefSysType.geocentric,
+          sourceDatum: sourceDatum,
+          targetCrsType: CoordRefSysType.geocentric,
+          targetDatum: targetDatum,
+        ),
+        _inverse = _DatumToDatumProjection(
+          sourceCrsType: CoordRefSysType.geocentric,
+          sourceDatum: targetDatum,
+          targetCrsType: CoordRefSysType.geocentric,
+          targetDatum: sourceDatum,
+        );
 
   @override
-  Projection get forward => _EllipsoidalToGeocentricProjection(
-        sourceDatum: _sourceDatum,
-        targetDatum: _targetDatum,
-      );
+  Projection get forward => _forward;
 
   @override
-  Projection get inverse => _GeocentricToEllipsoidalProjection(
-        sourceDatum: _targetDatum,
-        targetDatum: _sourceDatum,
-      );
+  Projection get inverse => _inverse;
 }
 
-class _EllipsoidalToGeocentricProjection
-    extends BaseEllipsoidalProjection<Geographic, Position> {
-  const _EllipsoidalToGeocentricProjection({
+class _DatumToDatumProjection
+    extends BaseEllipsoidalProjection<Position, Position> {
+  final CoordRefSysType sourceCrsType;
+  final CoordRefSysType targetCrsType;
+
+  _DatumToDatumProjection({
+    required this.sourceCrsType,
     required super.sourceDatum,
+    required this.targetCrsType,
     required super.targetDatum,
   });
 
   @override
-  Position projectPosition(Geographic source) {
-    // source geographic coordinates in the source datum
-    final ellipsoidal = Ellipsoidal.fromGeographic(
-      source,
-      datum: sourceDatum,
-    );
-
-    // geocentric cartesian coordinates in the source datum
-    var cartesian = ellipsoidal.toGeocentricCartesian();
-
-    if (sourceDatum != targetDatum) {
-      // transform geocentric cartesian coordinates to the target datum
-      cartesian =
-          sourceDatum.convertGeocentricCartesian(cartesian, to: targetDatum);
-    }
-
-    return cartesian;
-  }
-
-  @override
-  Position projectXYZM(double x, double y, double? z, double? m) {
-    return projectPosition(Geographic.create(x: x, y: y, z: z, m: m));
-  }
+  Position projectXYZM(double x, double y, double? z, double? m) =>
+      convertDatumToDatum(
+        x: x,
+        y: y,
+        z: z,
+        m: m,
+        sourceCrsType: sourceCrsType,
+        targetCrsType: targetCrsType,
+        sourceDatum: sourceDatum,
+        targetDatum: targetDatum,
+        // Use `Projected.new` for efficiency on temporary object.
+        to: Projected.new,
+      );
 
   @override
   R project<R extends Position>(
     Position source, {
     required CreatePosition<R> to,
-  }) {
-    final cartesian = projectPosition(
-      source is Geographic ? source : source.copyTo(Geographic.create),
-    );
-
-    // target geocentric cartesian coordinates in the target datum
-    return cartesian is R ? cartesian : cartesian.copyTo(to);
-  }
-}
-
-class _GeocentricToEllipsoidalProjection
-    extends BaseEllipsoidalProjection<Position, Geographic> {
-  const _GeocentricToEllipsoidalProjection({
-    required super.sourceDatum,
-    required super.targetDatum,
-  });
+  }) =>
+      convertDatumToDatum(
+        x: source.x,
+        y: source.y,
+        z: source.optZ,
+        m: source.optM,
+        sourceCrsType: sourceCrsType,
+        targetCrsType: targetCrsType,
+        sourceDatum: sourceDatum,
+        targetDatum: targetDatum,
+        to: to,
+      );
 
   @override
-  Geographic projectPosition(Position source) {
-    // source geocentric cartesian coordinates in the source datum
-    var cartesian = source;
-
-    if (sourceDatum != targetDatum) {
-      // transform geocentric cartesian coordinates to the target datum
-      cartesian =
-          sourceDatum.convertGeocentricCartesian(cartesian, to: targetDatum);
-    }
-
-    // from cartesian coordinates to geographic coordinates in the target datum
-    return Geocentric.fromGeocentricCartesian(cartesian, datum: targetDatum)
-        .toGeographic();
-  }
-
-  @override
-  Geographic projectXYZM(double x, double y, double? z, double? m) {
-    // NOTE: we use `Projected.new` instead of `Position.create` because
-    // it should be more efficient for temporay position objects.
-    return projectPosition(Projected(x: x, y: y, z: z, m: m));
-  }
-
-  @override
-  R project<R extends Position>(
-    Position source, {
-    required CreatePosition<R> to,
-  }) {
-    final geographic = projectPosition(source);
-
-    // target geographic coordinates coordinates in the target datum
-    return geographic is R ? geographic as R : geographic.copyTo(to);
-  }
+  List<double> projectCoords(
+    Iterable<double> source, {
+    List<double>? target,
+    required Coords type,
+  }) =>
+      convertDatumToDatumCoords(
+        source,
+        target: target,
+        type: type,
+        sourceCrsType: sourceCrsType,
+        targetCrsType: targetCrsType,
+        sourceDatum: sourceDatum,
+        targetDatum: targetDatum,
+      );
 }

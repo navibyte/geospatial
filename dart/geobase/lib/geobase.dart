@@ -29,6 +29,7 @@ library geobase;
 export 'src/common/codes/axis_order.dart';
 export 'src/common/codes/canvas_origin.dart';
 export 'src/common/codes/cardinal_precision.dart';
+export 'src/common/codes/coord_ref_sys_type.dart';
 export 'src/common/codes/coords.dart';
 export 'src/common/codes/dimensionality.dart';
 export 'src/common/codes/dms_type.dart';
@@ -69,8 +70,10 @@ export 'src/coordinates/scalable/scalable2i.dart';
 
 // geodesy
 export 'src/geodesy/base/geodetic_arc_segment.dart';
-export 'src/geodesy/ellipsoidal/datum.dart';
-export 'src/geodesy/ellipsoidal/ellipsoidal.dart';
+export 'src/geodesy/ellipsoidal/datum.dart'
+    hide convertDatumToDatum, convertDatumToDatumCoords;
+export 'src/geodesy/ellipsoidal/ellipsoidal.dart'
+    hide geocentricCartesianToGeographic, geographicToGeocentricCartesian;
 export 'src/geodesy/ellipsoidal/ellipsoidal_extension.dart';
 export 'src/geodesy/ellipsoidal/ellipsoidal_vincenty.dart';
 export 'src/geodesy/ellipsoidal/utm.dart';

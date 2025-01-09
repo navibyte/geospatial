@@ -17,19 +17,21 @@ import '/src/utils/format_validation.dart';
 @internal
 abstract class BaseEllipsoidalProjection<SourceType extends Position,
     TargetType extends Position> with Projection {
+  /// The required source datum for this projection.
   @protected
   final Datum sourceDatum;
 
+  /// An optional target datum for this projection. If null, then no datum
+  /// transformation is needed.
   @protected
-  final Datum targetDatum;
+  final Datum? targetDatum;
 
-  const BaseEllipsoidalProjection({
+  BaseEllipsoidalProjection({
     required this.sourceDatum,
-    required this.targetDatum,
-  });
-
-  @protected
-  TargetType projectPosition(SourceType source);
+    required Datum targetDatum,
+  }) : // if target datum is same as source, then set target as null (this
+        // means that no datum transformation is needed)
+        targetDatum = sourceDatum == targetDatum ? null : targetDatum;
 
   @protected
   TargetType projectXYZM(double x, double y, double? z, double? m);
@@ -78,10 +80,8 @@ abstract class BaseEllipsoidalProjection<SourceType extends Position,
         if (hasM) {
           result[offset + 3] = targetPosition.m;
         }
-      } else {
-        if (hasM) {
-          result[offset + 2] = targetPosition.m;
-        }
+      } else if (hasM) {
+        result[offset + 2] = targetPosition.m;
       }
 
       offset += dim;

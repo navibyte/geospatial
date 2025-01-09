@@ -15,6 +15,8 @@ import 'web_mercator_projection.dart';
 
 /// Projections for the WGS 84 geographic coordinate system.
 class WGS84 {
+  const WGS84._();
+
   /// A projection adapter between WGS84 geographic and Web Mercator positions
   /// (using "spherical development" of WGS84 ellipsoidal coordinates).
   ///
@@ -35,16 +37,17 @@ class WGS84 {
   /// positions (using the WGS84 ellipsoidal datum).
   ///
   /// Use `forward` of the adapter to return a projection for:
-  /// * source: `lon` and `lat` geographic coordinates (WGS 84)
+  /// * source: `lon`, `lat` and `elev` (h) geographic coordinates (WGS 84)
   /// * target: `x`, `y` and `z` coordinates ("EPSG:4978", WGS 84 / geocentric)
   ///
   /// Use `inverse` of the adapter to return a projection for:
   /// * source: `x`, `y` and `z` coordinates ("EPSG:4978", WGS 84 / geocentric)
-  /// * target: `lon` and `lat` geographic coordinates (WGS 84)
+  /// * target: `lon`, `lat` and `elev` (h) geographic coordinates (WGS 84)
   ///
   /// Other coordinates, if available in the source and if expected for target
   /// coordinates, are just copied (`m` <=> `m`) without any changes.
-  static const ProjectionAdapter geocentric = EllipsoidalProjectionAdapter(
+  static final ProjectionAdapter geocentric =
+      EllipsoidalProjectionAdapter.geographicToGeocentric(
     // source is geographic coordinates in WGS 84
     sourceCrs: CoordRefSys.CRS84,
     sourceDatum: Datum.WGS84,
@@ -53,4 +56,29 @@ class WGS84 {
     targetCrs: CoordRefSys.EPSG_4978,
     targetDatum: Datum.WGS84,
   );
+
+  /// A projection adapter between WGS84 geographic and geographic positions
+  /// on the target datum.
+  ///
+  /// Use `forward` of the adapter to return a projection for:
+  /// * source: `lon` and `lat` geographic coordinates (WGS 84)
+  /// * target: `lon` and `lat` geographic coordinates on the target datum
+  ///
+  /// Use `inverse` of the adapter to return a projection for:
+  /// * source: `lon` and `lat` geographic coordinates on the target datum
+  /// * target: `lon` and `lat` geographic coordinates (WGS 84)
+  static ProjectionAdapter geographicToDatum(
+    CoordRefSys targetCrs,
+    Datum targetDatum,
+  ) {
+    return EllipsoidalProjectionAdapter.geographicToGeographic(
+      // source is geographic coordinates in WGS 84
+      sourceCrs: CoordRefSys.CRS84,
+      sourceDatum: Datum.WGS84,
+
+      // target is geographic coordinates on the target datum
+      targetCrs: targetCrs,
+      targetDatum: targetDatum,
+    );
+  }
 }

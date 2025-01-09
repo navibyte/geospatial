@@ -521,7 +521,7 @@ void main() {
     final helmertturm = // epsg.io/23033
         Utm(33, 'N', 368381.402, 5805291.614, datum: Datum.ED50);
     final llED50 = helmertturm.toGeographic();
-    final llWGS84 = Datum.ED50.convertGeographic(llED50, to: Datum.WGS84);
+    final llWGS84 = Datum.ED50.convertGeographic(llED50, target: Datum.WGS84);
     final llWGS84WithoutElev = llWGS84.copyByType(Coords.xy);
     test('helmertturm ED50', () {
       // earth-info.nga.mil/GandG/coordsys/datums/datumorigins.html
