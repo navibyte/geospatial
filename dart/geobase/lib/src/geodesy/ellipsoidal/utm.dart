@@ -38,6 +38,8 @@ import 'datum.dart';
 import 'ellipsoidal.dart';
 import 'utm_mgrs.dart';
 
+// NOTE: UtmMeta shall be refactored to a record type in future.
+
 /// {@template geobase.geodesy.utm.meta}
 ///
 /// Metadata ([convergence] and [scale]) as a result from UTM calculations
@@ -91,7 +93,7 @@ class UtmMeta<T extends Object> {
   /// {@macro geobase.geodesy.utm.meta.convergence}
   ///
   /// {@macro geobase.geodesy.utm.meta.scale}
-  const UtmMeta(
+  const UtmMeta._(
     this.position, {
     required this.convergence,
     required this.scale,
@@ -662,7 +664,7 @@ class Utm {
     // hemisphere
     final h = lat >= 0 ? 'N' : 'S';
 
-    return UtmMeta(
+    return UtmMeta._(
       Utm(
         utmZone,
         h,
@@ -727,7 +729,7 @@ class Utm {
   /// See also [toGeographic] for a method returning a geographic position only.
   UtmMeta<Geographic> toGeographicMeta({bool roundResults = true}) {
     final meta = _toEllipsoidalMeta(roundResults: roundResults);
-    return UtmMeta(
+    return UtmMeta._(
       meta.position.origin,
       convergence: meta.convergence,
       scale: meta.scale,
@@ -894,7 +896,7 @@ class Utm {
       m: projected.optM, // do not convert optional M value
     );
 
-    return UtmMeta(
+    return UtmMeta._(
       Ellipsoidal.fromGeographic(geographic, datum: datum),
       convergence: convergence,
       scale: scale,
