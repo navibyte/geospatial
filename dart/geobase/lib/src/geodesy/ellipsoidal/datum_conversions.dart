@@ -193,14 +193,14 @@ R _convertDatumToDatum<R extends Position>({
 /// another datum specified by [targetDatum].
 ///
 /// {@macro geobase.geodesy.datum.convert_params}
-/// 
+///
 /// {@template geobase.geodesy.datum.iterable_coords}
 ///
 /// The positions are given as an iterable of coordinates where each position
 /// contains coordinate values as specified by [type]. The result is returned
 /// in as a list of coordinates with the same structure as the source. If
 /// [target] is provided, then the returned result is stored in that list.
-/// 
+///
 /// {@endtemplate}
 @internal
 List<double> convertDatumToDatumCoords(

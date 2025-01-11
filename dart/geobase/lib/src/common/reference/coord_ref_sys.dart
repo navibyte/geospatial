@@ -142,7 +142,7 @@ class CoordRefSys {
   /// and a [CoordRefSys] instance with an identifier
   /// `http://www.opengis.net/def/crs/EPSG/0/32631` is returned.
   factory CoordRefSys.utm(int zone, Hemisphere hemisphere) {
-    if(!(zone >= 1 && zone <= 60)) {
+    if (!(zone >= 1 && zone <= 60)) {
       throw ArgumentError('Invalid UTM zone: $zone');
     }
 

@@ -7,7 +7,7 @@
 /// An enumeration of common coordinate reference system (CRS) types.
 enum CoordRefSysType {
   /// Geographic Coordinate Systems (GCS)
-  /// 
+  ///
   /// Geographic coordinate systems are used to define locations on the Earth
   /// based on the ellipsoidal Earth model. Coordinates are given as latitude
   /// and longitude angles.
@@ -45,7 +45,7 @@ enum CoordRefSysType {
   ///
   /// These systems are used to measure heights or depths relative to a
   /// reference surface, such as mean sea level or a geoid model.
-  /// 
+  ///
   /// For example
   /// [Earth Gravitation Model](https://en.wikipedia.org/wiki/Earth_Gravitational_Model)
   /// (EGM) models are used to define vertical datums.
