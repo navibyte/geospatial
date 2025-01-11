@@ -71,6 +71,9 @@ enum CoordRefSysType {
   /// Returns true if this CRS type is geographic or geocentric.
   bool get isGeographicOrGeocentric => this == geographic || this == geocentric;
 
+  /// Returns true if this CRS type is geographic or projected.
+  bool get isGeographicOrProjected => this == geographic || this == projected;
+
   /// Returns true if this CRS type is geographic.
   bool get isGeographic => this == geographic;
 

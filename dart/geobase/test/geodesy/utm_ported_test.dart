@@ -283,6 +283,10 @@ void main() {
       expect(
           Utm.parse('31 N 166021.443081 0.000000').toGeographic().latLonDms(),
           '0.0000°N, 0.0000°E');
+      expect(
+          UtmZone.fromGeographic(
+              Geographic.parseDms(lat: '0.0000°N', lon: '0.0000°E')),
+          UtmZone(31, 'N'));
     });
 
     test('1,1', () {
@@ -291,6 +295,10 @@ void main() {
               .toGeographic()
               .latLonDms(),
           '1.0000°N, 1.0000°E');
+      expect(
+          UtmZone.fromGeographic(
+              Geographic.parseDms(lat: '1.0000°N', lon: '1.0000°E')),
+          UtmZone(31, 'N'));
     });
 
     test('-1,-1', () {
@@ -299,36 +307,60 @@ void main() {
               .toGeographic()
               .latLonDms(),
           '1.0000°S, 1.0000°W');
+      expect(
+          UtmZone.fromGeographic(
+              Geographic.parseDms(lat: '1.0000°S', lon: '1.0000°W')),
+          UtmZone(30, 'S'));
     });
 
     test('eiffel tower', () {
       expect(
           Utm.parse('31 N 448251.898 5411943.794').toGeographic().latLonDms(),
           '48.8583°N, 2.2945°E');
+      expect(
+          UtmZone.fromGeographic(
+              Geographic.parseDms(lat: '48.8583°N', lon: '2.2945°E')),
+          UtmZone(31, 'N'));
     });
 
     test('sidney o/h', () {
       expect(
           Utm.parse('56 S 334873.199 6252266.092').toGeographic().latLonDms(),
           '33.8570°S, 151.2150°E');
+      expect(
+          UtmZone.fromGeographic(
+              Geographic.parseDms(lat: '33.8570°S', lon: '151.2150°E')),
+          UtmZone(56, 'S'));
     });
 
     test('white house', () {
       expect(
           Utm.parse('18 N 323394.296 4307395.634').toGeographic().latLonDms(),
           '38.8977°N, 77.0365°W');
+      expect(
+          UtmZone.fromGeographic(
+              Geographic.parseDms(lat: '38.8977°N', lon: '77.0365°W')),
+          UtmZone(18, 'N'));
     });
 
     test('rio christ', () {
       expect(
           Utm.parse('23 S 683466.254 7460687.433').toGeographic().latLonDms(),
           '22.9519°S, 43.2106°W');
+      expect(
+          UtmZone.fromGeographic(
+              Geographic.parseDms(lat: '22.9519°S', lon: '43.2106°W')),
+          UtmZone(23, 'S'));
     });
 
     test('bergen', () {
       expect(
           Utm.parse('32 N 297508.410 6700645.296').toGeographic().latLonDms(),
           '60.3914°N, 5.3249°E');
+      expect(
+          UtmZone.fromGeographic(
+              Geographic.parseDms(lat: '60.3914°N', lon: '5.3249°E')),
+          UtmZone(32, 'N'));
     });
 
     test('bergen convergence', () {
@@ -688,31 +720,45 @@ void main() {
 
   group('Norway/Svalbard adjustmen', () {
     test('Norway 31->32', () {
-      expect(Utm.fromGeographic(const Geographic(lat: 60, lon: 4)).zone, 32);
+      const geo = Geographic(lat: 60, lon: 4);
+      expect(Utm.fromGeographic(geo).zone, 32);
+      expect(UtmZone.fromGeographic(geo).zone, 32);
     });
 
     test('Svalbard 32->31', () {
-      expect(Utm.fromGeographic(const Geographic(lat: 75, lon: 8)).zone, 31);
+      const geo = Geographic(lat: 75, lon: 8);
+      expect(Utm.fromGeographic(geo).zone, 31);
+      expect(UtmZone.fromGeographic(geo).zone, 31);
     });
 
     test('Svalbard 32->33', () {
-      expect(Utm.fromGeographic(const Geographic(lat: 75, lon: 10)).zone, 33);
+      const geo = Geographic(lat: 75, lon: 10);
+      expect(Utm.fromGeographic(geo).zone, 33);
+      expect(UtmZone.fromGeographic(geo).zone, 33);
     });
 
     test('Svalbard 34->33', () {
-      expect(Utm.fromGeographic(const Geographic(lat: 75, lon: 20)).zone, 33);
+      const geo = Geographic(lat: 75, lon: 20);
+      expect(Utm.fromGeographic(geo).zone, 33);
+      expect(UtmZone.fromGeographic(geo).zone, 33);
     });
 
     test('Svalbard 34->35', () {
-      expect(Utm.fromGeographic(const Geographic(lat: 75, lon: 22)).zone, 35);
+      const geo = Geographic(lat: 75, lon: 22);
+      expect(Utm.fromGeographic(geo).zone, 35);
+      expect(UtmZone.fromGeographic(geo).zone, 35);
     });
 
     test('Svalbard 36->35', () {
-      expect(Utm.fromGeographic(const Geographic(lat: 75, lon: 32)).zone, 35);
+      const geo = Geographic(lat: 75, lon: 32);
+      expect(Utm.fromGeographic(geo).zone, 35);
+      expect(UtmZone.fromGeographic(geo).zone, 35);
     });
 
     test('Svalbard 36->37', () {
-      expect(Utm.fromGeographic(const Geographic(lat: 75, lon: 34)).zone, 37);
+      const geo = Geographic(lat: 75, lon: 34);
+      expect(Utm.fromGeographic(geo).zone, 37);
+      expect(UtmZone.fromGeographic(geo).zone, 37);
     });
   });
 }

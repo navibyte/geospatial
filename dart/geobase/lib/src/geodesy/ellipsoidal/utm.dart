@@ -22,9 +22,11 @@
 // Docs: https://github.com/navibyte/geospatial
 
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:meta/meta.dart';
 
+import '/src/common/codes/coord_ref_sys_type.dart';
 import '/src/common/codes/coords.dart';
 import '/src/common/codes/hemisphere.dart';
 import '/src/common/constants/geodetic.dart';
@@ -32,11 +34,14 @@ import '/src/common/functions/position_functions.dart';
 import '/src/coordinates/base/position.dart';
 import '/src/coordinates/geographic/geographic.dart';
 import '/src/coordinates/projected/projected.dart';
+import '/src/utils/format_validation.dart';
 import '/src/utils/math_utils.dart';
 
 import 'datum.dart';
 import 'ellipsoidal.dart';
 import 'utm_mgrs.dart';
+
+part 'utm_conversions.dart';
 
 // NOTE: UtmMeta shall be refactored to a record type in future.
 
@@ -114,6 +119,140 @@ class UtmMeta<T extends Object> {
   int get hashCode => Object.hash(position, convergence, scale);
 }
 
+/// The UTM zone represented by the [zone] number and [hemisphere].
+///
+/// {@macro geobase.geodesy.utm.zone}
+///
+/// {@macro geobase.geodesy.utm.hemisphere}
+@immutable
+class UtmZone {
+  /// {@template geobase.geodesy.utm.zone}
+  ///
+  /// The [zone] represents UTM 6° longitudinal zone (1..60 covering
+  /// 180°W..180°E).
+  ///
+  /// {@endtemplate}
+  final int zone;
+
+  /// {@template geobase.geodesy.utm.hemisphere}
+  ///
+  /// The [hemisphere] of the Earth (north or south) is represented by 'N' or
+  /// 'S' in UTM coordinates.
+  ///
+  /// {@endtemplate}
+  final Hemisphere hemisphere;
+
+  /// Creates the UTM zone object with [zone] and the hemisphere parsed from
+  /// the [hemisphere] symbol ('N' or 'S').
+  ///
+  /// Throws FormatException if the zone is outside the valid range 1..60 or
+  /// the hemisphere is invalid (not 'N' or 'S').
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  ///   // The UTM zone 31 N.
+  ///   final utmZone = UtmZone(31, 'N');
+  /// ```
+  factory UtmZone(int zone, String hemisphere) =>
+      UtmZone.from(zone, Hemisphere.fromSymbol(hemisphere));
+
+  /// Creates the UTM zone object with [zone] and [hemisphere].
+  ///
+  /// Throws FormatException if the zone is outside the valid range 1..60.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  ///   // The UTM zone 31 N.
+  ///   final utmZone = UtmZone.from(31, Hemisphere.north);
+  /// ```
+  factory UtmZone.from(int zone, Hemisphere hemisphere) {
+    // validate zone and hemisphere
+    if (!(1 <= zone && zone <= 60)) {
+      throw FormatException('invalid UTM zone $zone');
+    }
+
+    return UtmZone._(zone, hemisphere);
+  }
+
+  const UtmZone._(this.zone, this.hemisphere);
+
+  /// Calculates the UTM zone object from the [geographic] position.
+  ///
+  /// Throws FormatException if the latitude is outside UTM limits.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  ///   const geographic = Geographic(lat: 48.8582, lon: 2.2945);
+  ///
+  ///   // The UTM zone 31 N.
+  ///   final utmZone = UtmZone.fromGeographic(geographic);
+  /// ```
+  factory UtmZone.fromGeographic(Geographic geographic) {
+    final lat = geographic.lat;
+    final lon = geographic.lon;
+
+    if (!(minLatitudeUTM <= lat && lat <= maxLatitudeUTM)) {
+      throw FormatException('latitude ‘${geographic.lat}’ outside UTM limits');
+    }
+
+    // longitudinal zone
+    var utmZone = (((lon + 180.0) / 6.0).floor() + 1).clamp(1, 60);
+
+    // handle Norway/Svalbard exceptions
+    // grid zones are 8° tall; 0°N is offset 10 into latitude bands array
+    const mgrsLatBands = 'CDEFGHJKLMNPQRSTUVWXX'; // X is repeated for 80-84°N
+    final latBand =
+        mgrsLatBands[(lat / 8 + 10).floor().clamp(0, mgrsLatBands.length - 1)];
+    // adjust zone & central meridian for Norway
+    if (utmZone == 31 && latBand == 'V' && lon >= 3) {
+      utmZone++;
+    }
+    // adjust zone & central meridian for Svalbard
+    if (utmZone == 32 && latBand == 'X' && lon < 9) {
+      utmZone--;
+    }
+    if (utmZone == 32 && latBand == 'X' && lon >= 9) {
+      utmZone++;
+    }
+    if (utmZone == 34 && latBand == 'X' && lon < 21) {
+      utmZone--;
+    }
+    if (utmZone == 34 && latBand == 'X' && lon >= 21) {
+      utmZone++;
+    }
+    if (utmZone == 36 && latBand == 'X' && lon < 33) {
+      utmZone--;
+    }
+    if (utmZone == 36 && latBand == 'X' && lon >= 33) {
+      utmZone++;
+    }
+
+    return UtmZone._(
+      utmZone,
+      lat >= 0 ? Hemisphere.north : Hemisphere.south,
+    );
+  }
+
+  @override
+  String toString() => '$zone ${hemisphere.symbol}';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is UtmZone &&
+          zone == other.zone &&
+          hemisphere == other.hemisphere);
+
+  @override
+  int get hashCode => Object.hash(
+        zone,
+        hemisphere,
+      );
+}
+
 /// UTM coordinates, with functions to parse them and convert them to
 /// geographic points.
 ///
@@ -132,23 +271,7 @@ class UtmMeta<T extends Object> {
 ///
 /// See also [UtmMeta] for metadata related to UTM calculations.
 @immutable
-class Utm {
-  /// {@template geobase.geodesy.utm.zone}
-  ///
-  /// The [zone] represents UTM 6° longitudinal zone (1..60 covering
-  /// 180°W..180°E).
-  ///
-  /// {@endtemplate}
-  final int zone;
-
-  /// {@template geobase.geodesy.utm.hemisphere}
-  ///
-  /// The [hemisphere] of the Earth (north or south) is represented by 'N' or
-  /// 'S' in UTM coordinates.
-  ///
-  /// {@endtemplate}
-  final Hemisphere hemisphere;
-
+class Utm extends UtmZone {
   /// The [projected] position as UTM coordinates (x=easting, y=northing,
   /// z=elev) in the specified [zone] and [hemisphere].
   ///
@@ -346,11 +469,11 @@ class Utm {
   /// `Projected(x: easting, y: northing)` and a 3D position as
   /// `Projected(x: easting, y: northing, z: elev)`.
   const Utm._coordinates(
-    this.zone,
-    this.hemisphere, {
+    super.zone,
+    super.hemisphere, {
     required this.projected,
     required this.datum,
-  });
+  }) : super._();
 
   /*
   // NOTE: commented out to keep the Utm class more focused
@@ -491,7 +614,7 @@ class Utm {
     const falseNorthing = 10000.0e3;
 
     // longitudinal zone
-    var utmZone = zone ?? ((lon + 180.0) / 6.0).floor() + 1;
+    var utmZone = zone ?? (((lon + 180.0) / 6.0).floor() + 1).clamp(1, 60);
     if (!(1 <= utmZone && utmZone <= 60)) {
       throw FormatException('invalid UTM zone $utmZone');
     }

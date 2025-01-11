@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// WGS84 based projections; ellipsoidal (geographic, geocentric) and
+/// WGS84 based projections; ellipsoidal (geographic, geocentric, UTM) and
 /// spherical (Web Mercator).
 ///
 /// This libary exports a subset of `package:geobase/geobase.dart`.

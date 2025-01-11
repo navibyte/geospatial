@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2025 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -10,6 +10,7 @@ import 'package:meta/meta.dart';
 
 import '/src/common/codes/axis_order.dart';
 import '/src/common/codes/geo_representation.dart';
+import '/src/common/codes/hemisphere.dart';
 
 import 'coord_ref_sys_resolver.dart';
 
@@ -127,6 +128,31 @@ class CoordRefSys {
     String? crs,
   }) =>
       coordRefSys ?? (crs != null ? CoordRefSys.normalized(crs) : CRS84);
+
+  /// The coordinate reference system for the UTM zone (in the WGS84 datum)
+  /// identified by [zone] (must be 1..60) and [hemisphere].
+  ///
+  /// EPSG codes for UTM in Northern Hemisphere start at 32601 (for zone 1) and
+  /// end at 32660 (for zone 60).
+  ///
+  /// EPSG codes for UTM in Southern Hemisphere start at 32701 (for zone 1) and
+  /// end at 32760 (for zone 60).
+  ///
+  /// For example in the Northern Hemisphere for zone 31 the EPSG code is 32631
+  /// and a [CoordRefSys] instance with an identifier
+  /// `http://www.opengis.net/def/crs/EPSG/0/32631` is returned.
+  factory CoordRefSys.utm(int zone, Hemisphere hemisphere) {
+    if(!(zone >= 1 && zone <= 60)) {
+      throw ArgumentError('Invalid UTM zone: $zone');
+    }
+
+    final epsgBase = (hemisphere == Hemisphere.north) ? 32600 : 32700;
+
+    // Calculate the EPSG code
+    final epsgCode = epsgBase + zone;
+
+    return CoordRefSys.id('http://www.opengis.net/def/crs/EPSG/0/$epsgCode');
+  }
 
   /// The coordinate reference system identified by
   /// 'http://www.opengis.net/def/crs/OGC/1.3/CRS84'.
