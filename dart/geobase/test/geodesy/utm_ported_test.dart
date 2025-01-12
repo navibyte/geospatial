@@ -11,7 +11,6 @@
 
 // ignore_for_file: require_trailing_commas, lines_longer_than_80_chars
 
-import 'package:geobase/common.dart';
 import 'package:geobase/coordinates.dart';
 import 'package:geobase/geodesy.dart';
 

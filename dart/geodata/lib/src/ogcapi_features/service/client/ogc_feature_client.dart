@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2025 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -6,7 +6,6 @@
 
 import 'dart:convert';
 
-import 'package:geobase/common.dart';
 import 'package:geobase/coordinates.dart';
 import 'package:geobase/meta.dart';
 import 'package:geobase/vector.dart';

@@ -12,7 +12,6 @@
 
 import 'dart:math';
 
-import 'package:geobase/common.dart';
 import 'package:geobase/coordinates.dart';
 import 'package:geobase/geodesy.dart';
 

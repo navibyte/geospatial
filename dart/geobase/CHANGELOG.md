@@ -10,6 +10,9 @@ NOTE: [geobase version 1.5.0](https://github.com/navibyte/geospatial/milestone/8
 * [Handle optional m and elev coordinates when transforming between geographic and cartesian geocentric coordinates #259](https://github.com/navibyte/geospatial/issues/259)
 * [Conversions between geographic, UTM and geocentric coordinates in projections sub package #261](https://github.com/navibyte/geospatial/issues/261)
 
+🛠 Refactoring:
+* [Sub package export enhancements on geobase #263](https://github.com/navibyte/geospatial/issues/263)
+
 ## 1.4.0+1
 
 Small documentation link fixes.

@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2025 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -21,6 +21,10 @@ export 'src/common/codes/dimensionality.dart';
 export 'src/common/codes/dms_type.dart';
 export 'src/common/codes/geo_representation.dart';
 export 'src/common/constants/epsilon.dart';
+export 'src/common/functions/geographic_functions.dart';
+export 'src/common/functions/position_functions.dart';
+export 'src/common/presentation/dms.dart';
+export 'src/common/reference/coord_ref_sys.dart';
 export 'src/coordinates/base/aligned.dart';
 export 'src/coordinates/base/bounded.dart';
 export 'src/coordinates/base/box.dart';
