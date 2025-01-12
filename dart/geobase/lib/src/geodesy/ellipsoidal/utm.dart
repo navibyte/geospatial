@@ -370,30 +370,75 @@ class Utm extends UtmZone {
       throw FormatException('invalid UTM zone $zone');
     }
     final hemisphereValue = Hemisphere.fromSymbol(hemisphere);
+    final projected = Projected(x: easting, y: northing, z: elev, m: m);
 
     if (verifyEN) {
-      // (rough) range-check of E/N values
-      if (!(0.0 <= easting && easting <= 1000.0e3)) {
-        throw FormatException('invalid UTM easting $easting');
-      }
-      if (hemisphereValue == Hemisphere.north) {
-        if (!(0.0 <= northing && northing < 9329006.0)) {
-          throw FormatException('invalid UTM northing $northing');
-        }
-      } else {
-        // southern hemisphere
-        if (!(1116914.0 < northing && northing <= 10000.0e3)) {
-          throw FormatException('invalid UTM northing $northing');
-        }
-      }
+      _verifyEN(projected, hemisphereValue);
     }
 
     return Utm._coordinates(
       zone,
       hemisphereValue,
-      projected: Projected(x: easting, y: northing, z: elev, m: m),
+      projected: projected,
       datum: datum,
     );
+  }
+
+  /// Creates UTM coordinates from [zone] and the [projected] position based on
+  /// the [datum].
+  ///
+  /// {@macro geobase.geodesy.utm.projected}
+  ///
+  /// {@macro geobase.geodesy.utm.datum}
+  ///
+  /// {@macro geobase.geodesy.utm.verifyEN}
+  ///
+  /// May throw a [FormatException] if the UTM zone, hemisphere, easting or
+  /// northing are invalid.
+  ///
+  /// Examples:
+  ///
+  /// ```dart
+  ///   // UTM coordinates with 2D position in zone 31N and WGS84 datum
+  ///   // (easting 448251.0, northing 5411932.0).
+  ///   final utmCoord =
+  ///       Utm.from(UtmZone(31, 'N'), Projected(x: 448251.0, y: 5411932.0));
+  /// ```
+  factory Utm.from(
+    UtmZone zone,
+    Projected projected, {
+    Datum datum = Datum.WGS84,
+    bool verifyEN = true,
+  }) {
+    if (verifyEN) {
+      _verifyEN(projected, zone.hemisphere);
+    }
+
+    return Utm._coordinates(
+      zone.zone,
+      zone.hemisphere,
+      projected: projected,
+      datum: datum,
+    );
+  }
+
+  static void _verifyEN(Projected projected, Hemisphere hemisphere) {
+    final easting = projected.x;
+    final northing = projected.y;
+    // (rough) range-check of E/N values
+    if (!(0.0 <= easting && easting <= 1000.0e3)) {
+      throw FormatException('invalid UTM easting $easting');
+    }
+    if (hemisphere == Hemisphere.north) {
+      if (!(0.0 <= northing && northing < 9329006.0)) {
+        throw FormatException('invalid UTM northing $northing');
+      }
+    } else {
+      // southern hemisphere
+      if (!(1116914.0 < northing && northing <= 10000.0e3)) {
+        throw FormatException('invalid UTM northing $northing');
+      }
+    }
   }
 
   /// Parses projected UTM coordinates from [text], by default in the following

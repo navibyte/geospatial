@@ -126,13 +126,9 @@ R _convertUtm<R extends Position>({
     sourceGeo = Geographic(lon: x, lat: y, elev: z, m: m);
   } else {
     // source is UTM projected, convert to geographic
-    final sourceUtm = Utm(
-      sourceZone!.zone,
-      sourceZone.hemisphere.symbol,
-      x, // easting
-      y, // northing
-      elev: z,
-      m: m,
+    final sourceUtm = Utm.from(
+      sourceZone!,
+      Projected(x: x, y: y, z: z, m: m),
       datum: sourceDatum,
       verifyEN: false,
     );
