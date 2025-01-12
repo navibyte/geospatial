@@ -577,19 +577,24 @@ class Utm {
     bool roundResults = true,
     bool verifyEN = true,
   }) {
-    return Utm.fromGeographicMeta(
-      geographic,
+    final result = geographicToUtm(
+      lon: geographic.lon,
+      lat: geographic.lat,
+      elev: geographic.optElev,
+      m: geographic.optM,
       zone: zone,
       datum: datum,
       roundResults: roundResults,
-      verifyEN: verifyEN,
-    ).position;
-  }
+      to: Projected.new,
+    );
 
-  // symbols: η = eta, ξ = xi, β = beta, τ = tau, δ = delta, σ = sigma
-  //          φ = phi, λ = lambda, γ = gamma, α = alpha
-  //          ʹ = P (prime)
-  //          ʺ = PP (double prime)
+    return Utm.from(
+      result.zone,
+      result.projected,
+      datum: datum,
+      verifyEN: verifyEN,
+    );
+  }
 
   /// Creates projected UTM coordinates wrapped inside metadata object by
   /// converting it from a [geographic] position based on the [datum].
@@ -635,209 +640,26 @@ class Utm {
     bool roundResults = true,
     bool verifyEN = true,
   }) {
-    final lat = geographic.lat;
-    final lon = geographic.lon;
-
-    if (!(minLatitudeUTM <= lat && lat <= maxLatitudeUTM)) {
-      throw FormatException('latitude ‘${geographic.lat}’ outside UTM limits');
-    }
-
-    const falseEasting = 500.0e3;
-    const falseNorthing = 10000.0e3;
-
-    // longitudinal zone
-    var lonZone =
-        zone?.lonZone ?? (((lon + 180.0) / 6.0).floor() + 1).clamp(1, 60);
-    if (!(1 <= lonZone && lonZone <= 60)) {
-      throw FormatException('invalid UTM longitudinal zone $lonZone');
-    }
-
-    // hemisphere
-    final h = lat >= 0 ? 'N' : 'S';
-
-    // if forced zone, check that hemisphere from lat matches forced hemisphere
-    if (zone != null && zone.hemisphere.symbol != h) {
-      throw const FormatException('zone hemisphere does not match position');
-    }
-
-    // longitude of central meridian
-    var lambda0 = ((lonZone - 1) * 6.0 - 180.0 + 3.0).toRadians();
-
-    // handle Norway/Svalbard exceptions
-    // grid zones are 8° tall; 0°N is offset 10 into latitude bands array
-    final sixDegreesRad = 6.0.toRadians();
-    const mgrsLatBands = 'CDEFGHJKLMNPQRSTUVWXX'; // X is repeated for 80-84°N
-    final latBand =
-        mgrsLatBands[(lat / 8 + 10).floor().clamp(0, mgrsLatBands.length - 1)];
-    // adjust zone & central meridian for Norway
-    if (lonZone == 31 && latBand == 'V' && lon >= 3) {
-      lonZone++;
-      lambda0 += sixDegreesRad;
-    }
-    // adjust zone & central meridian for Svalbard
-    if (lonZone == 32 && latBand == 'X' && lon < 9) {
-      lonZone--;
-      lambda0 -= sixDegreesRad;
-    }
-    if (lonZone == 32 && latBand == 'X' && lon >= 9) {
-      lonZone++;
-      lambda0 += sixDegreesRad;
-    }
-    if (lonZone == 34 && latBand == 'X' && lon < 21) {
-      lonZone--;
-      lambda0 -= sixDegreesRad;
-    }
-    if (lonZone == 34 && latBand == 'X' && lon >= 21) {
-      lonZone++;
-      lambda0 += sixDegreesRad;
-    }
-    if (lonZone == 36 && latBand == 'X' && lon < 33) {
-      lonZone--;
-      lambda0 -= sixDegreesRad;
-    }
-    if (lonZone == 36 && latBand == 'X' && lon >= 33) {
-      lonZone++;
-      lambda0 += sixDegreesRad;
-    }
-
-    final phi = lat.toRadians(); // latitude ± from equator
-    final lambda =
-        lon.toRadians() - lambda0; // longitude ± from central meridian
-
-    // Ellipsoidal params (ie. WGS-84: a = 6378137, f = 1/298.257223563)
-    final a = datum.ellipsoid.a;
-    final f = datum.ellipsoid.f;
-
-    // UTM scale on the central meridian
-    const k0 = 0.9996;
-
-    // ---- easting, northing: Karney 2011 Eq 7-14, 29, 35:
-
-    final e = sqrt(f * (2 - f)); // eccentricity
-    final n = f / (2 - f); // 3rd flattening
-    final n2 = n * n, n3 = n * n2, n4 = n * n3, n5 = n * n4, n6 = n * n5;
-
-    final cosLambda = cos(lambda);
-    final sinLambda = sin(lambda);
-    final tanLambda = tan(lambda);
-
-    // τ ≡ tanφ, τʹ ≡ tanφʹ; prime (ʹ) indicates angles on the conformal sphere
-    final tau = tan(phi);
-    final sigma = sinh(e * atanh(e * tau / sqrt(1 + tau * tau)));
-
-    final tauPrime =
-        tau * sqrt(1 + sigma * sigma) - sigma * sqrt(1 + tau * tau);
-
-    final xiPrime = atan2(tauPrime, cosLambda);
-    final etaPrime =
-        asinh(sinLambda / sqrt(tauPrime * tauPrime + cosLambda * cosLambda));
-
-    // 2πA is the circumference of a meridian
-    final A = a / (1 + n) * (1 + 1 / 4 * n2 + 1 / 64 * n4 + 1 / 256 * n6);
-
-    // note α is one-based array (6th order Krüger expressions)
-    final alpha = [
-      null,
-      1 / 2 * n -
-          2 / 3 * n2 +
-          5 / 16 * n3 +
-          41 / 180 * n4 -
-          127 / 288 * n5 +
-          7891 / 37800 * n6,
-      13 / 48 * n2 -
-          3 / 5 * n3 +
-          557 / 1440 * n4 +
-          281 / 630 * n5 -
-          1983433 / 1935360 * n6,
-      61 / 240 * n3 -
-          103 / 140 * n4 +
-          15061 / 26880 * n5 +
-          167603 / 181440 * n6,
-      49561 / 161280 * n4 - 179 / 168 * n5 + 6601661 / 7257600 * n6,
-      34729 / 80640 * n5 - 3418889 / 1995840 * n6,
-      212378941 / 319334400 * n6,
-    ];
-
-    var xi = xiPrime;
-    for (var j = 1; j <= 6; j++) {
-      xi += (alpha[j] ?? 0.0) * sin(2 * j * xiPrime) * cosh(2 * j * etaPrime);
-    }
-
-    var eta = etaPrime;
-    for (var j = 1; j <= 6; j++) {
-      eta += (alpha[j] ?? 0.0) * cos(2 * j * xiPrime) * sinh(2 * j * etaPrime);
-    }
-
-    var easting = k0 * A * eta; // easting == x
-    var northing = k0 * A * xi; // northing == y
-
-    // ---- convergence: Karney 2011 Eq 23, 24
-
-    var pPrime = 1.0;
-    for (var j = 1; j <= 6; j++) {
-      pPrime += 2 *
-          j *
-          (alpha[j] ?? 0.0) *
-          cos(2 * j * xiPrime) *
-          cosh(2 * j * etaPrime);
-    }
-    var qPrime = 0.0;
-    for (var j = 1; j <= 6; j++) {
-      qPrime += 2 *
-          j *
-          (alpha[j] ?? 0.0) *
-          sin(2 * j * xiPrime) *
-          sinh(2 * j * etaPrime);
-    }
-
-    final gammaPrime =
-        atan(tauPrime / sqrt(1 + tauPrime * tauPrime) * tanLambda);
-    final gammaDoublePrime = atan2(qPrime, pPrime);
-
-    final gamma = gammaPrime + gammaDoublePrime;
-
-    // ---- scale: Karney 2011 Eq 25
-
-    final sinPhi = sin(phi);
-    final kPrime = sqrt(1 - e * e * sinPhi * sinPhi) *
-        sqrt(1 + tau * tau) /
-        sqrt(tauPrime * tauPrime + cosLambda * cosLambda);
-    final kDoublePrime = A / a * sqrt(pPrime * pPrime + qPrime * qPrime);
-
-    final k = k0 * kPrime * kDoublePrime;
-
-    // shift x/y to false origins
-    easting = easting + falseEasting; // make x relative to false easting
-    if (northing < 0) {
-      // make y in southern hemisphere relative to false northing
-      northing = northing + falseNorthing;
-    }
-
-    // round to reasonable precision when requested (roundResults is true)
-    easting = roundResults
-        ? double.parse(easting.toStringAsFixed(9)) // nm precision
-        : easting;
-    northing = roundResults
-        ? double.parse(northing.toStringAsFixed(9)) // nm precision
-        : northing;
-    final convergence = roundResults
-        ? double.parse(gamma.toDegrees().toStringAsFixed(9))
-        : gamma.toDegrees();
-    final scale = roundResults ? double.parse(k.toStringAsFixed(12)) : k;
+    final result = geographicToUtm(
+      lon: geographic.lon,
+      lat: geographic.lat,
+      elev: geographic.optElev,
+      m: geographic.optM,
+      zone: zone,
+      datum: datum,
+      roundResults: roundResults,
+      to: Projected.new,
+    );
 
     return UtmMeta._(
-      Utm(
-        lonZone,
-        h,
-        easting,
-        northing,
-        elev: geographic.optElev, // do not convert optional elevation (meters)
-        m: geographic.optM, // do not convert optional M value
+      Utm.from(
+        result.zone,
+        result.projected,
         datum: datum,
         verifyEN: verifyEN,
       ),
-      convergence: convergence,
-      scale: scale,
+      convergence: result.convergence,
+      scale: result.scale,
     );
   }
 
@@ -888,14 +710,17 @@ class Utm {
   /// ```
   ///
   /// See also [toGeographic] for a method returning a geographic position only.
-  UtmMeta<Geographic> toGeographicMeta({bool roundResults = true}) {
-    final meta = _toEllipsoidalMeta(roundResults: roundResults);
-    return UtmMeta._(
-      meta.position.origin,
-      convergence: meta.convergence,
-      scale: meta.scale,
-    );
-  }
+  UtmMeta<Geographic> toGeographicMeta({bool roundResults = true}) =>
+      utmToGeographic(
+        zone: zone,
+        easting: easting,
+        northing: northing,
+        elev: projected.optZ,
+        m: projected.optM,
+        datum: datum,
+        roundResults: roundResults,
+        to: Geographic.create,
+      );
 
   /// {@macro geobase.geodesy.utm.unproject}
   ///
@@ -917,151 +742,21 @@ class Utm {
   ///
   /// See also [toGeographic] for a method returning a geographic position only.
   UtmMeta<Ellipsoidal> _toEllipsoidalMeta({bool roundResults = true}) {
-    const falseEasting = 500.0e3;
-    const falseNorthing = 10000.0e3;
-
-    // Ellipsoidal params (ie. WGS-84: a = 6378137, f = 1/298.257223563)
-    final a = datum.ellipsoid.a;
-    final f = datum.ellipsoid.f;
-
-    // UTM scale on the central meridian
-    const k0 = 0.9996;
-
-    // make x ± relative to central meridian
-    final x = easting - falseEasting;
-    // make y ± relative to equator
-    final y = zone.hemisphere == Hemisphere.south
-        ? northing - falseNorthing
-        : northing;
-
-    // ---- from Karney 2011 Eq 15-22, 36:
-
-    final e = sqrt(f * (2 - f)); // eccentricity
-    final n = f / (2 - f); // 3rd flattening
-    final n2 = n * n, n3 = n * n2, n4 = n * n3, n5 = n * n4, n6 = n * n5;
-
-    // 2πA is the circumference of a meridian
-    final A = a / (1 + n) * (1 + 1 / 4 * n2 + 1 / 64 * n4 + 1 / 256 * n6);
-
-    final eta = x / (k0 * A);
-    final xi = y / (k0 * A);
-
-    // note beta is one-based array (6th order Krüger expressions)
-    final beta = [
-      null,
-      1 / 2 * n -
-          2 / 3 * n2 +
-          37 / 96 * n3 -
-          1 / 360 * n4 -
-          81 / 512 * n5 +
-          96199 / 604800 * n6,
-      1 / 48 * n2 +
-          1 / 15 * n3 -
-          437 / 1440 * n4 +
-          46 / 105 * n5 -
-          1118711 / 3870720 * n6,
-      17 / 480 * n3 - 37 / 840 * n4 - 209 / 4480 * n5 + 5569 / 90720 * n6,
-      4397 / 161280 * n4 - 11 / 504 * n5 - 830251 / 7257600 * n6,
-      4583 / 161280 * n5 - 108847 / 3991680 * n6,
-      20648693 / 638668800 * n6,
-    ];
-
-    var xiPrime = xi;
-    for (var j = 1; j <= 6; j++) {
-      xiPrime -= (beta[j] ?? 0.0) * sin(2 * j * xi) * cosh(2 * j * eta);
-    }
-
-    var etaPrime = eta;
-    for (var j = 1; j <= 6; j++) {
-      etaPrime -= (beta[j] ?? 0.0) * cos(2 * j * xi) * sinh(2 * j * eta);
-    }
-
-    final sinhEtaPrime = sinh(etaPrime);
-    final sinXiPrime = sin(xiPrime), cosXiP = cos(xiPrime);
-
-    final tauPrime =
-        sinXiPrime / sqrt(sinhEtaPrime * sinhEtaPrime + cosXiP * cosXiP);
-
-    double? deltaTaui;
-    var taui = tauPrime;
-    do {
-      final sigmai = sinh(e * atanh(e * taui / sqrt(1 + taui * taui)));
-      final tauiPrime =
-          taui * sqrt(1 + sigmai * sigmai) - sigmai * sqrt(1 + taui * taui);
-      deltaTaui = (tauPrime - tauiPrime) /
-          sqrt(1 + tauiPrime * tauiPrime) *
-          (1 + (1 - e * e) * taui * taui) /
-          ((1 - e * e) * sqrt(1 + taui * taui));
-      taui += deltaTaui;
-    } while (deltaTaui.abs() >
-        1.0e-12); // using IEEE 754 δτi -> 0 after 2-3 iterations
-    // note relatively large convergence test as δτi toggles on ±1.12e-16 for eg
-    // 31 N 400000 5000000
-
-    final tau = taui;
-
-    final phi = atan(tau);
-
-    var lambda = atan2(sinhEtaPrime, cosXiP);
-
-    // ---- convergence: Karney 2011 Eq 26, 27
-
-    var p = 1.0;
-    for (var j = 1; j <= 6; j++) {
-      p -= 2 * j * (beta[j] ?? 0.0) * cos(2 * j * xi) * cosh(2 * j * eta);
-    }
-    var q = 0.0;
-    for (var j = 1; j <= 6; j++) {
-      q += 2 * j * (beta[j] ?? 0.0) * sin(2 * j * xi) * sinh(2 * j * eta);
-    }
-
-    final gammaPrime = atan(tan(xiPrime) * tanh(etaPrime));
-    final gammaDoublePrime = atan2(q, p);
-
-    final gamma = gammaPrime + gammaDoublePrime;
-
-    // ---- scale: Karney 2011 Eq 28
-
-    final sinPhi = sin(phi);
-    final kPrime = sqrt(1 - e * e * sinPhi * sinPhi) *
-        sqrt(1 + tau * tau) *
-        sqrt(sinhEtaPrime * sinhEtaPrime + cosXiP * cosXiP);
-    final kDoublePrime = A / a / sqrt(p * p + q * q);
-
-    final k = k0 * kPrime * kDoublePrime;
-
-    // longitude of central meridian
-    final lambda0 = ((zone.lonZone - 1) * 6.0 - 180.0 + 3.0).toRadians();
-    // move λ from zonal to global coordinates
-    lambda += lambda0;
-
-    // round to reasonable precision when requested (roundResults is true)
-    // nm precision (1nm = 10^-14°)
-    final lat = (roundResults
-            ? double.parse(phi.toDegrees().toStringAsFixed(14))
-            : phi.toDegrees())
-        .clamp(minLatitudeUTM, maxLatitudeUTM);
-    // (strictly lat rounding should be φ⋅cosφ!)
-    final lon = roundResults
-        ? double.parse(lambda.toDegrees().toStringAsFixed(14))
-        : lambda.toDegrees();
-    final convergence = roundResults
-        ? double.parse(gamma.toDegrees().toStringAsFixed(9))
-        : gamma.toDegrees();
-    final scale = roundResults ? double.parse(k.toStringAsFixed(12)) : k;
-
-    // unprojected geographic position
-    final geographic = Geographic(
-      lat: lat,
-      lon: lon,
-      elev: projected.optZ, // do not convert optional elevation (in meters)
-      m: projected.optM, // do not convert optional M value
+    final meta = utmToGeographic(
+      zone: zone,
+      easting: easting,
+      northing: northing,
+      elev: projected.optZ,
+      m: projected.optM,
+      datum: datum,
+      roundResults: roundResults,
+      to: Geographic.create,
     );
 
     return UtmMeta._(
-      Ellipsoidal.fromGeographic(geographic, datum: datum),
-      convergence: convergence,
-      scale: scale,
+      Ellipsoidal.fromGeographic(meta.position, datum: datum),
+      convergence: meta.convergence,
+      scale: meta.scale,
     );
   }
 
@@ -1154,4 +849,400 @@ class Utm {
         projected,
         datum,
       );
+}
+
+// -----------------------------------------------------------------------------
+// Internal functions to implement UTM and geographic conversions with as low
+// overhead as possible. These functions are used by ellipsoidal and datum
+// classes.
+//
+// Functions are not exported, so marked as internal. In future these functions
+// could be optimized further by using records or other efficient data
+// structures.
+
+// symbols: η = eta, ξ = xi, β = beta, τ = tau, δ = delta, σ = sigma
+//          φ = phi, λ = lambda, γ = gamma, α = alpha
+//          ʹ = P (prime)
+//          ʺ = PP (double prime)
+
+/// An internal class to hold UTM result data, to be refactored as a record.
+@internal
+class UtmResult<T extends Position> {
+  final UtmZone zone;
+  final T projected;
+  final double convergence;
+  final double scale;
+
+  const UtmResult({
+    required this.zone,
+    required this.projected,
+    required this.convergence,
+    required this.scale,
+  });
+}
+
+@internal
+UtmResult<R> geographicToUtm<R extends Position>({
+  required double lon,
+  required double lat,
+  double? elev,
+  double? m,
+  UtmZone? zone,
+  Datum datum = Datum.WGS84,
+  bool roundResults = true,
+  required CreatePosition<R> to,
+}) {
+  if (!(minLatitudeUTM <= lat && lat <= maxLatitudeUTM)) {
+    throw FormatException('latitude ‘$lat’ outside UTM limits');
+  }
+
+  const falseEasting = 500.0e3;
+  const falseNorthing = 10000.0e3;
+
+  // longitudinal zone
+  var lonZone =
+      zone?.lonZone ?? (((lon + 180.0) / 6.0).floor() + 1).clamp(1, 60);
+  if (!(1 <= lonZone && lonZone <= 60)) {
+    throw FormatException('invalid UTM longitudinal zone $lonZone');
+  }
+
+  // hemisphere
+  final h = lat >= 0 ? 'N' : 'S';
+
+  // if forced zone, check that hemisphere from lat matches forced hemisphere
+  if (zone != null && zone.hemisphere.symbol != h) {
+    throw const FormatException('zone hemisphere does not match position');
+  }
+
+  // longitude of central meridian
+  var lambda0 = ((lonZone - 1) * 6.0 - 180.0 + 3.0).toRadians();
+
+  // handle Norway/Svalbard exceptions
+  // grid zones are 8° tall; 0°N is offset 10 into latitude bands array
+  final sixDegreesRad = 6.0.toRadians();
+  const mgrsLatBands = 'CDEFGHJKLMNPQRSTUVWXX'; // X is repeated for 80-84°N
+  final latBand =
+      mgrsLatBands[(lat / 8 + 10).floor().clamp(0, mgrsLatBands.length - 1)];
+  // adjust zone & central meridian for Norway
+  if (lonZone == 31 && latBand == 'V' && lon >= 3) {
+    lonZone++;
+    lambda0 += sixDegreesRad;
+  }
+  // adjust zone & central meridian for Svalbard
+  if (lonZone == 32 && latBand == 'X' && lon < 9) {
+    lonZone--;
+    lambda0 -= sixDegreesRad;
+  }
+  if (lonZone == 32 && latBand == 'X' && lon >= 9) {
+    lonZone++;
+    lambda0 += sixDegreesRad;
+  }
+  if (lonZone == 34 && latBand == 'X' && lon < 21) {
+    lonZone--;
+    lambda0 -= sixDegreesRad;
+  }
+  if (lonZone == 34 && latBand == 'X' && lon >= 21) {
+    lonZone++;
+    lambda0 += sixDegreesRad;
+  }
+  if (lonZone == 36 && latBand == 'X' && lon < 33) {
+    lonZone--;
+    lambda0 -= sixDegreesRad;
+  }
+  if (lonZone == 36 && latBand == 'X' && lon >= 33) {
+    lonZone++;
+    lambda0 += sixDegreesRad;
+  }
+
+  final phi = lat.toRadians(); // latitude ± from equator
+  final lambda = lon.toRadians() - lambda0; // longitude ± from central meridian
+
+  // Ellipsoidal params (ie. WGS-84: a = 6378137, f = 1/298.257223563)
+  final a = datum.ellipsoid.a;
+  final f = datum.ellipsoid.f;
+
+  // UTM scale on the central meridian
+  const k0 = 0.9996;
+
+  // ---- easting, northing: Karney 2011 Eq 7-14, 29, 35:
+
+  final e = sqrt(f * (2 - f)); // eccentricity
+  final n = f / (2 - f); // 3rd flattening
+  final n2 = n * n, n3 = n * n2, n4 = n * n3, n5 = n * n4, n6 = n * n5;
+
+  final cosLambda = cos(lambda);
+  final sinLambda = sin(lambda);
+  final tanLambda = tan(lambda);
+
+  // τ ≡ tanφ, τʹ ≡ tanφʹ; prime (ʹ) indicates angles on the conformal sphere
+  final tau = tan(phi);
+  final sigma = sinh(e * atanh(e * tau / sqrt(1 + tau * tau)));
+
+  final tauPrime = tau * sqrt(1 + sigma * sigma) - sigma * sqrt(1 + tau * tau);
+
+  final xiPrime = atan2(tauPrime, cosLambda);
+  final etaPrime =
+      asinh(sinLambda / sqrt(tauPrime * tauPrime + cosLambda * cosLambda));
+
+  // 2πA is the circumference of a meridian
+  final A = a / (1 + n) * (1 + 1 / 4 * n2 + 1 / 64 * n4 + 1 / 256 * n6);
+
+  // note α is one-based array (6th order Krüger expressions)
+  final alpha = [
+    null,
+    1 / 2 * n -
+        2 / 3 * n2 +
+        5 / 16 * n3 +
+        41 / 180 * n4 -
+        127 / 288 * n5 +
+        7891 / 37800 * n6,
+    13 / 48 * n2 -
+        3 / 5 * n3 +
+        557 / 1440 * n4 +
+        281 / 630 * n5 -
+        1983433 / 1935360 * n6,
+    61 / 240 * n3 - 103 / 140 * n4 + 15061 / 26880 * n5 + 167603 / 181440 * n6,
+    49561 / 161280 * n4 - 179 / 168 * n5 + 6601661 / 7257600 * n6,
+    34729 / 80640 * n5 - 3418889 / 1995840 * n6,
+    212378941 / 319334400 * n6,
+  ];
+
+  var xi = xiPrime;
+  for (var j = 1; j <= 6; j++) {
+    xi += (alpha[j] ?? 0.0) * sin(2 * j * xiPrime) * cosh(2 * j * etaPrime);
+  }
+
+  var eta = etaPrime;
+  for (var j = 1; j <= 6; j++) {
+    eta += (alpha[j] ?? 0.0) * cos(2 * j * xiPrime) * sinh(2 * j * etaPrime);
+  }
+
+  var easting = k0 * A * eta; // easting == x
+  var northing = k0 * A * xi; // northing == y
+
+  // ---- convergence: Karney 2011 Eq 23, 24
+
+  var pPrime = 1.0;
+  for (var j = 1; j <= 6; j++) {
+    pPrime += 2 *
+        j *
+        (alpha[j] ?? 0.0) *
+        cos(2 * j * xiPrime) *
+        cosh(2 * j * etaPrime);
+  }
+  var qPrime = 0.0;
+  for (var j = 1; j <= 6; j++) {
+    qPrime += 2 *
+        j *
+        (alpha[j] ?? 0.0) *
+        sin(2 * j * xiPrime) *
+        sinh(2 * j * etaPrime);
+  }
+
+  final gammaPrime = atan(tauPrime / sqrt(1 + tauPrime * tauPrime) * tanLambda);
+  final gammaDoublePrime = atan2(qPrime, pPrime);
+
+  final gamma = gammaPrime + gammaDoublePrime;
+
+  // ---- scale: Karney 2011 Eq 25
+
+  final sinPhi = sin(phi);
+  final kPrime = sqrt(1 - e * e * sinPhi * sinPhi) *
+      sqrt(1 + tau * tau) /
+      sqrt(tauPrime * tauPrime + cosLambda * cosLambda);
+  final kDoublePrime = A / a * sqrt(pPrime * pPrime + qPrime * qPrime);
+
+  final k = k0 * kPrime * kDoublePrime;
+
+  // shift x/y to false origins
+  easting = easting + falseEasting; // make x relative to false easting
+  if (northing < 0) {
+    // make y in southern hemisphere relative to false northing
+    northing = northing + falseNorthing;
+  }
+
+  // round to reasonable precision when requested (roundResults is true)
+  easting = roundResults
+      ? double.parse(easting.toStringAsFixed(9)) // nm precision
+      : easting;
+  northing = roundResults
+      ? double.parse(northing.toStringAsFixed(9)) // nm precision
+      : northing;
+  final convergence = roundResults
+      ? double.parse(gamma.toDegrees().toStringAsFixed(9))
+      : gamma.toDegrees();
+  final scale = roundResults ? double.parse(k.toStringAsFixed(12)) : k;
+
+  // projected coornidates in the zone specified by `lonZone` and `h`
+  final projected = to.call(
+    x: easting,
+    y: northing,
+    z: elev, // do not convert optional elevation (meters)
+    m: m, // do not convert optional M value
+  );
+
+  return UtmResult(
+    zone: UtmZone(lonZone, h),
+    projected: projected,
+    convergence: convergence,
+    scale: scale,
+  );
+}
+
+@internal
+UtmMeta<R> utmToGeographic<R extends Position>({
+  required UtmZone zone,
+  required double easting,
+  required double northing,
+  double? elev,
+  double? m,
+  required Datum datum,
+  bool roundResults = true,
+  required CreatePosition<R> to,
+}) {
+  const falseEasting = 500.0e3;
+  const falseNorthing = 10000.0e3;
+
+  // Ellipsoidal params (ie. WGS-84: a = 6378137, f = 1/298.257223563)
+  final a = datum.ellipsoid.a;
+  final f = datum.ellipsoid.f;
+
+  // UTM scale on the central meridian
+  const k0 = 0.9996;
+
+  // make x ± relative to central meridian
+  final x = easting - falseEasting;
+  // make y ± relative to equator
+  final y =
+      zone.hemisphere == Hemisphere.south ? northing - falseNorthing : northing;
+
+  // ---- from Karney 2011 Eq 15-22, 36:
+
+  final e = sqrt(f * (2 - f)); // eccentricity
+  final n = f / (2 - f); // 3rd flattening
+  final n2 = n * n, n3 = n * n2, n4 = n * n3, n5 = n * n4, n6 = n * n5;
+
+  // 2πA is the circumference of a meridian
+  final A = a / (1 + n) * (1 + 1 / 4 * n2 + 1 / 64 * n4 + 1 / 256 * n6);
+
+  final eta = x / (k0 * A);
+  final xi = y / (k0 * A);
+
+  // note beta is one-based array (6th order Krüger expressions)
+  final beta = [
+    null,
+    1 / 2 * n -
+        2 / 3 * n2 +
+        37 / 96 * n3 -
+        1 / 360 * n4 -
+        81 / 512 * n5 +
+        96199 / 604800 * n6,
+    1 / 48 * n2 +
+        1 / 15 * n3 -
+        437 / 1440 * n4 +
+        46 / 105 * n5 -
+        1118711 / 3870720 * n6,
+    17 / 480 * n3 - 37 / 840 * n4 - 209 / 4480 * n5 + 5569 / 90720 * n6,
+    4397 / 161280 * n4 - 11 / 504 * n5 - 830251 / 7257600 * n6,
+    4583 / 161280 * n5 - 108847 / 3991680 * n6,
+    20648693 / 638668800 * n6,
+  ];
+
+  var xiPrime = xi;
+  for (var j = 1; j <= 6; j++) {
+    xiPrime -= (beta[j] ?? 0.0) * sin(2 * j * xi) * cosh(2 * j * eta);
+  }
+
+  var etaPrime = eta;
+  for (var j = 1; j <= 6; j++) {
+    etaPrime -= (beta[j] ?? 0.0) * cos(2 * j * xi) * sinh(2 * j * eta);
+  }
+
+  final sinhEtaPrime = sinh(etaPrime);
+  final sinXiPrime = sin(xiPrime), cosXiP = cos(xiPrime);
+
+  final tauPrime =
+      sinXiPrime / sqrt(sinhEtaPrime * sinhEtaPrime + cosXiP * cosXiP);
+
+  double? deltaTaui;
+  var taui = tauPrime;
+  do {
+    final sigmai = sinh(e * atanh(e * taui / sqrt(1 + taui * taui)));
+    final tauiPrime =
+        taui * sqrt(1 + sigmai * sigmai) - sigmai * sqrt(1 + taui * taui);
+    deltaTaui = (tauPrime - tauiPrime) /
+        sqrt(1 + tauiPrime * tauiPrime) *
+        (1 + (1 - e * e) * taui * taui) /
+        ((1 - e * e) * sqrt(1 + taui * taui));
+    taui += deltaTaui;
+  } while (deltaTaui.abs() >
+      1.0e-12); // using IEEE 754 δτi -> 0 after 2-3 iterations
+  // note relatively large convergence test as δτi toggles on ±1.12e-16 for eg
+  // 31 N 400000 5000000
+
+  final tau = taui;
+
+  final phi = atan(tau);
+
+  var lambda = atan2(sinhEtaPrime, cosXiP);
+
+  // ---- convergence: Karney 2011 Eq 26, 27
+
+  var p = 1.0;
+  for (var j = 1; j <= 6; j++) {
+    p -= 2 * j * (beta[j] ?? 0.0) * cos(2 * j * xi) * cosh(2 * j * eta);
+  }
+  var q = 0.0;
+  for (var j = 1; j <= 6; j++) {
+    q += 2 * j * (beta[j] ?? 0.0) * sin(2 * j * xi) * sinh(2 * j * eta);
+  }
+
+  final gammaPrime = atan(tan(xiPrime) * tanh(etaPrime));
+  final gammaDoublePrime = atan2(q, p);
+
+  final gamma = gammaPrime + gammaDoublePrime;
+
+  // ---- scale: Karney 2011 Eq 28
+
+  final sinPhi = sin(phi);
+  final kPrime = sqrt(1 - e * e * sinPhi * sinPhi) *
+      sqrt(1 + tau * tau) *
+      sqrt(sinhEtaPrime * sinhEtaPrime + cosXiP * cosXiP);
+  final kDoublePrime = A / a / sqrt(p * p + q * q);
+
+  final k = k0 * kPrime * kDoublePrime;
+
+  // longitude of central meridian
+  final lambda0 = ((zone.lonZone - 1) * 6.0 - 180.0 + 3.0).toRadians();
+  // move λ from zonal to global coordinates
+  lambda += lambda0;
+
+  // round to reasonable precision when requested (roundResults is true)
+  // nm precision (1nm = 10^-14°)
+  final lat = (roundResults
+          ? double.parse(phi.toDegrees().toStringAsFixed(14))
+          : phi.toDegrees())
+      .clamp(minLatitudeUTM, maxLatitudeUTM);
+  // (strictly lat rounding should be φ⋅cosφ!)
+  final lon = roundResults
+      ? double.parse(lambda.toDegrees().toStringAsFixed(14))
+      : lambda.toDegrees();
+  final convergence = roundResults
+      ? double.parse(gamma.toDegrees().toStringAsFixed(9))
+      : gamma.toDegrees();
+  final scale = roundResults ? double.parse(k.toStringAsFixed(12)) : k;
+
+  // unprojected geographic position
+  final geographic = to.call(
+    x: lon,
+    y: lat,
+    z: elev, // do not convert optional elevation (in meters)
+    m: m, // do not convert optional M value
+  );
+
+  return UtmMeta._(
+    geographic,
+    convergence: convergence,
+    scale: scale,
+  );
 }

@@ -24,7 +24,13 @@ export 'src/geodesy/ellipsoidal/ellipsoidal.dart'
     hide geocentricCartesianToGeographic, geographicToGeocentricCartesian;
 export 'src/geodesy/ellipsoidal/ellipsoidal_extension.dart';
 export 'src/geodesy/ellipsoidal/ellipsoidal_vincenty.dart';
-export 'src/geodesy/ellipsoidal/utm.dart' hide convertUtm, convertUtmCoords;
+export 'src/geodesy/ellipsoidal/utm.dart'
+    hide
+        UtmResult,
+        convertUtm,
+        convertUtmCoords,
+        geographicToUtm,
+        utmToGeographic;
 export 'src/geodesy/ellipsoidal/utm_mgrs.dart';
 export 'src/geodesy/spherical/spherical_great_circle.dart';
 export 'src/geodesy/spherical/spherical_rhumb_line.dart';

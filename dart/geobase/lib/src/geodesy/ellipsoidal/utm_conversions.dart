@@ -126,13 +126,17 @@ R _convertUtm<R extends Position>({
     sourceGeo = Geographic(lon: x, lat: y, elev: z, m: m);
   } else {
     // source is UTM projected, convert to geographic
-    final sourceUtm = Utm.from(
-      sourceZone!,
-      Projected(x: x, y: y, z: z, m: m),
+    final sourceUtm = utmToGeographic(
+      zone: sourceZone!,
+      easting: x,
+      northing: y,
+      elev: z,
+      m: m,
       datum: sourceDatum,
-      verifyEN: false,
+      roundResults: false,
+      to: Geographic.create,
     );
-    sourceGeo = sourceUtm.toGeographic(roundResults: false);
+    sourceGeo = sourceUtm.position;
   }
 
   if (targetCrsType.isGeographic) {
@@ -162,13 +166,16 @@ R _convertUtm<R extends Position>({
         : sourceGeo;
 
     // then convert to UTM in the target datum (or if null then in source datum)
-    final targetUtm = Utm.fromGeographic(
-      targetGeo,
-      zone: targetZone, // optional forced target zone
+    final targetUtm2 = geographicToUtm(
+      lon: targetGeo.lon,
+      lat: targetGeo.lat,
+      elev: targetGeo.optElev,
+      m: targetGeo.optM,
+      zone: targetZone,
       datum: targetDatum ?? sourceDatum,
-      verifyEN: false,
+      to: to,
     );
-    return targetUtm.projected.copyTo(to);
+    return targetUtm2.projected;
   }
 }
 
