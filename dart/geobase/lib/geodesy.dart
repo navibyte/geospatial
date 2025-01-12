@@ -1,21 +1,18 @@
 /// Ellipsoidal (*vincenty*) and spherical (*great circle*, *rhumb line*)
-/// geodesy tools, with UTM and MGRS coordinate conversions.
-///
-/// Geodesy tools by Chris Veness 2002-2024 (MIT Licence) ported to Dart by
-/// Navibyte.
-///
-/// See links for the original work:
-/// * https://github.com/chrisveness/geodesy
-/// * https://www.movable-type.co.uk/scripts/latlong.html
-/// * https://www.movable-type.co.uk/scripts/geodesy-library.html#latlon-spherical
-/// * https://www.movable-type.co.uk/scripts/latlong-vincenty.html
-/// * https://www.movable-type.co.uk/scripts/latlong-utm-mgrs.html
+/// geodesy tools, with ellipsoidal datum, UTM and MGRS coordinate conversions.
 ///
 /// This libary exports a subset of `package:geobase/geobase.dart`.
 ///
 /// Usage: import `package:geobase/geodesy.dart`
 library geodesy;
 
+export 'src/common/codes/coord_ref_sys_type.dart';
+export 'src/common/codes/coords.dart';
+export 'src/common/codes/hemisphere.dart';
+export 'src/common/constants/geodetic.dart';
+export 'src/common/functions/geographic_functions.dart';
+export 'src/common/functions/position_functions.dart';
+export 'src/common/reference/ellipsoid.dart';
 export 'src/geodesy/base/geodetic_arc_segment.dart';
 export 'src/geodesy/ellipsoidal/datum.dart'
     hide convertDatumToDatum, convertDatumToDatumCoords;
