@@ -14,6 +14,8 @@ import '/src/coordinates/projection/projection.dart';
 import '/src/geodesy/ellipsoidal/datum.dart';
 import '/src/utils/format_validation.dart';
 
+// NOTE: Currently marked as internal. This may be changed in future.
+
 @internal
 abstract class BaseEllipsoidalProjection<SourceType extends Position,
     TargetType extends Position> with Projection {

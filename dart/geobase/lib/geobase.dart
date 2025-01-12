@@ -94,7 +94,6 @@ export 'src/meta/time/interval.dart';
 export 'src/meta/time/temporal.dart';
 
 // projections
-export 'src/projections/ellipsoidal/ellipsoidal_projection_adapter.dart';
 export 'src/projections/wgs84/wgs84.dart';
 
 // tiling

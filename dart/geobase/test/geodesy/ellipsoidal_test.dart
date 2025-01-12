@@ -12,6 +12,7 @@ import 'package:geobase/common.dart';
 import 'package:geobase/coordinates.dart';
 import 'package:geobase/geodesy.dart';
 import 'package:geobase/projections.dart';
+import 'package:geobase/src/projections/ellipsoidal/ellipsoidal_projection_adapter.dart';
 
 import 'package:test/test.dart';
 

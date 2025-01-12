@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'package:meta/meta.dart';
+
 import '/src/common/codes/coord_ref_sys_type.dart';
 import '/src/common/codes/coords.dart';
 import '/src/common/reference/coord_ref_sys.dart';
@@ -14,6 +16,8 @@ import '/src/coordinates/projection/projection_adapter.dart';
 import '/src/geodesy/ellipsoidal/datum.dart';
 
 import 'base_ellipsoidal_projection.dart';
+
+// NOTE: Currently marked as internal. This may be changed in future.
 
 /// A projection adapter based on geodetic transformations based on ellipsoidal
 /// Earth models. Source and target coordinates can geographic (longitude,
@@ -27,6 +31,7 @@ import 'base_ellipsoidal_projection.dart';
 /// target CRSs are swapped.
 ///
 /// {@endtemplate}
+@internal
 class EllipsoidalProjectionAdapter with ProjectionAdapter {
   @override
   final CoordRefSys sourceCrs;

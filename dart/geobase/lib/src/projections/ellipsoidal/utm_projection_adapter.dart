@@ -18,6 +18,8 @@ import '/src/geodesy/ellipsoidal/utm.dart';
 
 import 'base_ellipsoidal_projection.dart';
 
+// NOTE: Currently marked as internal. This may be changed in future.
+
 /// A projection adapter based on the Universal Transverse Mercator (UTM)
 /// projection. Source and target coordinates can geographic (longitude,
 /// latitude) or projected UTM (easting, northing) positions.
