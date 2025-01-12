@@ -15,7 +15,11 @@ export 'src/common/functions/position_functions.dart';
 export 'src/common/reference/ellipsoid.dart';
 export 'src/geodesy/base/geodetic_arc_segment.dart';
 export 'src/geodesy/ellipsoidal/datum.dart'
-    hide convertDatumToDatum, convertDatumToDatumCoords;
+    hide
+        convertDatumToDatum,
+        convertDatumToDatumCoords,
+        convertGeocentricCartesianInternal,
+        convertGeographicInternal;
 export 'src/geodesy/ellipsoidal/ellipsoidal.dart'
     hide geocentricCartesianToGeographic, geographicToGeocentricCartesian;
 export 'src/geodesy/ellipsoidal/ellipsoidal_extension.dart';

@@ -139,10 +139,20 @@ R _convertUtm<R extends Position>({
     // target is geographic
 
     // if target datum is specified, convert to target datum
-    final targetGeo = targetDatum != null
-        ? sourceDatum.convertGeographic(sourceGeo, target: targetDatum)
-        : sourceGeo;
-    return targetGeo.copyTo(to);
+    if (targetDatum != null) {
+      return convertGeographicInternal(
+        lon: sourceGeo.lon,
+        lat: sourceGeo.lat,
+        elev: sourceGeo.optElev,
+        m: sourceGeo.optM,
+        source: sourceDatum,
+        target: targetDatum,
+        to: to,
+        omitElev: !sourceGeo.is3D,
+      );
+    } else {
+      return sourceGeo.copyTo(to);
+    }
   } else {
     // target is UTM projected
 

@@ -207,60 +207,16 @@ class Datum {
     Geographic geographic, {
     required Datum target,
   }) =>
-      _convertGeographicInternal(
+      convertGeographicInternal(
         lon: geographic.lon,
         lat: geographic.lat,
         elev: geographic.optElev,
         m: geographic.optM,
+        source: this,
         target: target,
         to: Geographic.create,
         omitElev: !geographic.is3D,
       );
-
-  R _convertGeographicInternal<R extends Position>({
-    required double lon,
-    required double lat,
-    double? elev,
-    double? m,
-    required Datum target,
-    required CreatePosition<R> to,
-    bool omitElev = false,
-  }) {
-    // use `this` datum to get geocentric position in `this` datum
-    final geocentric = geographicToGeocentricCartesian(
-      lon: lon,
-      lat: lat,
-      elev: elev,
-      m: m,
-      ellipsoid: ellipsoid, // ellipsoid of `this` datum
-      // Use `Projected.new` for efficiency on temporary object.
-      to: Projected.new,
-    );
-
-    // use `target` datum to convert geocentric position to `target` datum
-    final converted = _convertGeocentricCartesianInternal(
-      x: geocentric.x,
-      y: geocentric.y,
-      z: geocentric.z,
-      m: geocentric.optM,
-      target: target,
-      // Use `Projected.new` for efficiency on temporary object.
-      to: Projected.new,
-    );
-
-    // use `target` datum to get geographic position from geocentric position
-    // (omit the elevation if the input geographic position was 2D even if
-    //  elevation could be non-zero after conversion to another datum)
-    return geocentricCartesianToGeographic(
-      x: converted.x,
-      y: converted.y,
-      z: converted.z,
-      m: converted.optM,
-      ellipsoid: target.ellipsoid,
-      omitElev: omitElev,
-      to: to,
-    );
-  }
 
   /// Converts the geocentric [cartesian] position (X, Y, Z) in this datum to
   /// another datum a specified by [target] using the Helmert 7-parameter
@@ -274,98 +230,15 @@ class Datum {
   }) =>
       this == target
           ? cartesian // no datum change
-          : _convertGeocentricCartesianInternal(
+          : convertGeocentricCartesianInternal(
               x: cartesian.x,
               y: cartesian.y,
               z: cartesian.z,
               m: cartesian.optM,
+              source: this,
               target: target,
               to: Position.create,
             );
-
-  R _convertGeocentricCartesianInternal<R extends Position>({
-    required double x,
-    required double y,
-    required double z,
-    double? m,
-    required Datum target,
-    required CreatePosition<R> to,
-  }) {
-    if (isWGS84) {
-      // both this and target are WGS84: no tranform, just return position
-      if (target.isWGS84) {
-        return to.call(x: x, y: y, z: z, m: m);
-      }
-
-      // converting from WGS 84 datum to target datum
-      return _applyTransform(
-        target._transform,
-        x1: x, y1: y, z1: z, m1: m, //
-        to: to,
-      );
-    } else if (target.isWGS84) {
-      // converting from source datum to WGS 84 datum; use inverse transform
-      return _applyTransform(
-        _transform.map((e) => -e).toList(growable: false),
-        x1: x, y1: y, z1: z, m1: m, //
-        to: to,
-      );
-    }
-
-    // neither this.datum nor toDatum are WGS84: convert origin to WGS84 first
-    final wgs84 = _convertGeocentricCartesianInternal(
-      target: WGS84,
-      x: x, y: y, z: z, m: m, //
-      // Use `Projected.new` for efficiency on temporary object.
-      to: Projected.new,
-    );
-    return _applyTransform(
-      target._transform,
-      x1: wgs84.x,
-      y1: wgs84.y,
-      z1: wgs84.z,
-      m1: wgs84.optM,
-      to: to,
-    );
-  }
-
-  R _applyTransform<R extends Position>(
-    List<double> t, {
-    required double x1,
-    required double y1,
-    required double z1,
-    double? m1,
-    required CreatePosition<R> to,
-  }) {
-    // transform parameters
-
-    // x-shift in metres
-    final tx = t[0];
-    // y-shift in metres
-    final ty = t[1];
-    // z-shift in metres
-    final tz = t[2];
-    // scale: normalise parts-per-million to (s+1)
-    final s = t[3] / 1.0e6 + 1.0;
-    // x-rotation: normalise arcseconds to radians
-    final rx = (t[4] / 3600.0).toRadians();
-    // y-rotation: normalise arcseconds to radians
-    final ry = (t[5] / 3600.0).toRadians();
-    // z-rotation: normalise arcseconds to radians
-    final rz = (t[6] / 3600.0).toRadians();
-
-    // apply transform
-    final x2 = tx + x1 * s - y1 * rz + z1 * ry;
-    final y2 = ty + x1 * rz + y1 * s - z1 * rx;
-    final z2 = tz - x1 * ry + y1 * rx + z1 * s;
-
-    return to.call(
-      x: x2,
-      y: y2,
-      z: z2,
-      m: m1, // do not convert optional M value
-    );
-  }
 
   @override
   String toString() => '$isWGS84$ellipsoid;${listToString(_transform)}';
@@ -452,5 +325,149 @@ class HistoricalEllipsoids {
     a: 6378135,
     b: 6356750.52,
     f: 1.0 / 298.26,
+  );
+}
+
+// -----------------------------------------------------------------------------
+// Internal functions to implement geocentric and geographic conversions with
+// as low overhead as possible. These functions are used by datum and utm
+// conversion classes.
+//
+// Functions are not exported, so marked as internal. In future these functions
+// could be optimized further by using records or other efficient data
+// structures.
+
+@internal
+R convertGeographicInternal<R extends Position>({
+  required double lon,
+  required double lat,
+  double? elev,
+  double? m,
+  required Datum source,
+  required Datum target,
+  required CreatePosition<R> to,
+  bool omitElev = false,
+}) {
+  // use `source` datum to get geocentric position in `source` datum
+  final geocentric = geographicToGeocentricCartesian(
+    lon: lon,
+    lat: lat,
+    elev: elev,
+    m: m,
+    ellipsoid: source.ellipsoid, // ellipsoid of `source` datum
+    // Use `Projected.new` for efficiency on temporary object.
+    to: Projected.new,
+  );
+
+  // use `target` datum to convert geocentric position to `target` datum
+  final converted = convertGeocentricCartesianInternal(
+    x: geocentric.x,
+    y: geocentric.y,
+    z: geocentric.z,
+    m: geocentric.optM,
+    source: source,
+    target: target,
+    // Use `Projected.new` for efficiency on temporary object.
+    to: Projected.new,
+  );
+
+  // use `target` datum to get geographic position from geocentric position
+  // (omit the elevation if the input geographic position was 2D even if
+  //  elevation could be non-zero after conversion to another datum)
+  return geocentricCartesianToGeographic(
+    x: converted.x,
+    y: converted.y,
+    z: converted.z,
+    m: converted.optM,
+    ellipsoid: target.ellipsoid,
+    omitElev: omitElev,
+    to: to,
+  );
+}
+
+@internal
+R convertGeocentricCartesianInternal<R extends Position>({
+  required double x,
+  required double y,
+  required double z,
+  double? m,
+  required Datum source,
+  required Datum target,
+  required CreatePosition<R> to,
+}) {
+  if (source.isWGS84) {
+    // if both this and target are WGS84: no tranform, just return position
+    if (target.isWGS84) {
+      return to.call(x: x, y: y, z: z, m: m);
+    }
+
+    // converting from WGS 84 datum to target datum
+    return _applyTransform(
+      target._transform,
+      x1: x, y1: y, z1: z, m1: m, //
+      to: to,
+    );
+  } else if (target.isWGS84) {
+    // converting from source datum to WGS 84 datum; use inverse transform
+    return _applyTransform(
+      source._transform.map((e) => -e).toList(growable: false),
+      x1: x, y1: y, z1: z, m1: m, //
+      to: to,
+    );
+  }
+
+  // neither this.datum nor toDatum are WGS84: convert origin to WGS84 first
+  final wgs84 = convertGeocentricCartesianInternal(
+    source: source,
+    target: Datum.WGS84,
+    x: x, y: y, z: z, m: m, //
+    // Use `Projected.new` for efficiency on temporary object.
+    to: Projected.new,
+  );
+  return _applyTransform(
+    target._transform,
+    x1: wgs84.x,
+    y1: wgs84.y,
+    z1: wgs84.z,
+    m1: wgs84.optM,
+    to: to,
+  );
+}
+
+R _applyTransform<R extends Position>(
+  List<double> t, {
+  required double x1,
+  required double y1,
+  required double z1,
+  double? m1,
+  required CreatePosition<R> to,
+}) {
+  // transform parameters
+
+  // x-shift in metres
+  final tx = t[0];
+  // y-shift in metres
+  final ty = t[1];
+  // z-shift in metres
+  final tz = t[2];
+  // scale: normalise parts-per-million to (s+1)
+  final s = t[3] / 1.0e6 + 1.0;
+  // x-rotation: normalise arcseconds to radians
+  final rx = (t[4] / 3600.0).toRadians();
+  // y-rotation: normalise arcseconds to radians
+  final ry = (t[5] / 3600.0).toRadians();
+  // z-rotation: normalise arcseconds to radians
+  final rz = (t[6] / 3600.0).toRadians();
+
+  // apply transform
+  final x2 = tx + x1 * s - y1 * rz + z1 * ry;
+  final y2 = ty + x1 * rz + y1 * s - z1 * rx;
+  final z2 = tz - x1 * ry + y1 * rx + z1 * s;
+
+  return to.call(
+    x: x2,
+    y: y2,
+    z: z2,
+    m: m1, // do not convert optional M value
   );
 }

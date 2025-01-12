@@ -71,7 +71,11 @@ export 'src/coordinates/scalable/scalable2i.dart';
 // geodesy
 export 'src/geodesy/base/geodetic_arc_segment.dart';
 export 'src/geodesy/ellipsoidal/datum.dart'
-    hide convertDatumToDatum, convertDatumToDatumCoords;
+    hide
+        convertDatumToDatum,
+        convertDatumToDatumCoords,
+        convertGeocentricCartesianInternal,
+        convertGeographicInternal;
 export 'src/geodesy/ellipsoidal/ellipsoidal.dart'
     hide geocentricCartesianToGeographic, geographicToGeocentricCartesian;
 export 'src/geodesy/ellipsoidal/ellipsoidal_extension.dart';

@@ -88,8 +88,9 @@ R _convertDatumToDatum<R extends Position>({
       // no target datum, just return the source position
       return to.call(x: x, y: y, z: z, m: m);
     } else {
-      return sourceDatum._convertGeocentricCartesianInternal(
+      return convertGeocentricCartesianInternal(
         x: x, y: y, z: z ?? 0.0, m: m, // source position is geocentric
+        source: sourceDatum,
         target: targetDatum,
         to: to,
       );
@@ -102,11 +103,12 @@ R _convertDatumToDatum<R extends Position>({
       // no target datum, just return the source position
       return to.call(x: x, y: y, z: z, m: m);
     } else {
-      return sourceDatum._convertGeographicInternal(
+      return convertGeographicInternal(
         lon: x, // longitude = x
         lat: y, // latitude = y
         elev: z,
         m: m,
+        source: sourceDatum,
         target: targetDatum,
         to: to,
         omitElev: !is3D,
@@ -134,11 +136,12 @@ R _convertDatumToDatum<R extends Position>({
       );
 
       // convert to target geocentric on target datum
-      return sourceDatum._convertGeocentricCartesianInternal(
+      return convertGeocentricCartesianInternal(
         x: sourceCartesian.x,
         y: sourceCartesian.y,
         z: sourceCartesian.z,
         m: sourceCartesian.optM,
+        source: sourceDatum,
         target: targetDatum,
         to: to,
       );
@@ -160,8 +163,9 @@ R _convertDatumToDatum<R extends Position>({
       // need sourceDatum to targetDatum conversion
 
       // first convert source to geocentric cartesian on target datum
-      final targetCartesian = sourceDatum._convertGeocentricCartesianInternal(
+      final targetCartesian = convertGeocentricCartesianInternal(
         x: x, y: y, z: z ?? 0.0, m: m,
+        source: sourceDatum,
         target: targetDatum,
         to: Projected.new, // use for efficiency on temporary object
       );
