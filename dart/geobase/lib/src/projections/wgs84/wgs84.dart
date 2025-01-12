@@ -137,7 +137,7 @@ class WGS84 {
       // given target datum
       targetCrs: isNonWGS84Target
           ? targetCrs
-          : CoordRefSys.utmWgs84(zone.zone, zone.hemisphere),
+          : CoordRefSys.utmWgs84(zone.lonZone, zone.hemisphere),
       targetDatum: isNonWGS84Target ? targetDatum : Datum.WGS84,
       targetZone: zone,
     );
@@ -165,12 +165,14 @@ class WGS84 {
   ) {
     return UtmProjectionAdapter.projectedToProjected(
       // source is UTM projected coordinates of the source zone in WGS 84
-      sourceCrs: CoordRefSys.utmWgs84(sourceZone.zone, sourceZone.hemisphere),
+      sourceCrs:
+          CoordRefSys.utmWgs84(sourceZone.lonZone, sourceZone.hemisphere),
       sourceDatum: Datum.WGS84,
       sourceZone: sourceZone,
 
       // target is UTM projected coordinates of the target zone in WGS 84
-      targetCrs: CoordRefSys.utmWgs84(targetZone.zone, targetZone.hemisphere),
+      targetCrs:
+          CoordRefSys.utmWgs84(targetZone.lonZone, targetZone.hemisphere),
       targetDatum: Datum.WGS84,
       targetZone: targetZone,
     );

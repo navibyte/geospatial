@@ -69,7 +69,7 @@ extension EllipsoidalExtension on Geographic {
   ///   final utmCoord = geographic.toUtm(datum: Datum.WGS84);
   /// ```
   Utm toUtm({
-    int? zone,
+    UtmZone? zone,
     Datum datum = Datum.WGS84,
     bool roundResults = true,
     bool verifyEN = true,
@@ -107,7 +107,7 @@ extension EllipsoidalExtension on Geographic {
   ///   final scale = utmMeta.scale;
   /// ```
   UtmMeta<Utm> toUtmMeta({
-    int? zone,
+    UtmZone? zone,
     Datum datum = Datum.WGS84,
     bool roundResults = true,
     bool verifyEN = true,

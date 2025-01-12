@@ -221,7 +221,8 @@ void main() {
 
     test('1,1 Z31', () {
       const geo1 = Geographic(lat: 1, lon: 1);
-      expect(Utm.fromGeographic(geo1, zone: 30).toText(decimals: 5),
+      final zone30 = UtmZone(30, 'N');
+      expect(Utm.fromGeographic(geo1, zone: zone30).toText(decimals: 5),
           '30 N 945396.68398 110801.83255');
     });
 
@@ -721,44 +722,44 @@ void main() {
   group('Norway/Svalbard adjustmen', () {
     test('Norway 31->32', () {
       const geo = Geographic(lat: 60, lon: 4);
-      expect(Utm.fromGeographic(geo).zone, 32);
-      expect(UtmZone.fromGeographic(geo).zone, 32);
+      expect(Utm.fromGeographic(geo).zone.lonZone, 32);
+      expect(UtmZone.fromGeographic(geo).lonZone, 32);
     });
 
     test('Svalbard 32->31', () {
       const geo = Geographic(lat: 75, lon: 8);
-      expect(Utm.fromGeographic(geo).zone, 31);
-      expect(UtmZone.fromGeographic(geo).zone, 31);
+      expect(Utm.fromGeographic(geo).zone.lonZone, 31);
+      expect(UtmZone.fromGeographic(geo).lonZone, 31);
     });
 
     test('Svalbard 32->33', () {
       const geo = Geographic(lat: 75, lon: 10);
-      expect(Utm.fromGeographic(geo).zone, 33);
-      expect(UtmZone.fromGeographic(geo).zone, 33);
+      expect(Utm.fromGeographic(geo).zone.lonZone, 33);
+      expect(UtmZone.fromGeographic(geo).lonZone, 33);
     });
 
     test('Svalbard 34->33', () {
       const geo = Geographic(lat: 75, lon: 20);
-      expect(Utm.fromGeographic(geo).zone, 33);
-      expect(UtmZone.fromGeographic(geo).zone, 33);
+      expect(Utm.fromGeographic(geo).zone.lonZone, 33);
+      expect(UtmZone.fromGeographic(geo).lonZone, 33);
     });
 
     test('Svalbard 34->35', () {
       const geo = Geographic(lat: 75, lon: 22);
-      expect(Utm.fromGeographic(geo).zone, 35);
-      expect(UtmZone.fromGeographic(geo).zone, 35);
+      expect(Utm.fromGeographic(geo).zone.lonZone, 35);
+      expect(UtmZone.fromGeographic(geo).lonZone, 35);
     });
 
     test('Svalbard 36->35', () {
       const geo = Geographic(lat: 75, lon: 32);
-      expect(Utm.fromGeographic(geo).zone, 35);
-      expect(UtmZone.fromGeographic(geo).zone, 35);
+      expect(Utm.fromGeographic(geo).zone.lonZone, 35);
+      expect(UtmZone.fromGeographic(geo).lonZone, 35);
     });
 
     test('Svalbard 36->37', () {
       const geo = Geographic(lat: 75, lon: 34);
-      expect(Utm.fromGeographic(geo).zone, 37);
-      expect(UtmZone.fromGeographic(geo).zone, 37);
+      expect(Utm.fromGeographic(geo).zone.lonZone, 37);
+      expect(UtmZone.fromGeographic(geo).lonZone, 37);
     });
   });
 }

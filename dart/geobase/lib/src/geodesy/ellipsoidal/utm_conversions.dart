@@ -154,13 +154,10 @@ R _convertUtm<R extends Position>({
     // then convert to UTM in the target datum (or if null then in source datum)
     final targetUtm = Utm.fromGeographic(
       targetGeo,
-      zone: targetZone?.zone, // optional forced target zone
+      zone: targetZone, // optional forced target zone
       datum: targetDatum ?? sourceDatum,
       verifyEN: false,
     );
-    if (targetZone != null && targetUtm.hemisphere != targetZone.hemisphere) {
-      throw const FormatException('Invalid target hemisphere');
-    }
     return targetUtm.projected.copyTo(to);
   }
 }

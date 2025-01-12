@@ -130,7 +130,8 @@ class CoordRefSys {
       coordRefSys ?? (crs != null ? CoordRefSys.normalized(crs) : CRS84);
 
   /// The coordinate reference system for the UTM zone (in the WGS84 datum)
-  /// identified by [zone] (must be 1..60) and [hemisphere].
+  /// identified by [lonZone] (longitudinal zone, must be 1..60) and
+  /// [hemisphere].
   ///
   /// EPSG codes for UTM in Northern Hemisphere start at 32601 (for zone 1) and
   /// end at 32660 (for zone 60).
@@ -141,15 +142,15 @@ class CoordRefSys {
   /// For example in the Northern Hemisphere for zone 31 the EPSG code is 32631
   /// and a [CoordRefSys] instance with an identifier
   /// `http://www.opengis.net/def/crs/EPSG/0/32631` is returned.
-  factory CoordRefSys.utmWgs84(int zone, Hemisphere hemisphere) {
-    if (!(zone >= 1 && zone <= 60)) {
-      throw ArgumentError('Invalid UTM zone: $zone');
+  factory CoordRefSys.utmWgs84(int lonZone, Hemisphere hemisphere) {
+    if (!(lonZone >= 1 && lonZone <= 60)) {
+      throw ArgumentError('Invalid UTM longitudinal zone: $lonZone');
     }
 
     final epsgBase = (hemisphere == Hemisphere.north) ? 32600 : 32700;
 
     // Calculate the EPSG code
-    final epsgCode = epsgBase + zone;
+    final epsgCode = epsgBase + lonZone;
 
     return CoordRefSys.id('http://www.opengis.net/def/crs/EPSG/0/$epsgCode');
   }

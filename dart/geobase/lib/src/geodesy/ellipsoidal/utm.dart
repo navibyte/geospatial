@@ -119,7 +119,7 @@ class UtmMeta<T extends Object> {
   int get hashCode => Object.hash(position, convergence, scale);
 }
 
-/// The UTM zone represented by the [zone] number and [hemisphere].
+/// The UTM zone represented by the [lonZone] number and [hemisphere].
 ///
 /// {@macro geobase.geodesy.utm.zone}
 ///
@@ -128,11 +128,11 @@ class UtmMeta<T extends Object> {
 class UtmZone {
   /// {@template geobase.geodesy.utm.zone}
   ///
-  /// The [zone] represents UTM 6° longitudinal zone (1..60 covering
+  /// The [lonZone] represents UTM 6° longitudinal zone (1..60 covering
   /// 180°W..180°E).
   ///
   /// {@endtemplate}
-  final int zone;
+  final int lonZone;
 
   /// {@template geobase.geodesy.utm.hemisphere}
   ///
@@ -142,7 +142,7 @@ class UtmZone {
   /// {@endtemplate}
   final Hemisphere hemisphere;
 
-  /// Creates the UTM zone object with [zone] and the hemisphere parsed from
+  /// Creates the UTM zone object with [lonZone] and the hemisphere parsed from
   /// the [hemisphere] symbol ('N' or 'S').
   ///
   /// Throws FormatException if the zone is outside the valid range 1..60 or
@@ -154,10 +154,10 @@ class UtmZone {
   ///   // The UTM zone 31 N.
   ///   final utmZone = UtmZone(31, 'N');
   /// ```
-  factory UtmZone(int zone, String hemisphere) =>
-      UtmZone.from(zone, Hemisphere.fromSymbol(hemisphere));
+  factory UtmZone(int lonZone, String hemisphere) =>
+      UtmZone.from(lonZone, Hemisphere.fromSymbol(hemisphere));
 
-  /// Creates the UTM zone object with [zone] and [hemisphere].
+  /// Creates the UTM zone object with [lonZone] and [hemisphere].
   ///
   /// Throws FormatException if the zone is outside the valid range 1..60.
   ///
@@ -167,16 +167,16 @@ class UtmZone {
   ///   // The UTM zone 31 N.
   ///   final utmZone = UtmZone.from(31, Hemisphere.north);
   /// ```
-  factory UtmZone.from(int zone, Hemisphere hemisphere) {
+  factory UtmZone.from(int lonZone, Hemisphere hemisphere) {
     // validate zone and hemisphere
-    if (!(1 <= zone && zone <= 60)) {
-      throw FormatException('invalid UTM zone $zone');
+    if (!(1 <= lonZone && lonZone <= 60)) {
+      throw FormatException('invalid UTM longitudinal zone $lonZone');
     }
 
-    return UtmZone._(zone, hemisphere);
+    return UtmZone._(lonZone, hemisphere);
   }
 
-  const UtmZone._(this.zone, this.hemisphere);
+  const UtmZone._(this.lonZone, this.hemisphere);
 
   /// Calculates the UTM zone object from the [geographic] position.
   ///
@@ -199,7 +199,7 @@ class UtmZone {
     }
 
     // longitudinal zone
-    var utmZone = (((lon + 180.0) / 6.0).floor() + 1).clamp(1, 60);
+    var lonZone = (((lon + 180.0) / 6.0).floor() + 1).clamp(1, 60);
 
     // handle Norway/Svalbard exceptions
     // grid zones are 8° tall; 0°N is offset 10 into latitude bands array
@@ -207,48 +207,48 @@ class UtmZone {
     final latBand =
         mgrsLatBands[(lat / 8 + 10).floor().clamp(0, mgrsLatBands.length - 1)];
     // adjust zone & central meridian for Norway
-    if (utmZone == 31 && latBand == 'V' && lon >= 3) {
-      utmZone++;
+    if (lonZone == 31 && latBand == 'V' && lon >= 3) {
+      lonZone++;
     }
     // adjust zone & central meridian for Svalbard
-    if (utmZone == 32 && latBand == 'X' && lon < 9) {
-      utmZone--;
+    if (lonZone == 32 && latBand == 'X' && lon < 9) {
+      lonZone--;
     }
-    if (utmZone == 32 && latBand == 'X' && lon >= 9) {
-      utmZone++;
+    if (lonZone == 32 && latBand == 'X' && lon >= 9) {
+      lonZone++;
     }
-    if (utmZone == 34 && latBand == 'X' && lon < 21) {
-      utmZone--;
+    if (lonZone == 34 && latBand == 'X' && lon < 21) {
+      lonZone--;
     }
-    if (utmZone == 34 && latBand == 'X' && lon >= 21) {
-      utmZone++;
+    if (lonZone == 34 && latBand == 'X' && lon >= 21) {
+      lonZone++;
     }
-    if (utmZone == 36 && latBand == 'X' && lon < 33) {
-      utmZone--;
+    if (lonZone == 36 && latBand == 'X' && lon < 33) {
+      lonZone--;
     }
-    if (utmZone == 36 && latBand == 'X' && lon >= 33) {
-      utmZone++;
+    if (lonZone == 36 && latBand == 'X' && lon >= 33) {
+      lonZone++;
     }
 
     return UtmZone._(
-      utmZone,
+      lonZone,
       lat >= 0 ? Hemisphere.north : Hemisphere.south,
     );
   }
 
   @override
-  String toString() => '$zone ${hemisphere.symbol}';
+  String toString() => '$lonZone ${hemisphere.symbol}';
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is UtmZone &&
-          zone == other.zone &&
+          lonZone == other.lonZone &&
           hemisphere == other.hemisphere);
 
   @override
   int get hashCode => Object.hash(
-        zone,
+        lonZone,
         hemisphere,
       );
 }
@@ -256,9 +256,8 @@ class UtmZone {
 /// UTM coordinates, with functions to parse them and convert them to
 /// geographic points.
 ///
-/// {@macro geobase.geodesy.utm.zone}
-///
-/// {@macro geobase.geodesy.utm.hemisphere}
+/// The UTM [zone] object contains the longitudinal zone (1..60) and the
+/// hemisphere.
 ///
 /// {@macro geobase.geodesy.utm.projected}
 ///
@@ -271,9 +270,12 @@ class UtmZone {
 ///
 /// See also [UtmMeta] for metadata related to UTM calculations.
 @immutable
-class Utm extends UtmZone {
+class Utm {
+  /// The UTM zone object with the longitudinal zone (1..60) and the hemisphere.
+  final UtmZone zone;
+
   /// The [projected] position as UTM coordinates (x=easting, y=northing,
-  /// z=elev) in the specified [zone] and [hemisphere].
+  /// z=elev) in the specified [zone].
   ///
   /// {@template geobase.geodesy.utm.projected}
   ///
@@ -322,8 +324,8 @@ class Utm extends UtmZone {
   /// See also [projected].
   final Datum datum;
 
-  /// Creates UTM coordinates with [zone], [hemisphere], [easting], [northing]
-  /// based on the [datum].
+  /// Creates UTM coordinates with [lonZone], [hemisphere], [easting],
+  /// [northing] based on the [datum].
   ///
   /// You can also provide optional [elev] (elevation) and [m] (measure value).
   ///
@@ -356,7 +358,7 @@ class Utm extends UtmZone {
   ///   final utmCoord = Utm(31, 'N', 448251.0, 5411932.0);
   /// ```
   factory Utm(
-    int zone,
+    int lonZone,
     String hemisphere,
     double easting,
     double northing, {
@@ -365,27 +367,18 @@ class Utm extends UtmZone {
     Datum datum = Datum.WGS84,
     bool verifyEN = true,
   }) {
-    // validate zone and hemisphere
-    if (!(1 <= zone && zone <= 60)) {
-      throw FormatException('invalid UTM zone $zone');
-    }
-    final hemisphereValue = Hemisphere.fromSymbol(hemisphere);
+    final utmZone = UtmZone(lonZone, hemisphere);
     final projected = Projected(x: easting, y: northing, z: elev, m: m);
 
     if (verifyEN) {
-      _verifyEN(projected, hemisphereValue);
+      _verifyEN(projected, utmZone.hemisphere);
     }
 
-    return Utm._coordinates(
-      zone,
-      hemisphereValue,
-      projected: projected,
-      datum: datum,
-    );
+    return Utm._coordinates(utmZone, projected, datum: datum);
   }
 
-  /// Creates UTM coordinates from [zone] and the [projected] position based on
-  /// the [datum].
+  /// Creates UTM coordinates from [utmZone] and the [projected] position based
+  /// on the [datum].
   ///
   /// {@macro geobase.geodesy.utm.projected}
   ///
@@ -405,21 +398,16 @@ class Utm extends UtmZone {
   ///       Utm.from(UtmZone(31, 'N'), Projected(x: 448251.0, y: 5411932.0));
   /// ```
   factory Utm.from(
-    UtmZone zone,
+    UtmZone utmZone,
     Projected projected, {
     Datum datum = Datum.WGS84,
     bool verifyEN = true,
   }) {
     if (verifyEN) {
-      _verifyEN(projected, zone.hemisphere);
+      _verifyEN(projected, utmZone.hemisphere);
     }
 
-    return Utm._coordinates(
-      zone.zone,
-      zone.hemisphere,
-      projected: projected,
-      datum: datum,
-    );
+    return Utm._coordinates(utmZone, projected, datum: datum);
   }
 
   static void _verifyEN(Projected projected, Hemisphere hemisphere) {
@@ -488,7 +476,7 @@ class Utm extends UtmZone {
       throw FormatException('invalid UTM coordinate ‘$text’');
     }
 
-    final zone = int.parse(parts[0]);
+    final lonZone = int.parse(parts[0]);
     final hemisphere = parts[1];
     final easting = double.parse(parts[swapXY ? 3 : 2]);
     final northing = double.parse(parts[swapXY ? 2 : 3]);
@@ -496,7 +484,7 @@ class Utm extends UtmZone {
     final m = parts.length >= 6 ? double.parse(parts[5]) : null;
 
     return Utm(
-      zone,
+      lonZone,
       hemisphere,
       easting,
       northing,
@@ -507,18 +495,17 @@ class Utm extends UtmZone {
     );
   }
 
-  /// Creates UTM coordinates with [zone], [hemisphere] and the [projected]
-  /// position based on [datum].
+  /// Creates UTM coordinates with [zone] and the [projected] position based on
+  /// [datum].
   ///
   /// A 2D position should be constructed as
   /// `Projected(x: easting, y: northing)` and a 3D position as
   /// `Projected(x: easting, y: northing, z: elev)`.
   const Utm._coordinates(
-    super.zone,
-    super.hemisphere, {
-    required this.projected,
+    this.zone,
+    this.projected, {
     required this.datum,
-  }) : super._();
+  });
 
   /*
   // NOTE: commented out to keep the Utm class more focused
@@ -585,7 +572,7 @@ class Utm extends UtmZone {
   /// ```
   factory Utm.fromGeographic(
     Geographic geographic, {
-    int? zone,
+    UtmZone? zone,
     Datum datum = Datum.WGS84,
     bool roundResults = true,
     bool verifyEN = true,
@@ -643,7 +630,7 @@ class Utm extends UtmZone {
   /// ```
   static UtmMeta<Utm> fromGeographicMeta(
     Geographic geographic, {
-    int? zone,
+    UtmZone? zone,
     Datum datum = Datum.WGS84,
     bool roundResults = true,
     bool verifyEN = true,
@@ -659,13 +646,22 @@ class Utm extends UtmZone {
     const falseNorthing = 10000.0e3;
 
     // longitudinal zone
-    var utmZone = zone ?? (((lon + 180.0) / 6.0).floor() + 1).clamp(1, 60);
-    if (!(1 <= utmZone && utmZone <= 60)) {
-      throw FormatException('invalid UTM zone $utmZone');
+    var lonZone =
+        zone?.lonZone ?? (((lon + 180.0) / 6.0).floor() + 1).clamp(1, 60);
+    if (!(1 <= lonZone && lonZone <= 60)) {
+      throw FormatException('invalid UTM longitudinal zone $lonZone');
+    }
+
+    // hemisphere
+    final h = lat >= 0 ? 'N' : 'S';
+
+    // if forced zone, check that hemisphere from lat matches forced hemisphere
+    if (zone != null && zone.hemisphere.symbol != h) {
+      throw const FormatException('zone hemisphere does not match position');
     }
 
     // longitude of central meridian
-    var lambda0 = ((utmZone - 1) * 6.0 - 180.0 + 3.0).toRadians();
+    var lambda0 = ((lonZone - 1) * 6.0 - 180.0 + 3.0).toRadians();
 
     // handle Norway/Svalbard exceptions
     // grid zones are 8° tall; 0°N is offset 10 into latitude bands array
@@ -674,33 +670,33 @@ class Utm extends UtmZone {
     final latBand =
         mgrsLatBands[(lat / 8 + 10).floor().clamp(0, mgrsLatBands.length - 1)];
     // adjust zone & central meridian for Norway
-    if (utmZone == 31 && latBand == 'V' && lon >= 3) {
-      utmZone++;
+    if (lonZone == 31 && latBand == 'V' && lon >= 3) {
+      lonZone++;
       lambda0 += sixDegreesRad;
     }
     // adjust zone & central meridian for Svalbard
-    if (utmZone == 32 && latBand == 'X' && lon < 9) {
-      utmZone--;
+    if (lonZone == 32 && latBand == 'X' && lon < 9) {
+      lonZone--;
       lambda0 -= sixDegreesRad;
     }
-    if (utmZone == 32 && latBand == 'X' && lon >= 9) {
-      utmZone++;
+    if (lonZone == 32 && latBand == 'X' && lon >= 9) {
+      lonZone++;
       lambda0 += sixDegreesRad;
     }
-    if (utmZone == 34 && latBand == 'X' && lon < 21) {
-      utmZone--;
+    if (lonZone == 34 && latBand == 'X' && lon < 21) {
+      lonZone--;
       lambda0 -= sixDegreesRad;
     }
-    if (utmZone == 34 && latBand == 'X' && lon >= 21) {
-      utmZone++;
+    if (lonZone == 34 && latBand == 'X' && lon >= 21) {
+      lonZone++;
       lambda0 += sixDegreesRad;
     }
-    if (utmZone == 36 && latBand == 'X' && lon < 33) {
-      utmZone--;
+    if (lonZone == 36 && latBand == 'X' && lon < 33) {
+      lonZone--;
       lambda0 -= sixDegreesRad;
     }
-    if (utmZone == 36 && latBand == 'X' && lon >= 33) {
-      utmZone++;
+    if (lonZone == 36 && latBand == 'X' && lon >= 33) {
+      lonZone++;
       lambda0 += sixDegreesRad;
     }
 
@@ -829,12 +825,9 @@ class Utm extends UtmZone {
         : gamma.toDegrees();
     final scale = roundResults ? double.parse(k.toStringAsFixed(12)) : k;
 
-    // hemisphere
-    final h = lat >= 0 ? 'N' : 'S';
-
     return UtmMeta._(
       Utm(
-        utmZone,
+        lonZone,
         h,
         easting,
         northing,
@@ -850,8 +843,8 @@ class Utm extends UtmZone {
 
   /// {@template geobase.geodesy.utm.unproject}
   ///
-  /// Converts UTM coordinates of this and represented by [zone], [hemisphere]
-  /// and [projected] based on the [datum] to a geographic position.
+  /// Converts UTM coordinates of this and represented by [zone] and [projected]
+  /// based on the [datum] to a geographic position.
   ///
   /// Implements Karney’s method, using Krüger series to order n⁶, giving
   /// results accurate to 5nm for distances up to 3900km from the central
@@ -937,8 +930,9 @@ class Utm extends UtmZone {
     // make x ± relative to central meridian
     final x = easting - falseEasting;
     // make y ± relative to equator
-    final y =
-        hemisphere == Hemisphere.south ? northing - falseNorthing : northing;
+    final y = zone.hemisphere == Hemisphere.south
+        ? northing - falseNorthing
+        : northing;
 
     // ---- from Karney 2011 Eq 15-22, 36:
 
@@ -1037,7 +1031,7 @@ class Utm extends UtmZone {
     final k = k0 * kPrime * kDoublePrime;
 
     // longitude of central meridian
-    final lambda0 = ((zone - 1) * 6.0 - 180.0 + 3.0).toRadians();
+    final lambda0 = ((zone.lonZone - 1) * 6.0 - 180.0 + 3.0).toRadians();
     // move λ from zonal to global coordinates
     lambda += lambda0;
 
@@ -1116,13 +1110,14 @@ class Utm extends UtmZone {
     bool zeroPadZone = false,
   }) {
     // ensure leading zeros on zone if `zeroPadZone` is set true
+    final lonZone = zone.lonZone;
     final zPadded =
-        zeroPadZone ? zone.toString().padLeft(2, '0') : zone.toString();
+        zeroPadZone ? lonZone.toString().padLeft(2, '0') : lonZone.toString();
 
     final buf = StringBuffer()
       ..write(zPadded)
       ..write(delimiter)
-      ..write(hemisphere.symbol)
+      ..write(zone.hemisphere.symbol)
       ..write(delimiter);
 
     var pos = projected;
@@ -1150,14 +1145,12 @@ class Utm extends UtmZone {
       identical(this, other) ||
       (other is Utm &&
           zone == other.zone &&
-          hemisphere == other.hemisphere &&
           projected == other.projected &&
           datum == other.datum);
 
   @override
   int get hashCode => Object.hash(
         zone,
-        hemisphere,
         projected,
         datum,
       );

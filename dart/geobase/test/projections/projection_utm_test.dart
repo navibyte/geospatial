@@ -54,60 +54,74 @@ void main() {
         expect(_format(geo1c, 8), _format(geo1, 8));
       }
     });
-  });
 
-  test('WGS84 (lon-lat) to ED50 utm zone (easting, northing) - project', () {
-    final adapter = WGS84.utmZone(UtmZone(33, 'N'),
-        targetDatum: Datum.ED50,
+    test('WGS84 (lon-lat) to forced zone (easting, northing) - project', () {
+      final adapter = WGS84.utmZone(UtmZone(30, 'N'));
 
-        // ED50 / UTM zone 33N
-        targetCrs: const CoordRefSys.id(
-            'http://www.opengis.net/def/crs/EPSG/0/23033'));
+      const geo1 = Geographic(lon: 2.2945, lat: 48.8582);
+      const utm1 = Projected(x: 888277, y: 5425221);
 
-    final geo1 =
-        Geographic.parseDms(lat: '52°22′48.931″N', lon: '13°03′54.824″E');
-    const utm1 = Projected(x: 368381.402, y: 5805291.614);
+      final utm1b = adapter.forward.project(geo1, to: Projected.create);
+      expect(_format(utm1b, 0), _format(utm1, 0));
 
-    final utm1b = adapter.forward.project(geo1, to: Projected.create);
-    expect(_format(utm1b, 1), _format(utm1, 1));
+      final geo1b = adapter.inverse.project(utm1, to: Geographic.create);
+      expect(_format(geo1b, 5), _format(geo1, 5));
+    });
 
-    final geo1b = adapter.inverse.project(utm1, to: Geographic.create);
-    expect(_format(geo1b, 2), _format(geo1, 2));
+    test('WGS84 (lon-lat) to ED50 utm zone (easting, northing) - project', () {
+      final adapter = WGS84.utmZone(UtmZone(33, 'N'),
+          targetDatum: Datum.ED50,
 
-    final geo1ED50 =
-        Geographic.parseDms(lat: '52°22′51.446″N', lon: '13°03′58.741″E');
-    final geo1bED50 = Datum.WGS84.convertGeographic(geo1b, target: Datum.ED50);
-    expect(_format(geo1bED50, 2), _format(geo1ED50, 2));
-  });
+          // ED50 / UTM zone 33N
+          targetCrs: const CoordRefSys.id(
+              'http://www.opengis.net/def/crs/EPSG/0/23033'));
 
-  test('UTM self test1', () {
-    final testCases = [
-      const Geographic(lat: 51.749822, lon: 5.398882, elev: 10.2234),
-      const Geographic(lat: 0.0, lon: -23.484, elev: -2210.3232232),
-      const Geographic(lat: minLatitudeUTM, lon: -179.2, elev: -123.552345),
-      const Geographic(
-          lat: maxLatitudeUTM, lon: -179.2, elev: -123.552345, m: 1.1),
-      const Geographic(lat: maxLatitudeUTM, lon: -180.0, elev: 0.0),
-      const Geographic(lat: minLatitudeUTM, lon: 180.0, elev: 1000.0),
-      const Geographic(lat: 0.0, lon: 0.0, elev: 0.0),
-    ];
+      final geo1 =
+          Geographic.parseDms(lat: '52°22′48.931″N', lon: '13°03′54.824″E');
+      const utm1 = Projected(x: 368381.402, y: 5805291.614);
 
-    for (var i = 0; i < testCases.length; i++) {
-      final geo1 = testCases[i];
-      _testZone(geo1);
-    }
-  });
+      final utm1b = adapter.forward.project(geo1, to: Projected.create);
+      expect(_format(utm1b, 1), _format(utm1, 1));
 
-  test('UTM self test2', () {
-    final rand = Random(29348843);
-    for (var i = 0; i < 100; i++) {
-      final geo1 = Geographic(
-        lat: -80.0 + rand.nextDouble() * 160.0,
-        lon: -180.0 + rand.nextDouble() * 360.0,
-        elev: -5000.0 + rand.nextDouble() * 10000.0,
-      );
-      _testZone(geo1);
-    }
+      final geo1b = adapter.inverse.project(utm1, to: Geographic.create);
+      expect(_format(geo1b, 2), _format(geo1, 2));
+
+      final geo1ED50 =
+          Geographic.parseDms(lat: '52°22′51.446″N', lon: '13°03′58.741″E');
+      final geo1bED50 =
+          Datum.WGS84.convertGeographic(geo1b, target: Datum.ED50);
+      expect(_format(geo1bED50, 2), _format(geo1ED50, 2));
+    });
+
+    test('UTM self test1', () {
+      final testCases = [
+        const Geographic(lat: 51.749822, lon: 5.398882, elev: 10.2234),
+        const Geographic(lat: 0.0, lon: -23.484, elev: -2210.3232232),
+        const Geographic(lat: minLatitudeUTM, lon: -179.2, elev: -123.552345),
+        const Geographic(
+            lat: maxLatitudeUTM, lon: -179.2, elev: -123.552345, m: 1.1),
+        const Geographic(lat: maxLatitudeUTM, lon: -180.0, elev: 0.0),
+        const Geographic(lat: minLatitudeUTM, lon: 180.0, elev: 1000.0),
+        const Geographic(lat: 0.0, lon: 0.0, elev: 0.0),
+      ];
+
+      for (var i = 0; i < testCases.length; i++) {
+        final geo1 = testCases[i];
+        _testZone(geo1);
+      }
+    });
+
+    test('UTM self test2', () {
+      final rand = Random(29348843);
+      for (var i = 0; i < 100; i++) {
+        final geo1 = Geographic(
+          lat: -80.0 + rand.nextDouble() * 160.0,
+          lon: -180.0 + rand.nextDouble() * 360.0,
+          elev: -5000.0 + rand.nextDouble() * 10000.0,
+        );
+        _testZone(geo1);
+      }
+    });
   });
 }
 
@@ -120,8 +134,8 @@ void _testZone(Geographic geo1) {
   expect(_format(geo1b, 8), _format(geo1, 8));
 
   // test in the zone (zone + 1)
-  if (zone1.zone + 1 <= 60 && geo1.lon != 0.0) {
-    final zone1p1 = UtmZone.from(zone1.zone + 1, zone1.hemisphere);
+  if (zone1.lonZone + 1 <= 60 && geo1.lon != 0.0) {
+    final zone1p1 = UtmZone.from(zone1.lonZone + 1, zone1.hemisphere);
     final adapter2 = WGS84.utmZone(zone1p1);
     final utm2 = adapter2.forward.project(geo1, to: Projected.create);
     final geo2b = adapter2.inverse.project(utm2, to: Geographic.create);
@@ -129,8 +143,8 @@ void _testZone(Geographic geo1) {
   }
 
   // test zone to zone
-  if (zone1.zone + 1 <= 60 && geo1.lon != 0.0) {
-    final zone1p1 = UtmZone.from(zone1.zone + 1, zone1.hemisphere);
+  if (zone1.lonZone + 1 <= 60 && geo1.lon != 0.0) {
+    final zone1p1 = UtmZone.from(zone1.lonZone + 1, zone1.hemisphere);
     // first to the zone `zone + 1`
     final adapter2zp1 = WGS84.utmZone(zone1p1);
     final utmZp1 = adapter2zp1.forward.project(geo1, to: Projected.create);

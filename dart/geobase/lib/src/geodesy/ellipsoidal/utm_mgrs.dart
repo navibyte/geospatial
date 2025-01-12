@@ -42,7 +42,7 @@ const _rowLetters = ['ABCDEFGHJKLMNPQRSTUV', 'FGHJKLMNPQRSTUVABCDE'];
 /// A grid zone as a polygon of 6° × 8° in MGRS/NATO grid references.
 ///
 /// Grid zones are identified by grid zone designator (GZD) like `31U` with
-/// 6° longitudinal [zone] and 8° latitudinal [band].
+/// 6° longitudinal zone ([lonZone]) and 8° latitudinal [band].
 ///
 /// According to
 /// [Wikipedia](https://en.wikipedia.org/wiki/Military_Grid_Reference_System)
@@ -53,7 +53,7 @@ const _rowLetters = ['ABCDEFGHJKLMNPQRSTUV', 'FGHJKLMNPQRSTUVABCDE'];
 @immutable
 class MgrsGridZone {
   /// {@macro geobase.geodesy.utm.zone}
-  final int zone;
+  final int lonZone;
 
   /// {@template geobase.geodesy.mgrs.band}
   ///
@@ -62,7 +62,7 @@ class MgrsGridZone {
   /// {@endtemplate}
   final String band;
 
-  /// Creates a MGRS grid zone with [zone] and [band].
+  /// Creates a MGRS grid zone with [lonZone] and [band].
   ///
   /// {@macro geobase.geodesy.utm.zone}
   ///
@@ -76,10 +76,10 @@ class MgrsGridZone {
   ///   // MGRS grid zone with zone 31 and band U.
   ///   final mgrsGridZone = MgrsGridZone(31, 'U');
   /// ```
-  factory MgrsGridZone(int zone, String band) {
+  factory MgrsGridZone(int lonZone, String band) {
     // validate zone
-    if (!(1 <= zone && zone <= 60)) {
-      throw FormatException('invalid MGRS zone $zone');
+    if (!(1 <= lonZone && lonZone <= 60)) {
+      throw FormatException('invalid MGRS longitudinal zone $lonZone');
     }
 
     // validate band
@@ -88,13 +88,13 @@ class MgrsGridZone {
     }
 
     return MgrsGridZone._coordinates(
-      zone,
+      lonZone,
       band,
     );
   }
 
   const MgrsGridZone._coordinates(
-    this.zone,
+    this.lonZone,
     this.band,
   );
 
@@ -125,7 +125,7 @@ class MgrsGridZone {
   String toText({bool zeroPadZone = false}) {
     // ensure leading zeros on zone if `zeroPadZone` is set true
     final zPadded =
-        zeroPadZone ? zone.toString().padLeft(2, '0') : zone.toString();
+        zeroPadZone ? lonZone.toString().padLeft(2, '0') : lonZone.toString();
 
     return '$zPadded$band';
   }
@@ -136,10 +136,10 @@ class MgrsGridZone {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is MgrsGridZone && zone == other.zone && band == other.band);
+      (other is MgrsGridZone && lonZone == other.lonZone && band == other.band);
 
   @override
-  int get hashCode => Object.hash(zone, band);
+  int get hashCode => Object.hash(lonZone, band);
 }
 
 /// The 100km grid square (or the 100,000-meter square identifier) as a part of
@@ -171,7 +171,7 @@ class MgrsGridSquare extends MgrsGridZone {
   /// {@endtemplate}
   final String row;
 
-  /// Creates a MGRS 100km grid square with [zone], [band], [column] and [row].
+  /// Creates a MGRS 100km grid square with [lonZone], [band], [column] and [row].
   ///
   /// {@macro geobase.geodesy.utm.zone}
   ///
@@ -190,14 +190,14 @@ class MgrsGridSquare extends MgrsGridZone {
   ///   final mgrsGridSquare = MgrsGridSquare(31, 'U', 'D', 'Q');
   /// ```
   factory MgrsGridSquare(
-    int zone,
+    int lonZone,
     String band,
     String column,
     String row,
   ) {
     // validate zone
-    if (!(1 <= zone && zone <= 60)) {
-      throw FormatException('invalid MGRS zone $zone');
+    if (!(1 <= lonZone && lonZone <= 60)) {
+      throw FormatException('invalid MGRS longitudinal zone $lonZone');
     }
 
     // validate band and 100km grid square letters
@@ -206,9 +206,9 @@ class MgrsGridSquare extends MgrsGridZone {
       errors.add('invalid MGRS band `$band`');
     }
     if (column.length != 1 ||
-        !_columnLetters[(zone - 1) % 3].contains(column)) {
+        !_columnLetters[(lonZone - 1) % 3].contains(column)) {
       errors.add(
-        'invalid MGRS 100km grid square column `$column` for zone $zone',
+        'invalid MGRS 100km grid square column `$column` for zone $lonZone',
       );
     }
     if (row.length != 1 || !_rowLetters[0].contains(row)) {
@@ -219,7 +219,7 @@ class MgrsGridSquare extends MgrsGridZone {
     }
 
     return MgrsGridSquare._coordinates(
-      zone,
+      lonZone,
       band,
       column,
       row,
@@ -227,7 +227,7 @@ class MgrsGridSquare extends MgrsGridZone {
   }
 
   const MgrsGridSquare._coordinates(
-    super.zone,
+    super.lonZone,
     super.band,
     this.column,
     this.row,
@@ -270,7 +270,7 @@ class MgrsGridSquare extends MgrsGridZone {
   }) {
     // ensure leading zeros on zone if `zeroPadZone` is set true
     final zPadded =
-        zeroPadZone ? zone.toString().padLeft(2, '0') : zone.toString();
+        zeroPadZone ? lonZone.toString().padLeft(2, '0') : lonZone.toString();
 
     return militaryStyle
         ? '$zPadded$band$column$row'
@@ -281,13 +281,13 @@ class MgrsGridSquare extends MgrsGridZone {
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is MgrsGridSquare &&
-          zone == other.zone &&
+          lonZone == other.lonZone &&
           band == other.band &&
           column == other.column &&
           row == other.row);
 
   @override
-  int get hashCode => Object.hash(zone, band, column, row);
+  int get hashCode => Object.hash(lonZone, band, column, row);
 }
 
 /// {@template geobase.geodesy.mgrs.about}
@@ -338,7 +338,7 @@ class Mgrs {
   /// transformation parameters.
   final Datum datum;
 
-  /// Creates a MGRS grid reference with [zone], [band], [column], [row],
+  /// Creates a MGRS grid reference with [lonZone], [band], [column], [row],
   /// [easting], [northing] based on the [datum] (used in the UTM projection).
   ///
   /// {@macro geobase.geodesy.utm.zone}
@@ -368,7 +368,7 @@ class Mgrs {
   ///   final mgrsRef = Mgrs(31, 'U', 'D', 'Q', 48251, 11932);
   /// ```
   factory Mgrs(
-    int zone,
+    int lonZone,
     String band,
     String column,
     String row,
@@ -379,7 +379,7 @@ class Mgrs {
     // create 100 km grid square, validating zone, band and 100km grid square
     // letters (column + row)
     final gridSquare = MgrsGridSquare(
-      zone,
+      lonZone,
       band,
       column, // e100k
       row, // n100k
@@ -487,7 +487,7 @@ class Mgrs {
 
     // split gzd into zone (one or two digits), band (one letter)
     final gzdLen = gzd.length;
-    final zone = int.parse(gzd.substring(0, gzdLen - 1));
+    final lonZone = int.parse(gzd.substring(0, gzdLen - 1));
     final band = gzd.substring(gzdLen - 1, gzdLen);
 
     // split 100km letter-pair into column and row letters
@@ -500,7 +500,7 @@ class Mgrs {
     // use the default constructor as it also validates the coordinates (and
     // constructs also a MgrsGridSquare object)
     return Mgrs(
-      zone,
+      lonZone,
       band,
       column,
       row,
@@ -522,7 +522,7 @@ class Mgrs {
   /// ```
   factory Mgrs.fromUtm(Utm utm) {
     // MGRS zone is same as UTM zone
-    final zone = utm.zone;
+    final lonZone = utm.zone.lonZone;
 
     // convert UTM to lat/long to get latitude to determine band
     final latlong = utm.toGeographic();
@@ -535,11 +535,11 @@ class Mgrs {
     // 3rd zone
     final col = (utm.easting / 100000).floor();
     // (note -1 because eastings start at 166e3 due to 500km false origin)
-    final e100k = _columnLetters[(zone - 1) % 3][col - 1];
+    final e100k = _columnLetters[(lonZone - 1) % 3][col - 1];
 
     // rows in even zones are A-V, in odd zones are F-E
     final row = (utm.northing / 100000).floor() % 20;
-    final n100k = _rowLetters[(zone - 1) % 2][row];
+    final n100k = _rowLetters[(lonZone - 1) % 2][row];
 
     // truncate easting/northing to within 100km grid square & round to 1-metre
     // precision
@@ -547,7 +547,7 @@ class Mgrs {
     final northing = (utm.northing % 100000).floor();
 
     return Mgrs(
-      zone,
+      lonZone,
       band,
       e100k,
       n100k,
@@ -572,18 +572,19 @@ class Mgrs {
   ///   final utmCoord = mgrsRef.toUtm(); // 31 N 448251 5411932
   /// ```
   Utm toUtm() {
-    final zone = gridSquare.zone;
+    final lonZone = gridSquare.lonZone;
     final isNorth =
         _latBands.indexOf(gridSquare.band) >= _latBands.indexOf('N');
     final hemisphere = isNorth ? 'N' : 'S';
 
     // get easting specified by e100k (note +1 because eastings start at 166e3
     // due to 500km false origin)
-    final col = _columnLetters[(zone - 1) % 3].indexOf(gridSquare.column) + 1;
+    final col =
+        _columnLetters[(lonZone - 1) % 3].indexOf(gridSquare.column) + 1;
     final e100kNum = col * 100000; // e100k in metres
 
     // get northing specified by n100k
-    final row = _rowLetters[(zone - 1) % 2].indexOf(gridSquare.row);
+    final row = _rowLetters[(lonZone - 1) % 2].indexOf(gridSquare.row);
     final n100kNum = row * 100000; // n100k in metres
 
     // latitude of (bottom of) band, 10 bands above the equator, 8°latitude each
@@ -611,7 +612,7 @@ class Mgrs {
     }
 
     return Utm(
-      gridSquare.zone,
+      gridSquare.lonZone,
       hemisphere,
       (e100kNum + easting).toDouble(),
       (n2M + n100kNum + northing).toDouble(),
@@ -692,7 +693,7 @@ class Mgrs {
       throw FormatException('invalid precision `$digits`');
     }
 
-    final zone = gridSquare.zone;
+    final lonZone = gridSquare.lonZone;
     final band = gridSquare.band;
     final column = gridSquare.column;
     final row = gridSquare.row;
@@ -707,7 +708,7 @@ class Mgrs {
 
     // ensure leading zeros on zone if `zeroPadZone` is set true
     final zPadded =
-        zeroPadZone ? zone.toString().padLeft(2, '0') : zone.toString();
+        zeroPadZone ? lonZone.toString().padLeft(2, '0') : lonZone.toString();
 
     // ensure leading zeros on easting and northing when needed
     final ePadded = eRounded.toString().padLeft(digitsPer2, '0');

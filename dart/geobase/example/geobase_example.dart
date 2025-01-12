@@ -873,8 +873,8 @@ void _utmAndMgrs() {
   // UTM coordinates for the position
   final eiffelUtm = eiffel.toUtm();
   print(eiffelUtm.toText()); // "31 N 448252 5411933"
-  print(eiffelUtm.zone); // "31" (longitudinal zone)
-  print(eiffelUtm.hemisphere.symbol); // "N" (hemisphere, N or S)
+  print(eiffelUtm.zone.lonZone); // "31" (longitudinal zone)
+  print(eiffelUtm.zone.hemisphere.symbol); // "N" (hemisphere, N or S)
   // UTM easting and northing are floating point values in meters
   print(eiffelUtm.easting.toStringAsFixed(3)); // "448251.795"
   print(eiffelUtm.northing.toStringAsFixed(3)); // "5411932.678"
@@ -884,7 +884,7 @@ void _utmAndMgrs() {
 
   // UTM coordinates for the position with extra metadata
   final eiffelUtmMeta = eiffel.toUtmMeta();
-  print(eiffelUtmMeta.position.toText()); // "31 N 448251,5411932"
+  print(eiffelUtmMeta.position.toText()); // "31 N 448252 5411933"
   // The bearing of the grid north clockwise from the true north, in degrees.
   print(eiffelUtmMeta.convergence.toStringAsFixed(3)); // "-0.531"
   // The scale factor at the position (factor is 0.9996 at the central meridian)
@@ -893,7 +893,8 @@ void _utmAndMgrs() {
   // The UTM zone can be forced to neighbour zones too, but if the position is
   // out of the defined limits of a zone, then the convergence gets larger and
   // the scale error indicated by the scale factor increases.
-  final eiffelUtmZone30Meta = eiffel.toUtmMeta(zone: 30, verifyEN: false);
+  final zone30 = UtmZone(30, 'N');
+  final eiffelUtmZone30Meta = eiffel.toUtmMeta(zone: zone30, verifyEN: false);
   print(eiffelUtmZone30Meta.position.toText()); // "30 N 888277 5425221"
   print(eiffelUtmZone30Meta.convergence.toStringAsFixed(3)); // "3.992"
   print(eiffelUtmZone30Meta.scale.toStringAsFixed(6)); // "1.001453"
@@ -905,7 +906,7 @@ void _utmAndMgrs() {
   // MGRS grid reference for the position
   final eiffelMgrs = eiffel.toMgrs();
   print(eiffelMgrs.toText()); // "31U DQ 48251 11932"
-  print(eiffelMgrs.gridSquare.zone); // "31" (longitudinal zone)
+  print(eiffelMgrs.gridSquare.lonZone); // "31" (longitudinal zone)
   print(eiffelMgrs.gridSquare.band); // "U" (latitudinal band)
   print(eiffelMgrs.gridSquare.column); // "D" (100km square column)
   print(eiffelMgrs.gridSquare.row); // "Q" (100km square row)

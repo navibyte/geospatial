@@ -36,7 +36,7 @@ void main() {
         expect(m.toText(digits: 10), '4Q FJ 10000 60000');
         expect(m.toText(digits: 10, zeroPadZone: true), '04Q FJ 10000 60000');
         final gs = m.gridSquare;
-        expect(gs.zone, 4);
+        expect(gs.lonZone, 4);
         expect(gs.band, 'Q');
         expect(gs.column, 'F');
         expect(gs.row, 'J');
