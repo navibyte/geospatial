@@ -56,6 +56,30 @@ void main() {
     });
   });
 
+  test('WGS84 (lon-lat) to ED50 utm zone (easting, northing) - project', () {
+    final adapter = WGS84.utmZone(UtmZone(33, 'N'),
+        targetDatum: Datum.ED50,
+
+        // ED50 / UTM zone 33N
+        targetCrs: const CoordRefSys.id(
+            'http://www.opengis.net/def/crs/EPSG/0/23033'));
+
+    final geo1 =
+        Geographic.parseDms(lat: '52°22′48.931″N', lon: '13°03′54.824″E');
+    const utm1 = Projected(x: 368381.402, y: 5805291.614);
+
+    final utm1b = adapter.forward.project(geo1, to: Projected.create);
+    expect(_format(utm1b, 1), _format(utm1, 1));
+
+    final geo1b = adapter.inverse.project(utm1, to: Geographic.create);
+    expect(_format(geo1b, 2), _format(geo1, 2));
+
+    final geo1ED50 =
+        Geographic.parseDms(lat: '52°22′51.446″N', lon: '13°03′58.741″E');
+    final geo1bED50 = Datum.WGS84.convertGeographic(geo1b, target: Datum.ED50);
+    expect(_format(geo1bED50, 2), _format(geo1ED50, 2));
+  });
+
   test('UTM self test1', () {
     final testCases = [
       const Geographic(lat: 51.749822, lon: 5.398882, elev: 10.2234),

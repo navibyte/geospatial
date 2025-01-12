@@ -141,7 +141,7 @@ class CoordRefSys {
   /// For example in the Northern Hemisphere for zone 31 the EPSG code is 32631
   /// and a [CoordRefSys] instance with an identifier
   /// `http://www.opengis.net/def/crs/EPSG/0/32631` is returned.
-  factory CoordRefSys.utm(int zone, Hemisphere hemisphere) {
+  factory CoordRefSys.utmWgs84(int zone, Hemisphere hemisphere) {
     if (!(zone >= 1 && zone <= 60)) {
       throw ArgumentError('Invalid UTM zone: $zone');
     }
