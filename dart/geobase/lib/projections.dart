@@ -15,4 +15,7 @@
 /// Usage: import `package:geobase/projections.dart`
 library projections;
 
+export 'src/common/reference/coord_ref_sys.dart';
+export 'src/geodesy/ellipsoidal/datum.dart' show Datum;
+export 'src/geodesy/ellipsoidal/utm.dart' show UtmZone;
 export 'src/projections/wgs84/wgs84.dart';
