@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2025 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -6,7 +6,6 @@
 
 // ignore_for_file: lines_longer_than_80_chars, avoid_redundant_argument_values
 
-import 'package:geobase/coordinates.dart';
 import 'package:geobase/vector.dart';
 import 'package:geobase/vector_data.dart';
 
