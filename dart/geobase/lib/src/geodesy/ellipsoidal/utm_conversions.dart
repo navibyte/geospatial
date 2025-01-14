@@ -119,6 +119,40 @@ R _convertUtm<R extends Position>({
   UtmZone? targetZone,
   required CreatePosition<R> to,
 }) {
+  // if source is geographic and target is UTM projected without target datum
+  if (sourceCrsType.isGeographic &&
+      targetCrsType.isProjected &&
+      targetDatum == null) {
+    return geographicToUtm(
+      lon: x,
+      lat: y,
+      elev: z,
+      m: m,
+      zone: targetZone,
+      datum: sourceDatum,
+      roundResults: false,
+      to: to,
+    ).position;
+  }
+
+  // if source is UTM projected and target is geographic without target datum
+  if (sourceCrsType.isProjected &&
+      targetCrsType.isGeographic &&
+      targetDatum == null) {
+    return utmToGeographic(
+      zone: sourceZone!,
+      easting: x,
+      northing: y,
+      elev: z,
+      m: m,
+      datum: sourceDatum,
+      roundResults: false,
+      to: to,
+    ).position;
+  }
+
+  // othewise need temporary geographic position
+
   // first convert to geographic coordinates in the source datum
   final Geographic sourceGeo;
   if (sourceCrsType.isGeographic) {
@@ -166,7 +200,7 @@ R _convertUtm<R extends Position>({
         : sourceGeo;
 
     // then convert to UTM in the target datum (or if null then in source datum)
-    final targetUtm2 = geographicToUtm(
+    final targetUtm = geographicToUtm(
       lon: targetGeo.lon,
       lat: targetGeo.lat,
       elev: targetGeo.optElev,
@@ -175,7 +209,7 @@ R _convertUtm<R extends Position>({
       datum: targetDatum ?? sourceDatum,
       to: to,
     );
-    return targetUtm2.position;
+    return targetUtm.position;
   }
 }
 
