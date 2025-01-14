@@ -175,7 +175,7 @@ R _convertUtm<R extends Position>({
       datum: targetDatum ?? sourceDatum,
       to: to,
     );
-    return targetUtm2.projected;
+    return targetUtm2.position;
   }
 }
 

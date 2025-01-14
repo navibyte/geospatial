@@ -72,6 +72,9 @@ class UtmMeta<T extends Object> {
   /// {@endtemplate}
   final T position;
 
+  /// The UTM zone of the [position].
+  final UtmZone zone;
+
   /// {@template geobase.geodesy.utm.meta.convergence}
   ///
   /// The meridian [convergence] specifies the bearing of the grid north
@@ -100,18 +103,20 @@ class UtmMeta<T extends Object> {
   /// {@macro geobase.geodesy.utm.meta.scale}
   const UtmMeta._(
     this.position, {
+    required this.zone,
     required this.convergence,
     required this.scale,
   });
 
   @override
-  String toString() => '$position;$convergence;$scale';
+  String toString() => '$position;$zone;$convergence;$scale';
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is UtmMeta &&
           position == other.position &&
+          zone == other.zone &&
           convergence == other.convergence &&
           scale == other.scale);
 
@@ -590,7 +595,7 @@ class Utm {
 
     return Utm.from(
       result.zone,
-      result.projected,
+      result.position,
       datum: datum,
       verifyEN: verifyEN,
     );
@@ -654,10 +659,11 @@ class Utm {
     return UtmMeta._(
       Utm.from(
         result.zone,
-        result.projected,
+        result.position,
         datum: datum,
         verifyEN: verifyEN,
       ),
+      zone: result.zone,
       convergence: result.convergence,
       scale: result.scale,
     );
@@ -755,6 +761,7 @@ class Utm {
 
     return UtmMeta._(
       Ellipsoidal.fromGeographic(meta.position, datum: datum),
+      zone: zone,
       convergence: meta.convergence,
       scale: meta.scale,
     );
@@ -865,24 +872,8 @@ class Utm {
 //          ʹ = P (prime)
 //          ʺ = PP (double prime)
 
-/// An internal class to hold UTM result data, to be refactored as a record.
 @internal
-class UtmResult<T extends Position> {
-  final UtmZone zone;
-  final T projected;
-  final double convergence;
-  final double scale;
-
-  const UtmResult({
-    required this.zone,
-    required this.projected,
-    required this.convergence,
-    required this.scale,
-  });
-}
-
-@internal
-UtmResult<R> geographicToUtm<R extends Position>({
+UtmMeta<R> geographicToUtm<R extends Position>({
   required double lon,
   required double lat,
   double? elev,
@@ -1081,9 +1072,9 @@ UtmResult<R> geographicToUtm<R extends Position>({
     m: m, // do not convert optional M value
   );
 
-  return UtmResult(
+  return UtmMeta._(
+    projected,
     zone: UtmZone(lonZone, h),
-    projected: projected,
     convergence: convergence,
     scale: scale,
   );
@@ -1242,6 +1233,7 @@ UtmMeta<R> utmToGeographic<R extends Position>({
 
   return UtmMeta._(
     geographic,
+    zone: zone,
     convergence: convergence,
     scale: scale,
   );
