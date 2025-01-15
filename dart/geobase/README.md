@@ -339,7 +339,25 @@ Temporal instants and intervals, and geospatial extents:
   );
 ```
 
-Coordinate projections, tiling schemes (web mercator, global geodetic) and
+Projections can be applied on any geometry and feature objects along with
+positions.
+
+```dart
+  // The source point geometry with a position in WGS 84 coordinates.
+  final positionWgs84 = Geographic(lon: 2.2945, lat: 48.8582);
+  final point = Point(positionWgs84);
+
+  // Project to UTM projected coordinates (in zone 31 N).
+  final zone31N = UtmZone(31, 'N');
+  final wgs84toUtm31N = WGS84.utmZone(zone31N).forward;
+  final pointUtm31N = point.project(wgs84toUtm31N);
+
+  // Project back to WGS 84 coordinates.
+  final utm31NtoWgs84 = WGS84.utmZone(zone31N).inverse;
+  final pointWgs84 = pointUtm31N.project(utm31NtoWgs84);
+```
+
+Other coordinate projections, tiling schemes (web mercator, global geodetic) and
 coordinate array classes are some of the more advanced topics not introduced
 here. Please see chapters about
 [projections](https://geospatial.navibyte.dev/v1/geobase/projections/),
