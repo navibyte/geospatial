@@ -1,6 +1,6 @@
 ## 1.5.0
 
-NOTE: [geobase version 1.5.0](https://github.com/navibyte/geospatial/milestone/8) currently under development (1.5.0-dev.2).
+NOTE: [geobase version 1.5.0](https://github.com/navibyte/geospatial/milestone/8) currently under development (1.5.0-dev.3).
 
 🧩 Features:
 * [Port conversions between (historical) ellipsoidal datums to Dart #256](https://github.com/navibyte/geospatial/issues/256)
