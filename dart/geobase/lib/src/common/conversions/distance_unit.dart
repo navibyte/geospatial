@@ -46,7 +46,7 @@ enum DistanceUnit {
   miles(1609.344, 'mi'),
 
   /// 1 nautical mile is equal to 1852 meters.
-  /// 
+  ///
   /// Official unit symbols for nautical miles are "NM", "nmi" or "M" depending
   /// on the context ([Wikipedia](https://en.wikipedia.org/wiki/Nautical_mile)).
   nauticalMiles(1852.0, 'nmi');

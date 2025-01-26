@@ -230,4 +230,132 @@ void main() {
       );
     });
   });
+
+  group('AreaUnit', () {
+    test('square meters to square kilometers', () {
+      expect(
+        AreaUnit.squareMeters.toUnits(1000000, AreaUnit.squareKilometers),
+        equals(1),
+      );
+    });
+
+    test('square kilometers to square meters', () {
+      expect(
+        AreaUnit.squareKilometers.toUnits(1, AreaUnit.squareMeters),
+        equals(1000000),
+      );
+    });
+
+    test('square meters to square miles', () {
+      expect(
+        AreaUnit.squareMeters.toUnits(2589988.11, AreaUnit.squareMiles),
+        closeTo(1, 0.0001),
+      );
+    });
+
+    test('square miles to square meters', () {
+      expect(
+        AreaUnit.squareMiles.toUnits(1, AreaUnit.squareMeters),
+        closeTo(2589988.11, 0.0001),
+      );
+    });
+
+    test('square kilometers to square miles', () {
+      expect(
+        AreaUnit.squareKilometers.toUnits(2.589988, AreaUnit.squareMiles),
+        closeTo(1, 0.0001),
+      );
+    });
+
+    test('square miles to square kilometers', () {
+      expect(
+        AreaUnit.squareMiles.toUnits(1, AreaUnit.squareKilometers),
+        closeTo(2.589988, 0.0001),
+      );
+    });
+
+    test('square meters to square feet', () {
+      expect(
+        AreaUnit.squareMeters.toUnits(0.092903, AreaUnit.squareFeet),
+        closeTo(1, 0.0001),
+      );
+    });
+
+    test('square feet to square meters', () {
+      expect(
+        AreaUnit.squareFeet.toUnits(1, AreaUnit.squareMeters),
+        closeTo(0.092903, 0.0001),
+      );
+    });
+
+    test('square kilometers to square feet', () {
+      expect(
+        AreaUnit.squareKilometers.toUnits(0.000000092903, AreaUnit.squareFeet),
+        closeTo(1, 0.0001),
+      );
+    });
+
+    test('square feet to square kilometers', () {
+      expect(
+        AreaUnit.squareFeet.toUnits(1, AreaUnit.squareKilometers),
+        closeTo(0.000000092903, 0.0001),
+      );
+    });
+
+    test('square miles to square feet', () {
+      expect(
+        AreaUnit.squareMiles.toUnits(0.00000003587, AreaUnit.squareFeet),
+        closeTo(1, 0.0001),
+      );
+    });
+
+    test('square feet to square miles', () {
+      expect(
+        AreaUnit.squareFeet.toUnits(1, AreaUnit.squareMiles),
+        closeTo(0.00000003587, 0.0001),
+      );
+    });
+
+    test('hectares to square meters', () {
+      expect(
+        AreaUnit.hectares.toUnits(1, AreaUnit.squareMeters),
+        equals(10000),
+      );
+    });
+
+    test('square meters to hectares', () {
+      expect(
+        AreaUnit.squareMeters.toUnits(10000, AreaUnit.hectares),
+        equals(1),
+      );
+    });
+
+    test('acres to square meters', () {
+      expect(
+        AreaUnit.acres.toUnits(1, AreaUnit.squareMeters),
+        closeTo(4046.8564224, 0.0001),
+      );
+    });
+
+    test('square meters to acres', () {
+      expect(
+        AreaUnit.squareMeters.toUnits(4046.8564224, AreaUnit.acres),
+        closeTo(1, 0.0001),
+      );
+    });
+
+    test('hectares to acres', () {
+      expect(
+        AreaUnit.hectares.toUnits(1, AreaUnit.acres),
+        closeTo(2.47105, 0.0001),
+      );
+    });
+
+    test('acres to hectares', () {
+      expect(
+        AreaUnit.acres.toUnits(1, AreaUnit.hectares),
+        closeTo(0.404686, 0.0001),
+      );
+    });
+  });
 }

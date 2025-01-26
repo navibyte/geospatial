@@ -27,32 +27,32 @@ enum AngleUnit {
   milliradians(0.001, 'mrad'),
 
   /// The SI base unit for angles.
-  /// 
+  ///
   /// 1 radian is approximately 57.296 degrees.
   radians(1.0, 'rad'),
 
   /// 1 arc second is equal to π / (180 * 60 * 60) radians.
-  /// 
+  ///
   /// 1 degree contains 60 * 60 = 3600 arc seconds.
   arcSeconds(pi / (180 * 60 * 60), 'arcsec'),
 
   /// 1 arc minute is equal to π / (180 * 60) radians.
-  /// 
+  ///
   /// 1 degree contains 60 arc minutes.
   arcMinutes(pi / (180 * 60), 'arcmin'),
 
   /// 1 degree is equal to π / 180 radians.
-  /// 
+  ///
   /// 1 degree is 1/360 of a full circle.
   degrees(pi / 180, 'deg'),
 
   /// 1 gradian is equal to π / 200 radians.
-  /// 
+  ///
   /// 1 gradian is 1/400 of a full circle.
   gradians(pi / 200, 'gon'),
 
   /// 1 turn is equal to 2π radians.
-  /// 
+  ///
   /// 1 turn is a full circle.
   turns(2 * pi, 'turn');
 
