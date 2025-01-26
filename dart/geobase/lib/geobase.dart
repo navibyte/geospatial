@@ -39,6 +39,7 @@ export 'src/common/codes/hemisphere.dart';
 export 'src/common/constants/epsilon.dart';
 export 'src/common/constants/geodetic.dart';
 export 'src/common/constants/screen_ppi.dart';
+export 'src/common/conversions/angle_unit.dart';
 export 'src/common/conversions/distance_unit.dart';
 export 'src/common/functions/geographic_functions.dart';
 export 'src/common/functions/position_functions.dart';

@@ -4,6 +4,8 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
+import 'dart:math';
+
 import 'package:geobase/common.dart';
 import 'package:test/test.dart';
 
@@ -125,6 +127,106 @@ void main() {
       expect(
         DistanceUnit.nauticalMiles.toUnits(1, DistanceUnit.miles),
         closeTo(1.15078, 0.0001),
+      );
+    });
+  });
+
+  group('AngleUnit', () {
+    test('degrees to radians', () {
+      expect(
+        AngleUnit.degrees.toUnits(180, AngleUnit.radians),
+        closeTo(pi, 0.00001),
+      );
+    });
+
+    test('radians to degrees', () {
+      expect(
+        AngleUnit.radians.toUnits(pi, AngleUnit.degrees),
+        closeTo(180, 0.00001),
+      );
+    });
+
+    test('degrees to gradians', () {
+      expect(
+        AngleUnit.degrees.toUnits(90, AngleUnit.gradians),
+        closeTo(100, 0.00001),
+      );
+    });
+
+    test('gradians to degrees', () {
+      expect(
+        AngleUnit.gradians.toUnits(100, AngleUnit.degrees),
+        closeTo(90, 0.00001),
+      );
+    });
+
+    test('radians to gradians', () {
+      expect(
+        AngleUnit.radians.toUnits(pi, AngleUnit.gradians),
+        closeTo(200, 0.00001),
+      );
+    });
+
+    test('gradians to radians', () {
+      expect(
+        AngleUnit.gradians.toUnits(200, AngleUnit.radians),
+        closeTo(pi, 0.00001),
+      );
+    });
+
+    test('degrees to milliradians', () {
+      expect(
+        AngleUnit.degrees.toUnits(1, AngleUnit.milliradians),
+        closeTo(17.4533, 0.0001),
+      );
+    });
+
+    test('milliradians to degrees', () {
+      expect(
+        AngleUnit.milliradians.toUnits(17.4533, AngleUnit.degrees),
+        closeTo(1, 0.0001),
+      );
+    });
+
+    test('degrees to arc minutes', () {
+      expect(
+        AngleUnit.degrees.toUnits(1, AngleUnit.arcMinutes),
+        closeTo(60, 0.0001),
+      );
+    });
+
+    test('arc minutes to degrees', () {
+      expect(
+        AngleUnit.arcMinutes.toUnits(60, AngleUnit.degrees),
+        closeTo(1, 0.0001),
+      );
+    });
+
+    test('degrees to arc seconds', () {
+      expect(
+        AngleUnit.degrees.toUnits(1, AngleUnit.arcSeconds),
+        closeTo(3600, 0.0001),
+      );
+    });
+
+    test('arc seconds to degrees', () {
+      expect(
+        AngleUnit.arcSeconds.toUnits(3600, AngleUnit.degrees),
+        closeTo(1, 0.0001),
+      );
+    });
+
+    test('degrees to turns', () {
+      expect(
+        AngleUnit.degrees.toUnits(360, AngleUnit.turns),
+        closeTo(1, 0.0001),
+      );
+    });
+
+    test('turns to degrees', () {
+      expect(
+        AngleUnit.turns.toUnits(1, AngleUnit.degrees),
+        closeTo(360, 0.0001),
       );
     });
   });
