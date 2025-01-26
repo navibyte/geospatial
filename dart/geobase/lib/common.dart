@@ -12,6 +12,7 @@
 ///   canvas origin, cardinal direction, DMS type, geo representation, axis
 ///   order, hemisphere, coordinate reference system types.
 /// * Constants: epsilon, geodetic and screen related constants.
+/// * Conversions: distance units.
 /// * Functions: conversions between radians and degrees, geographic coordinate
 ///   helpers.
 /// * Presentation: DMS (degree-minutes-seconds geographic representations).
@@ -39,6 +40,9 @@ export 'src/common/codes/hemisphere.dart';
 export 'src/common/constants/epsilon.dart';
 export 'src/common/constants/geodetic.dart';
 export 'src/common/constants/screen_ppi.dart';
+
+// conversions
+export 'src/common/conversions/distance_unit.dart';
 
 // functions
 export 'src/common/functions/geographic_functions.dart';

@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2025 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -39,6 +39,7 @@ export 'src/common/codes/hemisphere.dart';
 export 'src/common/constants/epsilon.dart';
 export 'src/common/constants/geodetic.dart';
 export 'src/common/constants/screen_ppi.dart';
+export 'src/common/conversions/distance_unit.dart';
 export 'src/common/functions/geographic_functions.dart';
 export 'src/common/functions/position_functions.dart';
 export 'src/common/presentation/dms.dart';
