@@ -13,119 +13,119 @@ void main() {
   group('DistanceUnit', () {
     test('meters to kilometers', () {
       expect(
-        DistanceUnit.meters.toUnits(1000, DistanceUnit.kilometers),
+        DistanceUnit.meter.toUnit(1000, DistanceUnit.kilometer),
         equals(1),
       );
     });
 
     test('kilometers to meters', () {
       expect(
-        DistanceUnit.kilometers.toUnits(1, DistanceUnit.meters),
+        DistanceUnit.kilometer.toUnit(1, DistanceUnit.meter),
         equals(1000),
       );
     });
 
     test('meters to miles', () {
       expect(
-        DistanceUnit.meters.toUnits(1609.34, DistanceUnit.miles),
+        DistanceUnit.meter.toUnit(1609.34, DistanceUnit.mile),
         closeTo(1, 0.0001),
       );
     });
 
     test('miles to meters', () {
       expect(
-        DistanceUnit.miles.toUnits(1, DistanceUnit.meters),
+        DistanceUnit.mile.toUnit(1, DistanceUnit.meter),
         closeTo(1609.344, 0.0001),
       );
     });
 
     test('kilometers to miles', () {
       expect(
-        DistanceUnit.kilometers.toUnits(1.609344, DistanceUnit.miles),
+        DistanceUnit.kilometer.toUnit(1.609344, DistanceUnit.mile),
         closeTo(1, 0.0001),
       );
     });
 
     test('miles to kilometers', () {
       expect(
-        DistanceUnit.miles.toUnits(1, DistanceUnit.kilometers),
+        DistanceUnit.mile.toUnit(1, DistanceUnit.kilometer),
         closeTo(1.60934, 0.0001),
       );
     });
 
     test('meters to feet', () {
       expect(
-        DistanceUnit.meters.toUnits(0.3048, DistanceUnit.feet),
+        DistanceUnit.meter.toUnit(0.3048, DistanceUnit.foot),
         closeTo(1, 0.0001),
       );
     });
 
     test('feet to meters', () {
       expect(
-        DistanceUnit.feet.toUnits(1, DistanceUnit.meters),
+        DistanceUnit.foot.toUnit(1, DistanceUnit.meter),
         closeTo(0.3048, 0.0001),
       );
     });
 
     test('kilometers to feet', () {
       expect(
-        DistanceUnit.kilometers.toUnits(0.0003048, DistanceUnit.feet),
+        DistanceUnit.kilometer.toUnit(0.0003048, DistanceUnit.foot),
         closeTo(1, 0.0001),
       );
     });
 
     test('feet to kilometers', () {
       expect(
-        DistanceUnit.feet.toUnits(1, DistanceUnit.kilometers),
+        DistanceUnit.foot.toUnit(1, DistanceUnit.kilometer),
         closeTo(0.0003048, 0.0001),
       );
     });
 
     test('miles to feet', () {
       expect(
-        DistanceUnit.miles.toUnits(0.000189394, DistanceUnit.feet),
+        DistanceUnit.mile.toUnit(0.000189394, DistanceUnit.foot),
         closeTo(1, 0.0001),
       );
     });
 
     test('feet to miles', () {
       expect(
-        DistanceUnit.feet.toUnits(1, DistanceUnit.miles),
+        DistanceUnit.foot.toUnit(1, DistanceUnit.mile),
         closeTo(0.000189394, 0.0001),
       );
     });
 
     test('nautical miles to meters', () {
       expect(
-        DistanceUnit.nauticalMiles.toUnits(1, DistanceUnit.meters),
+        DistanceUnit.nauticalMile.toUnit(1, DistanceUnit.meter),
         closeTo(1852, 0.0001),
       );
     });
 
     test('kilometers to nautical miles', () {
       expect(
-        DistanceUnit.kilometers.toUnits(1.852, DistanceUnit.nauticalMiles),
+        DistanceUnit.kilometer.toUnit(1.852, DistanceUnit.nauticalMile),
         closeTo(1, 0.0001),
       );
     });
 
     test('nautical miles to kilometers', () {
       expect(
-        DistanceUnit.nauticalMiles.toUnits(1, DistanceUnit.kilometers),
+        DistanceUnit.nauticalMile.toUnit(1, DistanceUnit.kilometer),
         closeTo(1.852, 0.0001),
       );
     });
 
     test('miles to nautical miles', () {
       expect(
-        DistanceUnit.miles.toUnits(1.15078, DistanceUnit.nauticalMiles),
+        DistanceUnit.mile.toUnit(1.15078, DistanceUnit.nauticalMile),
         closeTo(1, 0.0001),
       );
     });
 
     test('nautical miles to miles', () {
       expect(
-        DistanceUnit.nauticalMiles.toUnits(1, DistanceUnit.miles),
+        DistanceUnit.nauticalMile.toUnit(1, DistanceUnit.mile),
         closeTo(1.15078, 0.0001),
       );
     });
@@ -134,98 +134,98 @@ void main() {
   group('AngleUnit', () {
     test('degrees to radians', () {
       expect(
-        AngleUnit.degrees.toUnits(180, AngleUnit.radians),
+        AngleUnit.degree.toUnit(180, AngleUnit.radian),
         closeTo(pi, 0.00001),
       );
     });
 
     test('radians to degrees', () {
       expect(
-        AngleUnit.radians.toUnits(pi, AngleUnit.degrees),
+        AngleUnit.radian.toUnit(pi, AngleUnit.degree),
         closeTo(180, 0.00001),
       );
     });
 
     test('degrees to gradians', () {
       expect(
-        AngleUnit.degrees.toUnits(90, AngleUnit.gradians),
+        AngleUnit.degree.toUnit(90, AngleUnit.gradian),
         closeTo(100, 0.00001),
       );
     });
 
     test('gradians to degrees', () {
       expect(
-        AngleUnit.gradians.toUnits(100, AngleUnit.degrees),
+        AngleUnit.gradian.toUnit(100, AngleUnit.degree),
         closeTo(90, 0.00001),
       );
     });
 
     test('radians to gradians', () {
       expect(
-        AngleUnit.radians.toUnits(pi, AngleUnit.gradians),
+        AngleUnit.radian.toUnit(pi, AngleUnit.gradian),
         closeTo(200, 0.00001),
       );
     });
 
     test('gradians to radians', () {
       expect(
-        AngleUnit.gradians.toUnits(200, AngleUnit.radians),
+        AngleUnit.gradian.toUnit(200, AngleUnit.radian),
         closeTo(pi, 0.00001),
       );
     });
 
     test('degrees to milliradians', () {
       expect(
-        AngleUnit.degrees.toUnits(1, AngleUnit.milliradians),
+        AngleUnit.degree.toUnit(1, AngleUnit.milliradian),
         closeTo(17.4533, 0.0001),
       );
     });
 
     test('milliradians to degrees', () {
       expect(
-        AngleUnit.milliradians.toUnits(17.4533, AngleUnit.degrees),
+        AngleUnit.milliradian.toUnit(17.4533, AngleUnit.degree),
         closeTo(1, 0.0001),
       );
     });
 
     test('degrees to arc minutes', () {
       expect(
-        AngleUnit.degrees.toUnits(1, AngleUnit.arcMinutes),
+        AngleUnit.degree.toUnit(1, AngleUnit.arcMinute),
         closeTo(60, 0.0001),
       );
     });
 
     test('arc minutes to degrees', () {
       expect(
-        AngleUnit.arcMinutes.toUnits(60, AngleUnit.degrees),
+        AngleUnit.arcMinute.toUnit(60, AngleUnit.degree),
         closeTo(1, 0.0001),
       );
     });
 
     test('degrees to arc seconds', () {
       expect(
-        AngleUnit.degrees.toUnits(1, AngleUnit.arcSeconds),
+        AngleUnit.degree.toUnit(1, AngleUnit.arcSecond),
         closeTo(3600, 0.0001),
       );
     });
 
     test('arc seconds to degrees', () {
       expect(
-        AngleUnit.arcSeconds.toUnits(3600, AngleUnit.degrees),
+        AngleUnit.arcSecond.toUnit(3600, AngleUnit.degree),
         closeTo(1, 0.0001),
       );
     });
 
     test('degrees to turns', () {
       expect(
-        AngleUnit.degrees.toUnits(360, AngleUnit.turns),
+        AngleUnit.degree.toUnit(360, AngleUnit.turn),
         closeTo(1, 0.0001),
       );
     });
 
     test('turns to degrees', () {
       expect(
-        AngleUnit.turns.toUnits(1, AngleUnit.degrees),
+        AngleUnit.turn.toUnit(1, AngleUnit.degree),
         closeTo(360, 0.0001),
       );
     });
@@ -234,126 +234,126 @@ void main() {
   group('AreaUnit', () {
     test('square meters to square kilometers', () {
       expect(
-        AreaUnit.squareMeters.toUnits(1000000, AreaUnit.squareKilometers),
+        AreaUnit.squareMeter.toUnit(1000000, AreaUnit.squareKilometer),
         equals(1),
       );
     });
 
     test('square kilometers to square meters', () {
       expect(
-        AreaUnit.squareKilometers.toUnits(1, AreaUnit.squareMeters),
+        AreaUnit.squareKilometer.toUnit(1, AreaUnit.squareMeter),
         equals(1000000),
       );
     });
 
     test('square meters to square miles', () {
       expect(
-        AreaUnit.squareMeters.toUnits(2589988.11, AreaUnit.squareMiles),
+        AreaUnit.squareMeter.toUnit(2589988.11, AreaUnit.squareMile),
         closeTo(1, 0.0001),
       );
     });
 
     test('square miles to square meters', () {
       expect(
-        AreaUnit.squareMiles.toUnits(1, AreaUnit.squareMeters),
+        AreaUnit.squareMile.toUnit(1, AreaUnit.squareMeter),
         closeTo(2589988.11, 0.0001),
       );
     });
 
     test('square kilometers to square miles', () {
       expect(
-        AreaUnit.squareKilometers.toUnits(2.589988, AreaUnit.squareMiles),
+        AreaUnit.squareKilometer.toUnit(2.589988, AreaUnit.squareMile),
         closeTo(1, 0.0001),
       );
     });
 
     test('square miles to square kilometers', () {
       expect(
-        AreaUnit.squareMiles.toUnits(1, AreaUnit.squareKilometers),
+        AreaUnit.squareMile.toUnit(1, AreaUnit.squareKilometer),
         closeTo(2.589988, 0.0001),
       );
     });
 
     test('square meters to square feet', () {
       expect(
-        AreaUnit.squareMeters.toUnits(0.092903, AreaUnit.squareFeet),
+        AreaUnit.squareMeter.toUnit(0.092903, AreaUnit.squareFoot),
         closeTo(1, 0.0001),
       );
     });
 
     test('square feet to square meters', () {
       expect(
-        AreaUnit.squareFeet.toUnits(1, AreaUnit.squareMeters),
+        AreaUnit.squareFoot.toUnit(1, AreaUnit.squareMeter),
         closeTo(0.092903, 0.0001),
       );
     });
 
     test('square kilometers to square feet', () {
       expect(
-        AreaUnit.squareKilometers.toUnits(0.000000092903, AreaUnit.squareFeet),
+        AreaUnit.squareKilometer.toUnit(0.000000092903, AreaUnit.squareFoot),
         closeTo(1, 0.0001),
       );
     });
 
     test('square feet to square kilometers', () {
       expect(
-        AreaUnit.squareFeet.toUnits(1, AreaUnit.squareKilometers),
+        AreaUnit.squareFoot.toUnit(1, AreaUnit.squareKilometer),
         closeTo(0.000000092903, 0.0001),
       );
     });
 
     test('square miles to square feet', () {
       expect(
-        AreaUnit.squareMiles.toUnits(0.00000003587, AreaUnit.squareFeet),
+        AreaUnit.squareMile.toUnit(0.00000003587, AreaUnit.squareFoot),
         closeTo(1, 0.0001),
       );
     });
 
     test('square feet to square miles', () {
       expect(
-        AreaUnit.squareFeet.toUnits(1, AreaUnit.squareMiles),
+        AreaUnit.squareFoot.toUnit(1, AreaUnit.squareMile),
         closeTo(0.00000003587, 0.0001),
       );
     });
 
     test('hectares to square meters', () {
       expect(
-        AreaUnit.hectares.toUnits(1, AreaUnit.squareMeters),
+        AreaUnit.hectare.toUnit(1, AreaUnit.squareMeter),
         equals(10000),
       );
     });
 
     test('square meters to hectares', () {
       expect(
-        AreaUnit.squareMeters.toUnits(10000, AreaUnit.hectares),
+        AreaUnit.squareMeter.toUnit(10000, AreaUnit.hectare),
         equals(1),
       );
     });
 
     test('acres to square meters', () {
       expect(
-        AreaUnit.acres.toUnits(1, AreaUnit.squareMeters),
+        AreaUnit.acre.toUnit(1, AreaUnit.squareMeter),
         closeTo(4046.8564224, 0.0001),
       );
     });
 
     test('square meters to acres', () {
       expect(
-        AreaUnit.squareMeters.toUnits(4046.8564224, AreaUnit.acres),
+        AreaUnit.squareMeter.toUnit(4046.8564224, AreaUnit.acre),
         closeTo(1, 0.0001),
       );
     });
 
     test('hectares to acres', () {
       expect(
-        AreaUnit.hectares.toUnits(1, AreaUnit.acres),
+        AreaUnit.hectare.toUnit(1, AreaUnit.acre),
         closeTo(2.47105, 0.0001),
       );
     });
 
     test('acres to hectares', () {
       expect(
-        AreaUnit.acres.toUnits(1, AreaUnit.hectares),
+        AreaUnit.acre.toUnit(1, AreaUnit.hectare),
         closeTo(0.404686, 0.0001),
       );
     });

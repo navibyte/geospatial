@@ -13,43 +13,45 @@
 /// ```dart
 /// /// Convert directly from and to square meters.
 /// final squareMeters = 10000.0;
-/// final sqKmUnit = AreaUnit.squareKilometers;
+/// final sqKmUnit = AreaUnit.squareKilometer;
 /// final squareKilometers = sqKmUnit.fromSquareMeters(squareMeters); // 0.01
 /// final squareMeters2 = sqKmUnit.toSquareMeters(squareKilometers); // 10000.0
 ///
 /// /// You can also convert between units without using square meters.
-/// final acres = sqKmUnit.toUnits(squareKilometers, AreaUnit.acres); // ~2.4711
+/// final acres = sqKmUnit.toUnit(squareKilometers, AreaUnit.acre); // ~2.4711
 /// ```
+/// 
+/// See also [Area](https://en.wikipedia.org/wiki/Area) in Wikipedia.
 enum AreaUnit {
   /// 1 square millimeter is equal to 1e-6 square meters.
-  squareMillimeters(1e-6, 'mm²'),
+  squareMillimeter(1e-6, 'mm²'),
 
   /// 1 square centimeter is equal to 1e-4 square meters.
-  squareCentimeters(1e-4, 'cm²'),
+  squareCentimeter(1e-4, 'cm²'),
 
   /// The SI base unit for area.
-  squareMeters(1.0, 'm²'),
+  squareMeter(1.0, 'm²'),
 
   /// 1 square kilometer is equal to 1e+6 square meters.
-  squareKilometers(1e6, 'km²'),
+  squareKilometer(1e6, 'km²'),
 
   /// 1 square inch is equal to 0.00064516 square meters.
-  squareInches(0.00064516, 'in²'),
+  squareInch(0.00064516, 'in²'),
 
   /// 1 square foot is equal to 0.09290304 square meters.
-  squareFeet(0.09290304, 'ft²'),
+  squareFoot(0.09290304, 'ft²'),
 
   /// 1 square yard is equal to 0.83612736 square meters.
-  squareYards(0.83612736, 'yd²'),
+  squareYard(0.83612736, 'yd²'),
 
   /// 1 square mile is equal to 2589988.11 square meters.
-  squareMiles(2589988.11, 'mi²'),
+  squareMile(2589988.11, 'mi²'),
 
   /// 1 acre is equal to 4046.8564224 square meters.
-  acres(4046.8564224, 'ac'),
+  acre(4046.8564224, 'ac'),
 
   /// 1 hectare is equal to 10000 square meters.
-  hectares(10000.0, 'ha');
+  hectare(10000.0, 'ha');
 
   /// The conversion factor to square meters.
   final double factorToSquareMeters;
@@ -70,13 +72,13 @@ enum AreaUnit {
   }
 
   /// Convert a value from this unit to another unit.
-  double toUnits(double value, AreaUnit targetUnit) {
+  double toUnit(double value, AreaUnit targetUnit) {
     final valueInSquareMeters = toSquareMeters(value);
     return targetUnit.fromSquareMeters(valueInSquareMeters);
   }
 
   /// Convert a value from another unit to this unit.
-  double fromUnits(double value, AreaUnit sourceUnit) {
+  double fromUnit(double value, AreaUnit sourceUnit) {
     final valueInSquareMeters = sourceUnit.toSquareMeters(value);
     return fromSquareMeters(valueInSquareMeters);
   }
