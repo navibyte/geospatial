@@ -530,4 +530,54 @@ void main() {
       );
     });
   });
+
+  group('AngularVelocityUnit', () {
+    test('radians per second to degrees per second', () {
+      expect(
+        AngularVelocityUnit.radianPerSecond
+            .toUnit(1, AngularVelocityUnit.degreePerSecond),
+        closeTo(57.2958, 0.0001),
+      );
+    });
+
+    test('degrees per second to radians per second', () {
+      expect(
+        AngularVelocityUnit.degreePerSecond
+            .toUnit(57.2958, AngularVelocityUnit.radianPerSecond),
+        closeTo(1, 0.0001),
+      );
+    });
+
+    test('radians per second to revolutions per minute', () {
+      expect(
+        AngularVelocityUnit.radianPerSecond
+            .toUnit(1, AngularVelocityUnit.revolutionPerMinute),
+        closeTo(9.5493, 0.0001),
+      );
+    });
+
+    test('revolutions per minute to radians per second', () {
+      expect(
+        AngularVelocityUnit.revolutionPerMinute
+            .toUnit(9.5493, AngularVelocityUnit.radianPerSecond),
+        closeTo(1, 0.0001),
+      );
+    });
+
+    test('degrees per second to revolutions per minute', () {
+      expect(
+        AngularVelocityUnit.degreePerSecond
+            .toUnit(360, AngularVelocityUnit.revolutionPerMinute),
+        closeTo(60, 0.0001),
+      );
+    });
+
+    test('revolutions per minute to degrees per second', () {
+      expect(
+        AngularVelocityUnit.revolutionPerMinute
+            .toUnit(60, AngularVelocityUnit.degreePerSecond),
+        closeTo(360, 0.0001),
+      );
+    });
+  });
 }

@@ -40,6 +40,7 @@ export 'src/common/constants/epsilon.dart';
 export 'src/common/constants/geodetic.dart';
 export 'src/common/constants/screen_ppi.dart';
 export 'src/common/conversions/angle_unit.dart';
+export 'src/common/conversions/angular_velocity_unit.dart';
 export 'src/common/conversions/area_unit.dart';
 export 'src/common/conversions/distance_unit.dart';
 export 'src/common/conversions/speed_unit.dart';
