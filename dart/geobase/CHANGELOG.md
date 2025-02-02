@@ -9,7 +9,8 @@ NOTE: [geobase version 1.5.0](https://github.com/navibyte/geospatial/milestone/8
 * [Add Geocentric class on geodesy / ellipsoidal to represent ECEF (earth-centric earth-fixed) positions / calculations #260](https://github.com/navibyte/geospatial/issues/260)
 * [Handle optional m and elev coordinates when transforming between geographic and cartesian geocentric coordinates #259](https://github.com/navibyte/geospatial/issues/259)
 * [Conversions between geographic, UTM and geocentric coordinates in projections sub package #261](https://github.com/navibyte/geospatial/issues/261)
-* [Common conversions between angle, distance and area units #264](https://github.com/navibyte/geospatial/issues/264)
+* [Common units and conversions for angle, distance and area #264](https://github.com/navibyte/geospatial/issues/264)
+* [Common units and conversions for time (duration), speed and angular velocity #266](https://github.com/navibyte/geospatial/issues/266)
 
 🛠 Refactoring:
 * [Sub package export enhancements on geobase #263](https://github.com/navibyte/geospatial/issues/263)

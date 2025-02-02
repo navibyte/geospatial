@@ -358,4 +358,90 @@ void main() {
       );
     });
   });
+
+  group('TimeUnit', () {
+    test('seconds to minutes', () {
+      expect(
+        TimeUnit.second.toUnit(60, TimeUnit.minute),
+        equals(1),
+      );
+    });
+
+    test('minutes to seconds', () {
+      expect(
+        TimeUnit.minute.toUnit(1, TimeUnit.second),
+        equals(60),
+      );
+    });
+
+    test('seconds to hours', () {
+      expect(
+        TimeUnit.second.toUnit(3600, TimeUnit.hour),
+        equals(1),
+      );
+    });
+
+    test('hours to seconds', () {
+      expect(
+        TimeUnit.hour.toUnit(1, TimeUnit.second),
+        equals(3600),
+      );
+    });
+
+    test('minutes to hours', () {
+      expect(
+        TimeUnit.minute.toUnit(60, TimeUnit.hour),
+        equals(1),
+      );
+    });
+
+    test('hours to minutes', () {
+      expect(
+        TimeUnit.hour.toUnit(1, TimeUnit.minute),
+        equals(60),
+      );
+    });
+
+    test('seconds to days', () {
+      expect(
+        TimeUnit.second.toUnit(86400, TimeUnit.day),
+        equals(1),
+      );
+    });
+
+    test('days to seconds', () {
+      expect(
+        TimeUnit.day.toUnit(1, TimeUnit.second),
+        equals(86400),
+      );
+    });
+
+    test('minutes to days', () {
+      expect(
+        TimeUnit.minute.toUnit(1440, TimeUnit.day),
+        equals(1),
+      );
+    });
+
+    test('days to minutes', () {
+      expect(
+        TimeUnit.day.toUnit(1, TimeUnit.minute),
+        equals(1440),
+      );
+    });
+
+    test('hours to days', () {
+      expect(
+        TimeUnit.hour.toUnit(24, TimeUnit.day),
+        equals(1),
+      );
+    });
+
+    test('days to hours', () {
+      expect(
+        TimeUnit.day.toUnit(1, TimeUnit.hour),
+        equals(24),
+      );
+    });
+  });
 }
