@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2025 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -11,9 +11,15 @@ const _toRad = pi / 180.0;
 /// An extension on [double] with basic degrees and radians utility methods.
 extension DoubleAngleExtension on double {
   /// Converts this double value in degrees to radians.
+  ///
+  /// See also `convertAngle()` that allows conversion between different angle
+  /// units.
   double toRadians() => this * _toRad;
 
   /// Converts this double value in radians to degrees.
+  ///
+  /// See also `convertAngle()` that allows conversion between different angle
+  /// units.
   double toDegrees() => this / _toRad;
 
   /// Normalizes this double value in degrees to the range `[0.0, 360.0[`.
