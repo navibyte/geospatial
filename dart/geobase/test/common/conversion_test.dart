@@ -444,4 +444,90 @@ void main() {
       );
     });
   });
+
+  group('SpeedUnit', () {
+    test('meters per second to kilometers per hour', () {
+      expect(
+        SpeedUnit.meterPerSecond.toUnit(1, SpeedUnit.kilometerPerHour),
+        closeTo(3.6, 0.0001),
+      );
+    });
+
+    test('kilometers per hour to meters per second', () {
+      expect(
+        SpeedUnit.kilometerPerHour.toUnit(3.6, SpeedUnit.meterPerSecond),
+        closeTo(1, 0.0001),
+      );
+    });
+
+    test('meters per second to miles per hour', () {
+      expect(
+        SpeedUnit.meterPerSecond.toUnit(1, SpeedUnit.milePerHour),
+        closeTo(2.23694, 0.0001),
+      );
+    });
+
+    test('miles per hour to meters per second', () {
+      expect(
+        SpeedUnit.milePerHour.toUnit(1, SpeedUnit.meterPerSecond),
+        closeTo(0.44704, 0.0001),
+      );
+    });
+
+    test('kilometers per hour to miles per hour', () {
+      expect(
+        SpeedUnit.kilometerPerHour.toUnit(1, SpeedUnit.milePerHour),
+        closeTo(0.621371, 0.0001),
+      );
+    });
+
+    test('miles per hour to kilometers per hour', () {
+      expect(
+        SpeedUnit.milePerHour.toUnit(1, SpeedUnit.kilometerPerHour),
+        closeTo(1.60934, 0.0001),
+      );
+    });
+
+    test('knots to meters per second', () {
+      expect(
+        SpeedUnit.knot.toUnit(1, SpeedUnit.meterPerSecond),
+        closeTo(0.514444, 0.0001),
+      );
+    });
+
+    test('meters per second to knots', () {
+      expect(
+        SpeedUnit.meterPerSecond.toUnit(1, SpeedUnit.knot),
+        closeTo(1.94384, 0.0001),
+      );
+    });
+
+    test('knots to kilometers per hour', () {
+      expect(
+        SpeedUnit.knot.toUnit(1, SpeedUnit.kilometerPerHour),
+        closeTo(1.852, 0.0001),
+      );
+    });
+
+    test('kilometers per hour to knots', () {
+      expect(
+        SpeedUnit.kilometerPerHour.toUnit(1, SpeedUnit.knot),
+        closeTo(0.539957, 0.0001),
+      );
+    });
+
+    test('knots to miles per hour', () {
+      expect(
+        SpeedUnit.knot.toUnit(1, SpeedUnit.milePerHour),
+        closeTo(1.15078, 0.0001),
+      );
+    });
+
+    test('miles per hour to knots', () {
+      expect(
+        SpeedUnit.milePerHour.toUnit(1, SpeedUnit.knot),
+        closeTo(0.868976, 0.0001),
+      );
+    });
+  });
 }
