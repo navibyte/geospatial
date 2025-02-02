@@ -13,7 +13,7 @@ import '/src/common/conversions/time_unit.dart';
 
 /// An extension on [double] with conversion methods for angle, angular
 /// velocity, area, length, speed and time units.
-extension UnitConversionExtension on double {
+extension UnitConversionExtension on num {
   /// Converts this double value from one angle unit to another.
   ///
   /// Set the source unit using [from] and the target unit using [to]. The
@@ -34,7 +34,7 @@ extension UnitConversionExtension on double {
     AngleUnit from = AngleUnit.radian,
     AngleUnit to = AngleUnit.radian,
   }) =>
-      from.toUnit(this, to);
+      from.toUnit(toDouble(), to);
 
   /// Converts this double value from one angular velocity unit to another.
   ///
@@ -59,7 +59,7 @@ extension UnitConversionExtension on double {
     AngularVelocityUnit from = AngularVelocityUnit.radianPerSecond,
     AngularVelocityUnit to = AngularVelocityUnit.radianPerSecond,
   }) =>
-      from.toUnit(this, to);
+      from.toUnit(toDouble(), to);
 
   /// Converts this double value from one area unit to another.
   ///
@@ -81,7 +81,7 @@ extension UnitConversionExtension on double {
     AreaUnit from = AreaUnit.squareMeter,
     AreaUnit to = AreaUnit.squareMeter,
   }) =>
-      from.toUnit(this, to);
+      from.toUnit(toDouble(), to);
 
   /// Converts this double value from one length unit to another.
   ///
@@ -103,7 +103,7 @@ extension UnitConversionExtension on double {
     LengthUnit from = LengthUnit.meter,
     LengthUnit to = LengthUnit.meter,
   }) =>
-      from.toUnit(this, to);
+      from.toUnit(toDouble(), to);
 
   /// Converts this double value from one speed unit to another.
   ///
@@ -125,7 +125,7 @@ extension UnitConversionExtension on double {
     SpeedUnit from = SpeedUnit.meterPerSecond,
     SpeedUnit to = SpeedUnit.meterPerSecond,
   }) =>
-      from.toUnit(this, to);
+      from.toUnit(toDouble(), to);
 
   /// Converts this double value from one time unit to another.
   ///
@@ -147,5 +147,5 @@ extension UnitConversionExtension on double {
     TimeUnit from = TimeUnit.second,
     TimeUnit to = TimeUnit.second,
   }) =>
-      from.toUnit(this, to);
+      from.toUnit(toDouble(), to);
 }
