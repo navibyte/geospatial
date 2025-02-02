@@ -47,6 +47,7 @@ export 'src/common/conversions/speed_unit.dart';
 export 'src/common/conversions/time_unit.dart';
 export 'src/common/functions/geographic_functions.dart';
 export 'src/common/functions/position_functions.dart';
+export 'src/common/functions/unit_conversion_extension.dart';
 export 'src/common/presentation/dms.dart';
 export 'src/common/reference/coord_ref_sys.dart';
 export 'src/common/reference/coord_ref_sys_resolver.dart';

@@ -13,8 +13,7 @@
 ///   order, hemisphere, coordinate reference system types.
 /// * Constants: epsilon, geodetic and screen related constants.
 /// * Conversions: angle, angular velocity, area, distance, speed and time.
-/// * Functions: conversions between radians and degrees, geographic coordinate
-///   helpers.
+/// * Functions: conversions between units, geographic coordinate helpers.
 /// * Presentation: DMS (degree-minutes-seconds geographic representations).
 /// * Reference: Coordinate and temporal reference systems. Reference
 ///   ellipsoids.
@@ -52,6 +51,7 @@ export 'src/common/conversions/time_unit.dart';
 // functions
 export 'src/common/functions/geographic_functions.dart';
 export 'src/common/functions/position_functions.dart';
+export 'src/common/functions/unit_conversion_extension.dart';
 
 // presentation
 export 'src/common/presentation/dms.dart';

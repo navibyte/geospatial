@@ -11,6 +11,7 @@ NOTE: [geobase version 1.5.0](https://github.com/navibyte/geospatial/milestone/8
 * [Conversions between geographic, UTM and geocentric coordinates in projections sub package #261](https://github.com/navibyte/geospatial/issues/261)
 * [Common units and conversions for angle, distance and area #264](https://github.com/navibyte/geospatial/issues/264)
 * [Common units and conversions for time (duration), speed and angular velocity #266](https://github.com/navibyte/geospatial/issues/266)
+* [Unit conversion extension on double with conversion methods for angle, angular velocity, area, length, speed and time units #267](https://github.com/navibyte/geospatial/issues/267)
 
 🛠 Refactoring:
 * [Sub package export enhancements on geobase #263](https://github.com/navibyte/geospatial/issues/263)
