@@ -10,122 +10,122 @@ import 'package:geobase/common.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('DistanceUnit', () {
+  group('LengthUnit', () {
     test('meters to kilometers', () {
       expect(
-        DistanceUnit.meter.toUnit(1000, DistanceUnit.kilometer),
+        LengthUnit.meter.toUnit(1000, LengthUnit.kilometer),
         equals(1),
       );
     });
 
     test('kilometers to meters', () {
       expect(
-        DistanceUnit.kilometer.toUnit(1, DistanceUnit.meter),
+        LengthUnit.kilometer.toUnit(1, LengthUnit.meter),
         equals(1000),
       );
     });
 
     test('meters to miles', () {
       expect(
-        DistanceUnit.meter.toUnit(1609.34, DistanceUnit.mile),
+        LengthUnit.meter.toUnit(1609.34, LengthUnit.mile),
         closeTo(1, 0.0001),
       );
     });
 
     test('miles to meters', () {
       expect(
-        DistanceUnit.mile.toUnit(1, DistanceUnit.meter),
+        LengthUnit.mile.toUnit(1, LengthUnit.meter),
         closeTo(1609.344, 0.0001),
       );
     });
 
     test('kilometers to miles', () {
       expect(
-        DistanceUnit.kilometer.toUnit(1.609344, DistanceUnit.mile),
+        LengthUnit.kilometer.toUnit(1.609344, LengthUnit.mile),
         closeTo(1, 0.0001),
       );
     });
 
     test('miles to kilometers', () {
       expect(
-        DistanceUnit.mile.toUnit(1, DistanceUnit.kilometer),
+        LengthUnit.mile.toUnit(1, LengthUnit.kilometer),
         closeTo(1.60934, 0.0001),
       );
     });
 
     test('meters to feet', () {
       expect(
-        DistanceUnit.meter.toUnit(0.3048, DistanceUnit.foot),
+        LengthUnit.meter.toUnit(0.3048, LengthUnit.foot),
         closeTo(1, 0.0001),
       );
     });
 
     test('feet to meters', () {
       expect(
-        DistanceUnit.foot.toUnit(1, DistanceUnit.meter),
+        LengthUnit.foot.toUnit(1, LengthUnit.meter),
         closeTo(0.3048, 0.0001),
       );
     });
 
     test('kilometers to feet', () {
       expect(
-        DistanceUnit.kilometer.toUnit(0.0003048, DistanceUnit.foot),
+        LengthUnit.kilometer.toUnit(0.0003048, LengthUnit.foot),
         closeTo(1, 0.0001),
       );
     });
 
     test('feet to kilometers', () {
       expect(
-        DistanceUnit.foot.toUnit(1, DistanceUnit.kilometer),
+        LengthUnit.foot.toUnit(1, LengthUnit.kilometer),
         closeTo(0.0003048, 0.0001),
       );
     });
 
     test('miles to feet', () {
       expect(
-        DistanceUnit.mile.toUnit(0.000189394, DistanceUnit.foot),
+        LengthUnit.mile.toUnit(0.000189394, LengthUnit.foot),
         closeTo(1, 0.0001),
       );
     });
 
     test('feet to miles', () {
       expect(
-        DistanceUnit.foot.toUnit(1, DistanceUnit.mile),
+        LengthUnit.foot.toUnit(1, LengthUnit.mile),
         closeTo(0.000189394, 0.0001),
       );
     });
 
     test('nautical miles to meters', () {
       expect(
-        DistanceUnit.nauticalMile.toUnit(1, DistanceUnit.meter),
+        LengthUnit.nauticalMile.toUnit(1, LengthUnit.meter),
         closeTo(1852, 0.0001),
       );
     });
 
     test('kilometers to nautical miles', () {
       expect(
-        DistanceUnit.kilometer.toUnit(1.852, DistanceUnit.nauticalMile),
+        LengthUnit.kilometer.toUnit(1.852, LengthUnit.nauticalMile),
         closeTo(1, 0.0001),
       );
     });
 
     test('nautical miles to kilometers', () {
       expect(
-        DistanceUnit.nauticalMile.toUnit(1, DistanceUnit.kilometer),
+        LengthUnit.nauticalMile.toUnit(1, LengthUnit.kilometer),
         closeTo(1.852, 0.0001),
       );
     });
 
     test('miles to nautical miles', () {
       expect(
-        DistanceUnit.mile.toUnit(1.15078, DistanceUnit.nauticalMile),
+        LengthUnit.mile.toUnit(1.15078, LengthUnit.nauticalMile),
         closeTo(1, 0.0001),
       );
     });
 
     test('nautical miles to miles', () {
       expect(
-        DistanceUnit.nauticalMile.toUnit(1, DistanceUnit.mile),
+        LengthUnit.nauticalMile.toUnit(1, LengthUnit.mile),
         closeTo(1.15078, 0.0001),
       );
     });

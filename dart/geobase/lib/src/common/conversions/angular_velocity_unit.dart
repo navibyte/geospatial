@@ -23,7 +23,7 @@ import 'dart:math';
 /// final degreesPerSecond =
 ///     rpmUnit.toUnit(rpm, AngularVelocityUnit.degreePerSecond); // ~360.0
 /// ```
-/// 
+///
 /// See also [Angular velocity](https://en.wikipedia.org/wiki/Angular_velocity)
 /// in Wikipedia.
 enum AngularVelocityUnit {

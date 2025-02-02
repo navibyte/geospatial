@@ -19,10 +19,10 @@ import 'dart:math';
 /// final radians2 = AngleUnit.degree.toRadians(degrees); // ~3.14159
 ///
 /// /// You can also convert between units without using radians.
-/// final gradians = 
+/// final gradians =
 ///     AngleUnit.degree.toUnit(degrees, AngleUnit.gradian); // ~200.0
 /// ```
-/// 
+///
 /// See also [Angle](https://en.wikipedia.org/wiki/Angle) in Wikipedia.
 enum AngleUnit {
   /// 1 milliradian is equal to 0.001 radians.

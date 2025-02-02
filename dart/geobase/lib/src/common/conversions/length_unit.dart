@@ -4,7 +4,7 @@
 //
 // Docs: https://github.com/navibyte/geospatial
 
-/// An enumeration of distance units.
+/// An enumeration of length (distance) units.
 ///
 /// The units are defined with conversion factors to meters.
 ///
@@ -24,7 +24,7 @@
 /// See also [Unit of length](https://en.wikipedia.org/wiki/Unit_of_length) and
 /// [Orders of magnitude (length)](https://en.wikipedia.org/wiki/Orders_of_magnitude_(length))
 /// in Wikipedia.
-enum DistanceUnit {
+enum LengthUnit {
   /// 1 millimeter is equal to 0.001 meters.
   millimeter(0.001, 'mm'),
 
@@ -61,7 +61,7 @@ enum DistanceUnit {
   /// The unit symbol.
   final String symbol;
 
-  const DistanceUnit(this.factorToMeters, this.symbol);
+  const LengthUnit(this.factorToMeters, this.symbol);
 
   /// Convert a value from this unit to meters.
   double toMeters(double value) {
@@ -74,13 +74,13 @@ enum DistanceUnit {
   }
 
   /// Convert a value from this unit to another unit.
-  double toUnit(double value, DistanceUnit targetUnit) {
+  double toUnit(double value, LengthUnit targetUnit) {
     final valueInMeters = toMeters(value);
     return targetUnit.fromMeters(valueInMeters);
   }
 
   /// Convert a value from another unit to this unit.
-  double fromUnit(double value, DistanceUnit sourceUnit) {
+  double fromUnit(double value, LengthUnit sourceUnit) {
     final valueInMeters = sourceUnit.toMeters(value);
     return fromMeters(valueInMeters);
   }

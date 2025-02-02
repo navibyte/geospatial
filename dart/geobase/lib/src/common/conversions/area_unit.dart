@@ -20,7 +20,7 @@
 /// /// You can also convert between units without using square meters.
 /// final acres = sqKmUnit.toUnit(squareKilometers, AreaUnit.acre); // ~2.4711
 /// ```
-/// 
+///
 /// See also [Area](https://en.wikipedia.org/wiki/Area) in Wikipedia.
 enum AreaUnit {
   /// 1 square millimeter is equal to 1e-6 square meters.

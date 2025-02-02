@@ -42,7 +42,7 @@ export 'src/common/constants/screen_ppi.dart';
 export 'src/common/conversions/angle_unit.dart';
 export 'src/common/conversions/angular_velocity_unit.dart';
 export 'src/common/conversions/area_unit.dart';
-export 'src/common/conversions/distance_unit.dart';
+export 'src/common/conversions/length_unit.dart';
 export 'src/common/conversions/speed_unit.dart';
 export 'src/common/conversions/time_unit.dart';
 export 'src/common/functions/geographic_functions.dart';
