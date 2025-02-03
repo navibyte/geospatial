@@ -21,6 +21,56 @@
 /// This libary exports a subset of `package:geobase/geobase.dart`.
 ///
 /// Usage: import `package:geobase/common.dart`
+///
+/// Examples on unit conversions:
+///
+/// ```dart
+///   // Length units (mm, cm, m, km, in, ft, yd, mi, nmi), with some examples:
+///   const meters = 1500.0;
+///   meters.convertLength(to: LengthUnit.foot); // ~ 4921.26 ft
+///   meters.convertLength(to: LengthUnit.kilometer); // 1.5 km
+///   meters.convertLength(to: LengthUnit.nauticalMile); // 0.8099 nmi
+///   254.convertLength(from: LengthUnit.millimeter, to: LengthUnit.inch); // 10.0
+///
+///   // Area units (mm², cm², m², km², in², ft², yd², mi², ac, ha), with examples:
+///   const squareMeters = 10000.0;
+///   squareMeters.convertArea(to: AreaUnit.squareKilometer); // 0.01 km²
+///   squareMeters.convertArea(to: AreaUnit.acre); // ~ 2.4711 acres
+///   1.0.convertArea(
+///     from: AreaUnit.hectare,
+///     to: AreaUnit.squareFoot,
+///   ); // 107639.1042 ft²
+///
+///   // Speed units (mm/s, cm/s, m/s, km/h, mph, ft/s, kn), with some examples:
+///   const metersPerSecond = 10.0;
+///   metersPerSecond.convertSpeed(to: SpeedUnit.kilometerPerHour); // 36.0 km/h
+///   metersPerSecond.convertSpeed(to: SpeedUnit.milePerHour); // 22.3694 mph
+///   10.0.convertSpeed(
+///     from: SpeedUnit.kilometerPerHour,
+///     to: SpeedUnit.knot,
+///   ); // ~ 5.3996 kn
+///
+///   // Angle units (mrad, rad, arcsec, arcmin, deg, gon, turn), with examples:
+///   const degrees = 90.0;
+///   degrees.convertAngle(from: AngleUnit.degree); // ~1.5708 rad
+///   degrees.convertAngle(from: AngleUnit.degree, to: AngleUnit.gradian); // 100.0
+///
+///   // Angular velocity units (mrad/s, rad/s, deg/s, rpm, rps), with examples:
+///   const radiansPerSecond = 1.0;
+///   radiansPerSecond.convertAngularVelocity(
+///     to: AngularVelocityUnit.degreePerSecond,
+///   ); // ~ 57.296 deg/s
+///   720.0.convertAngularVelocity(
+///     from: AngularVelocityUnit.degreePerSecond,
+///     to: AngularVelocityUnit.revolutionPerSecond,
+///   ); // 2.0 rps
+///
+///   // Time units (ns, µs, ms, s, min, h, d, w), with some examples:
+///   const seconds = 3600.0;
+///   seconds.convertTime(to: TimeUnit.hour); // 1.0 h
+///   seconds.convertTime(to: TimeUnit.day); // 0.0417 d
+///   1.0.convertTime(from: TimeUnit.week, to: TimeUnit.day); // 7.0 d
+/// ```
 library common;
 
 // codes

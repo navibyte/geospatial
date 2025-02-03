@@ -62,6 +62,18 @@ See also overview topics about *Geospatial tools for Dart*:
 
 ## Introduction
 
+Unit conversions for length, area, speed, angle, angular velocity and time
+units.
+
+```dart
+  // For example conversions between length units.
+  const meters = 1500.0;
+  meters.convertLength(to: LengthUnit.foot); // ~ 4921.26 feet
+  meters.convertLength(to: LengthUnit.kilometer); // 1.5 km
+  meters.convertLength(to: LengthUnit.nauticalMile); // 0.8099 nmi
+  254.convertLength(from: LengthUnit.millimeter, to: LengthUnit.inch); // 10.0
+```
+
 General purpose positions, series of positions and bounding boxes:
 
 ```dart

@@ -27,8 +27,8 @@ import 'dart:math';
 /// See also [Angular velocity](https://en.wikipedia.org/wiki/Angular_velocity)
 /// in Wikipedia.
 enum AngularVelocityUnit {
-  /// 1 degree per second is equal to π / 180 radians per second.
-  degreePerSecond(pi / 180, '°/s'),
+  /// 1 degree per second (°/s) is equal to π / 180 radians per second.
+  degreePerSecond(pi / 180, 'deg/s'),
 
   /// 1 radian per second is the base unit for angular velocity.
   radianPerSecond(1.0, 'rad/s'),
