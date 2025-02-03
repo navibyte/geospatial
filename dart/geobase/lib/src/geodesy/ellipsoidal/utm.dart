@@ -891,6 +891,7 @@ UtmMeta<R> geographicToUtm<R extends Position>({
   const falseNorthing = 10000.0e3;
 
   // longitudinal zone
+  final forcedZone = zone != null;
   var lonZone =
       zone?.lonZone ?? (((lon + 180.0) / 6.0).floor() + 1).clamp(1, 60);
   if (!(1 <= lonZone && lonZone <= 60)) {
@@ -908,41 +909,43 @@ UtmMeta<R> geographicToUtm<R extends Position>({
   // longitude of central meridian
   var lambda0 = ((lonZone - 1) * 6.0 - 180.0 + 3.0).toRadians();
 
-  // handle Norway/Svalbard exceptions
-  // grid zones are 8° tall; 0°N is offset 10 into latitude bands array
-  final sixDegreesRad = 6.0.toRadians();
-  const mgrsLatBands = 'CDEFGHJKLMNPQRSTUVWXX'; // X is repeated for 80-84°N
-  final latBand =
-      mgrsLatBands[(lat / 8 + 10).floor().clamp(0, mgrsLatBands.length - 1)];
-  // adjust zone & central meridian for Norway
-  if (lonZone == 31 && latBand == 'V' && lon >= 3) {
-    lonZone++;
-    lambda0 += sixDegreesRad;
-  }
-  // adjust zone & central meridian for Svalbard
-  if (lonZone == 32 && latBand == 'X' && lon < 9) {
-    lonZone--;
-    lambda0 -= sixDegreesRad;
-  }
-  if (lonZone == 32 && latBand == 'X' && lon >= 9) {
-    lonZone++;
-    lambda0 += sixDegreesRad;
-  }
-  if (lonZone == 34 && latBand == 'X' && lon < 21) {
-    lonZone--;
-    lambda0 -= sixDegreesRad;
-  }
-  if (lonZone == 34 && latBand == 'X' && lon >= 21) {
-    lonZone++;
-    lambda0 += sixDegreesRad;
-  }
-  if (lonZone == 36 && latBand == 'X' && lon < 33) {
-    lonZone--;
-    lambda0 -= sixDegreesRad;
-  }
-  if (lonZone == 36 && latBand == 'X' && lon >= 33) {
-    lonZone++;
-    lambda0 += sixDegreesRad;
+  if (!forcedZone) {
+    // handle Norway/Svalbard exceptions
+    // grid zones are 8° tall; 0°N is offset 10 into latitude bands array
+    final sixDegreesRad = 6.0.toRadians();
+    const mgrsLatBands = 'CDEFGHJKLMNPQRSTUVWXX'; // X is repeated for 80-84°N
+    final latBand =
+        mgrsLatBands[(lat / 8 + 10).floor().clamp(0, mgrsLatBands.length - 1)];
+    // adjust zone & central meridian for Norway
+    if (lonZone == 31 && latBand == 'V' && lon >= 3) {
+      lonZone++;
+      lambda0 += sixDegreesRad;
+    }
+    // adjust zone & central meridian for Svalbard
+    if (lonZone == 32 && latBand == 'X' && lon < 9) {
+      lonZone--;
+      lambda0 -= sixDegreesRad;
+    }
+    if (lonZone == 32 && latBand == 'X' && lon >= 9) {
+      lonZone++;
+      lambda0 += sixDegreesRad;
+    }
+    if (lonZone == 34 && latBand == 'X' && lon < 21) {
+      lonZone--;
+      lambda0 -= sixDegreesRad;
+    }
+    if (lonZone == 34 && latBand == 'X' && lon >= 21) {
+      lonZone++;
+      lambda0 += sixDegreesRad;
+    }
+    if (lonZone == 36 && latBand == 'X' && lon < 33) {
+      lonZone--;
+      lambda0 -= sixDegreesRad;
+    }
+    if (lonZone == 36 && latBand == 'X' && lon >= 33) {
+      lonZone++;
+      lambda0 += sixDegreesRad;
+    }
   }
 
   final phi = lat.toRadians(); // latitude ± from equator
