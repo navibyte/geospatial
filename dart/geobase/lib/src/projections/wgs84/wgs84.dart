@@ -48,6 +48,14 @@ class WGS84 {
   ///
   /// Other coordinates, if available in the source and if expected for target
   /// coordinates, are just copied (`m` <=> `m`) without any changes.
+  ///
+  /// {@template geobase.projections.wgs84.datumAccuracy}
+  ///
+  /// The accuracy on conversions using other than the [Datum.WGS84] datum is
+  /// not guaranteed. The accuracy depends on the transformation parameter of
+  /// the Helmert 7-parameter transformation used in the conversion.
+  ///
+  /// {@endtemplate}
   static final ProjectionAdapter geocentric =
       EllipsoidalProjectionAdapter.geographicToGeocentric(
     // source is geographic coordinates in WGS 84
@@ -69,6 +77,8 @@ class WGS84 {
   /// Use `inverse` of the adapter to return a projection for:
   /// * source: `lon` and `lat` geographic coordinates on the target datum
   /// * target: `lon` and `lat` geographic coordinates (WGS 84)
+  ///
+  /// {@macro geobase.projections.wgs84.datumAccuracy}
   static ProjectionAdapter geographicToDatum(
     CoordRefSys targetCrs,
     Datum targetDatum,
@@ -122,6 +132,8 @@ class WGS84 {
   /// the hemisphere for a geographic position.
   ///
   /// {@endtemplate}
+  ///
+  /// {@macro geobase.projections.wgs84.datumAccuracy}
   static ProjectionAdapter utmZone(
     UtmZone zone, {
     CoordRefSys? targetCrs,

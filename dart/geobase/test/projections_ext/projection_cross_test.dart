@@ -192,4 +192,93 @@ void main() {
       }
     });
   });
+
+  group('Test datum conversions (geographic WGS84 <-> geographic ED50)', () {
+    // NOTE: geobase datum conversion is not very accurate at all
+
+    // WGS84 to ED50 (EPSG:4320) projection using geobase
+    final adapterGeobase = WGS84.geographicToDatum(
+      CoordRefSys.normalized('EPSG:4230'),
+      Datum.ED50,
+    );
+
+    // WGS84 to ED50 (EPSG:4320) projection using Proj4dart library
+    const def = '+proj=longlat +ellps=intl +towgs84=-87,-98,-121,0,0,0,0'
+        ' +no_defs +type=crs';
+    final adapterProj4d = Proj4d.tryInit(
+      CoordRefSys.EPSG_4326,
+      CoordRefSys.normalized('EPSG:4230'),
+      targetDef: def,
+    )!;
+
+    void testDatumConv(Geographic geo) {
+      // project using proj4dart
+      final ed1 = adapterProj4d.forward.project(geo, to: Geographic.create);
+      final geo1b = adapterProj4d.inverse.project(ed1, to: Geographic.create);
+      expect(_format(geo1b, 5), _format(geo, 5));
+
+      // project using geobase
+      final ed2 = adapterGeobase.forward.project(geo, to: Geographic.create);
+      final geo2b = adapterGeobase.inverse.project(ed2, to: Geographic.create);
+      expect(_format(geo2b, 3), _format(geo, 3));
+
+      // cross check
+      expect(_format(ed1, 1), _format(ed2, 1));
+      expect(_format(geo1b, 3), _format(geo2b, 3));
+    }
+
+    test('Datum conversions cross test', () {
+      final rand = Random(129684);
+      for (var i = 0; i < 100; i++) {
+        final geo1 = Geographic(
+          lat: 34.88 + rand.nextDouble() * 36.36,
+          lon: -9.56 + rand.nextDouble() * 41.15,
+        );
+        testDatumConv(geo1);
+      }
+    });
+  });
+
+  group('Test datum conversions (geographic WGS84 <-> geographic NAD83)', () {
+    // NOTE: geobase datum conversion is not very accurate at all
+
+    // WGS84 to NAD83 (EPSG:4269) projection using geobase
+    final adapterGeobase = WGS84.geographicToDatum(
+      CoordRefSys.normalized('EPSG:4269'),
+      Datum.NAD83,
+    );
+
+    // WGS84 to NAD83 (EPSG:4269) projection using Proj4dart library
+    final adapterProj4d = Proj4d.init(
+      CoordRefSys.EPSG_4326,
+      CoordRefSys.normalized('EPSG:4269'),
+    );
+
+    void testDatumConv(Geographic geo) {
+      // project using proj4dart
+      final nad1 = adapterProj4d.forward.project(geo, to: Geographic.create);
+      final geo1b = adapterProj4d.inverse.project(nad1, to: Geographic.create);
+      expect(_format(geo1b, 13), _format(geo, 13));
+
+      // project using geobase
+      final nad2 = adapterGeobase.forward.project(geo, to: Geographic.create);
+      final geo2b = adapterGeobase.inverse.project(nad2, to: Geographic.create);
+      expect(_format(geo2b, 8), _format(geo, 8));
+
+      // cross check
+      expect(_format(nad1, 2), _format(nad2, 2));
+      expect(_format(geo1b, 8), _format(geo2b, 8));
+    }
+
+    test('Datum conversions cross test', () {
+      final rand = Random(129684);
+      for (var i = 0; i < 100; i++) {
+        final geo1 = Geographic(
+          lat: 23.81 + rand.nextDouble() * 62.65,
+          lon: -172.54 + rand.nextDouble() * 124.8,
+        );
+        testDatumConv(geo1);
+      }
+    });
+  });
 }

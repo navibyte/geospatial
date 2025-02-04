@@ -1774,18 +1774,6 @@ void _wgs84ProjectionsOnGeometries() {
   final wgs84toWebMercator = WGS84.webMercator.forward;
   final pointWebMercator = point.project(wgs84toWebMercator);
   print(pointWebMercator.position.toText(decimals: 2)); // 255422.57,6250835.06
-
-  // Other datum, for example from WGS 84 geographic to ED50 geographic.
-  // In this sample `project` is called directly on the position, not on the
-  // point geometry object (that is possible too).
-  final wgs84toED50Adapter = WGS84.geographicToDatum(
-    const CoordRefSys.id('http://www.opengis.net/def/crs/EPSG/0/4230'),
-    Datum.ED50,
-  );
-  final positionED50 = positionWgs84.project(wgs84toED50Adapter.forward);
-  // prints : "2.2945,48.8582 => 2.2958,48.8591"
-  print('${positionWgs84.toText(decimals: 4)} => '
-      '${positionED50.toText(decimals: 4)}');
 }
 
 void _wgs84ToWebMercatorViaPositions() {
