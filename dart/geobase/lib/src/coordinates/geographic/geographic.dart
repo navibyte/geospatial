@@ -482,19 +482,24 @@ class Geographic extends Position {
   ///   // geographic position with elevation
   ///   const p2 = Geographic(lon: -0.0014, lat: 51.4778, elev: 45.83764);
   ///
-  ///   // DMS lat-lon with elevation: 51°28′40.080″N, 0°0′5.040″W
+  ///   // DMS lat-lon with elevation: 51°28′40.080″N, 0°0′5.040″W, 45.84m
   ///   const format = Dms(
   ///     type: DmsType.degMinSec,
   ///     decimals: 3,
   ///     zeroPadMinSec: false,
   ///   );
   ///   final p2DegMinSecWithElev = p2.latLonDms(format: format);
+  ///
+  ///   // DMS lat-lon with elev omitted: 51°28′40.080″N, 0°0′5.040″W,
+  ///   final p2DegMinSecNoElev = p2.latLonDms(format: format, omitElev: true);
   /// ```
   String latLonDms({
     DmsFormat format = const Dms(),
     String separator = ', ',
+    bool omitElev = false,
     String elevUnits = 'm',
     int elevDecimals = 2,
+    bool omitM = false,
     String mUnits = '',
     int mDecimals = 2,
   }) {
@@ -504,8 +509,10 @@ class Geographic extends Position {
       this,
       format: format,
       separator: separator,
+      omitElev: omitElev,
       elevUnits: elevUnits,
       elevDecimals: elevDecimals,
+      omitM: omitM,
       mUnits: mUnits,
       mDecimals: mDecimals,
     );
@@ -521,8 +528,10 @@ class Geographic extends Position {
     Geographic position, {
     DmsFormat format = const Dms(),
     String separator = ' ',
+    bool omitElev = false,
     String elevUnits = 'm',
     int elevDecimals = 2,
+    bool omitM = false,
     String mUnits = '',
     int mDecimals = 2,
   }) {
@@ -531,20 +540,24 @@ class Geographic extends Position {
       ..write(separator)
       ..write(format.lon(position.lon));
 
-    final elev = position.optElev;
-    if (elev != null) {
-      buf
-        ..write(separator)
-        ..write(elev.toStringAsFixed(elevDecimals))
-        ..write(elevUnits);
+    if (!omitElev) {
+      final elev = position.optElev;
+      if (elev != null) {
+        buf
+          ..write(separator)
+          ..write(elev.toStringAsFixed(elevDecimals))
+          ..write(elevUnits);
+      }
     }
 
-    final m = position.optM;
-    if (m != null) {
-      buf
-        ..write(separator)
-        ..write(m.toStringAsFixed(mDecimals))
-        ..write(mUnits);
+    if (!omitM) {
+      final m = position.optM;
+      if (m != null) {
+        buf
+          ..write(separator)
+          ..write(m.toStringAsFixed(mDecimals))
+          ..write(mUnits);
+      }
     }
   }
 }

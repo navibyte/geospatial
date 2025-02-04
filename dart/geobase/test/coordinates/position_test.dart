@@ -254,6 +254,10 @@ void main() {
         p2.latLonDms(format: format),
         '51°28′40.080″N, 0°0′5.040″W, 45.84m',
       );
+      expect(
+        p2.latLonDms(format: format, omitElev: true),
+        '51°28′40.080″N, 0°0′5.040″W',
+      );
     });
 
     test('Dms for documentation examples', () {
