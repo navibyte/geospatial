@@ -19,6 +19,7 @@ NOTE: [geobase version 1.5.0](https://github.com/navibyte/geospatial/milestone/8
 
 📚 Documentation updates:
 * [New chapter about UTM and MGRS on the documentation site #262](https://github.com/navibyte/geospatial/issues/262)
+* [New chapter common sub package including unit conversions on the documentation site #268](https://github.com/navibyte/geospatial/issues/268)
 
 ## 1.4.0+1
 
