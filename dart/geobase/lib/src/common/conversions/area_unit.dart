@@ -11,13 +11,13 @@
 /// Examples:
 ///
 /// ```dart
-/// /// Convert directly from and to square meters.
+/// // Convert directly from and to square meters.
 /// final squareMeters = 10000.0;
 /// final sqKmUnit = AreaUnit.squareKilometer;
 /// final squareKilometers = sqKmUnit.fromSquareMeters(squareMeters); // 0.01
 /// final squareMeters2 = sqKmUnit.toSquareMeters(squareKilometers); // 10000.0
 ///
-/// /// You can also convert between units without using square meters.
+/// // You can also convert between units without using square meters.
 /// final acres = sqKmUnit.toUnit(squareKilometers, AreaUnit.acre); // ~2.4711
 /// ```
 ///

@@ -11,14 +11,14 @@
 /// Examples:
 ///
 /// ```dart
-/// /// Convert directly from and to meters.
+/// // Convert directly from and to meters.
 /// final meters = 4000.0;
-/// final kmUnit = DistanceUnit.kilometer;
+/// final kmUnit = LengthUnit.kilometer;
 /// final kilometers = kmUnit.fromMeters(meters); // 4.0
 /// final meters2 = kmUnit.toMeters(kilometers); // 4000.0
 ///
-/// /// You can also convert between units wihout using meters.
-/// final miles = kmUnit.toUnit(kilometers, DistanceUnit.mile); // ~ 2.485484
+/// // You can also convert between units wihout using meters.
+/// final miles = kmUnit.toUnit(kilometers, LengthUnit.mile); // ~ 2.485484
 /// ```dart
 ///
 /// See also [Unit of length](https://en.wikipedia.org/wiki/Unit_of_length) and

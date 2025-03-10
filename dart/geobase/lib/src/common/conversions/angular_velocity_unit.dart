@@ -13,13 +13,13 @@ import 'dart:math';
 /// Examples:
 ///
 /// ```dart
-/// /// Convert directly from and to radians per second.
+/// // Convert directly from and to radians per second.
 /// final radiansPerSecond = 6.28319;
 /// final rpmUnit = AngularVelocityUnit.revolutionPerMinute;
 /// final rpm = rpmUnit.fromRadiansPerSecond(radiansPerSecond); // ~60.0
 /// final radiansPerSecond2 = rpmUnit.toRadiansPerSecond(rpm); // ~6.28319
 ///
-/// /// You can also convert between units without using radians per second.
+/// // You can also convert between units without using radians per second.
 /// final degreesPerSecond =
 ///     rpmUnit.toUnit(rpm, AngularVelocityUnit.degreePerSecond); // ~360.0
 /// ```

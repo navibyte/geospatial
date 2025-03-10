@@ -11,14 +11,14 @@
 /// Examples:
 ///
 /// ```dart
-/// /// Convert directly from and to meters per second.
+/// // Convert directly from and to meters per second.
 /// final metersPerSecond = 3.6;
 /// final kilometersPerHour =
 ///   SpeedUnit.kilometerPerHour.fromMetersPerSecond(metersPerSecond); // 12.96
 /// final metersPerSecond2 =
 ///   SpeedUnit.kilometerPerHour.toMetersPerSecond(kilometersPerHour); // 3.6
 ///
-/// /// You can also convert between units without using meters per second.
+/// // You can also convert between units without using meters per second.
 /// final milesPerHour =
 ///   SpeedUnit.kilometerPerHour.toUnit(kilometersPerHour,
 ///        SpeedUnit.milePerHour); // 8.04672

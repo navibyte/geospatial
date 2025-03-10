@@ -12,12 +12,12 @@
 /// Examples:
 ///
 /// ```dart
-/// /// Convert directly from and to seconds.
+/// // Convert directly from and to seconds.
 /// final seconds = 3600.0;
 /// final hours = TimeUnit.hour.fromSeconds(seconds); // 1.0
 /// final seconds2 = TimeUnit.hour.toSeconds(hours); // 3600.0
 ///
-/// /// You can also convert between units without using seconds.
+/// // You can also convert between units without using seconds.
 /// final minutes = TimeUnit.hour.toUnit(hours, TimeUnit.minute); // 60.0
 /// ```
 ///

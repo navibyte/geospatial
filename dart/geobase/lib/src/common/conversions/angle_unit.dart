@@ -13,12 +13,12 @@ import 'dart:math';
 /// Examples:
 ///
 /// ```dart
-/// /// Convert directly from and to radians.
+/// // Convert directly from and to radians.
 /// final radians = 3.14159; // ~pi
 /// final degrees = AngleUnit.degree.fromRadians(radians); // ~180.0
 /// final radians2 = AngleUnit.degree.toRadians(degrees); // ~3.14159
 ///
-/// /// You can also convert between units without using radians.
+/// // You can also convert between units without using radians.
 /// final gradians =
 ///     AngleUnit.degree.toUnit(degrees, AngleUnit.gradian); // ~200.0
 /// ```
