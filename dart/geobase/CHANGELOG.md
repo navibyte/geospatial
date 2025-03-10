@@ -17,6 +17,9 @@ NOTE: [geobase version 1.5.0](https://github.com/navibyte/geospatial/milestone/8
 🛠 Refactoring:
 * [Sub package export enhancements on geobase #263](https://github.com/navibyte/geospatial/issues/263)
 
+📚 Documentation updates:
+* [New chapter about UTM and MGRS on the documentation site #262](https://github.com/navibyte/geospatial/issues/262)
+
 ## 1.4.0+1
 
 Small documentation link fixes.
