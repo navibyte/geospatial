@@ -15,17 +15,11 @@ Read the docs 👉 [geospatial.navibyte.dev](https://geospatial.navibyte.dev/)!
 
 🗺️ [Roadmap 2025: The current state and candidate issues for the geobase package](https://github.com/navibyte/geospatial/issues/254).
 
+✨ New (2025-03-11): The stable version 1.5.0 with [global grids](https://geospatial.navibyte.dev/v1/geobase/global-grids/), better WGS84 [projection](https://geospatial.navibyte.dev/v1/geobase/projections/) support and [unit conversions](https://geospatial.navibyte.dev/v1/geobase/unit-conversions/).
+
 ✨ New (2024-11-10): The stable release with [ellipsoidal geodesy functions](https://geospatial.navibyte.dev/v1/geobase/ellipsoidal-geodesy/) letting you calculate distances, bearings, destination positions and intermediate points along the Earth surface accurately.
 
 ✨ New (2024-07-26): The stable version 1.3.0 with centroid, polylabel, point-in-polygon and other cartesian 2D calculations enhanced - [read more](https://geospatial.navibyte.dev/v1/geobase/geometry-calculations/)!
-
-✨ New (2024-05-26): The new documentation website ([geospatial.navibyte.dev](https://geospatial.navibyte.dev/)) for [geobase](https://geospatial.navibyte.dev/v1/geobase/)
-and [geodata](https://geospatial.navibyte.dev/v1/geodata/)
-package documentation published along with the stable version 1.2.0.
-
-✨ New (2024-04-22):  The stable version 1.1.0 adds support for Newline-delimited GeoJSON, EWKT and EWKB. See also the article [Decode and encode GeoJSON, WKT and WKB in Dart and Flutter apps](https://medium.com/@navibyte/decode-and-encode-geojson-wkt-and-wkb-in-dart-and-flutter-apps-ab2ef4ece2f1).
-
-✨ New (2023-10-29): The stable version 1.0.0 is now ready. See also the article [Geospatial tools for Dart - version 1.0 published](https://medium.com/@navibyte/geospatial-tools-for-dart-version-1-0-published-0f9673e510b3) at Medium.
 
 ## :package: Packages
 
@@ -61,8 +55,10 @@ package documentation by chapters:
 * [🔵 Ellipsoidal geodesy](https://geospatial.navibyte.dev/v1/geobase/ellipsoidal-geodesy/)
 * [📐 Spherical geodesy](https://geospatial.navibyte.dev/v1/geobase/spherical-geodesy/)
 * [📅 Metadata](https://geospatial.navibyte.dev/v1/geobase/metadata/)
+* [🌐 Global grids](https://geospatial.navibyte.dev/v1/geobase/global-grids/)
 * [🗺️ Projections](https://geospatial.navibyte.dev/v1/geobase/projections/)
 * [🔢 Tiling schemes](https://geospatial.navibyte.dev/v1/geobase/tiling-schemes/)
+* [⚖️ Unit conversions](https://geospatial.navibyte.dev/v1/geobase/unit-conversions/)
 
 The [geodata](https://geospatial.navibyte.dev/v1/geodata/)
 package documentation by chapters:
@@ -346,6 +342,12 @@ Code          | Description
 
 ## :newspaper_roll: News
 
+2025-03-11
+* ✨ The stable version 1.5.0 with [global grids](https://geospatial.navibyte.dev/v1/geobase/global-grids/), better WGS84 [projection](https://geospatial.navibyte.dev/v1/geobase/projections/) support and [unit conversions](https://geospatial.navibyte.dev/v1/geobase/unit-conversions/).
+* All docs: [geospatial.navibyte.dev](https://geospatial.navibyte.dev/).
+* Published packages at pub.dev:
+  * [geobase version 1.5.0](https://pub.dev/packages/geobase/versions/1.5.0)
+
 2024-11-10
 * ✨ The stable release with [ellipsoidal geodesy functions](https://geospatial.navibyte.dev/v1/geobase/ellipsoidal-geodesy/) letting you calculate distances, bearings, destination positions and intermediate points along the Earth surface accurately.
 * All docs: [geospatial.navibyte.dev](https://geospatial.navibyte.dev/).
@@ -465,6 +467,8 @@ SDKs:
 * [Flutter](https://flutter.dev/) 
 
 Latest on Dart SDKs
+* [Dart 3.7](https://medium.com/dartlang/announcing-dart-3-7-bf864a1b195c) with developer productivity enhancements.
+* [Dart 3.6](https://medium.com/dartlang/announcing-dart-3-6-778dd7a80983) with digit separators and new features in the pub ecosystem (pub download counts and pub workspaces)
 * [Dart 3.5](https://medium.com/dartlang/dart-3-5-6ca36259fa2f) with improvements in interoperability and an update on the Dart roadmap.
 * [Dart 3.4](https://medium.com/dartlang/dart-3-4-bd8d23b4462a) with WebAssembly (WASM) updates and the roadmap for Dart *macros*. 
 * [Dart 3.3](https://medium.com/dartlang/dart-3-3-325bf2bf6c13) with extension types,  evolving JavaScript-interoperability and experimental support for WebAssembly.
@@ -480,6 +484,8 @@ Latest on Dart SDKs
 * [Dart 2.12](https://medium.com/dartlang/announcing-dart-2-12-499a6e689c87) with sound null safety
 
 Latest on Flutter SDKs
+* [Flutter 3.29](https://medium.com/flutter/whats-new-in-flutter-3-29-f90c380c2317) running on Dart 3.7 and with updates to Impeller, Cupertino and DevTools.
+* [Flutter 3.27](https://medium.com/flutter/whats-new-in-flutter-3-27-28341129570c) running on Dart 3.6 and with enhanced Impeller and improvements to Cupertino widgets.
 * [Flutter 3.24](https://medium.com/flutter/whats-new-in-flutter-3-24-6c040f87d1e4) running on Dart 3.5 and with Multi-View Embedding and preview on Flutter GPU. 
 * [Flutter 3.22](https://medium.com/flutter/whats-new-in-flutter-3-22-fbde6c164fe3) running on Dart 3.4 and stable support for WebAssembly (WASM), Graphics rendering enhancements, and AI updates.
 * [Flutter 3.19](https://medium.com/flutter/whats-new-in-flutter-3-19-58b1aae242d2) running on Dart 3.3 and Gemini API integration, Impeller updates, and Windows Arm64 support.

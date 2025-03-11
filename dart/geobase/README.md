@@ -10,17 +10,6 @@ and [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geomet
 
 ## Features
 
-✨ New (2024-11-10): The stable version 1.4.0 with [ellipsoidal geodesy functions](https://geospatial.navibyte.dev/v1/geobase/ellipsoidal-geodesy/) letting you calculate distances, bearings, destination positions and intermediate points along the Earth surface accurately.
-
-✨ New (2024-07-26): The stable version 1.3.0 with centroid, polylabel, point-in-polygon and other cartesian 2D calculations enhanced - [read more](https://geospatial.navibyte.dev/v1/geobase/geometry-calculations/)!
-
-✨ New (2024-05-26): The new documentation website ([geospatial.navibyte.dev](https://geospatial.navibyte.dev/)) for the [geobase](https://geospatial.navibyte.dev/v1/geobase/)
-package documentation published along with the stable version 1.2.0.
-
-✨ New (2024-04-22): Support for Newline-delimited GeoJSON, EWKT and EWKB added. Check out [the blog post](https://medium.com/@navibyte/decode-and-encode-geojson-wkt-and-wkb-in-dart-and-flutter-apps-ab2ef4ece2f1).
-
-<a title="Ktrinko, CC0, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Eckert4.jpg"><img alt="World map with Natural Earth data, Excert projection" src="https://raw.githubusercontent.com/navibyte/geospatial_docs/v2023-08-12/assets/doc/projections/eckert4/320px-Eckert4.jpg" align="right"></a>
-
 Key features:
 * 🌐 geographic (longitude-latitude) and projected positions and bounding boxes
 * 🧩 simple geometries (point, line string, polygon, multi point, multi line string, multi polygon, geometry collection)
@@ -33,6 +22,21 @@ Key features:
 * 🗺️ coordinate projections (built-in WGS84 based projections on geographic, geocentric, UTM and Web Mercator coordinates + external [proj4dart](https://pub.dev/packages/proj4dart) support)
 * 🔢 tiling schemes and tile matrix sets (web mercator, global geodetic)
 * ⚖️ unit conversions (angle, angular velocity, area, distance, speed and time)
+
+## Latest changes
+
+✨ New (2025-03-11): The stable version 1.5.0 with [global grids](https://geospatial.navibyte.dev/v1/geobase/global-grids/), better WGS84 [projection](https://geospatial.navibyte.dev/v1/geobase/projections/) support and [unit conversions](https://geospatial.navibyte.dev/v1/geobase/unit-conversions/).
+
+✨ New (2024-11-10): The stable version 1.4.0 with [ellipsoidal geodesy functions](https://geospatial.navibyte.dev/v1/geobase/ellipsoidal-geodesy/) letting you calculate distances, bearings, destination positions and intermediate points along the Earth surface accurately.
+
+✨ New (2024-07-26): The stable version 1.3.0 with centroid, polylabel, point-in-polygon and other cartesian 2D calculations enhanced - [read more](https://geospatial.navibyte.dev/v1/geobase/geometry-calculations/)!
+
+✨ New (2024-05-26): The new documentation website ([geospatial.navibyte.dev](https://geospatial.navibyte.dev/)) for the [geobase](https://geospatial.navibyte.dev/v1/geobase/)
+package documentation published along with the stable version 1.2.0.
+
+✨ New (2024-04-22): Support for Newline-delimited GeoJSON, EWKT and EWKB added. Check out [the blog post](https://medium.com/@navibyte/decode-and-encode-geojson-wkt-and-wkb-in-dart-and-flutter-apps-ab2ef4ece2f1).
+
+<a title="Ktrinko, CC0, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Eckert4.jpg"><img alt="World map with Natural Earth data, Excert projection" src="https://raw.githubusercontent.com/navibyte/geospatial_docs/v2023-08-12/assets/doc/projections/eckert4/320px-Eckert4.jpg" align="right"></a>
 
 ## Documentation
 
@@ -51,8 +55,10 @@ package documentation by chapters:
 * [🔵 Ellipsoidal geodesy](https://geospatial.navibyte.dev/v1/geobase/ellipsoidal-geodesy/)
 * [📐 Spherical geodesy](https://geospatial.navibyte.dev/v1/geobase/spherical-geodesy/)
 * [📅 Metadata](https://geospatial.navibyte.dev/v1/geobase/metadata/)
+* [🌐 Global grids](https://geospatial.navibyte.dev/v1/geobase/global-grids/)
 * [🗺️ Projections](https://geospatial.navibyte.dev/v1/geobase/projections/)
 * [🔢 Tiling schemes](https://geospatial.navibyte.dev/v1/geobase/tiling-schemes/)
+* [⚖️ Unit conversions](https://geospatial.navibyte.dev/v1/geobase/unit-conversions/)
 
 See also overview topics about *Geospatial tools for Dart*:
 
@@ -389,7 +395,7 @@ Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  geobase: ^1.5.0-dev.5
+  geobase: ^1.5.0
 ```
 
 Import it:

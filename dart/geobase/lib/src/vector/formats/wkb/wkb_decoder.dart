@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2024 Navibyte (https://navibyte.com). All rights reserved.
+// Copyright (c) 2020-2025 Navibyte (https://navibyte.com). All rights reserved.
 // Use of this source code is governed by a “BSD-3-Clause”-style license that is
 // specified in the LICENSE file.
 //
@@ -8,20 +8,21 @@ part of 'wkb_format.dart';
 
 class _WkbGeometryDecoder implements ContentDecoder {
   final GeometryContent builder;
-  final bool singlePrecision;
+  //final bool singlePrecision;
 
   _WkbGeometryDecoder(
-    this.builder, {
+    this.builder, //{
     // ignore: unused_element
-    this.singlePrecision = false,
-  });
+    // this.singlePrecision = false,
+    //}
+  );
 
   @override
   void decodeBytes(Uint8List source, {Map<String, dynamic>? options}) {
     _WkbGeometryBufferDecoder(
       builder,
       ByteReader.view(source),
-      singlePrecision: singlePrecision,
+      //singlePrecision: singlePrecision,
     ).buildAll();
   }
 

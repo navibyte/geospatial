@@ -1,6 +1,8 @@
 ## 1.5.0
 
-NOTE: [geobase version 1.5.0](https://github.com/navibyte/geospatial/milestone/8) currently under development (1.5.0-dev.5).
+[geobase release 1.5.0](https://github.com/navibyte/geospatial/milestone/8)
+
+✨ New (2025-03-11): The stable version 1.5.0 with [global grids](https://geospatial.navibyte.dev/v1/geobase/global-grids/), better WGS84 [projection](https://geospatial.navibyte.dev/v1/geobase/projections/) support and [unit conversions](https://geospatial.navibyte.dev/v1/geobase/unit-conversions/).
 
 🧩 Features:
 * [Port conversions between (historical) ellipsoidal datums to Dart #256](https://github.com/navibyte/geospatial/issues/256)
