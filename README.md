@@ -78,12 +78,13 @@ Key features of the [geobase](https://pub.dev/packages/geobase) package:
 * 🧩 simple geometries (point, line string, polygon, multi point, multi line string, multi polygon, geometry collection)
 * 📏 cartesian 2D calculations (centroid, polylabel, point-in-polygon, distance).
 * 🔷 features (with id, properties and geometry) and feature collections
-* 📐 ellipsoidal (*vincenty*) and spherical (*great circle*, *rhumb line*) geodesy tools
+* 📐 ellipsoidal (*vincenty*) and spherical (*great circle*, *rhumb line*) geodesy tools, with ellipsoidal datum, [UTM](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system), [MGRS](https://en.wikipedia.org/wiki/Military_Grid_Reference_System) and ECEF (earth-centric earth-fixed) support
 * 📅 temporal data structures (instant, interval) and spatial extents
 * 📃 vector data formats supported ([GeoJSON](https://geojson.org/), [Newline-delimited GeoJSON](https://stevage.github.io/ndgeojson/), [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry), [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary)
 )
-* 🗺️ coordinate projections (web mercator + based on the external [proj4dart](https://pub.dev/packages/proj4dart) library)
+* 🗺️ coordinate projections (built-in WGS84 based projections on geographic, geocentric, UTM and Web Mercator coordinates + external [proj4dart](https://pub.dev/packages/proj4dart) support)
 * 🔢 tiling schemes and tile matrix sets (web mercator, global geodetic)
+* ⚖️ unit conversions (angle, angular velocity, area, distance, speed and time)
 
 Key features of the [geodata](https://pub.dev/packages/geodata) package:
 

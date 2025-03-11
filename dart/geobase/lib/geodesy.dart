@@ -1,5 +1,5 @@
 /// Ellipsoidal (*vincenty*) and spherical (*great circle*, *rhumb line*)
-/// geodesy tools, with ellipsoidal datum, UTM and MGRS coordinate conversions.
+/// geodesy tools, with ellipsoidal datum, UTM, MGRS and ECEF support.
 ///
 /// This libary exports a subset of `package:geobase/geobase.dart`.
 ///

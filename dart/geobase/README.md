@@ -26,12 +26,13 @@ Key features:
 * 🧩 simple geometries (point, line string, polygon, multi point, multi line string, multi polygon, geometry collection)
 * 📏 cartesian 2D calculations (centroid, polylabel, point-in-polygon, distance).
 * 🔷 features (with id, properties and geometry) and feature collections
-* 📐 ellipsoidal (*vincenty*) and spherical (*great circle*, *rhumb line*) geodesy tools, with [UTM](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system) and [MGRS](https://en.wikipedia.org/wiki/Military_Grid_Reference_System) coordinate conversions
+* 📐 ellipsoidal (*vincenty*) and spherical (*great circle*, *rhumb line*) geodesy tools, with ellipsoidal datum, [UTM](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system), [MGRS](https://en.wikipedia.org/wiki/Military_Grid_Reference_System) and ECEF (earth-centric earth-fixed) support
 * 📅 temporal data structures (instant, interval) and spatial extents
 * 📃 vector data formats supported ([GeoJSON](https://geojson.org/), [Newline-delimited GeoJSON](https://stevage.github.io/ndgeojson/), [WKT](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry), [WKB](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary)
 )
-* 🗺️ coordinate projections (web mercator + based on the external [proj4dart](https://pub.dev/packages/proj4dart) library)
+* 🗺️ coordinate projections (built-in WGS84 based projections on geographic, geocentric, UTM and Web Mercator coordinates + external [proj4dart](https://pub.dev/packages/proj4dart) support)
 * 🔢 tiling schemes and tile matrix sets (web mercator, global geodetic)
+* ⚖️ unit conversions (angle, angular velocity, area, distance, speed and time)
 
 ## Documentation
 
@@ -428,10 +429,10 @@ Package                | Description
 ---------------------- | ----------- 
 **common**             | Common codes, constants, functions, presentation helpers and reference systems related to geospatial applications.
 **coordinates**        | Position, bounding box and positions series (with coordinate arrays).
-**geodesy**            | Ellipsoidal (*vincenty*) and spherical (*great circle*, *rhumb line*) geodesy tools, with UTM and MGRS coordinate conversions.
+**geodesy**            | Ellipsoidal (*vincenty*) and spherical (*great circle*, *rhumb line*) geodesy tools, with ellipsoidal datum, UTM, MGRS and ECEF support.
 **geometric**          | Cartesian 2D calculations (centroid, polylabel, point-in-polygon, distance).
 **meta**               | Temporal data structures (instant, interval) and spatial extents.
-**projections**        | Geospatial projections (currently only between WGS84 and Web Mercator).
+**projections**        | WGS84 based projections; ellipsoidal (geographic, geocentric, UTM) and spherical (Web Mercator).
 **projections_proj4d** | Projections provided by the external [proj4dart](https://pub.dev/packages/proj4dart) package.
 **tiling**             | Tiling schemes and tile matrix sets (web mercator, global geodetic).
 **vector**             | Text and binary formats for vector data (features, geometries, coordinates).
