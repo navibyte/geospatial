@@ -1,3 +1,10 @@
+## 2025-03-11
+
+* ✨ The stable version 1.5.0 with [global grids](https://geospatial.navibyte.dev/v1/geobase/global-grids/), better WGS84 [projection](https://geospatial.navibyte.dev/v1/geobase/projections/) support and [unit conversions](https://geospatial.navibyte.dev/v1/geobase/unit-conversions/).
+* All docs: [geospatial.navibyte.dev](https://geospatial.navibyte.dev/).
+* Published packages at pub.dev:
+  * [geobase version 1.5.0](https://pub.dev/packages/geobase/versions/1.5.0)
+
 ## 2024-11-10
 
 * ✨ The stable release with [ellipsoidal geodesy functions](https://geospatial.navibyte.dev/v1/geobase/ellipsoidal-geodesy/) letting you calculate distances, bearings, destination positions and intermediate points along the Earth surface accurately.

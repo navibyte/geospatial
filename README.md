@@ -439,6 +439,15 @@ Geospatial:
 * [EPSG](https://epsg.org/home.html) (Geodetic Parameter Dataset)
 * [World Geodetic System](https://en.wikipedia.org/wiki/World_Geodetic_System), see also [EPSG:4326](https://epsg.io/4326) about WGS 84
 * [Web Mercator projection](https://en.wikipedia.org/wiki/Web_Mercator_projection), see also [EPSG:3857](https://epsg.io/3857) and [Bing Maps Tile System](https://docs.microsoft.com/en-us/bingmaps/articles/bing-maps-tile-system)
+* [Geographic coordinate conversion](https://en.wikipedia.org/wiki/Geographic_coordinate_conversion)
+* [Geodetic datum](https://en.wikipedia.org/wiki/Geodetic_datum)
+* [Ellipsoid](https://en.wikipedia.org/wiki/Ellipsoid)
+* [Geodesic](https://en.wikipedia.org/wiki/Geodesic)
+* [Geodesic on ellipsoid](https://en.wikipedia.org/wiki/Geodesics_on_an_ellipsoid)
+* [Helmert transformation](en.wikipedia.org/wiki/Helmert_transformation)
+* [ECEF](https://en.wikipedia.org/wiki/Earth-centered,_Earth-fixed_coordinate_system) (Earth-centered, Earth-fixed coordinate system)
+* [UTM](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system) (Universal Transverse Mercator)
+* [MGRS](https://en.wikipedia.org/wiki/Military_Grid_Reference_System) (Military Grid Reference System)
 * [ISO 6709](https://en.wikipedia.org/wiki/ISO_6709) on standard representation of geographic point location by coordinates
 
 OGC (The Open Geospatial Consortium) related:
